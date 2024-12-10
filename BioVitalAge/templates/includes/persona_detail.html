@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioVitalAge - HomePage</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'includes/homePage.css' %}">
+    <link rel="stylesheet" href="{% static 'includes/persona_detail.css' %}">
+
+    <!-- Js Import  -->
+    <script src="{% static 'includes/js/indicatorNew.js' %}" defer></script>
+    
+    <!-- Bootstrap import -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Import  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="{% static 'includes/js/pdfGenerator.js' %}" defer></script>
+</head>
+<body>
+    <header>
+        <div class="nav-bar-user-modal" id="userModal">
+            <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">log out</button>
+        </div>
+
+        <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar ">
+            <div class="col-md-2 d-flex jus nav-bar-logo">
+                <img src="{% static 'includes/icone/Logo.png' %}" alt="">
+            </div>
+            <div class="col-md-8 nav-bar-linkage">
+                <a href="{% url 'HomePage' %}">HomePage</a>
+                <a href="{% url 'Calcolatore' %}">Calcolatore Età Biologica</a>
+                <a href="{% url 'Risultati' %}" id="active">Ricerca Pazienti</a>
+            </div>
+
+            <div class="col-md-2 nav-bar-user">
+                <h3>Demo User</h3>
+                <div class="img-container-user-nav-bar">
+                    <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user">
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="main-title-nav">
+            <div class="back-tittle">
+                <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt=""></a>
+                <h2 class="main-welcome-title">Report Paziente, {{ persona.name }} {{ persona.surname }}</h2>
+            </div>
+           
+            <div class="main-menu-trace">
+                <img src="{% static 'includes/icone/homePage.png' %}" alt="">
+                <p>»</p>
+                <p>Report Paziente</p>
+            </div>
+        </div>
+
+
+        <div class="container-risultati">
+            <div class="card-personal-info">
+                <h3>Personal Information</h3>
+                <div class="card-content-container">    
+                    <div class="detail-row">
+                        <p><span>Name: </span></p>
+                        <p>{{ persona.name }}</p>
+                    </div>
+                    <div class="detail-row">
+                        <p><span>Surname: </span></p>
+                        <p>{{ persona.surname }}</p>
+                    </div>
+                    <div class="detail-row">
+                        <p><span>Date of Birth: </span></p>
+                        <p>{{ persona.dob|date:"d/m/Y" }}</p>
+                    </div>
+                    <div class="detail-row">
+                        <p><span>Codice Fiscale: </span></p>
+                        <p>{{ persona.codice_fiscale }}</p>
+                    </div>
+                    <div class="detail-row">
+                        <p><span>Place of Birth: </span></p>
+                        <p>{{ persona.place_of_birth }}</p>
+                    </div>
+                    <div class="detail-row">
+                        <p><span>Chronological Age: </span></p>
+                        <p>{{ persona.chronological_age }}</p>
+                    </div>
+                    <div class="detail-row">
+                        <p><span>Biological Age: </span></p>
+                        <p>{{ persona.biological_age }}</span>
+                    </div>
+                </div>  
+            </div>
+
+            <div class="exams-container">
+
+                <h3>All Exams Value</h3>
+
+                <div class="content-container">
+
+                    <div class="indicator-container">
+                        <p><span>Obri Index:</span>{{ persona.obri_index }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">2.2 <</p>
+                                <div class="positiveTesto">
+                                    <p>1.2</p>
+                                    <p>0.8</p>
+                                </div>
+                                <p class="extremeNegativeRange">< 0</p>
+                            </div>
+                        
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ persona.obri_index }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="indicator-container">
+                        <p><span>d-ROMs:</span>{{ persona.d_roms }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">400 <</p>
+                                <div class="positiveTesto">
+                                    <p>300</p>
+                                    <p>250</p>
+                                </div>
+                                <p class="extremeNegativeRange">< 250</p>
+                            </div>
+                        
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ persona.d_roms }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="indicator-container">
+                        <p><span>AA/EPA Ratio:</span>{{ persona.aa_epa }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">15 <</p>
+                                <div class="positiveTesto">
+                                    <p>3</p>
+                                    <p>1</p>
+                                </div>
+                                <p class="extremeNegativeRange">< 1</p>
+                            </div>
+                        
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ persona.aa_epa }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="indicator-container">
+                        <p><span>AA/DHA Ratio:</span>{{ persona.aa_dha }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">4.3 <</p>
+                                <div class="positiveTesto">
+                                    <p>3.6</p>
+                                    <p>1.6</p>
+                                </div>
+                                <p class="extremeNegativeRange">< 1.6</p>
+                            </div>
+                        
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ persona.aa_dha }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="indicator-container">
+                        <p><span>HOMA Test:</span>{{ persona.homa_test }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">< 0.3</p>
+                                <div class="positiveTesto">
+                                    <p>0.3</p>
+                                    <p>2.5</p>
+                                </div>
+                                <p class="extremeNegativeRange">> 2.5</p>
+                            </div>
+                        
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer"></p>
+                                <p id="indicator" class="indicatore"  data-value="{{ persona.homa_test }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="indicator-container">
+                        <p><span>Cardiovascular Risk:</span>{{ persona.cardiovascular_risk }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">< 20</p>
+                                <div class="positiveTesto" id="middleTesto">
+                                    <p>20</p>
+                                    <p>3</p>
+                                </div>
+                                <p class="extremeNegativeRange">< 3</p>
+                            </div>
+                        
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ persona.cardiovascular_risk }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="indicator-container">
+                        <p><span>Oxidative Stress Index (OSI):</span>{{ persona.osi }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">< 120</p>
+                                <div class="positiveTesto" id="middleTesto">
+                                    <p>65</p>
+                                    <p>41</p>
+                                </div>
+                                <p class="extremeNegativeRange"> 0</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ persona.osi }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Plasma Antioxidant Test (PAT):</span>{{ persona.pat }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">< 1800</p>
+                                <div class="positiveTesto" id="middleTesto">
+                                    <p>1800</p>
+                                    <p>2270</p>
+                                </div>
+                                <p class="extremeNegativeRange">< 2800</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar""></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ persona.pat }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>White Blood Cells (WBC):</span>{{ persona.wbc }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p>min</p>
+                                <p>Max</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container-none">
+                                <p data-value="{{ persona.wbc }}"></p>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Basophils (%):</span>{{ persona.baso }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p>min</p>
+                                <p>Max</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container-none">
+                                <p data-value="{{ persona.baso }}"></p>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Eosinophils (%):</span>{{ persona.eosi }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p>min</p>
+                                <p>Max</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container-none">
+                                <p data-value="{{ persona.eosi }}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Lymphocytes (%):</span>{{ persona.lymph }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p>min</p>
+                                <p>Max</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container-none">
+                                <p data-value="{{ persona.lymph }}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Monocytes (%):</span>{{ persona.mono }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p>min</p>
+                                <p>Max</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container-none">
+                                <p data-value="{{ persona.mono }}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Neutrophils (%):</span>{{ persona.neut }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p>min</p>
+                                <p>Max</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container-none">
+                                <p data-value="{{ persona.neut }}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Red Blood Cells (RBC):</span>{{ persona.rbc }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p>min</p>
+                                <p>Max</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container-none">
+                                <p data-value="{{ persona.rbc }}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Hematocrit (HCT):</span>{{ persona.hct }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p>min</p>
+                                <p>Max</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container-none">
+                                <p data-value="{{ persona.hct }}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Hemoglobin (HGB):</span>{{ persona.hgb }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p>min</p>
+                                <p>Max</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container-none">
+                                <p data-value="{{ persona.hgb }}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Mean Corpuscular Hemoglobin (MCH):</span>{{ persona.mch }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p>min</p>
+                                <p>Max</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container-none">
+                                <p data-value="{{ persona.mch }}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Mean Corpuscular Hemoglobin Concentration (MCHC):</span>{{ persona.mchc }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p>min</p>
+                                <p>Max</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container-none">
+                                <p data-value="{{ persona.mchc }}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Mean Corpuscular Volume (MCV):</span>{{ persona.mcv }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p>min</p>
+                                <p>Max</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container-none">
+                                <p data-value="{{ persona.mcv }}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Glucose (mg/dL):</span>{{ persona.glucose }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">140 <</p>
+                                <div class="positiveTesto" id="middleTesto">
+                                    <p>140</p>
+                                    <p>106</p>
+                                </div>
+                                <p class="extremeNegativeRange">70</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ persona.glucose }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Creatinine (mg/dL):</span>{{ persona.creatinine }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">0.9 <</p>
+                                <div class="positiveTesto">
+                                    <p>0.5</p>
+                                    <p>0.9</p>
+                                </div>
+                                <p class="extremeNegativeRange">> 0.9</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ persona.creatinine }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Ferritin (ng/mL):</span>{{ persona.ferritin }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">150 <</p>
+                                <div class="positiveTesto">
+                                    <p>150</p>
+                                    <p>13</p>
+                                </div>
+                                <p class="extremeNegativeRange">< 13</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ persona.ferritin }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Albumin (g/dL):</span>{{ persona.albumin }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">5.2 <</p>
+                                <div class="positiveTesto">
+                                    <p>5.2</p>
+                                    <p>3.5</p>
+                                </div>
+                                <p class="extremeNegativeRange">< 3.5</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ persona.albumin }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Total Protein (g/dL):</span>{{ persona.protein }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">6.6 <</p>
+                                <div class="positiveTesto">
+                                    <p>6.6</p>
+                                    <p>8.7</p>
+                                </div>
+                                <p class="extremeNegativeRange">< 8.7</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ persona.protein }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Bilirubin (mg/dL):</span>{{ persona.bilirubin }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">1.2 <</p>
+                                <p class="extremeNegativeRange">0</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="barraSpecial" ></p>
+                                <p id="indicator" class="indicatore" data-value="{{ persona.bilirubin }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="indicator-container">
+                        <p><span>Uric Acid (mg/dL):</span>{{ persona.uric_acid }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">7.2 <</p>
+                                <div class="positiveTesto">
+                                    <p>7.2</p>
+                                    <p>3.5</p>
+                                </div>
+                                <p class="extremeNegativeRange">> 3.5</p>
+                            </div>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ persona.uric_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <button id="generatePDFButton">Genera PDF</button>
+        <script>
+            window.personaData = {
+                name: "{{ persona.name }}",
+                surname: "{{ persona.surname }}",
+                dob: "{{ persona.dob|date:'d/m/Y' }}",
+                gender: "{{ persona.gender }}",
+                place_of_birth: "{{ persona.place_of_birth }}",
+                codice_fiscale: "{{ persona.codice_fiscale }}",
+                chronological_age: "{{ persona.chronological_age }}",
+                biological_age: "{{ persona.biological_age }}",
+                obri_index: "{{ persona.obri_index }}",
+                d_roms: "{{ persona.d_roms }}",
+                aa_epa: "{{ persona.aa_epa }}",
+                aa_dha: "{{ persona.aa_dha }}",
+                homa_test: "{{ persona.homa_test }}",
+                cardiovascular_risk: "{{ persona.cardiovascular_risk }}",
+                osi: "{{ persona.osi }}",
+                pat: "{{ persona.pat }}",
+                wbc: "{{ persona.wbc }}",
+                baso: "{{ persona.baso }}",
+                eosi: "{{ persona.eosi }}",
+                lymph: "{{ persona.lymph }}",
+                mono: "{{ persona.mono }}",
+                neut: "{{ persona.neut }}",
+                rbc: "{{ persona.rbc }}",
+                hct: "{{ persona.hct }}",
+                hgb: "{{ persona.hgb }}",
+                mch: "{{ persona.mch }}",
+                mchc: "{{ persona.mchc }}",
+                mcv: "{{ persona.mcv }}",
+                glucose: "{{ persona.glucose }}",
+                creatinine: "{{ persona.creatinine }}",
+                ferritin: "{{ persona.ferritin }}",
+                albumin: "{{ persona.albumin }}",
+                protein: "{{ persona.protein }}",
+                bilirubin: "{{ persona.bilirubin }}",
+                uric_acid: "{{ persona.uric_acid }}"
+            };
+        </script>
+        <script src="{% static 'includes/js/pdfGenerator.js' %}?v={{ timestamp }}"></script>
+
+        
+    </main>
+
+   
+</body>
+</html>
+

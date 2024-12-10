@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioVitalAge - HomePage</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'includes/homePage.css' %}">
+    <link rel="stylesheet" href="{% static 'includes/risultati.css' %}">
+
+    <!-- Bootstrap import -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Import  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="nav-bar-user-modal" id="userModal">
+            <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">log out</button>
+        </div>
+
+        <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar ">
+            <div class="col-md-2 d-flex jus nav-bar-logo">
+                <img src="{% static 'includes/icone/Logo.png' %}" alt="">
+            </div>
+            <div class="col-md-8 nav-bar-linkage">
+                <a href="{% url 'HomePage' %}">HomePage</a>
+                <a href="{% url 'Calcolatore' %}">Calcolatore Età Biologica</a>
+                <a href="{% url 'Risultati' %}" id="active">Ricerca Pazienti</a>
+            </div>
+
+            <div class="col-md-2 nav-bar-user">
+                <h3>Demo User</h3>
+                <div class="img-container-user-nav-bar">
+                    <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user">
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="main-title-nav">
+            <h2 class="main-welcome-title">Calcola la tua età biologica, Demo User</h2>
+            <div class="main-menu-trace">
+                <img src="{% static 'includes/icone/homePage.png' %}" alt="">
+                <p>»</p>
+                <p>Ricerca Pazienti</p>
+            </div>
+        </div>
+
+        <div class="barra-ricerca">
+            <form method="POST" action="#">
+                {% csrf_token %} 
+                <input type="text" placeholder="Type name here" name="inputField" required>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <div class="risultati-ricerca">
+            <div class="table-placeholder">
+                <p class="cella">Name</p>
+                <p class="cella">Surname</p>
+                <p class="cella">Date of Birth</p>
+                <p class="cella">Codice Fiscale</p>
+                <p class="cella">Place of Birth</p>
+                <p class="cella">Chronological Age</p>
+                <p class="cella">Biological Age</p>
+                <p class="cella"><img src="{% static 'includes/icone/freccia.png' %}" alt=""></p>
+            </div>
+        
+            <div class="col-md-12 content-table">
+                {% for persona in persone %}
+                    <div class="riga d-flex justify-content-between align-items-center">
+                        <p class="cella">{{ persona.name }}</p>
+                        <p class="cella">{{ persona.surname }}</p>
+                        <p class="cella">{{ persona.dob|date:"d/m/Y" }}</p>
+                        <p class="cella">{{ persona.codice_fiscale }}</p>
+                        <p class="cella">{{ persona.place_of_birth }}</p>
+                        <p class="cella">{{ persona.chronological_age }}</p>
+                        <p class="cella">{{ persona.biological_age }}</p>
+                        <div class="cella">
+                            <a href="{% url 'persona_detail' persona.id %}" class="btn btn-info">View more</a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-center">No results found</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <footer>
+            <p>® Vitality Age Limited 2024, All Rights Reserved</p>
+        </footer>
+    </main>
+
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

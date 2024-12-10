@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioVitalAge - HomePage</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'includes/homePage.css' %}">
+
+    <!-- Bootstrap import -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Import  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+
+    <!-- Js Import -->
+    <!-- <script src="{% static 'includes/js/app.js' %}"></script> -->
+</head>
+<body>
+    <header>
+        <div class="nav-bar-user-modal" id="userModal">
+            <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">log out</button>
+        </div>
+
+        <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar ">
+            <div class="col-md-2 d-flex jus  nav-bar-logo">
+                <img src="{% static 'includes/icone/Logo.png' %}" alt="">
+            </div>
+            <div class="col-md-8 nav-bar-linkage">
+                <a href="{% url 'HomePage' %}" id="active">HomePage</a>
+                <a href="{% url 'Calcolatore' %}">Calcolatore Età Biologica</a>
+                <a href="{% url 'Risultati' %}">Ricerca Pazienti</a>
+            </div>
+
+            <div class="col-md-2 nav-bar-user">
+               
+                <h3>Demo User</h3>
+                
+                <div class="img-container-user-nav-bar">
+                    <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user">
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    
+    <main>
+        <div class="main-title-nav">
+            <h2 class="main-welcome-title">Welcome Back,{{ user_name }} </h2>
+            <div class="main-menu-trace">
+                <img src="{% static 'includes/icone/homePage.png' %}" alt="">
+                <p>»</p>
+                <p>Home Page</p>
+            </div>
+        </div>
+        
+        <div class="main-upload-btn">
+            <button class="main-update-btn">Calcola l'età Biologica</button>
+            <button class="main-take-btn">Ricerca Dati Paziente</button>
+        </div>
+
+        <div class="main-content">
+            <div class="main-content-latest-scores">
+
+                <div class="backdrop-locked">
+                    <img src="{% static 'includes/icone/lucchetto.png' %}" alt="">
+                </div>
+
+                <p class="section-tittle">Latest Organ Health Scores</p>
+               
+                <div class="score-clock-graph">
+                    
+                    <div class="clock" id="kidneyClock">
+                        <div class="inner"></div>
+                        <div class="percentage" id="kidneyPercentage"></div>
+                      
+                        <p class="clock-description">Kidney Health</p>
+                    </div>
+                
+                    <div class="clock" id="lipidClock">
+                        <div class="inner"></div>
+                        <div class="percentage" id="lipidPercentage"></div>
+                      
+                        <p class="clock-description">Lipid Health</p>
+                    </div>
+                
+                    <div class="clock" id="liverClock">
+                        <div class="inner"></div>
+                        <div class="percentage" id="liverPercentage"></div>
+                       
+                        <p class="clock-description">Liver Health</p>
+                    </div>
+                
+                    <div class="clock" id="glucoseClock">
+                        <div class="inner"></div>
+                        <div class="percentage" id="glucosePercentage"></div>
+                       
+                        <p class="clock-description">Glucose Health</p>
+                    </div>
+                
+                </div>
+             
+            </div>
+
+            <div class="main-content-chronologic-age">
+                <p class="section-tittle">Età Cronologica vs Età Predetta</p>
+            
+                <div class="chronologic-age-graphic-container">
+                    <p class="chronologic-age-lateral-words">Età (anni)</p>
+            
+                    <div class="graphic-container-content">
+                        <div class="lateral-number">
+                            <p>100</p>
+                            <p>80</p>
+                            <p>60</p>
+                            <p>40</p>
+                            <p>20</p>
+                            <p>0</p>
+                        </div>
+            
+                        <div class="graphic-container-indicator-container">
+                            <div class="indicator-container-value-container">
+                                <!-- Barra per Età Cronologica -->
+                                <div class="first-indicator-container">
+                                    <div class="first-indicator-value-container" 
+                                         style="height: {{ avg_chronological_age }}%;"></div>
+                                    <p class="first-indicator-value">{{ avg_chronological_age }}</p>
+                                </div>
+            
+                                <!-- Barra per Età Biologica -->
+                                <div class="second-indicator-container">
+                                    <div class="second-indicator-value-container" 
+                                         style="height: {{ avg_biological_age }}%;"></div>
+                                    <p class="second-indicator-value">{{ avg_biological_age }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="crhonologic-graph-legenda">
+                    <div class="first-legenda-indicator-container">
+                        <div class="first-legenda-indicator"></div>
+                        <p>Età Cronologica</p>
+                    </div>
+            
+                    <div class="second-legenda-indicator-container">
+                        <div class="second-legenda-indicator"></div>
+                        <p>Età Biologica</p>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            
+
+
+            <div class="main-content-latest-score-graph">
+                <p class="section-tittle" id="titoloSezione">Gli Ultimi cinque report del calcolo dell'età biologica</p>
+            
+                <div class="col-md-12 d-flex justify-content-between align-items-center paziente-demo-tittle">
+                    <p>Username</p>
+                    <p>Cognome</p>
+                    <p>Città</p>
+                    <p>Data di Nascita</p>
+                    <p>Codice Fiscale</p>
+                    <p>Data Caricamento</p>
+                    <p>Tools</p>
+                </div>
+            
+                <div class="col-md-12 last-result-container">
+                    {% for persona in recent_reports %}
+                        <div class="col-md-12 d-flex justify-content-between align-items-center paziente-demo">
+                            <p>{{ persona.name }}</p>
+                            <p>{{ persona.surname }}</p>
+                            <p>{{ persona.place_of_birth }}</p>
+                            <p>{{ persona.dob|date:"d/m/Y" }}</p>
+                            <p>{{ persona.codice_fiscale }}</p>
+                            <p>{{ persona.created_at|date:"d/m/Y" }}</p>
+                            <a href="{% url 'persona_detail' persona.id %}" class="button-style">Mostra di più</a>
+                        </div>
+                    {% empty %}
+                        <p class="text-center">Nessun report disponibile</p>
+                    {% endfor %}
+                </div>
+                            
+                <button class="button-style" id="vedi-tutti">Mostra tutti</button>
+            </div>
+            
+
+            <div class="main-content-my-latest-report">
+
+                <div class="backdrop-locked">
+                    <img src="{% static 'includes/icone/lucchetto.png' %}" alt="">
+                </div>
+
+                <p class="section-tittle">My Latest Reports</p>
+
+                <div class="latest-report-blod-age-container">
+                    <div class="latest-report-blod-age-description">
+                        <h4>Blood Age Report</h4>
+                        <p>Generated on Mon Aug 26 2024</p>
+                    </div>
+                    <button class="blod-age-btn">Download</button>
+                </div>
+                <div class="latest-report-mind-age-container">
+                    <div class="latest-report-mind-age-description">
+                        <h4>Min Age Report</h4>
+                        <p>Generated on Mon Aug 26 2024</p>
+                    </div>
+                    <button class="mind-age-btn">Download</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>® Vitality Age Limited 2024, All Rights Reserved</p>
+        </footer>
+    </main>
+
+  
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

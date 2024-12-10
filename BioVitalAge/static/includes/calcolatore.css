@@ -1,0 +1,318 @@
+
+:root{
+    --dark1: #0c042c; 
+    --dark2: #0c214b; 
+    --light1: #c3ccd4; 
+
+    --neutral-gray: #b0b8c1;
+    --neutral-bg-color: rgba(176, 184, 193, 0.2);
+    --neutral-bg-color-contrast: rgba(124, 81, 149, 0.2); 
+    
+    --contrast-color: #3a255d;
+    --contrast-color-shadow: #3b255d2c; 
+    --contrast-color2: #6a2dcc; 
+    --positive-color: #2ac670; 
+            
+    --tittle1: whitesmoke; 
+    --tittle2: #2ac4dd; 
+
+    --circle-color-shadow: rgba(42, 196, 221,0.15);
+    --circle-color-shadow-two: rgba(42, 196, 221,0.05)
+}
+
+
+main{
+    height: 1300px;
+}
+form{
+    margin: auto;
+    height: 900px;
+}
+.containerInfoPatient{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.PatientInfoContainer{
+    border-radius: 8px;
+    background-color: whitesmoke;
+}
+.PatientInfoContainer h3{
+    color: var(--contrast-color);
+    padding-left: 40px;
+    padding-top: 20px;
+    padding-bottom: 0px;
+    margin-bottom: 0rem;
+}
+.containerInput{
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.form-group{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.form-group label{
+    color: var(--dark1);
+    padding: 8px;
+}
+.form-group input{
+    width: 100%;
+    border-radius: 8px;
+    border: none;
+    border-bottom: 2px solid var(--contrast-color2);
+    height: 2.5rem;
+    outline-color: var(--contrast-color-shadow);
+    padding: 15px;
+    box-shadow: 1px 1px 10px 3px rgba(0,0,0,0.1);
+}
+.form-group select{
+    width: 100%;
+    border-radius: 8px;
+    border: none;
+    border-bottom: 2px solid var(--contrast-color2);
+    height: 2.5rem;
+    outline-color: var(--contrast-color-shadow);
+    padding: 5px;
+    box-shadow: 1px 1px 10px 3px rgba(0,0,0,0.1);
+}   
+
+#bloodTest{
+    margin-top: 1rem;
+}
+#other{
+    border-radius: 8px;
+    background-color: whitesmoke;
+
+    padding: 10px;
+    max-width: 99%;
+}
+#other h3{
+    color: var(--contrast-color);
+    padding-top: 20px;
+}
+#other .containerInput{
+    justify-content: center;
+    align-items: center;
+}
+#other .form-group{
+    padding: 17px;
+}
+#other .form-group input{
+    width: 14rem;
+}
+
+.button-container{
+    gap: 20px;
+}
+.button-container button{
+    width: 15rem;
+    height: 2.5rem;
+    font-size: 18px;
+    color: var(--tittle1);
+    background-color: var(--contrast-color2);
+    border-radius: 8px;
+    border: none;
+}
+.button-container a{
+    border-radius: 8px;
+    border: 2px solid var(--contrast-color2);
+    color: var(--tittle1);
+    height: 2.5rem;
+    padding: 5px;
+    text-decoration: none;
+    width: 12rem;
+    text-align: center;
+    font-size: 18px;
+}
+
+
+.modal{
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+}
+.modal.show {
+    display: flex;
+}
+.modal-container {
+    background-color: whitesmoke;
+    padding: 20px;
+    border-radius: 8px;
+    width: 800px;
+    height: 600px;
+}
+.modal-container h3 {
+    color: var(--contrast-color);
+}
+.modal-container p {
+    font-size: 18px;
+}
+.modal-container p span {
+    color: var(--contrast-color2);
+    font-weight: bold;
+}
+.modal-container button {
+    margin-top: 2rem;
+    height: 2.5rem;
+    width: 12rem;
+    font-size: 18px;
+    border-radius: 8px;
+    background-color: var(--contrast-color2);
+    border: none;
+    color: var(--tittle1);
+}
+.Subtitle {
+    font-weight: bold;
+}
+.valoriInseritiContainer {
+    max-height: 360px;
+    overflow: auto;
+}
+
+/* .indicator{
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+.barra-container{
+    background-color: var(--neutral-gray);
+    border-radius: 8px;
+    height: 1.5rem;
+    position: relative;
+}
+.barra-pointer{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 8px;
+    width: 60%; 
+}
+.indicator-container{
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    background-color: var(--contrast-color-shadow);
+    padding: 10px 10px;
+    border-radius: 8px;
+}
+.positiveTesto{
+    color: var(--positive-color);
+}
+.negativeTesto{
+    color: red;
+}
+.positive{
+    background-color: var(--positive-color);
+}
+.negative{
+    background-color: red;
+} */
+
+
+
+
+
+.indicator-container{
+    padding: 20px;
+    background-color: var(--contrast-color-shadow);
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+}
+.description{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.indicator{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.negativeTesto,
+.extremeNegativeRange{
+    color: red;
+}
+.positiveTesto{
+    color: var(--positive-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 40%;
+}
+.extremePositiveRange{
+    color: var(--positive-color);
+}
+#middleTesto{
+    width: 40%;
+    margin-left: -1rem;
+    color: rgb(255, 191, 71);
+}
+#middleBar{
+    width: 40%;
+    left: 30%;
+    background-color: rgb(255, 191, 71);
+}
+
+.barra-container{
+    background-color: var(--neutral-bg-color);
+    border-radius: 8px;
+    height: 1rem;
+    position: relative;
+    background-color: rgb(255, 98, 98);
+}
+.barra-container-none{
+    background-color: var(--neutral-bg-color);
+    border-radius: 8px;
+    height: 1rem;
+    position: relative;
+}
+
+
+.barra-pointer{
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 30%;
+    border-radius: 8px;
+    transition: width 0.3s ease;
+    width: 40%;
+    background-color: var(--positive-color);
+    z-index: 1;
+}
+
+.barra-pointer-two{
+    background-color: var(--positive-color);
+    position: absolute;
+    top: 0;
+    left: 60%;
+    width: 40%;
+    height: 100%;
+    border-radius: 8px;
+}
+#barraSpecial{
+    left: 50%;
+    width: 50%;
+}
+
+
+#indicator{
+    position: absolute;
+    top: -1rem;
+    z-index: 2;
+    height: 2rem;
+    width: 0.5rem;
+    border-radius: 8px;
+}
