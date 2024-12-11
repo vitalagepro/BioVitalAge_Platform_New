@@ -12,7 +12,8 @@ class LoginRenderingPage(View):
 class HomePageRender(View):
 
     def get(self, request):
-        return render(request, 'includes/homePage.html')
+        persone = TabellaPazienti.objects.all()
+        return render(request, "includes/homePage.html", {"persone": persone})
     
     def post(self, request):
 
@@ -145,5 +146,7 @@ class CartellaPazienteView(View):
     def get(self, request, id):
         persona = get_object_or_404(TabellaPazienti, id=id)
         return render(request, "includes/cartellaPaziente.html", {"persona": persona})
+
+
 
 
