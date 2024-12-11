@@ -514,12 +514,15 @@ main {
   background-color: var(--neutral-bg-color);
 }
 .cella a {
-  background-color: var(--contrast-color2);
   color: var(--tittle1);
   border-radius: 8px;
   border: none;
   width: 10rem;
   height: 2.5rem;
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .content-table {
   overflow: auto;
