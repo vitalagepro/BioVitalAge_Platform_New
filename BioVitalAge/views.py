@@ -139,3 +139,11 @@ class PersonaDetailView(View):
     def get(self, request, id):
         persona = get_object_or_404(TabellaPazienti, id=id)
         return render(request, "includes/persona_detail.html", {"persona": persona})
+
+
+class CartellaPazienteView(View):
+    def get(self, request, id):
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        return render(request, "includes/cartellaPaziente.html", {"persona": persona})
+
+
