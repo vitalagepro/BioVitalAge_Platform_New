@@ -61,17 +61,21 @@ form button {
     justify-content: space-between;
     align-items: center;
 }
-.cella {
+.cella{
     flex: 1;
     padding: 10px 0px;
     font-size: 18px;
     font-weight: bold;
     color: var(--contrast-color);
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
 }
+.cella p{
+    padding-top: 20px;
+}
+
 .riga {
     height: 6rem;
     border-bottom: 1px solid lightgrey;
@@ -80,12 +84,17 @@ form button {
     background-color: var(--neutral-bg-color);
 }
 .cella a {
-    background-color: var(--contrast-color2);
     color: var(--tittle1);
-    border-radius: 8px;
     border: none;
-    width: 10rem;
-    height: 2.5rem;
+    padding: 10px;
+}
+.cella a img:hover{
+    transform: scale(1.1);
+}
+.cella a img{
+    width: 40px;
+    height: 40px;
+    transition: transform 0.3s ease-in-out;
 }
 .content-table {
     overflow: auto;
@@ -106,5 +115,6 @@ form button {
 .content-table::-webkit-scrollbar-thumb:hover {
     background-color: var(--contrast-color2);
 }
+
 
 

@@ -1,0 +1,252 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+  
+:root {
+    --dark1: #0c042c;
+    --dark2: #0c214b;
+    --light1: #c3ccd4;
+  
+    --neutral-gray: #b0b8c1;
+    --neutral-bg-color: rgba(176, 184, 193, 0.2);
+    --neutral-bg-color-contrast: rgba(124, 81, 149, 0.2);
+  
+    --contrast-color: #3a255d;
+    --contrast-color-shadow: #3b255d2c;
+    --contrast-color2: #6a2dcc;
+    --positive-color: #2ac670;
+  
+    --tittle1: whitesmoke;
+    --tittle2: #2ac4dd;
+  
+    --circle-color-shadow: rgba(42, 196, 221, 0.15);
+    --circle-color-shadow-two: rgba(42, 196, 221, 0.05);
+    --text-color: rgb(34, 34, 34);
+}
+
+
+.containerStyle{
+    padding: 20px;
+}
+.card {
+    background-color: white;
+    border-radius: 8px;
+}
+.header-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header-card h2,
+.section-tittle{
+    color: var(--contrast-color2);
+    font-size: 25px;
+    padding-left: 12px;
+    font-weight: bold;
+}
+.card-body{
+    display: flex;
+    flex-wrap: wrap;
+}
+.card-body p{
+    width: 30%;
+    font-size: 20px
+}
+
+.button-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    grid-gap: 10px;
+    padding-right: 10px;
+}
+.button-grid a img{
+    transition: transform 0.3s ease-in-out;
+    width: 40px;
+    height: 40px;
+}
+.button-grid a img:hover{
+    transform: scale(1.1);
+}
+strong{
+    color: var(--contrast-color);
+}
+
+
+
+.container-indicatori{
+    margin-top: -1rem;
+    display: grid;
+    grid-template-columns: 70% 29.2%;
+    gap: 15px;
+    height: 370px;
+}
+
+
+
+/* Clock style*/
+.score-clock-graph {
+    width: 100%;
+    height: 14rem;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+.clock {
+    position: relative;
+    width: 11%;
+    height: 60%; 
+    border-radius: 50%; 
+    margin: 16px;
+    background: conic-gradient(black 0%, #e0e0e0 0%); 
+}
+.inner {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    background-color: white;
+    border-radius: 50%;
+    z-index: 1;
+}
+.percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    font-weight: bold;
+    z-index: 2;
+    color: var(--contrast-color);
+}
+#clock-description{
+    position: absolute;
+    top: 110%;
+    text-align: center;
+    font-size: 18px;
+    width: 105%;
+    color: var(--text-color) ;
+}
+
+.card5 h2{
+    font-size: 25px;
+    font-weight: bold;
+    padding: 10px 0px;
+    color: var(--contrast-color2);
+}
+.blood-container div,
+.exam-container div{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+.blood-container div img,
+.exam-container div img{
+    width: 40px;
+    margin-right: 1rem;
+}
+.blood-container div p,
+.exam-container div p{
+    font-size: 18px;
+}
+
+
+
+
+.dashboard {
+    margin-top: -1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+.card-graphic {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.card-graphic .icon img {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 10px;
+}
+.card-graphic h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+.card-graphic p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+.card-graphic canvas {
+    width: 100%;
+    height: 100px !important;
+    margin-bottom: 15px;
+}
+.card-graphic .data {
+    width: 100%;
+}
+.card-graphic .data table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.card-graphic .data table td {
+    text-align: left;
+    padding: 5px;
+    border-top: 1px solid #ddd;
+}
+
+
+
+
+.dashboard2 {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding: 20px;
+    margin-top: -1rem;
+}
+.cardChart {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+}
+.cardChart h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+.cardChart canvas {
+    width: 100%;
+    height: 250px !important;
+}
+.cardChart h2{
+    font-size: 25px;
+    font-weight: bold;
+    color: var(--contrast-color2);
+    padding: 20px;
+}
+
+
+.container-table{
+    padding: 20px;
+    margin-top: -1rem;
+}
+
+
+
+

@@ -149,6 +149,8 @@ new Chart(patientsCtx, {
         label: "Pazienti Inseriti",
         data: [30, 45, 60, 50, 70, 90],
         backgroundColor: "#3a255d",
+        categoryPercentage: 0.8, // Riduce lo spazio tra le categorie
+        barPercentage: 0.9, // Riduce lo spazio interno tra le barre
       },
     ],
   },
@@ -158,7 +160,14 @@ new Chart(patientsCtx, {
       legend: { display: false },
     },
     scales: {
-      y: { beginAtZero: true },
+      x: {
+        ticks: {
+          autoSkip: false, // Mostra tutte le etichette
+        },
+      },
+      y: { 
+        beginAtZero: true 
+      },
     },
   },
 });
