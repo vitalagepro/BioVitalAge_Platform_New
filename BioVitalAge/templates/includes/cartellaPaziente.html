@@ -63,7 +63,7 @@
         </div>
 
         <div class="container-datiPersonali containerStyle">
-            <div class="card card1">
+            <div class="card card1" id="card-style">
                 <div class="header-card">
                     <h2>Personal Information</h2>
                     <div class="button-grid">
@@ -84,7 +84,7 @@
 
         <div class="dashboard">
         
-            <div class="card-graphic">
+            <div class="card-graphic"  id="card-style">
                 <div class="icon">
                     <img src="{% static 'includes/icone/pillola.png' %}" alt="BP Levels Icon">
                 </div>
@@ -100,7 +100,7 @@
                 </div>
             </div>
          
-            <div class="card-graphic">
+            <div class="card-graphic"  id="card-style">
                 <div class="icon">
                     <img src="{% static 'includes/icone/sugar.png' %}" alt="Sugar Levels Icon">
                 </div>
@@ -116,7 +116,7 @@
                 </div>
             </div>
       
-            <div class="card-graphic">
+            <div class="card-graphic"  id="card-style">
                 <div class="icon">
                     <img src="{% static 'includes/icone/heart.png' %}" alt="Heart Rate Icon">
                 </div>
@@ -132,7 +132,7 @@
                 </div>
             </div>
       
-            <div class="card-graphic">
+            <div class="card-graphic"  id="card-style">
                 <div class="icon">
                     <img src="{% static 'includes/icone/provetta.png' %}" alt="Cholesterol Icon">
                 </div>
@@ -150,7 +150,7 @@
         </div>
 
         <div class="container-indicatori containerStyle">
-            <div class="card card4">
+            <div class="card card4" id="card-style">
                 <h2 class="section-tittle">Latest Organ Health Scores</p>
                
                 <div class="score-clock-graph">
@@ -205,56 +205,91 @@
                     </div>
                 </div>
 
-                <button>Aggiorna analisi</button>
+                <button id="button-fix">Aggiorna analisi</button>
             </div>
         </div>
 
         <div class="dashboard2">
       
-            <div class="cardChart">
+            <div class="cardChart"  id="card-style">
                 <h2>Numero Controlli</h2>
                 <canvas id="chartDash2_1"></canvas>
             </div>
 
-            <div class="cardChart">
+            <div class="cardChart"  id="card-style">
                 <h2>Numero Esami</h2>
                 <canvas id="chartDash_2"></canvas>
             </div>
         </div>
 
+        <div class="contenitore-tabella">
+            <div class="recent-patients" id="card-style">
+                <h2>Ultimi 5 Referti</h2>
+                <div class="risultati-ricerca">
+                    <div class="table-placeholder">
+                        <p class="cella">Chronological Age</p>
+                        <p class="cella">Biological Age</p>
+                        <p class="cella">Valore Referto</p>
+                        <p class="cella">Data Referto</p>
+                        <p class="cella">Mostra Referto</p>
+                        <p class="cella">Scarica Referto</p>
+                    </div>
+                    {% for referto in referti %}
+                    <div class="col-md-12 content-table">
+                   
+                        <div class="cella">
+                            <p>{{ referto.chronological_age }}</p>
+                        </div>
+                        <div class="cella">
+                            <p>{{ referto.biological_age }}</p>
+                        </div>
+                        <div class="cella">
+                            <p>{{ referto.descrizione }}</p>
+                        </div>
+                        <div class="cella">
+                            <p>{{ referto.data_referto }}</p>
+                        </div>
 
-        <div class="container-table">
-            <div class="card card6">
-                <h3>Ultime Analisi</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID Analisi</th>
-                                <th>Tipo</th>
-                                <th>Data</th>
-                                <th>Risultato</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>001</td>
-                                <td>Emocromo</td>
-                                <td>10/12/2024</td>
-                                <td>Normale</td>
-                            </tr>
-                            <tr>
-                                <td>002</td>
-                                <td>Colesterolo</td>
-                                <td>12/12/2024</td>
-                                <td>Elevato</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        <div class="cella">
+                            <a href="{% url 'persona_detail' persona.id %}"
+                            ><img
+                                src="{% static 'includes/icone/referto.png' %}"
+                                alt=""
+                            /></a>
+                        </div>
+
+                        <div class="cella">
+                            <a href="{% url 'cartella_paziente' persona.id %}"
+                            ><img
+                                src="{% static 'includes/icone/download.png' %}"
+                                alt=""
+                            /></a>
+                        </div>
+
+                    </div>
+
+                    {% empty %}
+                    <p class="text-center">No results found</p>
+                        
+                    {% endfor %}
                 </div>
             </div>
+        </div>  
+
+        
+        <div class="conteiner-operation">
+            <div class="card7" id="card-fix">
+                <div class="backdrop"></div>
+                <h2>Guarda tutti i Referti</h2>
+                <button class="button-style">Clicca qui</button>
+            </div>
+            <div class="card8">
+                <div class="backdrop"></div>
+                <h2>Calcola L'età Biologica</h2>
+                <button class="button-style">Clicca qui</button>
+            </div>
         </div>
-    
+
         
     </main>
 

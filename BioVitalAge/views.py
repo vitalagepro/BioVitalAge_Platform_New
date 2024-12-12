@@ -12,7 +12,7 @@ class LoginRenderingPage(View):
 class HomePageRender(View):
 
     def get(self, request):
-        persone = TabellaPazienti.objects.all()
+        persone = TabellaPazienti.objects.all() 
         return render(request, "includes/homePage.html", {"persone": persone})
     
     def post(self, request):
@@ -28,7 +28,8 @@ class HomePageRender(View):
                     if value == emailInput: 
 
                         if record['password'] == passwordInput:
-                            return render(request, 'includes/homePage.html')
+                            persone = TabellaPazienti.objects.all().order_by('-id')[:5]
+                            return render(request, "includes/homePage.html", {"persone": persone})
                         
                         else:
                             return render(request, 'includes/login.html', {'error' : 'Password errata' })
@@ -36,6 +37,7 @@ class HomePageRender(View):
                     else:
                         return render(request, 'includes/login.html', {'error' : 'Email inserita non valida o non registrata' })
                     
+
 class CalcolatoreRender(View):
     def get(self, request):
         return render(request, 'includes/calcolatore.html')
@@ -127,25 +129,23 @@ class CalcolatoreRender(View):
             }
             return render(request, "includes/calcolatore.html", context)
 
-
-
 class RisultatiRender(View):
     def get(self, request):
         persone = TabellaPazienti.objects.all()
         return render(request, "includes/risultati.html", {"persone": persone})
 
-
- 
 class PersonaDetailView(View):
     def get(self, request, id):
         persona = get_object_or_404(TabellaPazienti, id=id)
         return render(request, "includes/persona_detail.html", {"persona": persona})
 
-
 class CartellaPazienteView(View):
+
     def get(self, request, id):
         persona = get_object_or_404(TabellaPazienti, id=id)
-        return render(request, "includes/cartellaPaziente.html", {"persona": persona})
+        referti = persona.referti.all().order_by('-data_referto')[:5]
+
+        return render(request, "includes/cartellaPaziente.html", {"persona": persona, "referti": referti})
 
 
 

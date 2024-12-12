@@ -32,10 +32,7 @@
 .containerStyle{
     padding: 20px;
 }
-.card {
-    background-color: white;
-    border-radius: 8px;
-}
+
 .header-card {
     display: flex;
     justify-content: space-between;
@@ -43,10 +40,11 @@
 }
 .header-card h2,
 .section-tittle{
-    color: var(--contrast-color2);
+    color: var(--dark2);
     font-size: 25px;
     padding-left: 12px;
     font-weight: bold;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
 }
 .card-body{
     display: flex;
@@ -134,12 +132,12 @@ strong{
     width: 105%;
     color: var(--text-color) ;
 }
-
 .card5 h2{
     font-size: 25px;
     font-weight: bold;
     padding: 10px 0px;
-    color: var(--contrast-color2);
+    color: var(--dark2);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 .blood-container div,
 .exam-container div{
@@ -156,9 +154,18 @@ strong{
 .exam-container div p{
     font-size: 18px;
 }
+.blood-container div img,
+.exam-container div img{  
+    transition: transform 0.3s ease-in-out;
+}
+.blood-container div img:hover,
+.exam-container div img:hover{  
+    transform: scale(1.1);
+}
 
-
-
+#button-fix{
+    padding-top: 4px;
+}
 
 .dashboard {
     margin-top: -1rem;
@@ -237,16 +244,147 @@ strong{
 .cardChart h2{
     font-size: 25px;
     font-weight: bold;
-    color: var(--contrast-color2);
+    color: var(--dark2);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     padding: 20px;
 }
 
 
-.container-table{
+.contenitore-tabella{
+    padding: 20px;
+    margin-top: -3rem;
+}
+.recent-patients h2{
+    font-size: 25px;
+    padding: 20px;
+    font-weight: bold;
+    color: var(--dark2);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.content-table{
+    display: flex;
+    padding: 20px 0px;
+}
+.cella a img{
+    width: 40px;
+    transition: transform 0.3s ease-in-out;
+}
+.cella a img:hover{
+    transform: scale(1.1);
+}
+
+
+.conteiner-operation{
     padding: 20px;
     margin-top: -1rem;
+    display: flex;
+    gap: 20px;
+    height: 300px;
+}
+.card7{
+    background-image: url(https://www.dimi.univr.it/documenti/Iniziativa/immagine/immagine268271.jpeg);
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+.backdrop{
+    position: absolute;
+    top: 0rem;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    border-radius: 8px;
+}
+.card8{
+    background-image: url(https://www.3ds.com/assets/invest/2024-10/lsh-pharmaceutical-and-biotech-hero-banner-1920x600.jpg);
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
 }
 
+.card8 h2,
+.card7 h2{
+    z-index: 3;
+    color: var(--tittle1);
+    padding-left: 40px;
+    padding-bottom: 60px;
+    font-size: 25px;
+    font-weight: bold;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
 
+.card8 button,
+.card7 button{
+    z-index: 3;
+    margin-left: 2.5rem;
+}
 
+.button-style{
+    height: 80%;
+    width: 50%;
+    background-color: transparent;
+    border: 2px solid var(--contrast-color2);
+    box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 30px;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--tittle1);
+    font-weight: 600;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s;
+    z-index: 1;
+    height: 2rem;
+    width: 10rem;
+}
+.button-style::before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    top: 0;
+    position: absolute;
+    left: 0;
+    background-color: var(--contrast-color2);
+    z-index: -1;
+    transition: width 0.4s ease;
+}
+.button-style::after {
+    content: "";
+    width: 0%;
+    height: 100%;
+    top: 0;
+    position: absolute;
+    right: 0;
+    background-color: var(--dark2);
+    z-index: -1;
+    transition: width 0.4s ease;
+}
+.button-style:hover::before {
+    width: 0%;
+}
+.button-style:hover::after {
+    width: 100%;
+}
+.button-style:hover {
+    color: #d3d3d3;
+}
 
+.risultati-ricerca{
+    border: 1px solid var(--contrast-color-shadow);
+}

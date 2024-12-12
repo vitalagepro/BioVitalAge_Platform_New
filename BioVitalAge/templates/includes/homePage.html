@@ -23,7 +23,7 @@
     />
 
     <!-- Js Import -->
-    <script src="{% static 'includes/js/app.js' %}" defer></script>
+    <script src="{% static 'includes/js/HomePage.js' %}" defer></script>
 
     <!-- Chart Import -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1/dist/chart.umd.min.js"></script>
@@ -65,7 +65,21 @@
 
     <main>
       <div class="main-title-nav">
-        <div></div>
+        <div class="linkage-container">
+
+          <a href="">
+            <img src="{% static 'includes/icone/notifica.png' %}" alt="">
+          </a>
+
+          <a href="">
+            <img src="{% static 'includes/icone/email.png' %}" alt="">
+          </a>
+
+          <a href="">
+            <img src="{% static 'includes/icone/update.png' %}" alt="">
+          </a>
+
+        </div>
         <div class="main-menu-trace">
           <img src="{% static 'includes/icone/homePage.png' %}" alt="" />
           <p>»</p>
@@ -76,8 +90,9 @@
       <section class="banner-section">
         <div class="banner">
           <div class="banner-info">
-            <div class="spacer-banner"></div>
-            <h2 class="main-welcome-title">Welcome Back, {{ user_name }}</h2>
+
+            <h3>Good Morning</h3>
+            <h2 class="main-welcome-title" id="nameUser">dott. Rossi</h2>
             <div class="box-icons">
               <div class="box-info">
                 <div class="icon-container">
@@ -122,17 +137,17 @@
       </section>
 
       <div class="cards">
-        <div class="card">
+        <div class="card" id="card-style">
           <h2>Totale Pazienti Visitati</h2>
           <p>150</p>
           <button onclick="goToPatientsPage()">Vedi Tutti</button>
         </div>
-        <div class="card">
+        <div class="card" id="card-style">
           <h2>Calcoli Età Biologica</h2>
           <p>120</p>
           <button onclick="goToRefertiPage()">Referti</button>
         </div>
-        <div class="card">
+        <div class="card" id="card-style">
           <h2>Media Età Pazienti</h2>
           <p>52 anni</p>
         </div>

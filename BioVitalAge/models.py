@@ -11,16 +11,22 @@ class UtentiRegistratiCredenziali(models.Model):
     def __str__(self):
         return f'{self.nome} {self.cognome}'
     
-    
 
-#class ReferTabelle(models.Model):
 
-    #idTabella = autoIncrement
-    #primaryKey = tabellaPazienti
+class ArchivioReferti(models.Model):
+    paziente = models.ForeignKey(
+        'TabellaPazienti', 
+        on_delete=models.CASCADE, 
+        related_name='referti'
+    )
+    chronological_age = models.CharField(null=True, max_length=3)
+    biological_age = models.CharField(null=True, max_length=3)
+    data_referto = models.DateField()
+    descrizione = models.TextField(null=True, blank=True)
+    documento = models.FileField(upload_to='referti/', null=True, blank=True)
 
-    #def __str__(self):
-        #return f'{self.nome} {self.cognome}'
-    
+    def __str__(self):
+        return f"Referto ID: {self.id} - Paziente: {self.paziente.name} {self.paziente.surname}"
 
 
 

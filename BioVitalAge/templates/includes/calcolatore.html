@@ -11,7 +11,6 @@
 
     <!-- Js Import  -->
     <script src="{% static 'includes/js/indicatorNew.js' %}" defer></script>
-    <script src="{% static 'includes/js/app.js' %}"></script> 
 
     <!-- Bootstrap import -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -516,14 +515,14 @@
         </script>
 
         <div class="main-title-nav">
-            <h2 class="main-welcome-title">Calcola la tua età biologica, Demo User</h2>
+            <h2 class="main-welcome-title">Compila il form per calcolare l'età Biologica</h2>
             <div class="main-menu-trace">
                 <img src="{% static 'includes/icone/homePage.png' %}" alt="">
                 <p>»</p>
                 <p>Calcolatore</p>
             </div>
         </div>
-
+<!-- 
         <form method="POST" action="{% url 'Calcolatore' %}" class="col-md-12 p-4" id="age-form"> 
             {% csrf_token %} 
 
@@ -719,9 +718,211 @@
             </div>
             
         </form>
+ -->
+
+        <form method="POST" action="{% url 'Calcolatore' %}" class="form-container" id="age-form"> 
+            {% csrf_token %} 
+
+            <div class="section">
+                <h3>Patient Information</h3>
+                <div class="grid-container">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Insert your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="surname">Surname</label>
+                        <input type="text" id="surname" name="surname" required placeholder="Insert your surname">
+                    </div>
+                    <div class="form-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender" required>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="place_of_birth">Place of Birth</label>
+                        <input type="text" id="place_of_birth" name="place_of_birth" required placeholder="Insert your place of birth">
+                    </div>
+                    <div class="form-group">
+                        <label for="codice_fiscale">Codice Fiscale</label>
+                        <input type="text" id="codice_fiscale" name="codice_fiscale" required placeholder="Insert your codice fiscale">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Medical Indicators</h3>
+                <div class="grid-container" style="row-gap: 60px;">
+                    <div class="form-group">
+                        <label for="chronological_age">Chronological Age</label>
+                        <input type="number" id="chronological_age" name="chronological_age" required placeholder="Enter age">
+                        <input type="range" id="chronological_age_range" name="chronological_age_range" min="0" max="100" value="0" oninput="chronological_age.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="obri_index">Obri Index</label>
+                        <input type="number" step="0.1" id="obri_index" name="obri_index" required placeholder="numeric value only">
+                        <input type="range" id="obri_index_range" name="obri_index_range" min="0" max="10" step="0.1" value="0" oninput="obri_index.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="d_roms">d-ROMs</label>
+                        <input type="number" id="d_roms" name="d_roms" required placeholder="numeric value only">
+                        <input type="range" id="d_roms_range" name="d_roms_range" min="0" max="500" value="0" oninput="d_roms.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="aa_epa">AA/EPA Ratio</label>
+                        <input type="number" step="0.1" id="aa_epa" name="aa_epa" required placeholder="numeric value only">
+                        <input type="range" id="aa_epa_range" name="aa_epa_range" min="0" max="10" step="0.1" value="0" oninput="aa_epa.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="aa_dha">AA/DHA Ratio</label>
+                        <input type="number" step="0.1" id="aa_dha" name="aa_dha" required placeholder="numeric value only">
+                        <input type="range" id="aa_dha_range" name="aa_dha_range" min="0" max="10" step="0.1" value="0" oninput="aa_dha.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="homa_test">HOMA Test</label>
+                        <input type="number" step="0.01" id="homa_test" name="homa_test" required placeholder="numeric value only">
+                        <input type="range" id="homa_test_range" name="homa_test_range" min="0" max="10" step="0.01" value="0" oninput="homa_test.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="cardiovascular_risk">Cardiovascular Risk</label>
+                        <input type="number" step="0.1" id="cardiovascular_risk" name="cardiovascular_risk" required placeholder="numeric value only">
+                        <input type="range" id="cardiovascular_risk_range" name="cardiovascular_risk_range" min="0" max="100" step="0.1" value="0" oninput="cardiovascular_risk.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="osi">Oxidative Stress Index (OSI)</label>
+                        <input type="number" id="osi" name="osi" required placeholder="numeric value only">
+                        <input type="range" id="osi_range" name="osi_range" min="0" max="10" value="0" oninput="osi.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="pat">Plasma Antioxidant Test (PAT)</label>
+                        <input type="number" id="pat" name="pat" required placeholder="numeric value only">
+                        <input type="range" id="pat_range" name="pat_range" min="0" max="10" value="0" oninput="pat.value=this.value">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Blood Test Results</h3>
+                <div class="grid-container" style="row-gap: 60px;">
+                    <div class="form-group">
+                        <label for="wbc">White Blood Cells (WBC)</label>
+                        <input type="number" step="0.1" id="wbc" name="wbc" required placeholder="numeric value only">
+                        <input type="range" id="wbc_range" name="wbc_range" min="0" max="20" value="0" oninput="wbc.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="baso">Basophils (%)</label>
+                        <input type="number" step="0.1" id="baso" name="baso" required placeholder="numeric value only">
+                        <input type="range" id="baso_range" name="baso_range" min="0" max="10" value="0" oninput="baso.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="eosi">Eosinophils (%)</label>
+                        <input type="number" step="0.1" id="eosi" name="eosi" required placeholder="numeric value only">
+                        <input type="range" id="eosi_range" name="eosi_range" min="0" max="10" value="0" oninput="eosi.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="lymph">Lymphocytes (%)</label>
+                        <input type="number" step="0.1" id="lymph" name="lymph" required placeholder="numeric value only">
+                        <input type="range" id="lymph_range" name="lymph_range" min="0" max="100" value="0" oninput="lymph.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="mono">Monocytes (%)</label>
+                        <input type="number" step="0.1" id="mono" name="mono" required placeholder="numeric value only">
+                        <input type="range" id="mono_range" name="mono_range" min="0" max="20" value="0" oninput="mono.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="neut">Neutrophils (%)</label>
+                        <input type="number" step="0.1" id="neut" name="neut" required placeholder="numeric value only">
+                        <input type="range" id="neut_range" name="neut_range" min="0" max="100" value="0" oninput="neut.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="rbc">Red Blood Cells (RBC)</label>
+                        <input type="number" step="0.1" id="rbc" name="rbc" required placeholder="numeric value only">
+                        <input type="range" id="rbc_range" name="rbc_range" min="0" max="10" value="0" oninput="rbc.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="hct">Hematocrit (HCT %)</label>
+                        <input type="number" step="0.1" id="hct" name="hct" required placeholder="numeric value only">
+                        <input type="range" id="hct_range" name="hct_range" min="0" max="100" value="0" oninput="hct.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="hgb">Hemoglobin (HGB)</label>
+                        <input type="number" step="0.1" id="hgb" name="hgb" required placeholder="numeric value only">
+                        <input type="range" id="hgb_range" name="hgb_range" min="0" max="20" value="0" oninput="hgb.value=this.value">
+                    </div>
+                    <div class="form-group" style="margin-top: -1.5rem;"> 
+                        <label for="mch">Mean Corpuscular Hemoglobin (MCH)</label>
+                        <input type="number" step="0.1" id="mch" name="mch" required placeholder="numeric value only">
+                        <input type="range" id="mch_range" name="mch_range" min="0" max="50" value="0" oninput="mch.value=this.value">
+                    </div>
+                    <div class="form-group" style="margin-top: -1.5rem;">
+                        <label for="mchc">Mean Corpuscular Hemoglobin Concentration (MCHC)</label>
+                        <input type="number" step="0.1" id="mchc" name="mchc" required placeholder="numeric value only">
+                        <input type="range" id="mchc_range" name="mchc_range" min="0" max="50" value="0" oninput="mchc.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="mcv">Mean Corpuscular Volume (MCV)</label>
+                        <input type="number" step="0.1" id="mcv" name="mcv" required placeholder="numeric value only">
+                        <input type="range" id="mcv_range" name="mcv_range" min="0" max="150" value="0" oninput="mcv.value=this.value">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Other Key Markers</h3>
+                <div class="grid-container">
+                    <div class="form-group">
+                        <label for="glucose">Glucose (mg/dL)</label>
+                        <input type="number" step="0.1" id="glucose" name="glucose" required placeholder="numeric value only">
+                        <input type="range" id="glucose_range" name="glucose_range" min="0" max="300" value="0" oninput="glucose.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="creatinine">Creatinine (mg/dL)</label>
+                        <input type="number" step="0.1" id="creatinine" name="creatinine" required placeholder="numeric value only">
+                        <input type="range" id="creatinine_range" name="creatinine_range" min="0" max="10" value="0" oninput="creatinine.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="ferritin">Ferritin (ng/mL)</label>
+                        <input type="number" step="0.1" id="ferritin" name="ferritin" required placeholder="numeric value only">
+                        <input type="range" id="ferritin_range" name="ferritin_range" min="0" max="1000" value="0" oninput="ferritin.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="albumin">Albumin (g/dL)</label>
+                        <input type="number" step="0.1" id="albumin" name="albumin" required placeholder="numeric value only">
+                        <input type="range" id="albumin_range" name="albumin_range" min="0" max="10" value="0" oninput="albumin.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="protein">Total Protein (g/dL)</label>
+                        <input type="number" step="0.1" id="protein" name="protein" required placeholder="numeric value only">
+                        <input type="range" id="protein_range" name="protein_range" min="0" max="10" value="0" oninput="protein.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="bilirubin">Bilirubin (mg/dL)</label>
+                        <input type="number" step="0.1" id="bilirubin" name="bilirubin" required placeholder="numeric value only">
+                        <input type="range" id="bilirubin_range" name="bilirubin_range" min="0" max="10" value="0" oninput="bilirubin.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="uric_acid">Uric Acid (mg/dL)</label>
+                        <input type="number" step="0.1" id="uric_acid" name="uric_acid" required placeholder="numeric value only">
+                        <input type="range" id="uric_acid_range" name="uric_acid_range" min="0" max="20" value="0" oninput="uric_acid.value=this.value">
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button type="submit">Calculate Biological Age</button>
+                <a href="#">View Results</a>
+            </div>
+        </form>
 
 
     </main>
+    <script src="{% static 'includes/js/calcolatore.js' %}"></script>
     <script src="{% static 'includes/js/CodiceFiscale.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
