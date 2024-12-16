@@ -19,8 +19,6 @@
 
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-   
 </head>
 
 <body>
@@ -72,12 +70,12 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <p><strong>Nome:</strong> &nbsp; Mario</p>
-                    <p><strong>Cognome:</strong> &nbsp;  Rossi</p>
-                    <p><strong>Data di Nascita:</strong> &nbsp;  01/01/1980</p>
-                    <p><strong>Codice Fiscale:</strong> &nbsp;  RSSMRA80A01H501U</p>
-                    <p><strong>Luogo di Nascita:</strong> &nbsp;  Milano</p>
-                    <p><strong>Età Cronologica:</strong> &nbsp; 44 anni</p>
+                    <p><strong>Nome:</strong> &nbsp; {{ persona.name }}</p>
+                    <p><strong>Cognome:</strong> &nbsp;  {{ persona.surname }}</p>
+                    <p><strong>Data di Nascita:</strong> &nbsp;  {{ persona.dob }} </p>
+                    <p><strong>Codice Fiscale:</strong> &nbsp;  {{ persona.codice_fiscale }}</p>
+                    <p><strong>Luogo di Nascita:</strong> &nbsp; {{ persona.place_of_birth }}</p>
+                    <p><strong>Età Cronologica:</strong> &nbsp; {{ dati_estesi_ultimo_referto.chronological_age }}</p>
                 </div>
             </div>
         </div>
@@ -234,44 +232,44 @@
                         <p class="cella">Mostra Referto</p>
                         <p class="cella">Scarica Referto</p>
                     </div>
-                    {% for referto in referti %}
-                    <div class="col-md-12 content-table">
-                   
-                        <div class="cella">
-                            <p>{{ referto.chronological_age }}</p>
-                        </div>
-                        <div class="cella">
-                            <p>{{ referto.biological_age }}</p>
-                        </div>
-                        <div class="cella">
-                            <p>{{ referto.descrizione }}</p>
-                        </div>
-                        <div class="cella">
-                            <p>{{ referto.data_referto }}</p>
-                        </div>
-
-                        <div class="cella">
-                            <a href="{% url 'persona_detail' persona.id %}"
-                            ><img
-                                src="{% static 'includes/icone/referto.png' %}"
-                                alt=""
-                            /></a>
-                        </div>
-
-                        <div class="cella">
-                            <a href="{% url 'cartella_paziente' persona.id %}"
-                            ><img
-                                src="{% static 'includes/icone/download.png' %}"
-                                alt=""
-                            /></a>
-                        </div>
-
+                    {% for referto in referti_recenti %}
+                <div class="col-md-12 content-table">
+                    <div class="cella">
+                        <!-- Cerca i dati estesi per il referto corrente -->
+                        {% for dato in dati_estesi %}
+                            {% if dato.referto.id == referto.id %}
+                                <p>{{ dato.chronological_age }}</p>
+                            {% endif %}
+                        {% endfor %}
                     </div>
+                    <div class="cella">
+                        {% for dato in dati_estesi %}
+                            {% if dato.referto.id == referto.id %}
+                                <p>{{ dato.biological_age }}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="cella">
+                        <p>{{ referto.descrizione }}</p>
+                    </div>
+                    <div class="cella">
+                        <p>{{ referto.data_referto|date:"d/m/Y" }}</p>
+                    </div>
+                    <div class="cella">
+                        <a href="{% url 'persona_detail' persona.id %}">
+                            <img src="{% static 'includes/icone/referto.png' %}" alt="" />
+                        </a>
+                    </div>
+                    <div class="cella">
+                        <a href="{% url 'cartella_paziente' persona.id %}">
+                            <img src="{% static 'includes/icone/download.png' %}" alt="" />
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center">No recent reports found.</p>
+                {% endfor %}
 
-                    {% empty %}
-                    <p class="text-center">No results found</p>
-                        
-                    {% endfor %}
                 </div>
             </div>
         </div>  

@@ -1,45 +1,56 @@
 from django.db import models
 
+# Tabella dottori con credenziali
 class UtentiRegistratiCredenziali(models.Model):
     nome = models.CharField(max_length=100)
     cognome = models.CharField(max_length=100)
     email = models.CharField(max_length=100, null=True)
     password = models.CharField(max_length=24, null=True)
 
-    #idTablePazienti = ReferTabelle
-
     def __str__(self):
         return f'{self.nome} {self.cognome}'
-    
 
+# Tabella pazienti associata a ogni dottore
+class TabellaPazienti(models.Model):
+    dottore = models.ForeignKey(
+        UtentiRegistratiCredenziali, 
+        on_delete=models.CASCADE, 
+        related_name='pazienti',
+        null=True
+    )
+    name = models.CharField(max_length=50, null=True, blank=True)
+    surname = models.CharField(max_length=50, null=True, blank=True)
+    dob = models.DateField(null=True, blank=True)
+    gender = models.CharField(max_length=1, null=True, blank=True, choices=[('M', 'Male'), ('F', 'Female')])
+    place_of_birth = models.CharField(max_length=100, null=True, blank=True)
+    codice_fiscale = models.CharField(max_length=16, null=True, blank=True)
 
+    def __str__(self):
+        return f"Paziente: {self.name} {self.surname}"  
+
+# Tabella archivio referti associata ai pazienti
 class ArchivioReferti(models.Model):
     paziente = models.ForeignKey(
-        'TabellaPazienti', 
+        TabellaPazienti, 
         on_delete=models.CASCADE, 
         related_name='referti'
     )
-    chronological_age = models.CharField(null=True, max_length=3)
-    biological_age = models.CharField(null=True, max_length=3)
-    data_referto = models.DateField()
+    data_referto = models.DateField(auto_now_add=True)
     descrizione = models.TextField(null=True, blank=True)
     documento = models.FileField(upload_to='referti/', null=True, blank=True)
 
     def __str__(self):
         return f"Referto ID: {self.id} - Paziente: {self.paziente.name} {self.paziente.surname}"
 
+# Nuova tabella per i dati estesi dei referti
+class DatiEstesiReferti(models.Model):
+    referto = models.OneToOneField(
+        ArchivioReferti, 
+        on_delete=models.CASCADE, 
+        related_name='dati_estesi'
+    )
 
-
-class TabellaPazienti(models.Model):
-
-    name = models.CharField(max_length=50 , null=True, blank=True)
-    surname = models.CharField(max_length=50 , null=True, blank=True)
-    dob = models.DateField(null=True, blank=True) 
-    gender = models.CharField(max_length=1, null=True, blank=True, choices=[('M', 'Male'), ('F', 'Female')])
-    place_of_birth = models.CharField(max_length=100,null=True, blank=True)
-    codice_fiscale = models.CharField(max_length=16, null=True, blank=True)
-
-    # Calcolatore Età Biologica (temporaneamente nullable)
+    # Calcolatore Età Biologica
     chronological_age = models.IntegerField(null=True, blank=True)
     obri_index = models.FloatField(null=True, blank=True)
     d_roms = models.FloatField(null=True, blank=True)
@@ -75,7 +86,7 @@ class TabellaPazienti(models.Model):
     bilirubin = models.FloatField(null=True, blank=True)
     uric_acid = models.FloatField(null=True, blank=True)
 
-    biological_age = models.FloatField(null=True, blank=True)
+    biological_age = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return f"Persona ID: {self.id}"
+        return f"Dati Estesi Referto ID: {self.referto.id}"

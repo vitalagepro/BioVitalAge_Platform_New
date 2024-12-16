@@ -61,7 +61,6 @@
             </div>
         </div>
 
-
         <div class="container-risultati">
             <div class="card-personal-info">
                 <h3>Personal Information</h3>
@@ -88,11 +87,11 @@
                     </div>
                     <div class="detail-row">
                         <p><span>Chronological Age: </span></p>
-                        <p>{{ persona.chronological_age }}</p>
+                        <p>{{ datiEstesi.chronological_age }}</p>
                     </div>
                     <div class="detail-row">
                         <p><span>Biological Age: </span></p>
-                        <p>{{ persona.biological_age }}</span>
+                        <p>{{ datiEstesi.biological_age }}</span>
                     </div>
                 </div>  
             </div>
@@ -104,7 +103,7 @@
                 <div class="content-container">
 
                     <div class="indicator-container">
-                        <p><span>Obri Index:</span>{{ persona.obri_index }}</p>
+                        <p><span>Obri Index:</span>{{ datiEstesi.obri_index }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">2.2 <</p>
@@ -117,13 +116,13 @@
                         
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ persona.obri_index }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.obri_index }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
 
                     <div class="indicator-container">
-                        <p><span>d-ROMs:</span>{{ persona.d_roms }}</p>
+                        <p><span>d-ROMs:</span>{{ datiEstesi.d_roms }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">400 <</p>
@@ -136,13 +135,13 @@
                         
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ persona.d_roms }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.d_roms }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
 
                     <div class="indicator-container">
-                        <p><span>AA/EPA Ratio:</span>{{ persona.aa_epa }}</p>
+                        <p><span>AA/EPA Ratio:</span>{{ datiEstesi.aa_epa }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">15 <</p>
@@ -155,13 +154,13 @@
                         
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ persona.aa_epa }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.aa_epa }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
 
                     <div class="indicator-container">
-                        <p><span>AA/DHA Ratio:</span>{{ persona.aa_dha }}</p>
+                        <p><span>AA/DHA Ratio:</span>{{ datiEstesi.aa_dha }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">4.3 <</p>
@@ -174,13 +173,13 @@
                         
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ persona.aa_dha }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.aa_dha }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
 
                     <div class="indicator-container">
-                        <p><span>HOMA Test:</span>{{ persona.homa_test }}</p>
+                        <p><span>HOMA Test:</span>{{ datiEstesi.homa_test }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">< 0.3</p>
@@ -193,13 +192,13 @@
                         
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer"></p>
-                                <p id="indicator" class="indicatore"  data-value="{{ persona.homa_test }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore"  data-value="{{ datiEstesi.homa_test }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
 
                     <div class="indicator-container">
-                        <p><span>Cardiovascular Risk:</span>{{ persona.cardiovascular_risk }}</p>
+                        <p><span>Cardiovascular Risk:</span>{{ datiEstesi.cardiovascular_risk }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">< 20</p>
@@ -213,13 +212,13 @@
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer" id="middleBar"></p>
                                 <p class="barra-pointer-two"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ persona.cardiovascular_risk }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.cardiovascular_risk }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
 
                     <div class="indicator-container">
-                        <p><span>Oxidative Stress Index (OSI):</span>{{ persona.osi }}</p>
+                        <p><span>Oxidative Stress Index (OSI):</span>{{ datiEstesi.osi }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">< 120</p>
@@ -232,13 +231,13 @@
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer" id="middleBar"></p>
                                 <p class="barra-pointer-two"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ persona.osi }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.osi }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Plasma Antioxidant Test (PAT):</span>{{ persona.pat }}</p>
+                        <p><span>Plasma Antioxidant Test (PAT):</span>{{ datiEstesi.pat }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">< 1800</p>
@@ -251,171 +250,171 @@
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer" id="middleBar""></p>
                                 <p class="barra-pointer-two"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ persona.pat }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.pat }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>White Blood Cells (WBC):</span>{{ persona.wbc }}</p>
+                        <p><span>White Blood Cells (WBC):</span>{{ datiEstesi.wbc }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
                             <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ persona.wbc }}"></p>
+                                <p data-value="{{ datiEstesi.wbc }}"></p>
                                 
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Basophils (%):</span>{{ persona.baso }}</p>
+                        <p><span>Basophils (%):</span>{{ datiEstesi.baso }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
                             <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ persona.baso }}"></p>
+                                <p data-value="{{ datiEstesi.baso }}"></p>
                                 
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Eosinophils (%):</span>{{ persona.eosi }}</p>
+                        <p><span>Eosinophils (%):</span>{{ datiEstesi.eosi }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
                             <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ persona.eosi }}"></p>
+                                <p data-value="{{ datiEstesi.eosi }}"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Lymphocytes (%):</span>{{ persona.lymph }}</p>
+                        <p><span>Lymphocytes (%):</span>{{ datiEstesi.lymph }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
                             <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ persona.lymph }}"></p>
+                                <p data-value="{{ datiEstesi.lymph }}"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Monocytes (%):</span>{{ persona.mono }}</p>
+                        <p><span>Monocytes (%):</span>{{ datiEstesi.mono }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
                             <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ persona.mono }}"></p>
+                                <p data-value="{{ datiEstesi.mono }}"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Neutrophils (%):</span>{{ persona.neut }}</p>
+                        <p><span>Neutrophils (%):</span>{{ datiEstesi.neut }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
                             <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ persona.neut }}"></p>
+                                <p data-value="{{ datiEstesi.neut }}"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Red Blood Cells (RBC):</span>{{ persona.rbc }}</p>
+                        <p><span>Red Blood Cells (RBC):</span>{{ datiEstesi.rbc }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
                             <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ persona.rbc }}"></p>
+                                <p data-value="{{ datiEstesi.rbc }}"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Hematocrit (HCT):</span>{{ persona.hct }}</p>
+                        <p><span>Hematocrit (HCT):</span>{{ datiEstesi.hct }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
                             <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ persona.hct }}"></p>
+                                <p data-value="{{ datiEstesi.hct }}"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Hemoglobin (HGB):</span>{{ persona.hgb }}</p>
+                        <p><span>Hemoglobin (HGB):</span>{{ datiEstesi.hgb }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
                             <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ persona.hgb }}"></p>
+                                <p data-value="{{ datiEstesi.hgb }}"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Mean Corpuscular Hemoglobin (MCH):</span>{{ persona.mch }}</p>
+                        <p><span>Mean Corpuscular Hemoglobin (MCH):</span>{{ datiEstesi.mch }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
                             <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ persona.mch }}"></p>
+                                <p data-value="{{ datiEstesi.mch }}"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Mean Corpuscular Hemoglobin Concentration (MCHC):</span>{{ persona.mchc }}</p>
+                        <p><span>Mean Corpuscular Hemoglobin Concentration (MCHC):</span>{{ datiEstesi.mchc }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
                             <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ persona.mchc }}"></p>
+                                <p data-value="{{ datiEstesi.mchc }}"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Mean Corpuscular Volume (MCV):</span>{{ persona.mcv }}</p>
+                        <p><span>Mean Corpuscular Volume (MCV):</span>{{ datiEstesi.mcv }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
                             <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ persona.mcv }}"></p>
+                                <p data-value="{{ datiEstesi.mcv }}"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Glucose (mg/dL):</span>{{ persona.glucose }}</p>
+                        <p><span>Glucose (mg/dL):</span>{{ datiEstesi.glucose }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">140 <</p>
@@ -428,13 +427,13 @@
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer" id="middleBar"></p>
                                 <p class="barra-pointer-two"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ persona.glucose }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.glucose }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Creatinine (mg/dL):</span>{{ persona.creatinine }}</p>
+                        <p><span>Creatinine (mg/dL):</span>{{ datiEstesi.creatinine }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0.9 <</p>
@@ -446,13 +445,13 @@
                             </div>
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ persona.creatinine }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.creatinine }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Ferritin (ng/mL):</span>{{ persona.ferritin }}</p>
+                        <p><span>Ferritin (ng/mL):</span>{{ datiEstesi.ferritin }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">150 <</p>
@@ -464,13 +463,13 @@
                             </div>
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ persona.ferritin }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ferritin }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Albumin (g/dL):</span>{{ persona.albumin }}</p>
+                        <p><span>Albumin (g/dL):</span>{{ datiEstesi.albumin }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">5.2 <</p>
@@ -482,13 +481,13 @@
                             </div>
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ persona.albumin }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.albumin }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Total Protein (g/dL):</span>{{ persona.protein }}</p>
+                        <p><span>Total Protein (g/dL):</span>{{ datiEstesi.protein }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">6.6 <</p>
@@ -500,13 +499,13 @@
                             </div>
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ persona.protein }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.protein }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Bilirubin (mg/dL):</span>{{ persona.bilirubin }}</p>
+                        <p><span>Bilirubin (mg/dL):</span>{{ datiEstesi.bilirubin }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">1.2 <</p>
@@ -514,13 +513,13 @@
                             </div>
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer" id="barraSpecial" ></p>
-                                <p id="indicator" class="indicatore" data-value="{{ persona.bilirubin }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.bilirubin }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="indicator-container">
-                        <p><span>Uric Acid (mg/dL):</span>{{ persona.uric_acid }}</p>
+                        <p><span>Uric Acid (mg/dL):</span>{{ datiEstesi.uric_acid }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">7.2 <</p>
@@ -532,7 +531,7 @@
                             </div>
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ persona.uric_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.uric_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
