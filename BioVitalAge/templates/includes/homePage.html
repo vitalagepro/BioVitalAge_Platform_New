@@ -30,6 +30,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
+    <div id="sidebar" class="bg-sidebar hidden"></div>
     <header>
       <div class="nav-bar-user-modal" id="userModal">
         <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">
@@ -65,23 +66,55 @@
 
     <main>
       <div class="main-title-nav">
-        <div class="linkage-container">
-
-          <a href="">
-            <img src="{% static 'includes/icone/notifica.png' %}" alt="">
-          </a>
-
-          <a href="">
-            <img src="{% static 'includes/icone/email.png' %}" alt="">
-          </a>
-
-          <a href="">
-            <img src="{% static 'includes/icone/update.png' %}" alt="">
-          </a>
-
+        <!-- SIDEBAR LATERAL -->
+        <div id="sidebar" class="sidebar hidden">
+          <div class="sidebar-header">
+            <h3 id="sidebar-title">Sezione</h3>
+            <button id="closeSidebar">✖</button>
+          </div>
+          <div id="sidebar-content"></div>
         </div>
-        <div class="main-menu-trace">
-          <img src="{% static 'includes/icone/homePage.png' %}" alt="" />
+
+        <div class="linkage-container">
+          <a
+            href="#"
+            title="Notifiche"
+            class="sidebar-trigger"
+            data-section="Notifiche"
+          >
+            <img
+              src="{% static 'includes/icone/notifica.png' %}"
+              alt="icon-notify"
+            />
+          </a>
+          <a
+            href="#"
+            title="Email"
+            class="sidebar-trigger"
+            data-section="Email"
+          >
+            <img
+              src="{% static 'includes/icone/email.png' %}"
+              alt="icon-email"
+            />
+          </a>
+          <a
+            href="#"
+            title="Update"
+            class="sidebar-trigger"
+            data-section="Update"
+          >
+            <img
+              src="{% static 'includes/icone/update.png' %}"
+              alt="icon-update"
+            />
+          </a>
+        </div>
+
+        <div class="main-menu-trace" title="Home Page">
+          <a href="{% url 'HomePage' %}">
+            <img src="{% static 'includes/icone/homePage.png' %}" alt="" />
+          </a>
           <p>»</p>
           <p>Home Page</p>
         </div>
@@ -90,9 +123,8 @@
       <section class="banner-section">
         <div class="banner">
           <div class="banner-info">
-
             <h3>Good Morning</h3>
-            <h2 class="main-welcome-title" id="nameUser">dott. Rossi</h2>
+            <h2 class="main-welcome-title" id="nameUser">Dott. Rossi</h2>
             <div class="box-icons">
               <div class="box-info">
                 <div class="icon-container">
