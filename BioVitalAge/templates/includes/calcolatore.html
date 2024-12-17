@@ -23,10 +23,6 @@
 </head>
 <body>
     <header>
-        <div class="nav-bar-user-modal" id="userModal">
-            <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">log out</button>
-        </div>
-
         <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar ">
             <div class="col-md-2 d-flex jus  nav-bar-logo">
                 <img src="{% static 'includes/icone/Logo.png' %}" alt="">
@@ -43,6 +39,9 @@
                 
                 <div class="img-container-user-nav-bar">
                     <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user">
+                </div>
+                <div class="nav-bar-user-modal" id="userModal">
+                    <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">log out</button>
                 </div>
             </div>
         </nav>
@@ -517,7 +516,9 @@
         <div class="main-title-nav">
             <h2 class="main-welcome-title">Compila il form per calcolare l'età Biologica</h2>
             <div class="main-menu-trace">
-                <img src="{% static 'includes/icone/homePage.png' %}" alt="">
+                <a href="{% url 'HomePage' %}">
+                    <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+                </a>                
                 <p>»</p>
                 <p>Calcolatore</p>
             </div>
@@ -915,7 +916,7 @@
             </div>
 
             <div class="button-container">
-                <button type="submit">Calculate Biological Age</button>
+                <button id="calculateButton" type="submit">Calculate Biological Age</button>
                 <a href="#">View Results</a>
             </div>
         </form>

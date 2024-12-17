@@ -78,6 +78,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  position: relative;
 }
 .nav-bar-user h3 {
   color: var(--tittle1);
@@ -102,7 +103,7 @@
   background-color: var(--light1);
   position: absolute;
   right: 25px;
-  top: 4.8rem;
+  top: 4.3rem;
   z-index: 2;
   border-radius: 4px;
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.3);
@@ -126,7 +127,7 @@
   transform: translateX(-80%);
   border-width: 10px;
   border-style: solid;
-  border-color: transparent transparent var(--title-color-light) transparent;
+  border-color: transparent transparent var(--light1) transparent;
 }
 .nav-bar-user img:hover {
   cursor: pointer;
