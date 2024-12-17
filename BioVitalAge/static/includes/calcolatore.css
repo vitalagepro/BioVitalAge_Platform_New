@@ -43,6 +43,7 @@ label {
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  align-items: flex-end;
   gap: 20px;
   width: 100%;
 }
@@ -61,6 +62,7 @@ label {
 }
 input[type="range"] {
   margin-top: 10px;
+  padding: 8px 0 8px 1px;
 }
 .button-container {
   text-align: center;
@@ -93,7 +95,7 @@ input[type="range"] {
   width: 100%; /* Larghezza dello slider */
   height: 10px; /* Altezza della traccia */
   background: #e0e0e0; /* Colore della traccia non riempita */
-  border-radius: 8px; /* Arrotondamento della traccia */
+  border-radius: 15px; /* Arrotondamento della traccia */
   outline: none; /* Rimuove il bordo di focus */
   overflow: hidden; /* Necessario per Firefox */
 }
@@ -107,7 +109,7 @@ input[type="range"]::-webkit-slider-runnable-track {
     #e0e0e0 var(--value),
     #e0e0e0 100%
   );
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 /* Thumb personalizzato */

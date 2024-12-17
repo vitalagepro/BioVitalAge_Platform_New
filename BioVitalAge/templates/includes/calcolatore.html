@@ -754,26 +754,36 @@
                         <label for="codice_fiscale">Codice Fiscale</label>
                         <input type="text" id="codice_fiscale" name="codice_fiscale" required placeholder="Insert your codice fiscale">
                     </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <h3>Medical Indicators</h3>
-                <div class="grid-container" style="row-gap: 60px;">
                     <div class="form-group">
                         <label for="chronological_age">Chronological Age</label>
                         <input type="number" id="chronological_age" name="chronological_age" required placeholder="Enter age">
                         <input type="range" id="chronological_age_range" name="chronological_age_range" min="0" max="100" value="0" oninput="chronological_age.value=this.value">
                     </div>
-                    <div class="form-group">
-                        <label for="obri_index">Obri Index</label>
-                        <input type="number" step="0.1" id="obri_index" name="obri_index" required placeholder="numeric value only">
-                        <input type="range" id="obri_index_range" name="obri_index_range" min="0" max="10" step="0.1" value="0" oninput="obri_index.value=this.value">
-                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Oxidative Stress</h3>
+                <div class="grid-container" style="row-gap: 60px;">
                     <div class="form-group">
                         <label for="d_roms">d-ROMs</label>
                         <input type="number" id="d_roms" name="d_roms" required placeholder="numeric value only">
                         <input type="range" id="d_roms_range" name="d_roms_range" min="0" max="500" value="0" oninput="d_roms.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="pat">Plasma Antioxidant Test (PAT)</label>
+                        <input type="number" id="pat" name="pat" required placeholder="numeric value only">
+                        <input type="range" id="pat_range" name="pat_range" min="0" max="10" value="0" oninput="pat.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="osi">Oxidative Stress Index (OSI)</label>
+                        <input type="number" id="osi" name="osi" required placeholder="numeric value only">
+                        <input type="range" id="osi_range" name="osi_range" min="0" max="10" value="0" oninput="osi.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="obri_index">Obri Index</label>
+                        <input type="number" step="0.1" id="obri_index" name="obri_index" required placeholder="numeric value only">
+                        <input type="range" id="obri_index_range" name="obri_index_range" min="0" max="10" step="0.1" value="0" oninput="obri_index.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="aa_epa">AA/EPA Ratio</label>
@@ -795,15 +805,50 @@
                         <input type="number" step="0.1" id="cardiovascular_risk" name="cardiovascular_risk" required placeholder="numeric value only">
                         <input type="range" id="cardiovascular_risk_range" name="cardiovascular_risk_range" min="0" max="100" step="0.1" value="0" oninput="cardiovascular_risk.value=this.value">
                     </div>
+                </div>
+            </div>
+            <div class="section">
+                <h3>Omega Screening</h3>
+                <div class="grid-container" style="row-gap: 60px;">
                     <div class="form-group">
-                        <label for="osi">Oxidative Stress Index (OSI)</label>
-                        <input type="number" id="osi" name="osi" required placeholder="numeric value only">
-                        <input type="range" id="osi_range" name="osi_range" min="0" max="10" value="0" oninput="osi.value=this.value">
+                        <label for="fa_saturated">Saturated fatty acids</label>
+                        <input type="number" id="fa_saturated" name="fa_saturated" required placeholder="numeric value only">
+                        <input type="range" id="fa_saturated_range" name="fa_saturated_range" min="0" max="500" value="0" oninput="fa_saturated.value=this.value">
                     </div>
                     <div class="form-group">
-                        <label for="pat">Plasma Antioxidant Test (PAT)</label>
-                        <input type="number" id="pat" name="pat" required placeholder="numeric value only">
-                        <input type="range" id="pat_range" name="pat_range" min="0" max="10" value="0" oninput="pat.value=this.value">
+                        <label for="o9o7fatty_acids">O-7 and O-9 fatty acids</label>
+                        <input type="number" id="o9o7fatty_acids" name="o9o7fatty_acids" required placeholder="numeric value only">
+                        <input type="range" id="o9o7fatty_acids_range" name="o9o7fatty_acids_range" min="0" max="10" value="0" oninput="o9o7fatty_acids.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="o3fatty_acids">O-3 fatty acids</label>
+                        <input type="number" id="o3fatty_acids" name="o3fatty_acids" required placeholder="numeric value only">
+                        <input type="range" id="o3fatty_acids_range" name="o3fatty_acids_range" min="0" max="10" value="0" oninput="o3fatty_acids.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="o6fatty_acids">O-6 fatty acids</label>
+                        <input type="number" step="0.1" id="o6fatty_acids" name="o6fatty_acids" required placeholder="numeric value only">
+                        <input type="range" id="o6fatty_acids_range" name="o6fatty_acids_range" min="0" max="10" step="0.1" value="0" oninput="o6fatty_acids.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="s_u_fatty_acids">Sat./unsat. fatty acid quotient</label>
+                        <input type="number" step="0.1" id="s_u_fatty_acids" name="s_u_fatty_acids" required placeholder="numeric value only">
+                        <input type="range" id="s_u_fatty_acids_range" name="s_u_fatty_acids_range" min="0" max="10" step="0.1" value="0" oninput="s_u_fatty_acids.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="o6o3_fatty_acids_quotient">O-6/O-3 fatty acid quotient</label>
+                        <input type="number" step="0.1" id="o6o3_fatty_acids_quotient" name="o6o3_fatty_acids_quotient" required placeholder="numeric value only">
+                        <input type="range" id="o6o3_fatty_acids_quotient_range" name="o6o3_fatty_acids_quotient_range" min="0" max="10" step="0.1" value="0" oninput="o6o3_fatty_acids_quotient.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="aa_epa_quotient">Acid arachidonic/eicosapentanenoic quotient(AA/EPA)</label>
+                        <input type="number" step="0.01" id="aa_epa_quotient" name="aa_epa_quotient" required placeholder="numeric value only">
+                        <input type="range" id="aa_epa_quotient_range" name="aa_epa_quotient_range" min="0" max="10" step="0.01" value="0" oninput="aa_epa_quotient.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="O3_index">O-3 Index</label>
+                        <input type="number" step="0.01" id="O3_index" name="O3_index" required placeholder="numeric value only">
+                        <input type="range" id="O3_index_range" name="O3_index_range" min="0" max="10" step="0.01" value="0" oninput="O3_index.value=this.value">
                     </div>
                 </div>
             </div>
