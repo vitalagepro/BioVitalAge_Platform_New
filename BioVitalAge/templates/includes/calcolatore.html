@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href='../../../../static/includes/icone/favicon.png' type="image/x-icon">
     <title>BioVitalAge - Calcolatore</title>
 
     {% load static %}
@@ -50,33 +51,13 @@
 
     <main>
 
-        <div id="myModal" class="modal">
+        <div id="myModal" class="modal-calculator hidden">
             <div class="modal-container">
                 <h3>Risultato Calcolo età Biologica</h3>
                 <p>{{ data.name }}, la tua età biologica calcolata attraverso i dati inseriti è: <span>{{ biological_age }}</span></p>
                 <p class="Subtitle">Risultati</p>
 
                 <div class="valoriInseritiContainer">
-
-                        <div class="indicator-container">
-                            <p><span>Obri Index:</span>{{ data.obri_index }}</p>
-                            <div class="indicator-content-container">
-                                <div class="indicator">
-                                    <p class="negativeTesto">2.2 <</p>
-                                    <div class="positiveTesto">
-                                        <p>1.2</p>
-                                        <p>0.8</p>
-                                    </div>
-                                    <p class="extremeNegativeRange">< 0</p>
-                                </div>
-                            
-                                <div class="col-md-12 p-2 barra-container">
-                                    <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ data.obri_index }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
-                                </div>
-                            </div>
-                        </div>
-    
                         <div class="indicator-container">
                             <p><span>d-ROMs:</span>{{ data.d_roms }}</p>
                             <div class="indicator-content-container">
@@ -97,7 +78,7 @@
                         </div>
     
                         <div class="indicator-container">
-                            <p><span>AA/EPA Ratio:</span>{{ data.aa_epa }}</p>
+                            <p><span>AA/EPA Quotient:</span>{{ data.aa_epa_quotient }}</p>
                             <div class="indicator-content-container">
                                 <div class="indicator">
                                     <p class="negativeTesto">15 <</p>
@@ -114,45 +95,7 @@
                                 </div>
                             </div>
                         </div>
-    
-                        <div class="indicator-container">
-                            <p><span>AA/DHA Ratio:</span>{{ data.aa_dha }}</p>
-                            <div class="indicator-content-container">
-                                <div class="indicator">
-                                    <p class="negativeTesto">4.3 <</p>
-                                    <div class="positiveTesto">
-                                        <p>3.6</p>
-                                        <p>1.6</p>
-                                    </div>
-                                    <p class="extremeNegativeRange">< 1.6</p>
-                                </div>
-                            
-                                <div class="col-md-12 p-2 barra-container">
-                                    <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ data.aa_dha }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
-                                </div>
-                            </div>
-                        </div>
-    
-                        <div class="indicator-container">
-                            <p><span>HOMA Test:</span>{{ data.homa_test }}</p>
-                            <div class="indicator-content-container">
-                                <div class="indicator">
-                                    <p class="negativeTesto">< 0.3</p>
-                                    <div class="positiveTesto">
-                                        <p>0.3</p>
-                                        <p>2.5</p>
-                                    </div>
-                                    <p class="extremeNegativeRange">> 2.5</p>
-                                </div>
-                            
-                                <div class="col-md-12 p-2 barra-container">
-                                    <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore"  data-value="{{ data.homa_test }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
-                                </div>
-                            </div>
-                        </div>
-    
+        
                         <div class="indicator-container">
                             <p><span>Cardiovascular Risk:</span>{{ data.cardiovascular_risk }}</p>
                             <div class="indicator-content-container">
@@ -204,7 +147,7 @@
                                     <p class="extremeNegativeRange">< 2800</p>
                                 </div>
                                 <div class="col-md-12 p-2 barra-container">
-                                    <p class="barra-pointer" id="middleBar""></p>
+                                    <p class="barra-pointer" id="middleBar"></p>
                                     <p class="barra-pointer-two"></p>
                                     <p id="indicator" class="indicatore" data-value="{{ data.pat }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
@@ -218,10 +161,12 @@
                                     <p>min</p>
                                     <p>Max</p>
                                 </div>
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ data.wbc }}"></p>
-                                    
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer" id="middleBar"></p>
+                                    <p class="barra-pointer-two"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ data.wbc }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
+
                             </div>
                         </div>
                         
@@ -232,10 +177,12 @@
                                     <p>min</p>
                                     <p>Max</p>
                                 </div>
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ data.baso }}"></p>
-                                    
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer" id="middleBar"></p>
+                                    <p class="barra-pointer-two"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ data.baso }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
+
                             </div>
                         </div>
                         
@@ -246,9 +193,12 @@
                                     <p>min</p>
                                     <p>Max</p>
                                 </div>
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ data.eosi }}"></p>
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer" id="middleBar"></p>
+                                    <p class="barra-pointer-two"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ data.eosi }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
+
                             </div>
                         </div>
                         
@@ -259,9 +209,12 @@
                                     <p>min</p>
                                     <p>Max</p>
                                 </div>
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ data.lymph }}"></p>
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer" id="middleBar"></p>
+                                    <p class="barra-pointer-two"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ data.lymph }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
+
                             </div>
                         </div>
                         
@@ -272,9 +225,12 @@
                                     <p>min</p>
                                     <p>Max</p>
                                 </div>
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ data.mono }}"></p>
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer" id="middleBar"></p>
+                                    <p class="barra-pointer-two"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ data.mono }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
+
                             </div>
                         </div>
                         
@@ -285,8 +241,10 @@
                                     <p>min</p>
                                     <p>Max</p>
                                 </div>
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ data.neut }}"></p>
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer" id="middleBar"></p>
+                                    <p class="barra-pointer-two"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ data.neut }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
                             </div>
                         </div>
@@ -298,9 +256,12 @@
                                     <p>min</p>
                                     <p>Max</p>
                                 </div>
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ data.rbc }}"></p>
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer" id="middleBar"></p>
+                                    <p class="barra-pointer-two"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ data.rbc }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
+
                             </div>
                         </div>
                         
@@ -311,8 +272,10 @@
                                     <p>min</p>
                                     <p>Max</p>
                                 </div>
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ data.hct }}"></p>
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer" id="middleBar"></p>
+                                    <p class="barra-pointer-two"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ data.hct }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
                             </div>
                         </div>
@@ -324,8 +287,10 @@
                                     <p>min</p>
                                     <p>Max</p>
                                 </div>
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ data.hgb }}"></p>
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer" id="middleBar"></p>
+                                    <p class="barra-pointer-two"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ data.hgb }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
                             </div>
                         </div>
@@ -337,8 +302,10 @@
                                     <p>min</p>
                                     <p>Max</p>
                                 </div>
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ data.mch }}"></p>
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer" id="middleBar"></p>
+                                    <p class="barra-pointer-two"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ data.mch }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
                             </div>
                         </div>
@@ -350,8 +317,10 @@
                                     <p>min</p>
                                     <p>Max</p>
                                 </div>
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ data.mchc }}"></p>
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer" id="middleBar"></p>
+                                    <p class="barra-pointer-two"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ data.mchc }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
                             </div>
                         </div>
@@ -363,9 +332,12 @@
                                     <p>min</p>
                                     <p>Max</p>
                                 </div>
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ data.mcv }}"></p>
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer" id="middleBar"></p>
+                                    <p class="barra-pointer-two"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ data.mcv }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
+
                             </div>
                         </div>
                         
@@ -493,7 +465,9 @@
                         </div>
     
                 </div>
-                <button onclick="closeModal()">Chiudi</button>
+                <div class="button-container-modal">
+                    <button onclick="closeModal()">Chiudi</button>
+                </div>
             </div>
         </div>
 
@@ -501,14 +475,16 @@
         <!-- Gestione Modal -->
         <script>
             function closeModal() {
-                document.getElementById("myModal").style.display = "none";
+                document.getElementById("myModal").classList.add("hidden");
+                document.body.classList.remove("visible");
             }
 
             // Mostra la modale se show_modal è True
             const modal = document.getElementById("myModal");
             if (modal) {
                 {% if show_modal %} // @ts-ignore
-                modal.style.display = "flex";
+                    document.body.classList.add("visible");
+                    modal.classList.remove("hidden");
                 {% endif %}  // @ts-ignore
             } // @ts-ignore
         </script>
@@ -723,10 +699,9 @@
 
         <form method="POST" action="{% url 'Calcolatore' %}" class="form-container" id="age-form"> 
             {% csrf_token %} 
-
             <div class="section">
                 <h3>Patient Information</h3>
-                <div class="grid-container">
+                <div class="grid-container patient-info">
                     <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" id="name" name="name" required placeholder="Insert your name">
@@ -737,11 +712,11 @@
                     </div>
                     <div class="form-group">
                         <label for="dob">Date of Birth</label>
-                        <input type="date" id="dob" name="dob" required>
+                        <input type="date" id="dob" name="dob" >
                     </div>
                     <div class="form-group">
                         <label for="gender">Gender</label>
-                        <select id="gender" name="gender" required>
+                        <select id="gender" name="gender" >
                             <option value="M">Male</option>
                             <option value="F">Female</option>
                         </select>
@@ -750,6 +725,10 @@
                         <label for="place_of_birth">Place of Birth</label>
                         <input type="text" id="place_of_birth" name="place_of_birth" required placeholder="Insert your place of birth">
                     </div>
+                    <div class="form-group">
+                        <label for="province">Province</label>
+                        <input type="text" id="province" name="province" required placeholder="Enter province (e.g., RM)">
+                    </div>                                     
                     <div class="form-group">
                         <label for="codice_fiscale">Codice Fiscale</label>
                         <input type="text" id="codice_fiscale" name="codice_fiscale" required placeholder="Insert your codice fiscale">
@@ -839,12 +818,12 @@
                     <div class="form-group">
                         <label for="baso">Basophils (%)</label>
                         <input type="number" step="0.1" id="baso" name="baso" placeholder="numeric value only">
-                        <input type="range" id="baso_range" name="baso_range" min="0" max="10" value="0" oninput="baso.value=this.value">
+                        <input type="range" id="baso_range" name="baso_range" min="0" max="5" value="0" oninput="baso.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="eosi">Eosinophils (%)</label>
                         <input type="number" step="0.1" id="eosi" name="eosi" placeholder="numeric value only">
-                        <input type="range" id="eosi_range" name="eosi_range" min="0" max="10" value="0" oninput="eosi.value=this.value">
+                        <input type="range" id="eosi_range" name="eosi_range" min="0" max="20" value="0" oninput="eosi.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="lymph">Lymphocytes (%)</label>
@@ -859,7 +838,7 @@
                     <div class="form-group">
                         <label for="neut">Neutrophils (%)</label>
                         <input type="number" step="0.1" id="neut" name="neut" placeholder="numeric value only">
-                        <input type="range" id="neut_range" name="neut_range" min="0" max="100" value="0" oninput="neut.value=this.value">
+                        <input type="range" id="neut_range" name="neut_range" min="0" max="140" value="0" oninput="neut.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="rbc">Red Blood Cells (RBC)</label>
@@ -874,22 +853,22 @@
                     <div class="form-group">
                         <label for="hgb">Hemoglobin (HGB)</label>
                         <input type="number" step="0.1" id="hgb" name="hgb" placeholder="numeric value only">
-                        <input type="range" id="hgb_range" name="hgb_range" min="0" max="20" value="0" oninput="hgb.value=this.value">
+                        <input type="range" id="hgb_range" name="hgb_range" min="0" max="32" value="0" oninput="hgb.value=this.value">
                     </div>
                     <div class="form-group" style="margin-top: -1.5rem;"> 
                         <label for="mch">Mean Corpuscular Hemoglobin (MCH)</label>
                         <input type="number" step="0.1" id="mch" name="mch" placeholder="numeric value only">
-                        <input type="range" id="mch_range" name="mch_range" min="0" max="50" value="0" oninput="mch.value=this.value">
+                        <input type="range" id="mch_range" name="mch_range" min="0" max="64" value="0" oninput="mch.value=this.value">
                     </div>
                     <div class="form-group" style="margin-top: -1.5rem;">
                         <label for="mchc">Mean Corpuscular Hemoglobin Concentration (MCHC)</label>
                         <input type="number" step="0.1" id="mchc" name="mchc" placeholder="numeric value only">
-                        <input type="range" id="mchc_range" name="mchc_range" min="0" max="50" value="0" oninput="mchc.value=this.value">
+                        <input type="range" id="mchc_range" name="mchc_range" min="0" max="74" value="0" oninput="mchc.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="mcv">Mean Corpuscular Volume (MCV)</label>
                         <input type="number" step="0.1" id="mcv" name="mcv" placeholder="numeric value only">
-                        <input type="range" id="mcv_range" name="mcv_range" min="0" max="150" value="0" oninput="mcv.value=this.value">
+                        <input type="range" id="mcv_range" name="mcv_range" min="0" max="200" value="0" oninput="mcv.value=this.value">
                     </div>
                 </div>
             </div>
@@ -900,12 +879,17 @@
                     <div class="form-group">
                         <label for="glucose">Glucose (mg/dL)</label>
                         <input type="number" step="0.1" id="glucose" name="glucose" placeholder="numeric value only">
-                        <input type="range" id="glucose_range" name="glucose_range" min="0" max="300" value="0" oninput="glucose.value=this.value">
+                        <input type="range" id="glucose_range" name="glucose_range" min="0" max="50" value="0" oninput="glucose.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="azotemia">Azotemia</label>
+                        <input type="number" step="0.1" id="azotemia" name="azotemia" placeholder="numeric value only">
+                        <input type="range" id="azotemia_range" name="azotemia_range" min="0" max="100" value="0" oninput="azotemia.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="creatinine">Creatinine (mg/dL)</label>
                         <input type="number" step="0.1" id="creatinine" name="creatinine" placeholder="numeric value only">
-                        <input type="range" id="creatinine_range" name="creatinine_range" min="0" max="10" value="0" oninput="creatinine.value=this.value">
+                        <input type="range" id="creatinine_range" name="creatinine_range" min="0" max="20" value="0" oninput="creatinine.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="ferritin">Ferritin (ng/mL)</label>
@@ -915,12 +899,12 @@
                     <div class="form-group">
                         <label for="albumin">Albumin (g/dL)</label>
                         <input type="number" step="0.1" id="albumin" name="albumin" placeholder="numeric value only">
-                        <input type="range" id="albumin_range" name="albumin_range" min="0" max="10" value="0" oninput="albumin.value=this.value">
+                        <input type="range" id="albumin_range" name="albumin_range" min="0" max="120" value="0" oninput="albumin.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="protein">Total Protein (g/dL)</label>
                         <input type="number" step="0.1" id="protein" name="protein" placeholder="numeric value only">
-                        <input type="range" id="protein_range" name="protein_range" min="0" max="10" value="0" oninput="protein.value=this.value">
+                        <input type="range" id="protein_range" name="protein_range" min="0" max="20" value="0" oninput="protein.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="bilirubin">Bilirubin (mg/dL)</label>
@@ -943,7 +927,7 @@
 
 
     </main>
-    <script src="{% static 'includes/js/calcolatore.js' %}"></script>
+    <script src="{% static 'includes/js/calcolatore.js' %}" defer></script>
     <script src="{% static 'includes/js/CodiceFiscale.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

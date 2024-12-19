@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href='../../../../static/includes/icone/favicon.png' type="image/x-icon">
     <title>BioVitalAge - HomePage</title>
 
     {% load static %}
@@ -55,7 +56,9 @@
             </div>
            
             <div class="main-menu-trace">
-                <img src="{% static 'includes/icone/homePage.png' %}" alt="">
+                <a href="{% url 'HomePage' %}">
+                    <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+                </a>                                    
                 <p>»</p>
                 <p>Report Paziente</p>
             </div>
@@ -101,26 +104,6 @@
                 <h3>All Exams Value</h3>
 
                 <div class="content-container">
-
-                    <div class="indicator-container">
-                        <p><span>Obri Index:</span>{{ datiEstesi.obri_index }}</p>
-                        <div class="indicator-content-container">
-                            <div class="indicator">
-                                <p class="negativeTesto">2.2 <</p>
-                                <div class="positiveTesto">
-                                    <p>1.2</p>
-                                    <p>0.8</p>
-                                </div>
-                                <p class="extremeNegativeRange">< 0</p>
-                            </div>
-                        
-                            <div class="col-md-12 p-2 barra-container">
-                                <p class="barra-pointer"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.obri_index }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="indicator-container">
                         <p><span>d-ROMs:</span>{{ datiEstesi.d_roms }}</p>
                         <div class="indicator-content-container">
@@ -141,7 +124,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p><span>AA/EPA Ratio:</span>{{ datiEstesi.aa_epa }}</p>
+                        <p><span>AA/EPA Quotient:</span>{{ datiEstesi.aa_epa_quotient }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">15 <</p>
@@ -155,44 +138,6 @@
                             <div class="col-md-12 p-2 barra-container">
                                 <p class="barra-pointer"></p>
                                 <p id="indicator" class="indicatore" data-value="{{ datiEstesi.aa_epa }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="indicator-container">
-                        <p><span>AA/DHA Ratio:</span>{{ datiEstesi.aa_dha }}</p>
-                        <div class="indicator-content-container">
-                            <div class="indicator">
-                                <p class="negativeTesto">4.3 <</p>
-                                <div class="positiveTesto">
-                                    <p>3.6</p>
-                                    <p>1.6</p>
-                                </div>
-                                <p class="extremeNegativeRange">< 1.6</p>
-                            </div>
-                        
-                            <div class="col-md-12 p-2 barra-container">
-                                <p class="barra-pointer"></p>
-                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.aa_dha }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="indicator-container">
-                        <p><span>HOMA Test:</span>{{ datiEstesi.homa_test }}</p>
-                        <div class="indicator-content-container">
-                            <div class="indicator">
-                                <p class="negativeTesto">< 0.3</p>
-                                <div class="positiveTesto">
-                                    <p>0.3</p>
-                                    <p>2.5</p>
-                                </div>
-                                <p class="extremeNegativeRange">> 2.5</p>
-                            </div>
-                        
-                            <div class="col-md-12 p-2 barra-container">
-                                <p class="barra-pointer"></p>
-                                <p id="indicator" class="indicatore"  data-value="{{ datiEstesi.homa_test }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
@@ -262,9 +207,10 @@
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
-                            <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ datiEstesi.wbc }}"></p>
-                                
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.wbc }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
@@ -276,9 +222,10 @@
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
-                            <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ datiEstesi.baso }}"></p>
-                                
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.baso }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
@@ -290,8 +237,10 @@
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
-                            <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ datiEstesi.eosi }}"></p>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.eosi }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
@@ -303,8 +252,10 @@
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
-                            <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ datiEstesi.lymph }}"></p>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.lymph }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
@@ -316,8 +267,10 @@
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
-                            <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ datiEstesi.mono }}"></p>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mono }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
@@ -329,8 +282,10 @@
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
-                            <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ datiEstesi.neut }}"></p>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.neut }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
@@ -342,8 +297,10 @@
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
-                            <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ datiEstesi.rbc }}"></p>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.rbc }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
@@ -355,8 +312,10 @@
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
-                            <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ datiEstesi.hct }}"></p>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hct }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
@@ -368,8 +327,10 @@
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
-                            <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ datiEstesi.hgb }}"></p>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hgb }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
@@ -381,8 +342,10 @@
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
-                            <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ datiEstesi.mch }}"></p>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mch }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
@@ -394,8 +357,10 @@
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
-                            <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ datiEstesi.mchc }}"></p>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mchc }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
@@ -407,8 +372,10 @@
                                 <p>min</p>
                                 <p>Max</p>
                             </div>
-                            <div class="col-md-12 p-2 barra-container-none">
-                                <p data-value="{{ datiEstesi.mcv }}"></p>
+                            <div class="col-md-12 p-2 barra-container">
+                                <p class="barra-pointer" id="middleBar"></p>
+                                <p class="barra-pointer-two"></p>
+                                <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mcv }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                             </div>
                         </div>
                     </div>
@@ -580,8 +547,6 @@
             };
         </script>
         <script src="{% static 'includes/js/pdfGenerator.js' %}?v={{ timestamp }}"></script>
-
-        
     </main>
 
    

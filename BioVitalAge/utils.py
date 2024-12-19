@@ -1,3 +1,138 @@
+def adjust_age_basophils(basophils):
+    basophils = float(basophils) if basophils else 0
+    if 4 <= basophils <= 11:
+        return 0
+    elif basophils > 11:
+        return 2
+    return 0
+
+def adjust_age_eosinophils(eosinophils):
+    eosinophils = float(eosinophils) if eosinophils else 0
+    if 4 <= eosinophils <= 11:
+        return 0
+    elif eosinophils > 11:
+        return 2
+    return 0
+
+def adjust_age_lymphocytes(lymphocytes):
+    lymphocytes = float(lymphocytes) if lymphocytes else 0
+    if 4 <= lymphocytes <= 11:
+        return 0
+    elif lymphocytes > 11:
+        return 2
+    return 0
+
+def adjust_age_monocytes(monocytes):
+    monocytes = float(monocytes) if monocytes else 0
+    if 4 <= monocytes <= 11:
+        return 0
+    elif monocytes > 11:
+        return 2
+    return 0
+
+def adjust_age_neutrophils(neutrophils):
+    neutrophils = float(neutrophils) if neutrophils else 0
+    if 4 <= neutrophils <= 11:
+        return 0
+    elif neutrophils > 11:
+        return 2
+    return 0
+
+def adjust_age_rbc(rbc):
+    rbc = float(rbc) if rbc else 0
+    if 4 <= rbc <= 11:
+        return 0
+    elif rbc > 11:
+        return 2
+    return 0
+
+def adjust_age_hct(hct):
+    hct = float(hct) if hct else 0
+    if 4 <= hct <= 11:
+        return 0
+    elif hct > 11:
+        return 2
+    return 0
+
+def adjust_age_hgb(hgb):
+    hgb = float(hgb) if hgb else 0
+    if 4 <= hgb <= 11:
+        return 0
+    elif hgb > 11:
+        return 2
+    return 0
+
+def adjust_age_mch(mch):
+    mch = float(mch) if mch else 0
+    if 4 <= mch <= 11:
+        return 0
+    elif mch > 11:
+        return 2
+    return 0
+
+def adjust_age_mchc(mchc):
+    mchc = float(mchc) if mchc else 0
+    if 4 <= mchc <= 11:
+        return 0
+    elif mchc > 11:
+        return 2
+    return 0
+
+def adjust_age_mcv(mcv):
+    mcv = float(mcv) if mcv else 0
+    if 4 <= mcv <= 11:
+        return 0
+    elif mcv > 11:
+        return 2
+    return 0
+
+def adjust_age_mpv(mpv):
+    mpv = float(mpv) if mpv else 0
+    if 4 <= mpv <= 11:
+        return 0
+    elif mpv > 11:
+        return 2
+    return 0
+
+def adjust_age_mpd(mpd):
+    mpd = float(mpd) if mpd else 0
+    if 4 <= mpd <= 11:
+        return 0
+    elif mpd > 11:
+        return 2
+    return 0
+
+def adjust_age_wbc(wbc):
+    wbc = float(wbc) if wbc else 0
+    if 4 <= wbc <= 11:
+        return 0
+    elif wbc > 11:
+        return 2
+    return 0
+
+def adjust_age_bilirubin(bilirubin):
+    bilirubin = float(bilirubin) if bilirubin else 0
+    if 0 <= bilirubin <= 1.2:
+        return 0
+    elif bilirubin > 1.2:
+        return 2
+    return 0
+
+def adjust_age_uric_acid(uric_acid):
+    uric_acid = float(uric_acid) if uric_acid else 0
+    if 3.5 <= uric_acid <= 7.2:
+        return 0
+    elif uric_acid < 3.5:
+        return 2
+    return 0
+
+def adjust_age_rdw(rdw):
+    rdw = float(rdw) if rdw else 0
+    if 4 <= rdw <= 11:
+        return 0
+    elif rdw > 11:
+        return 2
+    return 0
 
 def adjust_age_glucose(glucose):
     glucose = float(glucose) if glucose else 0  # Conversione a float
@@ -158,21 +293,31 @@ def adjust_age_exams(exams):
             age_adjustment += 1  # Incrementa per ogni valore fuori dal range normale
     return age_adjustment
 
-def calculate_biological_age(chronological_age, obri_index, d_roms, aa_epa, aa_dha, homa_test, cardiovascular_risk, osi, pat, exams):
+def calculate_biological_age(chronological_age, d_roms, osi, pat, wbc, basophils,
+                eosinophils, lymphocytes, monocytes, neutrophils, rbc, hgb, 
+                hct, mcv, mch, mchc, rdw, exams):
     """Calcola l'età biologica basata sui biomarcatori forniti."""
     biological_age = chronological_age
 
 
 
     # Aggiustamenti basati sui vari parametri
-    biological_age += adjust_age_obri(obri_index)
     biological_age += adjust_age_d_roms(d_roms)
-    biological_age += adjust_age_aa_epa(aa_epa)
-    biological_age += adjust_age_aa_dha(aa_dha)
-    biological_age += adjust_age_homa(homa_test)
-    biological_age += adjust_age_cardio(cardiovascular_risk)
     biological_age += adjust_age_osi(osi)
     biological_age += adjust_age_pat(pat)
+    biological_age += adjust_age_wbc(wbc)
+    biological_age += adjust_age_basophils(basophils)
+    biological_age += adjust_age_eosinophils(eosinophils)
+    biological_age += adjust_age_lymphocytes(lymphocytes)
+    biological_age += adjust_age_monocytes(monocytes)
+    biological_age += adjust_age_neutrophils(neutrophils)
+    biological_age += adjust_age_rbc(rbc)
+    biological_age += adjust_age_hgb(hgb)
+    biological_age += adjust_age_hct(hct)
+    biological_age += adjust_age_mcv(mcv)
+    biological_age += adjust_age_mch(mch)
+    biological_age += adjust_age_mchc(mchc)
+    biological_age += adjust_age_rdw(rdw)
 
     # Aggiustamenti basati sugli esami specifici
     biological_age += adjust_age_glucose(exams[0])

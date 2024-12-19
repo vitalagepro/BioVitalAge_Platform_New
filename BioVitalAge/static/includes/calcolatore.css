@@ -47,6 +47,10 @@ label {
   gap: 20px;
   width: 100%;
 }
+
+.patient-info {
+  align-items: flex-start;
+}
 .form-group {
   display: flex;
   flex-direction: column;
@@ -79,10 +83,10 @@ input[type="range"] {
   border: 2px solid var(--contrast-color2);
   border-radius: 5px;
   font-size: 16px;
-  transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
+  transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-.button-container button:hover{
+.button-container button:hover {
   background-color: transparent;
 }
 .button-container a {
@@ -264,21 +268,37 @@ form{
 }
  */
 
-.modal {
+
+
+.visible{
+  overflow: hidden;
+}
+
+ .visible .modal-calculator{
   display: flex;
   position: fixed;
+  visibility: visible;
+  z-index: 9999999;
+  height: 100vh;
+  opacity: 1;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
   justify-content: center;
   align-items: center;
   padding: 0 20px;
+  transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
 }
-.modal.show {
-  display: flex;
+
+.hidden{
+  visibility: hidden;
+  height: 0;
+  opacity: 0;
 }
+
 .modal-container {
   background-color: whitesmoke;
   padding: 20px;
@@ -296,14 +316,30 @@ form{
   color: var(--contrast-color2);
   font-weight: bold;
 }
-.modal-container button {
-  margin-top: 2rem;
+
+.button-container-modal{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-container-modal button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 2.5rem;
   width: 12rem;
   font-size: 18px;
   border-radius: 8px;
   background-color: var(--contrast-color2);
   border: none;
+  color: var(--tittle1);
+  text-transform: uppercase;
+  transition: all 0.2s cubic-bezier(.215, .61, .355, 1);
+}
+
+.button-container-modal button:hover{
+  background-color: var(--dark2);
   color: var(--tittle1);
 }
 .Subtitle {
@@ -403,4 +439,48 @@ form{
   height: 2rem;
   width: 0.5rem;
   border-radius: 8px;
+}
+
+/*  -----------------------------------------------------------------------------------------------
+  MODAL FORM CSS
+--------------------------------------------------------------------------------------------------- */
+.is-invalid {
+  border: 2px solid red;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  display: none; /* Nascondi inizialmente */
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none; /* Inizia nascosta */
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5); /* Sfondo traslucido */
+  z-index: 1000;
+}
+
+.modal-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.modal-container button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
