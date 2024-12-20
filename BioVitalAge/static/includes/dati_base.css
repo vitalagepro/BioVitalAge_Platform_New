@@ -20,10 +20,6 @@
   --card-color: #f8f4fc;
 }
 
-main {
-  margin: 25px 25px;
-}
-
 .container_data {
   display: flex;
   flex-direction: column;
@@ -34,6 +30,8 @@ main {
   background: var(--card-color);
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
   border-radius: 5px;
+  margin: 0 25px;
+  margin-top: 25px;
 }
 
 .anagraphic_data h3 {
@@ -49,11 +47,6 @@ main {
 .field {
   font-weight: bold;
   color: var(--contrast-color);
-}
-
-#title-page {
-  color: #d3d3d3;
-  margin: 25px 0;
 }
 
 /* ! Blood Data */
@@ -249,7 +242,7 @@ tr:hover {
   background-color: transparent;
   border: 2px solid #6a2dcc;
   border-radius: 30px;
-  font-size: 15px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: #f3f3f3;
@@ -263,7 +256,7 @@ tr:hover {
   transition: all 0.3s;
   z-index: 1;
   height: 2rem;
-  width: 6rem;
+  width: 8rem;
 }
 
 .edit-save-btn::before {

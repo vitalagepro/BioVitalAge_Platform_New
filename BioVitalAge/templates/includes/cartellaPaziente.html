@@ -71,8 +71,8 @@
                 <div class="header-card">
                     <h2>Personal Information</h2>
                     <div class="button-grid">
-                        <a href="#"><img src="{% static 'includes/icone/referto.png' %}" alt=""></a>
-                        <a href="#"><img src="{% static 'includes/icone/rotella.png' %}" alt=""></a>
+                        <a href="{% url 'dati_base' persona.id %}"><img src="{% static 'includes/icone/referto.png' %}" alt="dati-base" title="Dati Base"></a>
+                        <a href="#"><img src="{% static 'includes/icone/rotella.png' %}" alt="modifica" title="Modifica"></a>
                     </div>
                 </div>
                 <div class="card-body">

@@ -30,22 +30,26 @@
     />
 
     <!-- JS import -->
-     <script src="{% static 'includes/js/HomePage.js' %}"></script>
-     <script src="{% static 'includes/js/dati_base.js' %}"></script>
+    <script src="{% static 'includes/js/dati_base.js' %}" defer></script>
     <title>BioVitalAge - Dati Base</title>
   </head>
   <body>
     <!-- Header -->
     <header>
-      <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar">
+      <nav
+        class="col-md-12 d-flex justify-content-between align-items-center nav-bar"
+      >
         <div class="col-md-2 d-flex jus nav-bar-logo">
-          <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®" />
+          <img
+            src="{% static 'includes/icone/Logo.png' %}"
+            alt="logo_img"
+            title="BioVitalAge®"
+          />
         </div>
         <div class="col-md-8 nav-bar-linkage">
           <a href="{% url 'HomePage' %}">HomePage</a>
           <a href="{% url 'Calcolatore' %}">Calcolatore Età Biologica</a>
           <a href="{% url 'Risultati' %}" id="active">Ricerca Pazienti</a>
-          <a href="{% url 'DatiBase' %}" id="active">Dati Base</a>
         </div>
 
         <div class="col-md-2 nav-bar-user">
@@ -82,24 +86,23 @@
           <p>Dati Base</p>
         </div>
       </div>
-      <h1 id="title-page">Dati di base</h1>
       <section class="container_data anagraphic_data">
         <h3>Anagraphic Data</h3>
         <div class="container_box">
           <div class="info_container">
             <div>
               <span class="field">Name:&nbsp;</span>
-              <span id="name">Mario</span>
+              <span id="name">{{ persona.name }}</span>
             </div>
             <div>
               <span class="field">Surname:&nbsp;</span>
-              <span id="surname">Rossi</span>
+              <span id="surname">{{ persona.surname }}</span>
             </div>
           </div>
           <div class="info_container">
             <div>
               <span class="field">F.C. :&nbsp;</span>
-              <span id="surname">RSSMRA55E19A662D</span>
+              <span id="surname">{{ persona.codice_fiscale }}</span>
             </div>
             <div>
               <span class="field">Associate staff:&nbsp;</span>
@@ -109,17 +112,17 @@
           <div class="info_container">
             <div>
               <span class="field">Age:&nbsp;</span>
-              <span id="age">29</span>
+              <span id="age">{{ dati_estesi_ultimo_referto.chronological_age }}</span>
             </div>
             <div>
               <span class="field">Date of birth:&nbsp;</span>
-              <span id="date">19/05/1995</span>
+              <span id="date">{{ persona.dob }}</span>
             </div>
           </div>
           <div class="info_container">
             <div>
               <span class="field">Address:&nbsp;</span>
-              <span id="address">Via Roma, 1</span>
+              <span id="address">{{ persona.place_of_birth }}</span>
             </div>
             <div>
               <span class="field">Phone:&nbsp;</span>
