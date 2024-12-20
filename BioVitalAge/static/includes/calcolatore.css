@@ -268,13 +268,11 @@ form{
 }
  */
 
-
-
-.visible{
+.visible {
   overflow: hidden;
 }
 
- .visible .modal-calculator{
+.visible .modal-calculator {
   display: flex;
   position: fixed;
   visibility: visible;
@@ -290,10 +288,10 @@ form{
   justify-content: center;
   align-items: center;
   padding: 0 20px;
-  transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
+  transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-.hidden{
+.hidden {
   visibility: hidden;
   height: 0;
   opacity: 0;
@@ -305,6 +303,13 @@ form{
   border-radius: 8px;
   width: 800px;
   height: 600px;
+  overflow: auto;
+  scrollbar-width: none; /* Per Firefox */
+  -ms-overflow-style: none; /* Per Internet Explorer e Edge */
+}
+
+.modal-container ::-webkit-scrollbar {
+  display: none; /* Per Webkit (Chrome, Safari) */
 }
 .modal-container h3 {
   color: var(--contrast-color);
@@ -317,7 +322,7 @@ form{
   font-weight: bold;
 }
 
-.button-container-modal{
+.button-container-modal {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -335,10 +340,10 @@ form{
   border: none;
   color: var(--tittle1);
   text-transform: uppercase;
-  transition: all 0.2s cubic-bezier(.215, .61, .355, 1);
+  transition: all 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-.button-container-modal button:hover{
+.button-container-modal button:hover {
   background-color: var(--dark2);
   color: var(--tittle1);
 }

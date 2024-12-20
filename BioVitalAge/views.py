@@ -474,5 +474,12 @@ class CartellaPazienteView(View):
 
         return render(request, "includes/cartellaPaziente.html", context)
 
+class DatiBaseView(View):
+    def get(self, request, id):
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        context = {
+            'persona': persona,
+        }
+        return render(request, "includes/dati_base.html", context)
 
 
