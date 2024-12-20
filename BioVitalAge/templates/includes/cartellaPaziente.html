@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href='../../../../static/includes/icone/favicon.png' type="image/x-icon">
     <title>Cartella Paziente, {{ persona.name }}</title>
 
     {% load static %}
@@ -46,7 +47,10 @@
         </nav>
     </header>
 
-    <main>
+    <div class="container">
+        
+    </div>
+    <main class="">
         <div class="main-title-nav">
             <div class="back-tittle">
                 <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt=""></a>
@@ -54,7 +58,9 @@
             </div>
            
             <div class="main-menu-trace">
-                <img src="{% static 'includes/icone/homePage.png' %}" alt="">
+                <a href="{% url 'HomePage' %}">
+                    <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+                </a>                    
                 <p>»</p>
                 <p>Cartella Paziente</p>
             </div>

@@ -77,7 +77,7 @@ new Chart(patientsCtx, {
     datasets: [
       {
         label: "Pazienti Inseriti",
-        data: [30, 45, 60, 50, 70, 90],
+        data: [30, 45, 60, 50, 41, 66, 30, 50, 70, 90, 100, 120],
         backgroundColor: "#3a255d",
         categoryPercentage: 2.8, // Maggior spazio tra le categorie
         barPercentage: 0.1, // Barre più sottili

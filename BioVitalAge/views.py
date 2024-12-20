@@ -67,7 +67,20 @@ class HomePageRender(View):
                         
                     else:
                         return render(request, 'includes/login.html', {'error' : 'Email inserita non valida o non registrata' })
-                    
+
+def get_float(value, default=0.0):
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+def get_int(value, default=0):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
 class CalcolatoreRender(View):
     def get(self, request):
         return render(request, 'includes/calcolatore.html')
@@ -114,42 +127,47 @@ class CalcolatoreRender(View):
             print("Referto salvato:", referto)
 
             # Estrai i dati necessari per la tabella DatiEstesiReferti
-            chronological_age = int(data.get('chronological_age'))
-            obri_index = float(data.get('obri_index'))
-            d_roms = float(data.get('d_roms'))
-            aa_epa = float(data.get('aa_epa'))
-            aa_dha = float(data.get('aa_dha'))
-            homa_test = float(data.get('homa_test'))
-            cardiovascular_risk = float(data.get('cardiovascular_risk'))
-            osi = float(data.get('osi'))
-            pat = float(data.get('pat'))
+            chronological_age = get_int(data.get('chronological_age'), default=0)
+            d_roms = get_float(data.get('d_roms'), default=0.0)
+            osi = get_float(data.get('osi'), default=0.0)
+            pat = get_float(data.get('pat'), default=0.0)
+            wbc = get_float(data.get('wbc'), default=0.0)
+            basophils = get_float(data.get('basophils'), default=0.0)
+            eosinophils = get_float(data.get('eosinophils'), default=0.0)
+            lymphocytes = get_float(data.get('lymphocytes'), default=0.0)
+            monocytes = get_float(data.get('monocytes'), default=0.0)
+            neutrophils = get_float(data.get('neutrophils'), default=0.0)
+            rbc = get_float(data.get('rbc'), default=0.0)
+            hgb = get_float(data.get('hgb'), default=0.0)
+            hct = get_float(data.get('hct'), default=0.0)
+            mcv = get_float(data.get('mcv'), default=0.0)
+            mch = get_float(data.get('mch'), default=0.0)
+            mchc = get_float(data.get('mchc'), default=0.0)
+            rdw = get_float(data.get('rdw'), default=0.0)
 
-            glucose = float(data.get('glucose'))
-            creatinine = float(data.get('creatinine'))
-            ferritin = float(data.get('ferritin'))
-            albumin = float(data.get('albumin'))
-            protein = float(data.get('protein'))
-            bilirubin = float(data.get('bilirubin'))
-            uric_acid = float(data.get('uric_acid'))
+            
+            glucose = get_float(data.get('glucose'), default=0.0)
+            creatinine = get_float(data.get('creatinine'), default=0.0)
+            ferritin = get_float(data.get('ferritin'), default=0.0)
+            albumin = get_float(data.get('albumin'), default=0.0)
+            protein = get_float(data.get('protein'), default=0.0)
+            bilirubin = get_float(data.get('bilirubin'), default=0.0)
+            uric_acid = get_float(data.get('uric_acid'), default=0.0)
 
             exams = [glucose, creatinine, ferritin, albumin, protein, bilirubin, uric_acid]
 
             # Calcolo dell'età biologica
             biological_age = calculate_biological_age(
-                chronological_age, obri_index, d_roms, aa_epa, aa_dha,
-                homa_test, cardiovascular_risk, osi, pat, exams
+                chronological_age, d_roms, osi, pat, wbc, basophils,
+                eosinophils, lymphocytes, monocytes, neutrophils, rbc, hgb, 
+                hct, mcv, mch, mchc, rdw, exams
             )
 
             # Salva i dati estesi del referto
             dati_estesi = DatiEstesiReferti(
                 referto=referto,
                 chronological_age=chronological_age,
-                obri_index=obri_index,
                 d_roms=d_roms,
-                aa_epa=aa_epa,
-                aa_dha=aa_dha,
-                homa_test=homa_test,
-                cardiovascular_risk=cardiovascular_risk,
                 osi=osi,
                 pat=pat,
                 glucose=glucose,

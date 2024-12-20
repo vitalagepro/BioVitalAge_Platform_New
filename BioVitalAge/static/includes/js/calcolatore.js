@@ -1,3 +1,6 @@
+/*  -----------------------------------------------------------------------------------------------
+  Slider Range
+--------------------------------------------------------------------------------------------------- */
 document.querySelectorAll('input[type="range"]').forEach((slider) => {
   slider.addEventListener("input", function () {
     const value = ((this.value - this.min) / (this.max - this.min)) * 100;
@@ -5,6 +8,9 @@ document.querySelectorAll('input[type="range"]').forEach((slider) => {
   });
 });
 
+/*  -----------------------------------------------------------------------------------------------
+  User Modal log out
+--------------------------------------------------------------------------------------------------- */
 const userImg = document.getElementById("userImg");
 const userModal = document.getElementById("userModal");
 const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
