@@ -4,12 +4,16 @@
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".edit-save-btn").forEach((button) => {
     button.addEventListener("click", () => {
-      // Trova la tabella associata al pulsante
       const table =
         button.parentElement.previousElementSibling.querySelector("table");
       const isEditing = button.textContent === "Save";
 
-      // Attiva/disattiva la modalità di modifica per le celle
+      // Memorizza lo stato iniziale della tabella per il rollback
+      if (!isEditing) {
+        table.dataset.originalState = table.innerHTML;
+      }
+
+      // Attiva/disattiva la modifica dei campi
       table.querySelectorAll("td").forEach((cell) => {
         cell.contentEditable = !isEditing;
       });
@@ -17,15 +21,62 @@ document.addEventListener("DOMContentLoaded", () => {
       // Cambia il testo del pulsante
       button.textContent = isEditing ? "Edit" : "Save";
 
-      // Log dei dati aggiornati (per debug)
-      if (isEditing) {
-        const updatedData = Array.from(table.querySelectorAll("tbody tr")).map(
-          (row) =>
-            Array.from(row.querySelectorAll("td")).map(
-              (cell) => cell.textContent
-            )
-        );
-        console.log("Dati aggiornati:", updatedData);
+      // Aggiunge pulsanti "Add Row" e "Cancel" in modalità modifica
+      if (!isEditing) {
+        const addRowButton = document.createElement("button");
+        addRowButton.textContent = "Add Row";
+        addRowButton.className = "edit-save-btn add-row-btn";
+        button.parentElement.appendChild(addRowButton);
+
+        const cancelButton = document.createElement("button");
+        cancelButton.textContent = "Cancel";
+        cancelButton.className = "edit-save-btn cancel-btn";
+        button.parentElement.appendChild(cancelButton);
+
+        // Mostra i pulsanti con transizione
+        setTimeout(() => {
+          addRowButton.classList.add("show");
+          cancelButton.classList.add("show");
+        }, 10);
+
+        // Evento per aggiungere una riga
+        addRowButton.addEventListener("click", () => {
+          const newRow = document.createElement("tr");
+          const columns = table.querySelectorAll("thead th").length;
+
+          for (let i = 0; i < columns; i++) {
+            const newCell = document.createElement("td");
+            newCell.contentEditable = true;
+            newCell.textContent = ""; // Cella vuota
+            newRow.appendChild(newCell);
+          }
+
+          table.querySelector("tbody").appendChild(newRow);
+        });
+
+        // Evento per annullare le modifiche
+        cancelButton.addEventListener("click", () => {
+          table.innerHTML = table.dataset.originalState; // Ripristina lo stato iniziale
+          button.textContent = "Edit";
+          addRowButton.classList.remove("show");
+          cancelButton.classList.remove("show");
+
+          setTimeout(() => {
+            addRowButton.remove();
+            cancelButton.remove();
+          }, 300);
+        });
+
+        // Rimuove i pulsanti "Add Row" e "Cancel" quando si salva
+        button.addEventListener("click", () => {
+          addRowButton.classList.remove("show");
+          cancelButton.classList.remove("show");
+
+          setTimeout(() => {
+            addRowButton.remove();
+            cancelButton.remove();
+          }, 300);
+        });
       }
     });
   });

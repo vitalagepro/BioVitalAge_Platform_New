@@ -227,6 +227,24 @@ tr:hover {
   margin-top: 15px;
 }
 
+/* ! edit button */
+.add-row-btn {
+  margin: 0 10px;
+}
+
+.add-row-btn,
+.cancel-btn {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.add-row-btn.show,
+.cancel-btn.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .edit-save-btn {
   background-color: transparent;
   border: 2px solid #6a2dcc;
