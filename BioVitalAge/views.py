@@ -4,6 +4,7 @@ from .models import UtentiRegistratiCredenziali,TabellaPazienti, ArchivioReferti
 from .utils import calculate_biological_age
 from django.contrib.sessions.models import Session
 from django.db.models import OuterRef, Subquery
+from django.db import transaction
 
 # Create your views here.
 
@@ -68,17 +69,16 @@ class HomePageRender(View):
                     else:
                         return render(request, 'includes/login.html', {'error' : 'Email inserita non valida o non registrata' })
 
-def get_float(value, default=0.0):
+
+
+def safe_float(data, key, default=0.0):
     try:
-        return float(value)
-    except (TypeError, ValueError):
+        return float(data.get(key, default))
+    except (ValueError, TypeError):
         return default
 
-def get_int(value, default=0):
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return default
+
+
 
 
 class CalcolatoreRender(View):
@@ -88,7 +88,6 @@ class CalcolatoreRender(View):
 
     def post(self, request):
         data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
-
         dottore_id = request.session.get('dottore_id')
 
         try:
@@ -101,94 +100,284 @@ class CalcolatoreRender(View):
                 codice_fiscale=data.get('codice_fiscale') 
             ).first()
 
-            if paziente:
-                print("Paziente trovato:", paziente)
+            if paziente: 
+                
+                campi_opzionali = [
+                    'd_roms', 'osi', 'pat', 'fa_saturated', 'o9o7fatty_acids', 'o3fatty_acids', 'o6fatty_acids', 's_u_fatty_acids',
+                    'o6o3_fatty_acids_quotient', 'aa_epa_quotient', 'O3_index', 'wbc', 'basophils', 'eosinophils', 'lymphocytes',
+                    'monocytes', 'neutrophils', 'rbc', 'hgb', 'hct', 'mcv', 'mch', 'mchc', 'rdw', 'glucose', 'creatinine',
+                    'ferritin', 'albumin', 'protein', 'bilirubin', 'uric_acid'
+                ]
+
+                # Verifica se almeno un campo opzionale è stato inserito
+                if any(data.get(campo) for campo in campi_opzionali):
+
+                    paziente_query = get_object_or_404(TabellaPazienti, id=paziente.id)
+
+                    # Salva i dati del referto
+                    referto = ArchivioReferti(
+                        paziente=paziente_query,
+                        descrizione=data.get('descrizione'),
+                        documento=request.FILES.get('documento')
+                    )
+                    referto.save()
+
+                    # Estrai i dati necessari per la tabella DatiEstesiReferti
+                    chronological_age = int(data.get('chronological_age'))
+                    d_roms = safe_float(data, 'd_roms')
+                    osi = safe_float(data, 'osi')
+                    pat = safe_float(data, 'pat')
+
+                    fa_saturated = safe_float(data, 'fa_saturated')
+                    o9o7fatty_acids = safe_float(data, 'o9o7fatty_acids')
+                    o3fatty_acids = safe_float(data, 'o3fatty_acids')
+                    o6fatty_acids = safe_float(data, 'o6fatty_acids')
+                    s_u_fatty_acids = safe_float(data, 's_u_fatty_acids')
+                    o6o3_fatty_acids_quotient = safe_float(data, 'o6o3_fatty_acids_quotient')
+                    aa_epa_quotient = safe_float(data, 'aa_epa_quotient')
+                    O3_index = safe_float(data, 'O3_index')
+
+                    wbc = safe_float(data, 'wbc')
+                    baso = safe_float(data, 'basophils')
+                    eosi = safe_float(data, 'eosinophils')
+                    lymph = safe_float(data, 'lymphocytes')
+                    mono = safe_float(data, 'monocytes')
+                    neut = safe_float(data, 'neutrophils')
+                    rbc = safe_float(data, 'rbc')
+                    hgb = safe_float(data, 'hgb')
+                    hct = safe_float(data, 'hct')
+                    mcv = safe_float(data, 'mcv')
+                    mch = safe_float(data, 'mch')
+                    mchc = safe_float(data, 'mchc')
+                    rdw = safe_float(data, 'rdw')
+
+                    azotemia = safe_float(data, 'azotemia')
+                    glucose = safe_float(data, 'glucose')
+                    creatinine = safe_float(data, 'creatinine')
+                    ferritin = safe_float(data, 'ferritin')
+                    albumin = safe_float(data, 'albumin')
+                    protein = safe_float(data, 'protein')
+                    bilirubin = safe_float(data, 'bilirubin')
+                    uric_acid = safe_float(data, 'uric_acid')
+
+
+                    exams = [glucose, creatinine, ferritin, albumin, protein, bilirubin, uric_acid]
+
+                    # Calcolo dell'età biologica
+                    biological_age = calculate_biological_age(
+                        chronological_age, d_roms, osi, pat, wbc, baso,
+                        eosi, lymph, mono, neut, rbc, hgb, 
+                        hct, mcv, mch, mchc, rdw, exams
+                    )
+
+                    # Salvataggio dei dati
+                    dati_estesi = DatiEstesiReferti(
+                        referto=referto,
+                        d_roms=d_roms,
+                        osi=osi,
+                        pat=pat,
+                        fa_saturated=fa_saturated,
+                        o9o7fatty_acids=o9o7fatty_acids,
+                        o3fatty_acids=o3fatty_acids,
+                        o6fatty_acids=o6fatty_acids,
+                        s_u_fatty_acids=s_u_fatty_acids,
+                        o6o3_fatty_acids_quotient=o6o3_fatty_acids_quotient,
+                        aa_epa_quotient=aa_epa_quotient,
+                        O3_index=O3_index,
+                        wbc=wbc,
+                        baso=baso,
+                        eosi=eosi,
+                        lymph=lymph,
+                        mono=mono,
+                        neut=neut,
+                        rbc=rbc,
+                        hct=hct,
+                        hgb=hgb,
+                        mch=mch,
+                        mchc=mchc,
+                        mcv=mcv,
+                        glucose=glucose,
+                        azotemia=azotemia,
+                        creatinine=creatinine,
+                        ferritin=ferritin,
+                        albumin=albumin,
+                        protein=protein,
+                        bilirubin=bilirubin,
+                        uric_acid=uric_acid,
+                        biological_age=biological_age,
+                    )
+                    dati_estesi.save()
+
+                    print("Dati estesi salvati:", dati_estesi)
+
+                    # Context da mostrare nel template
+                    context = {
+                        "show_modal": True,
+                        "biological_age": biological_age,
+                        "data": data,
+                    }
+                    
+                    return render(request, "includes/calcolatore.html", context)
+                
+                else:
+                    print("Nessun campo opzionale compilato. Operazione interrotta.")
+                    context = {
+                        "show_modal": False,
+                        "error": "Nessun dato opzionale inserito. Referto e dati estesi non salvati.",
+                        "data": data,
+                    }
+                    return render(request, "includes/calcolatore.html", context)
+
             else:
-                # Salva i dati del paziente (solo informazioni personali)
-                paziente = TabellaPazienti(
-                    dottore=dottore,
-                    name=data.get('name'),
-                    surname=data.get('surname'),
-                    dob=data.get('dob'),
-                    gender=data.get('gender'),
-                    place_of_birth=data.get('place_of_birth'),
-                    codice_fiscale=data.get('codice_fiscale')
-                )
-                paziente.save()
-                print("Paziente creato:", paziente)
+                # Controlla se solo i campi richiesti sono popolati
+                campi_obbligatori = ['name', 'surname', 'dob', 'gender', 'place_of_birth', 'codice_fiscale', 'chronological_age']
+                campi_opzionali = [
+                    'd_roms', 'osi', 'pat', 'fa_saturated', 'o9o7fatty_acids', 'o3fatty_acids', 'o6fatty_acids', 's_u_fatty_acids',
+                    'o6o3_fatty_acids_quotient', 'aa_epa_quotient', 'O3_index', 'wbc', 'basophils', 'eosinophils', 'lymphocytes',
+                    'monocytes', 'neutrophils', 'rbc', 'hgb', 'hct', 'mcv', 'mch', 'mchc', 'rdw', 'glucose', 'creatinine',
+                    'ferritin', 'albumin', 'protein', 'bilirubin', 'uric_acid'
+                ]
 
-            # Salva i dati del referto
-            referto = ArchivioReferti(
-                paziente=paziente,
-                descrizione=data.get('descrizione'),
-                documento=request.FILES.get('documento')  # Carica eventuale file referto se necessario
-            )
-            referto.save()
-            print("Referto salvato:", referto)
+                if all(not data.get(campo) for campo in campi_opzionali):
+                    # Salva solo i dati personali e l'età cronologica
+                    paziente = TabellaPazienti(
+                        dottore=dottore,
+                        name=data.get('name'),
+                        surname=data.get('surname'),
+                        dob=data.get('dob'),
+                        gender=data.get('gender'),
+                        place_of_birth=data.get('place_of_birth'),
+                        codice_fiscale=data.get('codice_fiscale')
+                    )
+                    paziente.save()
+                    print("Paziente creato (solo campi obbligatori):", paziente)
 
-            # Estrai i dati necessari per la tabella DatiEstesiReferti
-            chronological_age = get_int(data.get('chronological_age'), default=0)
-            d_roms = get_float(data.get('d_roms'), default=0.0)
-            osi = get_float(data.get('osi'), default=0.0)
-            pat = get_float(data.get('pat'), default=0.0)
-            wbc = get_float(data.get('wbc'), default=0.0)
-            basophils = get_float(data.get('basophils'), default=0.0)
-            eosinophils = get_float(data.get('eosinophils'), default=0.0)
-            lymphocytes = get_float(data.get('lymphocytes'), default=0.0)
-            monocytes = get_float(data.get('monocytes'), default=0.0)
-            neutrophils = get_float(data.get('neutrophils'), default=0.0)
-            rbc = get_float(data.get('rbc'), default=0.0)
-            hgb = get_float(data.get('hgb'), default=0.0)
-            hct = get_float(data.get('hct'), default=0.0)
-            mcv = get_float(data.get('mcv'), default=0.0)
-            mch = get_float(data.get('mch'), default=0.0)
-            mchc = get_float(data.get('mchc'), default=0.0)
-            rdw = get_float(data.get('rdw'), default=0.0)
+                    dati_estesi = DatiEstesiReferti(
+                        chronological_age=chronological_age,  
+                    )
+                    dati_estesi.save()
+                  
+                else:
+                    # Salva tutti i dati del paziente
+                    paziente = TabellaPazienti(
+                        dottore= dottore,
+                        name= data.get('name'),
+                        surname= data.get('surname'),
+                        dob= data.get('dob'),
+                        gender= data.get('gender'),
+                        place_of_birth= data.get('place_of_birth'),
+                        codice_fiscale= data.get('codice_fiscale'),
+                        chronological_age= data.get('chronological_age'),
+                    )
+                    paziente.save()
+                    print("Paziente creato:", paziente)
 
-            
-            glucose = get_float(data.get('glucose'), default=0.0)
-            creatinine = get_float(data.get('creatinine'), default=0.0)
-            ferritin = get_float(data.get('ferritin'), default=0.0)
-            albumin = get_float(data.get('albumin'), default=0.0)
-            protein = get_float(data.get('protein'), default=0.0)
-            bilirubin = get_float(data.get('bilirubin'), default=0.0)
-            uric_acid = get_float(data.get('uric_acid'), default=0.0)
+                    # Salva i dati del referto
+                    referto = ArchivioReferti(
+                        paziente=paziente,
+                        descrizione=data.get('descrizione'),
+                        documento=request.FILES.get('documento')
+                    )
+                    referto.save()
+                    print("Referto salvato:", referto)
 
-            exams = [glucose, creatinine, ferritin, albumin, protein, bilirubin, uric_acid]
+                    # Estrai i dati necessari per la tabella DatiEstesiReferti
+                    chronological_age = int(data.get('chronological_age'))
+                    d_roms = safe_float(data, 'd_roms')
+                    osi = safe_float(data, 'osi')
+                    pat = safe_float(data, 'pat')
 
-            # Calcolo dell'età biologica
-            biological_age = calculate_biological_age(
-                chronological_age, d_roms, osi, pat, wbc, basophils,
-                eosinophils, lymphocytes, monocytes, neutrophils, rbc, hgb, 
-                hct, mcv, mch, mchc, rdw, exams
-            )
+                    fa_saturated = safe_float(data, 'fa_saturated')
+                    o9o7fatty_acids = safe_float(data, 'o9o7fatty_acids')
+                    o3fatty_acids = safe_float(data, 'o3fatty_acids')
+                    o6fatty_acids = safe_float(data, 'o6fatty_acids')
+                    s_u_fatty_acids = safe_float(data, 's_u_fatty_acids')
+                    o6o3_fatty_acids_quotient = safe_float(data, 'o6o3_fatty_acids_quotient')
+                    aa_epa_quotient = safe_float(data, 'aa_epa_quotient')
+                    O3_index = safe_float(data, 'O3_index')
 
-            # Salva i dati estesi del referto
-            dati_estesi = DatiEstesiReferti(
-                referto=referto,
-                chronological_age=chronological_age,
-                d_roms=d_roms,
-                osi=osi,
-                pat=pat,
-                glucose=glucose,
-                creatinine=creatinine,
-                ferritin=ferritin,
-                albumin=albumin,
-                protein=protein,
-                bilirubin=bilirubin,
-                uric_acid=uric_acid,
-                biological_age=biological_age
-            )
-            dati_estesi.save()
-            print("Dati estesi salvati:", dati_estesi)
+                    wbc = safe_float(data, 'wbc')
+                    baso = safe_float(data, 'basophils')
+                    eosi = safe_float(data, 'eosinophils')
+                    lymph = safe_float(data, 'lymphocytes')
+                    mono = safe_float(data, 'monocytes')
+                    neut = safe_float(data, 'neutrophils')
+                    rbc = safe_float(data, 'rbc')
+                    hgb = safe_float(data, 'hgb')
+                    hct = safe_float(data, 'hct')
+                    mcv = safe_float(data, 'mcv')
+                    mch = safe_float(data, 'mch')
+                    mchc = safe_float(data, 'mchc')
+                    rdw = safe_float(data, 'rdw')
 
-            # Context da mostrare nel template
-            context = {
-                "show_modal": True,
-                "biological_age": biological_age,
-                "data": data,
-            }
-            return render(request, "includes/calcolatore.html", context)
+                    azotemia = safe_float(data, 'azotemia')
+                    glucose = safe_float(data, 'glucose')
+                    creatinine = safe_float(data, 'creatinine')
+                    ferritin = safe_float(data, 'ferritin')
+                    albumin = safe_float(data, 'albumin')
+                    protein = safe_float(data, 'protein')
+                    bilirubin = safe_float(data, 'bilirubin')
+                    uric_acid = safe_float(data, 'uric_acid')
+
+                    exams = [glucose, creatinine, ferritin, albumin, protein, bilirubin, uric_acid]
+
+                    # Calcolo dell'età biologica
+                    biological_age = calculate_biological_age(
+                        chronological_age, d_roms, osi, pat, wbc, baso,
+                        eosi, lymph, mono, neut, rbc, hgb, 
+                        hct, mcv, mch, mchc, rdw, exams
+                    )
+
+                    print(referto.id)
+
+                    # Salvataggio dei dati
+                    dati_estesi = DatiEstesiReferti(
+                        referto=referto,
+                        d_roms=d_roms,
+                        osi=osi,
+                        pat=pat,
+                        fa_saturated=fa_saturated,
+                        o9o7fatty_acids=o9o7fatty_acids,
+                        o3fatty_acids=o3fatty_acids,
+                        o6fatty_acids=o6fatty_acids,
+                        s_u_fatty_acids=s_u_fatty_acids,
+                        o6o3_fatty_acids_quotient=o6o3_fatty_acids_quotient,
+                        aa_epa_quotient=aa_epa_quotient,
+                        O3_index=O3_index,
+                        wbc=wbc,
+                        baso=baso,
+                        eosi=eosi,
+                        lymph=lymph,
+                        mono=mono,
+                        neut=neut,
+                        rbc=rbc,
+                        hct=hct,
+                        hgb=hgb,
+                        mch=mch,
+                        mchc=mchc,
+                        mcv=mcv,
+                        glucose=glucose,
+                        azotemia=azotemia,
+                        creatinine=creatinine,
+                        ferritin=ferritin,
+                        albumin=albumin,
+                        protein=protein,
+                        bilirubin=bilirubin,
+                        uric_acid=uric_acid,
+                        biological_age=biological_age,
+                    )
+                    dati_estesi.save()
+
+                    print("Dati estesi salvati:", dati_estesi)
+
+                # Context da mostrare nel template
+                context = {
+                    "show_modal": True,
+                    "biological_age": biological_age,
+                    "data": data,
+                }
+
+                return render(request, "includes/calcolatore.html", context)
 
         except Exception as e:
             import traceback
@@ -200,6 +389,20 @@ class CalcolatoreRender(View):
                 "data": data,
             }
             return render(request, "includes/calcolatore.html", context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class RisultatiRender(View):
@@ -239,7 +442,6 @@ class PersonaDetailView(View):
             'datiEstesi': datiEstesi
         }
         return render(request, "includes/persona_detail.html", context)
-
 
 class CartellaPazienteView(View):
 

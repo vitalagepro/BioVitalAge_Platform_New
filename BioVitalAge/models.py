@@ -23,7 +23,9 @@ class TabellaPazienti(models.Model):
     dob = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=1, null=True, blank=True, choices=[('M', 'Male'), ('F', 'Female')])
     place_of_birth = models.CharField(max_length=100, null=True, blank=True)
-    codice_fiscale = models.CharField(max_length=16, null=True, blank=True)
+    codice_fiscale = models.CharField(max_length=16, null=True, blank=True, unique=True)
+    chronological_age = models.IntegerField(null=True, blank=True)
+
 
     def __str__(self):
         return f"Paziente: {self.name} {self.surname}"  
@@ -50,16 +52,20 @@ class DatiEstesiReferti(models.Model):
         related_name='dati_estesi'
     )
 
-    # Calcolatore Età Biologica
-    chronological_age = models.IntegerField(null=True, blank=True)
-    obri_index = models.FloatField(null=True, blank=True)
+    # Oxidative Stress
     d_roms = models.FloatField(null=True, blank=True)
-    aa_epa = models.FloatField(null=True, blank=True)
-    aa_dha = models.FloatField(null=True, blank=True)
-    homa_test = models.FloatField(null=True, blank=True)
-    cardiovascular_risk = models.FloatField(null=True, blank=True)
     osi = models.FloatField(null=True, blank=True)
     pat = models.FloatField(null=True, blank=True)
+
+    # Omega Screening
+    fa_saturated = models.FloatField(null=True, blank=True)
+    o9o7fatty_acids = models.FloatField(null=True, blank=True)
+    o3fatty_acids = models.FloatField(null=True, blank=True)
+    o6fatty_acids = models.FloatField(null=True, blank=True)
+    s_u_fatty_acids = models.FloatField(null=True, blank=True)
+    o6o3_fatty_acids_quotient = models.FloatField(null=True, blank=True)
+    aa_epa_quotient = models.FloatField(null=True, blank=True)
+    O3_index = models.FloatField(null=True, blank=True)
 
     # Risultati dei test sui globuli bianchi
     wbc = models.FloatField(null=True, blank=True)
@@ -79,6 +85,7 @@ class DatiEstesiReferti(models.Model):
 
     # Altri marker chiave
     glucose = models.FloatField(null=True, blank=True)
+    azotemia = models.FloatField(null=True, blank=True)
     creatinine = models.FloatField(null=True, blank=True)
     ferritin = models.FloatField(null=True, blank=True)
     albumin = models.FloatField(null=True, blank=True)
@@ -90,3 +97,12 @@ class DatiEstesiReferti(models.Model):
 
     def __str__(self):
         return f"Dati Estesi Referto ID: {self.referto.id}"
+    
+
+    
+    #obri_index = models.FloatField(null=True, blank=True)
+    #aa_epa = models.FloatField(null=True, blank=True)
+    #aa_dha = models.FloatField(null=True, blank=True)
+    #homa_test = models.FloatField(null=True, blank=True)
+    #cardiovascular_risk = models.FloatField(null=True, blank=True)
+    

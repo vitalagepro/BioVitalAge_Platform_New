@@ -81,7 +81,7 @@
                     <p><strong>Data di Nascita:</strong> &nbsp;  {{ persona.dob }} </p>
                     <p><strong>Codice Fiscale:</strong> &nbsp;  {{ persona.codice_fiscale }}</p>
                     <p><strong>Luogo di Nascita:</strong> &nbsp; {{ persona.place_of_birth }}</p>
-                    <p><strong>Età Cronologica:</strong> &nbsp; {{ dati_estesi_ultimo_referto.chronological_age }}</p>
+                    <p><strong>Età Cronologica:</strong> &nbsp; {{ persona.chronological_age }}</p>
                 </div>
             </div>
         </div>
@@ -240,13 +240,8 @@
                     </div>
                     {% for referto in referti_recenti %}
                 <div class="col-md-12 content-table">
-                    <div class="cella">
-                        <!-- Cerca i dati estesi per il referto corrente -->
-                        {% for dato in dati_estesi %}
-                            {% if dato.referto.id == referto.id %}
-                                <p>{{ dato.chronological_age }}</p>
-                            {% endif %}
-                        {% endfor %}
+                    <div class="cella">               
+                        <p>{{ persona.chronological_age }}</p>            
                     </div>
                     <div class="cella">
                         {% for dato in dati_estesi %}

@@ -106,12 +106,7 @@
                     <p>{{ persona.place_of_birth }}</p>
                   </div>
                   <div class="cella">
-                    <!-- Associa il dato corretto al paziente -->
-                    {% for dato in datiEstesi %}
-                      {% if dato.referto.paziente.id == persona.id %}
-                        <p>{{ dato.chronological_age }}</p>
-                      {% endif %}
-                    {% endfor %}
+                    <p>{{ persona.chronological_age }}</p>
                   </div>
                   <div class="cella">
                     <!-- Associa il dato corretto al paziente -->

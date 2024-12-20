@@ -23,6 +23,7 @@
 
 </head>
 <body>
+
     <header>
         <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar ">
             <div class="col-md-2 d-flex jus  nav-bar-logo">
@@ -50,7 +51,7 @@
     </header>
 
     <main>
-
+         
         <div id="myModal" class="modal-calculator hidden">
             <div class="modal-container">
                 <h3>Risultato Calcolo età Biologica</h3>
@@ -471,24 +472,6 @@
             </div>
         </div>
 
-
-        <!-- Gestione Modal -->
-        <script>
-            function closeModal() {
-                document.getElementById("myModal").classList.add("hidden");
-                document.body.classList.remove("visible");
-            }
-
-            // Mostra la modale se show_modal è True
-            const modal = document.getElementById("myModal");
-            if (modal) {
-                {% if show_modal %} // @ts-ignore
-                    document.body.classList.add("visible");
-                    modal.classList.remove("hidden");
-                {% endif %}  // @ts-ignore
-            } // @ts-ignore
-        </script>
-
         <div class="main-title-nav">
             <h2 class="main-welcome-title">Compila il form per calcolare l'età Biologica</h2>
             <div class="main-menu-trace">
@@ -499,203 +482,6 @@
                 <p>Calcolatore</p>
             </div>
         </div>
-<!-- 
-        <form method="POST" action="{% url 'Calcolatore' %}" class="col-md-12 p-4" id="age-form"> 
-            {% csrf_token %} 
-
-            <div class="col-md12 containerInfoPatient">
-
-                <div class="col-md-6 PatientInfoContainer" id="PrimoContainerPatient" style=" max-width: 49%">
-                    <h3>Patient Information</h3>
-
-                    <div class="col-md-12 d-flex containerInput" style="padding: 28px;">
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="name">Name</label>
-                            <input type="text" id="name" name="name" required placeholder="Insert your name">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="surname">Surname</label>
-                            <input type="text" id="surname" name="surname" required placeholder="Insert your surname">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="dob">Date of Birth</label>
-                            <input type="date" id="dob" name="dob" required>
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="gender">Gender</label>
-                            <select id="gender" name="gender" required>
-                                <option value="M">Male</option>
-                                <option value="F">Female</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="place_of_birth">Place of Birth</label>
-                            <input type="text" id="place_of_birth" name="place_of_birth" required placeholder="Insert your place of birth">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="codice_fiscale">Codice Fiscale</label>
-                            <input type="text" id="codice_fiscale" name="codice_fiscale" required placeholder="Insert your name">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 PatientInfoContainer" id="SecondoContainerPatient" style=" max-width: 49%">
-
-                    <div class="col-md-12 d-flex containerInput">
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="chronological_age">Chronological Age</label>
-                            <input type="number" id="chronological_age" name="chronological_age" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="obri_index">Obri Index</label>
-                            <input type="number" step="0.1" id="obri_index" name="obri_index" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="d_roms">d-ROMs</label>
-                            <input type="number" id="d_roms" name="d_roms" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="aa_epa">AA/EPA Ratio</label>
-                            <input type="number" step="0.1" id="aa_epa" name="aa_epa" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="aa_dha">AA/DHA Ratio</label>
-                            <input type="number" step="0.1" id="aa_dha" name="aa_dha" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="homa_test">HOMA Test</label>
-                            <input type="number" step="0.01" id="homa_test" name="homa_test" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="cardiovascular_risk">Cardiovascular Risk</label>
-                            <input type="number" step="0.1" id="cardiovascular_risk" name="cardiovascular_risk" required  placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="osi">Oxidative Stress Index (OSI)</label>
-                            <input type="number" id="osi" name="osi" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="pat">Plasma Antioxidant Test (PAT)</label>
-                            <input type="number" id="pat" name="pat" required  placeholder="numeric value only">
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="col-md12 containerInfoPatient" id="bloodTest">
-
-                <div class="col-md-6 PatientInfoContainer" id="PrimoContainerPatient" style=" max-width: 49%">
-                    <h3>Blood Test Results</h3>
-
-                    <div class="col-md-12 d-flex containerInput" style="padding: 28px;">
-
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="wbc">White Blood Cells (WBC)</label>
-                            <input type="number" step="0.1" id="wbc" name="wbc" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="baso">Basophils (%)</label>
-                            <input type="number" step="0.1" id="baso" name="baso" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="eosi">Eosinophils (%)</label>
-                            <input type="number" step="0.1" id="eosi" name="eosi" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="lymph">Lymphocytes (%)</label>
-                            <input type="number" step="0.1" id="lymph" name="lymph" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="mono">Monocytes (%)</label>
-                            <input type="number" step="0.1" id="mono" name="mono" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3 form-group">
-                            <label for="neut">Neutrophils (%)</label>
-                            <input type="number" step="0.1" id="neut" name="neut" required placeholder="numeric value only">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 PatientInfoContainer" id="SecondoContainerPatient" style=" max-width: 49%">
-                    <h3>Red Blood Cells</h3>
-
-                    <div class="col-md-12 d-flex containerInput" style="padding: 16px;">
-
-                        <div class="col-md-4 p-3  form-group">
-                            <label for="rbc">Red Blood Cells (RBC)</label>
-                            <input type="number" step="0.1" id="rbc" name="rbc" required  placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3  form-group">
-                            <label for="hct">Hematocrit (HCT %)</label>
-                            <input type="number" step="0.1" id="hct" name="hct" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3  form-group">
-                            <label for="hgb">Hemoglobin (HGB)</label>
-                            <input type="number" step="0.1" id="hgb" name="hgb" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3  form-group">
-                            <label for="mch">Mean Corpuscular Hemoglobin (MCH)</label>
-                            <input type="number" step="0.1" id="mch" name="mch" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3  form-group" style="margin-top: -1.5rem;">
-                            <label for="mchc">Mean Corpuscular Hemoglobin Concentration (MCHC)</label>
-                            <input type="number" step="0.1" id="mchc" name="mchc" required placeholder="numeric value only">
-                        </div>
-                        <div class="col-md-4 p-3 form-group" >
-                            <label for="mcv">Mean Corpuscular Volume (MCV)</label>
-                            <input type="number" step="0.1" id="mcv" name="mcv" required placeholder="numeric value only">
-                    </div>
-                </div>
-
-
-            
-            </div>
-
-            <div class="col-md-12 containerInfoPatient" id="other">
-
-                <h3>Other Key Markers</h3>
-
-                <div class="col-md-12 d-flex containerInput">
-                    <div class="form-group">
-                            <label for="glucose">Glucose (mg/dL)</label>
-                            <input type="number" step="0.1" id="glucose" name="glucose" required placeholder="numeric value only">
-                        </div>
-                        <div class="form-group">
-                            <label for="creatinine">Creatinine (mg/dL)</label>
-                            <input type="number" step="0.1" id="creatinine" name="creatinine" required placeholder="numeric value only">
-                        </div>
-                        <div class="form-group">
-                            <label for="ferritin">Ferritin (ng/mL)</label>
-                            <input type="number" step="0.1" id="ferritin" name="ferritin" required placeholder="numeric value only">
-                        </div>
-                        <div class="form-group">
-                            <label for="albumin">Albumin (g/dL)</label>
-                            <input type="number" step="0.1" id="albumin" name="albumin" required placeholder="numeric value only">
-                        </div>
-                        <div class="form-group">
-                            <label for="protein">Total Protein (g/dL)</label>
-                            <input type="number" step="0.1" id="protein" name="protein" required placeholder="numeric value only">
-                        </div>
-                        <div class="form-group">
-                            <label for="bilirubin">Bilirubin (mg/dL)</label>
-                            <input type="number" step="0.1" id="bilirubin" name="bilirubin" required placeholder="numeric value only">
-                        </div>
-                        <div class="form-group">
-                            <label for="uric_acid">Uric Acid (mg/dL)</label>
-                            <input type="number" step="0.1" id="uric_acid" name="uric_acid" required placeholder="numeric value only">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-12 p-5 d-flex justify-content-center align-items-center button-container">
-                <button type="submit" >Calculate Biological Age</button>
-                <a href="#">Visualizza i Risultati</a>
-            </div>
-            
-        </form>
- -->
 
         <form method="POST" action="{% url 'Calcolatore' %}" class="form-container" id="age-form"> 
             {% csrf_token %} 
@@ -761,6 +547,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="section">
                 <h3>Omega Screening</h3>
                 <div class="grid-container" style="row-gap: 60px;">
@@ -840,6 +627,7 @@
                         <input type="number" step="0.1" id="neut" name="neut" placeholder="numeric value only">
                         <input type="range" id="neut_range" name="neut_range" min="0" max="140" value="0" oninput="neut.value=this.value">
                     </div>
+                    
                     <div class="form-group">
                         <label for="rbc">Red Blood Cells (RBC)</label>
                         <input type="number" step="0.1" id="rbc" name="rbc" placeholder="numeric value only">
@@ -925,10 +713,26 @@
             </div>
         </form>
 
-
     </main>
     <script src="{% static 'includes/js/calcolatore.js' %}" defer></script>
     <script src="{% static 'includes/js/CodiceFiscale.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Gestione Modal -->
+    <script>
+        function closeModal() {
+            document.getElementById("myModal").classList.add("hidden");
+            document.body.classList.remove("visible");
+        }
+        console.log("show_modal:", "{{ show_modal|yesno:'true,false' }}");
+
+        const modal = document.getElementById("myModal");
+        if (modal) {
+            {% if show_modal %} // @ts-ignore
+                document.body.classList.add("visible");
+                modal.classList.remove("hidden");
+            {% endif %}  // @ts-ignore
+        } // @ts-ignore
+    </script>
 </body>
 </html>
