@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href='../../../../static/includes/icone/favicon.png' type="image/x-icon">
+    <link
+      rel="shortcut icon"
+      href="../../../../static/includes/icone/favicon.png"
+      type="image/x-icon"
+    />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
     <!-- Css Import -->
@@ -25,16 +29,17 @@
       rel="stylesheet"
     />
 
+    <!-- JS import -->
+     <script src="{% static 'includes/js/HomePage.js' %}"></script>
+     <script src="{% static 'includes/js/dati_base.js' %}"></script>
     <title>BioVitalAge - Dati Base</title>
   </head>
   <body>
     <!-- Header -->
     <header>
-      <nav
-        class="col-md-12 d-flex justify-content-between align-items-center nav-bar"
-      >
+      <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar">
         <div class="col-md-2 d-flex jus nav-bar-logo">
-          <img src="{% static 'includes/icone/Logo.png' %}" alt="" />
+          <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®" />
         </div>
         <div class="col-md-8 nav-bar-linkage">
           <a href="{% url 'HomePage' %}">HomePage</a>
@@ -62,39 +67,330 @@
     </header>
 
     <main>
-        <!-- Breadcrumb -->
-        <div class="main-title-nav">
-            <h2 class="main-welcome-title">Dati Base Paziente</h2>
-            <div class="main-menu-trace">
-              <a href="{% url 'HomePage' %}">
-                <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
-              </a>                
-              <p>»</p>
-              <p>Dati Base</p>
-            </div>
+      <!-- Breadcrumb -->
+      <div class="main-title-nav">
+        <h2 class="main-welcome-title">Dati Base Paziente</h2>
+        <div class="main-menu-trace">
+          <a href="{% url 'HomePage' %}">
+            <img
+              src="{% static 'includes/icone/homePage.png' %}"
+              alt="Home Page"
+              title="Home Page"
+            />
+          </a>
+          <p>»</p>
+          <p>Dati Base</p>
         </div>
+      </div>
+      <h1 id="title-page">Dati di base</h1>
+      <section class="container_data anagraphic_data">
+        <h3>Anagraphic Data</h3>
+        <div class="container_box">
+          <div class="info_container">
+            <div>
+              <span class="field">Name:&nbsp;</span>
+              <span id="name">Mario</span>
+            </div>
+            <div>
+              <span class="field">Surname:&nbsp;</span>
+              <span id="surname">Rossi</span>
+            </div>
+          </div>
+          <div class="info_container">
+            <div>
+              <span class="field">F.C. :&nbsp;</span>
+              <span id="surname">RSSMRA55E19A662D</span>
+            </div>
+            <div>
+              <span class="field">Associate staff:&nbsp;</span>
+              <span id="surname">admin</span>
+            </div>
+          </div>
+          <div class="info_container">
+            <div>
+              <span class="field">Age:&nbsp;</span>
+              <span id="age">29</span>
+            </div>
+            <div>
+              <span class="field">Date of birth:&nbsp;</span>
+              <span id="date">19/05/1995</span>
+            </div>
+          </div>
+          <div class="info_container">
+            <div>
+              <span class="field">Address:&nbsp;</span>
+              <span id="address">Via Roma, 1</span>
+            </div>
+            <div>
+              <span class="field">Phone:&nbsp;</span>
+              <span id="phone">345 369 1687</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="container_data blood_data">
+        <div class="container_input">
+          <div class="blood_group_container">
+            <h3>Blood Group</h3>
+            <input type="text" readonly id="blood_group" />
+          </div>
+          <div class="rh_container">
+            <h3>Factor rh</h3>
+            <input type="text" readonly id="rh" />
+          </div>
+        </div>
+        <div class="btn_blood_group_container">
+          <button id="btn_blood_group">Update</button>
+        </div>
+      </section>
+      <section class="container_data table_data">
+        <h1>Informative Tables</h1>
+        <div class="table-container">
+          <div>
+            <div class="table-title">Anthropometric data</div>
+            <div class="responsive-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Height</th>
+                    <th>Weight</th>
+                    <th>BMI</th>
+                    <th>BMI detection date</th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>175 cm</td>
+                    <td>68 kg</td>
+                    <td>22.2</td>
+                    <td>2023-01-01</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>180 cm</td>
+                    <td>75 kg</td>
+                    <td>23.1</td>
+                    <td>2023-05-15</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>165 cm</td>
+                    <td>60 kg</td>
+                    <td>22.0</td>
+                    <td>2023-08-20</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="btn-edit-table-container">
+              <button class="edit-save-btn">Edit</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="table-title">Abdominal girth</div>
+            <div class="responsive-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Girth value</th>
+                    <th>Date measurement</th>
+                    <th>Notes</th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>85 cm</td>
+                    <td>2023-02-10</td>
+                    <td>Normal</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>90 cm</td>
+                    <td>2023-06-05</td>
+                    <td>Slightly high</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>88 cm</td>
+                    <td>2023-09-12</td>
+                    <td>Normal</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="btn-edit-table-container">
+              <button class="edit-save-btn">Edit</button>
+            </div>
+          </div>
+
+          <h1 class="category-title">Life style</h1>
+          <div>
+            <div class="table-title">Alcohol</div>
+            <div class="responsive-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Quantity of cc per day</th>
+                    <th>Taken alcohol</th>
+                    <th>Start day</th>
+                    <th>End day</th>
+                    <th>Notes</th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>200 cc</td>
+                    <td>Wine</td>
+                    <td>2023-01-01</td>
+                    <td>2023-03-01</td>
+                    <td>Occasional</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>150 cc</td>
+                    <td>Beer</td>
+                    <td>2023-04-01</td>
+                    <td>2023-06-01</td>
+                    <td>Rare</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>100 cc</td>
+                    <td>Spirits</td>
+                    <td>2023-07-01</td>
+                    <td>2023-09-01</td>
+                    <td>Minimal</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="btn-edit-table-container">
+              <button class="edit-save-btn">Edit</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="table-title">Smoking</div>
+            <div class="responsive-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Daily quantity</th>
+                    <th>Type of smoke</th>
+                    <th>Start day</th>
+                    <th>End day</th>
+                    <th>Notes</th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>5 cigarettes</td>
+                    <td>Light</td>
+                    <td>2022-01-01</td>
+                    <td>2022-12-31</td>
+                    <td>Reduced intake</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>10 cigarettes</td>
+                    <td>Medium</td>
+                    <td>2023-01-01</td>
+                    <td>2023-03-01</td>
+                    <td>Moderate</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>15 cigarettes</td>
+                    <td>Strong</td>
+                    <td>2023-04-01</td>
+                    <td>2023-06-01</td>
+                    <td>Increased intake</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="btn-edit-table-container">
+              <button class="edit-save-btn">Edit</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="table-title">Sport</div>
+            <div class="responsive-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Sport played</th>
+                    <th>Level</th>
+                    <th>Start day</th>
+                    <th>End day</th>
+                    <th>Notes</th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Football</td>
+                    <td>Amateur</td>
+                    <td>2020-01-01</td>
+                    <td>2021-12-31</td>
+                    <td>Weekly</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Tennis</td>
+                    <td>Intermediate</td>
+                    <td>2022-01-01</td>
+                    <td>2022-12-31</td>
+                    <td>Monthly</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Running</td>
+                    <td>Beginner</td>
+                    <td>2023-01-01</td>
+                    <td>2023-06-01</td>
+                    <td>Daily</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="btn-edit-table-container">
+              <button class="edit-save-btn">Edit</button>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
-
-    <!-- Script -->
-    <script>
-        /*  ----------------
-            User Modal
-        -------------------- */
-      const userImg = document.getElementById("userImg");
-      const userModal = document.getElementById("userModal");
-      const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
-
-      function showModal() {
-        userModal.classList.add("show");
-      }
-
-      userImg.addEventListener("mouseover", showModal);
-
-      userModal.addEventListener("mouseout", () => {
-        userModal.classList.remove("show");
-      });
-
-      userModalBtn.addEventListener("mouseover", showModal);
-    </script>
   </body>
 </html>
