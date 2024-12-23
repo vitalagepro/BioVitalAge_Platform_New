@@ -533,17 +533,17 @@
                     <div class="form-group">
                         <label for="d_roms">d-ROMs</label>
                         <input type="number" id="d_roms" name="d_roms" placeholder="numeric value only">
-                        <input type="range" id="d_roms_range" name="d_roms_range" min="0" max="500" value="0" oninput="d_roms.value=this.value">
+                        <input type="range" id="d_roms_range" name="d_roms_range" min="0" max="1000" value="0" oninput="d_roms.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="pat">Plasma Antioxidant Test (PAT)</label>
                         <input type="number" id="pat" name="pat" placeholder="numeric value only">
-                        <input type="range" id="pat_range" name="pat_range" min="0" max="10" value="0" oninput="pat.value=this.value">
+                        <input type="range" id="pat_range" name="pat_range" min="0" max="5600" value="0" oninput="pat.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="osi">Oxidative Stress Index (OSI)</label>
                         <input type="number" id="osi" name="osi" placeholder="numeric value only">
-                        <input type="range" id="osi_range" name="osi_range" min="0" max="10" value="0" oninput="osi.value=this.value">
+                        <input type="range" id="osi_range" name="osi_range" min="0" max="240" value="0" oninput="osi.value=this.value">
                     </div>
                 </div>
             </div>
@@ -579,12 +579,12 @@
                     <div class="form-group">
                         <label for="o6o3_fatty_acids_quotient">O-6/O-3 fatty acid quotient</label>
                         <input type="number" step="0.1" id="o6o3_fatty_acids_quotient" name="o6o3_fatty_acids_quotient" placeholder="numeric value only">
-                        <input type="range" id="o6o3_fatty_acids_quotient_range" name="o6o3_fatty_acids_quotient_range" min="0" max="10" step="0.1" value="0" oninput="o6o3_fatty_acids_quotient.value=this.value">
+                        <input type="range" id="o6o3_fatty_acids_quotient_range" name="o6o3_fatty_acids_quotient_range" min="0" max="28" step="0.1" value="0" oninput="o6o3_fatty_acids_quotient.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="aa_epa_quotient">Acid arachidonic/eicosapentanenoic quotient(AA/EPA)</label>
                         <input type="number" step="0.01" id="aa_epa_quotient" name="aa_epa_quotient" placeholder="numeric value only">
-                        <input type="range" id="aa_epa_quotient_range" name="aa_epa_quotient_range" min="0" max="10" step="0.01" value="0" oninput="aa_epa_quotient.value=this.value">
+                        <input type="range" id="aa_epa_quotient_range" name="aa_epa_quotient_range" min="0" max="8" step="0.01" value="0" oninput="aa_epa_quotient.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="O3_index">O-3 Index</label>
@@ -599,59 +599,59 @@
                 <div class="grid-container" style="row-gap: 60px;">
                     <div class="form-group">
                         <label for="baso">Basophils (%)</label>
-                        <input type="number" step="0.1" id="baso" name="baso" placeholder="numeric value only">
-                        <input type="range" id="baso_range" name="baso_range" min="0" max="5" value="0" oninput="baso.value=this.value">
+                        <input type="number" step="0" id="baso" name="baso" placeholder="numeric value only">
+                        <input type="range" id="baso_range" name="baso_range" min="0" max="5" value="0" step="0.1" oninput="baso.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="eosi">Eosinophils (%)</label>
-                        <input type="number" step="0.1" id="eosi" name="eosi" placeholder="numeric value only">
+                        <input type="number" step="0" id="eosi" name="eosi" placeholder="numeric value only">
                         <input type="range" id="eosi_range" name="eosi_range" min="0" max="20" value="0" oninput="eosi.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="lymph">Lymphocytes (%)</label>
-                        <input type="number" step="0.1" id="lymph" name="lymph" placeholder="numeric value only">
+                        <input type="number" step="0" id="lymph" name="lymph" placeholder="numeric value only">
                         <input type="range" id="lymph_range" name="lymph_range" min="0" max="100" value="0" oninput="lymph.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="mono">Monocytes (%)</label>
-                        <input type="number" step="0.1" id="mono" name="mono" placeholder="numeric value only">
+                        <input type="number" step="0" id="mono" name="mono" placeholder="numeric value only">
                         <input type="range" id="mono_range" name="mono_range" min="0" max="20" value="0" oninput="mono.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="neut">Neutrophils (%)</label>
-                        <input type="number" step="0.1" id="neut" name="neut" placeholder="numeric value only">
+                        <input type="number" step="0" id="neut" name="neut" placeholder="numeric value only">
                         <input type="range" id="neut_range" name="neut_range" min="0" max="140" value="0" oninput="neut.value=this.value">
                     </div>
                     
                     <div class="form-group">
                         <label for="wbc">White Blood Cells (10^3/uL)</label>
                         <input type="number" step="0.1" id="wbc" name="wbc" placeholder="numeric value only">
-                        <input type="range" id="wbc_range" name="wbc_range" min="0" max="20" value="0" oninput="wbc.value=this.value">
+                        <input type="range" id="wbc_range" name="wbc_range" min="0" max="20" value="0" step="0.1" oninput="wbc.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="neut_ul">Neutrophils (10^3/uL)</label>
                         <input type="number" step="0.1" id="neut_ul" name="neut_ul" placeholder="numeric value only">
-                        <input type="range" id="neut_ul_range" name="neut_ul_range" min="0" max="100" value="0" oninput="neut_ul.value=this.value">
+                        <input type="range" id="neut_ul_range" name="neut_ul_range" min="0" max="20" step="0.1" value="0" oninput="neut_ul.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="lymph_ul">Lymphocytes (10^3/uL)</label>
                         <input type="number" step="0.1" id="lymph_ul" name="lymph_ul" placeholder="numeric value only">
-                        <input type="range" id="lymph_ul_range" name="lymph_ul_range" min="0" max="32" value="0" oninput="lymph_ul.value=this.value">
+                        <input type="range" id="lymph_ul_range" name="lymph_ul_range" min="0" max="7" value="0" step="0.1" oninput="lymph_ul.value=this.value">
                     </div>
                     <div class="form-group" style="margin-top: -1.5rem;"> 
                         <label for="mono_ul">Monocytes (10^3/uL)</label>
                         <input type="number" step="0.1" id="mono_ul" name="mono_ul" placeholder="numeric value only">
-                        <input type="range" id="mono_ul_range" name="mono_ul_range" min="0" max="64" value="0" oninput="mono_ul.value=this.value">
+                        <input type="range" id="mono_ul_range" name="mono_ul_range" min="0" max="64" value="0" step="0.1" oninput="mono_ul.value=this.value">
                     </div>
                     <div class="form-group" style="margin-top: -1.5rem;">
                         <label for="eosi_ul">Eosinophils (10^3/uL)</label>
                         <input type="number" step="0.1" id="eosi_ul" name="eosi_ul" placeholder="numeric value only">
-                        <input type="range" id="eosi_ul_range" name="eosi_ul_range" min="0" max="74" value="0" oninput="eosi_ul.value=this.value">
+                        <input type="range" id="eosi_ul_range" name="eosi_ul_range" min="0" max="74" value="0" step="0.1" oninput="eosi_ul.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="baso_ul">Baso (10^3/uL)</label>
                         <input type="number" step="0.1" id="baso_ul" name="baso_ul" placeholder="numeric value only">
-                        <input type="range" id="baso_ul_range" name="baso_ul_range" min="0" max="200" value="0" oninput="baso_ul.value=this.value">
+                        <input type="range" id="baso_ul_range" name="baso_ul_range" min="0" max="200" value="0" step="0.1" oninput="baso_ul.value=this.value">
                     </div>
                 </div>
             </div>
@@ -661,110 +661,65 @@
                 <div class="grid-container" style="row-gap: 60px;">
                     <div class="form-group">
                         <label for="hct">Hematocrit (%)</label>
-                        <input type="number" step="0.1" id="hct" name="hct" placeholder="numeric value only">
-                        <input type="range" id="hct_range" name="hct_range" min="0" max="5" value="0" oninput="hct.value=this.value">
+                        <input type="number" step="0" id="hct" name="hct" placeholder="numeric value only">
+                        <input type="range" id="hct_range" name="hct_range" min="0" max="100" value="0" oninput="hct.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="hgb">Hemoglobin (g/dL)</label>
                         <input type="number" step="0.1" id="hgb" name="hgb" placeholder="numeric value only">
-                        <input type="range" id="hgb_range" name="hgb_range" min="0" max="20" value="0" oninput="hgb.value=this.value">
+                        <input type="range" id="hgb_range" name="hgb_range" min="0" max="30" value="0" oninput="hgb.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="mch">Mean Corpuscular Hemoglobin (pg)</label>
                         <input type="number" step="0.1" id="mch" name="mch" placeholder="numeric value only">
-                        <input type="range" id="mch_range" name="mch_range" min="0" max="100" value="0" oninput="mch.value=this.value">
+                        <input type="range" id="mch_range" name="mch_range" min="0" max="60" value="0" oninput="mch.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="mchc">Mean Corpuscular Hemoglobin Concentration (g/dL)</label>
                         <input type="number" step="0.1" id="mchc" name="mchc" placeholder="numeric value only">
-                        <input type="range" id="mchc_range" name="mchc_range" min="0" max="20" value="0" oninput="mchc.value=this.value">
+                        <input type="range" id="mchc_range" name="mchc_range" min="0" max="80" value="0" oninput="mchc.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="mcv">Mean Corpuscular Volume (fL)</label>
                         <input type="number" step="0.1" id="mcv" name="mcv" placeholder="numeric value only">
-                        <input type="range" id="mcv_range" name="mcv_range" min="0" max="140" value="0" oninput="mcv.value=this.value">
+                        <input type="range" id="mcv_range" name="mcv_range" min="0" max="200" value="0" oninput="mcv.value=this.value">
                     </div>
                     
                     <div class="form-group">
                         <label for="rbc">Red Blood Cells (10^6/uL)</label>
                         <input type="number" step="0.1" id="rbc" name="rbc" placeholder="numeric value only">
-                        <input type="range" id="rbc_range" name="rbc_range" min="0" max="20" value="0" oninput="rbc.value=this.value">
+                        <input type="range" id="rbc_range" name="rbc_range" min="0" max="10" value="0" step="0.1" oninput="rbc.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="rdwsd">RDW-SD (fL)</label>
                         <input type="number" step="0.1" id="rdwsd" name="rdwsd" placeholder="numeric value only">
-                        <input type="range" id="rdwsd_range" name="rdwsd_range" min="0" max="100" value="0" oninput="rdwsd.value=this.value">
+                        <input type="range" id="rdwsd_range" name="rdwsd_range" min="0" max="100" value="0" step="0.1" oninput="rdwsd.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="rdwcv">RDW-CV (%)</label>
                         <input type="number" step="0.1" id="rdwcv" name="rdwcv" placeholder="numeric value only">
-                        <input type="range" id="rdwcv_range" name="rdwcv_range" min="0" max="32" value="0" oninput="rdwcv.value=this.value">
+                        <input type="range" id="rdwcv_range" name="rdwcv_range" min="0" max="30" value="0" step="0.1" oninput="rdwcv.value=this.value">
                     </div>
                 </div>
             </div>
 
-            <!-- <div class="section">
-                <h3>Other Key Markers</h3>
-                <div class="grid-container">
-                    <div class="form-group">
-                        <label for="glucose">Glucose (mg/dL)</label>
-                        <input type="number" step="0.1" id="glucose" name="glucose" placeholder="numeric value only">
-                        <input type="range" id="glucose_range" name="glucose_range" min="0" max="50" value="0" oninput="glucose.value=this.value">
-                    </div>
-                    <div class="form-group">
-                        <label for="azotemia">Azotemia</label>
-                        <input type="number" step="0.1" id="azotemia" name="azotemia" placeholder="numeric value only">
-                        <input type="range" id="azotemia_range" name="azotemia_range" min="0" max="100" value="0" oninput="azotemia.value=this.value">
-                    </div>
-                    <div class="form-group">
-                        <label for="creatinine">Creatinine (mg/dL)</label>
-                        <input type="number" step="0.1" id="creatinine" name="creatinine" placeholder="numeric value only">
-                        <input type="range" id="creatinine_range" name="creatinine_range" min="0" max="20" value="0" oninput="creatinine.value=this.value">
-                    </div>
-                    <div class="form-group">
-                        <label for="ferritin">Ferritin (ng/mL)</label>
-                        <input type="number" step="0.1" id="ferritin" name="ferritin" placeholder="numeric value only">
-                        <input type="range" id="ferritin_range" name="ferritin_range" min="0" max="1000" value="0" oninput="ferritin.value=this.value">
-                    </div>
-                    <div class="form-group">
-                        <label for="albumin">Albumin (g/dL)</label>
-                        <input type="number" step="0.1" id="albumin" name="albumin" placeholder="numeric value only">
-                        <input type="range" id="albumin_range" name="albumin_range" min="0" max="120" value="0" oninput="albumin.value=this.value">
-                    </div>
-                    <div class="form-group">
-                        <label for="protein">Total Protein (g/dL)</label>
-                        <input type="number" step="0.1" id="protein" name="protein" placeholder="numeric value only">
-                        <input type="range" id="protein_range" name="protein_range" min="0" max="20" value="0" oninput="protein.value=this.value">
-                    </div>
-                    <div class="form-group">
-                        <label for="bilirubin">Bilirubin (mg/dL)</label>
-                        <input type="number" step="0.1" id="bilirubin" name="bilirubin" placeholder="numeric value only">
-                        <input type="range" id="bilirubin_range" name="bilirubin_range" min="0" max="10" value="0" oninput="bilirubin.value=this.value">
-                    </div>
-                    <div class="form-group">
-                        <label for="uric_acid">Uric Acid (mg/dL)</label>
-                        <input type="number" step="0.1" id="uric_acid" name="uric_acid" placeholder="numeric value only">
-                        <input type="range" id="uric_acid_range" name="uric_acid_range" min="0" max="20" value="0" oninput="uric_acid.value=this.value">
-                    </div>
-                </div>
-            </div> -->
             <div class="section">
                 <h3>Renal Functionality</h3>
                 <div class="grid-container">
                     <div class="form-group">
                         <label for="azotemia">Azotemia (mg/dL)</label>
                         <input type="number" step="0.1" id="azotemia" name="azotemia" placeholder="numeric value only">
-                        <input type="range" id="azotemia_range" name="azotemia_range" min="0" max="100" value="0" oninput="azotemia.value=this.value">
+                        <input type="range" id="azotemia_range" name="azotemia_range" min="0" max="100" value="0" step="0.1" oninput="azotemia.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="creatinine">Creatinine (mg/dL)</label>
                         <input type="number" step="0.1" id="creatinine" name="creatinine" placeholder="numeric value only">
-                        <input type="range" id="creatinine_range" name="creatinine_range" min="0" max="20" value="0" oninput="creatinine.value=this.value">
+                        <input type="range" id="creatinine_range" name="creatinine_range" min="0" max="20" value="0" step="0.1" oninput="creatinine.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="uric_acid">Uric Acid (mg/dL)</label>
                         <input type="number" step="0.1" id="uric_acid" name="uric_acid" placeholder="numeric value only">
-                        <input type="range" id="uric_acid_range" name="uric_acid_range" min="0" max="20" value="0" oninput="uric_acid.value=this.value">
+                        <input type="range" id="uric_acid_range" name="uric_acid_range" min="0" max="10" step="0.1" value="0" oninput="uric_acid.value=this.value">
                     </div>
                 </div>
             </div>
@@ -775,27 +730,27 @@
                     <div class="form-group">
                         <label for="plt">Platelets (10^3/uL)</label>
                         <input type="number" step="0.1" id="plt" name="plt" placeholder="numeric value only">
-                        <input type="range" id="plt_range" name="plt_range" min="0" max="100" value="0" oninput="plt.value=this.value">
+                        <input type="range" id="plt_range" name="plt_range" min="0" max="1000" value="0" oninput="plt.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="mpv">Mean Platelet Volume (fL)</label>
                         <input type="number" step="0.1" id="mpv" name="mpv" placeholder="numeric value only">
-                        <input type="range" id="mpv_range" name="mpv_range" min="0" max="20" value="0" oninput="mpv.value=this.value">
+                        <input type="range" id="mpv_range" name="mpv_range" min="0" max="30" value="0" step="0.1" oninput="mpv.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="plcr">P-LCR (%)</label>
                         <input type="number" step="0.1" id="plcr" name="plcr" placeholder="numeric value only">
-                        <input type="range" id="plcr_range" name="plcr_range" min="0" max="20" value="0" oninput="plcr.value=this.value">
+                        <input type="range" id="plcr_range" name="plcr_range" min="0" max="100" value="0" step="0.1" oninput="plcr.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="pct">Plateletcrit (%)</label>
                         <input type="number" step="0.1" id="pct" name="pct" placeholder="numeric value only">
-                        <input type="range" id="pct_range" name="pct_range" min="0" max="20" value="0" oninput="pct.value=this.value">
+                        <input type="range" id="pct_range" name="pct_range" min="0" max="0.8" value="0" step="0.1" oninput="pct.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="pdw">Platelet Distribution Width (fL)</label>
                        <input type="number" step="0.1" id="pdw" name="pdw" placeholder="numeric value only">
-                        <input type="range" id="pdw_range" name="pdw_range" min="0" max="20" value="0" oninput="pdw.value=this.value">
+                        <input type="range" id="pdw_range" name="pdw_range" min="0" max="30" value="0" oninput="pdw.value=this.value">
                     </div>
                 </div>
             </div>
@@ -806,22 +761,22 @@
                     <div class="form-group">
                         <label for="tot_chol">Total cholesterol (mg/dI)</label>
                         <input type="number" step="0.1" id="tot_chol" name="tot_chol" placeholder="numeric value only">
-                        <input type="range" id="tot_chol_range" name="tot_chol_range" min="0" max="100" value="0" oninput="tot_chol.value=this.value">
+                        <input type="range" id="tot_chol_range" name="tot_chol_range" min="0" max="400" value="0" oninput="tot_chol.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="ldl_chol">LDL cholesterol (mg/dL)</label>
                         <input type="number" step="0.1" id="ldl_chol" name="ldl_chol" placeholder="numeric value only">
-                        <input type="range" id="ldl_chol_range" name="ldl_chol_range" min="0" max="20" value="0" oninput="ldl_chol.value=this.value">
+                        <input type="range" id="ldl_chol_range" name="ldl_chol_range" min="0" max="200" value="0" oninput="ldl_chol.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="hdl_chol">Cholesterol HDL (mg/dL)</label>
                         <input type="number" step="0.1" id="hdl_chol" name="hdl_chol" placeholder="numeric value only">
-                        <input type="range" id="hdl_chol_range" name="hdl_chol_range" min="0" max="20" value="0" oninput="hdl_chol.value=this.value">
+                        <input type="range" id="hdl_chol_range" name="hdl_chol_range" min="0" max="120" value="0" oninput="hdl_chol.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="trigl">Triglicerides (mg/dL)</label>
                         <input type="number" step="0.1" id="trigl" name="trigl" placeholder="numeric value only">
-                        <input type="range" id="trigl_range" name="trigl_range" min="0" max="20" value="0" oninput="trigl.value=this.value">
+                        <input type="range" id="trigl_range" name="trigl_range" min="0" max="400" value="0" oninput="trigl.value=this.value">
                     </div>
                 </div>
             </div>
@@ -832,17 +787,17 @@
                     <div class="form-group">
                         <label for="na">Sodium (mEq/L)</label>
                         <input type="number" step="0.1" id="na" name="na" placeholder="numeric value only">
-                        <input type="range" id="na_range" name="na_range" min="0" max="100" value="0" oninput="na.value=this.value">
+                        <input type="range" id="na_range" name="na_range" min="0" max="300" value="0" oninput="na.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="k">Potassium (mEq/L)</label>
                         <input type="number" step="0.1" id="k" name="k" placeholder="numeric value only">
-                        <input type="range" id="k_range" name="k_range" min="0" max="20" value="0" oninput="k.value=this.value">
+                        <input type="range" id="k_range" name="k_range" min="0" max="10" value="0" step="0.1" oninput="k.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="mg">Magnesium (mg/dL)</label>
                         <input type="number" step="0.1" id="mg" name="mg" placeholder="numeric value only">
-                        <input type="range" id="mg_range" name="mg_range" min="0" max="20" value="0" oninput="mg.value=this.value">
+                        <input type="range" id="mg_range" name="mg_range" min="0" max="5" value="0" step="0.1" oninput="mg.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="ci">Chlorides (mEq/L)</label>
@@ -852,12 +807,12 @@
                     <div class="form-group">
                         <label for="ca">Calcium (mg/dL)</label>
                         <input type="number" step="0.1" id="ca" name="ca" placeholder="numeric value only">
-                        <input type="range" id="ca_range" name="ca_range" min="0" max="20" value="0" oninput="ca.value=this.value">
+                        <input type="range" id="ca_range" name="ca_range" min="0" max="20" value="0" step="0.1" oninput="ca.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="p">Phosphorus (mg/dL)</label>
                         <input type="number" step="0.1" id="p" name="p" placeholder="numeric value only">
-                        <input type="range" id="p_range" name="p_range" min="0" max="20" value="0" oninput="p.value=this.value">
+                        <input type="range" id="p_range" name="p_range" min="0" max="10" value="0" step="0.1" oninput="p.value=this.value">
                     </div>
                 </div>
             </div>
@@ -868,17 +823,17 @@
                     <div class="form-group">
                         <label for="fe">Sidermy (µg/dI)</label>
                         <input type="number" step="0.1" id="fe" name="fe" placeholder="numeric value only">
-                        <input type="range" id="fe_range" name="fe_range" min="0" max="100" value="0" oninput="fe.value=this.value">
+                        <input type="range" id="fe_range" name="fe_range" min="0" max="400" value="0" oninput="fe.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="ferritin">Ferritin (ng/mL)</label>
                         <input type="number" step="0.1" id="ferritin" name="ferritin" placeholder="numeric value only">
-                        <input type="range" id="ferritin_range" name="ferritin_range" min="0" max="1000" value="0" oninput="ferritin.value=this.value">
+                        <input type="range" id="ferritin_range" name="ferritin_range" min="0" max="800" value="0" oninput="ferritin.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="transferrin">Transferrin (mg/dL)</label>
                         <input type="number" step="0.1" id="transferrin" name="transferrin" placeholder="numeric value only">
-                        <input type="range" id="transferrin_range" name="transferrin_range" min="0" max="20" value="0" oninput="transferrin.value=this.value">
+                        <input type="range" id="transferrin_range" name="transferrin_range" min="0" max="700" value="0" oninput="transferrin.value=this.value">
                     </div>
                 </div>
             </div>
@@ -889,22 +844,22 @@
                     <div class="form-group">
                         <label for="glicemy">Blood glucose (mg/dL)</label>
                         <input type="number" step="0.1" id="glicemy" name="glicemy" placeholder="numeric value only">
-                        <input type="range" id="glicemy_range" name="glicemy_range" min="0" max="100" value="0" oninput="glicemy.value=this.value">
+                        <input type="range" id="glicemy_range" name="glicemy_range" min="0" max="200" value="0" oninput="glicemy.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="insulin">Insulin (ng/mL)</label>
                         <input type="number" step="0.1" id="insulin" name="insulin" placeholder="numeric value only">
-                        <input type="range" id="insulin_range" name="insulin_range" min="0" max="1000" value="0" oninput="insulin.value=this.value">
+                        <input type="range" id="insulin_range" name="insulin_range" min="0" max="30" value="0" oninput="insulin.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="homa">Homa test</label>
                         <input type="number" step="0.1" id="homa" name="homa" placeholder="numeric value only">
-                        <input type="range" id="homa_range" name="homa_range" min="0" max="20" value="0" oninput="homa.value=this.value">
+                        <input type="range" id="homa_range" name="homa_range" min="0" max="5" value="0" step="0.1" oninput="homa.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="ir">IR test</label>
                         <input type="number" step="0.1" id="ir" name="ir" placeholder="numeric value only">
-                        <input type="range" id="ir_range" name="ir_range" min="0" max="20" value="0" oninput="ir.value=this.value">
+                        <input type="range" id="ir_range" name="ir_range" min="0" max="6" value="0" oninput="ir.value=this.value">
                     </div>
                 </div>
             </div>
@@ -915,12 +870,12 @@
                     <div class="form-group">
                         <label for="albuminemia">Albuminemia (g/dL)</label>
                         <input type="number" step="0.1" id="albuminemia" name="albuminemia" placeholder="numeric value only">
-                        <input type="range" id="albuminemia_range" name="albuminemia_range" min="0" max="100" value="0" oninput="albuminemia.value=this.value">
+                        <input type="range" id="albuminemia_range" name="albuminemia_range" min="0" max="10" value="0" step="0.1" oninput="albuminemia.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="tot_prot">Total proteins (g/dI)</label>
                         <input type="number" step="0.1" id="tot_prot" name="tot_prot" placeholder="numeric value only">
-                        <input type="range" id="tot_prot_range" name="tot_prot_range" min="0" max="1000" value="0" oninput="tot_prot.value=this.value">
+                        <input type="range" id="tot_prot_range" name="tot_prot_range" min="0" max="20" value="0" step="0.1" oninput="tot_prot.value=this.value">
                     </div>
                 </div>
                 <hr>
@@ -929,87 +884,87 @@
                     <div class="form-group">
                         <label for="tot_prot_ele">Total Proteins (%)</label>
                         <input type="number" step="0.1" id="tot_prot_ele" name="tot_prot_ele" placeholder="numeric value only">
-                        <input type="range" id="tot_prot_ele_range" name="tot_prot_ele_range" min="0" max="20" value="0" oninput="tot_prot_ele.value=this.value">
+                        <input type="range" id="tot_prot_ele_range" name="tot_prot_ele_range" min="0" max="20" value="0" step="0.1" oninput="tot_prot_ele.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="albumin_ele">Albumin (%)</label>
                         <input type="number" step="0.1" id="albumin_ele" name="albumin_ele" placeholder="numeric value only">
-                        <input type="range" id="albumin_ele_range" name="albumin_ele_range" min="0" max="20" value="0" oninput="albumin_ele.value=this.value">
+                        <input type="range" id="albumin_ele_range" name="albumin_ele_range" min="0" max="120" value="0" step="0.1" oninput="albumin_ele.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="a_1">Alfa 1 (%)</label>
                         <input type="number" step="0.1" id="a_1" name="a_1" placeholder="numeric value only">
-                        <input type="range" id="a_1_range" name="a_1_range" min="0" max="20" value="0" oninput="a_1.value=this.value">
+                        <input type="range" id="a_1_range" name="a_1_range" min="0" max="20" value="0" step="0.1" step="0.1" oninput="a_1.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="a_2">Alfa 2 (%)</label>
                         <input type="number" step="0.1" id="a_2" name="a_2" placeholder="numeric value only">
-                        <input type="range" id="a_2_range" name="a_2_range" min="0" max="20" value="0" oninput="a_2.value=this.value">
+                        <input type="range" id="a_2_range" name="a_2_range" min="0" max="25" value="0" step="0.1" oninput="a_2.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="b_1">Beta 1</label>
                         <input type="number" step="0.1" id="b_1" name="b_1" placeholder="numeric value only">
-                        <input type="range" id="b_1_range" name="b_1_range" min="0" max="20" value="0" oninput="b_1.value=this.value">
+                        <input type="range" id="b_1_range" name="b_1_range" min="0" max="20" value="0" step="0.1" oninput="b_1.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="b_2">Beta 2 (%)</label>
                         <input type="number" step="0.1" id="b_2" name="b_2" placeholder="numeric value only">
-                        <input type="range" id="b_2_range" name="b_2_range" min="0" max="20" value="0" oninput="b_2.value=this.value">
+                        <input type="range" id="b_2_range" name="b_2_range" min="0" max="20" value="0" step="0.1" oninput="b_2.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="gamma">Gamma (%)</label>
                         <input type="number" step="0.1" id="gamma" name="gamma" placeholder="numeric value only">
-                        <input type="range" id="gamma_range" name="gamma_range" min="0" max="20" value="0" oninput="gamma.value=this.value">
+                        <input type="range" id="gamma_range" name="gamma_range" min="0" max="40" value="0" step="0.1" oninput="gamma.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="albumin_dI">Albumin* (g/dI)</label>
                         <input type="number" step="0.1" id="albumin_dI" name="albumin_dI" placeholder="numeric value only">
-                        <input type="range" id="albumin_dI_range" name="albumin_dI_range" min="0" max="20" value="0" oninput="albumin_dI.value=this.value">
+                        <input type="range" id="albumin_dI_range" name="albumin_dI_range" min="0" max="10" value="0" step="0.1" oninput="albumin_dI.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="a_1_dI">Alfa 1* (g/dI)</label>
                         <input type="number" step="0.1" id="a_1_dI" name="a_1_dI" placeholder="numeric value only">
-                        <input type="range" id="a_1_dI_range" name="a_1_dI_range" min="0" max="20" value="0" oninput="a_1_dI.value=this.value">
+                        <input type="range" id="a_1_dI_range" name="a_1_dI_range" min="0" max="1" value="0" step="0.1" oninput="a_1_dI.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="a_2_dI">Alfa 2* (g/dI)</label>
                         <input type="number" step="0.1" id="a_2_dI" name="a_2_dI" placeholder="numeric value only">
-                        <input type="range" id="a_2_dI_range" name="a_2_dI_range" min="0" max="20" value="0" oninput="a_2_dI.value=this.value">
+                        <input type="range" id="a_2_dI_range" name="a_2_dI_range" min="0" max="2" value="0" step="0.1" oninput="a_2_dI.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="b_1_dI">Beta 1* (g/dI)</label>
                         <input type="number" step="0.1" id="b_1_dI" name="b_1_dI" placeholder="numeric value only">
-                        <input type="range" id="b_1_dI_range" name="b_1_dI_range" min="0" max="20" value="0" oninput="b_1_dI.value=this.value">
+                        <input type="range" id="b_1_dI_range" name="b_1_dI_range" min="0" max="1.5" value="0" step="0.1" oninput="b_1_dI.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="b_2_dI">Beta 2* (g/dI)</label>
                         <input type="number" step="0.1" id="b_2_dI" name="b_2_dI" placeholder="numeric value only">
-                        <input type="range" id="b_2_dI_range" name="b_2_dI_range" min="0" max="20" value="0" oninput="b_2_dI.value=this.value">
+                        <input type="range" id="b_2_dI_range" name="b_2_dI_range" min="0" max="1.5" value="0" step="0.1" oninput="b_2_dI.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="gamma_dI">Gamma* (g/dI)</label>
                         <input type="number" step="0.1" id="gamma_dI" name="gamma_dI" placeholder="numeric value only">
-                        <input type="range" id="gamma_dI_range" name="gamma_dI_range" min="0" max="20" value="0" oninput="gamma_dI.value=this.value">
+                        <input type="range" id="gamma_dI_range" name="gamma_dI_range" min="0" max="3" value="0" step="0.1" oninput="gamma_dI.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="ag_rap">Rapporto A/G</label>
                         <input type="number" step="0.1" id="ag_rap" name="ag_rap" placeholder="numeric value only">
-                        <input type="range" id="ag_rap_range" name="ag_rap_range" min="0" max="20" value="0" oninput="ag_rap.value=this.value">
+                        <input type="range" id="ag_rap_range" name="ag_rap_range" min="0" max="4" value="0" step="0.1" oninput="ag_rap.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="cm">CM (g/dI)</label>
                         <input type="number" step="0.1" id="cm" name="cm" placeholder="numeric value only">
-                        <input type="range" id="cm_range" name="cm_range" min="0" max="20" value="0" oninput="cm.value=this.value">
+                        <input type="range" id="cm_range" name="cm_range" min="0" max="20" value="0" step="0.1" oninput="cm.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="b_2_spike">Beta 2 spike M 1% (%)</label>
                         <input type="number" step="0.1" id="b_2_spike" name="b_2_spike" placeholder="numeric value only">
-                        <input type="range" id="b_2_spike_range" name="b_2_spike_range" min="0" max="20" value="0" oninput="b_2_spike.value=this.value">
+                        <input type="range" id="b_2_spike_range" name="b_2_spike_range" min="0" max="20" value="0" step="0.1" oninput="b_2_spike.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="b_2_spike_m1">Beta 2 spike M 1 (g/dI)</label>
                         <input type="number" step="0.1" id="b_2_spike_m1" name="b_2_spike_m1" placeholder="numeric value only">
-                        <input type="range" id="b_2_spike_m1_range" name="b_2_spike_m1_range" min="0" max="20" value="0" oninput="b_2_spike_m1.value=this.value">
+                        <input type="range" id="b_2_spike_m1_range" name="b_2_spike_m1_range" min="0" max="20" value="0" step="0.1" oninput="b_2_spike_m1.value=this.value">
                     </div>
                 </div>
             </div>
@@ -1020,22 +975,22 @@
                     <div class="form-group">
                         <label for="got">Transaminase (GOT, U/I)</label>
                         <input type="number" step="0.1" id="got" name="got" placeholder="numeric value only">
-                        <input type="range" id="got_range" name="got_range" min="0" max="100" value="0" oninput="got.value=this.value">
+                        <input type="range" id="got_range" name="got_range" min="0" max="60" value="0" oninput="got.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="gpt">Transaminase (GPT, U/I)</label>
                         <input type="number" step="0.1" id="gpt" name="gpt" placeholder="numeric value only">
-                        <input type="range" id="gpt_range" name="gpt_range" min="0" max="1000" value="0" oninput="gpt.value=this.value">
+                        <input type="range" id="gpt_range" name="gpt_range" min="0" max="60" value="0" oninput="gpt.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="g_gt">Gamma GT (U/I)</label>
                         <input type="number" step="0.1" id="g_gt" name="g_gt" placeholder="numeric value only">
-                        <input type="range" id="g_gt_range" name="g_gt_range" min="0" max="20" value="0" oninput="g_gt.value=this.value">
+                        <input type="range" id="g_gt_range" name="g_gt_range" min="0" max="80" value="0" oninput="g_gt.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="a_photo">Alkaline Phosphatase (U/I)</label>
                         <input type="number" step="0.1" id="a_photo" name="a_photo" placeholder="numeric value only">
-                        <input type="range" id="a_photo_range" name="a_photo_range" min="0" max="20" value="0" oninput="a_photo.value=this.value">
+                        <input type="range" id="a_photo_range" name="a_photo_range" min="0" max="200" value="0" oninput="a_photo.value=this.value">
                     </div>
                 </div>
                 <hr>
@@ -1044,17 +999,17 @@
                     <div class="form-group">
                         <label for="tot_bili">Total bilirubin (mg/dI)</label>
                         <input type="number" step="0.1" id="tot_bili" name="tot_bili" placeholder="numeric value only">
-                        <input type="range" id="tot_bili_range" name="tot_bili_range" min="0" max="20" value="0" oninput="tot_bili.value=this.value">
+                        <input type="range" id="tot_bili_range" name="tot_bili_range" min="0" max="2.40" value="0" step="0.1" oninput="tot_bili.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="direct_bili">Direct bilirubin (mg/dI)</label>
                         <input type="number" step="0.1" id="direct_bili" name="direct_bili" placeholder="numeric value only">
-                        <input type="range" id="direct_bili_range" name="direct_bili_range" min="0" max="20" value="0" oninput="direct_bili.value=this.value">
+                        <input type="range" id="direct_bili_range" name="direct_bili_range" min="0" max="0.60" value="0" step="0.1" oninput="direct_bili.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="idirect_bili">Indirect bilirubin (mg/dI)</label>
                         <input type="number" step="0.1" id="idirect_bili" name="idirect_bili" placeholder="numeric value only">
-                        <input type="range" id="idirect_bili_range" name="idirect_bili_range" min="0" max="20" value="0" oninput="idirect_bili.value=this.value">
+                        <input type="range" id="idirect_bili_range" name="idirect_bili_range" min="0" max="2" value="0" step="0.1" oninput="idirect_bili.value=this.value">
                     </div>
                 </div>
             </div>
@@ -1065,12 +1020,12 @@
                     <div class="form-group">
                         <label for="ves">VES (mm/h)</label>
                         <input type="number" step="0.1" id="ves" name="ves" placeholder="numeric value only">
-                        <input type="range" id="ves_range" name="ves_range" min="0" max="100" value="0" oninput="ves.value=this.value">
+                        <input type="range" id="ves_range" name="ves_range" min="0" max="40" value="0" oninput="ves.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="pcr_c">PCR-C-Reactive Protein (mg/I)</label>
                         <input type="number" step="0.1" id="pcr_c" name="pcr_c" placeholder="numeric value only">
-                        <input type="range" id="pcr_c_range" name="pcr_c_range" min="0" max="1000" value="0" oninput="pcr_c.value=this.value">
+                        <input type="range" id="pcr_c_range" name="pcr_c_range" min="0" max="10" value="0" oninput="pcr_c.value=this.value">
                     </div>
                 </div>
             </div>
@@ -1081,7 +1036,7 @@
                     <div class="form-group">
                         <label for="ves">Homocysteine (uµol/I)</label>
                         <input type="number" step="0.1" id="ves" name="ves" placeholder="numeric value only">
-                        <input type="range" id="ves_range" name="ves_range" min="0" max="100" value="0" oninput="ves.value=this.value">
+                        <input type="range" id="ves_range" name="ves_range" min="0" max="30" value="0" oninput="ves.value=this.value">
                     </div>
                 </div>
                 <hr>
@@ -1090,22 +1045,22 @@
                     <div class="form-group">
                         <label for="s_weight">Specific Weight</label>
                         <input type="number" step="0.1" id="s_weight" name="s_weight" placeholder="numeric value only">
-                        <input type="range" id="s_weight_range" name="s_weight_range" min="0" max="100" value="0" oninput="s_weight.value=this.value">
+                        <input type="range" id="s_weight_range" name="s_weight_range" min="0" max="2060" value="0" oninput="s_weight.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="ph">PH</label>
                         <input type="number" step="0.1" id="ph" name="ph" placeholder="numeric value only">
-                        <input type="range" id="ph_range" name="ph_range" min="0" max="100" value="0" oninput="ph.value=this.value">
+                        <input type="range" id="ph_range" name="ph_range" min="0" max="10" value="0" step="0.1" oninput="ph.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="glucose">Glucose (mmol/L)</label>
                         <input type="number" step="0.1" id="glucose" name="glucose" placeholder="numeric value only">
-                        <input type="range" id="glucose_range" name="glucose_range" min="0" max="50" value="0" oninput="glucose.value=this.value">
+                        <input type="range" id="glucose_range" name="glucose_range" min="0" max="10" value="0" oninput="glucose.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="proteins_ex">Proteins (mg/dI)</label>
                         <input type="number" step="0.1" id="proteins_ex" name="proteins_ex" placeholder="numeric value only">
-                        <input type="range" id="proteins_ex_range" name="proteins_ex_range" min="0" max="50" value="0" oninput="proteins_ex.value=this.value">
+                        <input type="range" id="proteins_ex_range" name="proteins_ex_range" min="0" max="30" value="0" oninput="proteins_ex.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="blood_ex">Blood (ery/µL)</label>
@@ -1115,22 +1070,22 @@
                     <div class="form-group">
                         <label for="ketones">Ketones (mg/dI)</label>
                         <input type="number" step="0.1" id="ketones" name="ketones" placeholder="numeric value only">
-                        <input type="range" id="ketones_range" name="ketones_range" min="0" max="50" value="0" oninput="ketones.value=this.value">
+                        <input type="range" id="ketones_range" name="ketones_range" min="0" max="10" value="0" oninput="ketones.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="uro">Urobilinogen (umol/L)</label>
                         <input type="number" step="0.1" id="uro" name="uro" placeholder="numeric value only">
-                        <input type="range" id="uro_range" name="uro_range" min="0" max="50" value="0" oninput="uro.value=this.value">
+                        <input type="range" id="uro_range" name="uro_range" min="0" max="40" value="0" oninput="uro.value=this.value">
                     </div>
                     <div class="form-group">
-                        <label for="glucose">Bilirubin (mg/dI)</label>
-                        <input type="number" step="0.1" id="glucose" name="glucose" placeholder="numeric value only">
-                        <input type="range" id="glucose_range" name="glucose_range" min="0" max="50" value="0" oninput="glucose.value=this.value">
+                        <label for="bilirubin_ex">Bilirubin (mg/dI)</label>
+                        <input type="number" step="0.1" id="bilirubin_ex" name="bilirubin_ex" placeholder="numeric value only">
+                        <input type="range" id="bilirubin_ex_range" name="bilirubin_ex_range" min="0" max="2" value="0" oninput="bilirubin_ex.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="leuc">Leucocites (Leu/uL)</label>
                         <input type="number" step="0.1" id="leuc" name="leuc" placeholder="numeric value only">
-                        <input type="range" id="leuc_range" name="leuc_range" min="0" max="50" value="0" oninput="leuc.value=this.value">
+                        <input type="range" id="leuc_range" name="leuc_range" min="0" max="30" value="0" oninput="leuc.value=this.value">
                     </div>
                 </div>
             </div>
