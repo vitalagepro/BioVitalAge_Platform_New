@@ -70,8 +70,8 @@ function generateChart(ctx, data, label) {
             datasets: [{
                 label: label,
                 data: data,
-                borderColor: 'rgba(58, 37, 93, 0.8)',
                 backgroundColor: 'rgba(58, 37, 93, 1)',
+                borderColor: '#3a255d',
                 tension: 0.3,
                 fill: true
             }]

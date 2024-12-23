@@ -7,8 +7,8 @@
     <title>BioVitalAge - HomePage</title>
 
     {% load static %}
-    <link rel="stylesheet" href="{% static 'includes/homePage.css' %}">
     <link rel="stylesheet" href="{% static 'includes/persona_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'includes/homePage.css' %}">
 
     <!-- Js Import  -->
     <script src="{% static 'includes/js/indicatorNew.js' %}" defer></script>
@@ -25,33 +25,34 @@
 </head>
 <body>
     <header>
-        <div class="nav-bar-user-modal" id="userModal">
-            <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">log out</button>
-        </div>
-
         <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar ">
-            <div class="col-md-2 d-flex jus nav-bar-logo">
+            <div class="col-md-2 d-flex jus  nav-bar-logo">
                 <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®">
             </div>
             <div class="col-md-8 nav-bar-linkage">
-                <a href="{% url 'HomePage' %}">HomePage</a>
-                <a href="{% url 'Calcolatore' %}">Calcolatore Età Biologica</a>
-                <a href="{% url 'Risultati' %}" id="active">Ricerca Pazienti</a>
+                <a href="{% url 'HomePage' %}" >HomePage</a>
+                <a href="{% url 'Calcolatore' %}" id="active">Calcolatore Età Biologica</a>
+                <a href="{% url 'Risultati' %}" >Ricerca Pazienti</a>
             </div>
 
             <div class="col-md-2 nav-bar-user">
                 <h3>Demo User</h3>
+                
                 <div class="img-container-user-nav-bar">
                     <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user">
+                </div>
+                <div class="nav-bar-user-modal" id="userModal">
+                    <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">log out</button>
                 </div>
             </div>
         </nav>
     </header>
 
+
     <main>
         <div class="main-title-nav">
             <div class="back-tittle">
-                <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt=""></a>
+                <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to Results"></a>
                 <h2 class="main-welcome-title">Report Paziente, {{ persona.name }} {{ persona.surname }}</h2>
             </div>
            
@@ -107,7 +108,7 @@
                         <p><span>d-ROMs:</span>{{ datiEstesi.d_roms }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">0 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
                                     <p>250</p>
                                     <p>300</p>
@@ -135,10 +136,10 @@
                         <p><span>Oxidative Stress Index (OSI):</span>{{ datiEstesi.osi }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">< 0</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto" id="middleTesto">
-                                    <p>< 40</p>
                                     <p>40</p>
+                                    <p>65</p>
                                 </div>
                                 <p class="extremeNegativeRange">> 200</p>
                             </div>
@@ -163,7 +164,7 @@
                         <p><span>Plasma Antioxidant Test (PAT):</span>{{ datiEstesi.pat }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">< 0</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto" id="middleTesto">
                                     <p>2200</p>
                                     <p>2800</p>
@@ -191,20 +192,19 @@
                 <button id="generatePDFButton">Genera PDF</button>
             </div>
             <div class="exams-container">
-
                 <h3>All Exams Value</h3>
 
                 <div class="content-container">                    
                     <div class="indicator-container">
-                        <p><span>fa_saturated:</span>{{ datiEstesi.fa_saturated }}</p>
+                        <p><span>FA Saturation:</span>{{ datiEstesi.fa_saturated }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">0 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
                                     <p>0</p>
                                     <p>0</p>
                                 </div>
-                                <p class="extremeNegativeRange">> 0</p>
+                                <p class="extremeNegativeRange">> 500</p>
                             </div>
                             {% if datiEstesi.fa_saturated %}
 
@@ -223,15 +223,15 @@
                         </div>
                     </div>
                     <div class="indicator-container">
-                        <p><span>o9o7fatty_acids:</span>{{ datiEstesi.o9o7fatty_acids }}</p>
+                        <p><span>O-9/O-7 Fatty Acids:</span>{{ datiEstesi.o9o7fatty_acids }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">0 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
                                     <p>0</p>
                                     <p>0</p>
                                 </div>
-                                <p class="extremeNegativeRange">> 0</p>
+                                <p class="extremeNegativeRange">> 10</p>
                             </div>
                             {% if datiEstesi.o9o7fatty_acids %}
 
@@ -250,15 +250,15 @@
                         </div>
                     </div>
                     <div class="indicator-container">
-                        <p><span>o3fatty_acids:</span>{{ datiEstesi.o3fatty_acids }}</p>
+                        <p><span>O-3 Fatty Acids:</span>{{ datiEstesi.o3fatty_acids }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">0 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
                                     <p>0</p>
                                     <p>0</p>
                                 </div>
-                                <p class="extremeNegativeRange">> 0</p>
+                                <p class="extremeNegativeRange">> 10</p>
                             </div>
                             {% if datiEstesi.o3fatty_acids %}
 
@@ -277,15 +277,15 @@
                         </div>
                     </div>
                     <div class="indicator-container">
-                        <p><span>o6fatty_acids:</span>{{ datiEstesi.o6fatty_acids }}</p>
+                        <p><span>O-6 Fatty Acids:</span>{{ datiEstesi.o6fatty_acids }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">0 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
                                     <p>0</p>
                                     <p>0</p>
                                 </div>
-                                <p class="extremeNegativeRange">> 0</p>
+                                <p class="extremeNegativeRange">> 10</p>
                             </div>
                             {% if datiEstesi.o6fatty_acids %}
 
@@ -304,15 +304,15 @@
                         </div>
                     </div>
                     <div class="indicator-container">
-                        <p><span>s_u_fatty_acids:</span>{{ datiEstesi.s_u_fatty_acids }}</p>
+                        <p><span>Sat./unsat. fatty acid quotient:</span>{{ datiEstesi.s_u_fatty_acids }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">0 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
                                     <p>0</p>
                                     <p>0</p>
                                 </div>
-                                <p class="extremeNegativeRange">> 0</p>
+                                <p class="extremeNegativeRange">> 10</p>
                             </div>
                             {% if datiEstesi.s_u_fatty_acids %}
 
@@ -331,15 +331,15 @@
                         </div>
                     </div>
                     <div class="indicator-container">
-                        <p><span>o6o3_fatty_acids_quotient:</span>{{ datiEstesi.o6o3_fatty_acids_quotient }}</p>
+                        <p><span>O-6/O-3 fatty acids quotient:</span>{{ datiEstesi.o6o3_fatty_acids_quotient }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">0 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
                                     <p>0</p>
                                     <p>0</p>
                                 </div>
-                                <p class="extremeNegativeRange">> 0</p>
+                                <p class="extremeNegativeRange">> 10</p>
                             </div>
                             {% if datiEstesi.o6o3_fatty_acids_quotient %}
 
@@ -358,15 +358,15 @@
                         </div>
                     </div>
                     <div class="indicator-container">
-                        <p><span>aa_epa_quotient:</span>{{ datiEstesi.aa_epa_quotient }}</p>
+                        <p><span>Acid arachidonic/eicosapentanenoic quotient(AA/EPA):</span>{{ datiEstesi.aa_epa_quotient }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">0 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
                                     <p>0</p>
                                     <p>0</p>
                                 </div>
-                                <p class="extremeNegativeRange">> 0</p>
+                                <p class="extremeNegativeRange">> 8</p>
                             </div>
                             {% if datiEstesi.aa_epa_quotient %}
 
@@ -385,15 +385,15 @@
                         </div>
                     </div>
                     <div class="indicator-container">
-                        <p><span>O3_index:</span>{{ datiEstesi.O3_index }}</p>
+                        <p><span>O-3 index:</span>{{ datiEstesi.O3_index }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">0 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
                                     <p>0</p>
                                     <p>0</p>
                                 </div>
-                                <p class="extremeNegativeRange">> 0</p>
+                                <p class="extremeNegativeRange">> 10</p>
                             </div>
                             {% if datiEstesi.O3_index %}
 
@@ -417,8 +417,8 @@
                         <p><span>White Blood Cells (WBC):</span>{{ datiEstesi.wbc }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p>min</p>
-                                <p>Max</p>
+                                <p>0</p>
+                                <p>20</p>
                             </div>
                             {% if datiEstesi.wbc %}
 
@@ -443,7 +443,6 @@
                                 <p>Max</p>
                             </div>
                             {% if datiEstesi.baso %}
-
                                 <div class="col-md-12 p-2 barra-container">
                                     <p data-value="{{ datiEstesi.baso }}"></p>
                                 </div>
@@ -682,12 +681,12 @@
                         <p><span>Glucose (mg/dL):</span>{{ datiEstesi.glucose }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">140 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto" id="middleTesto">
-                                    <p>140</p>
-                                    <p>106</p>
+                                    <p></p>
+                                    <p></p>
                                 </div>
-                                <p class="extremeNegativeRange">70</p>
+                                <p class="extremeNegativeRange">10</p>
                             </div>
                             {% if datiEstesi.glucose %}
 
@@ -710,12 +709,12 @@
                         <p><span>Creatinine (mg/dL):</span>{{ datiEstesi.creatinine }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">0.9 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
                                     <p>0.5</p>
                                     <p>0.9</p>
                                 </div>
-                                <p class="extremeNegativeRange">> 0.9</p>
+                                <p class="extremeNegativeRange">> 2</p>
                             </div>
                             {% if datiEstesi.creatinine %}
 
@@ -737,12 +736,12 @@
                         <p><span>Ferritin (ng/mL):</span>{{ datiEstesi.ferritin }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">150 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
-                                    <p>150</p>
                                     <p>13</p>
+                                    <p>150</p>
                                 </div>
-                                <p class="extremeNegativeRange">< 13</p>
+                                <p class="extremeNegativeRange">800</p>
                             </div>
                             {% if datiEstesi.ferritin %}
 
@@ -764,12 +763,12 @@
                         <p><span>Albumin (g/dL):</span>{{ datiEstesi.albumin }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">5.2 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
-                                    <p>5.2</p>
-                                    <p>3.5</p>
+                                    <p>52.7</p>
+                                    <p>67.4</p>
                                 </div>
-                                <p class="extremeNegativeRange">< 3.5</p>
+                                <p class="extremeNegativeRange">120</p>
                             </div>
                             {% if datiEstesi.albumin %}
 
@@ -791,12 +790,12 @@
                         <p><span>Total Protein (g/dL):</span>{{ datiEstesi.protein }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">6.6 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
                                     <p>6.6</p>
                                     <p>8.7</p>
                                 </div>
-                                <p class="extremeNegativeRange">< 8.7</p>
+                                <p class="extremeNegativeRange">20</p>
                             </div>
                             {% if datiEstesi.protein %}
 
@@ -818,8 +817,8 @@
                         <p><span>Bilirubin (mg/dL):</span>{{ datiEstesi.bilirubin }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">1.2 <</p>
-                                <p class="extremeNegativeRange">0</p>
+                                <p class="negativeTesto">0</p>
+                                <p class="extremeNegativeRange">2</p>
                             </div>
                             {% if datiEstesi.bilirubin %}
 
@@ -841,12 +840,12 @@
                         <p><span>Uric Acid (mg/dL):</span>{{ datiEstesi.uric_acid }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">7.2 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
-                                    <p>7.2</p>
-                                    <p>3.5</p>
+                                    <p></p>
+                                    <p></p>
                                 </div>
-                                <p class="extremeNegativeRange">> 3.5</p>
+                                <p class="extremeNegativeRange">2</p>
                             </div>
                             {% if datiEstesi.uric_acid %}
 
@@ -865,15 +864,15 @@
                         </div>
                     </div>
                     <div class="indicator-container">
-                        <p><span>azotemia:</span>{{ datiEstesi.azotemia }}</p>
+                        <p><span>Azotemia:</span>{{ datiEstesi.azotemia }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">0 <</p>
+                                <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
-                                    <p>0</p>
-                                    <p>0</p>
+                                    <p>16.6</p>
+                                    <p>48.5</p>
                                 </div>
-                                <p class="extremeNegativeRange">> 0</p>
+                                <p class="extremeNegativeRange">100</p>
                             </div>
                             {% if datiEstesi.azotemia %}
 

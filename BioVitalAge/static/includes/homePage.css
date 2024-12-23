@@ -111,6 +111,10 @@
 }
 
 /* user nav-bar modal style */
+header{
+  position: relative;
+}
+
 .nav-bar-user-modal {
   width: 120px;
   height: 50px;
