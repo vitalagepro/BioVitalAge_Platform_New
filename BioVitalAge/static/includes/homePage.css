@@ -460,7 +460,7 @@ main {
   transition: width 0.4s ease;
 }
 .card-button button:hover::before {
-  width: 0%;
+  width: 0;
 }
 .card button:hover::after {
   width: 100%;

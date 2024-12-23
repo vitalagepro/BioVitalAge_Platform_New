@@ -101,20 +101,18 @@
 
             <div class="exams-container">
 
-                <h3>All Exams Value</h3>
-
+                <h3>Oxidative Stress</h3>
                 <div class="content-container">
-
                     <div class="indicator-container">
                         <p><span>d-ROMs:</span>{{ datiEstesi.d_roms }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">400 <</p>
+                                <p class="negativeTesto">0 <</p>
                                 <div class="positiveTesto">
-                                    <p>300</p>
                                     <p>250</p>
+                                    <p>300</p>
                                 </div>
-                                <p class="extremeNegativeRange">< 250</p>
+                                <p class="extremeNegativeRange">> 1000</p>
                             </div>
                             
                             {% if datiEstesi.d_roms  %}
@@ -137,12 +135,12 @@
                         <p><span>Oxidative Stress Index (OSI):</span>{{ datiEstesi.osi }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">< 120</p>
+                                <p class="negativeTesto">< 0</p>
                                 <div class="positiveTesto" id="middleTesto">
-                                    <p>65</p>
-                                    <p>41</p>
+                                    <p>< 40</p>
+                                    <p>40</p>
                                 </div>
-                                <p class="extremeNegativeRange"> 0</p>
+                                <p class="extremeNegativeRange">> 200</p>
                             </div>
                             {% if datiEstesi.osi %}
 
@@ -165,12 +163,12 @@
                         <p><span>Plasma Antioxidant Test (PAT):</span>{{ datiEstesi.pat }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
-                                <p class="negativeTesto">< 1800</p>
+                                <p class="negativeTesto">< 0</p>
                                 <div class="positiveTesto" id="middleTesto">
-                                    <p>1800</p>
-                                    <p>2270</p>
+                                    <p>2200</p>
+                                    <p>2800</p>
                                 </div>
-                                <p class="extremeNegativeRange">< 2800</p>
+                                <p class="extremeNegativeRange">> 5600</p>
                             </div>
                             {% if datiEstesi.pat %}
 
@@ -189,7 +187,14 @@
                             {% endif %}
                         </div>
                     </div>
-                    
+                </div>
+                <button id="generatePDFButton">Genera PDF</button>
+            </div>
+            <div class="exams-container">
+
+                <h3>All Exams Value</h3>
+
+                <div class="content-container">                    
                     <div class="indicator-container">
                         <p><span>fa_saturated:</span>{{ datiEstesi.fa_saturated }}</p>
                         <div class="indicator-content-container">
@@ -887,8 +892,8 @@
                         </div>
                     </div>
                 </div>
+                <button id="generatePDFButton">Genera PDF</button>
             </div>
-
 
             <!-- <div class="exams-container">
 
@@ -1298,8 +1303,6 @@
             </div> -->
         </div>
 
-
-        <button id="generatePDFButton">Genera PDF</button>
         <script>
             window.personaData = {
                 name: "{{ persona.name }}",

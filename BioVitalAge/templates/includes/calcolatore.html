@@ -59,16 +59,17 @@
                 <p class="Subtitle">Risultati</p>
 
                 <div class="valoriInseritiContainer">
+                        <h3>Oxidative Stress</h3>
                         <div class="indicator-container">
                             <p><span>d-ROMs:</span>{{ data.d_roms }}</p>
                             <div class="indicator-content-container">
                                 <div class="indicator">
-                                    <p class="negativeTesto">400 <</p>
+                                    <p class="negativeTesto">0 <</p>
                                     <div class="positiveTesto">
-                                        <p>300</p>
                                         <p>250</p>
+                                        <p>300</p>
                                     </div>
-                                    <p class="extremeNegativeRange">< 250</p>
+                                    <p class="extremeNegativeRange">> 1000</p>
                                 </div>
                             
                                 <div class="col-md-12 p-2 barra-container">
@@ -79,73 +80,15 @@
                         </div>
     
                         <div class="indicator-container">
-                            <p><span>AA/EPA Quotient:</span>{{ data.aa_epa_quotient }}</p>
+                            <p><span>Potential Antioxidant Test (PAT):</span>{{ data.pat }}</p>
                             <div class="indicator-content-container">
                                 <div class="indicator">
-                                    <p class="negativeTesto">15 <</p>
-                                    <div class="positiveTesto">
-                                        <p>3</p>
-                                        <p>1</p>
-                                    </div>
-                                    <p class="extremeNegativeRange">< 1</p>
-                                </div>
-                            
-                                <div class="col-md-12 p-2 barra-container">
-                                    <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ data.aa_epa }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
-                                </div>
-                            </div>
-                        </div>
-        
-                        <div class="indicator-container">
-                            <p><span>Cardiovascular Risk:</span>{{ data.cardiovascular_risk }}</p>
-                            <div class="indicator-content-container">
-                                <div class="indicator">
-                                    <p class="negativeTesto">< 20</p>
+                                    <p class="negativeTesto">< 0</p>
                                     <div class="positiveTesto" id="middleTesto">
-                                        <p>20</p>
-                                        <p>3</p>
+                                        <p>2200</p>
+                                        <p>2800</p>
                                     </div>
-                                    <p class="extremeNegativeRange">< 3</p>
-                                </div>
-                            
-                                <div class="col-md-12 p-2 barra-container">
-                                    <p class="barra-pointer" id="middleBar"></p>
-                                    <p class="barra-pointer-two"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ data.cardiovascular_risk }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
-                                </div>
-                            </div>
-                        </div>
-    
-                        <div class="indicator-container">
-                            <p><span>Oxidative Stress Index (OSI):</span>{{ data.osi }}</p>
-                            <div class="indicator-content-container">
-                                <div class="indicator">
-                                    <p class="negativeTesto">< 120</p>
-                                    <div class="positiveTesto" id="middleTesto">
-                                        <p>65</p>
-                                        <p>41</p>
-                                    </div>
-                                    <p class="extremeNegativeRange"> 0</p>
-                                </div>
-                                <div class="col-md-12 p-2 barra-container">
-                                    <p class="barra-pointer" id="middleBar"></p>
-                                    <p class="barra-pointer-two"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ data.osi }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="indicator-container">
-                            <p><span>Plasma Antioxidant Test (PAT):</span>{{ data.pat }}</p>
-                            <div class="indicator-content-container">
-                                <div class="indicator">
-                                    <p class="negativeTesto">< 1800</p>
-                                    <div class="positiveTesto" id="middleTesto">
-                                        <p>1800</p>
-                                        <p>2270</p>
-                                    </div>
-                                    <p class="extremeNegativeRange">< 2800</p>
+                                    <p class="extremeNegativeRange">< 5600</p>
                                 </div>
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer" id="middleBar"></p>
@@ -154,9 +97,30 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="indicator-container">
-                            <p><span>White Blood Cells (WBC):</span>{{ data.wbc }}</p>
+                            <p><span>Oxidative Stress Index (OSI):</span>{{ data.osi }}</p>
+                            <div class="indicator-content-container">
+                                <div class="indicator">
+                                    <p class="negativeTesto">< 0</p>
+                                    <div class="positiveTesto" id="middleTesto">
+                                        <p>< 40</p>
+                                        <p>40</p>
+                                    </div>
+                                    <p class="extremeNegativeRange">> 200</p>
+                                </div>
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer" id="middleBar"></p>
+                                    <p class="barra-pointer-two"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ data.osi }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <h3>Omega Screening</h3>
+                        <div class="indicator-container">
+                            <p><span>Saturated Fatty Acids:</span>{{ data.fa_saturated }}</p>
                             <div class="indicator-content-container">
                                 <div class="indicator">
                                     <p>min</p>
@@ -167,7 +131,6 @@
                                     <p class="barra-pointer-two"></p>
                                     <p id="indicator" class="indicatore" data-value="{{ data.wbc }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
-
                             </div>
                         </div>
                         
@@ -464,7 +427,6 @@
                                 </div>
                             </div>
                         </div>
-    
                 </div>
                 <div class="button-container-modal">
                     <button onclick="closeModal()">Chiudi</button>
