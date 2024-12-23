@@ -517,11 +517,11 @@
                     </div>                                     
                     <div class="form-group">
                         <label for="codice_fiscale">Codice Fiscale</label>
-                        <input type="text" id="codice_fiscale" name="codice_fiscale" required placeholder="Insert your codice fiscale">
+                        <input type="text" id="codice_fiscale" name="codice_fiscale" required placeholder="Insert your fiscal code">
                     </div>
                     <div class="form-group">
                         <label for="chronological_age">Chronological Age</label>
-                        <input type="number" id="chronological_age" name="chronological_age" required placeholder="Enter age">
+                        <input type="number" id="chronological_age" name="chronological_age" min="0" max="100" required placeholder="Enter chronological age">
                         <input type="range" id="chronological_age_range" name="chronological_age_range" min="0" max="100" value="0" oninput="chronological_age.value=this.value">
                     </div>
                 </div>
@@ -631,7 +631,7 @@
                     <div class="form-group">
                         <label for="neut_ul">Neutrophils (10^3/uL)</label>
                         <input type="number" step="0.1" id="neut_ul" name="neut_ul" placeholder="numeric value only">
-                        <input type="range" id="neut_ul_range" name="neut_ul_range" min="0" max="20" step="0.1" value="0" oninput="neut_ul.value=this.value">
+                        <input type="range" id="neut_ul_range" name="neut_ul_range" min="0" max="16" step="0.1" value="0" oninput="neut_ul.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="lymph_ul">Lymphocytes (10^3/uL)</label>
@@ -641,17 +641,17 @@
                     <div class="form-group" style="margin-top: -1.5rem;"> 
                         <label for="mono_ul">Monocytes (10^3/uL)</label>
                         <input type="number" step="0.1" id="mono_ul" name="mono_ul" placeholder="numeric value only">
-                        <input type="range" id="mono_ul_range" name="mono_ul_range" min="0" max="64" value="0" step="0.1" oninput="mono_ul.value=this.value">
+                        <input type="range" id="mono_ul_range" name="mono_ul_range" min="0" max="2" value="0" step="0.1" oninput="mono_ul.value=this.value">
                     </div>
                     <div class="form-group" style="margin-top: -1.5rem;">
                         <label for="eosi_ul">Eosinophils (10^3/uL)</label>
                         <input type="number" step="0.1" id="eosi_ul" name="eosi_ul" placeholder="numeric value only">
-                        <input type="range" id="eosi_ul_range" name="eosi_ul_range" min="0" max="74" value="0" step="0.1" oninput="eosi_ul.value=this.value">
+                        <input type="range" id="eosi_ul_range" name="eosi_ul_range" min="0" max="0.50" value="0" step="0.1" oninput="eosi_ul.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="baso_ul">Baso (10^3/uL)</label>
                         <input type="number" step="0.1" id="baso_ul" name="baso_ul" placeholder="numeric value only">
-                        <input type="range" id="baso_ul_range" name="baso_ul_range" min="0" max="200" value="0" step="0.1" oninput="baso_ul.value=this.value">
+                        <input type="range" id="baso_ul_range" name="baso_ul_range" min="0" max="0.2" value="0" step="0.1" oninput="baso_ul.value=this.value">
                     </div>
                 </div>
             </div>
@@ -719,7 +719,7 @@
                     <div class="form-group">
                         <label for="uric_acid">Uric Acid (mg/dL)</label>
                         <input type="number" step="0.1" id="uric_acid" name="uric_acid" placeholder="numeric value only">
-                        <input type="range" id="uric_acid_range" name="uric_acid_range" min="0" max="10" step="0.1" value="0" oninput="uric_acid.value=this.value">
+                        <input type="range" id="uric_acid_range" name="uric_acid_range" min="0" max="2" step="0.1" value="0" oninput="uric_acid.value=this.value">
                     </div>
                 </div>
             </div>
@@ -797,7 +797,7 @@
                     <div class="form-group">
                         <label for="mg">Magnesium (mg/dL)</label>
                         <input type="number" step="0.1" id="mg" name="mg" placeholder="numeric value only">
-                        <input type="range" id="mg_range" name="mg_range" min="0" max="5" value="0" step="0.1" oninput="mg.value=this.value">
+                        <input type="range" id="mg_range" name="mg_range" min="0" max="5\" value="0" step="0.1" oninput="mg.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="ci">Chlorides (mEq/L)</label>
