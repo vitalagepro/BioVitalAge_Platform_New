@@ -73,7 +73,10 @@
     <main>
       <!-- Breadcrumb -->
       <div class="main-title-nav">
-        <h2 class="main-welcome-title">Dati Base Paziente</h2>
+        <div class="back-tittle">
+          <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to folder"></a>
+          <h2 class="main-welcome-title">Dati Base {{ persona.name }} {{ persona.surname }}</h2>
+        </div>
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
             <img
@@ -82,8 +85,8 @@
               title="Home Page"
             />
           </a>
-          <p>»</p>
-          <p>Dati Base</p>
+          <span>»</span>
+          <span>Dati Base</span>
         </div>
       </div>
       <section class="container_data anagraphic_data">
