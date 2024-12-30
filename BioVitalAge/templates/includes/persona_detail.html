@@ -132,34 +132,7 @@
                             {% endif %}
                         </div>
                     </div>
-                    <div class="indicator-container">
-                        <p><span>Oxidative Stress Index (OSI):</span>{{ datiEstesi.osi }}</p>
-                        <div class="indicator-content-container">
-                            <div class="indicator">
-                                <p class="negativeTesto">0</p>
-                                <div class="positiveTesto" id="middleTesto">
-                                    <p>40</p>
-                                    <p>65</p>
-                                </div>
-                                <p class="extremeNegativeRange">> 200</p>
-                            </div>
-                            {% if datiEstesi.osi %}
 
-                                <div class="col-md-12 p-2 barra-container">
-                                    <p class="barra-pointer" id="middleBar"></p>
-                                    <p class="barra-pointer-two"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.osi }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
-                                </div>
-
-                            {% else %}
-
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ datiEstesi.osi }}"></p>
-                                </div>
-
-                            {% endif %}
-                        </div>
-                    </div>
                     <div class="indicator-container">
                         <p><span>Plasma Antioxidant Test (PAT):</span>{{ datiEstesi.pat }}</p>
                         <div class="indicator-content-container">
@@ -188,6 +161,37 @@
                             {% endif %}
                         </div>
                     </div>
+
+
+                    <div class="indicator-container">
+                        <p><span>Oxidative Stress Index (OSI):</span>{{ datiEstesi.osi }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">0</p>
+                                <div class="positiveTesto" id="middleTesto">
+                                    <p>40</p>
+                                    <p>65</p>
+                                </div>
+                                <p class="extremeNegativeRange">> 200</p>
+                            </div>
+                            {% if datiEstesi.osi %}
+
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer" id="middleBar"></p>
+                                    <p class="barra-pointer-two"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.osi }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                </div>
+
+                            {% else %}
+
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.osi }}"></p>
+                                </div>
+
+                            {% endif %}
+                        </div>
+                    </div>
+                    
                 </div>
                 <button id="generatePDFButton">Genera PDF</button>
             </div>
