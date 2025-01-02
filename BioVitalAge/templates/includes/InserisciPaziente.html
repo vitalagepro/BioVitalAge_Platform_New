@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href='../../../../static/includes/icone/favicon.png' type="image/x-icon">
+    <title>BioVitalAge - Inserisci Paziente</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'includes/homePage.css' %}" />
+    <link rel="stylesheet" href="{% static 'includes/InserisciPaziente.css' %}" />
+
+    <!-- Bootstrap import -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Font Import  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Js Import -->
+    <script src="{% static 'includes/js/HomePage.js' %}" defer></script>
+
+    <!-- Chart Import -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <header>
+      <nav
+        class="col-md-12 d-flex justify-content-between align-items-center nav-bar"
+      >
+        <div class="col-md-2 d-flex jus nav-bar-logo">
+          <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
+        </div>
+        <div class="col-md-8 nav-bar-linkage">
+            <a href="{% url 'HomePage' %}">HomePage</a>
+            <a href="{% url 'inserisci_paziente' %}" id="active">Inserisci Paziente</a>
+            <a href="{% url 'Calcolatore' %}">BioVitalAge Clock</a>
+            <a href="{% url 'Risultati' %}">Ricerca Pazienti</a>
+        </div>
+        <div class="col-md-2 nav-bar-user">
+          <h3>Demo User</h3>
+
+          <div class="img-container-user-nav-bar">
+            <img
+              id="userImg"
+              src="{% static 'includes/icone/username.png' %}"
+              alt="user"
+            />
+          </div>
+          <div class="nav-bar-user-modal" id="userModal">
+            <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">
+              log out
+            </button>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <div class="main-title-nav">
+       
+        <div class="main-menu-trace" title="Home Page">
+          <a href="{% url 'HomePage' %}">
+            <img src="{% static 'includes/icone/homePage.png' %}" alt="" />
+          </a>
+          <p>»</p>
+          <p>Inserisci Paziente</p>
+        </div>
+      </div>
+
+      <form method="POST" action="{% url 'inserisci_paziente' %}" class="form-container" id="age-form"> 
+        {% csrf_token %} 
+        <div class="section">
+            <h3>Patient Information</h3>
+            <div class="grid-container patient-info">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Insert your name">
+                </div>
+                <div class="form-group">
+                    <label for="surname">Surname</label>
+                    <input type="text" id="surname" name="surname" required placeholder="Insert your surname">
+                </div>
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" name="dob" >
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" >
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="place_of_birth">Place of Birth</label>
+                    <input type="text" id="place_of_birth" name="place_of_birth" required placeholder="Insert your place of birth">
+                </div>
+                <div class="form-group">
+                    <label for="province">Province</label>
+                    <input type="text" id="province" name="province" required placeholder="Enter province (e.g., RM)">
+                </div>                                     
+                <div class="form-group">
+                    <label for="codice_fiscale">Codice Fiscale</label>
+                    <input type="text" id="codice_fiscale" name="codice_fiscale" required placeholder="Insert your fiscal code">
+                </div>
+                <div class="form-group">
+                    <label for="chronological_age">Chronological Age</label>
+                    <input type="number" id="chronological_age" name="chronological_age" min="0" max="100" required placeholder="Enter chronological age">
+                    <input type="range" id="chronological_age_range" name="chronological_age_range" min="0" max="100" value="0" oninput="chronological_age.value=this.value">
+                </div>
+                <div class="form-group">
+                  <label for="name">Blood Group</label>
+                  <input type="text" id="name" name="name" placeholder="Insert your blood group">
+                </div>
+                <div class="form-group">
+                  <label for="surname">Factor rh</label>
+                  <input type="text" id="surname" name="surname" placeholder="Insert your factor rh">
+                </div>
+            </div>
+        </div>
+  
+        <section class="container_data table_data">
+          <h3>Informative Tables</h3>
+          <div class="table-container">
+            <div>
+              <div class="table-title">Anthropometric data</div>
+              <div class="responsive-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Height</th>
+                      <th>Weight</th>
+                      <th>BMI</th>
+                      <th>BMI detection date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input type="text" placeholder="165 cm" /></td>
+                      <td><input type="text" placeholder="60 kg" /></td>
+                      <td><input type="text" placeholder="22.0" /></td>
+                      <td><input type="date" placeholder="2023-08-20" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        
+            <div>
+              <div class="table-title">Abdominal girth</div>
+              <div class="responsive-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Girth value</th>
+                      <th>Notes</th>
+                      <th>Date measurement</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input type="text" placeholder="85 cm" /></td>
+                      <td><input type="text" placeholder="Normal" /></td>
+                      <td><input type="date" placeholder="2023-02-10" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        
+            <h3 class="category-title">Life style</h3>
+            <div>
+              <div class="table-title">Alcohol</div>
+              <div class="responsive-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Quantity of cc per day</th>
+                      <th>Taken alcohol</th>
+                      <th>Start day</th>
+                      <th>End day</th>
+                      <th>Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input type="text" placeholder="200 cc" /></td>
+                      <td><input type="text" placeholder="Wine" /></td>
+                      <td><input type="date" placeholder="2023-01-01" /></td>
+                      <td><input type="date" placeholder="2023-03-01" /></td>
+                      <td><input type="text" placeholder="Occasional" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        
+            <div>
+              <div class="table-title">Smoking</div>
+              <div class="responsive-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Daily quantity</th>
+                      <th>Type of smoke</th>
+                      <th>Start day</th>
+                      <th>End day</th>
+                      <th>Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input type="text" placeholder="5 cigarettes" /></td>
+                      <td><input type="text" placeholder="Light" /></td>
+                      <td><input type="date" placeholder="2022-01-01" /></td>
+                      <td><input type="date" placeholder="2022-12-31" /></td>
+                      <td><input type="text" placeholder="Reduced intake" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        
+            <div>
+              <div class="table-title">Sport</div>
+              <div class="responsive-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Sport played</th>
+                      <th>Level</th>
+                      <th>Start day</th>
+                      <th>End day</th>
+                      <th>Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input type="text" placeholder="Football" /></td>
+                      <td><input type="text" placeholder="Amateur" /></td>
+                      <td><input type="date" placeholder="2020-01-01" /></td>
+                      <td><input type="date" placeholder="2021-12-31" /></td>
+                      <td><input type="text" placeholder="Weekly" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="button-container">
+            <button id="salvaButton" type="submit" class="button-style">Salva Paziente</button>
+          </div>
+          
+        </section> 
+      </form>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

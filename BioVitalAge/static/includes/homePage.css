@@ -43,6 +43,90 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--contrast-color2);
 }
+
+
+
+/* BUTTON STYLE COMPONENTE */
+
+.button-style {
+  height: 80%;
+  width: 50%;
+  background-color: transparent;
+  border: 2px solid var(--contrast-color2);
+  box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 30px;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--tittle1);
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s;
+  z-index: 1;
+  height: 2rem;
+  width: 10rem;
+}
+.button-style::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  top: 0;
+  position: absolute;
+  left: 0;
+  background-color: var(--contrast-color2);
+  z-index: -1;
+  transition: width 0.4s ease;
+}
+.button-style::after {
+  content: "";
+  width: 0%;
+  height: 100%;
+  top: 0;
+  position: absolute;
+  right: 0;
+  background-color: var(--dark2);
+  z-index: -1;
+  transition: width 0.4s ease;
+}
+.button-style:hover::before {
+  width: 0;
+}
+.button-style:hover::after {
+  width: 100%;
+}
+.button-style:hover {
+  color: #d3d3d3;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Nav Bar Style */
 .nav-bar {
   position: fixed;
@@ -184,6 +268,56 @@ main {
 .banner-info h3 {
   font-size: 20px;
 }
+.banner-paziente{
+  background-color: var(--tittle1);
+  width: 48.5%;
+  height: 300px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+}
+
+.contenitore-inserisci-paziente{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+}
+
+.banner-backdrop{
+  position: absolute;
+  top: 0;
+  right: -2rem;
+  z-index: 1;
+}
+.banner-backdrop img{
+  width: 100%;
+  height: 350px;
+}
+
+.banner-content{
+  z-index: 10;
+}
+.banner-content h3{
+  color: var(--dark2);
+  padding-bottom: 20px;
+}
+.banner-content button{
+  margin-top: 2rem;
+}
+.banner-content .list-info{
+  margin-bottom: 0rem;
+}
+.banner-content span{
+  color: var(--contrast-color2);
+}
+
+
+
+
 #nameUser {
   padding-bottom: 20px;
   font-size: 30px;
@@ -504,9 +638,13 @@ main {
 }
 
 /* Tabella degli ultimi 5 pazienti */
+
+
+
 .recent-patients {
   background: var(--card-color);
-  padding: 20px;
+  margin: 1.2rem;
+  padding: 25px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -728,3 +866,4 @@ main {
 #card-style {
   background-color: var(--card-color);
 }
+

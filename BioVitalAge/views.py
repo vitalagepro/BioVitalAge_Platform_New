@@ -70,15 +70,11 @@ class HomePageRender(View):
                         return render(request, 'includes/login.html', {'error' : 'Email inserita non valida o non registrata' })
 
 
-
 def safe_float(data, key, default=0.0):
     try:
         return float(data.get(key, default))
     except (ValueError, TypeError):
         return default
-
-
-
 
 
 class CalcolatoreRender(View):
@@ -712,20 +708,6 @@ class CalcolatoreRender(View):
             return render(request, "includes/calcolatore.html", context)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class RisultatiRender(View):
     def get(self, request):
         persone = TabellaPazienti.objects.all()
@@ -803,4 +785,41 @@ class DatiBaseView(View):
         }
         return render(request, "includes/dati_base.html", context)
 
+
+class InserisciPazienteView(View):
+
+    def get(self, request):
+        return render(request, "includes/InserisciPaziente.html")
+    
+    def post(self, request):
+
+
+         # Ottieni il paziente con l'ID specificato
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        # Ottieni i 5 referti più recenti del paziente
+        referti_recenti = persona.referti.all().order_by('-data_referto')[:5]
+
+        # Ottieni i dati estesi associati a questi referti
+        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+
+        # Ottieni l'ultimo referto (il più recente)
+        ultimo_referto = referti_recenti.first() if referti_recenti else None
+
+       
+        # Ottieni i dati estesi dell'ultimo referto
+        dati_estesi_ultimo_referto = None
+        if ultimo_referto:
+            dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+
+
+        context = {
+            'persona': persona,
+            'referti_recenti': referti_recenti,
+            'dati_estesi': dati_estesi,
+            'ultimo_referto': ultimo_referto,
+            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto
+        }
+         
+        return render(request, "includes/cartellaPaziente.html", context)
 
