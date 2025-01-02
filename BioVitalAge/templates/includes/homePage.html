@@ -43,7 +43,7 @@
           <a href="{% url 'HomePage' %}" id="active">HomePage</a>
           <a href="{% url 'inserisci_paziente' %}">Inserisci Paziente</a>
           <a href="{% url 'Calcolatore' %}">BioVitalAge Clock</a>
-          <a href="{% url 'Risultati' %}">Ricerca Pazienti</a>
+          <a href="{% url 'Risultati' %}">Elenco Pazienti</a>
         </div>
 
         <div class="col-md-2 nav-bar-user">
@@ -77,38 +77,23 @@
         </div>
 
         <div class="linkage-container">
-          <a
-            href="#"
-            title="Notifiche"
-            class="sidebar-trigger"
-            data-section="Notifiche"
-          >
-            <img
-              src="{% static 'includes/icone/notifica.png' %}"
-              alt="icon-notify"
-            />
+          <a href="#" title="Notifiche" class="sidebar-trigger" data-section="Notifiche">
+            <img src="{% static 'includes/icone/notifica.png' %}" alt="icon-notify"/>
           </a>
-          <a
-            href="#"
-            title="Email"
-            class="sidebar-trigger"
-            data-section="Email"
-          >
-            <img
-              src="{% static 'includes/icone/email.png' %}"
-              alt="icon-email"
-            />
+          <a href="#" title="Email" class="sidebar-trigger" data-section="Email">
+            <img src="{% static 'includes/icone/email.png' %}" alt="icon-email"/>
           </a>
-          <a
-            href="#"
-            title="Update"
-            class="sidebar-trigger"
-            data-section="Update"
-          >
-            <img
-              src="{% static 'includes/icone/update.png' %}"
-              alt="icon-update"
-            />
+          <a href="#" title="Update" class="sidebar-trigger" data-section="Update">
+            <img src="{% static 'includes/icone/update.png' %}" alt="icon-update"/>
+          </a>
+          <a href="#" title="funzionalità" class="sidebar-trigger" data-section="Funzionalità">
+            <img src="{% static 'includes/icone/funzionalita.png' %}" alt="icon-funzionalità"/>
+          </a>
+          <a href="#" title="Configurazione" class="sidebar-trigger" data-section="Configurazione">
+            <img src="{% static 'includes/icone/configurazione.png' %}" alt="icon-Configurazione"/>
+          </a>
+          <a href="{% url 'statistiche' %}" title="Statistiche">
+            <img src="{% static 'includes/icone/statistiche.png' %}" alt="icon-statistiche"/>
           </a>
         </div>
 
@@ -173,77 +158,7 @@
         </div>
       </section>
     
-   
-      <div class="recent-patients">
-          <h2>Ultimi 5 Pazienti Visitati</h2>
-          <div class="risultati-ricerca">
-            <div class="table-placeholder">
-              <p class="cella">Name</p>
-              <p class="cella">Surname</p>
-              <p class="cella">Date of Birth</p>
-              <p class="cella">Codice Fiscale</p>
-              <p class="cella">Place of Birth</p>
-              <p class="cella">Chronological Age</p>
-              <p class="cella">Biological Age</p>
-              <p class="cella">Ultimo Referto</p>
-              <p class="cella">Cartella Paziente</p>
-            </div>
-            <div class="col-md-12 content-table">
-              {% for persona in persone %}
-              <div class="riga d-flex justify-content-between align-items-center">
-                <div class="cella">
-                  <p>{{ persona.name }}</p>
-                </div>
-                <div class="cella">
-                  <p>{{ persona.surname }}</p>
-                </div>
-                <div class="cella">
-                  <p>{{ persona.dob|date:"d/m/Y" }}</p>
-                </div>
-                <div class="cella">
-                  <p>{{ persona.codice_fiscale }}</p>
-                </div>
-                <div class="cella">
-                  <p>{{ persona.place_of_birth }}</p>
-                </div>
-                <div class="cella">
-                  <!-- Associa il dato corretto al paziente -->
-                  {% for dato in datiEstesi %}
-                    {% if dato.referto.paziente.id == persona.id %}
-                      <p>{{ dato.chronological_age }}</p>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-                <div class="cella">
-                  <!-- Associa il dato corretto al paziente -->
-                  {% for dato in datiEstesi %}
-                    {% if dato.referto.paziente.id == persona.id %}
-                      <p>{{ dato.biological_age }}</p>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-                <div class="cella">
-                  <a href="{% url 'persona_detail' persona.id %}">
-                    <img src="{% static 'includes/icone/referto.png' %}" alt="" />
-                  </a>
-                </div>
-                <div class="cella">
-                  <a href="{% url 'cartella_paziente' persona.id %}">
-                    <img src="{% static 'includes/icone/cartella.png' %}" alt="" />
-                  </a>
-                </div>
-                
-              </div>
-              {% empty %}
-              <p class="text-center">No results found</p>
-              {% endfor %}
-              
-            </div>
-          </div>
-      </div>   
-   
-
-      <div class="contenitore-inserisci-paziente">
+     <!--  <div class="contenitore-inserisci-paziente">
         <div class="banner-paziente">
           <div class="banner-backdrop">
             <img src="{% static 'includes/images/banner-home.png' %}" alt="">
@@ -266,8 +181,7 @@
             <button class="button-style" onclick="window.location.href='{% url 'inserisci_paziente' %}'">Aggiungi</button>
           </div>
         </div>
-      </div>
-
+      </div> -->
 
       <div class="cards">
         <div class="card" id="card-style">
@@ -285,55 +199,75 @@
           <p>52 anni</p>
         </div>
       </div>
-
-     
-
-      <div class="content">
-        <div class="charts-section">
-          <div class="chart-container">
-            <h3>Andamento Inserimento Pazienti</h3>
-            <canvas id="patientsChart"></canvas>
-          </div>
-          <div class="chart-container">
-            <h3>Pazienti Mensili</h3>
-            <canvas id="monthlyPatientsChart"></canvas>
-            <div id="monthlyTooltip" class="chartjs-tooltip"></div>
-          </div>
-        </div>
-
-        <div class="first-cards">
-          <div class="card bg-biological">
-            <div>
-              <h2>Età Biologica</h2>
-              <button onclick="goToPatientsPage()">Referti</button>
-            </div>
-            <div>
-              <img
-                src="../../static/includes/images/biological-item-banner.webp"
-                width="100px"
-                height="100px"
-                alt="biological-item-banner"
-              />
-            </div>
-          </div>
-          <div class="card bg-biological">
-            <div>
-              <h2>Ricerca Pazienti</h2>
-              <button onclick="goToPatientsPage()">Vedi Tutti</button>
-            </div>
-            <div>
-              <img
-                src="../../static/includes/images/search-patients-item.webp"
-                width="100px"
-                height="100px"
-                alt="serach-item-patients"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
         
-      
+      <div class="recent-patients">
+        <h2>Ultimi 5 Pazienti Visitati</h2>
+        <div class="risultati-ricerca">
+          <div class="table-placeholder">
+            <p class="cella">Name</p>
+            <p class="cella">Surname</p>
+            <p class="cella">Date of Birth</p>
+            <p class="cella">Codice Fiscale</p>
+            <p class="cella">Place of Birth</p>
+            <p class="cella">Chronological Age</p>
+            <p class="cella">Biological Age</p>
+            <p class="cella">Ultimo Referto</p>
+            <p class="cella">Cartella Paziente</p>
+          </div>
+          <div class="col-md-12 content-table">
+            {% for persona in persone %}
+            <div class="riga d-flex justify-content-between align-items-center">
+              <div class="cella">
+                <p>{{ persona.name }}</p>
+              </div>
+              <div class="cella">
+                <p>{{ persona.surname }}</p>
+              </div>
+              <div class="cella">
+                <p>{{ persona.dob|date:"d/m/Y" }}</p>
+              </div>
+              <div class="cella">
+                <p>{{ persona.codice_fiscale }}</p>
+              </div>
+              <div class="cella">
+                <p>{{ persona.place_of_birth }}</p>
+              </div>
+              <div class="cella">
+                <!-- Associa il dato corretto al paziente -->
+                {% for dato in datiEstesi %}
+                  {% if dato.referto.paziente.id == persona.id %}
+                    <p>{{ dato.chronological_age }}</p>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              <div class="cella">
+                <!-- Associa il dato corretto al paziente -->
+                {% for dato in datiEstesi %}
+                  {% if dato.referto.paziente.id == persona.id %}
+                    <p>{{ dato.biological_age }}</p>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              <div class="cella">
+                <a href="{% url 'persona_detail' persona.id %}">
+                  <img src="{% static 'includes/icone/referto.png' %}" alt="" />
+                </a>
+              </div>
+              <div class="cella">
+                <a href="{% url 'cartella_paziente' persona.id %}">
+                  <img src="{% static 'includes/icone/cartella.png' %}" alt="" />
+                </a>
+              </div>
+              
+            </div>
+            {% empty %}
+            <p class="text-center">No results found</p>
+            {% endfor %}
+            
+          </div>
+        </div>
+      </div>   
+ 
 
     </main>
 
