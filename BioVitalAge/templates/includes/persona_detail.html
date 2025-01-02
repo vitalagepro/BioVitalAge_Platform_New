@@ -2109,6 +2109,57 @@
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
             <div class="exams-container">
+                <h3>Diabetological setup</h3>
+
+                <div class="content-container">
+                    <div class="indicator-container">
+                        <p><span>Scatolo (µg/L):</span>{{ datiEstesi.scatolo }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p>min</p>
+                                <p>Max</p>
+                            </div>
+                            {% if datiEstesi.scatolo %}
+
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p data-value="{{ datiEstesi.scatolo }}"></p>
+                                </div>
+
+                            {% else %}
+
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.scatolo }}"></p>
+                                </div>
+
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="indicator-container">
+                        <p><span>Indicano (mg/L):</span>{{ datiEstesi.indicano }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p>min</p>
+                                <p>Max</p>
+                            </div>
+                            {% if datiEstesi.indicano %}
+
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p data-value="{{ datiEstesi.indicano }}"></p>
+                                </div>
+
+                            {% else %}
+
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.indicano }}"></p>
+                                </div>
+
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <button class="generatePDFButton">Genera PDF</button>
+            </div>
+            <div class="exams-container">
                 <h3>Other Exams</h3>
 
                 <div class="content-container">
