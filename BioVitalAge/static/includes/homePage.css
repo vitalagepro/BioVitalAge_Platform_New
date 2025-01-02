@@ -272,6 +272,7 @@ main {
   background-color: var(--tittle1);
   width: 48.5%;
   height: 300px;
+  overflow: hidden;
   border-radius: 8px;
   display: flex;
   justify-content: flex-start;
@@ -430,8 +431,8 @@ main {
 }
 .banner-info {
   background: var(--contrast-color);
-  background-image: url("../includes/images/banner-image.svg");
-  background-position: center;
+  background-image: url("../includes/images/banner-bg.png");
+  background-position: right;
   background-repeat: no-repeat;
   border-radius: 5px;
   position: relative;
@@ -487,16 +488,31 @@ main {
   width: 30px;
   height: 30px;
 }
-.banner-chart {
-  background: #3a255d;
-  display: flex;
-  align-items: center;
-  width: 480px;
-  height: 300px;
-  border-radius: 5px;
-  padding: 10px;
-  max-width: 100%;
+.appointment-card {
+  margin-top: 20px;
+  padding: 15px;
+  height: 100%;
 }
+
+.card {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 1em;
+  margin-bottom: 15px;
+}
+
 .content {
   padding: 0 20px 20px 20px;
 }
