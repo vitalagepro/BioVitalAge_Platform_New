@@ -823,3 +823,9 @@ class InserisciPazienteView(View):
          
         return render(request, "includes/cartellaPaziente.html", context)
 
+
+class StatisticheView(View):
+
+    def get(self, request):
+        return render(request, "includes/statistiche.html")
+    

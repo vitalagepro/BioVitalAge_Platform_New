@@ -47,7 +47,6 @@
 
 
 /* BUTTON STYLE COMPONENTE */
-
 .button-style {
   height: 80%;
   width: 50%;
@@ -99,27 +98,6 @@
 .button-style:hover {
   color: #d3d3d3;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -548,7 +526,6 @@ main {
   padding: 20px;
   flex-wrap: wrap;
 }
-
 .card {
   background: var(--card-color);
   padding: 20px;
@@ -654,12 +631,9 @@ main {
 }
 
 /* Tabella degli ultimi 5 pazienti */
-
-
-
 .recent-patients {
   background: var(--card-color);
-  margin: 1.2rem;
+  margin: 0rem 1.2rem 1.2rem 1.2rem;
   padding: 25px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
