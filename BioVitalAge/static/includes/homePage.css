@@ -103,7 +103,7 @@
   background: linear-gradient(90deg, var(--dark1), var(--dark2));
   height: 4.5rem;
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
-  z-index: 99999;
+  z-index: 6;
 }
 .nav-bar-logo {
   overflow: hidden;
@@ -383,17 +383,17 @@ main {
   transition: opacity 0.3s ease;
 }
 
-.linkage-container a[data-section="Funzionalità"] img{
+.linkage-container a[data-section="Funzionalità"] img {
   opacity: 0.8;
   transition: opacity 0.3s ease;
 }
 
-.linkage-container a[data-section="Configurazione"] img{
+.linkage-container a[data-section="Configurazione"] img {
   opacity: 0.8;
   transition: opacity 0.3s ease;
 }
 
-.linkage-container a[data-section="Statistiche"] img{
+.linkage-container a[data-section="Statistiche"] img {
   opacity: 0.8;
   transition: opacity 0.3s ease;
 }
@@ -703,7 +703,7 @@ main {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 9999999;
+  z-index: 9999999 !important;
   width: 500px;
   height: 100%;
   background-color: #f5f5f5;
@@ -870,10 +870,10 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
+  transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-.cella a:hover{
+.cella a:hover {
   transform: scale(1.1);
 }
 
@@ -882,7 +882,7 @@ main {
   max-height: 500px;
 }
 
-.content-table p{
+.content-table p {
   margin-bottom: 0 !important;
 }
 
@@ -912,7 +912,7 @@ main {
   overflow: auto;
   scrollbar-width: none; /* Per Firefox */
   -ms-overflow-style: none; /* Per Internet Explorer e Edge */
-  background-color: white;
+  background-color: var(--card-color);
   border-radius: 8px;
   position: relative;
 }
@@ -942,6 +942,7 @@ main {
   border: 1px solid var(--neutral-gray);
   display: flex;
   justify-content: space-between;
+  background: var(--contrast-color-shadow);
   align-items: center;
   height: 55px;
   width: 96%;
@@ -962,10 +963,21 @@ main {
   color: var(--dark1);
   font-size: 25px;
   width: 20%;
+  display: -webkit-box; /* Abilita il comportamento di line-clamp */
+  -webkit-line-clamp: 1; /* Numero di righe massimo */
+  -webkit-box-orient: vertical; /* Disposizione verticale delle righe */
+  overflow: hidden; /* Nasconde il testo eccedente */
+  text-overflow: ellipsis;  
+  margin: 0;
 }
 
 .info p {
   color: var(--contrast-color);
   width: 20%;
-  margin-top: 0.5rem;
+  margin: 0 !important;
+  display: -webkit-box; /* Abilita il comportamento di line-clamp */
+  -webkit-line-clamp: 1; /* Numero di righe massimo */
+  -webkit-box-orient: vertical; /* Disposizione verticale delle righe */
+  overflow: hidden; /* Nasconde il testo eccedente */
+  text-overflow: ellipsis;
 }

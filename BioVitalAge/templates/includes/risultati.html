@@ -61,7 +61,10 @@
 
         <div class="barra-ricerca">
           <select name="filter" id="filter">
-            <option value="name">Filtra per nomi</option>
+            <option value="name">Filtra per Nomi</option>
+            <option value="surname">Filtra per Cognomi</option>
+            <option value="fisc_code">Filtra per Codici Fiscali</option>
+            <option value="personal_association">Filtra per Personale Associato</option>
           </select>
             <form method="POST" action="#">
                 {% csrf_token %}
@@ -72,7 +75,11 @@
                 <!-- <input type="text" placeholder="Type name here" name="inputField" required>
                 <button type="submit">Search</button> -->
               </form>
-              <div></div>
+              <div class="button-container">
+                <a href="{% url 'inserisci_paziente' %}" title="Add Patient">
+                  <button class="button-style">Add Patient</button>
+                </a>
+              </div>
         </div>
 
         <div class="risultati-ricerca">

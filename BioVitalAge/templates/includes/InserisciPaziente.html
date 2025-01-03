@@ -66,12 +66,22 @@
     <main>
       <div class="main-title-nav">
        
-        <div class="main-menu-trace" title="Home Page">
-          <a href="{% url 'HomePage' %}">
-            <img src="{% static 'includes/icone/homePage.png' %}" alt="" />
-          </a>
-          <p>»</p>
-          <p>Inserisci Paziente</p>
+        <div class="main-title-nav">
+          <div class="back-tittle">
+            <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to patients"></a>
+            <h2 class="main-welcome-title">Patients</h2>
+          </div>
+          <div class="main-menu-trace">
+            <a href="{% url 'HomePage' %}">
+              <img
+                src="{% static 'includes/icone/homePage.png' %}"
+                alt="Home Page"
+                title="Home Page"
+              />
+            </a>
+            <span>»</span>
+            <span>Insert patient</span>
+          </div>
         </div>
       </div>
 
