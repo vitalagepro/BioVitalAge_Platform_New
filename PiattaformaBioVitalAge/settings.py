@@ -38,7 +38,6 @@ ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'BioVitalAge',
     'django.contrib.admin',
