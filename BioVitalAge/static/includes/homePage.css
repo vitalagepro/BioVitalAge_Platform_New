@@ -29,17 +29,14 @@
 ::-webkit-scrollbar {
   width: 12px; /* Puoi cambiare il valore in base alle tue preferenze */
 }
-
 ::-webkit-scrollbar-track {
   background: var(--dark2); /* Cambia qui il colore */
 }
-
 ::-webkit-scrollbar-thumb {
   background: var(--contrast-color); /* Colore al passaggio del mouse */
   border-radius: 7px; /* Angoli arrotondati */
   transition: background-color 0.3s ease; /* Transizione colore e trasformazione */
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: var(--contrast-color2);
 }
@@ -238,25 +235,28 @@ main {
     var(--dark2)
   );
 }
+
 .banner-info {
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  width: 55%;
 }
 .banner-info h3 {
   font-size: 20px;
 }
-.banner-paziente{
+/* .appointment-card{
   background-color: var(--tittle1);
-  width: 48.5%;
+  width: 45%;
   height: 300px;
+  overflow: hidden;
   border-radius: 8px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   padding: 20px;
   position: relative;
-}
+} */
 
 .contenitore-inserisci-paziente{
   display: flex;
@@ -408,8 +408,8 @@ main {
 }
 .banner-info {
   background: var(--contrast-color);
-  background-image: url("../includes/images/banner-image.svg");
-  background-position: center;
+  background-image: url("../includes/images/banner-bg.png");
+  background-position: right;
   background-repeat: no-repeat;
   border-radius: 5px;
   position: relative;
@@ -465,16 +465,31 @@ main {
   width: 30px;
   height: 30px;
 }
-.banner-chart {
-  background: #3a255d;
-  display: flex;
-  align-items: center;
-  width: 480px;
-  height: 300px;
-  border-radius: 5px;
-  padding: 10px;
-  max-width: 100%;
+.appointment-card {
+  margin-top: 20px;
+  padding: 15px;
+  height: 100%;
 }
+
+.card {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 1em;
+  margin-bottom: 15px;
+}
+
 .content {
   padding: 0 20px 20px 20px;
 }
@@ -839,5 +854,60 @@ main {
 
 #card-style {
   background-color: var(--card-color);
+}
+
+
+
+.appointment-container {
+  width: 45%;
+  height: 300px;
+  background-color: white;
+  border-radius: 8px;
+}
+.appoitment-title-container{
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+.appoitment-title-container h3{
+  color: var(--dark2);
+  font-size: 25px;
+}
+
+
+
+.appointment-card {
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid var(--neutral-gray);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 55px;
+  width: 96%;
+  margin: 2%;
+}
+.appointment-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.info{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.info h3{
+  color: var(--dark1);
+  font-size: 25px;
+  width: 20%;
+}
+
+
+.info p{
+  color: var(--contrast-color);
+  width: 20%;
+  margin-top: 0.5rem;
 }
 
