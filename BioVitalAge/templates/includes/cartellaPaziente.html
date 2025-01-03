@@ -30,14 +30,14 @@
 
         <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar ">
             <div class="col-md-2 d-flex jus nav-bar-logo">
-                <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®">
+                <a href="{% url 'HomePage' %}">
+                    <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
+                </a>
             </div>
             
             <div class="col-md-8 nav-bar-linkage">
-                <a href="{% url 'HomePage' %}">HomePage</a>
-                <a href="{% url 'inserisci_paziente' %}">Inserisci Paziente</a>
+                <a href="{% url 'Risultati' %}" id="active">Patients</a>
                 <a href="{% url 'Calcolatore' %}">BioVitalAge Clock</a>
-                <a href="{% url 'Risultati' %}" id="active">Elenco Pazienti</a>
             </div>
 
             <div class="col-md-2 nav-bar-user">
