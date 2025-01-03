@@ -18,9 +18,10 @@ ContainerIndicatori.forEach(element => {
     let rangeNegativeIndicator = element.querySelector('.negativeTesto').textContent.split(" ")[0];
     let extremeRightRangeIndicator = element.querySelector('.extremeNegativeRange').textContent.split(" ")[1]; 
     
+
  
     if(parseFloat(valoreEsame) <= parseFloat(minPositive) && parseFloat(valoreEsame) >= parseFloat(maxPositive)){
-        
+
         if(parseFloat(valoreEsame) == parseFloat(minPositive)){
             indicator.style.left = "28%";
         }
@@ -34,26 +35,38 @@ ContainerIndicatori.forEach(element => {
         }
     }
     else{
-        if(parseFloat(valoreEsame) > parseFloat(minPositive)){
 
-            if(parseFloat(valoreEsame) > parseFloat(rangeNegativeIndicator)){
+
+        if(parseFloat(valoreEsame) > parseFloat(rangeNegativeIndicator)){
+
+            if(parseFloat(valoreEsame) < parseFloat(rangeNegativeIndicator)){
                 indicator.style.left = "-3%";
+                console.log('sono qui')
             }
             else{
                 const percentuale = ((rangeNegativeIndicator - valoreEsame) / (rangeNegativeIndicator - minPositive)) * 30;
                 let fixedPercentuale = Math.round(percentuale) - 4;
+                if(fixedPercentuale < 0){
+                    fixedPercentuale = 1;
+                }
                 indicator.style.left = `${fixedPercentuale}%`;
+
+                console.log(fixedPercentuale)
             }
         }
 
         else{
-            if(parseFloat(valoreEsame) < parseFloat(extremeRightRangeIndicator)){
+
+            if(parseFloat(valoreEsame) > parseFloat(extremeRightRangeIndicator)){
                 indicator.style.left = "95%";
+                
             }
             else{
                 const percentuale = ((maxPositive - valoreEsame) / (maxPositive - extremeRightRangeIndicator)) * 30;
                 let fixedPercentuale = percentuale + 66;
                 indicator.style.left = `${fixedPercentuale}%`;
+
+
             }
         }
     } 

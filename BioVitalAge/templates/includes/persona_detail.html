@@ -12,6 +12,9 @@
 
     <!-- Js Import  -->
     <script src="{% static 'includes/js/indicatorNew.js' %}" defer></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="{% static 'includes/js/GeneratorePDF.js' %}" defer></script>
+
     
     <!-- Bootstrap import -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -72,31 +75,31 @@
                 <div class="card-content-container">    
                     <div class="detail-row">
                         <p><span>Name: </span></p>
-                        <p>{{ persona.name }}</p>
+                        <p id="name">{{ persona.name }}</p>
                     </div>
                     <div class="detail-row">
                         <p><span>Surname: </span></p>
-                        <p>{{ persona.surname }}</p>
+                        <p id="surname">{{ persona.surname }}</p>
                     </div>
                     <div class="detail-row">
                         <p><span>Date of Birth: </span></p>
-                        <p>{{ persona.dob|date:"d/m/Y" }}</p>
+                        <p id="dob">{{ persona.dob|date:"d/m/Y" }}</p>
                     </div>
                     <div class="detail-row">
                         <p><span>Codice Fiscale: </span></p>
-                        <p>{{ persona.codice_fiscale }}</p>
+                        <p id="codice_fiscale">{{ persona.codice_fiscale }}</p>
                     </div>
                     <div class="detail-row">
                         <p><span>Place of Birth: </span></p>
-                        <p>{{ persona.place_of_birth }}</p>
+                        <p id="place_birth">{{ persona.place_of_birth }}</p>
                     </div>
                     <div class="detail-row">
                         <p><span>Chronological Age: </span></p>
-                        <p>{{ persona.chronological_age }}</p>
+                        <p id="chronological_age">{{ persona.chronological_age }}</p>
                     </div>
                     <div class="detail-row">
                         <p><span>Biological Age: </span></p>
-                        <p>{{ datiEstesi.biological_age }}</span>
+                        <p id="biological_age">{{ datiEstesi.biological_age }}</span>
                     </div>
                 </div>  
             </div>
@@ -106,7 +109,7 @@
                 <h3>Oxidative Stress</h3>
                 <div class="content-container">
                     <div class="indicator-container">
-                        <p><span>d-ROMs:</span>{{ datiEstesi.d_roms }}</p>
+                        <p data-value="{{ datiEstesi.d_roms }}" id="d-ROMs"><span>d-ROMs:</span>{{ datiEstesi.d_roms }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -135,7 +138,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p><span>Plasma Antioxidant Test (PAT):</span>{{ datiEstesi.pat }}</p>
+                        <p data-value="{{ datiEstesi.pat }}" id="PAT"><span>Plasma Antioxidant Test (PAT):</span>{{ datiEstesi.pat }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -165,7 +168,7 @@
 
 
                     <div class="indicator-container">
-                        <p><span>Oxidative Stress Index (OSI):</span>{{ datiEstesi.osi }}</p>
+                        <p data-value="{{ datiEstesi.osi }}" id="OSI"><span>Oxidative Stress Index (OSI):</span>{{ datiEstesi.osi }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -194,8 +197,10 @@
                     </div>
                     
                 </div>
-                <button class="generatePDFButton">Genera PDF</button>
+                <button class="generatePDFButton" id="genereReportOS">Genera PDF</button>
+
             </div>
+
             <div class="exams-container">
                 <h3>Omega Screening</h3>
 
@@ -419,6 +424,7 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+
             <div class="exams-container">
                 <h3>White Blood Cells</h3>
 
@@ -667,6 +673,7 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+
             <div class="exams-container">
                 <h3>Red Blood Cells</h3>
 
@@ -850,6 +857,7 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+
             <div class="exams-container">
                 <h3>Renal Functionality</h3>
 
@@ -923,6 +931,7 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+
             <div class="exams-container">
                 <h3>Clotting status</h3>
 
@@ -1040,6 +1049,7 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+
             <div class="exams-container">
                 <h3>Lipid Appearance</h3>
 
@@ -1135,6 +1145,7 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+
             <div class="exams-container">
                 <h3>Minerals</h3>
 
@@ -1295,6 +1306,7 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+
             <div class="exams-container">
                 <h3>Martial trim</h3>
 
@@ -1368,6 +1380,7 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+
             <div class="exams-container">
                 <h3>Diabetological setup</h3>
 
@@ -1463,6 +1476,7 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+
             <div class="exams-container">
                 <h3>Proteins</h3>
 
@@ -1892,6 +1906,7 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+
             <div class="exams-container">
                 <h3>Liver Functionality</h3>
 
@@ -2057,6 +2072,7 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+
             <div class="exams-container">
                 <h3>Indices of phlogosis</h3>
 
@@ -2108,6 +2124,7 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+
             <div class="exams-container">
                 <h3>Diabetological setup</h3>
 
@@ -2159,6 +2176,7 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+
             <div class="exams-container">
                 <h3>Other Exams</h3>
 
@@ -2841,6 +2859,9 @@
 
         
         <script src="{% static 'includes/js/pdfGenerator.js' %}?v={{ timestamp }}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+        
+
     </main>
 
    
