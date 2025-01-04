@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href='../../../../static/includes/icone/favicon.png' type="image/x-icon">
-    <title>BioVitalAge - HomePage</title>
+    <title>BioVitalAge - Statistiche</title>
 
     {% load static %}
     <link rel="stylesheet" href="{% static 'includes/homePage.css' %}" />
@@ -35,19 +35,70 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 <body>
+      <!-- Loader -->
+      <div id="loading-wrapper">
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+      </div>  
     <div id="sidebar" class="bg-sidebar hidden"></div>
     <header>
       <nav
         class="col-md-12 d-flex justify-content-between align-items-center nav-bar"
       >
         <div class="col-md-2 d-flex jus nav-bar-logo">
-          <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
+            <a href="{% url 'HomePage' %}">
+              <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
+            </a>
         </div>
         <div class="col-md-8 nav-bar-linkage">
-          <a href="{% url 'HomePage' %}" id="active">HomePage</a>
-          <a href="{% url 'inserisci_paziente' %}">Inserisci Paziente</a>
+          <a href="{% url 'Risultati' %}">Patients</a>
           <a href="{% url 'Calcolatore' %}">BioVitalAge Clock</a>
-          <a href="{% url 'Risultati' %}">Elenco Pazienti</a>
         </div>
 
         <div class="col-md-2 nav-bar-user">

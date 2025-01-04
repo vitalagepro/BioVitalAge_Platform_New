@@ -23,16 +23,67 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 </head>
 <body>
+      <!-- Loader -->
+      <div id="loading-wrapper">
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+        <div class="spin-wrapper">
+          <div class="circle"></div>
+          <div class="circle"></div>
+        </div>
+      </div>  
     <header>
         <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar ">
             <div class="col-md-2 d-flex jus nav-bar-logo">
-                <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®">
+                <a href="{% url 'HomePage' %}">
+                  <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
+                </a>
             </div>
             <div class="col-md-8 nav-bar-linkage">
-              <a href="{% url 'HomePage' %}">HomePage</a>
-              <a href="{% url 'inserisci_paziente' %}">Inserisci Paziente</a>
+              <a href="{% url 'Risultati' %}" id="active">Patients</a>
               <a href="{% url 'Calcolatore' %}">BioVitalAge Clock</a>
-              <a href="{% url 'Risultati' %}" id="active">Elenco Pazienti</a>
           </div>
 
             <div class="col-md-2 nav-bar-user">
@@ -61,7 +112,10 @@
 
         <div class="barra-ricerca">
           <select name="filter" id="filter">
-            <option value="name">Filtra per nomi</option>
+            <option value="name">Filtra per Nomi</option>
+            <option value="surname">Filtra per Cognomi</option>
+            <option value="fisc_code">Filtra per Codici Fiscali</option>
+            <option value="personal_association">Filtra per Personale Associato</option>
           </select>
             <form method="POST" action="#">
                 {% csrf_token %}
@@ -72,7 +126,11 @@
                 <!-- <input type="text" placeholder="Type name here" name="inputField" required>
                 <button type="submit">Search</button> -->
               </form>
-              <div></div>
+              <div class="button-container">
+                <a href="{% url 'inserisci_paziente' %}" title="Add Patient">
+                  <button class="button-style">Add Patient</button>
+                </a>
+              </div>
         </div>
 
         <div class="risultati-ricerca">
@@ -140,6 +198,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+      // Funzione che imposta "opacity: 0" e "z-index: -1" dopo 3 secondi
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(() => {
+          document.getElementById("loading-wrapper").style.opacity = "0";
+          document.getElementById("loading-wrapper").style.zIndex = "-1";
+        }, 500);
+      });
+
       const userImg = document.getElementById("userImg");
       const userModal = document.getElementById("userModal");
       const userModalBtn = document.getElementById("nav-bar-user-modal-btn");

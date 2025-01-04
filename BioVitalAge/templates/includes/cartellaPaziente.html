@@ -23,6 +23,57 @@
 </head>
 
 <body>
+        <!-- Loader -->
+        <div id="loading-wrapper">
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+          </div>      
     <header>
         <div class="nav-bar-user-modal" id="userModal">
             <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">log out</button>
@@ -30,14 +81,14 @@
 
         <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar ">
             <div class="col-md-2 d-flex jus nav-bar-logo">
-                <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®">
+                <a href="{% url 'HomePage' %}">
+                    <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
+                </a>
             </div>
             
             <div class="col-md-8 nav-bar-linkage">
-                <a href="{% url 'HomePage' %}">HomePage</a>
-                <a href="{% url 'inserisci_paziente' %}">Inserisci Paziente</a>
+                <a href="{% url 'Risultati' %}" id="active">Patients</a>
                 <a href="{% url 'Calcolatore' %}">BioVitalAge Clock</a>
-                <a href="{% url 'Risultati' %}" id="active">Elenco Pazienti</a>
             </div>
 
             <div class="col-md-2 nav-bar-user">
@@ -84,6 +135,12 @@
                     <p><strong>Codice Fiscale:</strong> &nbsp;  {{ persona.codice_fiscale }}</p>
                     <p><strong>Luogo di Nascita:</strong> &nbsp; {{ persona.place_of_birth }}</p>
                     <p><strong>Età Cronologica:</strong> &nbsp; {{ persona.chronological_age }}</p>
+                    <p><strong>Ind. Residenza:</strong> &nbsp; {{ persona.residence }}</p>
+                    <p><strong>Città di Residenza:</strong> &nbsp; {{ persona.residence_city }}</p>
+                    <p><strong>Telefono:</strong> &nbsp; {{ persona.phone }}</p>
+                    <p><strong>CAP:</strong> &nbsp; {{ persona.cap }}</p>
+                    <p><strong>Mail:</strong> &nbsp; {{ persona.email }}</p>
+                    <p><strong>Personale Associato:</strong> &nbsp; {{ persona.associated_personal }}</p>
                 </div>
             </div>
         </div>

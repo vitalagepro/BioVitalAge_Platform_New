@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href='../../../../static/includes/icone/favicon.png' type="image/x-icon">
-    <title>BioVitalAge - HomePage</title>
+    <title>BioVitalAge - Report</title>
 
     {% load static %}
     <link rel="stylesheet" href="{% static 'includes/persona_detail.css' %}">
@@ -27,16 +27,67 @@
     <script src="{% static 'includes/js/pdfGenerator.js' %}" defer></script>
 </head>
 <body>
+        <!-- Loader -->
+        <div id="loading-wrapper">
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+            <div class="spin-wrapper">
+              <div class="circle"></div>
+              <div class="circle"></div>
+            </div>
+          </div>      
     <header>
         <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar ">
             <div class="col-md-2 d-flex jus  nav-bar-logo">
-                <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®">
+                <a href="{% url 'HomePage' %}">
+                    <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
+                </a>
             </div>
             <div class="col-md-8 nav-bar-linkage">
-                <a href="{% url 'HomePage' %}">HomePage</a>
-                <a href="{% url 'inserisci_paziente' %}" id="active">Inserisci Paziente</a>
+                <a href="{% url 'Risultati' %}">Patients</a>
                 <a href="{% url 'Calcolatore' %}">BioVitalAge Clock</a>
-                <a href="{% url 'Risultati' %}">Elenco Pazienti</a>
             </div>
 
             <div class="col-md-2 nav-bar-user">
@@ -57,7 +108,7 @@
         <div class="main-title-nav">
             <div class="back-tittle">
                 <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to Results"></a>
-                <h2 class="main-welcome-title">Report Paziente, {{ persona.name }} {{ persona.surname }}</h2>
+                <h2 class="main-welcome-title">Report Patient, {{ persona.name }} {{ persona.surname }}</h2>
             </div>
            
             <div class="main-menu-trace">
@@ -2859,8 +2910,7 @@
 
         
         <script src="{% static 'includes/js/pdfGenerator.js' %}?v={{ timestamp }}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>        
 
     </main>
 

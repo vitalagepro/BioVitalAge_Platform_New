@@ -32,18 +32,69 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
+        <!-- Loader -->
+        <div id="loading-wrapper">
+          <div class="spin-wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+          <div class="spin-wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+          <div class="spin-wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+          <div class="spin-wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+          <div class="spin-wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+          <div class="spin-wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+          <div class="spin-wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+          <div class="spin-wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+          <div class="spin-wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+          <div class="spin-wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+          <div class="spin-wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+          <div class="spin-wrapper">
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+        </div>    
     <header>
       <nav
         class="col-md-12 d-flex justify-content-between align-items-center nav-bar"
       >
         <div class="col-md-2 d-flex jus nav-bar-logo">
-          <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
+            <a href="{% url 'HomePage' %}">
+              <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
+            </a>
         </div>
         <div class="col-md-8 nav-bar-linkage">
-            <a href="{% url 'HomePage' %}">HomePage</a>
-            <a href="{% url 'inserisci_paziente' %}" id="active">Inserisci Paziente</a>
+          <a href="{% url 'Risultati' %}">Patients</a>
             <a href="{% url 'Calcolatore' %}">BioVitalAge Clock</a>
-            <a href="{% url 'Risultati' %}">Elenco Pazienti</a>
         </div>
         <div class="col-md-2 nav-bar-user">
           <h3>Demo User</h3>
@@ -66,12 +117,22 @@
     <main>
       <div class="main-title-nav">
        
-        <div class="main-menu-trace" title="Home Page">
-          <a href="{% url 'HomePage' %}">
-            <img src="{% static 'includes/icone/homePage.png' %}" alt="" />
-          </a>
-          <p>»</p>
-          <p>Inserisci Paziente</p>
+        <div class="main-title-nav">
+          <div class="back-tittle">
+            <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to patients"></a>
+            <h2 class="main-welcome-title">Patients</h2>
+          </div>
+          <div class="main-menu-trace">
+            <a href="{% url 'HomePage' %}">
+              <img
+                src="{% static 'includes/icone/homePage.png' %}"
+                alt="Home Page"
+                title="Home Page"
+              />
+            </a>
+            <span>»</span>
+            <span>Insert patient</span>
+          </div>
         </div>
       </div>
 
