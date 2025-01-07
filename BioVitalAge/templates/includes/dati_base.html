@@ -164,7 +164,7 @@
           <div class="info_container">
             <div>
               <span class="field">Age:&nbsp;</span>
-              <span id="age">{{ dati_estesi_ultimo_referto.chronological_age }}</span>
+              <span id="age">{{ persona.chronological_age }}</span>
             </div>
             <div>
               <span class="field">Date of birth:&nbsp;</span>
@@ -181,21 +181,6 @@
               <span id="phone">345 369 1687</span>
             </div>
           </div>
-        </div>
-      </section>
-      <section class="container_data blood_data">
-        <div class="container_input">
-          <div class="blood_group_container">
-            <h3>Blood Group</h3>
-            <input type="text" readonly id="blood_group" />
-          </div>
-          <div class="rh_container">
-            <h3>Factor rh</h3>
-            <input type="text" readonly id="rh" />
-          </div>
-        </div>
-        <div class="btn_blood_group_container">
-          <button id="btn_blood_group">Update</button>
         </div>
       </section>
       <section class="container_data table_data">
@@ -444,6 +429,21 @@
               <button class="edit-save-btn">Edit</button>
             </div>
           </div>
+        </div>
+      </section>
+      <section class="container_data blood_data">
+        <div class="container_input">
+          <div class="blood_group_container">
+            <h3>Blood Group</h3>
+            <input type="text" readonly id="blood_group" />
+          </div>
+          <div class="rh_container">
+            <h3>Factor rh</h3>
+            <input type="text" readonly id="rh" />
+          </div>
+        </div>
+        <div class="btn_blood_group_container">
+          <button id="btn_blood_group">Update</button>
         </div>
       </section>
     </main>

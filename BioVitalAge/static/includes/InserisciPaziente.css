@@ -100,11 +100,29 @@ input[type="range"] {
     margin-top: 50px;
     margin-bottom: 30px;
 }
+.table-container-lifestyle {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    color: var(--light1);
+    margin-bottom: 25px;
+}
 .table-title {
     padding-bottom: 20px;
     padding-top: 20px;
     color: var(--dark2);
+    font-weight: bolder;
 }
+.lifestyle{
+    background: var(--contrast-color2);
+    color: white;
+    padding-left: 20px;
+}
+
+.container-card{
+    padding: 20px;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -139,7 +157,10 @@ td input{
 
 .responsive-table {
     overflow-x: auto;
+    transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
     border: 1px solid #ddd;
+    height: 130px;
+    margin-top: 20px;
 }
 .button-container{
     display: flex;
@@ -149,4 +170,11 @@ td input{
     margin-top: 2rem;
     height: 3rem;
     width: 15rem;
+}
+
+.hidden{
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+    margin-top: 0;
 }
