@@ -21,6 +21,14 @@ function goToRefertiPage() {
   alert("Vai alla pagina dei referti dei pazienti");
 }
 
+// Funzione che imposta "opacity: 0" e "z-index: -1" dopo 3 secondi
+document.addEventListener("DOMContentLoaded", function () {
+  setTimeout(() => {
+    document.getElementById("loading-wrapper").style.opacity = "0";
+    document.getElementById("loading-wrapper").style.zIndex = "-1";
+  }, 500);
+});
+
 // Grafici
 const weeklyCtx = document.getElementById("weeklyPatientsChart");
 new Chart(weeklyCtx, {
@@ -78,7 +86,7 @@ new Chart(patientsCtx, {
       {
         label: "Pazienti Inseriti",
         data: [30, 45, 60, 50, 41, 66, 30, 50, 70, 90, 100, 120],
-        backgroundColor: "#3a255d",
+        backgroundColor: "#6a2dcc",
         categoryPercentage: 2.8, // Maggior spazio tra le categorie
         barPercentage: 0.1, // Barre più sottili
       },
@@ -122,7 +130,7 @@ const monthlyData = {
     {
       label: "Pazienti Mensili",
       data: [40, 60, 55, 70, 80, 90, 100, 85, 75, 95, 110, 120],
-      backgroundColor: "#3a255d",
+      backgroundColor: "#c3b0ec",
       borderColor: "#6a2dcc",
       borderWidth: 2,
       fill: true,
