@@ -118,6 +118,10 @@ form ion-icon {
     opacity: 0.8;
 }
 
+.button-container{
+  margin-right: 20px;
+}
+
 .input:focus,
 .input:focus-visible {
   border-color: var(--contrast-color2);
