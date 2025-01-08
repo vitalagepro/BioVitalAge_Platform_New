@@ -51,12 +51,12 @@ class TabellaPazienti(models.Model):
     reduced_intake = models.CharField(max_length=100, blank=True, null=True)
 
     # Sport
-    sport = models.BooleanField(default=False, null=True)
+    sport = models.CharField(default=False,max_length=100, null=True)
     sport_livello = models.CharField(max_length=100, blank=True, null=True)
     sport_frequency = models.CharField(max_length=100, blank=True, null=True)
 
     # Sedentarietà
-    attivita_sedentaria = models.BooleanField(default=False, null=True)
+    attivita_sedentaria = models.CharField(default=False,max_length=100, null=True)
     livello_sedentarieta = models.CharField(max_length=100, blank=True, null=True)
     sedentarieta_nota = models.TextField(blank=True, null=True)
 

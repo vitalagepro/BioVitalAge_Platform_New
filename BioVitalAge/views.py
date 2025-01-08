@@ -5,6 +5,7 @@ from .utils import calculate_biological_age
 from django.contrib.sessions.models import Session
 from django.db.models import OuterRef, Subquery
 from django.db import transaction
+from django.contrib import messages
 
 # Create your views here.
 
@@ -69,6 +70,11 @@ class HomePageRender(View):
                     else:
                         return render(request, 'includes/login.html', {'error' : 'Email inserita non valida o non registrata' })
 
+class StatisticheView(View):
+
+    def get(self, request):
+        return render(request, "includes/statistiche.html")
+    
 
 def safe_float(data, key, default=0.0):
     try:
@@ -79,9 +85,17 @@ def safe_float(data, key, default=0.0):
 
 class CalcolatoreRender(View):
     def get(self, request):
-        return render(request, 'includes/calcolatore.html')
 
+        codice_fiscale = request.GET.get('parametro')
 
+        if codice_fiscale:
+            paziente = TabellaPazienti.objects.get(codice_fiscale=codice_fiscale)
+            return render(request, 'includes/calcolatore.html', {'paziente': paziente})
+        
+        else:
+            return render(request, 'includes/calcolatore.html')
+
+        
     def post(self, request):
         data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
         dottore_id = request.session.get('dottore_id')
@@ -778,116 +792,112 @@ class CartellaPazienteView(View):
         return render(request, "includes/cartellaPaziente.html", context)
 
 class DatiBaseView(View):
+
     def get(self, request, id):
         persona = get_object_or_404(TabellaPazienti, id=id)
         context = {
             'persona': persona,
         }
         return render(request, "includes/dati_base.html", context)
-
-
+    
 class InserisciPazienteView(View):
 
     def get(self, request):
         return render(request, "includes/InserisciPaziente.html")
     
-    def post(self,request):
 
+    def post(self, request):
         dottore = request.user.utentiregistraticredenziali if hasattr(request.user, 'utentiregistraticredenziali') else None
         codice_fiscale = request.POST.get('codice_fiscale')
+
         paziente_esistente = TabellaPazienti.objects.filter(codice_fiscale=codice_fiscale).first()
 
+        def parse_date(date_str):
+            return date_str if date_str else None
+
         if paziente_esistente:
-            paziente_esistente.height = request.POST.get('height') or paziente_esistente.height
-            paziente_esistente.weight = request.POST.get('weight') or paziente_esistente.weight
-            paziente_esistente.bmi = request.POST.get('bmi') or paziente_esistente.bmi
-            paziente_esistente.bmi_detection_date = request.POST.get('bmi_detection_date') or paziente_esistente.bmi_detection_date
 
-            paziente_esistente.girth_value = request.POST.get('girth_value') or paziente_esistente.girth_value
-            paziente_esistente.girth_notes = request.POST.get('girth_notes') or paziente_esistente.girth_notes
-            paziente_esistente.girth_date = request.POST.get('girth_date') or paziente_esistente.girth_date
+            paziente_esistente.height = request.POST.get('height')
+            paziente_esistente.weight = request.POST.get('weight')
+            paziente_esistente.bmi = request.POST.get('bmi')
+            paziente_esistente.bmi_detection_date = parse_date(request.POST.get('bmi_detection_date'))
 
-            paziente_esistente.alcol = request.POST.get('alcol') == 'on'
-            paziente_esistente.alcol_type = request.POST.get('alcol_type') or paziente_esistente.alcol_type
-            paziente_esistente.data_alcol = request.POST.get('data_alcol') or paziente_esistente.data_alcol
-            paziente_esistente.alcol_frequency = request.POST.get('alcol_frequency') or paziente_esistente.alcol_frequency
 
-            paziente_esistente.smoke = request.POST.get('smoke') == 'on'
-            paziente_esistente.smoke_frequency = request.POST.get('smoke_frequency') or paziente_esistente.smoke_frequency
-            paziente_esistente.reduced_intake = request.POST.get('reduced_intake') or paziente_esistente.reduced_intake
+            paziente_esistente.girth_value = request.POST.get('girth_value')
+            paziente_esistente.girth_notes = request.POST.get('girth_notes')
+            paziente_esistente.girth_date = parse_date(request.POST.get('girth_date'))
 
-            paziente_esistente.sport = request.POST.get('sport') == 'on'
-            paziente_esistente.sport_livello = request.POST.get('sport_livello') or paziente_esistente.sport_livello
-            paziente_esistente.sport_frequency = request.POST.get('sport_frequency') or paziente_esistente.sport_frequency
+    
+            paziente_esistente.alcol = request.POST.get('alcol') 
+            paziente_esistente.alcol_type = request.POST.get('alcol_type')
+            paziente_esistente.data_alcol = parse_date(request.POST.get('data_alcol'))
+            paziente_esistente.alcol_frequency = request.POST.get('alcol_frequency')
 
-            paziente_esistente.attivita_sedentaria = request.POST.get('attivita_sedentaria') == 'on'
-            paziente_esistente.livello_sedentarieta = request.POST.get('livello_sedentarieta') or paziente_esistente.livello_sedentarieta
-            paziente_esistente.sedentarieta_nota = request.POST.get('sedentarieta_nota') or paziente_esistente.sedentarieta_nota
+    
+            paziente_esistente.smoke = request.POST.get('smoke') 
+            paziente_esistente.smoke_frequency = request.POST.get('smoke_frequency')
+            paziente_esistente.reduced_intake = request.POST.get('reduced_intake')
+
+            paziente_esistente.sport = request.POST.get('sport') 
+            paziente_esistente.sport_livello = request.POST.get('sport_livello')
+            paziente_esistente.sport_frequency = request.POST.get('sport_frequency')
+
+            paziente_esistente.attivita_sedentaria = request.POST.get('attivita_sedentaria')
+            paziente_esistente.livello_sedentarieta = request.POST.get('livello_sedentarieta')
+            paziente_esistente.sedentarieta_nota = request.POST.get('sedentarieta_nota')
+
+          
+            print(request.POST.get('sport'))
+           
 
             paziente_esistente.save()
-      
+            messages.success(request, "I dati del paziente sono stati aggiornati con successo!")
+
         else:
+            # Creazione di un nuovo paziente con la stessa gestione per le date
             TabellaPazienti.objects.create(
                 dottore=dottore,
                 name=request.POST.get('name'),
                 surname=request.POST.get('surname'),
-                dob=request.POST.get('dob') if request.POST.get('dob') else None,
+                dob=parse_date(request.POST.get('dob')),
                 gender=request.POST.get('gender'),
                 place_of_birth=request.POST.get('place_of_birth'),
                 codice_fiscale=codice_fiscale,
                 chronological_age=request.POST.get('chronological_age'),
 
+                # Dati antropometrici
                 height=request.POST.get('height'),
                 weight=request.POST.get('weight'),
                 bmi=request.POST.get('bmi'),
-                bmi_detection_date=request.POST.get('bmi_detection_date'),
+                bmi_detection_date=parse_date(request.POST.get('bmi_detection_date')),
 
+                # Circonferenza addominale
                 girth_value=request.POST.get('girth_value'),
                 girth_notes=request.POST.get('girth_notes'),
-                girth_date=request.POST.get('girth_date'),
+                girth_date=parse_date(request.POST.get('girth_date')),
 
+                # Alcol
                 alcol=request.POST.get('alcol') == 'on',
                 alcol_type=request.POST.get('alcol_type'),
-                data_alcol=request.POST.get('data_alcol'),
+                data_alcol=parse_date(request.POST.get('data_alcol')),
                 alcol_frequency=request.POST.get('alcol_frequency'),
 
+                # Fumo
                 smoke=request.POST.get('smoke') == 'on',
                 smoke_frequency=request.POST.get('smoke_frequency'),
                 reduced_intake=request.POST.get('reduced_intake'),
 
+                # Sport
                 sport=request.POST.get('sport') == 'on',
                 sport_livello=request.POST.get('sport_livello'),
                 sport_frequency=request.POST.get('sport_frequency'),
 
+                # Sedentarietà
                 attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on',
                 livello_sedentarieta=request.POST.get('livello_sedentarieta'),
                 sedentarieta_nota=request.POST.get('sedentarieta_nota'),
             )
-       
+            messages.success(request, "Nuovo paziente salvato con successo!")
+
         return render(request, "includes/InserisciPaziente.html")
 
-
-
-class StatisticheView(View):
-
-    def get(self, request):
-        return render(request, "includes/statistiche.html")
-    
-
-
-# persona = get_object_or_404(TabellaPazienti, id=id)
-  #      referti_recenti = persona.referti.all().order_by('-data_referto')[:5]
-  #      dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
-    #    ultimo_referto = referti_recenti.first() if referti_recenti else None
-
-   #     dati_estesi_ultimo_referto = None
-   #     if ultimo_referto:
-    #        dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
-
-      #  context = {
-        #    'persona': persona,
-        #    'referti_recenti': referti_recenti,
-        #    'dati_estesi': dati_estesi,
-        #    'ultimo_referto': ultimo_referto,
-          #  'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto
-        #} 

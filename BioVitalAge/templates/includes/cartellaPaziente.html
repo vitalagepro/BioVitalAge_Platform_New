@@ -24,7 +24,7 @@
 
 <body>
         <!-- Loader -->
-        <div id="loading-wrapper">
+    <div id="loading-wrapper">
             <div class="spin-wrapper">
               <div class="circle"></div>
               <div class="circle"></div>
@@ -73,7 +73,8 @@
               <div class="circle"></div>
               <div class="circle"></div>
             </div>
-          </div>      
+    </div>
+
     <header>
         <div class="nav-bar-user-modal" id="userModal">
             <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">log out</button>
@@ -401,7 +402,7 @@
             <div class="card8">
                 <div class="backdrop"></div>
                 <h2>Calcola L'età Biologica</h2>
-                <button class="button-style">Clicca qui</button>
+                <a  href="{% url 'Calcolatore' %}?parametro={{ persona.codice_fiscale|urlencode }}" class="button-style"  style="text-decoration: none; margin-left: 2.5rem; padding-left: 25px; padding-top: 2px;">Clicca qui</a>
             </div>
         </div>
 
