@@ -114,8 +114,8 @@ input[type="range"] {
     font-weight: bolder;
 }
 .lifestyle{
-    background: var(--contrast-color2);
-    color: white;
+    background: var(--contrast-color-shadow);
+    color: var(--dark1);
     padding-left: 20px;
 }
 
