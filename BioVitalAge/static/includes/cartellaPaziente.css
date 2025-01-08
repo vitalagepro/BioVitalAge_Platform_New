@@ -63,7 +63,7 @@
     padding-right: 10px;
 }
 .button-grid a img{
-    transition: transform 0.3s ease-in-out;
+    transition: all 0.2s cubic-bezier(.215, .61, .355, 1);
     width: 40px;
     height: 40px;
 }
@@ -409,4 +409,27 @@ strong{
 
 .risultati-ricerca{
     border: 1px solid var(--contrast-color-shadow);
+}
+
+.container-datiPersonali{
+    position: relative;
+}
+
+.privacy-icon-container{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
+.privacy-icon img{
+    width: 45px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
+}
+
+.privacy-icon img:hover{
+    transform: scale(1.1);
 }
