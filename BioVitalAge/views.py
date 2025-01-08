@@ -791,37 +791,81 @@ class InserisciPazienteView(View):
     def get(self, request):
         return render(request, "includes/InserisciPaziente.html")
     
-    def post(self, request):
+    def post(self,request):
 
+        dottore = request.user.utentiregistraticredenziali if hasattr(request.user, 'utentiregistraticredenziali') else None
+        codice_fiscale = request.POST.get('codice_fiscale')
+        paziente_esistente = TabellaPazienti.objects.filter(codice_fiscale=codice_fiscale).first()
 
-         # Ottieni il paziente con l'ID specificato
-        persona = get_object_or_404(TabellaPazienti, id=id)
+        if paziente_esistente:
+            paziente_esistente.height = request.POST.get('height') or paziente_esistente.height
+            paziente_esistente.weight = request.POST.get('weight') or paziente_esistente.weight
+            paziente_esistente.bmi = request.POST.get('bmi') or paziente_esistente.bmi
+            paziente_esistente.bmi_detection_date = request.POST.get('bmi_detection_date') or paziente_esistente.bmi_detection_date
 
-        # Ottieni i 5 referti più recenti del paziente
-        referti_recenti = persona.referti.all().order_by('-data_referto')[:5]
+            paziente_esistente.girth_value = request.POST.get('girth_value') or paziente_esistente.girth_value
+            paziente_esistente.girth_notes = request.POST.get('girth_notes') or paziente_esistente.girth_notes
+            paziente_esistente.girth_date = request.POST.get('girth_date') or paziente_esistente.girth_date
 
-        # Ottieni i dati estesi associati a questi referti
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+            paziente_esistente.alcol = request.POST.get('alcol') == 'on'
+            paziente_esistente.alcol_type = request.POST.get('alcol_type') or paziente_esistente.alcol_type
+            paziente_esistente.data_alcol = request.POST.get('data_alcol') or paziente_esistente.data_alcol
+            paziente_esistente.alcol_frequency = request.POST.get('alcol_frequency') or paziente_esistente.alcol_frequency
 
-        # Ottieni l'ultimo referto (il più recente)
-        ultimo_referto = referti_recenti.first() if referti_recenti else None
+            paziente_esistente.smoke = request.POST.get('smoke') == 'on'
+            paziente_esistente.smoke_frequency = request.POST.get('smoke_frequency') or paziente_esistente.smoke_frequency
+            paziente_esistente.reduced_intake = request.POST.get('reduced_intake') or paziente_esistente.reduced_intake
 
+            paziente_esistente.sport = request.POST.get('sport') == 'on'
+            paziente_esistente.sport_livello = request.POST.get('sport_livello') or paziente_esistente.sport_livello
+            paziente_esistente.sport_frequency = request.POST.get('sport_frequency') or paziente_esistente.sport_frequency
+
+            paziente_esistente.attivita_sedentaria = request.POST.get('attivita_sedentaria') == 'on'
+            paziente_esistente.livello_sedentarieta = request.POST.get('livello_sedentarieta') or paziente_esistente.livello_sedentarieta
+            paziente_esistente.sedentarieta_nota = request.POST.get('sedentarieta_nota') or paziente_esistente.sedentarieta_nota
+
+            paziente_esistente.save()
+      
+        else:
+            TabellaPazienti.objects.create(
+                dottore=dottore,
+                name=request.POST.get('name'),
+                surname=request.POST.get('surname'),
+                dob=request.POST.get('dob') if request.POST.get('dob') else None,
+                gender=request.POST.get('gender'),
+                place_of_birth=request.POST.get('place_of_birth'),
+                codice_fiscale=codice_fiscale,
+                chronological_age=request.POST.get('chronological_age'),
+
+                height=request.POST.get('height'),
+                weight=request.POST.get('weight'),
+                bmi=request.POST.get('bmi'),
+                bmi_detection_date=request.POST.get('bmi_detection_date'),
+
+                girth_value=request.POST.get('girth_value'),
+                girth_notes=request.POST.get('girth_notes'),
+                girth_date=request.POST.get('girth_date'),
+
+                alcol=request.POST.get('alcol') == 'on',
+                alcol_type=request.POST.get('alcol_type'),
+                data_alcol=request.POST.get('data_alcol'),
+                alcol_frequency=request.POST.get('alcol_frequency'),
+
+                smoke=request.POST.get('smoke') == 'on',
+                smoke_frequency=request.POST.get('smoke_frequency'),
+                reduced_intake=request.POST.get('reduced_intake'),
+
+                sport=request.POST.get('sport') == 'on',
+                sport_livello=request.POST.get('sport_livello'),
+                sport_frequency=request.POST.get('sport_frequency'),
+
+                attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on',
+                livello_sedentarieta=request.POST.get('livello_sedentarieta'),
+                sedentarieta_nota=request.POST.get('sedentarieta_nota'),
+            )
        
-        # Ottieni i dati estesi dell'ultimo referto
-        dati_estesi_ultimo_referto = None
-        if ultimo_referto:
-            dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+        return render(request, "includes/InserisciPaziente.html")
 
-
-        context = {
-            'persona': persona,
-            'referti_recenti': referti_recenti,
-            'dati_estesi': dati_estesi,
-            'ultimo_referto': ultimo_referto,
-            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto
-        }
-         
-        return render(request, "includes/cartellaPaziente.html", context)
 
 
 class StatisticheView(View):
@@ -829,3 +873,21 @@ class StatisticheView(View):
     def get(self, request):
         return render(request, "includes/statistiche.html")
     
+
+
+# persona = get_object_or_404(TabellaPazienti, id=id)
+  #      referti_recenti = persona.referti.all().order_by('-data_referto')[:5]
+  #      dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+    #    ultimo_referto = referti_recenti.first() if referti_recenti else None
+
+   #     dati_estesi_ultimo_referto = None
+   #     if ultimo_referto:
+    #        dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+
+      #  context = {
+        #    'persona': persona,
+        #    'referti_recenti': referti_recenti,
+        #    'dati_estesi': dati_estesi,
+        #    'ultimo_referto': ultimo_referto,
+          #  'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto
+        #} 

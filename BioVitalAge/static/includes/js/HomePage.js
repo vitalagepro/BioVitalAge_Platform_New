@@ -21,13 +21,6 @@ function goToRefertiPage() {
   alert("Vai alla pagina dei referti dei pazienti");
 }
 
-// Funzione che imposta "opacity: 0" e "z-index: -1" dopo 3 secondi
-document.addEventListener("DOMContentLoaded", function () {
-  setTimeout(() => {
-    document.getElementById("loading-wrapper").style.opacity = "0";
-    document.getElementById("loading-wrapper").style.zIndex = "-1";
-  }, 500);
-});
 
 // Grafici
 const weeklyCtx = document.getElementById("weeklyPatientsChart");
@@ -177,6 +170,8 @@ let monthlyPatientsChart = new Chart(monthlyCtx, {
     },
   },
 });
+
+
 
 /*  -----------------------------------------------------------------------------------------------
   JS SIDEBAR

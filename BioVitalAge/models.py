@@ -28,6 +28,39 @@ class TabellaPazienti(models.Model):
     chronological_age = models.IntegerField(null=True, blank=True)
 
 
+    # Dati antropometrici
+    height = models.FloatField(help_text="Height in cm", null=True) 
+    weight = models.FloatField(help_text="Weight in kg", null=True) 
+    bmi = models.FloatField(help_text="Body Mass Index", null=True) 
+    bmi_detection_date = models.DateField( null=True)
+
+    # Circonferenza addominale
+    girth_value = models.FloatField(help_text="Girth value in cm", null=True)
+    girth_notes = models.TextField(blank=True, null=True)
+    girth_date = models.DateField( null=True)
+
+    # Alcol
+    alcol = models.BooleanField(default=False, null=True)
+    alcol_type = models.CharField(max_length=100, blank=True, null=True)
+    data_alcol = models.DateField(blank=True, null=True)
+    alcol_frequency = models.CharField(max_length=100, blank=True, null=True)
+
+    # Fumo
+    smoke = models.BooleanField(default=False, null=True)
+    smoke_frequency = models.CharField(max_length=100, blank=True, null=True)
+    reduced_intake = models.CharField(max_length=100, blank=True, null=True)
+
+    # Sport
+    sport = models.BooleanField(default=False, null=True)
+    sport_livello = models.CharField(max_length=100, blank=True, null=True)
+    sport_frequency = models.CharField(max_length=100, blank=True, null=True)
+
+    # Sedentarietà
+    attivita_sedentaria = models.BooleanField(default=False, null=True)
+    livello_sedentarieta = models.CharField(max_length=100, blank=True, null=True)
+    sedentarieta_nota = models.TextField(blank=True, null=True)
+
+
     def __str__(self):
         return f"Paziente: {self.name} {self.surname}"  
 
