@@ -793,25 +793,14 @@ class InserisciPazienteView(View):
     
     def post(self, request):
 
-
-         # Ottieni il paziente con l'ID specificato
         persona = get_object_or_404(TabellaPazienti, id=id)
-
-        # Ottieni i 5 referti più recenti del paziente
         referti_recenti = persona.referti.all().order_by('-data_referto')[:5]
-
-        # Ottieni i dati estesi associati a questi referti
         dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
-
-        # Ottieni l'ultimo referto (il più recente)
         ultimo_referto = referti_recenti.first() if referti_recenti else None
 
-       
-        # Ottieni i dati estesi dell'ultimo referto
         dati_estesi_ultimo_referto = None
         if ultimo_referto:
             dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
-
 
         context = {
             'persona': persona,
