@@ -150,8 +150,16 @@
                     <input type="text" id="surname" name="surname" required placeholder="Insert your surname">
                 </div>
                 <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" id="phone" name="phone" required placeholder="Insert your phone">
+                </div>
+                <div class="form-group">
+                    <label for="mail">Mail</label>
+                    <input type="email" id="mail" name="mail" required placeholder="Insert your mail">
+                </div>
+                <div class="form-group">
                     <label for="dob">Date of Birth</label>
-                    <input type="date" id="dob" name="dob" >
+                    <input type="date" id="dob" name="dob">
                 </div>
                 <div class="form-group">
                     <label for="gender">Gender</label>
@@ -167,7 +175,19 @@
                 <div class="form-group">
                     <label for="province">Province</label>
                     <input type="text" id="province" name="province" required placeholder="Enter province (e.g., RM)">
-                </div>                                     
+                </div>       
+                <div class="form-group">
+                    <label for="cap">CAP</label>
+                    <input type="text" id="cap" name="cap" required placeholder="Enter cap (e.g., 70100)">
+                </div>
+                <div class="form-group">
+                    <label for="residence">Residence</label>
+                    <input type="text" id="residence" name="residence" min="0" max="100" required placeholder="Enter residence">
+                </div>
+                <div class="form-group">
+                    <label for="residence_city">City of residence</label>
+                    <input type="text" id="residence_city" name="residence_city" min="0" max="100" required placeholder="Enter residence city">
+                </div>
                 <div class="form-group">
                     <label for="codice_fiscale">Codice Fiscale</label>
                     <input type="text" id="codice_fiscale" name="codice_fiscale" required placeholder="Insert your fiscal code">
@@ -175,15 +195,18 @@
                 <div class="form-group">
                     <label for="chronological_age">Chronological Age</label>
                     <input type="number" id="chronological_age" name="chronological_age" min="0" max="100" required placeholder="Enter chronological age">
-                    <input type="range" id="chronological_age_range" name="chronological_age_range" min="0" max="100" value="0" oninput="chronological_age.value=this.value">
                 </div>
                 <div class="form-group">
-                  <label for="name">Blood Group</label>
-                  <input type="text" id="name" name="name" placeholder="Insert your blood group">
+                    <label for="associated_personal">Personal Associated</label>
+                    <input type="text" id="associated_personal" name="associated_personal" min="0" max="100" required placeholder="Enter your associated personal">
                 </div>
                 <div class="form-group">
-                  <label for="surname">Factor rh</label>
-                  <input type="text" id="surname" name="surname" placeholder="Insert your factor rh">
+                  <label for="blood_group">Blood Group</label>
+                  <input type="text" id="blood_group" name="blood_group" placeholder="Insert your blood group">
+                </div>
+                <div class="form-group">
+                  <label for="rh_factor">Factor rh</label>
+                  <input type="text" id="rh_factor" name="rh_factor" placeholder="Insert your factor rh">
                 </div>
             </div>
         </div>
@@ -238,84 +261,119 @@
             </div>
         
             <h3 class="category-title">Life style</h3>
-            <div>
-              <div class="table-title">Alcohol</div>
-              <div class="responsive-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Quantity of cc per day</th>
-                      <th>Taken alcohol</th>
-                      <th>Start day</th>
-                      <th>End day</th>
-                      <th>Notes</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><input type="text" placeholder="200 cc" /></td>
-                      <td><input type="text" placeholder="Wine" /></td>
-                      <td><input type="date" placeholder="2023-01-01" /></td>
-                      <td><input type="date" placeholder="2023-03-01" /></td>
-                      <td><input type="text" placeholder="Occasional" /></td>
-                    </tr>
-                  </tbody>
-                </table>
+            <div class="table-container-lifestyle">
+              <div class="table-title lifestyle">Alcohol</div>
+              <div class="container-card">
+                <div class="choose-buttons">
+                  <button class="button-style" data-choice="yes">Yes</button>
+                  <button class="button-style" data-choice="no">No</button>
+                </div>
+                <div class="responsive-table hidden">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Quantity per day</th>
+                        <th>Type of alcohol</th>
+                        <th>Day</th>
+                        <th>Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><input type="text" placeholder="1 bottle" /></td>
+                        <td><input type="text" placeholder="Wine" /></td>
+                        <td><input type="date" placeholder="2023-01-01" /></td>
+                        <td><input type="text" placeholder="Occasional" /></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
         
-            <div>
-              <div class="table-title">Smoking</div>
-              <div class="responsive-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Daily quantity</th>
-                      <th>Type of smoke</th>
-                      <th>Start day</th>
-                      <th>End day</th>
-                      <th>Notes</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><input type="text" placeholder="5 cigarettes" /></td>
-                      <td><input type="text" placeholder="Light" /></td>
-                      <td><input type="date" placeholder="2022-01-01" /></td>
-                      <td><input type="date" placeholder="2022-12-31" /></td>
-                      <td><input type="text" placeholder="Reduced intake" /></td>
-                    </tr>
-                  </tbody>
-                </table>
+            <div class="table-container-lifestyle">
+              <div class="table-title lifestyle">
+                <span>Smoking</span>
+              </div>
+              <div class="container-card">
+                <div class="choose-buttons">
+                  <button class="button-style" data-choice="yes">Yes</button>
+                  <button class="button-style" data-choice="no">No</button>
+                </div>
+                <div class="responsive-table hidden">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Daily quantity</th>
+                        <th>Days Smoking</th>
+                        <th>Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><input type="text" placeholder="5 cigarettes" /></td>
+                        <td><input type="date" placeholder="7 days" /></td>
+                        <td><input type="text" placeholder="Reduced intake" /></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
         
-            <div>
-              <div class="table-title">Sport</div>
-              <div class="responsive-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Sport played</th>
-                      <th>Level</th>
-                      <th>Start day</th>
-                      <th>End day</th>
-                      <th>Notes</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><input type="text" placeholder="Football" /></td>
-                      <td><input type="text" placeholder="Amateur" /></td>
-                      <td><input type="date" placeholder="2020-01-01" /></td>
-                      <td><input type="date" placeholder="2021-12-31" /></td>
-                      <td><input type="text" placeholder="Weekly" /></td>
-                    </tr>
-                  </tbody>
-                </table>
+            <div class="table-container-lifestyle">
+              <div class="table-title lifestyle">Sport</div>
+              <div class="container-card">
+                <div class="choose-buttons">
+                  <button class="button-style" data-choice="yes">Yes</button>
+                  <button class="button-style" data-choice="no">No</button>
+                </div>
+                <div class="responsive-table" data-lifestyle="sporting-lifestyle">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Physical Activity</th>
+                        <th>Level</th>
+                        <th>Start day</th>
+                        <th>End day</th>
+                        <th>Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><input type="text" placeholder="Football" /></td>
+                        <td><input type="text" placeholder="Amateur" /></td>
+                        <td><input type="date" placeholder="2020-01-01" /></td>
+                        <td><input type="date" placeholder="2021-12-31" /></td>
+                        <td><input type="text" placeholder="Weekly" /></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="responsive-table hidden" data-lifestyle="sedentary-lifestyle">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Sedentary</th>
+                        <th>Level</th>
+                        <th>Start day</th>
+                        <th>End day</th>
+                        <th>Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><input type="text" placeholder="Office work" /></td>
+                        <td><input type="text" placeholder="Minimal activity" /></td>
+                        <td><input type="date" placeholder="2022-01-01" /></td>
+                        <td><input type="date" placeholder="2022-12-31" /></td>
+                        <td><input type="text" placeholder="Rare workouts" /></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
 
           <div class="button-container">
             <button id="salvaButton" type="submit" class="button-style">Salva Paziente</button>
@@ -326,5 +384,60 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+    
+        // Selezioniamo tutti i blocchi che contengono i pulsanti "Yes/No"
+        const chooseButtonsContainers = document.querySelectorAll('.choose-buttons');
+    
+        chooseButtonsContainers.forEach((buttonsContainer) => {
+          const yesButton = buttonsContainer.querySelector('[data-choice="yes"]');
+          const noButton  = buttonsContainer.querySelector('[data-choice="no"]');
+    
+          // Troviamo il contenitore delle tabelle per la sezione Sport (o altre)
+          const containerCard = buttonsContainer.closest('.container-card');
+    
+          if (!containerCard) return;
+    
+          // Troviamo le due tabelle "sporting" e "sedentary"
+          const sportingLifestyle  = containerCard.querySelector('[data-lifestyle="sporting-lifestyle"]');
+          const sedentaryLifestyle = containerCard.querySelector('[data-lifestyle="sedentary-lifestyle"]');
+    
+          // Se esistono entrambe, vuol dire che è la sezione "Sport"
+          if (sportingLifestyle && sedentaryLifestyle) {
+            // Di default rimangono entrambe nascoste, perché nel tuo HTML
+            // hai messo class="hidden" su entrambe
+    
+            // Se clicco "Yes" → mostro sporting, nascondo sedentary
+            yesButton.addEventListener('click', (event) => {
+              event.preventDefault();
+              sportingLifestyle.classList.remove('hidden');
+              sedentaryLifestyle.classList.add('hidden');
+            });
+    
+            // Se clicco "No" → mostro sedentary, nascondo sporting
+            noButton.addEventListener('click', (event) => {
+              event.preventDefault();
+              sportingLifestyle.classList.add('hidden');
+              sedentaryLifestyle.classList.remove('hidden');
+            });
+    
+          } else {
+            // Se non è la sezione "Sport", manteniamo la logica generica
+            // (mostro/nascondo una sola tabella successiva)
+            const hiddenTable = buttonsContainer.nextElementSibling;
+    
+            yesButton.addEventListener('click', (event) => {
+              event.preventDefault();
+              hiddenTable?.classList.remove('hidden');
+            });
+            noButton.addEventListener('click', (event) => {
+              event.preventDefault();
+              hiddenTable?.classList.add('hidden');
+            });
+          }
+        });
+      });
+    </script>    
   </body>
 </html>
