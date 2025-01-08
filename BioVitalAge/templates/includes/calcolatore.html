@@ -172,19 +172,33 @@
                         <hr>
                         <h3>Omega Screening</h3>
                         <div class="indicator-container">
-                            <p><span>Saturated Fatty Acids:</span>{{ data.fa_saturated }}</p>
-                            <div class="indicator-content-container">
-                                <div class="indicator">
-                                    <p>min</p>
-                                    <p>Max</p>
-                                </div>
-                                <div class="col-md-12 p-2 barra-container">
-                                    <p class="barra-pointer" id="middleBar"></p>
-                                    <p class="barra-pointer-two"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ data.wbc }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                            <div class="indicator-container">
+                                <p><span>FA Saturation:</span>{{ datiEstesi.fa_saturated }}</p>
+                                <div class="indicator-content-container">
+                                    <div class="indicator">
+                                        <p class="negativeTesto">0</p>
+                                        <div class="positiveTesto">
+                                            <p>0</p>
+                                            <p>0</p>
+                                        </div>
+                                        <p class="extremeNegativeRange">> 500</p>
+                                    </div>
+                                    {% if datiEstesi.fa_saturated %}
+                
+                                        <div class="col-md-12 p-2 barra-container">
+                                            <p class="barra-pointer"></p>
+                                            <p id="indicator" class="indicatore" data-value="{{ datiEstesi.fa_saturated }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                        </div>
+                
+                                    {% else %}
+                
+                                        <div class="col-md-12 p-2 barra-container-none">
+                                            <p data-value="{{ datiEstesi.fa_saturated }}"></p>
+                                        </div>
+                
+                                    {% endif %}
                                 </div>
                             </div>
-                        </div>
                         
                         <div class="indicator-container">
                             <p><span>Basophils (%):</span>{{ data.baso }}</p>
@@ -8807,7 +8821,7 @@
                     <div class="form-group">
                         <label for="o3fatty_acids">O-3 fatty acids</label>
                         <input type="number" id="o3fatty_acids" name="o3fatty_acids" placeholder="numeric value only">
-                        <input type="range" id="o3fatty_acids_range" name="o3fatty_acids_range" min="0" max="10" value="0" oninput="o3fatty_acids.value=this.value">
+                        <input type="range" id="o3fatty_acids_range" name="o3fatty_acids_range" min="0" max="20" value="0" oninput="o3fatty_acids.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="o6fatty_acids">O-6 fatty acids</label>
@@ -8817,7 +8831,7 @@
                     <div class="form-group">
                         <label for="s_u_fatty_acids">Sat./unsat. fatty acid quotient</label>
                         <input type="number" step="0.1" id="s_u_fatty_acids" name="s_u_fatty_acids" placeholder="numeric value only">
-                        <input type="range" id="s_u_fatty_acids_range" name="s_u_fatty_acids_range" min="0" max="10" step="0.1" value="0" oninput="s_u_fatty_acids.value=this.value">
+                        <input type="range" id="s_u_fatty_acids_range" name="s_u_fatty_acids_range" min="0" max="1" step="0.1" value="0" oninput="s_u_fatty_acids.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="o6o3_fatty_acids_quotient">O-6/O-3 fatty acid quotient</label>
