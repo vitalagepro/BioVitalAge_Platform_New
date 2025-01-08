@@ -1,12 +1,42 @@
 /*  -----------------------------------------------------------------------------------------------
   Slider Range
 --------------------------------------------------------------------------------------------------- */
-document.querySelectorAll('input[type="range"]').forEach((slider) => {
-  slider.addEventListener("input", function () {
-    const value = ((this.value - this.min) / (this.max - this.min)) * 100;
-    this.style.setProperty("--value", `${value}%`);
+document.addEventListener("DOMContentLoaded", function () {
+  // Seleziona tutti gli input di tipo "number" e "range"
+  const numericInputs = document.querySelectorAll('input[type="number"]');
+  const rangeInputs = document.querySelectorAll('input[type="range"]');
+
+  numericInputs.forEach((input) => {
+    const rangeInput = document.getElementById(input.id + "_range");
+
+    if (rangeInput) {
+      // Sincronizzazione tra input numerico e range
+      input.addEventListener("input", function () {
+        if (!isNaN(input.value) && input.value !== "") {
+          rangeInput.value = input.value;
+          updateRangeStyle(rangeInput);
+        } else if (input.value === "") {
+          rangeInput.value = 0;
+          updateRangeStyle(rangeInput);
+        }
+      });
+
+      rangeInput.addEventListener("input", function () {
+        input.value = rangeInput.value;
+        updateRangeStyle(rangeInput);
+      });
+    }
   });
+
+  rangeInputs.forEach(updateRangeStyle);
+
+  function updateRangeStyle(slider) {
+    const value =
+      ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+    slider.style.setProperty("--value", `${value}%`);
+  }
 });
+
 
 /*  -----------------------------------------------------------------------------------------------
   User Modal log out

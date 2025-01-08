@@ -157,7 +157,7 @@
                                     <p class="negativeTesto">< 0</p>
                                     <div class="positiveTesto" id="middleTesto">
                                         <p>< 40</p>
-                                        <p>40</p>
+                                        <p>65</p>
                                     </div>
                                     <p class="extremeNegativeRange">> 200</p>
                                 </div>
@@ -172,16 +172,20 @@
                         <hr>
                         <h3>Omega Screening</h3>
                         <div class="indicator-container">
-                            <p><span>Saturated Fatty Acids:</span>{{ data.fa_saturated }}</p>
+                            <p><span>FA Saturation:</span>{{ data.fa_saturated }}</p>
                             <div class="indicator-content-container">
                                 <div class="indicator">
-                                    <p>min</p>
-                                    <p>Max</p>
+                                    <p class="negativeTesto">< 0</p>
+                                    <div class="positiveTesto" id="middleTesto">
+                                        <p>0</p>
+                                        <p>2.5</p>
+                                    </div>
+                                    <p class="extremeNegativeRange">> 5</p>
                                 </div>
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer" id="middleBar"></p>
                                     <p class="barra-pointer-two"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ data.wbc }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ data.fa_saturated}}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
                             </div>
                         </div>
@@ -190,15 +194,18 @@
                             <p><span>Basophils (%):</span>{{ data.baso }}</p>
                             <div class="indicator-content-container">
                                 <div class="indicator">
-                                    <p>min</p>
-                                    <p>Max</p>
+                                    <p class="negativeTesto">< 0</p>
+                                    <div class="positiveTesto" id="middleTesto">
+                                        <p>< 0</p>
+                                        <p>2.5</p>
+                                    </div>
+                                    <p class="extremeNegativeRange">> 5</p>
                                 </div>
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer" id="middleBar"></p>
                                     <p class="barra-pointer-two"></p>
                                     <p id="indicator" class="indicatore" data-value="{{ data.baso }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
-
                             </div>
                         </div>
                         
@@ -206,15 +213,18 @@
                             <p><span>Eosinophils (%):</span>{{ data.eosi }}</p>
                             <div class="indicator-content-container">
                                 <div class="indicator">
-                                    <p>min</p>
-                                    <p>Max</p>
+                                    <p class="negativeTesto">0</p>
+                                    <div class="positiveTesto" id="middleTesto">
+                                        <p>< 0</p>
+                                        <p>7</p>
+                                    </div>
+                                    <p class="extremeNegativeRange">14</p>
                                 </div>
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer" id="middleBar"></p>
                                     <p class="barra-pointer-two"></p>
                                     <p id="indicator" class="indicatore" data-value="{{ data.eosi }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
-
                             </div>
                         </div>
                         
@@ -8793,46 +8803,105 @@
 
             <div class="section">
                 <h3>Omega Screening</h3>
+                <hr>
+                <h3>Fatty Acids</h3>
                 <div class="grid-container" style="row-gap: 60px;">
                     <div class="form-group">
-                        <label for="fa_saturated">Saturated fatty acids</label>
-                        <input type="number" id="fa_saturated" name="fa_saturated" placeholder="numeric value only">
-                        <input type="range" id="fa_saturated_range" name="fa_saturated_range" min="0" max="500" value="0" oninput="fa_saturated.value=this.value">
+                        <label for="my_acid">Myristic acid</label>
+                        <input type="number" id="my_acid" name="my_acid" placeholder="numeric value only">
+                        <input type="range" id="my_acid_range" name="my_acid_range" min="0" max="128" value="0" oninput="my_acid.value=this.value">
                     </div>
                     <div class="form-group">
-                        <label for="o9o7fatty_acids">O-7 and O-9 fatty acids</label>
-                        <input type="number" id="o9o7fatty_acids" name="o9o7fatty_acids" placeholder="numeric value only">
-                        <input type="range" id="o9o7fatty_acids_range" name="o9o7fatty_acids_range" min="0" max="10" value="0" oninput="o9o7fatty_acids.value=this.value">
+                        <label for="p_acid">Palmitic acid</label>
+                        <input type="number" id="p_acid" name="p_acid" placeholder="numeric value only">
+                        <input type="range" id="p_acid_range" name="p_acid_range" min="0" max="1786" value="0" oninput="p_acid.value=this.value">
                     </div>
                     <div class="form-group">
-                        <label for="o3fatty_acids">O-3 fatty acids</label>
-                        <input type="number" id="o3fatty_acids" name="o3fatty_acids" placeholder="numeric value only">
-                        <input type="range" id="o3fatty_acids_range" name="o3fatty_acids_range" min="0" max="10" value="0" oninput="o3fatty_acids.value=this.value">
+                        <label for="st_acid">Stearic acid</label>
+                        <input type="number" id="st_acid" name="st_acid" placeholder="numeric value only">
+                        <input type="range" id="st_acid_range" name="st_acid_range" min="0" max="560" value="0" oninput="st_acid.value=this.value">
                     </div>
                     <div class="form-group">
-                        <label for="o6fatty_acids">O-6 fatty acids</label>
-                        <input type="number" step="0.1" id="o6fatty_acids" name="o6fatty_acids" placeholder="numeric value only">
-                        <input type="range" id="o6fatty_acids_range" name="o6fatty_acids_range" min="0" max="10" step="0.1" value="0" oninput="o6fatty_acids.value=this.value">
+                        <label for="ar_acid">Arachidic acid</label>
+                        <input type="number" step="0.1" id="ar_acid" name="ar_acid" placeholder="numeric value only">
+                        <input type="range" id="ar_acid_range" name="ar_acid_range" min="0" max="20" value="0" oninput="ar_acid.value=this.value">
                     </div>
                     <div class="form-group">
-                        <label for="s_u_fatty_acids">Sat./unsat. fatty acid quotient</label>
-                        <input type="number" step="0.1" id="s_u_fatty_acids" name="s_u_fatty_acids" placeholder="numeric value only">
-                        <input type="range" id="s_u_fatty_acids_range" name="s_u_fatty_acids_range" min="0" max="10" step="0.1" value="0" oninput="s_u_fatty_acids.value=this.value">
+                        <label for="beenic_acid">Beenic acid</label>
+                        <input type="number" step="0.1" id="beenic_acid" name="beenic_acid" placeholder="numeric value only">
+                        <input type="range" id="beenic_acid_range" name="beenic_acid_range" min="0" max="60" value="0" oninput="beenic_acid.value=this.value">
+                    </div>
+                </div>
+                <div class="spacer"></div>
+                <h3>Unsaturated fatty acids</h3>
+                <h4>Omega 7</h4>
+                <div class="grid-container">
+                    <div class="form-group">
+                        <label for="pal_acid">Palmitoleic acid</label>
+                        <input type="number" step="0.1" id="pal_acid" name="pal_acid" placeholder="numeric value only">
+                        <input type="range" id="pal_acid_range" name="pal_acid_range" min="0" max="248" value="0" oninput="pal_acid.value=this.value">
+                    </div>
+                </div>
+                <h4>Omega 9</h4>
+                <div class="grid-container">
+                    <div class="form-group">
+                        <label for="ol_acid">Oleic acid</label>
+                        <input type="number" step="0.1" id="ol_acid" name="ol_acid" placeholder="numeric value only">
+                        <input type="range" id="ol_acid_range" name="ol_acid_range" min="0" max="1832" value="0" oninput="ol_acid.value=this.value">
                     </div>
                     <div class="form-group">
-                        <label for="o6o3_fatty_acids_quotient">O-6/O-3 fatty acid quotient</label>
-                        <input type="number" step="0.1" id="o6o3_fatty_acids_quotient" name="o6o3_fatty_acids_quotient" placeholder="numeric value only">
-                        <input type="range" id="o6o3_fatty_acids_quotient_range" name="o6o3_fatty_acids_quotient_range" min="0" max="28" step="0.1" value="0" oninput="o6o3_fatty_acids_quotient.value=this.value">
+                        <label for="ner_acid">Nervonic acid</label>
+                        <input type="number" step="0.1" id="ner_acid" name="ner_acid" placeholder="numeric value only">
+                        <input type="range" id="ner_acid_range" name="ner_acid_range" min="0" max="82" value="0" oninput="ner_acid.value=this.value">
+                    </div>
+                </div>
+                <h4>Omega 3</h4>
+                <div class="grid-container">
+                    <div class="form-group">
+                        <label for="a_linoleic_acid">Alpha linoleic acid</label>
+                        <input type="number" step="0.1" id="a_linoleic_acid" name="a_linoleic_acid" placeholder="numeric value only">
+                        <input type="range" id="a_linoleic_acid_range" name="a_linoleic_acid_range" min="0" max="1000" value="0" oninput="a_linoleic_acid.value=this.value">
                     </div>
                     <div class="form-group">
-                        <label for="aa_epa_quotient" style="font-size: 15.2px;">Acid arachidonic/eicosapentanenoic quotient(AA/EPA)</label>
-                        <input type="number" step="0.01" id="aa_epa_quotient" name="aa_epa_quotient" placeholder="numeric value only">
-                        <input type="range" id="aa_epa_quotient_range" name="aa_epa_quotient_range" min="0" max="8" step="0.01" value="0" oninput="aa_epa_quotient.value=this.value">
+                        <label for="eico_acid">Eicosapentaenoic acid(EPA)</label>
+                        <input type="number" step="0.1" id="eico_acid" name="eico_acid" placeholder="numeric value only">
+                        <input type="range" id="eico_acid_range" name="eico_acid_range" min="0" max="122" value="0" oninput="eico_acid.value=this.value">
                     </div>
                     <div class="form-group">
-                        <label for="O3_index">O-3 Index</label>
-                        <input type="number" step="0.01" id="O3_index" name="O3_index" placeholder="numeric value only">
-                        <input type="range" id="O3_index_range" name="O3_index_range" min="0" max="10" step="0.01" value="0" oninput="O3_index.value=this.value">
+                        <label for="doco_acid">Docosaesaenoic acid(DHA)</label>
+                        <input type="number" step="0.1" id="doco_acid" name="doco_acid" placeholder="numeric value only">
+                        <input type="range" id="doco_acid_range" name="doco_acid_range" min="0" max="222" value="0" oninput="doco_acid.value=this.value">
+                    </div>
+                </div>
+                <h4>Omega 6</h4>
+                <div class="grid-container">
+                    <div class="form-group">
+                        <label for="lin_acid">Linoleic acid</label>
+                        <input type="number" step="0.1" id="lin_acid" name="lin_acid" placeholder="numeric value only">
+                        <input type="range" id="lin_acid_range" name="lin_acid_range" min="0" max="2334" value="0" oninput="lin_acid.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="gamma_lin_acid">Gamma linoleic acid</label>
+                        <input type="number" step="0.1" id="gamma_lin_acid" name="gamma_lin_acid" placeholder="numeric value only">
+                        <input type="range" id="gamma_lin_acid_range" name="gamma_lin_acid_range" min="0" max="50" value="0" oninput="gamma_lin_acid.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="dih_gamma_lin_acid">Dihomo gamma linoleic acid</label>
+                        <input type="number" step="0.1" id="dih_gamma_lin_acid" name="dih_gamma_lin_acid" placeholder="numeric value only">
+                        <input type="range" id="dih_gamma_lin_acid_range" name="dih_gamma_lin_acid_range" min="0" max="150" value="0" oninput="dih_gamma_lin_acid.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="arachidonic_acid">Arachidonic acid</label>
+                        <input type="number" step="0.1" id="arachidonic_acid" name="arachidonic_acid" placeholder="numeric value only">
+                        <input type="range" id="arachidonic_acid_range" name="arachidonic_acid_range" min="0" max="686" value="0" oninput="arachidonic_acid.value=this.value">
+                    </div>
+                </div>
+                <div class="spacer"></div>
+                <div class="grid-container">
+                    <div class="form-group">
+                        <label for="sa_un_fatty_acid">Saturated/unsaturated fatty acid quotient</label>
+                        <input type="number" step="0.1" id="sa_un_fatty_acid" name="sa_un_fatty_acid" placeholder="numeric value only">
+                        <input type="range" id="sa_un_fatty_acid_range" name="sa_un_fatty_acid_range" min="0" max="0.12" step="0.1" value="0" oninput="sa_un_fatty_acid.value=this.value">
                     </div>
                 </div>
             </div>
