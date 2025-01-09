@@ -35,8 +35,9 @@
     <title>BioVitalAge - Dati Base</title>
   </head>
   <body>
-        <!-- Loader -->
-        <div id="loading-wrapper">
+
+    <!-- Loader -->
+    <div id="loading-wrapper">
           <div class="spin-wrapper">
             <div class="circle"></div>
             <div class="circle"></div>
@@ -85,7 +86,9 @@
             <div class="circle"></div>
             <div class="circle"></div>
           </div>
-        </div>    
+      
+    </div>   
+
     <!-- Header -->
     <header>
       <nav
@@ -120,7 +123,6 @@
     </header>
 
     <main>
-      <!-- Breadcrumb -->
       <div class="main-title-nav">
         <div class="back-tittle">
           <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to folder"></a>
@@ -138,57 +140,64 @@
           <span>Dati Base</span>
         </div>
       </div>
+
       <section class="container_data anagraphic_data">
         <h3>Anagraphic Data</h3>
         <div class="container_box">
           <div class="info_container">
-            <div>
-              <span class="field">Name:&nbsp;</span>
-              <span id="name">{{ persona.name }}</span>
-            </div>
-            <div>
-              <span class="field">Surname:&nbsp;</span>
-              <span id="surname">{{ persona.surname }}</span>
-            </div>
+
+              <div class="field">
+                <p>Name:&nbsp;</p>
+                <p>{{ persona.name }}</p>
+              </div>
+
+              <div class="field">
+                <p>Surname:&nbsp;</p>
+                <p>{{ persona.surname }}</p>
+              </div>
+
+              <div class="field">
+                <p>Codice Fiscale :&nbsp;</p>
+                <p>{{ persona.codice_fiscale }}</p>
+              </div>
+
+              <div class="field">
+                <p>Città:&nbsp;</p>
+                <p>{{ persona.place_of_birth }}</p>
+              </div>
+
+              <div class="field">
+                <p>Age:&nbsp;</p>
+                <p>{{ persona.chronological_age }}</p>
+              </div>
+
+              <div class="field">
+                <p>Date of birth:&nbsp;</p>
+                <p>{{ persona.dob }}</p>
+              </div>
+      
+              <div class="field">
+                <p>Phone:&nbsp;</p>
+                <p>xxx</p>
+              </div>
+
+              <div class="field">
+                <p>Associate staff:&nbsp;</p>
+                <p>xxx</p>
+              </div>
+
           </div>
-          <div class="info_container">
-            <div>
-              <span class="field">F.C. :&nbsp;</span>
-              <span id="surname">{{ persona.codice_fiscale }}</span>
-            </div>
-            <div>
-              <span class="field">Associate staff:&nbsp;</span>
-              <span id="surname">admin</span>
-            </div>
-          </div>
-          <div class="info_container">
-            <div>
-              <span class="field">Age:&nbsp;</span>
-              <span id="age">{{ persona.chronological_age }}</span>
-            </div>
-            <div>
-              <span class="field">Date of birth:&nbsp;</span>
-              <span id="date">{{ persona.dob }}</span>
-            </div>
-          </div>
-          <div class="info_container">
-            <div>
-              <span class="field">Address:&nbsp;</span>
-              <span id="address">{{ persona.place_of_birth }}</span>
-            </div>
-            <div>
-              <span class="field">Phone:&nbsp;</span>
-              <span id="phone">345 369 1687</span>
-            </div>
-          </div>
-        </div>
+      
       </section>
+
       <section class="container_data table_data">
         <h1>Informative Tables</h1>
         <div class="table-container">
           <div>
             <div class="table-title">Anthropometric data</div>
+
             <div class="responsive-table">
+
               <table>
                 <thead>
                   <tr>
@@ -196,41 +205,24 @@
                     <th>Weight</th>
                     <th>BMI</th>
                     <th>BMI detection date</th>
-                    <th></th>
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>175 cm</td>
-                    <td>68 kg</td>
-                    <td>22.2</td>
-                    <td>2023-01-01</td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>180 cm</td>
-                    <td>75 kg</td>
-                    <td>23.1</td>
-                    <td>2023-05-15</td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>165 cm</td>
-                    <td>60 kg</td>
-                    <td>22.0</td>
-                    <td>2023-08-20</td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ persona.height }}</td>
+                    <td>{{ persona.weight }}</td>
+                    <td>{{ persona.bmi }}</td>
+                    <td>{{ persona.bmi_detection_date }}</td>
                   </tr>
                 </tbody>
               </table>
+
             </div>
+
             <div class="btn-edit-table-container">
               <button class="edit-save-btn">Edit</button>
             </div>
+
           </div>
 
           <div>
@@ -242,31 +234,13 @@
                     <th>Girth value</th>
                     <th>Date measurement</th>
                     <th>Notes</th>
-                    <th></th>
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>85 cm</td>
-                    <td>2023-02-10</td>
-                    <td>Normal</td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>90 cm</td>
-                    <td>2023-06-05</td>
-                    <td>Slightly high</td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>88 cm</td>
-                    <td>2023-09-12</td>
-                    <td>Normal</td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ persona.girth_value }}</td>
+                    <td>{{ persona.girth_date }}</td>
+                    <td>{{ persona.girth_notes }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -277,6 +251,7 @@
           </div>
 
           <h1 class="category-title">Life style</h1>
+
           <div>
             <div class="table-title">Alcohol</div>
             <div class="responsive-table">
@@ -285,40 +260,16 @@
                   <tr>
                     <th>Quantity of cc per day</th>
                     <th>Taken alcohol</th>
-                    <th>Start day</th>
-                    <th>End day</th>
+                    <th>Data</th>
                     <th>Notes</th>
-                    <th></th>
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>200 cc</td>
-                    <td>Wine</td>
-                    <td>2023-01-01</td>
-                    <td>2023-03-01</td>
-                    <td>Occasional</td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>150 cc</td>
-                    <td>Beer</td>
-                    <td>2023-04-01</td>
-                    <td>2023-06-01</td>
-                    <td>Rare</td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>100 cc</td>
-                    <td>Spirits</td>
-                    <td>2023-07-01</td>
-                    <td>2023-09-01</td>
-                    <td>Minimal</td>
-                    <td></td>
-                    <td></td>
+                    <th>{{ persona.alcol }}</th>
+                    <th>{{ persona.alcol_type }}</th>
+                    <th>{{ persona.data_alcol }}</th>
+                    <th>{{ persona.alcol_frequency }}</th>
                   </tr>
                 </tbody>
               </table>
@@ -334,42 +285,16 @@
               <table>
                 <thead>
                   <tr>
-                    <th>Daily quantity</th>
+                    <th>Smoke</th>
                     <th>Type of smoke</th>
-                    <th>Start day</th>
-                    <th>End day</th>
                     <th>Notes</th>
-                    <th></th>
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>5 cigarettes</td>
-                    <td>Light</td>
-                    <td>2022-01-01</td>
-                    <td>2022-12-31</td>
-                    <td>Reduced intake</td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>10 cigarettes</td>
-                    <td>Medium</td>
-                    <td>2023-01-01</td>
-                    <td>2023-03-01</td>
-                    <td>Moderate</td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>15 cigarettes</td>
-                    <td>Strong</td>
-                    <td>2023-04-01</td>
-                    <td>2023-06-01</td>
-                    <td>Increased intake</td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ persona.smoke}}</td>
+                    <td>{{ persona.smoke_frequency}}</td>
+                    <td>{{ persona.reduced_intake}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -387,41 +312,43 @@
                   <tr>
                     <th>Sport played</th>
                     <th>Level</th>
-                    <th>Start day</th>
-                    <th>End day</th>
-                    <th>Notes</th>
-                    <th></th>
-                    <th></th>
+                    <th>Frequency</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Football</td>
-                    <td>Amateur</td>
-                    <td>2020-01-01</td>
-                    <td>2021-12-31</td>
-                    <td>Weekly</td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ persona.sport }}</td>
+                    <td>{{ persona.sport_livello }}</td>
+                    <td>{{ persona.sport_frequency }}</td>
                   </tr>
+               
+                </tbody>
+              </table>
+            </div>
+            <div class="btn-edit-table-container">
+              <button class="edit-save-btn">Edit</button>
+            </div>
+          </div>
+
+
+          <div>
+            <div class="table-title">Sedentarietà</div>
+            <div class="responsive-table">
+              <table>
+                <thead>
                   <tr>
-                    <td>Tennis</td>
-                    <td>Intermediate</td>
-                    <td>2022-01-01</td>
-                    <td>2022-12-31</td>
-                    <td>Monthly</td>
-                    <td></td>
-                    <td></td>
+                    <th>Attività Sedentaria</th>
+                    <th>Level</th>
+                    <th>Notes</th>
                   </tr>
+                </thead>
+                <tbody>
                   <tr>
-                    <td>Running</td>
-                    <td>Beginner</td>
-                    <td>2023-01-01</td>
-                    <td>2023-06-01</td>
-                    <td>Daily</td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ persona.attivita_sedentaria }}</td>
+                    <td>{{ persona.livello_sedentarieta  }}</td>
+                    <td>{{ persona.sedentarieta_nota }}</td>
                   </tr>
+               
                 </tbody>
               </table>
             </div>
@@ -431,6 +358,7 @@
           </div>
         </div>
       </section>
+
       <section class="container_data blood_data">
         <div class="container_input">
           <div class="blood_group_container">
