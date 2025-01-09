@@ -7,7 +7,7 @@
     <title>Cartella Paziente, {{ persona.name }}</title>
 
     {% load static %}
-    <link rel="stylesheet" href="{% static 'includes/homePage.css' %}">
+    <link rel="stylesheet" href="{% static 'includes/Componenti.css' %}">
     <link rel="stylesheet" href="{% static 'includes/cartellaPaziente.css' %}">
 
     <!-- Bootstrap import -->
@@ -115,6 +115,8 @@
                 <a href="{% url 'HomePage' %}">
                     <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
                 </a>                    
+                <p>»</p>
+                <p>Elenco Pazienti</p>
                 <p>»</p>
                 <p>Cartella Paziente</p>
             </div>
