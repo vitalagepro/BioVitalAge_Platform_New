@@ -12,9 +12,8 @@
 
     <!-- Css Import -->
     {% load static %}
-    <link rel="stylesheet" href="{% static 'includes/homePage.css' %}" />
+    <link rel="stylesheet" href="{% static 'includes/Componenti.css' %}">
     <link rel="stylesheet" href="{% static 'includes/dati_base.css' %}" />
-    
 
     <!-- Bootstrap import -->
     <link
@@ -25,14 +24,10 @@
     <!-- Font Import  -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet"/>
 
     <!-- JS import -->
     <script src="{% static 'includes/js/dati_base.js' %}" defer></script>
-    <script src="{% static 'includes/js/spinner.js' %}" defer></script>
 
     <title>BioVitalAge - Dati Base</title>
   </head>
@@ -93,9 +88,7 @@
 
     <!-- Header -->
     <header>
-      <nav
-        class="col-md-12 d-flex justify-content-between align-items-center nav-bar"
-      >
+      <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar">
         <div class="col-md-2 d-flex jus nav-bar-logo">
           <a href="{% url 'HomePage' %}">
             <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
@@ -109,16 +102,10 @@
         <div class="col-md-2 nav-bar-user">
           <h3>Demo User</h3>
           <div class="img-container-user-nav-bar">
-            <img
-              id="userImg"
-              src="{% static 'includes/icone/username.png' %}"
-              alt="user"
-            />
+            <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user" />
           </div>
           <div class="nav-bar-user-modal" id="userModal">
-            <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">
-              log out
-            </button>
+            <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn"> log out </button>
           </div>
         </div>
       </nav>
@@ -132,12 +119,10 @@
         </div>
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
-            <img
-              src="{% static 'includes/icone/homePage.png' %}"
-              alt="Home Page"
-              title="Home Page"
-            />
+            <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page"/>
           </a>
+          <span>»</span>
+          <span>Cartella Paziente</span>
           <span>»</span>
           <span>Dati Base</span>
         </div>

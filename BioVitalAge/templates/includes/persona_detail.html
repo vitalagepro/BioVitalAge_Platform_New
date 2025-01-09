@@ -8,13 +8,12 @@
 
     {% load static %}
     <link rel="stylesheet" href="{% static 'includes/persona_detail.css' %}">
-    <link rel="stylesheet" href="{% static 'includes/homePage.css' %}">
+    <link rel="stylesheet" href="{% static 'includes/Componenti.css' %}">
 
     <!-- Js Import  -->
     <script src="{% static 'includes/js/indicatorNew.js' %}" defer></script>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="{% static 'includes/js/GeneratorePDF.js' %}" defer></script>
-    <script src="{% static 'includes/js/spinner.js' %}" defer></script>
 
     
     <!-- Bootstrap import -->
@@ -28,8 +27,8 @@
     <script src="{% static 'includes/js/pdfGenerator.js' %}" defer></script>
 </head>
 <body>
-        <!-- Loader -->
-        <div id="loading-wrapper">
+    <!-- Loader -->  
+    <div id="loading-wrapper">
             <div class="spin-wrapper">
               <div class="circle"></div>
               <div class="circle"></div>
@@ -78,7 +77,8 @@
               <div class="circle"></div>
               <div class="circle"></div>
             </div>
-          </div>      
+    </div>
+
     <header>
         <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar ">
             <div class="col-md-2 d-flex jus  nav-bar-logo">
@@ -117,7 +117,9 @@
                     <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
                 </a>                                    
                 <p>»</p>
-                <p>Report Paziente</p>
+                <p>Elenco Pazienti</p>
+                <p>»</p>
+                <p>Ultimo Paziente</p>
             </div>
         </div>
 
