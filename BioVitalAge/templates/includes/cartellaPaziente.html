@@ -9,6 +9,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'includes/Componenti.css' %}">
     <link rel="stylesheet" href="{% static 'includes/cartellaPaziente.css' %}">
+    <link rel="stylesheet" href="{% static 'includes/homePage.css' %}">
 
     <!-- Bootstrap import -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -20,10 +21,11 @@
 
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'includes/js/spinner.js' %}" defer></script>
 </head>
 
 <body>
-        <!-- Loader -->
+    <!-- Loader -->
     <div id="loading-wrapper">
             <div class="spin-wrapper">
               <div class="circle"></div>

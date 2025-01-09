@@ -19,6 +19,8 @@
     --circle-color-shadow-two: rgba(42, 196, 221, 0.05);
     --card-color: #f8f4fc;
 }
+
+
 .form-container {
     width: 100%;
     margin: auto;
@@ -43,8 +45,29 @@
     width: 100%;
 }
 .patient-info {
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    row-gap: 40px;
 }
+.patient-info .form-group label{
+    background-color: var(--contrast-color-shadow);
+    color: var(--dark2);
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: -1rem;
+    font-weight: bold;
+}
+.patient-info .form-group input{
+    padding: 15px;
+    font-size: 16px;
+}
+.patient-info .form-group select{
+    padding: 15px;
+}
+
+
+
 .form-group {
     display: flex;
     flex-direction: column;
@@ -118,11 +141,9 @@ input[type="range"] {
     color: var(--dark1);
     padding-left: 20px;
 }
-
 .container-card{
     padding: 20px;
 }
-
 table {
     width: 100%;
     border-collapse: collapse;

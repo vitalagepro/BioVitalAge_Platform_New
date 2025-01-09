@@ -12,6 +12,7 @@
 
     <!-- Js Import  -->
     <script src="{% static 'includes/js/indicatorNew.js' %}" defer></script>
+    <script src="{% static 'includes/js/spinner.js' %}" defer></script>
 
     <!-- Bootstrap import -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -8874,18 +8875,22 @@
                         <input type="range" id="beenic_acid_range" name="beenic_acid_range" min="0" max="60" value="0" oninput="beenic_acid.value=this.value">
                     </div>
                 </div>
+
                 <div class="spacer"></div>
+                <hr>
                 <h3>Unsaturated fatty acids</h3>
-                <h4>Omega 7</h4>
-                <div class="grid-container">
+
+                <h4 style="margin-top: 20px; margin-bottom: 20px;">Omega 7</h4>
+                <div class="flex-container" id="flex-adjust">
                     <div class="form-group">
                         <label for="pal_acid">Palmitoleic acid</label>
                         <input type="number" step="0.1" id="pal_acid" name="pal_acid" placeholder="numeric value only">
                         <input type="range" id="pal_acid_range" name="pal_acid_range" min="0" max="248" value="0" oninput="pal_acid.value=this.value">
                     </div>
                 </div>
-                <h4>Omega 9</h4>
-                <div class="grid-container">
+
+                <h4 style="margin-top: 30px; margin-bottom: 20px;">Omega 9</h4>
+                <div class="flex-container" id="flex-adjust">
                     <div class="form-group">
                         <label for="ol_acid">Oleic acid</label>
                         <input type="number" step="0.1" id="ol_acid" name="ol_acid" placeholder="numeric value only">
@@ -8897,8 +8902,9 @@
                         <input type="range" id="ner_acid_range" name="ner_acid_range" min="0" max="82" value="0" oninput="ner_acid.value=this.value">
                     </div>
                 </div>
-                <h4>Omega 3</h4>
-                <div class="grid-container">
+
+                <h4 style="margin-top: 30px; margin-bottom: 20px;">Omega 3</h4>
+                <div class="flex-container" id="flex-adjust">
                     <div class="form-group">
                         <label for="a_linoleic_acid">Alpha linoleic acid</label>
                         <input type="number" step="0.1" id="a_linoleic_acid" name="a_linoleic_acid" placeholder="numeric value only">
@@ -8915,7 +8921,8 @@
                         <input type="range" id="doco_acid_range" name="doco_acid_range" min="0" max="222" value="0" oninput="doco_acid.value=this.value">
                     </div>
                 </div>
-                <h4>Omega 6</h4>
+
+                <h4 style="margin-top: 30px; margin-bottom: 20px;">Omega 6</h4>
                 <div class="grid-container">
                     <div class="form-group">
                         <label for="lin_acid">Linoleic acid</label>
@@ -8939,6 +8946,7 @@
                     </div>
                 </div>
                 <hr>
+
                 <div class="grid-container">
                     <div class="form-group">
                         <label for="sa_un_fatty_acid">Saturated/unsaturated fatty acid quotient</label>
@@ -9089,7 +9097,7 @@
 
             <div class="section" id="flexed-section">
                 <h3>Renal Functionality</h3>
-                <div class="flex-container" id="flex-adjust">
+                <div class="grid-container">
                     <div class="form-group">
                         <label for="azotemia">Azotemia (mg/dL)</label>
                         <input type="number" step="0.1" id="azotemia" name="azotemia" placeholder="numeric value only">
@@ -9235,6 +9243,7 @@
                     </div>
                 </div>
             </div>
+
 
             <div class="section">
                 <h3>Hormonal Assets</h3>
@@ -9569,7 +9578,7 @@
 
             <div class="section" id="flex-section">
                 <h3 style="margin-bottom: 40px;">Other Exams</h3>
-                <div class="flex-container" id="flex-adjust">
+                <div class="grid-container" id="flex-adjust">
                     <div class="form-group">
                         <label for="ves2">Homocysteine (uµol/I)</label>
                         <input type="number" step="0.1" id="ves2" name="ves2" placeholder="numeric value only">
@@ -9659,17 +9668,6 @@
                         <label for="telotest">Telotest</label>
                         <input type="number" step="0.1" id="telotest" name="telotest" placeholder="numeric value only">
                         <input type="range" id="telotest_range" name="telotest_range" min="0" max="1" value="0" step="0.1" oninput="telotest.value=this.value">
-                    </div>
-                </div>
-            </div>
-
-            <div class="section" id="flex-section">
-                <h3>Methylation</h3>
-                <div class="flex-container" id="flex-adjust">
-                    <div class="form-group">
-                        <label for="epiage">Epiage</label>
-                        <input type="number" step="0.1" id="epiage" name="epiage" placeholder="numeric value only">
-                        <input type="range" id="epiage_range" name="epiage_range" min="0" max="120" value="0" step="0.1" oninput="epiage.value=this.value">
                     </div>
                 </div>
             </div>
