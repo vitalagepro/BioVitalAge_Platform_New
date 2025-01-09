@@ -28,6 +28,7 @@
 
     <!-- JS import -->
     <script src="{% static 'includes/js/dati_base.js' %}" defer></script>
+    <script src="{% static 'includes/js/spinner.js' %}" defer></script>
 
     <title>BioVitalAge - Dati Base</title>
   </head>
@@ -178,188 +179,254 @@
       </section>
 
       <section class="container_data table_data">
-        <h1>Informative Tables</h1>
-        <div class="table-container">
-          <div>
-            <div class="table-title">Anthropometric data</div>
+        <h3 style="margin-bottom: -20px;">Informative Tables</h3>
 
-            <div class="responsive-table">
+        <div>
+          <div class="table-title-tools">
 
-              <table>
-                <thead>
-                  <tr>
-                    <th>Height</th>
-                    <th>Weight</th>
-                    <th>BMI</th>
-                    <th>BMI detection date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{{ persona.height }}</td>
-                    <td>{{ persona.weight }}</td>
-                    <td>{{ persona.bmi }}</td>
-                    <td>{{ persona.bmi_detection_date }}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <p class="table-title">Anthropometric data</p>
+              <div class="tools-menu-button" id="menu-1">
+                <button class="tools-table" onclick="closeMenuTools1()" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt=""></button>
+              </div>
 
-            </div>
+              <script>
+                function closeMenuTools1(){
+                  document.getElementById('menu-1').style.display = 'none'
+                }
 
-            <div class="btn-edit-table-container">
-              <button class="edit-save-btn">Edit</button>
-            </div>
-
+                function openMenuTools1(){
+                  document.getElementById('menu-1').style.display = 'flex'
+                }
+              </script>
+              <button class="tools-table" onclick="openMenuTools1()"><img src="{% static 'includes/icone/modify.png' %}" alt=""></button>
           </div>
-
-          <div>
-            <div class="table-title">Abdominal girth</div>
-            <div class="responsive-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Girth value</th>
-                    <th>Date measurement</th>
-                    <th>Notes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{{ persona.girth_value }}</td>
-                    <td>{{ persona.girth_date }}</td>
-                    <td>{{ persona.girth_notes }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="btn-edit-table-container">
-              <button class="edit-save-btn">Edit</button>
-            </div>
-          </div>
-
-          <h1 class="category-title">Life style</h1>
-
-          <div>
-            <div class="table-title">Alcohol</div>
-            <div class="responsive-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Quantity of cc per day</th>
-                    <th>Taken alcohol</th>
-                    <th>Data</th>
-                    <th>Notes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th>{{ persona.alcol }}</th>
-                    <th>{{ persona.alcol_type }}</th>
-                    <th>{{ persona.data_alcol }}</th>
-                    <th>{{ persona.alcol_frequency }}</th>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="btn-edit-table-container">
-              <button class="edit-save-btn">Edit</button>
-            </div>
-          </div>
-
-          <div>
-            <div class="table-title">Smoking</div>
-            <div class="responsive-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Smoke</th>
-                    <th>Type of smoke</th>
-                    <th>Notes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{{ persona.smoke}}</td>
-                    <td>{{ persona.smoke_frequency}}</td>
-                    <td>{{ persona.reduced_intake}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="btn-edit-table-container">
-              <button class="edit-save-btn">Edit</button>
-            </div>
-          </div>
-
-          <div>
-            <div class="table-title">Sport</div>
-            <div class="responsive-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Sport played</th>
-                    <th>Level</th>
-                    <th>Frequency</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{{ persona.sport }}</td>
-                    <td>{{ persona.sport_livello }}</td>
-                    <td>{{ persona.sport_frequency }}</td>
-                  </tr>
-               
-                </tbody>
-              </table>
-            </div>
-            <div class="btn-edit-table-container">
-              <button class="edit-save-btn">Edit</button>
-            </div>
-          </div>
-
-
-          <div>
-            <div class="table-title">Sedentarietà</div>
-            <div class="responsive-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Attività Sedentaria</th>
-                    <th>Level</th>
-                    <th>Notes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{{ persona.attivita_sedentaria }}</td>
-                    <td>{{ persona.livello_sedentarieta  }}</td>
-                    <td>{{ persona.sedentarieta_nota }}</td>
-                  </tr>
-               
-                </tbody>
-              </table>
-            </div>
-            <div class="btn-edit-table-container">
-              <button class="edit-save-btn">Edit</button>
-            </div>
-          </div>
+      
+          <div class="table-container">
+              <div class="table-header">
+                  <p>Height</p>
+                  <p>Weight</p>
+                  <p>BMI</p>
+                  <p>BMI detection date</p>
+              </div>
+      
+              <div class="table-content">
+                  <p>{{ persona.height }}</p>
+                  <p>{{ persona.weight }}</p>
+                  <p>{{ persona.bmi }}</p>
+                  <p>{{ persona.bmi_detection_date }}</p>
+              </div>
+          </div> 
         </div>
+      
+        <div>   
+          <div class="table-title-tools">
+            <p class="table-title">Abdominal girth</p>
+            <div class="tools-menu-button" id="menu-2">
+              <button class="tools-table" onclick="closeMenuTools2()" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt=""></button>
+              <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt=""></button>
+              <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt=""></button>
+              <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt=""></button>
+            </div>
+
+            <script>
+              function closeMenuTools2(){
+                document.getElementById('menu-2').style.display = 'none'
+              }
+
+              function openMenuTools2(){
+                document.getElementById('menu-2').style.display = 'flex'
+              }
+            </script>
+            <button class="tools-table" onclick="openMenuTools2()"><img src="{% static 'includes/icone/modify.png' %}" alt=""></button>
+          </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <p>Girth value</p>
+                    <p>Date measurement</p>
+                    <p>Notes</p>
+                </div>
+        
+                <div class="table-content">
+                    <p>{{ persona.girth_value }}</p>
+                    <p>{{ persona.girth_date }}</p>
+                    <p>{{ persona.girth_notes }}</p>
+                </div>
+            </div>
+        </div>
+      
+        <h3 style="margin-top: 20px; margin-bottom: -20px;">Life style</h3>
+      
+        <div>
+            <div class="table-title-tools">
+              <p class="table-title">Alcohol</p>
+              <div class="tools-menu-button" id="menu-3">
+                <button class="tools-table" onclick="closeMenuTools3()" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt=""></button>
+              </div>
+
+              <script>
+                function closeMenuTools3(){
+                  document.getElementById('menu-3').style.display = 'none'
+                }
+
+                function openMenuTools3(){
+                  document.getElementById('menu-3').style.display = 'flex'
+                }
+              </script>
+              <button class="tools-table" onclick="openMenuTools3()"><img src="{% static 'includes/icone/modify.png' %}" alt=""></button>
+            </div>
+            
+            <div class="table-container">
+                <div class="table-header">
+                    <p>Quantity of cc per day</p>
+                    <p>Taken alcohol</p>
+                    <p>Data</p>
+                    <p>Notes</p>
+                </div>
+        
+                <div class="table-content">
+                    <p>{{ persona.alcol }}</p>
+                    <p>{{ persona.alcol_type }}</p>
+                    <p>{{ persona.data_alcol }}</p>
+                    <p>{{ persona.alcol_frequency }}</p>
+                </div>
+            </div>
+        </div>
+      
+        <div>
+            <div class="table-title-tools">
+              <p class="table-title">Smoking</p>
+              <div class="tools-menu-button" id="menu-4">
+                <button class="tools-table" onclick="closeMenuTools4()" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt=""></button>
+              </div>
+
+              <script>
+                function closeMenuTools4(){
+                  document.getElementById('menu-4').style.display = 'none'
+                }
+
+                function openMenuTools4(){
+                  document.getElementById('menu-4').style.display = 'flex'
+                }
+              </script>
+              <button class="tools-table" onclick="openMenuTools4()"><img src="{% static 'includes/icone/modify.png' %}" alt=""></button>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <p>Smoke</p>
+                    <p>Type of smoke</p>
+                    <p>Notes</p>
+                </div>
+        
+                <div class="table-content">
+                    <p>{{ persona.smoke }}</p>
+                    <p>{{ persona.smoke_frequency }}</p>
+                    <p>{{ persona.reduced_intake }}</p>
+                </div>
+            </div>
+        </div>
+      
+        <div>
+            <div class="table-title-tools">
+              <p class="table-title">Sport</p>
+              <div class="tools-menu-button" id="menu-5">
+                <button class="tools-table" onclick="closeMenuTools5()" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt=""></button>
+              </div>
+
+              <script>
+                function closeMenuTools5(){
+                  document.getElementById('menu-5').style.display = 'none'
+                }
+
+                function openMenuTools5(){
+                  document.getElementById('menu-5').style.display = 'flex'
+                }
+              </script>
+              <button class="tools-table" onclick="openMenuTools5()"><img src="{% static 'includes/icone/modify.png' %}" alt=""></button>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <p>Sport played</p>
+                    <p>Level</p>
+                    <p>Frequency</p>
+                </div>
+        
+                <div class="table-content">
+                    <p>{{ persona.sport }}</p>
+                    <p>{{ persona.sport_livello }}</p>
+                    <p>{{ persona.sport_frequency }}</p>
+                </div>
+            </div>
+        </div>
+      
+        <div>
+            <div class="table-title-tools">
+              <p class="table-title">Sedentarietà</p>
+              <div class="tools-menu-button" id="menu-6">
+                <button class="tools-table" onclick="closeMenuTools6()" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt=""></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt=""></button>
+              </div>
+
+              <script>
+                function closeMenuTools6(){
+                  document.getElementById('menu-6').style.display = 'none'
+                }
+
+                function openMenuTools6(){
+                  document.getElementById('menu-6').style.display = 'flex'
+                }
+              </script>
+              <button class="tools-table" onclick="openMenuTools6()"><img src="{% static 'includes/icone/modify.png' %}" alt=""></button>
+            </div>
+            <div class="table-container">
+                <div class="table-header">
+                    <p>Attività Sedentaria</p>
+                    <p>Level</p>
+                    <p>Notes</p>
+                </div>
+        
+                <div class="table-content">
+                    <p>{{ persona.attivita_sedentaria }}</p>
+                    <p>{{ persona.livello_sedentarieta }}</p>
+                    <p>{{ persona.sedentarieta_nota }}</p>
+                </div>
+            </div>
+        </div>
+      
       </section>
 
       <section class="container_data blood_data">
-        <div class="container_input">
-          <div class="blood_group_container">
+
+        <div class="container-blood-input">
+          <div class="container">
             <h3>Blood Group</h3>
             <input type="text" readonly id="blood_group" />
           </div>
-          <div class="rh_container">
-            <h3>Factor rh</h3>
-            <input type="text" readonly id="rh" />
+
+          <div class="container">
+              <h3>Factor rh</h3>
+              <input type="text" readonly id="rh" />
           </div>
         </div>
-        <div class="btn_blood_group_container">
-          <button id="btn_blood_group">Update</button>
-        </div>
+    
+      
+        <button class="button-style"  id="btn_blood_group">Update</button>
+        
+
       </section>
     </main>
 
