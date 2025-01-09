@@ -8902,7 +8902,7 @@
                     <div class="form-group">
                         <label for="a_linoleic_acid">Alpha linoleic acid</label>
                         <input type="number" step="0.1" id="a_linoleic_acid" name="a_linoleic_acid" placeholder="numeric value only">
-                        <input type="range" id="a_linoleic_acid_range" name="a_linoleic_acid_range" min="0" max="1000" value="0" oninput="a_linoleic_acid.value=this.value">
+                        <input type="range" id="a_linoleic_acid_range" name="a_linoleic_acid_range" min="0" max="66" value="0" oninput="a_linoleic_acid.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="eico_acid">Eicosapentaenoic acid(EPA)</label>
@@ -8958,7 +8958,7 @@
                     <div class="form-group">
                         <label for="o3_index">Omega 3 index</label>
                         <input type="number" step="0.1" id="o3_index" name="o3_index" placeholder="numeric value only">
-                        <input type="range" id="o3_index_range" name="o3_index_range" min="0" max="8" value="0" oninput="o3_index.value=this.value">
+                        <input type="range" id="o3_index_range" name="o3_index_range" min="0" max="16" value="0" oninput="o3_index.value=this.value">
                     </div>
                 </div>
             </div>
@@ -9015,7 +9015,7 @@
                     <div class="form-group">
                         <label for="eosi_ul">Eosinophils (10^3/uL)</label>
                         <input type="number" step="0.1" id="eosi_ul" name="eosi_ul" placeholder="numeric value only">
-                        <input type="range" id="eosi_ul_range" name="eosi_ul_range" min="0" max="0.50" value="0" step="0.1" oninput="eosi_ul.value=this.value">
+                        <input type="range" id="eosi_ul_range" name="eosi_ul_range" min="0" max="1.4" value="0" step="0.1" oninput="eosi_ul.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="baso_ul">Baso (10^3/uL)</label>
@@ -9104,11 +9104,6 @@
                         <label for="creatinine_w">Creatinine Woman(mg/dL)</label>
                         <input type="number" step="0.1" id="creatinine_w" name="creatinine_w" placeholder="numeric value only">
                         <input type="range" id="creatinine_w_range" name="creatinine_w_range" min="0" max="2" value="0" step="0.1" oninput="creatinine_w.value=this.value">
-                    </div>
-                    <div class="form-group">
-                        <label for="uric_acid">Uric Acid (mg/dL)</label>
-                        <input type="number" step="0.1" id="uric_acid" name="uric_acid" placeholder="numeric value only">
-                        <input type="range" id="uric_acid_range" name="uric_acid_range" min="0" max="2" step="0.1" value="0" oninput="uric_acid.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="cistatine_c">Cistatine C (mg/dL)</label>
@@ -9250,12 +9245,12 @@
                         <input type="range" id="dhea_w_range" name="dhea_w_range" min="0" max="20" value="0" step="0.1" oninput="dhea_w.value=this.value">
                     </div>
                     <div class="form-group">
-                        <label for="testo_m">Testosterone Man(ng/dL)</label>
+                        <label for="testo_m">Testosterone Man(ng/mI)</label>
                         <input type="number" step="0.1" id="testo_m" name="testo_m" placeholder="numeric value only">
                         <input type="range" id="testo_m_range" name="testo_m_range" min="0" max="14" value="0" step="0.1" oninput="testo_m.value=this.value">
                     </div>
                     <div class="form-group">
-                        <label for="testo_w">Testosterone Woman</label>
+                        <label for="testo_w">Testosterone Woman(ng/mI)</label>
                         <input type="number" step="0.1" id="testo_w" name="testo_w" placeholder="numeric value only">
                         <input type="range" id="testo_w_range" name="testo_w_range" min="0" max="2" value="0" step="0.01" oninput="testo_w.value=this.value">
                     </div>
@@ -9272,7 +9267,7 @@
                     <div class="form-group">
                         <label for="ft4">Free Thyroxine (ng/dL)</label>
                         <input type="number" step="0.1" id="ft4" name="ft4" placeholder="numeric value only">
-                        <input type="range" id="ft4_range" name="ft4_range" min="0" max="20" value="0" step="0.1" oninput="ft4.value=this.value">
+                        <input type="range" id="ft4_range" name="ft4_range" min="0" max="3.4" value="0" step="0.1" oninput="ft4.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="beta_es_m">17 beta estradiol Man</label>
@@ -9387,7 +9382,7 @@
                         <input type="range" id="a_2_range" name="a_2_range" min="0" max="25" value="0" step="0.1" oninput="a_2.value=this.value">
                     </div>
                     <div class="form-group">
-                        <label for="b_1">Beta 1</label>
+                        <label for="b_1">Beta 1 (%)</label>
                         <input type="number" step="0.1" id="b_1" name="b_1" placeholder="numeric value only">
                         <input type="range" id="b_1_range" name="b_1_range" min="0" max="20" value="0" step="0.1" oninput="b_1.value=this.value">
                     </div>
@@ -9402,7 +9397,7 @@
                         <input type="range" id="gamma_range" name="gamma_range" min="0" max="40" value="0" step="0.1" oninput="gamma.value=this.value">
                     </div>
                     <div class="form-group">
-                        <label for="albumin_dI">Albumin* (g/dI)</label>
+                        <label for="albumin_dI">Albumin (g/dI)</label>
                         <input type="number" step="0.1" id="albumin_dI" name="albumin_dI" placeholder="numeric value only">
                         <input type="range" id="albumin_dI_range" name="albumin_dI_range" min="0" max="10" value="0" step="0.1" oninput="albumin_dI.value=this.value">
                     </div>
@@ -9478,9 +9473,14 @@
                         <input type="range" id="gpt_w_range" name="gpt_w_range" min="0" max="60" value="0" oninput="gpt_w.value=this.value">
                     </div>
                     <div class="form-group">
-                        <label for="g_gt">Gamma GT (U/I)</label>
-                        <input type="number" step="0.1" id="g_gt" name="g_gt" placeholder="numeric value only">
-                        <input type="range" id="g_gt_range" name="g_gt_range" min="0" max="80" value="0" oninput="g_gt.value=this.value">
+                        <label for="g_gt_m">Gamma GT Man(U/I)</label>
+                        <input type="number" step="0.1" id="g_gt_m" name="g_gt_m" placeholder="numeric value only">
+                        <input type="range" id="g_gt_m_range" name="g_gt_m_range" min="0" max="80" value="0" oninput="g_gt_m.value=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label for="g_gt_w">Gamma GT Woman(U/I)</label>
+                        <input type="number" step="0.1" id="g_gt_w" name="g_gt_w" placeholder="numeric value only">
+                        <input type="range" id="g_gt_w_range" name="g_gt_w_range" min="0" max="120" value="0" oninput="g_gt_w.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="a_photo_m">Alkaline Phosphatase Man(U/I)</label>
@@ -9583,7 +9583,7 @@
                     <div class="form-group">
                         <label for="shbg_w">Sex Hormone Binding Globulin Woman</label>
                         <input type="number" step="0.1" id="shbg_w" name="shbg_w" placeholder="numeric value only">
-                        <input type="range" id="shbg_w_range" name="shbg_w_range" min="0" max="30" value="0" oninput="shbg_w.value=this.value">
+                        <input type="range" id="shbg_w_range" name="shbg_w_range" min="0" max="300" value="0" oninput="shbg_w.value=this.value">
                     </div>
                     <div class="form-group">
                         <label for="nt_pro">NT-proBNP</label>
@@ -9659,17 +9659,6 @@
                         <label for="telotest">Telotest</label>
                         <input type="number" step="0.1" id="telotest" name="telotest" placeholder="numeric value only">
                         <input type="range" id="telotest_range" name="telotest_range" min="0" max="1" value="0" step="0.1" oninput="telotest.value=this.value">
-                    </div>
-                </div>
-            </div>
-
-            <div class="section" id="flex-section">
-                <h3>Methylation</h3>
-                <div class="flex-container" id="flex-adjust">
-                    <div class="form-group">
-                        <label for="epiage">Epiage</label>
-                        <input type="number" step="0.1" id="epiage" name="epiage" placeholder="numeric value only">
-                        <input type="range" id="epiage_range" name="epiage_range" min="0" max="120" value="0" step="0.1" oninput="epiage.value=this.value">
                     </div>
                 </div>
             </div>
