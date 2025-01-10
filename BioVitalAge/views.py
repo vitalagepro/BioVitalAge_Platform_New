@@ -135,7 +135,6 @@ class CalcolatoreRender(View):
                     referto = ArchivioReferti(
                         paziente=paziente_query,
                         descrizione=data.get('descrizione'),
-                        documento=request.FILES.get('documento')
                     )
                     referto.save()
 
@@ -162,6 +161,9 @@ class CalcolatoreRender(View):
                     dih_gamma_lin_acid = safe_float(data, 'dih_gamma_lin_acid')
                     arachidonic_acid = safe_float(data, 'arachidonic_acid')
                     sa_un_fatty_acid = safe_float(data, 'sa_un_fatty_acid')
+                    o3o6_fatty_acid_quotient =  safe_float(data, 'o3o6_fatty_acid_quotient')
+                    aa_epa = safe_float(data, 'aa_epa ')
+                    o3_index = safe_float(data, 'o3_index')
 
                     wbc = safe_float(data, 'wbc')
                     baso = safe_float(data, 'baso')
@@ -191,7 +193,6 @@ class CalcolatoreRender(View):
                     uric_acid = safe_float(data, 'uric_acid')
                     creatinine_m = safe_float(data, 'creatinine_m')
                     creatinine_w = safe_float(data, 'creatinine_w')
-
                     uricemy_m = safe_float(data, 'uricemy_m')
                     uricemy_w = safe_float(data, 'uricemy_w')
                     cistatine_c = safe_float(data, 'cistatine_c')
@@ -258,26 +259,29 @@ class CalcolatoreRender(View):
                     cm = safe_float(data, 'cm')
                     b_2_spike = safe_float(data, 'b_2_spike')
                     b_2_spike_m1 = safe_float(data, 'b_2_spike_m1')
-                    got = safe_float(data, 'got')
-                    gpt = safe_float(data, 'gpt')
-                    g_gt = safe_float(data, 'g_gt')
-                    a_photo = safe_float(data, 'a_photo')
-                    tot_bili = safe_float(data, 'tot_bili')
-                    direct_bili = safe_float(data, 'direct_bili')
-                    idirect_bili = safe_float(data, 'idirect_bili')
+              
                     got_m = safe_float(data, 'got_m')
                     got_w = safe_float(data, 'got_w')
                     gpt_m = safe_float(data, 'gpt_m')
                     gpt_w = safe_float(data, 'gpt_w')
+                    g_gt_m = safe_float(data, 'g_gt_w')
+                    g_gt_w = safe_float(data, 'g_gt_w')
                     a_photo_m = safe_float(data, 'a_photo_m')
                     a_photo_w = safe_float(data, 'a_photo_w')
+                    tot_bili = safe_float(data, 'tot_bili')
+                    direct_bili = safe_float(data, 'direct_bili')
+                    indirect_bili = safe_float(data, 'indirect_bili')
+                 
                     ves = safe_float(data, 'ves')
                     pcr_c = safe_float(data, 'pcr_c')
+
                     tnf_a = safe_float(data, 'tnf_a')
                     inter_6 = safe_float(data, 'inter_6')
                     inter_10 = safe_float(data, 'inter_10')
+
                     scatolo = safe_float(data, 'scatolo')
                     indicano = safe_float(data, 'indicano')
+
                     s_weight = safe_float(data, 's_weight')
                     ph = safe_float(data, 'ph')
                     proteins_ex = safe_float(data, 'proteins_ex')
@@ -287,15 +291,16 @@ class CalcolatoreRender(View):
                     bilirubin_ex = safe_float(data, 'bilirubin_ex')
                     leuc = safe_float(data, 'leuc')
                     glucose = safe_float(data, 'glucose')
+
                     shbg_m = safe_float(data, 'shbg_m')
                     shbg_w = safe_float(data, 'shbg_w')
                     nt_pro = safe_float(data, 'nt_pro')
                     v_b12 = safe_float(data, 'v_b12')
                     v_d = safe_float(data, 'v_d')
                     ves2 = safe_float(data, 'ves2')
+
                     telotest = safe_float(data, 'telotest')
 
-                    
 
                     exams = [glucose, creatinine_m, ferritin_m, albumin_ele, proteins_ex, bilirubin_ex, uric_acid]
 
@@ -306,13 +311,14 @@ class CalcolatoreRender(View):
                         hct_m, mcv, mch, mchc, rdwsd, exams
                     )
 
-
                     # Salvataggio dei dati
                     dati_estesi = DatiEstesiReferti(
                         referto=referto,
+
                         d_roms=d_roms,
                         osi=osi,
                         pat=pat,
+
                         my_acid=my_acid,
                         p_acid=p_acid,
                         st_acid=st_acid,
@@ -329,6 +335,10 @@ class CalcolatoreRender(View):
                         dih_gamma_lin_acid=dih_gamma_lin_acid,
                         arachidonic_acid=arachidonic_acid,
                         sa_un_fatty_acid=sa_un_fatty_acid,
+                        o3o6_fatty_acid_quotient = o3o6_fatty_acid_quotient,
+                        aa_epa = aa_epa,
+                        o3_index = o3_index,
+
                         wbc=wbc,
                         baso=baso,
                         eosi=eosi,
@@ -340,6 +350,7 @@ class CalcolatoreRender(View):
                         mono_ul=mono_ul,
                         eosi_ul=eosi_ul,
                         baso_ul=baso_ul,
+
                         mch=mch,
                         mchc=mchc,
                         mcv=mcv,
@@ -351,6 +362,7 @@ class CalcolatoreRender(View):
                         hgb_w=hgb_w,
                         rbc_m=rbc_m,
                         rbc_w=rbc_w,
+
                         azotemia=azotemia,
                         uric_acid=uric_acid,
                         creatinine_m=creatinine_m,
@@ -358,6 +370,7 @@ class CalcolatoreRender(View):
                         uricemy_m=uricemy_m,
                         uricemy_w=uricemy_w,
                         cistatine_c=cistatine_c,
+
                         plt=plt,
                         mpv=mpv,
                         plcr=plcr,
@@ -365,17 +378,20 @@ class CalcolatoreRender(View):
                         pdw=pdw,
                         d_dimero=d_dimero,
                         pai_1=pai_1,
+
                         tot_chol=tot_chol,
                         ldl_chol=ldl_chol,
                         hdl_chol_m=hdl_chol_m,
                         hdl_chol_w=hdl_chol_w,
                         trigl=trigl,
+
                         na=na,
                         k=k,
                         mg=mg,
                         ci=ci,
                         ca=ca,
                         p=p,
+
                         dhea_m=dhea_m,
                         dhea_w=dhea_w,
                         testo_m=testo_m,
@@ -387,14 +403,17 @@ class CalcolatoreRender(View):
                         beta_es_w=beta_es_w,
                         prog_m=prog_m,
                         prog_w=prog_w,
+
                         fe=fe,
                         transferrin=transferrin,
                         ferritin_m=ferritin_m,
                         ferritin_w=ferritin_w,
+
                         glicemy=glicemy,
                         insulin=insulin,
                         homa=homa,
                         ir=ir,
+
                         albuminemia=albuminemia,
                         tot_prot=tot_prot,
                         tot_prot_ele=tot_prot_ele,
@@ -414,26 +433,29 @@ class CalcolatoreRender(View):
                         cm=cm,
                         b_2_spike=b_2_spike,
                         b_2_spike_m1=b_2_spike_m1,
-                        got=got,
-                        gpt=gpt,
-                        g_gt=g_gt,
-                        a_photo=a_photo,
-                        tot_bili=tot_bili,
-                        direct_bili=direct_bili,
-                        idirect_bili=idirect_bili,
+                      
                         got_m=got_m,
                         got_w=got_w,
                         gpt_m=gpt_m,
                         gpt_w=gpt_w,
+                        g_gt_m=g_gt_m,
+                        g_gt_w = g_gt_w,    
                         a_photo_m=a_photo_m,
                         a_photo_w=a_photo_w,
+                        tot_bili=tot_bili,
+                        direct_bili=direct_bili,
+                        indirect_bili=indirect_bili,
+                       
                         ves=ves,
                         pcr_c=pcr_c,
+
                         tnf_a=tnf_a,
                         inter_6=inter_6,
                         inter_10=inter_10,
+
                         scatolo=scatolo,
                         indicano=indicano,
+
                         s_weight=s_weight,
                         ph=ph,
                         proteins_ex=proteins_ex,
@@ -443,13 +465,17 @@ class CalcolatoreRender(View):
                         bilirubin_ex=bilirubin_ex,
                         leuc=leuc,
                         glucose=glucose,
+
                         shbg_m=shbg_m,
                         shbg_w=shbg_w,
                         nt_pro=nt_pro,
                         v_b12=v_b12,
                         v_d=v_d,
                         ves2=ves2,
-                        telotest=telotest
+
+                        telotest=telotest,
+
+                        biological_age= biological_age,
                     )
                     dati_estesi.save()
 
@@ -472,8 +498,6 @@ class CalcolatoreRender(View):
                     return render(request, "includes/calcolatore.html", context)
 
             else:
-                # Controlla se solo i campi richiesti sono popolati
-                campi_obbligatori = ['name', 'surname', 'dob', 'gender', 'place_of_birth', 'codice_fiscale', 'chronological_age']
                 campi_opzionali = [
                     # Aggiunti tutti i campi definiti nel modello e HTML
                     'd_roms', 'osi', 'pat', 'fa_saturated', 'o9o7fatty_acids', 'o3fatty_acids', 'o6fatty_acids', 's_u_fatty_acids',
@@ -490,6 +514,7 @@ class CalcolatoreRender(View):
 
                 if all(not data.get(campo) for campo in campi_opzionali):
                     # Salva solo i dati personali e l'età cronologica
+
                     paziente = TabellaPazienti(
                         dottore=dottore,
                         name=data.get('name'),
@@ -497,10 +522,11 @@ class CalcolatoreRender(View):
                         dob=data.get('dob'),
                         gender=data.get('gender'),
                         place_of_birth=data.get('place_of_birth'),
-                        codice_fiscale=data.get('codice_fiscale')
+                        codice_fiscale=data.get('codice_fiscale'),
+                        chronological_age = data.get('chronological_age')
                     )
                     paziente.save()
-                    print("Paziente creato (solo campi obbligatori):", paziente)
+
 
                     dati_estesi = DatiEstesiReferti(
                         chronological_age=chronological_age,  
@@ -521,7 +547,6 @@ class CalcolatoreRender(View):
                     )
                     paziente.save()
               
-
                     # Salva i dati del referto
                     referto = ArchivioReferti(
                         paziente=paziente,
@@ -529,7 +554,6 @@ class CalcolatoreRender(View):
                         documento=request.FILES.get('documento')
                     )
                     referto.save()
-           
 
                     # Estrai i dati necessari per la tabella DatiEstesiReferti
                     chronological_age = int(data.get('chronological_age'))
@@ -554,6 +578,9 @@ class CalcolatoreRender(View):
                     dih_gamma_lin_acid = safe_float(data, 'dih_gamma_lin_acid')
                     arachidonic_acid = safe_float(data, 'arachidonic_acid')
                     sa_un_fatty_acid = safe_float(data, 'sa_un_fatty_acid')
+                    o3o6_fatty_acid_quotient =  safe_float(data, 'o3o6_fatty_acid_quotient')
+                    aa_epa = safe_float(data, 'aa_epa ')
+                    o3_index = safe_float(data, 'o3_index')
 
                     wbc = safe_float(data, 'wbc')
                     baso = safe_float(data, 'baso')
@@ -583,7 +610,6 @@ class CalcolatoreRender(View):
                     uric_acid = safe_float(data, 'uric_acid')
                     creatinine_m = safe_float(data, 'creatinine_m')
                     creatinine_w = safe_float(data, 'creatinine_w')
-
                     uricemy_m = safe_float(data, 'uricemy_m')
                     uricemy_w = safe_float(data, 'uricemy_w')
                     cistatine_c = safe_float(data, 'cistatine_c')
@@ -650,26 +676,29 @@ class CalcolatoreRender(View):
                     cm = safe_float(data, 'cm')
                     b_2_spike = safe_float(data, 'b_2_spike')
                     b_2_spike_m1 = safe_float(data, 'b_2_spike_m1')
-                    got = safe_float(data, 'got')
-                    gpt = safe_float(data, 'gpt')
-                    g_gt = safe_float(data, 'g_gt')
-                    a_photo = safe_float(data, 'a_photo')
-                    tot_bili = safe_float(data, 'tot_bili')
-                    direct_bili = safe_float(data, 'direct_bili')
-                    idirect_bili = safe_float(data, 'idirect_bili')
+              
                     got_m = safe_float(data, 'got_m')
                     got_w = safe_float(data, 'got_w')
                     gpt_m = safe_float(data, 'gpt_m')
                     gpt_w = safe_float(data, 'gpt_w')
+                    g_gt_m = safe_float(data, 'g_gt_w')
+                    g_gt_w = safe_float(data, 'g_gt_w')
                     a_photo_m = safe_float(data, 'a_photo_m')
                     a_photo_w = safe_float(data, 'a_photo_w')
+                    tot_bili = safe_float(data, 'tot_bili')
+                    direct_bili = safe_float(data, 'direct_bili')
+                    indirect_bili = safe_float(data, 'indirect_bili')
+                 
                     ves = safe_float(data, 'ves')
                     pcr_c = safe_float(data, 'pcr_c')
+
                     tnf_a = safe_float(data, 'tnf_a')
                     inter_6 = safe_float(data, 'inter_6')
                     inter_10 = safe_float(data, 'inter_10')
+
                     scatolo = safe_float(data, 'scatolo')
                     indicano = safe_float(data, 'indicano')
+
                     s_weight = safe_float(data, 's_weight')
                     ph = safe_float(data, 'ph')
                     proteins_ex = safe_float(data, 'proteins_ex')
@@ -679,15 +708,17 @@ class CalcolatoreRender(View):
                     bilirubin_ex = safe_float(data, 'bilirubin_ex')
                     leuc = safe_float(data, 'leuc')
                     glucose = safe_float(data, 'glucose')
+
                     shbg_m = safe_float(data, 'shbg_m')
                     shbg_w = safe_float(data, 'shbg_w')
                     nt_pro = safe_float(data, 'nt_pro')
                     v_b12 = safe_float(data, 'v_b12')
                     v_d = safe_float(data, 'v_d')
                     ves2 = safe_float(data, 'ves2')
+
                     telotest = safe_float(data, 'telotest')
 
-                    
+
                     exams = [glucose, creatinine_m, ferritin_m, albumin_ele, proteins_ex, bilirubin_ex, uric_acid]
 
                     # Calcolo dell'età biologica
@@ -697,12 +728,15 @@ class CalcolatoreRender(View):
                         hct_m, mcv, mch, mchc, rdwsd, exams
                     )
 
+
                     # Salvataggio dei dati
                     dati_estesi = DatiEstesiReferti(
                         referto=referto,
+
                         d_roms=d_roms,
                         osi=osi,
                         pat=pat,
+
                         my_acid=my_acid,
                         p_acid=p_acid,
                         st_acid=st_acid,
@@ -719,6 +753,10 @@ class CalcolatoreRender(View):
                         dih_gamma_lin_acid=dih_gamma_lin_acid,
                         arachidonic_acid=arachidonic_acid,
                         sa_un_fatty_acid=sa_un_fatty_acid,
+                        o3o6_fatty_acid_quotient = o3o6_fatty_acid_quotient,
+                        aa_epa = aa_epa,
+                        o3_index = o3_index,
+
                         wbc=wbc,
                         baso=baso,
                         eosi=eosi,
@@ -730,6 +768,7 @@ class CalcolatoreRender(View):
                         mono_ul=mono_ul,
                         eosi_ul=eosi_ul,
                         baso_ul=baso_ul,
+
                         mch=mch,
                         mchc=mchc,
                         mcv=mcv,
@@ -741,6 +780,7 @@ class CalcolatoreRender(View):
                         hgb_w=hgb_w,
                         rbc_m=rbc_m,
                         rbc_w=rbc_w,
+
                         azotemia=azotemia,
                         uric_acid=uric_acid,
                         creatinine_m=creatinine_m,
@@ -748,6 +788,7 @@ class CalcolatoreRender(View):
                         uricemy_m=uricemy_m,
                         uricemy_w=uricemy_w,
                         cistatine_c=cistatine_c,
+
                         plt=plt,
                         mpv=mpv,
                         plcr=plcr,
@@ -755,17 +796,20 @@ class CalcolatoreRender(View):
                         pdw=pdw,
                         d_dimero=d_dimero,
                         pai_1=pai_1,
+
                         tot_chol=tot_chol,
                         ldl_chol=ldl_chol,
                         hdl_chol_m=hdl_chol_m,
                         hdl_chol_w=hdl_chol_w,
                         trigl=trigl,
+
                         na=na,
                         k=k,
                         mg=mg,
                         ci=ci,
                         ca=ca,
                         p=p,
+
                         dhea_m=dhea_m,
                         dhea_w=dhea_w,
                         testo_m=testo_m,
@@ -777,14 +821,17 @@ class CalcolatoreRender(View):
                         beta_es_w=beta_es_w,
                         prog_m=prog_m,
                         prog_w=prog_w,
+
                         fe=fe,
                         transferrin=transferrin,
                         ferritin_m=ferritin_m,
                         ferritin_w=ferritin_w,
+
                         glicemy=glicemy,
                         insulin=insulin,
                         homa=homa,
                         ir=ir,
+
                         albuminemia=albuminemia,
                         tot_prot=tot_prot,
                         tot_prot_ele=tot_prot_ele,
@@ -804,26 +851,29 @@ class CalcolatoreRender(View):
                         cm=cm,
                         b_2_spike=b_2_spike,
                         b_2_spike_m1=b_2_spike_m1,
-                        got=got,
-                        gpt=gpt,
-                        g_gt=g_gt,
-                        a_photo=a_photo,
-                        tot_bili=tot_bili,
-                        direct_bili=direct_bili,
-                        idirect_bili=idirect_bili,
+                      
                         got_m=got_m,
                         got_w=got_w,
                         gpt_m=gpt_m,
                         gpt_w=gpt_w,
+                        g_gt_m=g_gt_m,
+                        g_gt_w = g_gt_w,    
                         a_photo_m=a_photo_m,
                         a_photo_w=a_photo_w,
+                        tot_bili=tot_bili,
+                        direct_bili=direct_bili,
+                        indirect_bili=indirect_bili,
+                       
                         ves=ves,
                         pcr_c=pcr_c,
+
                         tnf_a=tnf_a,
                         inter_6=inter_6,
                         inter_10=inter_10,
+
                         scatolo=scatolo,
                         indicano=indicano,
+
                         s_weight=s_weight,
                         ph=ph,
                         proteins_ex=proteins_ex,
@@ -833,16 +883,19 @@ class CalcolatoreRender(View):
                         bilirubin_ex=bilirubin_ex,
                         leuc=leuc,
                         glucose=glucose,
+
                         shbg_m=shbg_m,
                         shbg_w=shbg_w,
                         nt_pro=nt_pro,
                         v_b12=v_b12,
                         v_d=v_d,
                         ves2=ves2,
-                        telotest=telotest
+                        
+                        telotest=telotest,
+
+                        biological_age= biological_age,
                     )
                     dati_estesi.save()
-
                 # Context da mostrare nel template
                 context = {
                     "show_modal": True,
