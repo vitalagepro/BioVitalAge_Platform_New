@@ -302,7 +302,7 @@ class CalcolatoreRender(View):
                     telotest = safe_float(data, 'telotest')
 
 
-                    eexams = [
+                    exams = [
                             'my_acid', 'p_acid', 'st_acid', 'ar_acid', 'beenic_acid', 'pal_acid', 
                             'ol_acid', 'ner_acid', 'a_linoleic_acid', 'eico_acid', 'doco_acid', 
                             'lin_acid', 'gamma_lin_acid', 'dih_gamma_lin_acid', 'arachidonic_acid', 
