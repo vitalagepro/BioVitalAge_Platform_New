@@ -73,6 +73,7 @@ class ArchivioReferti(models.Model):
         related_name='referti'
     )
     data_referto = models.DateField(auto_now_add=True)
+    data_ora_creazione = models.DateTimeField(auto_now_add=True, null=True) 
     descrizione = models.TextField(null=True, blank=True)
     documento = models.FileField(upload_to='referti/', null=True, blank=True)
 
@@ -110,6 +111,9 @@ class DatiEstesiReferti(models.Model):
     dih_gamma_lin_acid = models.FloatField(null=True, blank=True)  
     arachidonic_acid = models.FloatField(null=True, blank=True)  
     sa_un_fatty_acid = models.FloatField(null=True, blank=True)
+    o3o6_fatty_acid_quotient = models.FloatField(null=True, blank=True)  
+    aa_epa = models.FloatField(null=True, blank=True)  
+    o3_index = models.FloatField(null=True, blank=True)
 
     # White Blood Cells
     wbc = models.FloatField(null=True, blank=True)
@@ -217,19 +221,17 @@ class DatiEstesiReferti(models.Model):
     b_2_spike_m1 = models.FloatField(null=True, blank=True)
 
     # Liver Functionality
-    got = models.FloatField(null=True, blank=True)
-    gpt = models.FloatField(null=True, blank=True)
-    g_gt = models.FloatField(null=True, blank=True)
-    a_photo = models.FloatField(null=True, blank=True)
-    tot_bili = models.FloatField(null=True, blank=True)
-    direct_bili = models.FloatField(null=True, blank=True)
-    idirect_bili = models.FloatField(null=True, blank=True)
     got_m = models.FloatField(null=True, blank=True)  
     got_w = models.FloatField(null=True, blank=True)  
     gpt_m = models.FloatField(null=True, blank=True)  
-    gpt_w = models.FloatField(null=True, blank=True) 
+    gpt_w = models.FloatField(null=True, blank=True)  
+    g_gt_m = models.FloatField(null=True, blank=True)
+    g_gt_w = models.FloatField(null=True, blank=True)  
     a_photo_m = models.FloatField(null=True, blank=True)  
-    a_photo_w = models.FloatField(null=True, blank=True)  
+    a_photo_w = models.FloatField(null=True, blank=True)
+    tot_bili = models.FloatField(null=True, blank=True)  
+    direct_bili = models.FloatField(null=True, blank=True)  
+    indirect_bili = models.FloatField(null=True, blank=True)
 
     # Indices of Phlogosis
     ves = models.FloatField(null=True, blank=True)
