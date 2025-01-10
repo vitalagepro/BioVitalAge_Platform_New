@@ -124,39 +124,45 @@
             </div>
         </div>
 
-        <div class="container-risultati">
-            <div class="card-personal-info">
-                <h3>Personal Information</h3>
-                <div class="card-content-container">    
-                    <div class="detail-row">
-                        <p><span>Name: </span></p>
-                        <p id="name">{{ persona.name }}</p>
+        <div class="container_data anagraphic_data">
+            <div class="container_box">
+                <div class="info_container">
+                    <div class="field">
+                        <p>Name:&nbsp;</p>
+                        <p>{{ persona.name }}</p>
                     </div>
-                    <div class="detail-row">
-                        <p><span>Surname: </span></p>
-                        <p id="surname">{{ persona.surname }}</p>
+            
+                    <div class="field">
+                        <p>Surname:&nbsp;</p>
+                        <p>{{ persona.surname }}</p>
                     </div>
-                    <div class="detail-row">
-                        <p><span>Date of Birth: </span></p>
-                        <p id="dob">{{ persona.dob|date:"d/m/Y" }}</p>
+            
+                    <div class="field">
+                        <p>Fiscal Code:&nbsp;</p>
+                        <p>{{ persona.codice_fiscale }}</p>
                     </div>
-                    <div class="detail-row">
-                        <p><span>Codice Fiscale: </span></p>
-                        <p id="codice_fiscale">{{ persona.codice_fiscale }}</p>
+            
+                    <div class="field">
+                        <p>Place of birth:&nbsp;</p>
+                        <p>{{ persona.place_of_birth }}</p>
                     </div>
-                    <div class="detail-row">
-                        <p><span>Place of Birth: </span></p>
-                        <p id="place_birth">{{ persona.place_of_birth }}</p>
+            
+                    <div class="field">
+                        <p>Age:&nbsp;</p>
+                        <p>{{ persona.chronological_age }}</p>
                     </div>
-                    <div class="detail-row">
-                        <p><span>Chronological Age: </span></p>
-                        <p id="chronological_age">{{ persona.chronological_age }}</p>
+                
+                    <div class="field">
+                        <p>Biological Age:&nbsp;</p>
+                        <p>{{ persona.biological_age }}</p>
                     </div>
-                    <div class="detail-row">
-                        <p><span>Biological Age: </span></p>
-                        <p id="biological_age">{{ persona.biological_age }}</span>
+
+                    <div class="field">
+                        <p>Date of birth:&nbsp;</p>
+                        <p>{{ persona.dob }}</p>
                     </div>
-                </div>  
+                </div>
+            </div>
             </div>
 
             <div class="exams-container">
