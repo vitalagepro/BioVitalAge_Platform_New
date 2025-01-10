@@ -286,7 +286,7 @@ form{
     text-align: center;
     font-size: 18px;
 }
- */
+*/
 
 .visible {
   overflow: hidden;
@@ -346,26 +346,16 @@ form{
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 15px;
+  margin-top: 25px;
 }
 
-.button-container-modal button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 2.5rem;
-  width: 12rem;
-  font-size: 18px;
-  border-radius: 8px;
+.spacer_lilla{
+  width: 100%;
+  height: 3px;
+  margin: 20px 0;
+  border-radius: 20px;
   background-color: var(--contrast-color2);
-  border: none;
-  color: var(--tittle1);
-  text-transform: uppercase;
-  transition: all 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
-}
-
-.button-container-modal button:hover {
-  background-color: var(--dark2);
-  color: var(--tittle1);
 }
 .Subtitle {
   font-weight: bold;
@@ -373,8 +363,12 @@ form{
 .valoriInseritiContainer {
   max-height: 360px;
   overflow: auto;
+  border-radius: 15px;
+  box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.1);
 }
-
+.results-container-modal{
+  margin: 20px 0;
+}
 .indicator-container {
   padding: 20px;
   background-color: var(--contrast-color-shadow);
@@ -498,15 +492,5 @@ form{
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-}
-
-.modal-container button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
