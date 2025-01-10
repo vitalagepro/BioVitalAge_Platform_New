@@ -3660,6 +3660,7 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+
             <div class="exams-container">
                 <h3>Other Exams</h3>
 
@@ -3831,61 +3832,196 @@
                 <h3>Urinalysis</h3>
                 <div class="content-container">
                     <div class="indicator-container">
-                        <p><span>Total bilirubin (mg/dI):</span>{{ datiEstesi.tot_bili }}</p>
+                        <p><span>Specific Weight:</span>{{ datiEstesi.s_weight }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
-                                    <p>>0</p>
-                                    <p>1.20</p>
+                                    <p>1000</p>
+                                    <p>1030</p>
                                 </div>
-                                <p class="extremeNegativeRange">2.40</p>
+                                <p class="extremeNegativeRange">2060</p>
                             </div>
-                            {% if datiEstesi.tot_bili %}
+                            {% if datiEstesi.s_weight %}
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tot_bili }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.s_weight }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
         
                             {% else %}
         
                                 <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ datiEstesi.tot_bili }}"></p>
+                                    <p data-value="{{ datiEstesi.s_weight }}"></p>
                                 </div>
         
                             {% endif %}
                         </div>
                     </div>
                     <div class="indicator-container">
-                        <p><span>Direct bilirubin (mg/dI):</span>{{ datiEstesi.direct_bili }}</p>
+                        <p><span>PH:</span>{{ datiEstesi.ph }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
                                 <div class="positiveTesto">
-                                    <p>>0</p>
-                                    <p>0.30</p>
+                                    <p>5.0</p>
+                                    <p>9.0</p>
                                 </div>
-                                <p class="extremeNegativeRange">0.60</p>
+                                <p class="extremeNegativeRange">10</p>
                             </div>
-                            {% if datiEstesi.direct_bili %}
+                            {% if datiEstesi.ph %}
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.direct_bili }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ph }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
         
                             {% else %}
         
                                 <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ datiEstesi.direct_bili }}"></p>
+                                    <p data-value="{{ datiEstesi.ph }}"></p>
                                 </div>
         
                             {% endif %}
                         </div>
                     </div>
                     <div class="indicator-container">
-                        <p><span>Indirect bilirubin (mg/dI):</span>{{ datiEstesi.idirect_bili }}</p>
+                        <p><span>Glucose (mmol/L):</span>{{ datiEstesi.glucose }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">0</p>
+                                <div class="positiveTesto">
+                                    <p>>0</p>
+                                    <p>5</p>
+                                </div>
+                                <p class="extremeNegativeRange">10</p>
+                            </div>
+                            {% if datiEstesi.glucose %}
+        
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.glucose }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                </div>
+        
+                            {% else %}
+        
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.glucose }}"></p>
+                                </div>
+        
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="indicator-container">
+                        <p><span>Proteins (mg/dI):</span>{{ datiEstesi.proteins_ex }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">0</p>
+                                <div class="positiveTesto">
+                                    <p>>0</p>
+                                    <p>15</p>
+                                </div>
+                                <p class="extremeNegativeRange">30</p>
+                            </div>
+                            {% if datiEstesi.proteins_ex %}
+        
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.proteins_ex }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                </div>
+        
+                            {% else %}
+        
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.proteins_ex }}"></p>
+                                </div>
+        
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="indicator-container">
+                        <p><span>Blood (ery/µL):</span>{{ datiEstesi.blood_ex }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">0</p>
+                                <div class="positiveTesto">
+                                    <p>0-0</p>
+                                    <p>1-15</p>
+                                </div>
+                                <p class="extremeNegativeRange">15</p>
+                            </div>
+                            {% if datiEstesi.blood_ex %}
+        
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.blood_ex }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                </div>
+        
+                            {% else %}
+        
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.blood_ex }}"></p>
+                                </div>
+        
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="indicator-container">
+                        <p><span>Ketones (mg/dI):</span>{{ datiEstesi.ketones }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">0</p>
+                                <div class="positiveTesto">
+                                    <p>>0</p>
+                                    <p>15</p>
+                                </div>
+                                <p class="extremeNegativeRange">30</p>
+                            </div>
+                            {% if datiEstesi.ketones %}
+        
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ketones }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                </div>
+        
+                            {% else %}
+        
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.ketones }}"></p>
+                                </div>
+        
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="indicator-container">
+                        <p><span>Urobilinogen (umol/L):</span>{{ datiEstesi.uro }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">0</p>
+                                <div class="positiveTesto">
+                                    <p>>0</p>
+                                    <p>17</p>
+                                </div>
+                                <p class="extremeNegativeRange">35</p>
+                            </div>
+                            {% if datiEstesi.uro %}
+        
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.uro }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                </div>
+        
+                            {% else %}
+        
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.uro }}"></p>
+                                </div>
+        
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="indicator-container">
+                        <p><span>Bilirubin (mg/dI):</span>{{ datiEstesi.bilirubin_ex }}</p>
                         <div class="indicator-content-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3893,19 +4029,46 @@
                                     <p>>0</p>
                                     <p>1</p>
                                 </div>
-                                <p class="extremeNegativeRange">82</p>
+                                <p class="extremeNegativeRange">2</p>
                             </div>
-                            {% if datiEstesi.idirect_bili %}
+                            {% if datiEstesi.bilirubin_ex %}
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.idirect_bili }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.bilirubin_ex }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                 </div>
         
                             {% else %}
         
                                 <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ datiEstesi.idirect_bili }}"></p>
+                                    <p data-value="{{ datiEstesi.bilirubin_ex }}"></p>
+                                </div>
+        
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="indicator-container">
+                        <p><span>Leucocites (Leu/uL):</span>{{ datiEstesi.leuc }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">0</p>
+                                <div class="positiveTesto">
+                                    <p>>0</p>
+                                    <p>15</p>
+                                </div>
+                                <p class="extremeNegativeRange">30</p>
+                            </div>
+                            {% if datiEstesi.leuc %}
+        
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.leuc }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                </div>
+        
+                            {% else %}
+        
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.leuc }}"></p>
                                 </div>
         
                             {% endif %}
@@ -3914,6 +4077,42 @@
                 </div>
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
+            
+            <div class="exams-container">
+                <h3>Telomere length</h3>
+
+                <div class="content-container">
+                    <div class="indicator-container">
+                        <p><span>Telotest:</span>{{ datiEstesi.telotest }}</p>
+                        <div class="indicator-content-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">0</p>
+                                <div class="positiveTesto">
+                                    <p>>0</p>
+                                    <p>0.49</p>
+                                </div>
+                                <p class="extremeNegativeRange">1</p>
+                            </div>
+                            {% if datiEstesi.telotest %}
+        
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.telotest }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                </div>
+        
+                            {% else %}
+        
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.telotest }}"></p>
+                                </div>
+        
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <button class="generatePDFButton">Genera PDF</button>
+            </div>
+
         </div>
 
         <script>
