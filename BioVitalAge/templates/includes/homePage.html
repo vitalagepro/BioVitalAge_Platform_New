@@ -413,7 +413,7 @@
                 <!-- Associa il dato corretto al paziente -->
                 {% for dato in datiEstesi %}
                   {% if dato.referto.paziente.id == persona.id %}
-                    <p>{{ dato.chronological_age }}</p>
+                    <p>{{ persona.chronological_age }}</p>
                   {% endif %}
                 {% endfor %}
               </div>
@@ -421,7 +421,7 @@
                 <!-- Associa il dato corretto al paziente -->
                 {% for dato in datiEstesi %}
                   {% if dato.referto.paziente.id == persona.id %}
-                    <p>{{ dato.biological_age }}</p>
+                    <p>{{ persona.biological_age }}</p>
                   {% endif %}
                 {% endfor %}
               </div>

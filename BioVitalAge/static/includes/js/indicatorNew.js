@@ -1,3 +1,36 @@
+/*  -----------------------------------------------------------------------------------------------
+Function for gender selection
+--------------------------------------------------------------------------------------------------- */
+document.getElementById("gender").addEventListener("change", function () {
+  const selectedGender = this.value;
+
+  // Seleziona TUTTI gli elementi di input all'interno dei form-group
+  const formGroups = document.querySelectorAll(".form-group");
+
+  formGroups.forEach((group) => {
+    const label = group.querySelector("label");
+    const numberInput = group.querySelector('input[type="number"]');
+    const rangeInput = group.querySelector('input[type="range"]');
+
+    if (label && numberInput && rangeInput) {
+      const isMan = label.textContent.includes("Man");
+      const isWoman = label.textContent.includes("Woman");
+
+      // Logica di disabilitazione
+      if (
+        (selectedGender === "M" && isWoman) ||
+        (selectedGender === "F" && isMan)
+      ) {
+        numberInput.disabled = true;
+        rangeInput.disabled = true;
+      } else {
+        numberInput.disabled = false;
+        rangeInput.disabled = false;
+      }
+    }
+  });
+});
+
 const ContainerIndicatori = document.querySelectorAll(".indicator-container");
 
 ContainerIndicatori.forEach((element) => {
