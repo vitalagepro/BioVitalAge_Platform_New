@@ -20,7 +20,7 @@
   --card-color: #f8f4fc;
 }
 
-.spacer{
+.spacer {
   height: 30px;
 }
 
@@ -29,9 +29,8 @@ label {
   background-color: var(--contrast-color-shadow);
   color: var(--dark1);
   padding: 15px;
-  padding-bottom: 25px;
-  margin-bottom: -1.5rem;
-  border-radius: 8px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 .form-container {
   width: 100%;
@@ -52,19 +51,19 @@ label {
 .grid-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(2, auto); 
-  gap: 10px; 
+  grid-template-rows: repeat(2, auto);
+  gap: 10px;
   width: 100%;
   row-gap: 50px;
 }
-#flex-adjust .form-group{
+#flex-adjust .form-group {
   width: 100%;
 }
-#flexed-section{
+#flexed-section {
   padding-top: 50px;
   padding-bottom: 50px;
 }
-.flex-container{
+.flex-container {
   display: flex;
   justify-content: space-between;
   gap: 10px;
@@ -73,8 +72,8 @@ label {
 .patient-info {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(2, auto); 
-  gap: 10px; 
+  grid-template-rows: repeat(2, auto);
+  gap: 10px;
   row-gap: 50px;
 }
 .form-group {
@@ -83,9 +82,9 @@ label {
 }
 .form-group input,
 .form-group select {
-  margin-top: 10px;
   padding: 15px;
-  border-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
   border: 1px solid #ddd;
   outline: none;
   font-size: 16px;
@@ -100,7 +99,7 @@ input[type="range"] {
   align-content: center;
   gap: 15px;
 }
-.button-container button{
+.button-container button {
   font-size: 16px;
   width: 18rem;
   height: 3rem;
@@ -115,13 +114,13 @@ input[type="range"] {
 
 /* Stile per il track */
 input[type="range"] {
-  -webkit-appearance: none; 
-  width: 100%; 
-  height: 10px; 
-  background: #e0e0e0; 
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+  background: #e0e0e0;
   border-radius: 15px;
-  outline: none; 
-  overflow: hidden; 
+  outline: none;
+  overflow: hidden;
 }
 
 /* Traccia riempita per Chrome, Edge e Safari */
@@ -350,7 +349,7 @@ form{
   margin-top: 25px;
 }
 
-.spacer_lilla{
+.spacer_lilla {
   width: 100%;
   height: 3px;
   margin: 20px 0;
@@ -366,7 +365,7 @@ form{
   border-radius: 15px;
   box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.1);
 }
-.results-container-modal{
+.results-container-modal {
   margin: 20px 0;
 }
 .indicator-container {
@@ -493,4 +492,3 @@ form{
   text-align: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
-
