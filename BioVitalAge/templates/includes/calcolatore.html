@@ -519,7 +519,7 @@
                         <h4>Omega 6</h4>
                         <div class="results-container-modal">
                             <div class="indicator-container">
-                                <p><span>Linoleic acid:</span>{{ datiEstesi.lino_acid }}</p>
+                                <p><span>Linoleic acid:</span>{{ datiEstesi.lin_acid }}</p>
                                 <div class="indicator-content-container">
                                     <div class="indicator">
                                         <p class="negativeTesto">0</p>
@@ -529,17 +529,17 @@
                                         </div>
                                         <p class="extremeNegativeRange">2334</p>
                                     </div>
-                                    {% if datiEstesi.lino_acid %}
+                                    {% if datiEstesi.lin_acid %}
                 
                                         <div class="col-md-12 p-2 barra-container">
                                             <p class="barra-pointer"></p>
-                                            <p id="indicator" class="indicatore" data-value="{{ datiEstesi.lino_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
+                                            <p id="indicator" class="indicatore" data-value="{{ datiEstesi.lin_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 40px; height: 40px;"></p>
                                         </div>
                 
                                     {% else %}
                 
                                         <div class="col-md-12 p-2 barra-container-none">
-                                            <p data-value="{{ datiEstesi.lino_acid }}"></p>
+                                            <p data-value="{{ datiEstesi.lin_acid }}"></p>
                                         </div>
                 
                                     {% endif %}
