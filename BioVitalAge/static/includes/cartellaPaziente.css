@@ -73,8 +73,6 @@ strong {
   color: var(--contrast-color);
 }
 
-
-
 /*  -----------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------- */
 /* ! Input pre-reset CSS */
@@ -105,7 +103,6 @@ strong {
   background: var(--card-color);
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
   border-radius: 5px;
-  margin-top: 25px;
 }
 .field {
   display: flex;
@@ -134,9 +131,69 @@ strong {
 /*  -----------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------- */
 
+/*  -----------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------- */
+/* ! Tabelle */
+.table-header {
+  background-color: var(--contrast-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px 8px 0px 0px;
+  height: 3.5rem;
+}
+.table-header p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--tittle1);
+  width: 100%;
+  height: 100%;
+  margin-top: 0.5rem;
+}
+.table-content {
+  background-color: white;
+  border-radius: 0px 0px 8px 8px;
+  border-bottom: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4.5rem;
+}
+.table-content:hover {
+  background-color: var(--neutral-bg-color);
+}
+.table-content p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  margin-top: 0.5rem;
+  position: relative;
+}
+.table-content p:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0.5rem;
+  width: 0.1rem;
+  border-radius: 8px;
+  background-color: #ddd;
+  height: 4rem;
+}
 
-
-
+.table-content a img {
+  width: 40px;
+  transition: transform 0.3s ease-in-out;
+}
+.table-content a img:hover {
+  transform: scale(1.1);
+}
+/*  -----------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------- */
 
 .container-indicatori {
   margin-top: -1rem;
@@ -191,6 +248,9 @@ strong {
   width: 105%;
   color: var(--text-color);
 }
+.card5{
+  background-color: var(--card-color) !important;
+}
 .card5 h2 {
   font-size: 25px;
   font-weight: bold;
@@ -221,10 +281,6 @@ strong {
 .blood-container div img:hover,
 .exam-container div img:hover {
   transform: scale(1.1);
-}
-
-#button-fix {
-  padding-top: 4px;
 }
 
 .dashboard {
@@ -330,28 +386,16 @@ strong {
 }
 
 .contenitore-tabella {
-  padding: 0 20px;
   margin: 15px 0;
 }
 
 .recent-patients h2 {
   font-size: 25px;
-  padding: 20px;
+  padding: 20px 0;
   font-weight: bold;
   color: var(--dark2);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-}
-.content-table {
-  display: flex;
-  padding: 20px 0px;
-}
-.cella a img {
-  width: 40px;
-  transition: transform 0.3s ease-in-out;
-}
-.cella a img:hover {
-  transform: scale(1.1);
 }
 
 .conteiner-operation {
@@ -414,58 +458,6 @@ strong {
   margin-left: 2.5rem;
 }
 
-.button-style {
-  height: 80%;
-  width: 50%;
-  background-color: transparent;
-  border: 2px solid var(--contrast-color2);
-  box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.05);
-  border-radius: 30px;
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--tittle1);
-  font-weight: 600;
-  cursor: pointer;
-  overflow: hidden;
-  position: relative;
-  transition: all 0.3s;
-  z-index: 1;
-  height: 2rem;
-  width: 10rem;
-}
-.button-style::before {
-  content: "";
-  width: 100%;
-  height: 100%;
-  top: 0;
-  position: absolute;
-  left: 0;
-  background-color: var(--contrast-color2);
-  z-index: -1;
-  transition: width 0.4s ease;
-}
-.button-style::after {
-  content: "";
-  width: 0%;
-  height: 100%;
-  top: 0;
-  position: absolute;
-  right: 0;
-  background-color: var(--dark2);
-  z-index: -1;
-  transition: width 0.4s ease;
-}
-.button-style:hover::before {
-  width: 0%;
-}
-.button-style:hover::after {
-  width: 100%;
-}
-.button-style:hover {
-  color: #d3d3d3;
-}
-
 .risultati-ricerca {
   border: 1px solid var(--contrast-color-shadow);
 }
@@ -491,4 +483,10 @@ strong {
 
 .privacy-icon img:hover {
   transform: scale(1.1);
+}
+
+.main-title-nav a{
+  color: var(--light1) !important;
+  text-decoration: none !important;
+  margin: 0 !important;
 }
