@@ -100,90 +100,132 @@
     </header>
 
     <main>
-        <div class="main-title-nav">
-            <h2 class="main-welcome-title">Elenco di tutti i pazienti</h2>
-            <div class="main-menu-trace">
-              <a href="{% url 'HomePage' %}">
-                <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
-              </a>                
-              <p>»</p>
-              <p>Elenco Pazienti</p>
-            </div>
+      <div class="main-title-nav">
+        <h2 class="main-welcome-title">Elenco di tutti i pazienti</h2>
+        <div class="main-menu-trace">
+          <a href="{% url 'HomePage' %}">
+            <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+          </a>
+          <p>»</p>
+          <p>Elenco Pazienti</p>
         </div>
-
-        <div class="barra-ricerca">
-          <select name="filter" id="filter">
-            <option value="name">Filtra per Nomi</option>
-            <option value="surname">Filtra per Cognomi</option>
-            <option value="fisc_code">Filtra per Codici Fiscali</option>
-            <option value="personal_association">Filtra per Personale Associato</option>
-          </select>
-            <form method="POST" action="#">
-                {% csrf_token %}
-                <div class="input-group">
-                  <input type="text" class="input" id="Email" name="inputField" placeholder="Type name here" required>
-                  <button class="button--submit" type="submit">Search</button>
-                </div>
-                <!-- <input type="text" placeholder="Type name here" name="inputField" required>
-                <button type="submit">Search</button> -->
-              </form>
-              <div class="button-container">
-                <a href="{% url 'inserisci_paziente' %}" title="Add Patient">
-                  <button class="button-style">Add Patient</button>
-                </a>
-              </div>
-        </div>
-
-        <div class="table-container">
-          <div class="table-header">
-            <p>Name</p>
-            <p>Surname</p>
-            <p>Date of Birth</p>
-            <p>Codice Fiscale</p>
-            <p>Place of Birth</p>
-            <p>Chronological Age</p>
-            <p>Biological Age</p>
-            <p>Ultimo Referto</p>
-            <p>Cartella Paziente</p>
+      </div>
+    
+      <div class="barra-ricerca">
+        <select name="filter" id="filter">
+          <option value="name">Filtra per Nomi</option>
+          <option value="surname">Filtra per Cognomi</option>
+          <option value="fisc_code">Filtra per Codici Fiscali</option>
+          <option value="personal_association">Filtra per Personale Associato</option>
+        </select>
+        <form method="POST" action="#">
+          {% csrf_token %}
+          <div class="input-group">
+            <input type="text" class="input" id="Email" name="inputField" placeholder="Type name here" required>
+            <button class="button--submit" type="submit">Search</button>
           </div>
-        
-          <div class="bg-white">
-            <div class="table-content">
-              {% for persona in persone %}
-              <p>{{ persona.name }}</p>
-              <p>{{ persona.surname }}</p>
-              <p>{{ persona.dob|date:"d/m/Y" }}</p>
-              <p>{{ persona.codice_fiscale }}</p>
-              <p>{{ persona.place_of_birth }}</p>
-              <p>{{ persona.chronological_age }}</p>
-              <!-- Associa il dato corretto al paziente -->
-              {% for dato in datiEstesi %}
-              {% if dato.referto.paziente.id == persona.id %}
-              <p>{{ persona.biological_age }}</p>
-              {% endif %}
-              {% endfor %}
-              <p>
-                <a href="{% url 'persona_detail' persona.id %}">
-                  <img src="{% static 'includes/icone/referto.png' %}" alt="" />
-                </a>
-              </p>
-              <p>
-                <a href="{% url 'cartella_paziente' persona.id %}">
-                  <img src="{% static 'includes/icone/cartella.png' %}" alt="" />
-                </a>
-              </p>
-              {% empty %}
-              <p class="text-center">No results found</p>
-              {% endfor %}
-            </div>
+          <!-- <input type="text" placeholder="Type name here" name="inputField" required>
+                    <button type="submit">Search</button> -->
+        </form>
+        <div class="button-container">
+          <a href="{% url 'inserisci_paziente' %}" title="Add Patient">
+            <button class="button-style">Add Patient</button>
+          </a>
+        </div>
+      </div>
+    
+      <div class="table-container">
+        <div class="table-header">
+          <p>Name</p>
+          <p>Surname</p>
+          <p>Date of Birth</p>
+          <p>Codice Fiscale</p>
+          <p>Place of Birth</p>
+          <p>Chronological Age</p>
+          <p>Biological Age</p>
+          <p>Ultimo Referto</p>
+          <p>Cartella Paziente</p>
+        </div>
+    
+        <div class="bg-white">
+          <div class="table-content">
+            {% for persona in persone %}
+            <p>{{ persona.name }}</p>
+            <p>{{ persona.surname }}</p>
+            <p>{{ persona.dob|date:"d/m/Y" }}</p>
+            <p>{{ persona.codice_fiscale }}</p>
+            <p>{{ persona.place_of_birth }}</p>
+            <p>{{ persona.chronological_age }}</p>
+            <!-- Associa il dato corretto al paziente -->
+            {% for dato in datiEstesi %}
+            {% if dato.referto.paziente.id == persona.id %}
+            <p>{{ persona.biological_age }}</p>
+            {% endif %}
+            {% endfor %}
+            <p>
+              <a href="{% url 'persona_detail' persona.id %}">
+                <img src="{% static 'includes/icone/referto.png' %}" alt="" />
+              </a>
+            </p>
+            <p>
+              <a href="{% url 'cartella_paziente' persona.id %}">
+                <img src="{% static 'includes/icone/cartella.png' %}" alt="" />
+              </a>
+            </p>
+            {% empty %}
+            <p class="text-center">No results found</p>
+            {% endfor %}
           </div>
         </div>
-        </main>
+      </div>
+    </main>
 
     
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+      /*  -----------------------------------------------------------------------------------------------
+      Funzione di ricerca
+      --------------------------------------------------------------------------------------------------- */
+        document.addEventListener("DOMContentLoaded", function () {
+          const searchInput = document.getElementById("Email");
+          const searchForm = document.querySelector("form");
+          const rows = document.querySelectorAll(".table-content");
+
+          searchInput.addEventListener("input", function () {
+            const filterValue = searchInput.value.toLowerCase().trim();
+            let matchFound = false;
+
+            rows.forEach(row => {
+              const cells = row.querySelectorAll("p");
+              let rowMatch = Array.from(cells).some(cell =>
+                cell.textContent.toLowerCase().includes(filterValue)
+              );
+
+              if (rowMatch) {
+                row.style.display = "flex";
+                matchFound = true;
+              } else {
+                row.style.display = "none";
+              }
+            });
+
+            // Mostra un messaggio se non ci sono risultati
+            const noResultsMsg = document.querySelector(".no-results-message");
+            if (!matchFound) {
+              if (!noResultsMsg) {
+                const messageElement = document.createElement("p");
+                messageElement.classList.add("no-results-message");
+                messageElement.textContent = "Paziente non trovato";
+                document.querySelector(".table-container").appendChild(messageElement);
+              }
+            } else {
+              if (noResultsMsg) {
+                noResultsMsg.remove();
+              }
+            }
+          });
+        });
       // Funzione che imposta "opacity: 0" e "z-index: -1" dopo 3 secondi
       document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => {
@@ -207,6 +249,46 @@
       });
 
       userModalBtn.addEventListener("mouseover", showModal);
+
+      /*  -----------------------------------------------------------------------------------------------
+      Funzione per paginazione
+      --------------------------------------------------------------------------------------------------- */
+      document.addEventListener("DOMContentLoaded", function () {
+          const rows = document.querySelectorAll(".table-content");
+          const rowsPerPage = 5;
+          let currentPage = 1;
+          const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+          function showPage(page) {
+            rows.forEach((row, index) => {
+              row.style.display = (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) ? "flex" : "none";
+            });
+          }
+
+          function updatePaginationControls() {
+            const paginationContainer = document.querySelector(".table-container");
+            const existingControls = document.querySelector(".pagination-controls");
+            if (existingControls) existingControls.remove();
+
+            const controls = document.createElement("div");
+            controls.classList.add("pagination-controls");
+
+            for (let i = 1; i <= totalPages; i++) {
+              const btn = document.createElement("button");
+              btn.textContent = i;
+              btn.addEventListener("click", () => {
+                currentPage = i;
+                showPage(currentPage);
+              });
+              controls.appendChild(btn);
+            }
+
+            paginationContainer.appendChild(controls);
+          }
+
+          showPage(currentPage);
+          updatePaginationControls();
+        });
     </script>
 </body>
 </html>
