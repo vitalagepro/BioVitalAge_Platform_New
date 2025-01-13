@@ -976,7 +976,6 @@ class CalcolatoreRender(View):
             }
             return render(request, "includes/calcolatore.html", context)
 
-
 class RisultatiRender(View):
     def get(self, request):
         persone = TabellaPazienti.objects.all()
@@ -1001,7 +1000,7 @@ class PersonaDetailView(View):
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         # Ottieni l'ultimo referto del paziente
-        ultimo_referto = ArchivioReferti.objects.filter(paziente=persona).order_by('-data_referto').first()
+        ultimo_referto = ArchivioReferti.objects.filter(paziente=persona).order_by('-data_ora_creazione').first()
 
         # Ottieni i dati estesi associati all'ultimo referto (se esiste)
         datiEstesi = None
