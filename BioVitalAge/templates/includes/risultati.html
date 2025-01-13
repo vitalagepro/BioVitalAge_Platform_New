@@ -266,7 +266,7 @@
           }
 
           function updatePaginationControls() {
-            const paginationContainer = document.querySelector(".table-container");
+            const paginationContainer = document.querySelector(".bg-white");
             const existingControls = document.querySelector(".pagination-controls");
             if (existingControls) existingControls.remove();
 
@@ -275,6 +275,7 @@
 
             for (let i = 1; i <= totalPages; i++) {
               const btn = document.createElement("button");
+              btn.classList.add("button-style");
               btn.textContent = i;
               btn.addEventListener("click", () => {
                 currentPage = i;

@@ -2,14 +2,22 @@
   --dark1: #0c042c;
   --dark2: #0c214b;
   --light1: #c3ccd4;
+
   --neutral-gray: #b0b8c1;
   --neutral-bg-color: rgba(176, 184, 193, 0.2);
+  --neutral-bg-color-contrast: rgba(124, 81, 149, 0.2);
+
   --contrast-color: #3a255d;
   --contrast-color-shadow: #3b255d2c;
   --contrast-color2: #6a2dcc;
   --positive-color: #2ac670;
+
   --tittle1: whitesmoke;
+  --tittle2: #2ac4dd;
+
   --circle-color-shadow: rgba(42, 196, 221, 0.15);
+  --circle-color-shadow-two: rgba(42, 196, 221, 0.05);
+  --card-color: #f8f4fc;
 }
 main {
   height: 900px;
@@ -171,15 +179,22 @@ form ion-icon {
 /*  -----------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------- */
 /* ! Tabelle */
-.table-container{
+.table-container {
   margin: 0 1.2rem;
+}
+.table-container .button-style{
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  padding: 0;
+  margin: 0;
 }
 .table-header {
   background-color: var(--contrast-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: 8px 8px 0px 0px;
+  border-radius: 5px 5px 0px 0px;
   height: 3.5rem;
 }
 .table-header p {
@@ -191,7 +206,7 @@ form ion-icon {
   height: 100%;
   margin-top: 0.5rem;
 }
-.bg-white{
+.bg-white {
   background-color: white;
   border-radius: 0px 0px 8px 8px;
   border-bottom: 1px solid #ddd;
@@ -225,6 +240,10 @@ form ion-icon {
   border-radius: 8px;
   background-color: #ddd;
   height: 4rem;
+}
+.pagination-controls{
+  padding: 10px;
+  border-top: 1px solid #ddd;
 }
 /*  -----------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------- */
