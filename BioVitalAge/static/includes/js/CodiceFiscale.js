@@ -30,10 +30,10 @@ document.getElementById('place_of_birth').addEventListener('input', function () 
     const dob = document.getElementById('dob').value;
     const gender = document.getElementById('gender').value;
   
-    if (!name || !surname || !dob || !gender || !codiceCastale) {
-        alert("Tutti i campi sono obbligatori.");
-        return;
-    }
+    // if (!name || !surname || !dob || !gender || !codiceCastale) {
+    //     alert("Tutti i campi sono obbligatori.");
+    //     return;
+    // }
   
     const surnameCode = getCodeFromName(surname, false);
     const nameCode = getCodeFromName(name, true);

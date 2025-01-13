@@ -364,12 +364,12 @@
         <div class="card" id="card-style">
           <h2>Total patients visited</h2>
           <p>150</p>
-          <button onclick="goToPatientsPage()">View All</button>
+          <button class="button-style" onclick="goToPatientsPage()">View All</button>
         </div>
         <div class="card" id="card-style">
           <h2>Biological age calculations</h2>
           <p>120</p>
-          <button onclick="goToRefertiPage()">Reports</button>
+          <button class="button-style" onclick="goToRefertiPage()">Reports</button>
         </div>
         <div class="card" id="card-style">
           <h2>Average Age Patients</h2>
@@ -379,68 +379,51 @@
         
       <div class="recent-patients">
         <h2>Ultimi 5 Pazienti Visitati</h2>
-        <div class="risultati-ricerca">
-          <div class="table-placeholder">
-            <p class="cella">Name</p>
-            <p class="cella">Surname</p>
-            <p class="cella">Date of Birth</p>
-            <p class="cella">Codice Fiscale</p>
-            <p class="cella">Place of Birth</p>
-            <p class="cella">Chronological Age</p>
-            <p class="cella">Biological Age</p>
-            <p class="cella">Ultimo Referto</p>
-            <p class="cella">Cartella Paziente</p>
+        <div class="table-container">
+          <div class="table-header">
+            <p>Name</p>
+            <p>Surname</p>
+            <p>Date of Birth</p>
+            <p>Codice Fiscale</p>
+            <p>Place of Birth</p>
+            <p>Chronological Age</p>
+            <p>Biological Age</p>
+            <p>Ultimo Referto</p>
+            <p>Cartella Paziente</p>
           </div>
-          <div class="col-md-12 content-table">
+        
+          <div class="table-content">
+            <!-- QUI INIZIA -->
             {% for persona in persone %}
-            <div class="riga d-flex justify-content-between align-items-center">
-              <div class="cella">
-                <p>{{ persona.name }}</p>
-              </div>
-              <div class="cella">
-                <p>{{ persona.surname }}</p>
-              </div>
-              <div class="cella">
-                <p>{{ persona.dob|date:"d/m/Y" }}</p>
-              </div>
-              <div class="cella">
-                <p>{{ persona.codice_fiscale }}</p>
-              </div>
-              <div class="cella">
-                <p>{{ persona.place_of_birth }}</p>
-              </div>
-              <div class="cella">
-                <!-- Associa il dato corretto al paziente -->
-                {% for dato in datiEstesi %}
-                  {% if dato.referto.paziente.id == persona.id %}
-                    <p>{{ dato.chronological_age }}</p>
-                  {% endif %}
-                {% endfor %}
-              </div>
-              <div class="cella">
-                <!-- Associa il dato corretto al paziente -->
-                {% for dato in datiEstesi %}
-                  {% if dato.referto.paziente.id == persona.id %}
-                    <p>{{ dato.biological_age }}</p>
-                  {% endif %}
-                {% endfor %}
-              </div>
-              <div class="cella">
-                <a href="{% url 'persona_detail' persona.id %}">
-                  <img src="{% static 'includes/icone/referto.png' %}" alt="" title="Report" />
-                </a>
-              </div>
-              <div class="cella">
-                <a href="{% url 'cartella_paziente' persona.id %}">
-                  <img src="{% static 'includes/icone/cartella.png' %}" alt="" title="Patient Folder" />
-                </a>
-              </div>
+              <div class="riga-container">
+                  <p>{{ persona.name }}</p>
+                  <p>{{ persona.surname }}</p>
+                  <p>{{ persona.dob|date:"d/m/Y" }}</p>
+                  <p>{{ persona.codice_fiscale }}</p>
+                  <p>{{ persona.place_of_birth }}</p>
+                  <p>{{ persona.chronological_age }}</p>
               
-            </div>
-            {% empty %}
-            <p class="text-center">No results found</p>
+                  {% for dato in datiEstesi %}
+                    {% if dato.referto.paziente.id == persona.id %}
+                      <p>{{ persona.biological_age }}</p>
+                    {% else %}
+                      <p></p>
+                    {% endif %}
+                  {% endfor %}
+
+                  <p>
+                      <a href="{% url 'persona_detail' persona.id %}">
+                          <img src="{% static 'includes/icone/referto.png' %}" alt="Referto" />
+                      </a>
+                  </p>
+
+                  <p>
+                      <a href="{% url 'cartella_paziente' persona.id %}">
+                          <img src="{% static 'includes/icone/cartella.png' %}" alt="Cartella" />
+                      </a>
+                  </p>
+              </div>
             {% endfor %}
-            
           </div>
         </div>
       </div>   

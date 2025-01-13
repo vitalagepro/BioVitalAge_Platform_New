@@ -165,8 +165,6 @@
 
 /* BUTTON STYLE COMPONENTE */
 .button-style {
-    height: 80%;
-    width: 50%;
     background-color: transparent;
     border: 2px solid var(--contrast-color2);
     border-radius: 30px;
