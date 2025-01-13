@@ -19,10 +19,6 @@
   --circle-color-shadow-two: rgba(42, 196, 221, 0.05);
   --card-color: #f8f4fc;
 }
-main {
-  height: 900px;
-  position: relative;
-}
 
 .barra-ricerca {
   background-color: var(--contrast-color);
@@ -143,11 +139,6 @@ form ion-icon {
 .riga:hover {
   background-color: var(--neutral-bg-color);
 }
-.cella a {
-  color: var(--tittle1);
-  border: none;
-  padding: 10px;
-}
 .table-content a img:hover {
   transform: scale(1.1);
 }
@@ -179,71 +170,37 @@ form ion-icon {
 /*  -----------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------- */
 /* ! Tabelle */
-.table-container {
-  margin: 0 1.2rem;
-}
-.table-container .button-style{
-  width: 30px;
-  height: 30px;
-  border-radius: 100%;
-  padding: 0;
-  margin: 0;
-}
-.table-header {
-  background-color: var(--contrast-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 5px 5px 0px 0px;
-  height: 3.5rem;
-}
-.table-header p {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--tittle1);
-  width: 100%;
-  height: 100%;
-  margin-top: 0.5rem;
+.table-container{
+  margin: 0 20px;
+  padding-bottom: 20px;
 }
 .bg-white {
   background-color: white;
   border-radius: 0px 0px 8px 8px;
-  border-bottom: 1px solid #ddd;
-  border-left: 1px solid #ddd;
-  border-right: 1px solid #ddd;
 }
-.table-content {
+.pagination-controls{
+  padding: 15px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 4.5rem;
+  gap: 10px;
 }
-.table-content:hover {
-  background-color: var(--neutral-bg-color);
+
+.pagination-controls .button-style{
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  margin: 0;
 }
-.table-content p {
+.no-results-message {
+  color: red;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
-  margin-top: 0.5rem;
-  position: relative;
-}
-.table-content p:not(:last-child)::before {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 0.5rem;
-  width: 0.1rem;
-  border-radius: 8px;
-  background-color: #ddd;
-  height: 4rem;
-}
-.pagination-controls{
+  font-weight: bold;
+  text-align: center;
   padding: 10px;
-  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 0;
 }
 /*  -----------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------- */

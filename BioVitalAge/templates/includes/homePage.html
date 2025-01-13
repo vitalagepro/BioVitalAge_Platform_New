@@ -393,7 +393,6 @@
           </div>
         
           <div class="table-content">
-            <!-- QUI INIZIA -->
             {% for persona in persone %}
               <div class="riga-container">
                   <p>{{ persona.name }}</p>
@@ -410,17 +409,15 @@
                       <p></p>
                     {% endif %}
                   {% endfor %}
-
                   <p>
-                      <a href="{% url 'persona_detail' persona.id %}">
-                          <img src="{% static 'includes/icone/referto.png' %}" alt="Referto" />
-                      </a>
+                    <a href="{% url 'persona_detail' persona.id %}">
+                      <img src="{% static 'includes/icone/referto.png' %}" alt="Referto" />
+                    </a>
                   </p>
-
                   <p>
-                      <a href="{% url 'cartella_paziente' persona.id %}">
-                          <img src="{% static 'includes/icone/cartella.png' %}" alt="Cartella" />
-                      </a>
+                    <a href="{% url 'cartella_paziente' persona.id %}">
+                      <img src="{% static 'includes/icone/cartella.png' %}" alt="Cartella" />
+                    </a>
                   </p>
               </div>
             {% endfor %}
