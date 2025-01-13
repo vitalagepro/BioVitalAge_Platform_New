@@ -143,6 +143,7 @@
           <p>Place of Birth</p>
           <p>Chronological Age</p>
           <p>Biological Age</p>
+          <p>Personale Associato</p>
           <p>Ultimo Referto</p>
           <p>Cartella Paziente</p>
         </div>
@@ -159,11 +160,11 @@
                   <p>{{ persona.chronological_age }}</p>
               
                   {% for dato in datiEstesi %}
-                    {% if dato.referto.paziente.id == persona.id %}
-                      <p>{{ persona.biological_age }}</p>
-                    {% else %}
-                      <p></p>
-                    {% endif %}
+                  {% if dato.referto.paziente.id == persona.id %}
+                  <p>{{ persona.biological_age }}</p>
+                  {% else %}
+                  <p id="else"></p>
+                  {% endif %}
                   {% endfor %}
                   <p>
                     <a href="{% url 'persona_detail' persona.id %}">
