@@ -16,6 +16,7 @@
     <!-- Js Import  -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="{% static 'includes/js/spinner.js' %}" defer></script>
 
     <!-- Font Import  -->
@@ -188,14 +189,46 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        const searchForm = document.querySelector(".barra-ricerca form");
         const searchInput = document.getElementById("Email");
         const filterSelect = document.getElementById("filter");
         const rows = document.querySelectorAll(".riga-container");
-        const tableContent = document.querySelector(".table-content"); // Selezionato il contenitore corretto
 
-        searchInput.addEventListener("input", function () {
+        // Funzione per mostrare una riga con animazione
+        function showRow(row) {
+          gsap.to(row, {
+            opacity: 1,
+            height: "5rem",
+            duration: 0.3,
+            display: "flex",
+            onStart: () => (row.style.display = "flex"),
+          });
+        }
+
+        // Funzione per nascondere una riga con animazione
+        function hideRow(row) {
+          gsap.to(row, {
+            opacity: 0,
+            height: 0,
+            duration: 0.3,
+            onComplete: () => (row.style.display = "none"),
+          });
+        }
+
+        // Funzione per filtrare le righe
+        function filterRows() {
           const filterValue = searchInput.value.toLowerCase().trim();
           const filterType = filterSelect.value;
+
+          // Se l'input è vuoto, mostra tutte le righe e rimuovi il messaggio di errore
+          if (!filterValue) {
+            rows.forEach(row => showRow(row)); // Mostra tutte le righe con animazione
+            const noResultsMsg = document.querySelector(".no-results-message");
+            if (noResultsMsg) {
+              noResultsMsg.remove(); // Rimuove il messaggio di "Paziente non trovato"
+            }
+            return;
+          }
 
           let matchFound = false;
 
@@ -205,10 +238,10 @@
 
             cells.forEach((cell, index) => {
               if (
-                (filterType === "name" && index === 0) ||
-                (filterType === "surname" && index === 1) ||
-                (filterType === "fisc_code" && index === 3) ||
-                (filterType === "personal_association" && index === 4)
+                (filterType === "name" && index === 0) || // Nome
+                (filterType === "surname" && index === 1) || // Cognome
+                (filterType === "fisc_code" && index === 3) || // Codice Fiscale
+                (filterType === "personal_association" && index === 7) // Personale Associato
               ) {
                 if (cell.textContent.toLowerCase().includes(filterValue)) {
                   rowMatch = true;
@@ -217,74 +250,95 @@
             });
 
             if (rowMatch) {
-              row.style.display = "flex";
+              showRow(row); // Mostra la riga corrispondente con animazione
               matchFound = true;
             } else {
-              row.style.display = "none";
+              hideRow(row); // Nascondi la riga con animazione
             }
           });
 
-          // Mostra un messaggio all'interno di .table-content se non ci sono risultati
+          // Mostra un messaggio se nessuna riga corrisponde
+          const tableContent = document.querySelector(".table-content");
           let noResultsMsg = document.querySelector(".no-results-message");
+
           if (!matchFound) {
             if (!noResultsMsg) {
               noResultsMsg = document.createElement("p");
               noResultsMsg.classList.add("no-results-message");
               noResultsMsg.textContent = "Paziente non trovato";
-              tableContent.appendChild(noResultsMsg); // ✅ Messaggio dentro .table-content
+              tableContent.appendChild(noResultsMsg);
             }
           } else {
             if (noResultsMsg) {
               noResultsMsg.remove();
             }
           }
+        }
+
+        // Gestione del submit del form
+        searchForm.addEventListener("submit", function (event) {
+          event.preventDefault(); // Blocca il comportamento predefinito del form
+          filterRows(); // Esegui la ricerca
+        });
+
+        // Listener per il reset dello stato iniziale quando l'input è vuoto
+        searchInput.addEventListener("input", function () {
+          if (!searchInput.value.trim()) {
+            rows.forEach(row => showRow(row)); // Mostra tutte le righe con animazione
+            const noResultsMsg = document.querySelector(".no-results-message");
+            if (noResultsMsg) {
+              noResultsMsg.remove(); // Rimuove il messaggio di "Paziente non trovato"
+            }
+          }
         });
       });
+
+
       /*  -----------------------------------------------------------------------------------------------
       Funzione per paginazione
       --------------------------------------------------------------------------------------------------- */
-        document.addEventListener("DOMContentLoaded", function () {
-          const rows = document.querySelectorAll(".riga-container");
-          const rowsPerPage = 10;
-          let currentPage = 1;
-          const totalPages = Math.ceil(rows.length / rowsPerPage);
+      document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll(".riga-container");
+        const rowsPerPage = 10;
+        let currentPage = 1;
+        const totalPages = Math.ceil(rows.length / rowsPerPage);
 
-          function showPage(page) {
-            rows.forEach((row, index) => {
-              row.style.display = (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) ? "flex" : "none";
-            });
-          }
+        function showPage(page) {
+          rows.forEach((row, index) => {
+            row.style.display = (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) ? "flex" : "none";
+          });
+        }
 
-          function updatePaginationControls() {
-            const paginationContainer = document.querySelector(".bg-white");
-            const existingControls = document.querySelector(".pagination-controls");
+        function updatePaginationControls() {
+          const paginationContainer = document.querySelector(".bg-white");
+          const existingControls = document.querySelector(".pagination-controls");
 
-            // Rimuovere i controlli esistenti
-            if (existingControls) existingControls.remove();
+          // Rimuovere i controlli esistenti
+          if (existingControls) existingControls.remove();
 
-            // Condizione per mostrare la paginazione solo se necessario
-            if (rows.length > rowsPerPage) {
-              const controls = document.createElement("div");
-              controls.classList.add("pagination-controls");
+          // Condizione per mostrare la paginazione solo se necessario
+          if (rows.length > rowsPerPage) {
+            const controls = document.createElement("div");
+            controls.classList.add("pagination-controls");
 
-              for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement("button");
-                btn.classList.add("button-style");
-                btn.textContent = i;
-                btn.addEventListener("click", () => {
-                  currentPage = i;
-                  showPage(currentPage);
-                });
-                controls.appendChild(btn);
-              }
-              paginationContainer.appendChild(controls);
+            for (let i = 1; i <= totalPages; i++) {
+              const btn = document.createElement("button");
+              btn.classList.add("button-style");
+              btn.textContent = i;
+              btn.addEventListener("click", () => {
+                currentPage = i;
+                showPage(currentPage);
+              });
+              controls.appendChild(btn);
             }
+            paginationContainer.appendChild(controls);
           }
+        }
 
-          // Mostra la prima pagina e controlla se la paginazione è necessaria
-          showPage(currentPage);
-          updatePaginationControls();
-        });
+        // Mostra la prima pagina e controlla se la paginazione è necessaria
+        showPage(currentPage);
+        updatePaginationControls();
+      });
     </script>
 </body>
 </html>
