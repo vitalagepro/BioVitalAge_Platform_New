@@ -104,6 +104,9 @@
   width: 40px;
   background-color: var(--tittle1);
   margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .tools-table img{
   height: 30px;

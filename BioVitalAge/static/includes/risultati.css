@@ -143,11 +143,6 @@ form ion-icon {
 .riga:hover {
   background-color: var(--neutral-bg-color);
 }
-.cella a {
-  color: var(--tittle1);
-  border: none;
-  padding: 10px;
-}
 .table-content a img:hover {
   transform: scale(1.1);
 }
@@ -209,15 +204,13 @@ form ion-icon {
 .bg-white {
   background-color: white;
   border-radius: 0px 0px 8px 8px;
-  border-bottom: 1px solid #ddd;
-  border-left: 1px solid #ddd;
-  border-right: 1px solid #ddd;
 }
 .table-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 4.5rem;
+  border-bottom: 1px solid #ddd;
 }
 .table-content:hover {
   background-color: var(--neutral-bg-color);
@@ -228,22 +221,24 @@ form ion-icon {
   align-items: center;
   width: 100%;
   height: 100%;
-  margin-top: 0.5rem;
+  margin: 0;
   position: relative;
+  border-left: 0.1rem solid #ddd;
 }
-.table-content p:not(:last-child)::before {
+/* .table-content p:not(:last-child)::before {
   content: "";
   position: absolute;
   right: 0;
-  top: 0.5rem;
+  top: 0;
   width: 0.1rem;
   border-radius: 8px;
   background-color: #ddd;
-  height: 4rem;
-}
+  height: 100%;
+} */
 .pagination-controls{
-  padding: 10px;
-  border-top: 1px solid #ddd;
+  padding: 15px;
+  display: flex;
+  gap: 10px;
 }
 /*  -----------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------- */

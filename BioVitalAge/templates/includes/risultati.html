@@ -184,23 +184,36 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      /*  -----------------------------------------------------------------------------------------------
-      Funzione di ricerca
-      --------------------------------------------------------------------------------------------------- */
         document.addEventListener("DOMContentLoaded", function () {
           const searchInput = document.getElementById("Email");
           const searchForm = document.querySelector("form");
-          const rows = document.querySelectorAll(".table-content");
+          const rows = document.querySelectorAll(".table-content > p");
+          const filterSelect = document.getElementById("filter");
 
           searchInput.addEventListener("input", function () {
             const filterValue = searchInput.value.toLowerCase().trim();
-            let matchFound = false;
+            const filterType = filterSelect.value; // Recupera il tipo di filtro selezionato
 
-            rows.forEach(row => {
+            let matchFound = false;
+            const allRows = document.querySelectorAll(".table-content");
+
+            allRows.forEach(row => {
               const cells = row.querySelectorAll("p");
-              let rowMatch = Array.from(cells).some(cell =>
-                cell.textContent.toLowerCase().includes(filterValue)
-              );
+              let rowMatch = false;
+
+              cells.forEach((cell, index) => {
+                // Controlla l'indice della cella in base al filtro scelto
+                if (
+                  (filterType === "name" && index === 0) ||
+                  (filterType === "surname" && index === 1) ||
+                  (filterType === "fisc_code" && index === 3) ||
+                  (filterType === "personal_association" && index === 4)
+                ) {
+                  if (cell.textContent.toLowerCase().includes(filterValue)) {
+                    rowMatch = true;
+                  }
+                }
+              });
 
               if (rowMatch) {
                 row.style.display = "flex";
@@ -226,6 +239,7 @@
             }
           });
         });
+
       // Funzione che imposta "opacity: 0" e "z-index: -1" dopo 3 secondi
       document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => {

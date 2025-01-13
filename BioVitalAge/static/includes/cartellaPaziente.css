@@ -139,7 +139,7 @@ strong {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: 8px 8px 0px 0px;
+  border-radius: 5px 5px 0px 0px;
   height: 3.5rem;
 }
 .table-header p {
@@ -155,8 +155,8 @@ strong {
   background-color: white;
   border-radius: 0px 0px 8px 8px;
   border-bottom: 1px solid #ddd;
-  border-left: 1px solid #ddd;
   border-right: 1px solid #ddd;
+  overflow: hidden;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -171,20 +171,25 @@ strong {
   align-items: center;
   width: 100%;
   height: 100%;
-  margin-top: 0.5rem;
+  margin: 0;
   position: relative;
+  border-left: 0.1rem solid #ddd;
 }
-.table-content p:not(:last-child)::before {
+/* .table-content p:not(:last-child)::before {
   content: "";
   position: absolute;
   right: 0;
-  top: 0.5rem;
+  top: 0;
   width: 0.1rem;
   border-radius: 8px;
   background-color: #ddd;
-  height: 4rem;
+  height: 100%;
+} */
+.pagination-controls{
+  padding: 15px;
+  display: flex;
+  gap: 10px;
 }
-
 .table-content a img {
   width: 40px;
   transition: transform 0.3s ease-in-out;
