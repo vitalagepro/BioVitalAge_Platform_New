@@ -432,6 +432,7 @@
 --------------------------------------------------------------------------------------------------- */
 /*  -----------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------- */
+
 /* ! Tabelle */
 .table-header {
   background-color: var(--contrast-color);
@@ -457,10 +458,21 @@
   border-right: 1px solid #ddd;
   overflow: hidden;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 10px;
+}
+.riga-container{
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 4.5rem;
+  width: 100%;
+  height: 5rem;
+  border-bottom: 1px solid #ddd;
 }
+
+
 .table-content:hover {
   background-color: var(--neutral-bg-color);
 }
@@ -470,7 +482,10 @@
   align-items: center;
   width: 100%;
   height: 100%;
+<<<<<<< HEAD
   margin: 0;
+=======
+>>>>>>> main
   position: relative;
   border-left: 0.1rem solid #ddd;
 }
@@ -482,9 +497,14 @@
   width: 0.1rem;
   border-radius: 8px;
   background-color: #ddd;
+<<<<<<< HEAD
   height: 100%;
 } */
 
+=======
+  height: 4rem;
+}
+>>>>>>> main
 .table-content a img {
   width: 40px;
   transition: transform 0.3s ease-in-out;
@@ -492,6 +512,8 @@
 .table-content a img:hover {
   transform: scale(1.1);
 }
+
+
 /*  -----------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------- */
 
