@@ -118,7 +118,7 @@
           <option value="fisc_code">Filtra per Codici Fiscali</option>
           <option value="personal_association">Filtra per Personale Associato</option>
         </select>
-        <form method="POST" action="#">
+        <form method="POST">
           {% csrf_token %}
           <div class="input-group">
             <input type="text" class="input" id="Email" name="inputField" placeholder="Type name here" required>
