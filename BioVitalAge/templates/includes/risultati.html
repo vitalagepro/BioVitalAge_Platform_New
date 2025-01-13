@@ -146,130 +146,105 @@
           <p>Ultimo Referto</p>
           <p>Cartella Paziente</p>
         </div>
-    
+      
         <div class="bg-white">
           <div class="table-content">
             {% for persona in persone %}
-            <p>{{ persona.name }}</p>
-            <p>{{ persona.surname }}</p>
-            <p>{{ persona.dob|date:"d/m/Y" }}</p>
-            <p>{{ persona.codice_fiscale }}</p>
-            <p>{{ persona.place_of_birth }}</p>
-            <p>{{ persona.chronological_age }}</p>
-            <!-- Associa il dato corretto al paziente -->
-            {% for dato in datiEstesi %}
-            {% if dato.referto.paziente.id == persona.id %}
-            <p>{{ persona.biological_age }}</p>
-            {% endif %}
-            {% endfor %}
-            <p>
-              <a href="{% url 'persona_detail' persona.id %}">
-                <img src="{% static 'includes/icone/referto.png' %}" alt="" />
-              </a>
-            </p>
-            <p>
-              <a href="{% url 'cartella_paziente' persona.id %}">
-                <img src="{% static 'includes/icone/cartella.png' %}" alt="" />
-              </a>
-            </p>
-            {% empty %}
-            <p class="text-center">No results found</p>
+              <div class="riga-container">
+                  <p>{{ persona.name }}</p>
+                  <p>{{ persona.surname }}</p>
+                  <p>{{ persona.dob|date:"d/m/Y" }}</p>
+                  <p>{{ persona.codice_fiscale }}</p>
+                  <p>{{ persona.place_of_birth }}</p>
+                  <p>{{ persona.chronological_age }}</p>
+              
+                  {% for dato in datiEstesi %}
+                    {% if dato.referto.paziente.id == persona.id %}
+                      <p>{{ persona.biological_age }}</p>
+                    {% else %}
+                      <p></p>
+                    {% endif %}
+                  {% endfor %}
+                  <p>
+                    <a href="{% url 'persona_detail' persona.id %}">
+                      <img src="{% static 'includes/icone/referto.png' %}" alt="Referto" />
+                    </a>
+                  </p>
+                  <p>
+                    <a href="{% url 'cartella_paziente' persona.id %}">
+                      <img src="{% static 'includes/icone/cartella.png' %}" alt="Cartella" />
+                    </a>
+                  </p>
+              </div>
             {% endfor %}
           </div>
         </div>
       </div>
-    </main>
+  </main>
 
     
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          const searchInput = document.getElementById("Email");
-          const searchForm = document.querySelector("form");
-          const rows = document.querySelectorAll(".table-content > p");
-          const filterSelect = document.getElementById("filter");
+      document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("Email");
+        const filterSelect = document.getElementById("filter");
+        const rows = document.querySelectorAll(".riga-container");
+        const tableContent = document.querySelector(".table-content"); // Selezionato il contenitore corretto
 
-          searchInput.addEventListener("input", function () {
-            const filterValue = searchInput.value.toLowerCase().trim();
-            const filterType = filterSelect.value; // Recupera il tipo di filtro selezionato
+        searchInput.addEventListener("input", function () {
+          const filterValue = searchInput.value.toLowerCase().trim();
+          const filterType = filterSelect.value;
 
-            let matchFound = false;
-            const allRows = document.querySelectorAll(".table-content");
+          let matchFound = false;
 
-            allRows.forEach(row => {
-              const cells = row.querySelectorAll("p");
-              let rowMatch = false;
+          rows.forEach(row => {
+            const cells = row.querySelectorAll("p");
+            let rowMatch = false;
 
-              cells.forEach((cell, index) => {
-                // Controlla l'indice della cella in base al filtro scelto
-                if (
-                  (filterType === "name" && index === 0) ||
-                  (filterType === "surname" && index === 1) ||
-                  (filterType === "fisc_code" && index === 3) ||
-                  (filterType === "personal_association" && index === 4)
-                ) {
-                  if (cell.textContent.toLowerCase().includes(filterValue)) {
-                    rowMatch = true;
-                  }
+            cells.forEach((cell, index) => {
+              if (
+                (filterType === "name" && index === 0) ||
+                (filterType === "surname" && index === 1) ||
+                (filterType === "fisc_code" && index === 3) ||
+                (filterType === "personal_association" && index === 4)
+              ) {
+                if (cell.textContent.toLowerCase().includes(filterValue)) {
+                  rowMatch = true;
                 }
-              });
-
-              if (rowMatch) {
-                row.style.display = "flex";
-                matchFound = true;
-              } else {
-                row.style.display = "none";
               }
             });
 
-            // Mostra un messaggio se non ci sono risultati
-            const noResultsMsg = document.querySelector(".no-results-message");
-            if (!matchFound) {
-              if (!noResultsMsg) {
-                const messageElement = document.createElement("p");
-                messageElement.classList.add("no-results-message");
-                messageElement.textContent = "Paziente non trovato";
-                document.querySelector(".table-container").appendChild(messageElement);
-              }
+            if (rowMatch) {
+              row.style.display = "flex";
+              matchFound = true;
             } else {
-              if (noResultsMsg) {
-                noResultsMsg.remove();
-              }
+              row.style.display = "none";
             }
           });
+
+          // Mostra un messaggio all'interno di .table-content se non ci sono risultati
+          let noResultsMsg = document.querySelector(".no-results-message");
+          if (!matchFound) {
+            if (!noResultsMsg) {
+              noResultsMsg = document.createElement("p");
+              noResultsMsg.classList.add("no-results-message");
+              noResultsMsg.textContent = "Paziente non trovato";
+              tableContent.appendChild(noResultsMsg); // ✅ Messaggio dentro .table-content
+            }
+          } else {
+            if (noResultsMsg) {
+              noResultsMsg.remove();
+            }
+          }
         });
-
-      // Funzione che imposta "opacity: 0" e "z-index: -1" dopo 3 secondi
-      document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(() => {
-          document.getElementById("loading-wrapper").style.opacity = "0";
-          document.getElementById("loading-wrapper").style.zIndex = "-1";
-        }, 500);
       });
-
-      const userImg = document.getElementById("userImg");
-      const userModal = document.getElementById("userModal");
-      const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
-
-      function showModal() {
-        userModal.classList.add("show");
-      }
-
-      userImg.addEventListener("mouseover", showModal);
-
-      userModal.addEventListener("mouseout", () => {
-        userModal.classList.remove("show");
-      });
-
-      userModalBtn.addEventListener("mouseover", showModal);
-
       /*  -----------------------------------------------------------------------------------------------
       Funzione per paginazione
       --------------------------------------------------------------------------------------------------- */
-      document.addEventListener("DOMContentLoaded", function () {
-          const rows = document.querySelectorAll(".table-content");
-          const rowsPerPage = 5;
+        document.addEventListener("DOMContentLoaded", function () {
+          const rows = document.querySelectorAll(".riga-container");
+          const rowsPerPage = 10;
           let currentPage = 1;
           const totalPages = Math.ceil(rows.length / rowsPerPage);
 
@@ -282,25 +257,30 @@
           function updatePaginationControls() {
             const paginationContainer = document.querySelector(".bg-white");
             const existingControls = document.querySelector(".pagination-controls");
+
+            // Rimuovere i controlli esistenti
             if (existingControls) existingControls.remove();
 
-            const controls = document.createElement("div");
-            controls.classList.add("pagination-controls");
+            // Condizione per mostrare la paginazione solo se necessario
+            if (rows.length > rowsPerPage) {
+              const controls = document.createElement("div");
+              controls.classList.add("pagination-controls");
 
-            for (let i = 1; i <= totalPages; i++) {
-              const btn = document.createElement("button");
-              btn.classList.add("button-style");
-              btn.textContent = i;
-              btn.addEventListener("click", () => {
-                currentPage = i;
-                showPage(currentPage);
-              });
-              controls.appendChild(btn);
+              for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement("button");
+                btn.classList.add("button-style");
+                btn.textContent = i;
+                btn.addEventListener("click", () => {
+                  currentPage = i;
+                  showPage(currentPage);
+                });
+                controls.appendChild(btn);
+              }
+              paginationContainer.appendChild(controls);
             }
-
-            paginationContainer.appendChild(controls);
           }
 
+          // Mostra la prima pagina e controlla se la paginazione è necessaria
           showPage(currentPage);
           updatePaginationControls();
         });

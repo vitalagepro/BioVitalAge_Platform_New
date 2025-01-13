@@ -183,25 +183,24 @@
 
         <div>
           <div class="table-title-tools">
-
-              <p class="table-title">Anthropometric data</p>
-              <div class="tools-menu-button" id="menu-1">
-                <button class="tools-table" onclick="closeMenuTools1()" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt=""></button>
-              </div>
-
-              <script>
-                function closeMenuTools1(){
-                  document.getElementById('menu-1').style.display = 'none'
-                }
-
-                function openMenuTools1(){
-                  document.getElementById('menu-1').style.display = 'flex'
-                }
-              </script>
-              <button class="tools-table" onclick="openMenuTools1()"><img src="{% static 'includes/icone/modify.png' %}" alt=""></button>
+            <p class="table-title">Anthropometric data</p>
+            
+            <!-- Menu Tools con effetto translate e opacity -->
+             <div class="container-menu">
+               <div class="tools-menu-button" id="menu-1">
+                   <button class="tools-table" onclick="closeMenuTools('menu-1')" style="margin-right: 20px;">
+                       <img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi">
+                   </button>
+                   <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+                   <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+                   <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+               </div>
+           
+               <!-- Bottone per aprire il menu con animazione -->
+               <button class="tools-table" onclick="openMenuTools('menu-1')">
+                   <img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu">
+               </button>
+             </div>
           </div>
       
           <div class="table-container">
@@ -213,10 +212,12 @@
               </div>
       
               <div class="table-content">
+                <div class="riga-container">
                   <p>{{ persona.height }}</p>
                   <p>{{ persona.weight }}</p>
                   <p>{{ persona.bmi }}</p>
                   <p>{{ persona.bmi_detection_date }}</p>
+                </div>
               </div>
           </div> 
         </div>
@@ -224,188 +225,160 @@
         <div>   
           <div class="table-title-tools">
             <p class="table-title">Abdominal girth</p>
-            <div class="tools-menu-button" id="menu-2">
-              <button class="tools-table" onclick="closeMenuTools2()" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt=""></button>
-              <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt=""></button>
-              <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt=""></button>
-              <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt=""></button>
+            <div class="container-menu">
+              <div class="tools-menu-button" id="menu-2">
+                <button class="tools-table" onclick="closeMenuTools('menu-2')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+                <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+              </div>
+  
+              <button class="tools-table" onclick="openMenuTools('menu-2')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Modifica"></button>
             </div>
-
-            <script>
-              function closeMenuTools2(){
-                document.getElementById('menu-2').style.display = 'none'
-              }
-
-              function openMenuTools2(){
-                document.getElementById('menu-2').style.display = 'flex'
-              }
-            </script>
-            <button class="tools-table" onclick="openMenuTools2()"><img src="{% static 'includes/icone/modify.png' %}" alt=""></button>
           </div>
 
             <div class="table-container">
-                <div class="table-header">
-                    <p>Girth value</p>
-                    <p>Date measurement</p>
-                    <p>Notes</p>
+              <div class="table-header">
+                <p>Girth value</p>
+                <p>Date measurement</p>
+                <p>Notes</p>
+              </div>
+            
+              <div class="table-content">
+                <div class="riga-container">
+                  <p>{{ persona.girth_value }}</p>
+                  <p>{{ persona.girth_date }}</p>
+                  <p>{{ persona.girth_notes }}</p>
                 </div>
-        
-                <div class="table-content">
-                    <p>{{ persona.girth_value }}</p>
-                    <p>{{ persona.girth_date }}</p>
-                    <p>{{ persona.girth_notes }}</p>
-                </div>
+            
+              </div>
             </div>
-        </div>
       
         <h3 style="margin-top: 20px; margin-bottom: -20px;">Life style</h3>
       
         <div>
             <div class="table-title-tools">
               <p class="table-title">Alcohol</p>
-              <div class="tools-menu-button" id="menu-3">
-                <button class="tools-table" onclick="closeMenuTools3()" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt=""></button>
+              <div class="container-menu">
+                <div class="tools-menu-button" id="menu-3">
+                  <button class="tools-table" onclick="closeMenuTools('menu-3')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                  <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+                  <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+                  <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+                </div>
+  
+                <button class="tools-table" onclick="openMenuTools('menu-3')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
               </div>
-
-              <script>
-                function closeMenuTools3(){
-                  document.getElementById('menu-3').style.display = 'none'
-                }
-
-                function openMenuTools3(){
-                  document.getElementById('menu-3').style.display = 'flex'
-                }
-              </script>
-              <button class="tools-table" onclick="openMenuTools3()"><img src="{% static 'includes/icone/modify.png' %}" alt=""></button>
             </div>
             
             <div class="table-container">
-                <div class="table-header">
-                    <p>Quantity of cc per day</p>
-                    <p>Taken alcohol</p>
-                    <p>Data</p>
-                    <p>Notes</p>
+              <div class="table-header">
+                <p>Quantity of cc per day</p>
+                <p>Taken alcohol</p>
+                <p>Data</p>
+                <p>Notes</p>
+              </div>
+            
+              <div class="table-content">
+                <div class="riga-container">
+                  <p>{{ persona.alcol }}</p>
+                  <p>{{ persona.alcol_type }}</p>
+                  <p>{{ persona.data_alcol }}</p>
+                  <p>{{ persona.alcol_frequency }}</p>
                 </div>
-        
-                <div class="table-content">
-                    <p>{{ persona.alcol }}</p>
-                    <p>{{ persona.alcol_type }}</p>
-                    <p>{{ persona.data_alcol }}</p>
-                    <p>{{ persona.alcol_frequency }}</p>
-                </div>
+              </div>
             </div>
         </div>
       
         <div>
             <div class="table-title-tools">
               <p class="table-title">Smoking</p>
-              <div class="tools-menu-button" id="menu-4">
-                <button class="tools-table" onclick="closeMenuTools4()" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt=""></button>
+              <div class="container-menu">
+                <div class="tools-menu-button" id="menu-4">
+                  <button class="tools-table" onclick="closeMenuTools('menu-4')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                  <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+                  <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+                  <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+                </div>
+  
+                <button class="tools-table" onclick="openMenuTools('menu-4')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
               </div>
-
-              <script>
-                function closeMenuTools4(){
-                  document.getElementById('menu-4').style.display = 'none'
-                }
-
-                function openMenuTools4(){
-                  document.getElementById('menu-4').style.display = 'flex'
-                }
-              </script>
-              <button class="tools-table" onclick="openMenuTools4()"><img src="{% static 'includes/icone/modify.png' %}" alt=""></button>
             </div>
             <div class="table-container">
-                <div class="table-header">
-                    <p>Smoke</p>
-                    <p>Type of smoke</p>
-                    <p>Notes</p>
+              <div class="table-header">
+                <p>Smoke</p>
+                <p>Type of smoke</p>
+                <p>Notes</p>
+              </div>
+            
+              <div class="table-content">
+                <div class="riga-container">
+                  <p>{{ persona.smoke }}</p>
+                  <p>{{ persona.smoke_frequency }}</p>
+                  <p>{{ persona.reduced_intake }}</p>
                 </div>
-        
-                <div class="table-content">
-                    <p>{{ persona.smoke }}</p>
-                    <p>{{ persona.smoke_frequency }}</p>
-                    <p>{{ persona.reduced_intake }}</p>
-                </div>
+              </div>
             </div>
-        </div>
       
-        <div>
             <div class="table-title-tools">
               <p class="table-title">Sport</p>
-              <div class="tools-menu-button" id="menu-5">
-                <button class="tools-table" onclick="closeMenuTools5()" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt=""></button>
+              <div class="container-menu">
+                <div class="tools-menu-button" id="menu-5">
+                  <button class="tools-table" onclick="closeMenuTools('menu-5')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                  <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+                  <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+                  <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+                </div>
+  
+                <button class="tools-table" onclick="openMenuTools('menu-5')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
               </div>
-
-              <script>
-                function closeMenuTools5(){
-                  document.getElementById('menu-5').style.display = 'none'
-                }
-
-                function openMenuTools5(){
-                  document.getElementById('menu-5').style.display = 'flex'
-                }
-              </script>
-              <button class="tools-table" onclick="openMenuTools5()"><img src="{% static 'includes/icone/modify.png' %}" alt=""></button>
             </div>
             <div class="table-container">
-                <div class="table-header">
-                    <p>Sport played</p>
-                    <p>Level</p>
-                    <p>Frequency</p>
+              <div class="table-header">
+                <p>Sport played</p>
+                <p>Level</p>
+                <p>Frequency</p>
+              </div>
+            
+              <div class="table-content">
+                <div class="riga-container">
+                  <p>{{ persona.sport }}</p>
+                  <p>{{ persona.sport_livello }}</p>
+                  <p>{{ persona.sport_frequency }}</p>
                 </div>
-        
-                <div class="table-content">
-                    <p>{{ persona.sport }}</p>
-                    <p>{{ persona.sport_livello }}</p>
-                    <p>{{ persona.sport_frequency }}</p>
-                </div>
+              </div>
             </div>
-        </div>
+                  
       
         <div>
             <div class="table-title-tools">
               <p class="table-title">Sedentarietà</p>
-              <div class="tools-menu-button" id="menu-6">
-                <button class="tools-table" onclick="closeMenuTools6()" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt=""></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt=""></button>
+              <div class="container-menu">
+                <div class="tools-menu-button" id="menu-6">
+                  <button class="tools-table" onclick="closeMenuTools('menu-6')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                  <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+                  <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+                  <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+                </div>
+  
+                <button class="tools-table" onclick="openMenuTools('menu-6')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
               </div>
-
-              <script>
-                function closeMenuTools6(){
-                  document.getElementById('menu-6').style.display = 'none'
-                }
-
-                function openMenuTools6(){
-                  document.getElementById('menu-6').style.display = 'flex'
-                }
-              </script>
-              <button class="tools-table" onclick="openMenuTools6()"><img src="{% static 'includes/icone/modify.png' %}" alt=""></button>
             </div>
             <div class="table-container">
-                <div class="table-header">
-                    <p>Attività Sedentaria</p>
-                    <p>Level</p>
-                    <p>Notes</p>
+              <div class="table-header">
+                <p>Attività Sedentaria</p>
+                <p>Level</p>
+                <p>Notes</p>
+              </div>
+            
+              <div class="table-content">
+                <div class="riga-container">
+                  <p>{{ persona.attivita_sedentaria }}</p>
+                  <p>{{ persona.livello_sedentarieta }}</p>
+                  <p>{{ persona.sedentarieta_nota }}</p>
                 </div>
-        
-                <div class="table-content">
-                    <p>{{ persona.attivita_sedentaria }}</p>
-                    <p>{{ persona.livello_sedentarieta }}</p>
-                    <p>{{ persona.sedentarieta_nota }}</p>
-                </div>
+              </div>
             </div>
-        </div>
       
       </section>
 
@@ -430,5 +403,26 @@
       </section>
     </main>
 
+    <script>
+      // Aprire il menu con animazione fluida
+      function openMenuTools(menuId) {
+          const menu = document.getElementById(menuId);
+          menu.style.display = 'flex'; 
+          setTimeout(() => {
+              menu.style.opacity = '1';
+              menu.style.transform = 'translateX(0)';
+          }, 10); // Ritardo per attivare la transizione dopo il cambio display
+      }
+
+      // Chiudere il menu con animazione fluida
+      function closeMenuTools(menuId) {
+          const menu = document.getElementById(menuId);
+          menu.style.opacity = '0';
+          menu.style.transform = 'translateX(20px)';
+          setTimeout(() => {
+              menu.style.display = 'none';
+          }, 300); // Attendere il completamento della transizione prima di nascondere
+      }
+    </script>
   </body>
 </html>

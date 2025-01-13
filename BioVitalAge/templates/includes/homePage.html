@@ -394,33 +394,6 @@
         
           <div class="table-content">
             {% for persona in persone %}
-<<<<<<< HEAD
-            <!-- Qui inizia il ciclo -->
-            <p>{{ persona.name }}</p>
-            <p>{{ persona.surname }}</p>
-            <p>{{ persona.dob|date:"d/m/Y" }}</p>
-            <p>{{ persona.codice_fiscale }}</p>
-            <p>{{ persona.place_of_birth }}</p>
-            <p>{{ persona.chronological_age }}</p>
-            <!-- Associa il dato corretto al paziente -->
-            {% for dato in datiEstesi %}
-            {% if dato.referto.paziente.id == persona.id %}
-            <p>{{ persona.biological_age }}</p>
-            {% endif %}
-            {% endfor %}
-            <p>
-              <a href="{% url 'persona_detail' persona.id %}">
-                <img src="{% static 'includes/icone/referto.png' %}" alt="" />
-              </a>
-            </p>
-            <p>
-              <a href="{% url 'cartella_paziente' persona.id %}">
-                <img src="{% static 'includes/icone/cartella.png' %}" alt="" />
-              </a>
-            </p>
-            {% empty %}
-            <p class="text-center">No results found</p>
-=======
               <div class="riga-container">
                   <p>{{ persona.name }}</p>
                   <p>{{ persona.surname }}</p>
@@ -436,20 +409,17 @@
                       <p></p>
                     {% endif %}
                   {% endfor %}
-
                   <p>
-                      <a href="{% url 'persona_detail' persona.id %}">
-                          <img src="{% static 'includes/icone/referto.png' %}" alt="Referto" />
-                      </a>
+                    <a href="{% url 'persona_detail' persona.id %}">
+                      <img src="{% static 'includes/icone/referto.png' %}" alt="Referto" />
+                    </a>
                   </p>
-
                   <p>
-                      <a href="{% url 'cartella_paziente' persona.id %}">
-                          <img src="{% static 'includes/icone/cartella.png' %}" alt="Cartella" />
-                      </a>
+                    <a href="{% url 'cartella_paziente' persona.id %}">
+                      <img src="{% static 'includes/icone/cartella.png' %}" alt="Cartella" />
+                    </a>
                   </p>
               </div>
->>>>>>> main
             {% endfor %}
           </div>
         </div>

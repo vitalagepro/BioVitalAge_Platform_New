@@ -129,62 +129,8 @@ strong {
   background-color: white;
 }
 /*  -----------------------------------------------------------------------------------------------
+ Pagination Table
 --------------------------------------------------------------------------------------------------- */
-
-/*  -----------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------- */
-/* ! Tabelle */
-.table-header {
-  background-color: var(--contrast-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 5px 5px 0px 0px;
-  height: 3.5rem;
-}
-.table-header p {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--tittle1);
-  width: 100%;
-  height: 100%;
-  margin-top: 0.5rem;
-}
-.table-content {
-  background-color: white;
-  border-radius: 0px 0px 8px 8px;
-  border-bottom: 1px solid #ddd;
-  border-right: 1px solid #ddd;
-  overflow: hidden;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 4.5rem;
-}
-.table-content:hover {
-  background-color: var(--neutral-bg-color);
-}
-.table-content p {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  position: relative;
-  border-left: 0.1rem solid #ddd;
-}
-/* .table-content p:not(:last-child)::before {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 0.1rem;
-  border-radius: 8px;
-  background-color: #ddd;
-  height: 100%;
-} */
 .pagination-controls{
   padding: 15px;
   display: flex;

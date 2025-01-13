@@ -20,7 +20,15 @@
     --card-color: #f8f4fc;
 }
   
-
+body{
+  height: 100vh;
+  background: linear-gradient(
+    to right,
+    var(--dark2),
+    var(--contrast-color),
+    var(--dark2)
+  );
+}
 
 /* ! LOADER PAGE */
 #loading-wrapper {
@@ -476,3 +484,67 @@ main {
   opacity: 1;
   transition: opacity 0.3s ease;
 }
+
+/*  -----------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------- */
+/* ! Tabelle */
+.table-header {
+  background-color: var(--contrast-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 5px 5px 0px 0px;
+  height: 3.5rem;
+}
+.table-header p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--tittle1);
+  width: 100%;
+  height: 100%;
+  margin-top: 0.5rem;
+}
+.table-content {
+  background-color: white;
+  border-radius: 0px 0px 8px 8px;
+  border-right: 1px solid #ddd;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.riga-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 5rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.riga-container:hover {
+  background-color: var(--neutral-bg-color);
+}
+.riga-container p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-left: 0.1rem solid #ddd;
+  margin: 0;
+}
+.table-content a img {
+  width: 40px;
+  transition: transform 0.3s ease-in-out;
+}
+.table-content a img:hover {
+  transform: scale(1.1);
+}
+
+
+/*  -----------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------- */

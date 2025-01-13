@@ -97,6 +97,10 @@
   display: flex;
   justify-content: space-between;
 }
+.container-menu{
+  display: flex;
+  gap: 15px;
+}
 .tools-table{
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -116,66 +120,20 @@
 .tools-table img:hover{
   transform: scale(1.1);
 }
-.table-header{
-  background-color: var(--contrast-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 8px 8px 0px 0px;
-  height: 3.5rem;
-}
-.table-header p{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--tittle1);
-  width: 100%;
-  height: 100%;
-  margin-top: 0.5rem;
-}
-.table-content{
-  background-color: white;
-  border-radius: 0px 0px 8px 8px;
-  border-bottom: 1px solid #ddd;
-  border-left: 1px solid #ddd;
-  border-right: 1px solid #ddd;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 4.5rem;
-}
-.table-content:hover{
-  background-color: var(--neutral-bg-color);
-}
-.table-content p{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  margin-top: 0.5rem;
-  position: relative;
-}
-.table-content p:not(:last-child)::before {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 0.5rem;
-  width: 0.1rem;
-  border-radius: 8px;
-  background-color: #ddd;
-  height: 4rem;
-}
-.tools-menu-button{
-  width: 85%;
+/* Stile base con animazione */
+.tools-menu-button {
   display: none;
-  justify-content: flex-end;
-  align-items: center;
-  margin-top: -1rem;
-  gap: 5px;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-in-out;
 }
 
-
+/* Stato visibile con transizione fluida */
+.tools-menu-button.show {
+  display: flex;
+  opacity: 1;
+  transform: translateX(0);
+}
 
 
 
