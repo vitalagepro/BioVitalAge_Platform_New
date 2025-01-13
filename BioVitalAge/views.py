@@ -35,7 +35,6 @@ class HomePageRender(View):
 
         emailInput = request.POST['email']
         passwordInput = request.POST['password']
-
        
         Query = UtentiRegistratiCredenziali.objects.all().values()
 
@@ -49,6 +48,7 @@ class HomePageRender(View):
                             dottore = UtentiRegistratiCredenziali.objects.get(email=emailInput, password=passwordInput)
                             request.session['dottore_id'] = dottore.id
 
+
                             persone = TabellaPazienti.objects.all().order_by('-id')[:5]
         
                             # Ottieni il referto più recente per ogni paziente
@@ -59,7 +59,8 @@ class HomePageRender(View):
 
                             context = {
                                 'persone': persone,
-                                'datiEstesi': datiEstesi
+                                'datiEstesi': datiEstesi,
+                                'dottore': dottore
                             }
 
                             return render(request, "includes/homePage.html", context)
@@ -69,6 +70,7 @@ class HomePageRender(View):
                         
                     else:
                         return render(request, 'includes/login.html', {'error' : 'Email inserita non valida o non registrata' })
+
 
 class StatisticheView(View):
 
@@ -90,7 +92,15 @@ class CalcolatoreRender(View):
 
         if codice_fiscale:
             paziente = TabellaPazienti.objects.get(codice_fiscale=codice_fiscale)
-            return render(request, 'includes/calcolatore.html', {'paziente': paziente})
+            paziente_id = paziente.id
+
+            context = {
+                    "paziente": paziente,
+                    "id_persona": paziente_id,
+            }
+
+
+            return render(request, 'includes/calcolatore.html', context)
         
         else:
             return render(request, 'includes/calcolatore.html')
@@ -99,6 +109,8 @@ class CalcolatoreRender(View):
     def post(self, request):
         data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
         dottore_id = request.session.get('dottore_id')
+
+
 
         try:
             dottore = UtentiRegistratiCredenziali.objects.get(id=dottore_id)
@@ -110,20 +122,21 @@ class CalcolatoreRender(View):
                 codice_fiscale=data.get('codice_fiscale') 
             ).first()
 
+            paziente_id = paziente.id
+
             if paziente: 
                 
-                campi_opzionali = [
-                    # Aggiunti tutti i campi definiti nel modello e HTML
-                    'd_roms', 'osi', 'pat', 'fa_saturated', 'o9o7fatty_acids', 'o3fatty_acids', 'o6fatty_acids', 's_u_fatty_acids',
-                    'o6o3_fatty_acids_quotient', 'aa_epa_quotient', 'O3_index', 'wbc', 'basophils', 'eosinophils', 'lymphocytes',
-                    'monocytes', 'neutrophils', 'neut_ul', 'lymph_ul', 'mono_ul', 'eosi_ul', 'baso_ul', 'rbc', 'hgb', 'hct',
-                    'mcv', 'mch', 'mchc', 'rdwsd', 'rdwcv', 'azotemia', 'glucose', 'creatinine', 'ferritin', 'albumin', 'protein',
-                    'bilirubin', 'uric_acid', 'plt', 'mpv', 'plcr', 'pct', 'pdw', 'tot_chol', 'ldl_chol', 'hdl_chol', 'trigl',
-                    'na', 'k', 'mg', 'ci', 'ca', 'p', 'fe', 'transferrin', 'glicemy', 'insulin', 'homa', 'ir', 'albuminemia',
-                    'tot_prot', 'tot_prot_ele', 'albumin_ele', 'a_1', 'a_2', 'b_1', 'b_2', 'gamma', 'albumin_dI', 'a_1_dI',
-                    'a_2_dI', 'b_1_dI', 'b_2_dI', 'gamma_dI', 'ag_rap', 'cm', 'b_2_spike', 'b_2_spike_m1', 'got', 'gpt',
-                    'g_gt', 'a_photo', 'tot_bili', 'direct_bili', 'idirect_bili', 'ves', 'pcr_c', 's_weight', 'ph', 'glucose_ex',
-                    'proteins_ex', 'blood_ex', 'ketones', 'uro', 'bilirubin_ex', 'leuc', 'homocysteine'
+                campi_opzionali=[
+                    'd_roms', 'osi', 'pat', 'my_acid', 'p_acid', 'st_acid', 'ar_acid', 'beenic_acid', 'pal_acid', 'ol_acid', 'ner_acid', 'a_linoleic_acid', 'eico_acid',
+                    'doco_acid', 'lin_acid', 'gamma_lin_acid', 'dih_gamma_lin_acid', 'arachidonic_acid', 'sa_un_fatty_acid', 'o3o6_fatty_acid_quotient', 'aa_epa', 
+                    'o3_index', 'wbc', 'baso', 'eosi', 'lymph', 'mono', 'neut', 'neut_ul', 'lymph_ul', 'mono_ul', 'eosi_ul', 'baso_ul', 'mch', 'mchc', 'mcv', 'rdwsd',
+                    'rdwcv', 'hct_m', 'hct_w', 'hgb_m', 'hgb_w', 'rbc_m', 'rbc_w', 'azotemia', 'uric_acid', 'creatinine_m', 'creatinine_w', 'uricemy_m', 'uricemy_w',
+                    'cistatine_c', 'plt', 'mpv', 'plcr', 'pct', 'pdw', 'd_dimero', 'pai_1', 'tot_chol', 'ldl_chol', 'hdl_chol_m', 'hdl_chol_w', 'trigl', 'na', 'k', 
+                    'mg', 'ci', 'ca', 'p', 'dhea_m', 'dhea_w', 'testo_m', 'testo_w', 'tsh', 'ft3', 'ft4', 'beta_es_m', 'beta_es_w', 'prog_m', 'prog_w', 'fe', 'transferrin',
+                    'ferritin_m', 'ferritin_w', 'glicemy', 'insulin', 'homa', 'ir', 'albuminemia', 'tot_prot', 'tot_prot_ele', 'albumin_ele', 'a_1', 'a_2', 'b_1', 'b_2',
+                    'gamma', 'albumin_dI', 'a_1_dI', 'a_2_dI', 'b_1_dI', 'b_2_dI', 'gamma_dI', 'ag_rap', 'cm', 'b_2_spike', 'b_2_spike_m1', 'got_m', 'got_w', 'gpt_m', 'gpt_w',
+                    'g_gt_m', 'g_gt_w', 'a_photo_m', 'a_photo_w', 'tot_bili', 'direct_bili', 'indirect_bili', 'ves', 'pcr_c', 's_weight',
+                    'ph', 'proteins_ex', 'blood_ex', 'ketones', 'uro', 'bilirubin_ex', 'leuc', 'glucose', 'shbg_m', 'shbg_w', 'nt_pro', 'v_b12', 'v_d', 'ves2', 'telotest'
                 ]
 
                 # Verifica se almeno un campo opzionale è stato inserito
@@ -303,25 +316,25 @@ class CalcolatoreRender(View):
 
 
                     exams = [
-                            'my_acid', 'p_acid', 'st_acid', 'ar_acid', 'beenic_acid', 'pal_acid', 
-                            'ol_acid', 'ner_acid', 'a_linoleic_acid', 'eico_acid', 'doco_acid', 
-                            'lin_acid', 'gamma_lin_acid', 'dih_gamma_lin_acid', 'arachidonic_acid', 
-                            'sa_un_fatty_acid', 'o3o6_fatty_acid_quotient', 'aa_epa', 'o3_index',
-                            'neut_ul', 'lymph_ul', 'mono_ul', 'eosi_ul', 'baso_ul', 'rdwcv', 'hct_w', 
-                            'hgb_w', 'rbc_w', 'azotemia', 'uric_acid', 'creatinine_m', 'creatinine_w', 
-                            'uricemy_m', 'uricemy_w', 'cistatine_c', 'plt', 'mpv', 'plcr', 'pct', 'pdw', 
-                            'd_dimero', 'pai_1', 'tot_chol', 'ldl_chol', 'hdl_chol_m', 'hdl_chol_w', 
-                            'trigl', 'na', 'k', 'mg', 'ci', 'ca', 'p', 'dhea_m', 'dhea_w', 'testo_m', 
-                            'testo_w', 'tsh', 'ft3', 'ft4', 'beta_es_m', 'beta_es_w', 'prog_m', 'prog_w', 
-                            'fe', 'transferrin', 'ferritin_m', 'ferritin_w', 'glicemy', 'insulin', 'homa', 
-                            'ir', 'albuminemia', 'tot_prot', 'tot_prot_ele', 'albumin_ele', 'a_1', 'a_2', 
-                            'b_1', 'b_2', 'gamma', 'albumin_dI', 'a_1_dI', 'a_2_dI', 'b_1_dI', 'b_2_dI', 
-                            'gamma_dI', 'ag_rap', 'cm', 'b_2_spike', 'b_2_spike_m1', 'got_m', 'got_w', 
-                            'gpt_m', 'gpt_w', 'g_gt_m', 'g_gt_w', 'a_photo_m', 'a_photo_w', 'tot_bili', 
-                            'direct_bili', 'indirect_bili', 'ves', 'pcr_c', 'tnf_a', 'inter_6', 'inter_10', 
-                            'scatolo', 'indicano', 's_weight', 'ph', 'proteins_ex', 'blood_ex', 'ketones', 
-                            'uro', 'bilirubin_ex', 'leuc', 'glucose', 'shbg_m', 'shbg_w', 'nt_pro', 'v_b12', 
-                            'v_d', 'ves2', 'telotest'
+                            my_acid, p_acid, st_acid, ar_acid, beenic_acid, pal_acid, 
+                            ol_acid, ner_acid, a_linoleic_acid, eico_acid, doco_acid, 
+                            lin_acid, gamma_lin_acid, dih_gamma_lin_acid, arachidonic_acid, 
+                            sa_un_fatty_acid, o3o6_fatty_acid_quotient, aa_epa, o3_index,
+                            neut_ul, lymph_ul, mono_ul, eosi_ul, baso_ul, rdwcv, hct_w, 
+                            hgb_w, rbc_w, azotemia, uric_acid, creatinine_m, creatinine_w, 
+                            uricemy_m, uricemy_w, cistatine_c, plt, mpv, plcr, pct, pdw, 
+                            d_dimero, pai_1, tot_chol, ldl_chol, hdl_chol_m, hdl_chol_w, 
+                            trigl, na, k, mg, ci, ca, p, dhea_m, dhea_w, testo_m, 
+                            testo_w, tsh, ft3, ft4, beta_es_m, beta_es_w, prog_m, prog_w, 
+                            fe, transferrin, ferritin_m, ferritin_w, glicemy, insulin, homa, 
+                            ir, albuminemia, tot_prot, tot_prot_ele, albumin_ele, a_1, a_2, 
+                            b_1, b_2, gamma, albumin_dI, a_1_dI, a_2_dI, b_1_dI, b_2_dI, 
+                            gamma_dI, ag_rap, cm, b_2_spike, b_2_spike_m1, got_m, got_w, 
+                            gpt_m, gpt_w, g_gt_m, g_gt_w, a_photo_m, a_photo_w, tot_bili, 
+                            direct_bili, indirect_bili, ves, pcr_c, tnf_a, inter_6, inter_10, 
+                            scatolo, indicano, s_weight, ph, proteins_ex, blood_ex, ketones, 
+                            uro, bilirubin_ex, leuc, glucose, shbg_m, shbg_w, nt_pro, v_b12, 
+                            v_d, ves2, telotest
                         ]
 
 
@@ -505,8 +518,9 @@ class CalcolatoreRender(View):
                         "show_modal": True,
                         "biological_age": biological_age,
                         "data": data,
+                        "id_persona": paziente_id,
                     }
-                    
+
                     return render(request, "includes/calcolatore.html", context)
                 
                 else:
@@ -519,19 +533,20 @@ class CalcolatoreRender(View):
                     return render(request, "includes/calcolatore.html", context)
 
             else:
-                campi_opzionali = [
-                    # Aggiunti tutti i campi definiti nel modello e HTML
-                    'd_roms', 'osi', 'pat', 'fa_saturated', 'o9o7fatty_acids', 'o3fatty_acids', 'o6fatty_acids', 's_u_fatty_acids',
-                    'o6o3_fatty_acids_quotient', 'aa_epa_quotient', 'O3_index', 'wbc', 'basophils', 'eosinophils', 'lymphocytes',
-                    'monocytes', 'neutrophils', 'neut_ul', 'lymph_ul', 'mono_ul', 'eosi_ul', 'baso_ul', 'rbc', 'hgb', 'hct',
-                    'mcv', 'mch', 'mchc', 'rdwsd', 'rdwcv', 'azotemia', 'glucose', 'creatinine', 'ferritin', 'albumin', 'protein',
-                    'bilirubin', 'uric_acid', 'plt', 'mpv', 'plcr', 'pct', 'pdw', 'tot_chol', 'ldl_chol', 'hdl_chol', 'trigl',
-                    'na', 'k', 'mg', 'ci', 'ca', 'p', 'fe', 'transferrin', 'glicemy', 'insulin', 'homa', 'ir', 'albuminemia',
-                    'tot_prot', 'tot_prot_ele', 'albumin_ele', 'a_1', 'a_2', 'b_1', 'b_2', 'gamma', 'albumin_dI', 'a_1_dI',
-                    'a_2_dI', 'b_1_dI', 'b_2_dI', 'gamma_dI', 'ag_rap', 'cm', 'b_2_spike', 'b_2_spike_m1', 'got', 'gpt',
-                    'g_gt', 'a_photo', 'tot_bili', 'direct_bili', 'idirect_bili', 'ves', 'pcr_c', 's_weight', 'ph', 'glucose_ex',
-                    'proteins_ex', 'blood_ex', 'ketones', 'uro', 'bilirubin_ex', 'leuc', 'homocysteine'
+
+                campi_opzionali=[
+                    'd_roms', 'osi', 'pat', 'my_acid', 'p_acid', 'st_acid', 'ar_acid', 'beenic_acid', 'pal_acid', 'ol_acid', 'ner_acid', 'a_linoleic_acid', 'eico_acid',
+                    'doco_acid', 'lin_acid', 'gamma_lin_acid', 'dih_gamma_lin_acid', 'arachidonic_acid', 'sa_un_fatty_acid', 'o3o6_fatty_acid_quotient', 'aa_epa', 
+                    'o3_index', 'wbc', 'baso', 'eosi', 'lymph', 'mono', 'neut', 'neut_ul', 'lymph_ul', 'mono_ul', 'eosi_ul', 'baso_ul', 'mch', 'mchc', 'mcv', 'rdwsd',
+                    'rdwcv', 'hct_m', 'hct_w', 'hgb_m', 'hgb_w', 'rbc_m', 'rbc_w', 'azotemia', 'uric_acid', 'creatinine_m', 'creatinine_w', 'uricemy_m', 'uricemy_w',
+                    'cistatine_c', 'plt', 'mpv', 'plcr', 'pct', 'pdw', 'd_dimero', 'pai_1', 'tot_chol', 'ldl_chol', 'hdl_chol_m', 'hdl_chol_w', 'trigl', 'na', 'k', 
+                    'mg', 'ci', 'ca', 'p', 'dhea_m', 'dhea_w', 'testo_m', 'testo_w', 'tsh', 'ft3', 'ft4', 'beta_es_m', 'beta_es_w', 'prog_m', 'prog_w', 'fe', 'transferrin',
+                    'ferritin_m', 'ferritin_w', 'glicemy', 'insulin', 'homa', 'ir', 'albuminemia', 'tot_prot', 'tot_prot_ele', 'albumin_ele', 'a_1', 'a_2', 'b_1', 'b_2',
+                    'gamma', 'albumin_dI', 'a_1_dI', 'a_2_dI', 'b_1_dI', 'b_2_dI', 'gamma_dI', 'ag_rap', 'cm', 'b_2_spike', 'b_2_spike_m1', 'got_m', 'got_w', 'gpt_m', 'gpt_w',
+                    'g_gt_m', 'g_gt_w', 'a_photo_m', 'a_photo_w', 'tot_bili', 'direct_bili', 'indirect_bili', 'ves', 'pcr_c', 's_weight',
+                    'ph', 'proteins_ex', 'blood_ex', 'ketones', 'uro', 'bilirubin_ex', 'leuc', 'glucose', 'shbg_m', 'shbg_w', 'nt_pro', 'v_b12', 'v_d', 'ves2', 'telotest'
                 ]
+                
 
                 if all(not data.get(campo) for campo in campi_opzionali):
                     # Salva solo i dati personali e l'età cronologica
@@ -568,6 +583,8 @@ class CalcolatoreRender(View):
                     )
                     paziente.save()
               
+                    paziente_id = paziente.id
+
                     # Salva i dati del referto
                     referto = ArchivioReferti(
                         paziente=paziente,
@@ -741,25 +758,25 @@ class CalcolatoreRender(View):
 
 
                     exams = [
-                            'my_acid', 'p_acid', 'st_acid', 'ar_acid', 'beenic_acid', 'pal_acid', 
-                            'ol_acid', 'ner_acid', 'a_linoleic_acid', 'eico_acid', 'doco_acid', 
-                            'lin_acid', 'gamma_lin_acid', 'dih_gamma_lin_acid', 'arachidonic_acid', 
-                            'sa_un_fatty_acid', 'o3o6_fatty_acid_quotient', 'aa_epa', 'o3_index',
-                            'neut_ul', 'lymph_ul', 'mono_ul', 'eosi_ul', 'baso_ul', 'rdwcv', 'hct_w', 
-                            'hgb_w', 'rbc_w', 'azotemia', 'uric_acid', 'creatinine_m', 'creatinine_w', 
-                            'uricemy_m', 'uricemy_w', 'cistatine_c', 'plt', 'mpv', 'plcr', 'pct', 'pdw', 
-                            'd_dimero', 'pai_1', 'tot_chol', 'ldl_chol', 'hdl_chol_m', 'hdl_chol_w', 
-                            'trigl', 'na', 'k', 'mg', 'ci', 'ca', 'p', 'dhea_m', 'dhea_w', 'testo_m', 
-                            'testo_w', 'tsh', 'ft3', 'ft4', 'beta_es_m', 'beta_es_w', 'prog_m', 'prog_w', 
-                            'fe', 'transferrin', 'ferritin_m', 'ferritin_w', 'glicemy', 'insulin', 'homa', 
-                            'ir', 'albuminemia', 'tot_prot', 'tot_prot_ele', 'albumin_ele', 'a_1', 'a_2', 
-                            'b_1', 'b_2', 'gamma', 'albumin_dI', 'a_1_dI', 'a_2_dI', 'b_1_dI', 'b_2_dI', 
-                            'gamma_dI', 'ag_rap', 'cm', 'b_2_spike', 'b_2_spike_m1', 'got_m', 'got_w', 
-                            'gpt_m', 'gpt_w', 'g_gt_m', 'g_gt_w', 'a_photo_m', 'a_photo_w', 'tot_bili', 
-                            'direct_bili', 'indirect_bili', 'ves', 'pcr_c', 'tnf_a', 'inter_6', 'inter_10', 
-                            'scatolo', 'indicano', 's_weight', 'ph', 'proteins_ex', 'blood_ex', 'ketones', 
-                            'uro', 'bilirubin_ex', 'leuc', 'glucose', 'shbg_m', 'shbg_w', 'nt_pro', 'v_b12', 
-                            'v_d', 'ves2', 'telotest'
+                            my_acid, p_acid, st_acid, ar_acid, beenic_acid, pal_acid, 
+                            ol_acid, ner_acid, a_linoleic_acid, eico_acid, doco_acid, 
+                            lin_acid, gamma_lin_acid, dih_gamma_lin_acid, arachidonic_acid, 
+                            sa_un_fatty_acid, o3o6_fatty_acid_quotient, aa_epa, o3_index,
+                            neut_ul, lymph_ul, mono_ul, eosi_ul, baso_ul, rdwcv, hct_w, 
+                            hgb_w, rbc_w, azotemia, uric_acid, creatinine_m, creatinine_w, 
+                            uricemy_m, uricemy_w, cistatine_c, plt, mpv, plcr, pct, pdw, 
+                            d_dimero, pai_1, tot_chol, ldl_chol, hdl_chol_m, hdl_chol_w, 
+                            trigl, na, k, mg, ci, ca, p, dhea_m, dhea_w, testo_m, 
+                            testo_w, tsh, ft3, ft4, beta_es_m, beta_es_w, prog_m, prog_w, 
+                            fe, transferrin, ferritin_m, ferritin_w, glicemy, insulin, homa, 
+                            ir, albuminemia, tot_prot, tot_prot_ele, albumin_ele, a_1, a_2, 
+                            b_1, b_2, gamma, albumin_dI, a_1_dI, a_2_dI, b_1_dI, b_2_dI, 
+                            gamma_dI, ag_rap, cm, b_2_spike, b_2_spike_m1, got_m, got_w, 
+                            gpt_m, gpt_w, g_gt_m, g_gt_w, a_photo_m, a_photo_w, tot_bili, 
+                            direct_bili, indirect_bili, ves, pcr_c, tnf_a, inter_6, inter_10, 
+                            scatolo, indicano, s_weight, ph, proteins_ex, blood_ex, ketones, 
+                            uro, bilirubin_ex, leuc, glucose, shbg_m, shbg_w, nt_pro, v_b12, 
+                            v_d, ves2, telotest
                         ]
 
 
@@ -943,6 +960,7 @@ class CalcolatoreRender(View):
                     "show_modal": True,
                     "biological_age": biological_age,
                     "data": data,
+                    "id_persona": paziente_id,
                 }
 
                 return render(request, "includes/calcolatore.html", context)
