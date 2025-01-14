@@ -123,7 +123,6 @@
           <p>Place of Birth</p>
           <p>Chronological Age</p>
           <p>Biological Age</p>
-          <p>Personale Associato</p>
           <p>Ultimo Referto</p>
           <p>Cartella Paziente</p>
         </div>
@@ -138,20 +137,14 @@
                   <p>{{ persona.codice_fiscale }}</p>
                   <p>{{ persona.place_of_birth }}</p>
                   <p>{{ persona.chronological_age }}</p>
-                  
-                  {% with biological_age_found=False %}
-                      {% for dato in datiEstesi %}
-                          {% if dato.referto.paziente.id == persona.id %}
-                              <p>{{ dato.biological_age }}</p>
-                              {% with biological_age_found=True %}
-                              {% endwith %}
-                          {% endif %}
-                      {% endfor %}
-                      {% if not biological_age_found %}
-                          <p id="else">N/D</p>
-                      {% endif %}
-                  {% endwith %}
-                  
+              
+                  {% for dato in datiEstesi %}
+                    {% if dato.referto.paziente.id == persona.id %}
+                      <p>{{ dato.biological_age }}</p>
+                    {% endif %}
+      
+                  {% endfor %}
+
                   <p>
                       <a href="{% url 'persona_detail' persona.id %}">
                           <img src="{% static 'includes/icone/referto.png' %}" alt="Referto" />

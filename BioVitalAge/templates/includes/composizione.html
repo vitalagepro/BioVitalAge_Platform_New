@@ -104,115 +104,79 @@
             </div>
         </div>
 
-        <div class="container-grafici">
-            <canvas id="bmiChart"></canvas>
-            <canvas id="grassoChart"></canvas>
-            <canvas id="acquaChart"></canvas>
-            <canvas id="massaChart"></canvas>
+        <div class="datiMassaCorporea-container">
+            <h3>Dati Massa Corporea Paziente</h3>
+            <div class="container_box">
+                <div class="info_container">
+      
+                    <div class="field">
+                      <p>Name:&nbsp;</p>
+                      <p>{{ persona.name }}</p>
+                    </div>
+      
+                    <div class="field">
+                      <p>Surname:&nbsp;</p>
+                      <p>{{ persona.surname }}</p>
+                    </div>
+      
+                    <div class="field">
+                      <p>Codice Fiscale :&nbsp;</p>
+                      <p>{{ persona.codice_fiscale }}</p>
+                    </div>
+    
+                    <div class="field">
+                      <p>Age:&nbsp;</p>
+                      <p>{{ persona.chronological_age }}</p>
+                    </div>
+
+                    <div class="field">
+                        <p>Altezza:</p>
+                        <p>xxx</p>
+                      </div>
+        
+      
+                    <div class="field">
+                      <p>Peso corporeo:</p>
+                      <p>xxx</p>
+                    </div>
+            
+                    <div class="field">
+                      <p>Sport:</p>
+                      <p>xxx</p>
+                    </div>
+      
+                    <div class="field">
+                      <p>Genere:</p>
+                      <p>xxx</p>
+                    </div>
+      
+                </div>
+            </div>
         </div>
-    
-        <script>
-            /*  -----------------------------------------------------------------------------------------------
-                Modal User
-            --------------------------------------------------------------------------------------------------- */
-            const userImg = document.getElementById("userImg");
-            const userModal = document.getElementById("userModal");
-            const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
 
-            function showModal() {
-                userModal.classList.add("show");
-            }
-
-            userImg.addEventListener("mouseover", showModal);
-
-            userModal.addEventListener("mouseout", () => {
-                userModal.classList.remove("show");
-            });
-
-            userModalBtn.addEventListener("mouseover", showModal);            
-            /*  -----------------------------------------------------------------------------------------------
-            *   Script per la creazione dei grafici
-            --------------------------------------------------------------------------------------------------- */
-            // Colori
-            const colors = {
-                dark1: "#0c042c",
-                dark2: "#0c214b",
-                light1: "#c3ccd4",
-                neutralGray: "#b0b8c1",
-                contrastColor: "#3a255d",
-                contrastColor2: "#6a2dcc",
-                positiveColor: "#2ac670"
-            };
-    
-            // BMI Chart
-            const bmiCtx = document.getElementById('bmiChart').getContext('2d');
-            new Chart(bmiCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Grave magrezza', 'Sottopeso', 'Normopeso', 'Sovrappeso', 'Obeso Classe 1', 'Obeso Classe 2', 'Obeso Classe 3'],
-                    datasets: [{
-                        label: 'BMI',
-                        data: [15, 17, 22, 27, 32, 37, 42],
-                        backgroundColor: colors.contrastColor
-                    }]
-                }
-            });
-    
-            // Grasso Corporeo
-            const grassoCtx = document.getElementById('grassoChart').getContext('2d');
-            new Chart(grassoCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Insufficientemente grasso', 'Sano', 'Eccessivamente grasso', 'Obeso'],
-                    datasets: [{
-                        label: '% Grasso Corporeo',
-                        data: [10, 25, 35, 50],
-                        backgroundColor: [colors.contrastColor, colors.positiveColor, colors.contrastColor2, colors.dark2]
-                    }]
-                }
-            });
-    
-            // Acqua Corporea
-            const acquaCtx = document.getElementById('acquaChart').getContext('2d');
-            new Chart(acquaCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['Donna', 'Uomo'],
-                    datasets: [{
-                        label: '% Acqua Corporea',
-                        data: [55, 60],
-                        backgroundColor: [colors.contrastColor2, colors.positiveColor]
-                    }]
-                }
-            });
-    
-            // Massa Muscolare
-            const massaCtx = document.getElementById('massaChart').getContext('2d');
-            new Chart(massaCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Massa Muscolare', 'Massa Grassa', 'Massa Ossea'],
-                    datasets: [{
-                        label: 'Composizione Corporea (kg)',
-                        data: [45, 20, 5],
-                        backgroundColor: [colors.positiveColor, colors.contrastColor, colors.contrastColor2]
-                    }]
-                }
-            });
-    
-        </script>
-
-
-
-
-
-
-
-
+        <div class="container-grafici">
+            <div class="card-grafico">
+                <h3>Grasso Corporeo</h3>
+                <canvas id="bmiChart"></canvas>
+            </div>
+            <div class="card-grafico">
+                <h3>BMI</h3>
+                <canvas id="grassoChart"></canvas>
+            </div>
+            <div class="card-grafico">
+                <h3>Acqua Corporea</h3>
+                <canvas id="acquaChart"></canvas>
+            </div>
+            <div class="card-grafico">
+                <h3>Massa Muscolare</h3>
+                <canvas id="massaChart"></canvas>
+            </div>
+        </div>
     </main>
 
     <!-- Import Js -->
-    <script src="{% static 'includes/js/cartellaPaziente.js' %}"></script>
+
+    <script src="{% static 'includes/js/chartComposizione.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
