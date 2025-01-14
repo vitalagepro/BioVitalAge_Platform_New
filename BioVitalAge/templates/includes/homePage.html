@@ -404,9 +404,7 @@
               
                   {% for dato in datiEstesi %}
                     {% if dato.referto.paziente.id == persona.id %}
-                      <p>{{ persona.biological_age }}</p>
-                    {% else %}
-                      <p></p>
+                      <p>{{ dato.biological_age }}</p>
                     {% endif %}
                   {% endfor %}
                   <p>

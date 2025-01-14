@@ -27,12 +27,11 @@
     --card-color: #f8f4fc;
 }
 
-h1 {
-    color: var(--tittle1);
+
+.main-title-nav a{
+    text-decoration: none;
+    color: var(--light1);
 }
-
-
-
 .container-grafici {
     padding: 20px;
     width: 100%;
@@ -40,9 +39,74 @@ h1 {
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
 }
-canvas{
-    max-width: 100%;
+.container-grafici h3{
+    padding: 20px;
+}
+.card-grafico{
+    width: 100%;
     background-color: var(--card-color);
-    max-height: 400px;
+    height: 400px;
     border-radius: 8px;
+}
+.card-grafico h3 {
+    color: var(--dark2);
+    font-weight: bold;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.datiMassaCorporea-container{
+    width: 98%;
+    margin: auto;
+    height: 400px;
+    background-color: var(--card-color);
+    border-radius: 8px;
+    margin-top: 20px;
+    padding: 20px;
+}
+.datiMassaCorporea-container h3 {
+    color: var(--dark2);
+    font-weight: bold;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+canvas{
+    max-height: 320px;
+    margin-top: -1rem;
+    padding: 0px 20px;
+}
+.container_box {
+    display: flex;
+    justify-content: space-between;
+}
+.info_container{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 15px;
+    row-gap: 20px;
+    width: 100%;
+}
+.field{
+    display: flex;
+    flex-direction: column;
+}
+.field p:first-of-type {
+      background-color: var(--contrast-color-shadow);
+      border-radius: 8px;
+      padding: 15px; 
+      color: var(--dark2);
+      margin-bottom: -1rem;
+      font-weight: bold;
+      padding-bottom: 25px;
+}
+.field p:last-of-type {
+      border-bottom: 1px solid #ddd;
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+      padding: 15px;
+      padding-top: 15px;
+      border-radius: 8px;
+      font-size: 18px;
+      color: var(--dark1);
+      background-color: white;
 }
