@@ -150,10 +150,12 @@ class CalcolatoreRender(View):
                 codice_fiscale=data.get('codice_fiscale') 
             ).first()
 
-            paziente_id = paziente.id
+            
 
             if paziente: 
                 
+                paziente_id = paziente.id
+
                 campi_opzionali=[
                     'd_roms', 'osi', 'pat', 'my_acid', 'p_acid', 'st_acid', 'ar_acid', 'beenic_acid', 'pal_acid', 'ol_acid', 'ner_acid', 'a_linoleic_acid', 'eico_acid',
                     'doco_acid', 'lin_acid', 'gamma_lin_acid', 'dih_gamma_lin_acid', 'arachidonic_acid', 'sa_un_fatty_acid', 'o3o6_fatty_acid_quotient', 'aa_epa', 
@@ -613,6 +615,11 @@ class CalcolatoreRender(View):
                     )
                     paziente.save()
               
+                    paziente = TabellaPazienti.objects.filter(
+                        codice_fiscale=data.get('codice_fiscale') 
+                    ).first()
+    
+                    
                     paziente_id = paziente.id
 
                     # Salva i dati del referto
@@ -990,7 +997,6 @@ class CalcolatoreRender(View):
                     "data": data,
                     "id_persona": paziente_id,
                     'dottore' : dottore
-
                 }
 
                 return render(request, "includes/calcolatore.html", context)
@@ -1232,3 +1238,21 @@ class InserisciPazienteView(View):
 
         return render(request, "includes/InserisciPaziente.html", context)
 
+
+
+class ComposizioneView(View):
+
+    def get(self, request, id):
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'persona': persona,
+            'dottore' : dottore
+        }
+
+        return render(request, "includes/composizione.html", context)
+    

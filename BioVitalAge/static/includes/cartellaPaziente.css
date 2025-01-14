@@ -4,7 +4,6 @@
   padding: 0;
   font-family: Arial, sans-serif;
 }
-
 :root {
   --dark1: #0c042c;
   --dark2: #0c214b;
@@ -26,11 +25,10 @@
   --circle-color-shadow-two: rgba(42, 196, 221, 0.05);
   --text-color: rgb(34, 34, 34);
 }
-
 .containerStyle {
   padding: 20px;
+  border-radius: 8px;
 }
-
 .header-card {
   display: flex;
   justify-content: space-between;
@@ -53,7 +51,6 @@
   width: 30%;
   font-size: 20px;
 }
-
 .button-grid {
   display: flex;
   justify-content: center;
@@ -66,6 +63,7 @@
   width: 40px;
   height: 40px;
 }
+
 .button-grid a img:hover {
   transform: scale(1.1);
 }
@@ -128,7 +126,6 @@ strong {
   color: var(--dark1);
   background-color: white;
 }
-
 .riga-container a img {
   width: 40px;
   transition: transform 0.3s ease-in-out;
@@ -136,7 +133,6 @@ strong {
 .riga-container a img:hover {
   transform: scale(1.1);
 }
-
 .container-indicatori {
   margin-top: -1rem;
   display: grid;
@@ -144,6 +140,70 @@ strong {
   gap: 15px;
   height: 370px;
 }
+
+
+/* CONTEINR SEZIONI INTERNET */
+.container-sezioniInterne{
+  height: 400px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.cardDati{
+  background-color: var(--card-color);
+  width: 50%;
+  height: 100%;
+  border-radius: 8px;
+  margin-top: -1rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.cardDati img{
+  position: absolute;
+  bottom: 0;
+  right: 1rem;
+  width: 360px
+}
+
+.cardDati h3{
+  position: absolute;
+  top: 3rem;
+  left: 1.5rem;
+  font-weight: bold;
+  color: var(--dark2);
+}
+
+.cardDati p{
+  max-width: 50%;
+  padding-left: 5px;
+}
+
+.cardDati button{
+  position: absolute;
+  bottom: 3rem;
+  width: 12rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Clock style*/
 .score-clock-graph {
