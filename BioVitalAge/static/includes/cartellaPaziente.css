@@ -128,23 +128,14 @@ strong {
   color: var(--dark1);
   background-color: white;
 }
-/*  -----------------------------------------------------------------------------------------------
- Pagination Table
---------------------------------------------------------------------------------------------------- */
-.pagination-controls{
-  padding: 15px;
-  display: flex;
-  gap: 10px;
-}
-.table-content a img {
+
+.riga-container a img {
   width: 40px;
   transition: transform 0.3s ease-in-out;
 }
-.table-content a img:hover {
+.riga-container a img:hover {
   transform: scale(1.1);
 }
-/*  -----------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------- */
 
 .container-indicatori {
   margin-top: -1rem;

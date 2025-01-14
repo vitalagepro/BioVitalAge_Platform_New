@@ -417,10 +417,10 @@
                                 </a>
                             </p>
                         </div>
+                        {% empty %}
+                        <p class="text-center">No recent reports found.</p>
+                        {% endfor %}
                     </div>
-                    {% empty %}
-                    <p class="text-center">No recent reports found.</p>
-                    {% endfor %}
                 </div>
             </div>
         </div>
