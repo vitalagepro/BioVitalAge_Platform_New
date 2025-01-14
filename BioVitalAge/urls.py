@@ -11,7 +11,8 @@ urlpatterns = [
     path("CartellaPaziente/<int:id>/", views.CartellaPazienteView.as_view(), name="cartella_paziente"),
     path("DatiBase/<int:id>/", views.DatiBaseView.as_view(), name="dati_base"),
     path("AggiungiPaziente/", views.InserisciPazienteView.as_view(), name="inserisci_paziente"),
-    path("Home_Page/Statistiche", views.StatisticheView.as_view(), name="statistiche")
+    path("Home_Page/Statistiche", views.StatisticheView.as_view(), name="statistiche"),
+    path("Patients/<int:id>/Composizione", views.ComposizioneView.as_view(), name="composizione")
 ]
 
 

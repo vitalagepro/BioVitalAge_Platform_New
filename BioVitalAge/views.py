@@ -9,14 +9,21 @@ from django.contrib import messages
 
 # Create your views here.
 
+
 class LoginRenderingPage(View):
     def get(self, request):
         return render(request, 'includes/login.html')
+
+
+
 
 class HomePageRender(View):
 
     def get(self, request):
         persone = TabellaPazienti.objects.all().order_by('-id')[:5]
+        
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
         
         # Ottieni il referto più recente per ogni paziente
         ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
@@ -26,7 +33,8 @@ class HomePageRender(View):
 
         context = {
             'persone': persone,
-            'datiEstesi': datiEstesi
+            'datiEstesi': datiEstesi,
+            'dottore': dottore
         }
 
         return render(request, "includes/homePage.html", context)
@@ -63,7 +71,7 @@ class HomePageRender(View):
                                 'dottore': dottore
                             }
 
-                            return render(request, "includes/homePage.html", context)
+                            return render(request, "includes/risultati.html", context)
                         
                         else:
                             return render(request, 'includes/login.html', {'error' : 'Password errata' })
@@ -72,11 +80,22 @@ class HomePageRender(View):
                         return render(request, 'includes/login.html', {'error' : 'Email inserita non valida o non registrata' })
 
 
-class StatisticheView(View):
 
+
+class StatisticheView(View):
     def get(self, request):
-        return render(request, "includes/statistiche.html")
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'dottore' : dottore
+        }
+
+        return render(request, "includes/statistiche.html", context)
     
+
+
 
 def safe_float(data, key, default=0.0):
     try:
@@ -85,8 +104,17 @@ def safe_float(data, key, default=0.0):
         return default
 
 
+
+
 class CalcolatoreRender(View):
     def get(self, request):
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'dottore' : dottore
+        }
 
         codice_fiscale = request.GET.get('parametro')
 
@@ -103,14 +131,14 @@ class CalcolatoreRender(View):
             return render(request, 'includes/calcolatore.html', context)
         
         else:
-            return render(request, 'includes/calcolatore.html')
+            return render(request, 'includes/calcolatore.html', context)
 
         
     def post(self, request):
         data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
         dottore_id = request.session.get('dottore_id')
 
-
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
         try:
             dottore = UtentiRegistratiCredenziali.objects.get(id=dottore_id)
@@ -122,10 +150,12 @@ class CalcolatoreRender(View):
                 codice_fiscale=data.get('codice_fiscale') 
             ).first()
 
-            paziente_id = paziente.id
+            
 
             if paziente: 
                 
+                paziente_id = paziente.id
+
                 campi_opzionali=[
                     'd_roms', 'osi', 'pat', 'my_acid', 'p_acid', 'st_acid', 'ar_acid', 'beenic_acid', 'pal_acid', 'ol_acid', 'ner_acid', 'a_linoleic_acid', 'eico_acid',
                     'doco_acid', 'lin_acid', 'gamma_lin_acid', 'dih_gamma_lin_acid', 'arachidonic_acid', 'sa_un_fatty_acid', 'o3o6_fatty_acid_quotient', 'aa_epa', 
@@ -519,6 +549,7 @@ class CalcolatoreRender(View):
                         "biological_age": biological_age,
                         "data": data,
                         "id_persona": paziente_id,
+                        'dottore': dottore
                     }
 
                     return render(request, "includes/calcolatore.html", context)
@@ -529,6 +560,7 @@ class CalcolatoreRender(View):
                         "show_modal": False,
                         "error": "Nessun dato opzionale inserito. Referto e dati estesi non salvati.",
                         "data": data,
+                        'dottore': dottore
                     }
                     return render(request, "includes/calcolatore.html", context)
 
@@ -583,6 +615,11 @@ class CalcolatoreRender(View):
                     )
                     paziente.save()
               
+                    paziente = TabellaPazienti.objects.filter(
+                        codice_fiscale=data.get('codice_fiscale') 
+                    ).first()
+    
+                    
                     paziente_id = paziente.id
 
                     # Salva i dati del referto
@@ -756,7 +793,6 @@ class CalcolatoreRender(View):
 
                     telotest = safe_float(data, 'telotest')
 
-
                     exams = [
                             my_acid, p_acid, st_acid, ar_acid, beenic_acid, pal_acid, 
                             ol_acid, ner_acid, a_linoleic_acid, eico_acid, doco_acid, 
@@ -779,14 +815,12 @@ class CalcolatoreRender(View):
                             v_d, ves2, telotest
                         ]
 
-
                     # Calcolo dell'età biologica
                     biological_age = calculate_biological_age(
                         chronological_age, d_roms, osi, pat, wbc, baso,
                         eosi, lymph, mono, neut, rbc_m, hgb_m, 
                         hct_m, mcv, mch, mchc, rdwsd, exams
                     )
-
 
                     # Salvataggio dei dati
                     dati_estesi = DatiEstesiReferti(
@@ -955,12 +989,14 @@ class CalcolatoreRender(View):
                         biological_age= biological_age,
                     )
                     dati_estesi.save()
+                
                 # Context da mostrare nel template
                 context = {
                     "show_modal": True,
                     "biological_age": biological_age,
                     "data": data,
                     "id_persona": paziente_id,
+                    'dottore' : dottore
                 }
 
                 return render(request, "includes/calcolatore.html", context)
@@ -976,10 +1012,16 @@ class CalcolatoreRender(View):
             }
             return render(request, "includes/calcolatore.html", context)
 
+
+
+
 class RisultatiRender(View):
     def get(self, request):
         persone = TabellaPazienti.objects.all()
         
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+ 
         # Ottieni il referto più recente per ogni paziente
         ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
 
@@ -988,16 +1030,23 @@ class RisultatiRender(View):
 
         context = {
             'persone': persone,
-            'datiEstesi': datiEstesi
+            'datiEstesi': datiEstesi,
+            'dottore' : dottore
         }
 
         return render(request, "includes/risultati.html", context)
+
+
+
 
 class PersonaDetailView(View):
    
     def get(self, request, id):
         # Ottieni il paziente con l'ID specificato
         persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
         # Ottieni l'ultimo referto del paziente
         ultimo_referto = ArchivioReferti.objects.filter(paziente=persona).order_by('-data_ora_creazione').first()
@@ -1010,9 +1059,13 @@ class PersonaDetailView(View):
         context = {
             'persona': persona,
             'ultimo_referto': ultimo_referto,
-            'datiEstesi': datiEstesi
+            'datiEstesi': datiEstesi,
+            'dottore' : dottore
         }
         return render(request, "includes/persona_detail.html", context)
+
+
+
 
 class CartellaPazienteView(View):
 
@@ -1029,7 +1082,9 @@ class CartellaPazienteView(View):
         # Ottieni l'ultimo referto (il più recente)
         ultimo_referto = referti_recenti.first() if referti_recenti else None
 
-       
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
         # Ottieni i dati estesi dell'ultimo referto
         dati_estesi_ultimo_referto = None
         if ultimo_referto:
@@ -1040,29 +1095,53 @@ class CartellaPazienteView(View):
             'referti_recenti': referti_recenti,
             'dati_estesi': dati_estesi,
             'ultimo_referto': ultimo_referto,
-            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto
+            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
+            'dottore' : dottore
         }
 
         return render(request, "includes/cartellaPaziente.html", context)
+
+
+
 
 class DatiBaseView(View):
 
     def get(self, request, id):
         persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
         context = {
             'persona': persona,
+            'dottore' : dottore
         }
         return render(request, "includes/dati_base.html", context)
+    
+
+
     
 class InserisciPazienteView(View):
 
     def get(self, request):
-        return render(request, "includes/InserisciPaziente.html")
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'dottore' : dottore
+        }
+
+        return render(request, "includes/InserisciPaziente.html", context)
     
 
     def post(self, request):
         dottore = request.user.utentiregistraticredenziali if hasattr(request.user, 'utentiregistraticredenziali') else None
         codice_fiscale = request.POST.get('codice_fiscale')
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
 
         paziente_esistente = TabellaPazienti.objects.filter(codice_fiscale=codice_fiscale).first()
 
@@ -1153,5 +1232,27 @@ class InserisciPazienteView(View):
             )
             messages.success(request, "Nuovo paziente salvato con successo!")
 
-        return render(request, "includes/InserisciPaziente.html")
+        context = {
+            'dottore' : dottore
+        }
 
+        return render(request, "includes/InserisciPaziente.html", context)
+
+
+
+class ComposizioneView(View):
+
+    def get(self, request, id):
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'persona': persona,
+            'dottore' : dottore
+        }
+
+        return render(request, "includes/composizione.html", context)
+    
