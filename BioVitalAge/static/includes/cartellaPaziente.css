@@ -408,7 +408,8 @@ strong {
   position: relative;
 }
 
-.privacy-icon-container {
+/* ! CODICE BACK-UP ICONA PRIVACY */
+/* .privacy-icon-container {
   display: flex;
   justify-content: flex-end;
   width: 100%;
@@ -425,7 +426,7 @@ strong {
 
 .privacy-icon img:hover {
   transform: scale(1.1);
-}
+} */
 
 .main-title-nav a{
   color: var(--light1) !important;

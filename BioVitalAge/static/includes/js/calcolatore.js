@@ -1,4 +1,19 @@
 /*  -----------------------------------------------------------------------------------------------
+  Function for section toggles
+--------------------------------------------------------------------------------------------------- */
+document.querySelectorAll(".button-style.btn-selected").forEach((button) => {
+  button.addEventListener("click", function () {
+    const container = this.closest(".section");
+    container.classList.toggle("hidden-exam");
+    if (container.classList.contains("hidden-exam")) {
+      this.setAttribute("title", "Apri Sezione");
+    } else {
+      this.setAttribute("title", "Chiudi Sezione");
+    }
+  });
+});
+
+/*  -----------------------------------------------------------------------------------------------
 Function for gender selection
 --------------------------------------------------------------------------------------------------- */
 document.getElementById("gender").addEventListener("change", function () {
@@ -16,16 +31,18 @@ document.getElementById("gender").addEventListener("change", function () {
       const isMan = label.textContent.includes("Man");
       const isWoman = label.textContent.includes("Woman");
 
-      // Logica di disabilitazione
+      // Logica di disabilitazione e rimozione
       if (
         (selectedGender === "M" && isWoman) ||
         (selectedGender === "F" && isMan)
       ) {
         numberInput.disabled = true;
         rangeInput.disabled = true;
+        group.classList.add("hidden-form-group");
       } else {
         numberInput.disabled = false;
         rangeInput.disabled = false;
+        group.classList.remove("hidden-form-group");
       }
     }
   });
