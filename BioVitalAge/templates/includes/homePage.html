@@ -82,32 +82,8 @@
     </div>
 
     <div id="sidebar" class="bg-sidebar hidden"></div>
-    <header>
-      <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar">
-        <div class="col-md-2 d-flex jus nav-bar-logo">
-          <a href="{% url 'HomePage' %}">
-            <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
-          </a>
-        </div>
-        <div class="col-md-8 nav-bar-linkage">
-          <a href="{% url 'Risultati' %}">Patients</a>
-          <a href="{% url 'Calcolatore' %}">BioVitalAge Clock</a>
-        </div>
-
-        <div class="col-md-2 nav-bar-user">
-          <h3>{{ dottore }}</h3>
-
-          <div class="img-container-user-nav-bar">
-            <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user" />
-          </div>
-          <div class="nav-bar-user-modal" id="userModal">
-            <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">
-              log out
-            </button>
-          </div>
-        </div>
-      </nav>
-    </header>
+    <!-- NAVBAR -->
+    {% include 'includes/navbar.html' %}
 
     <main>
       <div class="main-title-nav">
@@ -393,33 +369,40 @@
           </div>
         
           <div class="table-content">
-            {% for persona in persone %}
-              <div class="riga-container">
-                  <p>{{ persona.name }}</p>
-                  <p>{{ persona.surname }}</p>
-                  <p>{{ persona.dob|date:"d/m/Y" }}</p>
-                  <p>{{ persona.codice_fiscale }}</p>
-                  <p>{{ persona.place_of_birth }}</p>
-                  <p>{{ persona.chronological_age }}</p>
-              
-                  {% for dato in datiEstesi %}
-                    {% if dato.referto.paziente.id == persona.id %}
-                      <p>{{ persona.biological_age }}</p>
-                    {% else %}
-                      <p></p>
-                    {% endif %}
-                  {% endfor %}
-                  <p>
-                    <a href="{% url 'persona_detail' persona.id %}">
-                      <img src="{% static 'includes/icone/referto.png' %}" alt="Referto" />
-                    </a>
-                  </p>
-                  <p>
-                    <a href="{% url 'cartella_paziente' persona.id %}">
-                      <img src="{% static 'includes/icone/cartella.png' %}" alt="Cartella" />
-                    </a>
-                  </p>
-              </div>
+              {% for persona in persone %}
+                <div class="riga-container">
+                    <p>{{ persona.name }}</p>
+                    <p>{{ persona.surname }}</p>
+                    <p>{{ persona.dob|date:"d/m/Y" }}</p>
+                    <p>{{ persona.codice_fiscale }}</p>
+                    <p>{{ persona.place_of_birth }}</p>
+                    <p>{{ persona.chronological_age }}</p>
+            
+                    {% with biological_age_displayed=False %}
+                        {% for dato in datiEstesi %}
+                            {% if dato.referto.paziente.id == persona.id and not biological_age_displayed %}
+                                <p title="biological_age">{{ dato.biological_age }}</p>
+                                {% with biological_age_displayed=True %}
+                                {% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if not biological_age_displayed %}
+                            <p id="else">N/D</p>
+                        {% endif %}
+                    {% endwith %}
+            
+                    <p>
+                        <a href="{% url 'persona_detail' persona.id %}">
+                            <img src="{% static 'includes/icone/referto.png' %}" alt="Referto" />
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{% url 'cartella_paziente' persona.id %}">
+                            <img src="{% static 'includes/icone/cartella.png' %}" alt="Cartella" />
+                        </a>
+                    </p>
+                </div>
             {% endfor %}
           </div>
         </div>

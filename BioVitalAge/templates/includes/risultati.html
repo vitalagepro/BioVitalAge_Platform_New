@@ -76,29 +76,8 @@
           <div class="circle"></div>
         </div>
     </div>  
-    <header>
-        <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar ">
-            <div class="col-md-2 d-flex jus nav-bar-logo">
-                <a href="{% url 'HomePage' %}">
-                  <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
-                </a>
-            </div>
-            <div class="col-md-8 nav-bar-linkage">
-              <a href="{% url 'Risultati' %}" id="active">Patients</a>
-              <a href="{% url 'Calcolatore' %}">BioVitalAge Clock</a>
-          </div>
-
-            <div class="col-md-2 nav-bar-user">
-                <h3>{{ dottore }}</h3>
-                <div class="img-container-user-nav-bar">
-                    <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user">
-                </div>
-                <div class="nav-bar-user-modal" id="userModal">
-                  <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">log out</button>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <!-- NAVBAR -->
+    {% include 'includes/navbar.html' %}
 
     <main>
       <div class="main-title-nav">
@@ -159,26 +138,33 @@
                   <p>{{ persona.codice_fiscale }}</p>
                   <p>{{ persona.place_of_birth }}</p>
                   <p>{{ persona.chronological_age }}</p>
-              
-                  {% for dato in datiEstesi %}
-                  {% if dato.referto.paziente.id == persona.id %}
-                  <p>{{ persona.biological_age }}</p>
-                  {% else %}
-                  <p id="else"></p>
-                  {% endif %}
-                  {% endfor %}
+                  
+                  {% with biological_age_found=False %}
+                      {% for dato in datiEstesi %}
+                          {% if dato.referto.paziente.id == persona.id %}
+                              <p>{{ dato.biological_age }}</p>
+                              {% with biological_age_found=True %}
+                              {% endwith %}
+                          {% endif %}
+                      {% endfor %}
+                      {% if not biological_age_found %}
+                          <p id="else">N/D</p>
+                      {% endif %}
+                  {% endwith %}
+                  
                   <p>
-                    <a href="{% url 'persona_detail' persona.id %}">
-                      <img src="{% static 'includes/icone/referto.png' %}" alt="Referto" />
-                    </a>
+                      <a href="{% url 'persona_detail' persona.id %}">
+                          <img src="{% static 'includes/icone/referto.png' %}" alt="Referto" />
+                      </a>
                   </p>
                   <p>
-                    <a href="{% url 'cartella_paziente' persona.id %}">
-                      <img src="{% static 'includes/icone/cartella.png' %}" alt="Cartella" />
-                    </a>
+                      <a href="{% url 'cartella_paziente' persona.id %}">
+                          <img src="{% static 'includes/icone/cartella.png' %}" alt="Cartella" />
+                      </a>
                   </p>
               </div>
-            {% endfor %}
+           {% endfor %}
+
           </div>
         </div>
       </div>
@@ -188,6 +174,27 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+      /*  -----------------------------------------------------------------------------------------------
+      Modal User
+      --------------------------------------------------------------------------------------------------- */
+      const userImg = document.getElementById("userImg");
+      const userModal = document.getElementById("userModal");
+      const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
+
+      function showModal() {
+        userModal.classList.add("show");
+      }
+
+      userImg.addEventListener("mouseover", showModal);
+
+      userModal.addEventListener("mouseout", () => {
+        userModal.classList.remove("show");
+      });
+
+      userModalBtn.addEventListener("mouseover", showModal);
+      /*  -----------------------------------------------------------------------------------------------
+      Funzione di ricerca
+      --------------------------------------------------------------------------------------------------- */
       document.addEventListener("DOMContentLoaded", function () {
         const searchForm = document.querySelector(".barra-ricerca form");
         const searchInput = document.getElementById("Email");

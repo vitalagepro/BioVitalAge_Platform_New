@@ -78,33 +78,8 @@
               <div class="circle"></div>
             </div>
     </div>      
-
-    <header>
-        <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar ">
-            <div class="col-md-2 d-flex jus  nav-bar-logo">
-                <a href="{% url 'HomePage' %}">
-                    <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
-                </a>         
-            </div>
-            <div class="col-md-8 nav-bar-linkage">
-                <a href="{% url 'Risultati' %}">Patients</a>
-                <a href="{% url 'Calcolatore' %}" id="active">BioVitalAge Clock</a>
-            </div>
-
-            <div class="col-md-2 nav-bar-user">
-               
-                <h3>{{ dottore }}</h3>
-                
-                <div class="img-container-user-nav-bar">
-                    <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user">
-                </div>
-                <div class="nav-bar-user-modal" id="userModal">
-                    <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">log out</button>
-                </div>
-            </div>
-        </nav>
-
-    </header>
+    <!-- NAVBAR -->
+    {% include 'includes/navbar.html' %}
 
     <main>
          
@@ -13478,6 +13453,9 @@
 
     <!-- Gestione Modal -->
     <script>
+        /*  -----------------------------------------------------------------------------------------------
+        Funzione di caricamento
+        --------------------------------------------------------------------------------------------------- */
         // Funzione che imposta "opacity: 0" e "z-index: -1" dopo 3 secondi
         document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => {
