@@ -1,12 +1,15 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href='../../../../static/includes/icone/favicon.png' type="image/x-icon">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+
     <title>BioVitalAge - Report</title>
 
-    {% load static %}
+    <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/persona_detail.css' %}">
     <link rel="stylesheet" href="{% static 'includes/Componenti.css' %}">
 
@@ -15,8 +18,9 @@
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="{% static 'includes/js/GeneratorePDF.js' %}" defer></script>
     <script src="{% static 'includes/js/spinner.js' %}" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="{% static 'includes/js/pdfGenerator.js' %}" defer></script>
 
-    
     <!-- Bootstrap import -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -24,64 +28,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script src="{% static 'includes/js/pdfGenerator.js' %}" defer></script>
 </head>
 <body>
     <!-- Loader -->  
-    <div id="loading-wrapper">
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-    </div>
+    {% include 'components/loader.html' %}
 
     <!-- NAVBAR -->
-    {% include 'includes/navbar.html' %}
+    {% include 'components/navBar.html' %}
 
     <main>
         <div class="main-title-nav">

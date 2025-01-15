@@ -1,12 +1,15 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href='../../../../static/includes/icone/favicon.png' type="image/x-icon">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+    
     <title>BioVitalAge - HomePage</title>
 
-    {% load static %}
+    <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/homePage.css' %}" />
     <link rel="stylesheet" href="{% static 'includes/Componenti.css' %}" />
 
@@ -30,60 +33,11 @@
   <body>
 
     <!-- Loader -->
-    <div id="loading-wrapper">
-      <div class="spin-wrapper">
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
-      <div class="spin-wrapper">
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
-      <div class="spin-wrapper">
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
-      <div class="spin-wrapper">
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
-      <div class="spin-wrapper">
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
-      <div class="spin-wrapper">
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
-      <div class="spin-wrapper">
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
-      <div class="spin-wrapper">
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
-      <div class="spin-wrapper">
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
-      <div class="spin-wrapper">
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
-      <div class="spin-wrapper">
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
-      <div class="spin-wrapper">
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
-    </div>
+    {% include 'components/loader.html' %}
 
     <div id="sidebar" class="bg-sidebar hidden"></div>
     <!-- NAVBAR -->
-    {% include 'includes/navbar.html' %}
+    {% include 'components/navBar.html' %}
 
     <main>
       <div class="main-title-nav">
