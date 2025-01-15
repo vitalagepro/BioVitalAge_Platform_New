@@ -21,12 +21,10 @@ function goToRefertiPage() {
   alert("Vai alla pagina dei referti dei pazienti");
 }
 
-
 /*  -----------------------------------------------------------------------------------------------
   JS SIDEBAR
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-  const sidebar = document.querySelectorAll("#sidebar");
   const sidebarTitle = document.getElementById("sidebar-title");
   const sidebarContent = document.getElementById("sidebar-content");
   const closeSidebar = document.getElementById("closeSidebar");
