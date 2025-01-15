@@ -1042,16 +1042,13 @@ class RisultatiRender(View):
 class PersonaDetailView(View):
    
     def get(self, request, id):
-        # Ottieni il paziente con l'ID specificato
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
-        # Ottieni l'ultimo referto del paziente
         ultimo_referto = ArchivioReferti.objects.filter(paziente=persona).order_by('-data_ora_creazione').first()
 
-        # Ottieni i dati estesi associati all'ultimo referto (se esiste)
         datiEstesi = None
         if ultimo_referto:
             datiEstesi = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
@@ -1062,7 +1059,7 @@ class PersonaDetailView(View):
             'datiEstesi': datiEstesi,
             'dottore' : dottore
         }
-        return render(request, "includes/persona_detail.html", context)
+        return render(request, "includes/Referto.html", context)
 
 
 
@@ -1118,6 +1115,19 @@ class DatiBaseView(View):
         }
         return render(request, "includes/dati_base.html", context)
     
+    def post(self,request, id): 
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'persona': persona,
+            'dottore' : dottore
+        }
+
+        return render(request, "includes/dati_base.html", context)
 
 
     

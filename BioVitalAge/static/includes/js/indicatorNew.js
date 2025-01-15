@@ -42,7 +42,6 @@ ContainerIndicatori.forEach((element) => {
     if (parseFloat(valoreEsame) > parseFloat(rangeNegativeIndicator)) {
       if (parseFloat(valoreEsame) < parseFloat(rangeNegativeIndicator)) {
         indicator.style.left = "-3%";
-        console.log("sono qui");
       } else {
         const percentuale =
           ((rangeNegativeIndicator - valoreEsame) /
@@ -53,8 +52,6 @@ ContainerIndicatori.forEach((element) => {
           fixedPercentuale = 1;
         }
         indicator.style.left = `${fixedPercentuale}%`;
-
-        console.log(fixedPercentuale);
       }
     } else {
       if (parseFloat(valoreEsame) > parseFloat(extremeRightRangeIndicator)) {
