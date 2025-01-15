@@ -1,17 +1,16 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="shortcut icon"
-      href="../../../../static/includes/icone/favicon.png"
-      type="image/x-icon"
-    />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'includes/icone/favicon.png' %}" type="image/x-icon" />
+    
+    <title>BioVitalAge - Dati Base</title>
 
     <!-- Css Import -->
-    {% load static %}
     <link rel="stylesheet" href="{% static 'includes/Componenti.css' %}">
     <link rel="stylesheet" href="{% static 'includes/dati_base.css' %}" />
 
@@ -30,87 +29,14 @@
     <script src="{% static 'includes/js/dati_base.js' %}" defer></script>
     <script src="{% static 'includes/js/spinner.js' %}" defer></script>
 
-    <title>BioVitalAge - Dati Base</title>
   </head>
   <body>
 
     <!-- Loader -->
-    <div id="loading-wrapper">
-          <div class="spin-wrapper">
-            <div class="circle"></div>
-            <div class="circle"></div>
-          </div>
-          <div class="spin-wrapper">
-            <div class="circle"></div>
-            <div class="circle"></div>
-          </div>
-          <div class="spin-wrapper">
-            <div class="circle"></div>
-            <div class="circle"></div>
-          </div>
-          <div class="spin-wrapper">
-            <div class="circle"></div>
-            <div class="circle"></div>
-          </div>
-          <div class="spin-wrapper">
-            <div class="circle"></div>
-            <div class="circle"></div>
-          </div>
-          <div class="spin-wrapper">
-            <div class="circle"></div>
-            <div class="circle"></div>
-          </div>
-          <div class="spin-wrapper">
-            <div class="circle"></div>
-            <div class="circle"></div>
-          </div>
-          <div class="spin-wrapper">
-            <div class="circle"></div>
-            <div class="circle"></div>
-          </div>
-          <div class="spin-wrapper">
-            <div class="circle"></div>
-            <div class="circle"></div>
-          </div>
-          <div class="spin-wrapper">
-            <div class="circle"></div>
-            <div class="circle"></div>
-          </div>
-          <div class="spin-wrapper">
-            <div class="circle"></div>
-            <div class="circle"></div>
-          </div>
-          <div class="spin-wrapper">
-            <div class="circle"></div>
-            <div class="circle"></div>
-          </div>
-      
-    </div>   
+    {% include 'components/loader.html' %}
 
-    <!-- Header -->
-    <header>
-      <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar">
-        <div class="col-md-2 d-flex jus nav-bar-logo">
-          <a href="{% url 'HomePage' %}">
-            <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
-          </a>
-        </div>
-        <div class="col-md-8 nav-bar-linkage">
-          <a href="{% url 'Risultati' %}" id="active">Patients</a>
-          <a href="{% url 'Calcolatore' %}">BioVitalAge Clock</a>
-        </div>
-
-        <div class="col-md-2 nav-bar-user">
-          <h3>{{ dottore }}</h3>
-          <div class="img-container-user-nav-bar">
-            <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user" />
-          </div>
-          <div class="nav-bar-user-modal" id="userModal">
-            <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn"> log out </button>
-          </div>
-        </div>
-      </nav>
-    </header>
+    <!-- NAVBAR -->
+    {% include 'components/navBar.html' %}
 
     <main>
       <div class="main-title-nav">
@@ -181,14 +107,15 @@
       <section class="container_data table_data">
         <h3 style="margin-bottom: -20px;">Informative Tables</h3>
 
-        <div>
+        <form id="datiBaseForm" method="POST">
+          {% csrf_token %}
           <div class="table-title-tools">
             <p class="table-title">Anthropometric data</p>
             
             <!-- Menu Tools con effetto translate e opacity -->
              <div class="container-menu">
                <div class="tools-menu-button" id="menu-1">
-                   <button class="tools-table" onclick="closeMenuTools('menu-1')" style="margin-right: 20px;">
+                   <button class="tools-table" type="button" onclick="closeMenuTools('menu-1')" style="margin-right: 20px;">
                        <img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi">
                    </button>
                    <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
@@ -197,7 +124,7 @@
                </div>
            
                <!-- Bottone per aprire il menu con animazione -->
-               <button class="tools-table" onclick="openMenuTools('menu-1')">
+               <button type="button" class="tools-table" onclick="openMenuTools('menu-1')">
                    <img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu">
                </button>
              </div>
@@ -213,27 +140,28 @@
       
               <div class="table-content">
                 <div class="riga-container">
-                  <p>{{ persona.height }}</p>
-                  <p>{{ persona.weight }}</p>
-                  <p>{{ persona.bmi }}</p>
-                  <p>{{ persona.bmi_detection_date }}</p>
+                  <p><input type="text" value="{{ persona.height }}" disabled></p>
+                  <p><input type="text" value="{{ persona.weight }}" disabled></p>
+                  <p><input type="text" value="{{ persona.bmi }}" disabled></p>
+                  <p><input type="text" value="{{ persona.bmi_detection_date }}" disabled></p>
                 </div>
               </div>
           </div> 
-        </div>
-      
-        <div>   
+        </form>
+     
+        <form id="datiBaseForm1" method="POST">
+          {% csrf_token %}
           <div class="table-title-tools">
             <p class="table-title">Abdominal girth</p>
             <div class="container-menu">
               <div class="tools-menu-button" id="menu-2">
-                <button class="tools-table" onclick="closeMenuTools('menu-2')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                <button class="tools-table" type="button" onclick="closeMenuTools('menu-2')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
                 <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
                 <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
                 <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
               </div>
   
-              <button class="tools-table" onclick="openMenuTools('menu-2')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Modifica"></button>
+              <button type="button" class="tools-table" onclick="openMenuTools('menu-2')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Modifica"></button>
             </div>
           </div>
 
@@ -246,28 +174,29 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p>{{ persona.girth_value }}</p>
-                  <p>{{ persona.girth_date }}</p>
-                  <p>{{ persona.girth_notes }}</p>
+                  <p> <input type="text" value="{{ persona.girth_value }}" disabled> </p>
+                  <p> <input type="text" value="{{ persona.girth_date }}" disabled> </p>
+                  <p> <input type="text" value="{{ persona.girth_notes }}" disabled> </p>
                 </div>
             
               </div>
             </div>
-      
+        </form>
         <h3 style="margin-top: 20px; margin-bottom: -20px;">Life style</h3>
-      
-        <div>
+  
+        <form id="datiBaseForm2" method="POST">
+          {% csrf_token %} 
             <div class="table-title-tools">
               <p class="table-title">Alcohol</p>
               <div class="container-menu">
                 <div class="tools-menu-button" id="menu-3">
-                  <button class="tools-table" onclick="closeMenuTools('menu-3')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                  <button class="tools-table" type="button" onclick="closeMenuTools('menu-3')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
                   <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
                   <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
                   <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
                 </div>
   
-                <button class="tools-table" onclick="openMenuTools('menu-3')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
+                <button type="button" class="tools-table" onclick="openMenuTools('menu-3')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
               </div>
             </div>
             
@@ -281,27 +210,28 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p>{{ persona.alcol }}</p>
-                  <p>{{ persona.alcol_type }}</p>
-                  <p>{{ persona.data_alcol }}</p>
-                  <p>{{ persona.alcol_frequency }}</p>
+                  <p> <input type="text" value="{{ persona.alcol }}" disabled> </p>
+                  <p> <input type="text" value="{{ persona.alcol_type }}" disabled> </p>
+                  <p> <input type="text" value="{{ persona.data_alcol }}" disabled> </p>
+                  <p> <input type="text" value="{{ persona.alcol_frequency }}" disabled> </p>
                 </div>
               </div>
             </div>
-        </div>
-      
-        <div>
+        </form>
+   
+        <form id="datiBaseForm3" method="POST">
+          {% csrf_token %} 
             <div class="table-title-tools">
               <p class="table-title">Smoking</p>
               <div class="container-menu">
                 <div class="tools-menu-button" id="menu-4">
-                  <button class="tools-table" onclick="closeMenuTools('menu-4')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                  <button class="tools-table" type="button" onclick="closeMenuTools('menu-4')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
                   <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
                   <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
                   <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
                 </div>
   
-                <button class="tools-table" onclick="openMenuTools('menu-4')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
+                <button type="button" class="tools-table" onclick="openMenuTools('menu-4')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
               </div>
             </div>
             <div class="table-container">
@@ -313,24 +243,27 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p>{{ persona.smoke }}</p>
-                  <p>{{ persona.smoke_frequency }}</p>
-                  <p>{{ persona.reduced_intake }}</p>
+                  <p> <input type="text" value="{{ persona.smoke }}" disabled> </p>
+                  <p> <input type="text" value="{{ persona.smoke_frequency }}" disabled> </p>
+                  <p> <input type="text" value="{{ persona.reduced_intake }}" disabled> </p>
                 </div>
               </div>
             </div>
+        </form>        
       
+        <form id="datiBaseForm4" method="POST">
+          {% csrf_token %}
             <div class="table-title-tools">
               <p class="table-title">Sport</p>
               <div class="container-menu">
                 <div class="tools-menu-button" id="menu-5">
-                  <button class="tools-table" onclick="closeMenuTools('menu-5')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                  <button class="tools-table" type="button" onclick="closeMenuTools('menu-5')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
                   <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
                   <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
                   <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
                 </div>
   
-                <button class="tools-table" onclick="openMenuTools('menu-5')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
+                <button class="tools-table" type="button" onclick="openMenuTools('menu-5')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
               </div>
             </div>
             <div class="table-container">
@@ -342,26 +275,27 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p>{{ persona.sport }}</p>
-                  <p>{{ persona.sport_livello }}</p>
-                  <p>{{ persona.sport_frequency }}</p>
+                  <p> <input type="text" value="{{ persona.sport }}" disabled> </p>
+                  <p> <input type="text" value="{{ persona.sport_livello }}" disabled> </p>
+                  <p> <input type="text" value="{{ persona.sport_frequency }}" disabled> </p>
                 </div>
               </div>
             </div>
-                  
-      
-        <div>
+        </form>
+
+        <form id="datiBaseForm5" method="POST">
+          {% csrf_token %}
             <div class="table-title-tools">
               <p class="table-title">Sedentarietà</p>
               <div class="container-menu">
                 <div class="tools-menu-button" id="menu-6">
-                  <button class="tools-table" onclick="closeMenuTools('menu-6')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                  <button class="tools-table" type="button" onclick="closeMenuTools('menu-6')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
                   <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
                   <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
                   <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
                 </div>
   
-                <button class="tools-table" onclick="openMenuTools('menu-6')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
+                <button type="button" class="tools-table" onclick="openMenuTools('menu-6')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
               </div>
             </div>
             <div class="table-container">
@@ -373,13 +307,13 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p>{{ persona.attivita_sedentaria }}</p>
-                  <p>{{ persona.livello_sedentarieta }}</p>
-                  <p>{{ persona.sedentarieta_nota }}</p>
+                  <p> <input type="text" value="{{ persona.attivita_sedentaria }}" disabled> </p>
+                  <p> <input type="text" value="{{ persona.livello_sedentarieta }}" disabled> </p>
+                  <p> <input type="text" value="{{ persona.sedentarieta_nota }}" disabled> </p>
                 </div>
               </div>
             </div>
-      
+        </form>
       </section>
 
       <section class="container_data blood_data">
@@ -398,8 +332,6 @@
     
       
         <button class="button-style"  id="btn_blood_group">Update</button>
-        
-
       </section>
     </main>
 

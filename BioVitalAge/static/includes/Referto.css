@@ -10,6 +10,12 @@
   --positive-color: #2ac670;
   --tittle1: whitesmoke;
   --circle-color-shadow: rgba(42, 196, 221, 0.15);
+
+  /* Range color */
+  --negative-color-left: #8B1E3F;  
+  --negative-color-right: #C74B5B; 
+  --positive-color: #2ac670;
+  --neutral-range-color: #D4A33E;
 }
 
 .container-risultati {
@@ -28,6 +34,7 @@
 .card-personal-info h3,
 .exams-container h3 {
   color: var(--contrast-color);
+  padding-bottom: 20px;
 }
 .detail-row {
   display: flex;
@@ -44,9 +51,9 @@ span {
 }
 .exams-container {
   margin-top: 1rem;
-  background-color: var(--tittle1);
-  border-radius: 8px;
-  padding: 20px;
+  background-color: var(--card-color);
+  border-radius: 2px;
+  padding: 40px;
   margin: 25px;
 }
 .content-container {
@@ -65,10 +72,13 @@ span {
   justify-content: space-between;
   align-items: center;
 }
+#indicator img{
+  margin-top: -0.5rem;
+}
 
 .negativeTesto,
 .extremeNegativeRange {
-  color: red;
+  color: var(--negative-color-right);
 }
 .positiveTesto {
   color: var(--positive-color);
@@ -83,20 +93,19 @@ span {
 #middleTesto {
   width: 40%;
   margin-left: -1rem;
-  color: rgb(255, 191, 71);
+  color: var(--neutral-range-color);
 }
 #middleBar {
   width: 40%;
   left: 30%;
-  background-color: rgb(255, 191, 71);
+  background-color: var(--neutral-range-color);
 }
-
 .barra-container {
   background-color: var(--neutral-bg-color);
   border-radius: 8px;
   height: 1rem;
   position: relative;
-  background-color: rgb(255, 98, 98);
+  background-color: var(--negative-color-right);
 }
 .barra-container-none {
   background-color: var(--neutral-bg-color);
@@ -104,7 +113,6 @@ span {
   height: 1rem;
   position: relative;
 }
-
 .barra-pointer {
   height: 100%;
   position: absolute;
@@ -116,7 +124,6 @@ span {
   background-color: var(--positive-color);
   z-index: 1;
 }
-
 .barra-pointer-two {
   background-color: var(--positive-color);
   position: absolute;
@@ -130,7 +137,6 @@ span {
   left: 50%;
   width: 50%;
 }
-
 #indicator {
   position: absolute;
   top: -1rem;
@@ -139,7 +145,6 @@ span {
   width: 0.5rem;
   border-radius: 8px;
 }
-
 .generatePDFButton {
   height: 80%;
   width: 50%;
@@ -159,8 +164,8 @@ span {
   z-index: 1;
   height: 2rem;
   width: 10rem;
+  margin-top: 30px;
 }
-
 .generatePDFButton::before {
   content: "";
   width: 100%;
@@ -172,7 +177,6 @@ span {
   z-index: -1;
   transition: width 0.4s ease;
 }
-
 .generatePDFButton::after {
   content: "";
   width: 0%;
@@ -184,15 +188,12 @@ span {
   z-index: -1;
   transition: width 0.4s ease;
 }
-
 .generatePDFButton:hover::before {
   width: 0;
 }
-
 .generatePDFButton:hover::after {
   width: 100%;
 }
-
 .generatePDFButton:hover {
   color: var(--tittle1);
 }
@@ -200,7 +201,7 @@ span {
 
 /*  -----------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------- */
-/* ! Input pre-reset CSS */
+
 .anagraphic_data h3 {
   margin: 0 !important;
   padding: 0 !important;
@@ -223,11 +224,11 @@ span {
   position: relative;
   color: #0c214b;
   gap: 20px;
-  padding: 20px;
+  padding: 40px;
   font-size: 1.1rem;
   background: var(--card-color);
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-  border-radius: 5px;
+  border-radius: 2px;
   margin: 0 25px;
   margin-top: 25px;
 }
@@ -257,3 +258,37 @@ span {
 }
 /*  -----------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------- */
+
+
+
+
+
+
+.indicator-container{
+  border-radius: 8px;
+}
+.indicator-container{
+  color: var(--dark2);
+  font-size: 20px;
+}
+.nome{
+  background-color: var(--contrast-color-shadow);
+  padding: 20px;
+  border-radius: 8px;
+}
+.nome span{
+  color: var(--dark2);
+  font-size: 20px;
+}
+.nome{
+  display: flex;
+  justify-content: space-between;
+  padding-right: 30px;
+}
+#indicatori-container{
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: -1.5rem;
+}

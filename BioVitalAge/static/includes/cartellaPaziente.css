@@ -383,10 +383,6 @@ strong {
   padding: 20px;
 }
 
-#userModal {
-  top: 5.3rem !important;
-}
-
 .contenitore-tabella {
   margin: 15px 0;
 }
@@ -468,7 +464,8 @@ strong {
   position: relative;
 }
 
-.privacy-icon-container {
+/* ! CODICE BACK-UP ICONA PRIVACY */
+/* .privacy-icon-container {
   display: flex;
   justify-content: flex-end;
   width: 100%;
@@ -485,7 +482,7 @@ strong {
 
 .privacy-icon img:hover {
   transform: scale(1.1);
-}
+} */
 
 .main-title-nav a{
   color: var(--light1) !important;

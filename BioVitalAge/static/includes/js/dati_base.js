@@ -1,3 +1,121 @@
+document.addEventListener('DOMContentLoaded', function () {
+  // Seleziona tutti i bottoni con la classe "tools-table"
+  document.querySelectorAll('.tools-table').forEach(button => {
+    // Inizializza un contatore di click su ogni pulsante
+    button.dataset.clickCount = 0;
+
+    button.addEventListener('click', function (event) {
+      // Previeni azioni di default nel caso di type="submit"
+      event.preventDefault();
+
+      const menuId = this.closest('.tools-menu-button')?.id;
+      // Se non trovi il menuId (pulsante fuori .tools-menu-button), interrompi
+      if (!menuId) return;
+
+      // Controlla il titolo del pulsante
+      const title = this.title || "";
+
+      // Logica in base al "title"
+      if (title.includes("Aggiungi")) {
+        addRow(menuId);
+      }
+      else if (title.includes("Modifica")) {
+        let clickCount = parseInt(this.dataset.clickCount) || 0;
+        clickCount++;
+        this.dataset.clickCount = clickCount;
+
+        // Primo click -> abilita campi
+        if (clickCount === 1) {
+          openMenuTools(menuId);
+        } 
+        // Secondo click -> conferma e invia il form
+        else if (clickCount === 2) {
+          submitMenuTools(menuId);
+          // Azzera il contatore
+          this.dataset.clickCount = 0;
+        }
+      }
+      else if (title.includes("Chiudi")) {
+        closeMenuTools(menuId);
+      }
+      else if (title.includes("Cestino")) {
+        if (confirm("Sei sicuro di voler eliminare questa riga?")) {
+          this.closest('.riga-container')?.remove();
+        }
+      }
+    });
+  });
+});
+
+// Funzione: abilita i campi input (primo click)
+function openMenuTools(menuId) {
+  const form = document.querySelector(`#${menuId}`)?.closest('form');
+  if (!form) return;
+
+  // Abilita gli input
+  const inputs = form.querySelectorAll('input');
+  inputs.forEach(input => {
+    input.removeAttribute('disabled');
+  });
+
+  // Mostra il menu con animazione
+  const menu = document.getElementById(menuId);
+  if (menu) {
+    menu.style.display = 'flex'; 
+    setTimeout(() => {
+      menu.style.opacity = '1';
+      menu.style.transform = 'translateX(0)';
+    }, 10);
+  }
+}
+
+// Funzione: chiede conferma e invia il form (secondo click)
+function submitMenuTools(menuId) {
+  const form = document.querySelector(`#${menuId}`)?.closest('form');
+  if (!form) return;
+
+  if (confirm("Vuoi salvare le modifiche?")) {
+    form.submit();
+  }
+}
+
+// Funzione: chiude il menu e disabilita i campi
+function closeMenuTools(menuId) {
+  const form = document.querySelector(`#${menuId}`)?.closest('form');
+  if (form) {
+    const inputs = form.querySelectorAll('input');
+    inputs.forEach(input => input.setAttribute('disabled', true));
+  }
+
+  const menu = document.getElementById(menuId);
+  if (menu) {
+    menu.style.opacity = '0';
+    menu.style.transform = 'translateX(20px)';
+    setTimeout(() => {
+      menu.style.display = 'none';
+    }, 300);
+  }
+
+  alert("Modifiche annullate!");
+}
+
+// Aggiunge una nuova riga
+function addRow(menuId) {
+  const form = document.querySelector(`#${menuId}`)?.closest('form');
+  if (!form) return;
+
+  const newRow = document.createElement('div');
+  newRow.classList.add('riga-container');
+  newRow.innerHTML = `
+    <p><input type="text" name="new_height"></p>
+    <p><input type="text" name="new_weight"></p>
+    <p><input type="text" name="new_bmi"></p>
+    <p><input type="date" name="new_bmi_detection_date"></p>
+  `;
+  form.querySelector('.table-content')?.appendChild(newRow);
+}
+
+
 /*  -----------------------------------------------------------------------------------------------
     ! Table
 --------------------------------------------------------------------------------------------------- */
