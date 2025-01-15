@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import UtentiRegistratiCredenziali,TabellaPazienti, ArchivioReferti, DatiEstesiReferti
 from .utils import calculate_biological_age
@@ -1118,6 +1118,45 @@ class DatiBaseView(View):
         }
         return render(request, "includes/dati_base.html", context)
     
+    def post(self, request, id):
+            persona = get_object_or_404(TabellaPazienti, id=id)
+
+            # Aggiornamento dei dati ricevuti dal form
+            # Antropometric data
+            persona.height = request.POST.get('height')
+            persona.weight = request.POST.get('weight')
+            persona.bmi = request.POST.get('bmi')
+            persona.bmi_detection_date = request.POST.get('bmi_detection_date')
+
+            # Abdominal girth
+            persona.girth_value = request.POST.get('girth_value')
+            persona.girth_date = request.POST.get('girth_date')
+            persona.girth_notes = request.POST.get('girth_notes')
+
+            # Alchol
+            persona.alcol = request.POST.get('alcol')
+            persona.alcol_type = request.POST.get('alcol_type')
+            persona.data_alcol = request.POST.get('data_alcol')
+            persona.alcol_frequency = request.POST.get('alcol_frequency')
+
+            # Smoking
+            persona.smoke = request.POST.get('smoke')
+            persona.smoke_frequency = request.POST.get('smoke_frequency')
+            persona.reduced_intake = request.POST.get('reduced_intake')
+
+            # Sport
+            persona.sport = request.POST.get('sport')
+            persona.sport_livello = request.POST.get('sport_livello')
+            persona.sport_frequency = request.POST.get('sport_frequency')
+
+            # Sedentarietà
+            persona.attivita_sedentaria = request.POST.get('attivita_sedentaria')
+            persona.livello_sedentarieta = request.POST.get('livello_sedentarieta')
+            persona.sedentarieta_nota = request.POST.get('sedentarieta_nota')
+
+            persona.save()
+            return redirect('dati_base', id=persona.id)  # Redirect per evitare reinvii accidentali
+
 
 
     
