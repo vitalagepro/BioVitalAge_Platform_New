@@ -1,349 +1,120 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href='../../../../static/includes/icone/favicon.png' type="image/x-icon">
-    <title>BioVitalAge - Statistiche</title>
 
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'includes/homePage.css' %}" />
-    <link rel="stylesheet" href="{% static 'includes/statistiche.css' %}" />
-    <link rel="stylesheet" href="{% static 'includes/Componenti.css' %}" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Favicon -->
+  <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
 
-    
-    <!-- Bootstrap import -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <title>BioVitalAge - Statistiche</title>
 
-    <!-- Font Import  -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
+  <!-- Css Import -->
+  <link rel="stylesheet" href="{% static 'includes/homePage.css' %}" />
+  <link rel="stylesheet" href="{% static 'includes/statistiche.css' %}" />
+  <link rel="stylesheet" href="{% static 'includes/Componenti.css' %}" />
 
-    <!-- Js Import -->
-    <script src="{% static 'includes/js/spinner.js' %}" defer></script>
-    <script src="{% static 'includes/js/statistiche.js' %}" defer></script>
+  <!-- Bootstrap import -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Chart Import -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
+  <!-- Font Import  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
+
+  <!-- Js Import -->
+  <script src="{% static 'includes/js/spinner.js' %}" defer></script>
+  <script src="{% static 'includes/js/statistiche.js' %}" defer></script>
+
+  <!-- Chart Import -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
 <body>
-      <!-- Loader -->
-      <div id="loading-wrapper">
-        <div class="spin-wrapper">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-        <div class="spin-wrapper">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-        <div class="spin-wrapper">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-        <div class="spin-wrapper">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-        <div class="spin-wrapper">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-        <div class="spin-wrapper">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-        <div class="spin-wrapper">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-        <div class="spin-wrapper">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-        <div class="spin-wrapper">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-        <div class="spin-wrapper">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-        <div class="spin-wrapper">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-        <div class="spin-wrapper">
-          <div class="circle"></div>
-          <div class="circle"></div>
-        </div>
-      </div>  
-    <div id="sidebar" class="bg-sidebar hidden"></div>
-    <header>
-      <nav
-        class="col-md-12 d-flex justify-content-between align-items-center nav-bar"
-      >
-        <div class="col-md-2 d-flex jus nav-bar-logo">
-            <a href="{% url 'HomePage' %}">
-              <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
-            </a>
-        </div>
-        <div class="col-md-8 nav-bar-linkage">
-          <a href="{% url 'Risultati' %}">Patients</a>
-          <a href="{% url 'Calcolatore' %}">BioVitalAge Clock</a>
-        </div>
+  <!-- Loader -->
+  {% include 'components/loader.html' %}
 
-        <div class="col-md-2 nav-bar-user">
-          <h3>{{ dottore }}</h3>
+  <div id="sidebar" class="bg-sidebar hidden"></div>
 
-          <div class="img-container-user-nav-bar">
-            <img
-              id="userImg"
-              src="{% static 'includes/icone/username.png' %}"
-              alt="user"
-            />
-          </div>
-          <div class="nav-bar-user-modal" id="userModal">
-            <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">
-              log out
-            </button>
-          </div>
+  <!-- NAVBAR -->
+  {% include 'components/navBar.html' %}
+
+  <main>
+    <div class="main-title-nav">
+      <!-- SIDEBAR LATERAL -->
+      <div id="sidebar" class="sidebar hidden">
+        <div class="sidebar-header">
+          <h3 id="sidebar-title">Sezione</h3>
+          <button id="closeSidebar">✖</button>
         </div>
-      </nav>
-    </header>
+        <div id="sidebar-content"></div>
+      </div>
 
+      <div class="linkage-container">
+        <a href="#" title="Notifiche" class="sidebar-trigger" data-section="Notifiche">
+          <img src="{% static 'includes/icone/notifica.png' %}" alt="icon-notify" />
+        </a>
+        <a href="#" title="Email" class="sidebar-trigger" data-section="Email">
+          <img src="{% static 'includes/icone/email.png' %}" alt="icon-email" />
+        </a>
+        <a href="#" title="Update" class="sidebar-trigger" data-section="Update">
+          <img src="{% static 'includes/icone/update.png' %}" alt="icon-update" />
+        </a>
+        <a href="#" title="funzionalità" class="sidebar-trigger" data-section="Funzionalità">
+          <img src="{% static 'includes/icone/funzionalita.png' %}" alt="icon-funzionalità" />
+        </a>
+        <a href="#" title="Configurazione" class="sidebar-trigger" data-section="Configurazione">
+          <img src="{% static 'includes/icone/configurazione.png' %}" alt="icon-Configurazione" />
+        </a>
+        <a href="{% url 'statistiche' %}" title="Statistiche">
+          <img src="{% static 'includes/icone/statistiche.png' %}" alt="icon-statistiche" />
+        </a>
+      </div>
 
+      <div class="main-menu-trace" title="Home Page" id="statistiche">
+        <a href="{% url 'HomePage' %}">
+          <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+        </a>
+        <p>»</p>
+        <p>Home Page</p>
+        <p>»</p>
+        <p>Statistiche</p>
+      </div>
+    </div>
 
-<main>
-        <div class="main-title-nav">
-          <!-- SIDEBAR LATERAL -->
-          <div id="sidebar" class="sidebar hidden">
-            <div class="sidebar-header">
-              <h3 id="sidebar-title">Sezione</h3>
-              <button id="closeSidebar">✖</button>
-            </div>
-            <div id="sidebar-content"></div>
-          </div>
-  
-          <div class="linkage-container">
-            <a href="#" title="Notifiche" class="sidebar-trigger" data-section="Notifiche">
-              <img src="{% static 'includes/icone/notifica.png' %}" alt="icon-notify"/>
-            </a>
-            <a href="#" title="Email" class="sidebar-trigger" data-section="Email">
-              <img src="{% static 'includes/icone/email.png' %}" alt="icon-email"/>
-            </a>
-            <a href="#" title="Update" class="sidebar-trigger" data-section="Update">
-              <img src="{% static 'includes/icone/update.png' %}" alt="icon-update"/>
-            </a>
-            <a href="#" title="funzionalità" class="sidebar-trigger" data-section="Funzionalità">
-              <img src="{% static 'includes/icone/funzionalita.png' %}" alt="icon-funzionalità"/>
-            </a>
-            <a href="#" title="Configurazione" class="sidebar-trigger" data-section="Configurazione">
-              <img src="{% static 'includes/icone/configurazione.png' %}" alt="icon-Configurazione"/>
-            </a>
-            <a href="{% url 'statistiche' %}" title="Statistiche">
-              <img src="{% static 'includes/icone/statistiche.png' %}" alt="icon-statistiche"/>
-            </a>
-          </div>
-  
-          <div class="main-menu-trace" title="Home Page" id="statistiche">
-            <a href="{% url 'HomePage' %}">
-              <img src="{% static 'includes/icone/homePage.png' %}" alt="" />
-            </a>
-            <p>»</p>
-            <p>Home Page</p>
-            <p>»</p>
-            <p>Statistiche</p>
-          </div>
-        </div>
-
-        <div class="content-chart">
-            <div class="charts-section">
-              <div class="chart-container">
-                <h3>Andamento Inserimento Pazienti</h3>
-                <canvas id="patientsChart"></canvas>
-              </div>
-              <div class="chart-container">
-                <h3>Pazienti Mensili</h3>
-                <canvas id="monthlyPatientsChart"></canvas>
-                <div id="monthlyTooltip" class="chartjs-tooltip"></div>
-              </div>
-            </div>
-        </div>
-
-        <div class="chart-container" id="adjust">
-            <div class="chart-title">Patients by Age</div>
-            <canvas id="patientsByAge"></canvas>
-        </div>
-
+    <div class="content-chart">
+      <div class="charts-section">
         <div class="chart-container">
-            <div class="chart-title">Patients</div>
-            <canvas id="patients"></canvas>
+          <h3>Andamento Inserimento Pazienti</h3>
+          <canvas id="patientsChart"></canvas>
         </div>
-
         <div class="chart-container">
-            <div class="chart-title">Income by Department</div>
-            <canvas id="incomeByDepartment"></canvas>
+          <h3>Pazienti Mensili</h3>
+          <canvas id="monthlyPatientsChart"></canvas>
+          <div id="monthlyTooltip" class="chartjs-tooltip"></div>
         </div>
-    
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      </div>
+    </div>
 
+    <div class="chart-container" id="adjust">
+      <div class="chart-title">Patients by Age</div>
+      <canvas id="patientsByAge"></canvas>
+    </div>
 
-        <script>
-        // Chart: Patients by Age
-        const ctx1 = document.getElementById('patientsByAge').getContext('2d');
-        new Chart(ctx1, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [
-                    {
-                        label: '0-5',
-                        data: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60],
-                        backgroundColor: '#6a2dcc'
-                    },
-                    {
-                        label: '6-15',
-                        data: [7, 12, 17, 22, 27, 32, 37, 42, 47, 52, 57, 62],
-                        backgroundColor: '#8041e0'
-                    },
-                    {
-                        label: '16-25',
-                        data: [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65],
-                        backgroundColor: '#9666e4'
-                    },
-                    {
-                        label: '26-45',
-                        data: [15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70],
-                        backgroundColor: '#ad8be8'
-                    },
-                    {
-                        label: '46+',
-                        data: [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75],
-                        backgroundColor: '#c3b0ec'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    },
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
+    <div class="chart-container">
+      <div class="chart-title">Patients</div>
+      <canvas id="patients"></canvas>
+    </div>
 
-        // Chart: Patients
-        const ctx2 = document.getElementById('patients').getContext('2d');
-        new Chart(ctx2, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [
-                    {
-                        label: 'New',
-                        data: [50, 60, 55, 70, 75, 80, 90, 85, 95, 100, 105, 110],
-                        borderColor: '#6a2dcc',
-                        backgroundColor: '#3b255d2c',
-                        fill: true
-                    },
-                    {
-                        label: 'Return',
-                        data: [30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85],
-                        borderColor: '#9666e4',
-                        backgroundColor: '#c3b0ec',
-                        fill: true
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    },
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-
-        // Chart: Income by Department
-        const ctx3 = document.getElementById('incomeByDepartment').getContext('2d');
-        new Chart(ctx3, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [
-                    {
-                        label: 'Neurology',
-                        data: [10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32],
-                        backgroundColor: '#6a2dcc'
-                    },
-                    {
-                        label: 'Dental Care',
-                        data: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
-                        backgroundColor: '#8041e0'
-                    },
-                    {
-                        label: 'Gynecology',
-                        data: [8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30],
-                        backgroundColor: '#9666e4'
-                    },
-                    {
-                        label: 'Orthopedic',
-                        data: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26],
-                        backgroundColor: '#ad8be8'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    },
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-        </script>
-
-
-    
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="chart-container">
+      <div class="chart-title">Income by Department</div>
+      <canvas id="incomeByDepartment"></canvas>
+    </div>
+  </main>
 </body>
+
 </html>
     

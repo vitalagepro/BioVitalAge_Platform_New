@@ -126,6 +126,15 @@ form ion-icon {
   margin-right: 20px;
 }
 
+#add-patient img{
+  width: 40px;
+  transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
+}
+
+#add-patient img:hover{
+  transform: scale(1.1);
+}
+
 .input:focus,
 .input:focus-visible {
   border-color: var(--contrast-color2);

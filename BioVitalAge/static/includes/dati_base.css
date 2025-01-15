@@ -134,10 +134,14 @@
   opacity: 1;
   transform: translateX(0);
 }
-
-
-
-
+.riga-container input{
+  border: none;
+  text-align: center;
+  background-color: inherit;
+  width: 100%;
+  height: 100%;
+  outline: none;
+}
 
 /* ! Blood Data */
 .blood_data {
