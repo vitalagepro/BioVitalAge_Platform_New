@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", () => {
   let modificationsExist = false;
   const removedRows = new Map(); // Mappa per memorizzare le righe rimosse
+  const addedRows = new Set(); // Set per memorizzare le righe aggiunte
 
   // Cambia titolo del pulsante "Apri Menu" in "Salva le modifiche" solo se ci sono modifiche
   document.querySelectorAll('button[title="Apri Menu"]').forEach((button) => {
@@ -31,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
           closeMenuTools(menuId);
         } else {
           saveModifications(this.closest("form"));
+          rollbackValues(this.closest("form")); // Ripristina lo stato degli input quando si chiude il menu con "Salva le modifiche"
         }
       }
     });
@@ -47,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
       newRow.innerHTML = `<p><input type="text" style="background-color: inherit; color: inherit;"></p>`.repeat(columnCount);
       newRow.dataset.newRow = "true";
       tableContent.appendChild(newRow);
+      addedRows.add(newRow); // Memorizza la riga aggiunta
       modificationsExist = true;
     });
   });
@@ -59,10 +62,11 @@ document.addEventListener("DOMContentLoaded", () => {
         input.disabled = !input.disabled;
         input.style.backgroundColor = input.disabled ? "inherit" : "white";
         input.style.border = input.disabled ? "none" : "1px solid var(--contrast-color-shadow)";
-        input.style.width = input.disabled ? "100%" : "max-content";
-        input.style.height = input.disabled ? "100%" : "max-content";
-        input.style.borderRadius = input.disabled ? "none" : "5px";
-        input.style.focus = input.disabled ? "none" : "auto";
+
+        // Aggiungi un listener per rilevare modifiche al valore
+        input.addEventListener("input", () => {
+          modificationsExist = true;
+        });
       });
     });
   });
@@ -113,6 +117,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     removedRows.clear(); // Svuota la mappa
 
+    addedRows.forEach((row) => {
+      row.remove(); // Rimuove le righe aggiunte
+    });
+    addedRows.clear(); // Svuota il set delle righe aggiunte
+
     form.querySelectorAll(".riga-container input").forEach((input) => {
       if (input.dataset.originalValue !== undefined) {
         input.value = input.dataset.originalValue;
@@ -120,6 +129,11 @@ document.addEventListener("DOMContentLoaded", () => {
         input.style.backgroundColor = "inherit";
         input.style.border = "none";
       }
+    });
+
+    // Rimuovi eventuali checkbox residue
+    form.querySelectorAll(".container-checkbox").forEach((checkbox) => {
+      checkbox.remove();
     });
   }
 
@@ -139,6 +153,12 @@ document.addEventListener("DOMContentLoaded", () => {
           if (response.ok) {
             showPopup("Modifiche salvate con successo!");
             removedRows.clear(); // Pulisce le righe memorizzate dopo il salvataggio
+            addedRows.clear(); // Pulisce le righe aggiunte dopo il salvataggio
+
+            // Rimuove eventuali checkbox residue dopo il salvataggio
+            form.querySelectorAll(".container-checkbox").forEach((checkbox) => {
+              checkbox.remove();
+            });
           } else {
             showPopup("Errore nel salvataggio delle modifiche.", true);
           }
@@ -146,7 +166,18 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(() => {
           showPopup("Errore di connessione.", true);
         });
+    } else {
+      showPopup("Nessuna modifica da salvare.");
+
+      // Rimuove eventuali checkbox residue
+      form.querySelectorAll(".container-checkbox").forEach((checkbox) => {
+        checkbox.remove();
+      });
     }
+    // Rimuove eventuali checkbox residue
+    form.querySelectorAll(".container-checkbox").forEach((checkbox) => {
+      checkbox.remove();
+    });
   }
 
   // Mostra un pop-up
@@ -154,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const popup = document.createElement("div");
     popup.textContent = message;
     popup.style.position = "fixed";
-    popup.style.top = "20px";
+    popup.style.top = "80px";
     popup.style.right = "50%";
     popup.style.backgroundColor = isError ? "#e74c3c" : "#2ecc71";
     popup.style.color = "white";
@@ -174,6 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
         rollbackValues(form);
         modificationsExist = false;
       }
+      rollbackValues(form);
     });
   });
 
@@ -182,7 +214,6 @@ document.addEventListener("DOMContentLoaded", () => {
     input.dataset.originalValue = input.value;
   });
 });
-
 
 /*  -----------------------------------------------------------------------------------------------
       ! Blood Data
