@@ -1,12 +1,15 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href='../../../../static/includes/icone/favicon.png' type="image/x-icon">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+
     <title>BioVitalAge - Report</title>
 
-    {% load static %}
+    <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/Referto.css' %}">
     <link rel="stylesheet" href="{% static 'includes/Componenti.css' %}">
 
@@ -24,87 +27,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <!-- Js Import -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="{% static 'includes/js/pdfGenerator.js' %}" defer></script>
 </head>
 <body>
-    <!-- Loader -->  
-    <div id="loading-wrapper">
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-            <div class="spin-wrapper">
-              <div class="circle"></div>
-              <div class="circle"></div>
-            </div>
-    </div>
+    <!-- Loader -->
+    {% include 'components/loader.html' %}
 
-    <header>
-        <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar ">
-            <div class="col-md-2 d-flex jus  nav-bar-logo">
-                <a href="{% url 'HomePage' %}">
-                    <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®"/>
-                </a>
-            </div>
-            <div class="col-md-8 nav-bar-linkage">
-                <a href="{% url 'Risultati' %}">Patients</a>
-                <a href="{% url 'Calcolatore' %}">BioVitalAge Clock</a>
-            </div>
-
-            <div class="col-md-2 nav-bar-user">
-                <h3>{{ dottore }}</h3>
-                
-                <div class="img-container-user-nav-bar">
-                    <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user">
-                </div>
-                <div class="nav-bar-user-modal" id="userModal">
-                    <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn">log out</button>
-                </div>
-            </div>
-        </nav>
-    </header>
-
+    <!-- NAVBAR -->
+    {% include 'components/navBar.html' %}
 
     <main>
         <div class="main-title-nav">
