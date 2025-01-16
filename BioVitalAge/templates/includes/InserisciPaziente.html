@@ -52,6 +52,12 @@
         </div>
       </div>
 
+      {% if success %}
+      <div class="successMessage">
+        <p>{{ success}}</p>
+      </div>
+      {% endif %}
+
       <form method="POST" action="{% url 'inserisci_paziente' %}" class="form-container" id="age-form"> 
         {% csrf_token %} 
         <div class="section">
