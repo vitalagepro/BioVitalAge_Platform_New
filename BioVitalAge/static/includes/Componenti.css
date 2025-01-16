@@ -546,5 +546,29 @@ main {
 }
 
 
-/*  -----------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------- */
+/* ERRORE SYSTEM COMPONENTE */
+.errorSystemContainer{
+  color: rgb(255, 255, 255);
+  background-color: rgb(181, 45, 45);
+  border: 1px solid red;
+  height: 4rem;
+  padding: 20px;
+  width: 98%;
+  margin: auto;
+  border-radius: 8px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.successMessage{
+  color: rgb(255, 255, 255);
+  background-color: rgb(0, 76, 0);
+  border: 1px solid green;
+  height: 4rem;
+  padding: 20px;
+  width: 98%;
+  margin: auto;
+  border-radius: 8px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}

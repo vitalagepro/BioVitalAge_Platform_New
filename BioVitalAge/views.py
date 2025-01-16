@@ -71,7 +71,7 @@ class HomePageRender(View):
                                 'dottore': dottore
                             }
 
-                            return render(request, "includes/risultati.html", context)
+                            return render(request, "includes/homePage.html", context)
                         
                         else:
                             return render(request, 'includes/login.html', {'error' : 'Password errata' })
@@ -107,6 +107,7 @@ def safe_float(data, key, default=0.0):
 
 
 class CalcolatoreRender(View):
+    
     def get(self, request):
 
         dottore_id = request.session.get('dottore_id')
@@ -141,16 +142,10 @@ class CalcolatoreRender(View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
         try:
-            dottore = UtentiRegistratiCredenziali.objects.get(id=dottore_id)
-
             # Controlla se esiste un paziente con lo stesso nome e cognome
             paziente = TabellaPazienti.objects.filter(
-                name=data.get('name'),
-                surname=data.get('surname'),
                 codice_fiscale=data.get('codice_fiscale') 
             ).first()
-
-            
 
             if paziente: 
                 
@@ -172,6 +167,8 @@ class CalcolatoreRender(View):
                 # Verifica se almeno un campo opzionale è stato inserito
                 if any(data.get(campo) for campo in campi_opzionali):
 
+
+                    print('sono qui')
                     paziente_query = get_object_or_404(TabellaPazienti, id=paziente.id)
 
                     # Salva i dati del referto
@@ -555,10 +552,10 @@ class CalcolatoreRender(View):
                     return render(request, "includes/calcolatore.html", context)
                 
                 else:
-                    print("Nessun campo opzionale compilato. Operazione interrotta.")
+                    
                     context = {
                         "show_modal": False,
-                        "error": "Nessun dato opzionale inserito. Referto e dati estesi non salvati.",
+                        "error": "Operazione non andata a buon fine: 'Un Utente con questo Codice Fiscale è gia presente all'interno del database'. ",
                         "data": data,
                         'dottore': dottore
                     }
@@ -996,19 +993,15 @@ class CalcolatoreRender(View):
                     "biological_age": biological_age,
                     "data": data,
                     "id_persona": paziente_id,
-                    'dottore' : dottore
+                    'dottore' : dottore,
                 }
 
                 return render(request, "includes/calcolatore.html", context)
 
         except Exception as e:
-            import traceback
-
-            print("Errore incontrato:")
-            print(traceback.format_exc())
+    
             context = {
-                "error": str(e),
-                "data": data,
+                "error": "system error: " + str(e) + " --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova.",
             }
             return render(request, "includes/calcolatore.html", context)
 
@@ -1217,14 +1210,11 @@ class InserisciPazienteView(View):
             paziente_esistente.attivita_sedentaria = request.POST.get('attivita_sedentaria')
             paziente_esistente.livello_sedentarieta = request.POST.get('livello_sedentarieta')
             paziente_esistente.sedentarieta_nota = request.POST.get('sedentarieta_nota')
-
-          
-            print(request.POST.get('sport'))
            
 
             paziente_esistente.save()
-            messages.success(request, "I dati del paziente sono stati aggiornati con successo!")
-
+            success = "I dati del paziente sono stati aggiornati con successo!"
+    
         else:
             # Creazione di un nuovo paziente con la stessa gestione per le date
             TabellaPazienti.objects.create(
@@ -1269,9 +1259,11 @@ class InserisciPazienteView(View):
                 livello_sedentarieta=request.POST.get('livello_sedentarieta'),
                 sedentarieta_nota=request.POST.get('sedentarieta_nota'),
             )
-            messages.success(request, "Nuovo paziente salvato con successo!")
+            
+            success = "Nuovo paziente salvato con successo!"
 
         context = {
+            "success": success, 
             'dottore' : dottore
         }
 
