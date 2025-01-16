@@ -62,6 +62,9 @@ document.addEventListener("DOMContentLoaded", () => {
         input.disabled = !input.disabled;
         input.style.backgroundColor = input.disabled ? "inherit" : "white";
         input.style.border = input.disabled ? "none" : "1px solid var(--contrast-color-shadow)";
+        input.style.width = input.disabled ? "100%" : "max-content";
+        input.style.height = input.disabled ? "100%" : "max-content";
+        input.style.borderRadius = input.disabled ? "none" : "5px";
 
         // Aggiungi un listener per rilevare modifiche al valore
         input.addEventListener("input", () => {
