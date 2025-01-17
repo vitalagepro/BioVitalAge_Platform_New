@@ -40,6 +40,7 @@
     {% include 'components/navBar.html' %}
 
     <main>
+      <!-- MAIN MENU TRACE -->
       <div class="main-title-nav">
         <!-- SIDEBAR LATERAL -->
         <div id="sidebar" class="sidebar hidden">
@@ -80,9 +81,9 @@
         </div>
       </div>
 
-      <section class="banner-section">
-        <div class="banner">
-          <div class="banner-info">
+      <!-- BANNER SECTION -->
+      <div class="banner">
+        <div class="banner-info">
             <h3>Good Morning</h3>
             <h2 class="main-welcome-title" id="nameUser">{{ dottore }}</h2>
             <div class="box-icons">
@@ -92,9 +93,9 @@
                     <path d="M8 3V5H6V9C6 11.2091 7.79086 13 10 13C12.2091 13 14 11.2091 14 9V5H12V3H15C15.5523 3 16 3.44772 16 4V9C16 11.9727 13.8381 14.4405 11.0008 14.9169L11 16.5C11 18.433 12.567 20 14.5 20C15.9973 20 17.275 19.0598 17.7749 17.7375C16.7283 17.27 16 16.2201 16 15C16 13.3431 17.3431 12 19 12C20.6569 12 22 13.3431 22 15C22 16.3711 21.0802 17.5274 19.824 17.8854C19.2102 20.252 17.0592 22 14.5 22C11.4624 22 9 19.5376 9 16.5L9.00019 14.9171C6.16238 14.4411 4 11.9731 4 9V4C4 3.44772 4.44772 3 5 3H8ZM19 14C18.4477 14 18 14.4477 18 15C18 15.5523 18.4477 16 19 16C19.5523 16 20 15.5523 20 15C20 14.4477 19.5523 14 19 14Z"></path>
                   </svg>
                 </div>
-                <div>
-                  <h1>86</h1>
-                  <span>Visited Patients</span>
+                <div class="icon-description">
+                  <h3>86</h3>
+                  <p>Visited Patients</p>
                 </div>
               </div>
               <div class="box-info">
@@ -103,210 +104,203 @@
                     <path d="M10 2C10.5523 2 11 2.44772 11 3V7C11 7.55228 10.5523 8 10 8H8V10H13V9C13 8.44772 13.4477 8 14 8H20C20.5523 8 21 8.44772 21 9V13C21 13.5523 20.5523 14 20 14H14C13.4477 14 13 13.5523 13 13V12H8V18H13V17C13 16.4477 13.4477 16 14 16H20C20.5523 16 21 16.4477 21 17V21C21 21.5523 20.5523 22 20 22H14C13.4477 22 13 21.5523 13 21V20H7C6.44772 20 6 19.5523 6 19V8H4C3.44772 8 3 7.55228 3 7V3C3 2.44772 3.44772 2 4 2H10ZM19 18H15V20H19V18ZM19 10H15V12H19V10ZM9 4H5V6H9V4Z"></path>
                   </svg>
                 </div>
-                <div>
-                  <h1>23</h1>
-                  <span>BioVitalAge Clock</span>
+                <div class="icon-description">
+                  <h3>23</h3>
+                  <p>BioVitalAge Clock</p>
                 </div>
               </div>
             </div>
-          </div>
-          <!-- Card for Appointment Calendar -->
-            <div class="appointment-container">
-              <div class="appoitment-title-container">
-                <h3>Appointments</h3>
-                <button class="button-style">View All</button>
-              </div>
-              
-              <div class="appointment-card">
-                <div class="appointment-header">
-                    <div class="info">
-                        <h3 title="McDowell">McDowell</h3>
-                        <p title="Direct Visit">Today - Direct Visit</p>
-                        <p>Time: 10:30AM</p>
-                        <p title="mcdowell@test.com">Email: mcdowell@test.com</p>
-                        <p title="9876543210">Phone: 9876543210</p>
-                    </div>
-                </div>
-                <button class="button-style">details</button>
-              </div>
-              
-              <div class="appointment-card">
-                  <div class="appointment-header">
-                      <div class="info">
-                          <h3 title="Smith">Smith</h3>
-                          <p title="Scheduled Visit">Tomorrow - Scheduled Visit</p>
-                          <p>Time: 2:00PM</p>
-                          <p title="smith@test.com">Email: smith@test.com</p>
-                          <p title="9123456780">Phone: 9123456780</p>
-                      </div>
-                  </div>
-                  <button class="button-style">details</button>
-              </div>
-              
-              <div class="appointment-card">
-                  <div class="appointment-header">
-                      <div class="info">
-                          <h3 title="Johnson">Johnson</h3>
-                          <p title="Follow-up Visit">Next Week - Follow-up Visit</p>
-                          <p>Time: 11:15AM</p>
-                          <p title="johnson@test.com">Email: johnson@test.com</p>
-                          <p title="9012345678">Phone: 9012345678</p>
-                      </div>
-                  </div>
-                  <button class="button-style">details</button>
-              </div>
-              
-              <div class="appointment-card">
-                  <div class="appointment-header">
-                      <div class="info">
-                          <h3 title="Taylor">Taylor</h3>
-                          <p title="Emergency Visit">Today - Emergency Visit</p>
-                          <p>Time: 4:45PM</p>
-                          <p title="taylor@test.com">Email: taylor@test.com</p>
-                          <p title="8765432109">Phone: 8765432109</p>
-                      </div>
-                  </div>
-                  <button class="button-style">details</button>
-              </div>
-              
-              <div class="appointment-card">
-                <div class="appointment-header">
-                    <div class="info">
-                        <h3 title="Williams">Williams</h3>
-                        <p title="Routine Checkup">Next Monday - Routine Checkup</p>
-                        <p>Time: 9:00AM</p>
-                        <p title="williams@test.com">Email: williams@test.com</p>
-                        <p title="8123456789">Phone: 8123456789</p>
-                    </div>
-                </div>
-                <button class="button-style">details</button>
-              </div>
-              
-              <div class="appointment-card">
-                  <div class="appointment-header">
-                      <div class="info">
-                          <h3 title="Brown">Brown</h3>
-                          <p title="Physical Therapy">Thursday - Physical Therapy</p>
-                          <p>Time: 3:00PM</p>
-                          <p title="brown@test.com">Email: brown@test.com</p>
-                          <p title="8023456789">Phone: 8023456789</p>
-                      </div>
-                  </div>
-                  <button class="button-style">details</button>
-              </div>
-              
-              <div class="appointment-card">
-                  <div class="appointment-header">
-                      <div class="info">
-                          <h3 title="Davis">Davis</h3>
-                          <p title="Vaccination">Saturday - Vaccination</p>
-                          <p>Time: 1:30PM</p>
-                          <p title="davis@test.com">Email: davis@test.com</p>
-                          <p title="7923456789">Phone: 7923456789</p>
-                      </div>
-                  </div>
-                  <button class="button-style">details</button>
-              </div>
-              
-              <div class="appointment-card">
-                  <div class="appointment-header">
-                      <div class="info">
-                          <h3 title="Miller">Miller</h3>
-                          <p title="Annual Checkup">Friday - Annual Checkup</p>
-                          <p>Time: 11:00AM</p>
-                          <p title="miller@test.com">Email: miller@test.com</p>
-                          <p title="7823456789">Phone: 7823456789</p>
-                      </div>
-                  </div>
-                  <button class="button-style">details</button>
-              </div>
-              
-              <div class="appointment-card">
-                  <div class="appointment-header">
-                      <div class="info">
-                          <h3 title="Moore">Moore</h3>
-                          <p title="Eye Examination">Tuesday - Eye Examination</p>
-                          <p>Time: 10:15AM</p>
-                          <p title="moore@test.com">Email: moore@test.com</p>
-                          <p title="7723456789">Phone: 7723456789</p>
-                      </div>
-                  </div>
-                  <button class="button-style">details</button>
-              </div>
-              
-              <div class="appointment-card">
-                  <div class="appointment-header">
-                      <div class="info">
-                          <h3 title="White">White</h3>
-                          <p title="Dental Cleaning">Wednesday - Dental Cleaning</p>
-                          <p>Time: 2:45PM</p>
-                          <p title="white@test.com">Email: white@test.com</p>
-                          <p title="7623456789">Phone: 7623456789</p>
-                      </div>
-                  </div>
-                  <button class="button-style">details</button>
-              </div>
-              
-              <div class="appointment-card">
-                  <div class="appointment-header">
-                      <div class="info">
-                          <h3 title="Jackson">Jackson</h3>
-                          <p title="Consultation Visit">Friday - Consultation Visit</p>
-                          <p>Time: 4:00PM</p>
-                          <p title="jackson@test.com">Email: jackson@test.com</p>
-                          <p title="7523456789">Phone: 7523456789</p>
-                      </div>
-                  </div>
-                  <button class="button-style">details</button>
-              </div>
-            
-            </div>
         </div>
-      </section>
-      
-    
-     <!--  <div class="contenitore-inserisci-paziente">
-        <div class="banner-paziente">
-          <div class="banner-backdrop">
-            <img src="{% static 'includes/images/banner-home.png' %}" alt="">
-          </div>
-          <div class="banner-content">
-            <h3>Card Vuota</h3>
-            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
-            <button class="button-style" onclick="window.location.href='{% url 'inserisci_paziente' %}'">Aggiungi</button>
-          </div>
-        </div>
-        <div class="banner-paziente">
-          <div class="banner-backdrop">
-            <img src="{% static 'includes/images/banner-home.png' %}" alt="">
-          </div>
-          <div class="banner-content">
-            <h3>Inserisci un paziente</h3>
-            <p>Sezione di creazione paziente mediante dati base</p>
-            <p class="list-info"><span>[</span> Dati Anagrafici, Dati Antromotreci,</p>
-            <p class="list-info"> Abdominal girth, Life style <span>]</span></p>
-            <button class="button-style" onclick="window.location.href='{% url 'inserisci_paziente' %}'">Aggiungi</button>
-          </div>
-        </div>
-      </div> -->
 
+        <div class="reminders">
+            <div class="button-container">
+              <h3>Reminders</h3>
+              <button class="button-style">View All</button>
+            </div>
+            <ul class="reminder-list">
+              <li>
+                <div class="reminder-text">
+                  <span>-</span> Check lab results for patient William Mathews.
+                </div>
+                <span class="urgency-badge high">High priority</span>
+                <div class="reminder-time">Due: 10:00 AM</div>
+                <div class="reminder-actions">
+                  <button class="action-btn approve">✔</button>
+                  <button class="action-btn delete">✖</button>
+                </div>
+              </li>
+              <li>
+                <div class="reminder-text">
+                  <span>-</span> Prepare consultation notes for Adam Bradley.
+                </div>
+                <span class="urgency-badge medium">Medium priority</span>
+                <div class="reminder-time">Due: 2:30 PM</div>
+                <div class="reminder-actions">
+                  <button class="action-btn approve">✔</button>
+                  <button class="action-btn delete">✖</button>
+                </div>
+              </li>
+              <li>
+                <div class="reminder-text">
+                  <span>-</span> Schedule follow-up appointment with Kathy Atkinson.
+                </div>
+                <span class="urgency-badge low">Low priority</span>
+                <div class="reminder-time">Due: Tomorrow</div>
+                <div class="reminder-actions">
+                  <button class="action-btn approve">✔</button>
+                  <button class="action-btn delete">✖</button>
+                </div>
+              </li>
+            </ul>
+        </div>          
+      </div>
+   
+      <!-- CARD APPUNTAMENTI -->
+      <div class="cardAppuntamenti">
+        
+        <div class="button-container">
+          <h3>Appointments</h3>
+          <button class="button-style">View All</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Patient Name</th>
+              <th>Age</th>
+              <th>Time</th>
+              <th>Diagnosis</th>
+              <th>Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>001</td>
+              <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> William Mathews</td>
+              <td>21</td>
+              <td>10:30AM</td>
+              <td>Heart Attack</td>
+              <td><span class="badge general">General</span></td>
+              <td>
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> Adam Bradley</td>
+              <td>36</td>
+              <td>10:45AM</td>
+              <td>Diabetes</td>
+              <td><span class="badge consulting">Consulting</span></td>
+              <td>
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> Adam Bradley</td>
+              <td>36</td>
+              <td>10:45AM</td>
+              <td>Diabetes</td>
+              <td><span class="badge consulting">Consulting</span></td>
+              <td>
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> Adam Bradley</td>
+              <td>36</td>
+              <td>10:45AM</td>
+              <td>Diabetes</td>
+              <td><span class="badge consulting">Consulting</span></td>
+              <td>
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+      </div>
+      
+
+      <!-- CARDS REPORT -->
       <div class="cards">
-        <div class="card" id="card-style">
-          <h2>Total patients visited</h2>
-          <p>150</p>
-          <button class="button-style" onclick="goToPatientsPage()">View All</button>
+        <div class="report-card" id="card-style">
+          <div class="container-info-report">
+            <div class="img-container">
+              <img src="{% static 'includes/icone/patient.png' %}" alt="">
+            </div>
+            <div class="report-description">
+              <h3>Totale Pazienti</h3>
+              <div class="report-info-detail">
+                <p class="primary-info">150</p>
+                <p> &nbsp;+ 20 &nbsp;last week</p>
+              </div>    
+            </div>
+          </div>
+         
+
+          <p id="mediaPercentage">20% Higher than last week.</p>
+
         </div>
-        <div class="card" id="card-style">
-          <h2>Biological age calculations</h2>
-          <p>120</p>
-          <button class="button-style" onclick="goToRefertiPage()">Reports</button>
+
+        <div class="report-card" id="card-style">
+          <div class="container-info-report">
+            <div class="img-container">
+              <img src="{% static 'includes/icone/referto.png' %}" alt="">
+            </div>
+            <div class="report-description">
+              <h3>Totale Prescrizioni</h3>
+              <div class="report-info-detail">
+                <p class="primary-info">80</p>
+                <p> &nbsp;+ 20 &nbsp;last week</p>
+              </div>    
+            </div>
+          </div>
+          <p id="mediaPercentage">20% Higher than last week.</p>
         </div>
-        <div class="card" id="card-style">
-          <h2>Average Age Patients</h2>
-          <p>52 years</p>
+
+        <div class="report-card" id="card-style">
+          <div class="container-info-report">
+            <div class="img-container">
+              <img src="{% static 'includes/icone/heart.png' %}" alt="">
+            </div>
+            <div class="report-description">
+              <h3>Avarage Patients Age</h3>
+              <div class="report-info-detail">
+                <p><span>45</span>  years old</p>
+                <p>to <span>52</span>  years old</p>
+              </div>    
+            </div>
+          </div>
+          <p id="mediaPercentage">Mind - high age </p>
+        </div>
+
+        <div class="report-card" id="card-style">
+          <div class="container-info-report">
+            <div class="img-container">
+              <img src="{% static 'includes/icone/income.png' %}" alt="">
+            </div>
+            <div class="report-description">
+              <h3>Earnings</h3>
+              <div class="report-info-detail">
+                <p> &nbsp;+ 980$ &nbsp;last month</p>
+              </div>    
+            </div>
+          </div>
+          <p id="mediaPercentage">20% Higher than last month.</p>
         </div>
       </div>
         
+
+
+      <!-- TABELLA PAZIENTI RECENTI -->
       <div class="recent-patients">
         <h2>Ultimi 5 Pazienti Visitati</h2>
         <div class="table-container">
@@ -317,7 +311,6 @@
             <p>Codice Fiscale</p>
             <p>Place of Birth</p>
             <p>Chronological Age</p>
-            <p>Biological Age</p>
             <p>Ultimo Referto</p>
             <p>Cartella Paziente</p>
           </div>
@@ -331,12 +324,7 @@
                   <p>{{ persona.codice_fiscale }}</p>
                   <p>{{ persona.place_of_birth }}</p>
                   <p>{{ persona.chronological_age }}</p>
-              
-                  {% for dato in datiEstesi %}
-                    {% if dato.referto.paziente.id == persona.id %}
-                      <p>{{ dato.biological_age }}</p>
-                    {% endif %}
-                  {% endfor %}
+
                   <p>
                     <a href="{% url 'persona_detail' persona.id %}">
                       <img src="{% static 'includes/icone/referto.png' %}" alt="Referto" />
