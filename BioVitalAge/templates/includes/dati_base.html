@@ -115,17 +115,17 @@
             <!-- Menu Tools con effetto translate e opacity -->
              <div class="container-menu">
                <div class="tools-menu-button" id="menu-1">
-                   <button class="tools-table" type="button" onclick="closeMenuTools('menu-1')" style="margin-right: 20px;">
+                   <button class="tools-table" type="button" onclick="closeMenuTools('menu-1')" class="close-menu" style="margin-right: 20px;">
                        <img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi">
                    </button>
-                   <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
-                   <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
-                   <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+                   <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+                   <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+                   <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
                </div>
            
                <!-- Bottone per aprire il menu con animazione -->
-               <button type="button" class="tools-table" onclick="openMenuTools('menu-1')">
-                   <img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu">
+               <button title="Apri Menu" type="button" class="tools-table" class="open-menu" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-1') : openMenuTools('menu-1')">
+                   <img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu">
                </button>
              </div>
           </div>
@@ -155,13 +155,13 @@
             <p class="table-title">Abdominal girth</p>
             <div class="container-menu">
               <div class="tools-menu-button" id="menu-2">
-                <button class="tools-table" type="button" onclick="closeMenuTools('menu-2')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
-                <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+                <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-2')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+                <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+                <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
               </div>
   
-              <button type="button" class="tools-table" onclick="openMenuTools('menu-2')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Modifica"></button>
+              <button title="Apri Menu" type="button" class="tools-table" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-2') : openMenuTools('menu-2')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
             </div>
           </div>
 
@@ -190,13 +190,13 @@
               <p class="table-title">Alcohol</p>
               <div class="container-menu">
                 <div class="tools-menu-button" id="menu-3">
-                  <button class="tools-table" type="button" onclick="closeMenuTools('menu-3')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
-                  <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
-                  <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
-                  <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+                  <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-3')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
                 </div>
   
-                <button type="button" class="tools-table" onclick="openMenuTools('menu-3')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
+                <button title="Apri Menu" type="button" class="tools-table" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-3') : openMenuTools('menu-3')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
               </div>
             </div>
             
@@ -225,13 +225,13 @@
               <p class="table-title">Smoking</p>
               <div class="container-menu">
                 <div class="tools-menu-button" id="menu-4">
-                  <button class="tools-table" type="button" onclick="closeMenuTools('menu-4')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
-                  <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
-                  <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
-                  <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+                  <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-4')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
                 </div>
   
-                <button type="button" class="tools-table" onclick="openMenuTools('menu-4')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
+                <button title="Apri Menu" type="button" class="tools-table" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-4') : openMenuTools('menu-4')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
               </div>
             </div>
             <div class="table-container">
@@ -257,13 +257,13 @@
               <p class="table-title">Sport</p>
               <div class="container-menu">
                 <div class="tools-menu-button" id="menu-5">
-                  <button class="tools-table" type="button" onclick="closeMenuTools('menu-5')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
-                  <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
-                  <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
-                  <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+                  <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-5')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
                 </div>
   
-                <button class="tools-table" type="button" onclick="openMenuTools('menu-5')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
+                <button title="Apri Menu" class="tools-table" type="button" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-5') : openMenuTools('menu-5')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
               </div>
             </div>
             <div class="table-container">
@@ -289,13 +289,13 @@
               <p class="table-title">Sedentarietà</p>
               <div class="container-menu">
                 <div class="tools-menu-button" id="menu-6">
-                  <button class="tools-table" type="button" onclick="closeMenuTools('menu-6')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
-                  <button class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
-                  <button class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
-                  <button class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+                  <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-6')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
                 </div>
   
-                <button type="button" class="tools-table" onclick="openMenuTools('menu-6')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu" title="Apri Menu"></button>
+                <button title="Apri Menu" type="button" class="tools-table" title="Apri Menu" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-6') : openMenuTools('menu-6')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
               </div>
             </div>
             <div class="table-container">
