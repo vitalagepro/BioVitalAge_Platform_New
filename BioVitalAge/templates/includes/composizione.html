@@ -21,9 +21,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 
-    <!-- Chart.js CDN -->
+    <!-- JS Import -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'includes/js/spinner.js' %}" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+    <script src="{% static 'includes/js/pdfComposizione.js' %}" defer></script>
 </head>
 
 <body>
@@ -65,43 +69,53 @@
       
                     <div class="field">
                       <p>Name:&nbsp;</p>
-                      <p>{{ persona.name }}</p>
+                      <p id="name">{{ persona.name }}</p>
                     </div>
       
                     <div class="field">
                       <p>Surname:&nbsp;</p>
-                      <p>{{ persona.surname }}</p>
+                      <p id="surname">{{ persona.surname }}</p>
                     </div>
-      
+
+                    <div class="field">
+                        <p>Place of birth:&nbsp;</p>
+                        <p id="place_birth">{{ persona.place_of_birth }}</p>
+                    </div>
+            
                     <div class="field">
                       <p>Codice Fiscale :&nbsp;</p>
-                      <p>{{ persona.codice_fiscale }}</p>
+                      <p id="codice_fiscale">{{ persona.codice_fiscale }}</p>
                     </div>
     
                     <div class="field">
+                        <p>Date of birth:&nbsp;</p>
+                        <p id="dob">{{ persona.dob }}</p>
+                    </div>
+
+                    <div class="field">
                       <p>Age:&nbsp;</p>
-                      <p>{{ persona.chronological_age }}</p>
+                      <p id="chronological_age">{{ persona.chronological_age }}</p>
                     </div>
 
                     <div class="field">
                         <p>Altezza:</p>
-                        <p>xxx</p>
+                        <p id="altezza">{{ persona.height }}</p>
                       </div>
         
       
                     <div class="field">
                       <p>Peso corporeo:</p>
-                      <p>xxx</p>
+                      <p id="peso">{{ persona.weight }}</p>
                     </div>
             
                     <div class="field">
                       <p>Sport:</p>
-                      <p>xxx</p>
+                      <p>{{ persona.sport_frequency }}</p>
                     </div>
       
                     <div class="field">
                       <p>Genere:</p>
-                      <p>xxx</p>
+                      <p>{{ persona.gender }}</p>
                     </div>
       
                 </div>
@@ -126,11 +140,16 @@
                 <canvas id="massaChart"></canvas>
             </div>
         </div>
+
+        <div class="container-btn">
+            <button class="button-style" id="genereReport">Genera pdf referto</button>
+        </div>
     </main>
 
     <!-- Import Js -->
 
     <script src="{% static 'includes/js/chartComposizione.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>  
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

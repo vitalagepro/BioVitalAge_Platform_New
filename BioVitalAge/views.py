@@ -1175,106 +1175,175 @@ class InserisciPazienteView(View):
     
 
     def post(self, request):
-        dottore = request.user.utentiregistraticredenziali if hasattr(request.user, 'utentiregistraticredenziali') else None
-        codice_fiscale = request.POST.get('codice_fiscale')
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        try:
+            dottore = request.user.utentiregistraticredenziali if hasattr(request.user, 'utentiregistraticredenziali') else None
+            codice_fiscale = request.POST.get('codice_fiscale')
 
-
-        paziente_esistente = TabellaPazienti.objects.filter(codice_fiscale=codice_fiscale).first()
-
-        def parse_date(date_str):
-            return date_str if date_str else None
-
-        if paziente_esistente:
-
-            paziente_esistente.height = request.POST.get('height')
-            paziente_esistente.weight = request.POST.get('weight')
-            paziente_esistente.bmi = request.POST.get('bmi')
-            paziente_esistente.bmi_detection_date = parse_date(request.POST.get('bmi_detection_date'))
+            dottore_id = request.session.get('dottore_id')
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
 
-            paziente_esistente.girth_value = request.POST.get('girth_value')
-            paziente_esistente.girth_notes = request.POST.get('girth_notes')
-            paziente_esistente.girth_date = parse_date(request.POST.get('girth_date'))
+            paziente_esistente = TabellaPazienti.objects.filter(codice_fiscale=codice_fiscale).first()
 
-    
-            paziente_esistente.alcol = request.POST.get('alcol') 
-            paziente_esistente.alcol_type = request.POST.get('alcol_type')
-            paziente_esistente.data_alcol = parse_date(request.POST.get('data_alcol'))
-            paziente_esistente.alcol_frequency = request.POST.get('alcol_frequency')
+            def parse_date(date_str):
+                return date_str if date_str else None
 
-    
-            paziente_esistente.smoke = request.POST.get('smoke') 
-            paziente_esistente.smoke_frequency = request.POST.get('smoke_frequency')
-            paziente_esistente.reduced_intake = request.POST.get('reduced_intake')
+            context = {
+                'dottore' : dottore,
+            }
 
-            paziente_esistente.sport = request.POST.get('sport') 
-            paziente_esistente.sport_livello = request.POST.get('sport_livello')
-            paziente_esistente.sport_frequency = request.POST.get('sport_frequency')
 
-            paziente_esistente.attivita_sedentaria = request.POST.get('attivita_sedentaria')
-            paziente_esistente.livello_sedentarieta = request.POST.get('livello_sedentarieta')
-            paziente_esistente.sedentarieta_nota = request.POST.get('sedentarieta_nota')
-           
+            if paziente_esistente:
 
-            paziente_esistente.save()
-            success = "I dati del paziente sono stati aggiornati con successo!"
-    
-        else:
-            # Creazione di un nuovo paziente con la stessa gestione per le date
-            TabellaPazienti.objects.create(
-                dottore=dottore,
-                name=request.POST.get('name'),
-                surname=request.POST.get('surname'),
-                dob=parse_date(request.POST.get('dob')),
-                gender=request.POST.get('gender'),
-                place_of_birth=request.POST.get('place_of_birth'),
-                codice_fiscale=codice_fiscale,
-                chronological_age=request.POST.get('chronological_age'),
+                campi_opzionali = [
+                    'height', 'weight', 'bmi', 'bmi_detection_date',
+                    'girth_value', 'girth_notes', 'girth_date',
+                    'alcol', 'alcol_type', 'data_alcol', 'alcol_frequency',
+                    'smoke', 'smoke_frequency', 'reduced_intake',
+                    'sport', 'sport_livello', 'sport_frequency',
+                    'attivita_sedentaria', 'livello_sedentarieta', 'sedentarieta_nota'
+                ]
 
-                # Dati antropometrici
-                height=request.POST.get('height'),
-                weight=request.POST.get('weight'),
-                bmi=request.POST.get('bmi'),
-                bmi_detection_date=parse_date(request.POST.get('bmi_detection_date')),
+        
+                if any(request.POST.get(campo) for campo in campi_opzionali):
+                
+                    paziente_esistente.height = request.POST.get('height')
+                    paziente_esistente.weight = request.POST.get('weight')
+                    paziente_esistente.bmi = request.POST.get('bmi')
+                    paziente_esistente.bmi_detection_date = parse_date(request.POST.get('bmi_detection_date'))
 
-                # Circonferenza addominale
-                girth_value=request.POST.get('girth_value'),
-                girth_notes=request.POST.get('girth_notes'),
-                girth_date=parse_date(request.POST.get('girth_date')),
 
-                # Alcol
-                alcol=request.POST.get('alcol') == 'on',
-                alcol_type=request.POST.get('alcol_type'),
-                data_alcol=parse_date(request.POST.get('data_alcol')),
-                alcol_frequency=request.POST.get('alcol_frequency'),
+                    paziente_esistente.girth_value = request.POST.get('girth_value')
+                    paziente_esistente.girth_notes = request.POST.get('girth_notes')
+                    paziente_esistente.girth_date = parse_date(request.POST.get('girth_date'))
 
-                # Fumo
-                smoke=request.POST.get('smoke') == 'on',
-                smoke_frequency=request.POST.get('smoke_frequency'),
-                reduced_intake=request.POST.get('reduced_intake'),
-
-                # Sport
-                sport=request.POST.get('sport') == 'on',
-                sport_livello=request.POST.get('sport_livello'),
-                sport_frequency=request.POST.get('sport_frequency'),
-
-                # Sedentarietà
-                attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on',
-                livello_sedentarieta=request.POST.get('livello_sedentarieta'),
-                sedentarieta_nota=request.POST.get('sedentarieta_nota'),
-            )
             
-            success = "Nuovo paziente salvato con successo!"
+                    paziente_esistente.alcol = request.POST.get('alcol') 
+                    paziente_esistente.alcol_type = request.POST.get('alcol_type')
+                    paziente_esistente.data_alcol = parse_date(request.POST.get('data_alcol'))
+                    paziente_esistente.alcol_frequency = request.POST.get('alcol_frequency')
 
-        context = {
-            "success": success, 
-            'dottore' : dottore
-        }
+            
+                    paziente_esistente.smoke = request.POST.get('smoke') 
+                    paziente_esistente.smoke_frequency = request.POST.get('smoke_frequency')
+                    paziente_esistente.reduced_intake = request.POST.get('reduced_intake')
 
-        return render(request, "includes/InserisciPaziente.html", context)
+                    paziente_esistente.sport = request.POST.get('sport') 
+                    paziente_esistente.sport_livello = request.POST.get('sport_livello')
+                    paziente_esistente.sport_frequency = request.POST.get('sport_frequency')
+
+                    paziente_esistente.attivita_sedentaria = request.POST.get('attivita_sedentaria')
+                    paziente_esistente.livello_sedentarieta = request.POST.get('livello_sedentarieta')
+                    paziente_esistente.sedentarieta_nota = request.POST.get('sedentarieta_nota')
+                
+
+                    paziente_esistente.save()
+                    success = "I dati del paziente sono stati aggiornati con successo!"
+
+                    context = {
+                        "success": success, 
+                        'dottore' : dottore,
+                    }
+
+                else:
+                    errore = "Operazione non andata a buon fine: 'Un Utente con questo Codice Fiscale è gia presente all'interno del database'."
+
+                    context = {
+                        'dottore' : dottore,
+                        'errore': errore
+                    }
+        
+            else:
+
+                campi_opzionali = [
+                    'height', 'weight', 'bmi', 'bmi_detection_date',
+                    'girth_value', 'girth_notes', 'girth_date',
+                    'alcol', 'alcol_type', 'data_alcol', 'alcol_frequency',
+                    'smoke', 'smoke_frequency', 'reduced_intake',
+                    'sport', 'sport_livello', 'sport_frequency',
+                    'attivita_sedentaria', 'livello_sedentarieta', 'sedentarieta_nota'
+                ]
+
+                if any(request.POST.get(campo) for campo in campi_opzionali):
+                    
+                    TabellaPazienti.objects.create(
+                        dottore=dottore,
+                        name=request.POST.get('name'),
+                        surname=request.POST.get('surname'),
+                        dob=parse_date(request.POST.get('dob')),
+                        gender=request.POST.get('gender'),
+                        place_of_birth=request.POST.get('place_of_birth'),
+                        codice_fiscale=codice_fiscale,
+                        chronological_age=request.POST.get('chronological_age'),
+
+                        # Dati antropometrici
+                        height=request.POST.get('height'),
+                        weight=request.POST.get('weight'),
+                        bmi=request.POST.get('bmi'),
+                        bmi_detection_date=parse_date(request.POST.get('bmi_detection_date')),
+
+                        # Circonferenza addominale
+                        girth_value=request.POST.get('girth_value'),
+                        girth_notes=request.POST.get('girth_notes'),
+                        girth_date=parse_date(request.POST.get('girth_date')),
+
+                        # Alcol
+                        alcol=request.POST.get('alcol') == 'on',
+                        alcol_type=request.POST.get('alcol_type'),
+                        data_alcol=parse_date(request.POST.get('data_alcol')),
+                        alcol_frequency=request.POST.get('alcol_frequency'),
+
+                        # Fumo
+                        smoke=request.POST.get('smoke') == 'on',
+                        smoke_frequency=request.POST.get('smoke_frequency'),
+                        reduced_intake=request.POST.get('reduced_intake'),
+
+                        # Sport
+                        sport=request.POST.get('sport') == 'on',
+                        sport_livello=request.POST.get('sport_livello'),
+                        sport_frequency=request.POST.get('sport_frequency'),
+
+                        # Sedentarietà
+                        attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on',
+                        livello_sedentarieta=request.POST.get('livello_sedentarieta'),
+                        sedentarieta_nota=request.POST.get('sedentarieta_nota'),
+                    )
+                    print("sono qui")
+                    context = {
+                        "success": success, 
+                        'dottore' : dottore,
+                    }
+                    success = "Nuovo paziente salvato con successo!"
+                    
+
+                else:
+                    
+                    TabellaPazienti.objects.create(
+                        dottore=dottore,
+                        name=request.POST.get('name'),
+                        surname=request.POST.get('surname'),
+                        dob=parse_date(request.POST.get('dob')),
+                        gender=request.POST.get('gender'),
+                        place_of_birth=request.POST.get('place_of_birth'),
+                        codice_fiscale=codice_fiscale,
+                        chronological_age=request.POST.get('chronological_age'),
+                    )
+                    success = "Nuovo paziente salvato con successo!"
+                    context = {
+                        "success": success, 
+                        'dottore' : dottore,
+                    }
+                    
+            return render(request, "includes/InserisciPaziente.html", context)
+
+        except Exception as e:
+
+            context = {
+                'dottore' : dottore,
+                "errore": "system error: " + str(e) + " --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova.",
+            }
+            return render(request, "includes/InserisciPaziente.html", context)
 
 
 

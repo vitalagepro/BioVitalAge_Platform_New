@@ -13,7 +13,7 @@ async function generatePDF() {
         const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
         const pages = pdfDoc.getPages();
-        const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+        //const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
         // Stampa Informazioni Personali
         const personalInformationPages = pages[0]
@@ -24,13 +24,12 @@ async function generatePDF() {
         const cf = document.getElementById('codice_fiscale').textContent;
         const place_birth = document.getElementById('place_birth').textContent;
         const chronological_age = document.getElementById('chronological_age').textContent;
-        const biological_age = document.getElementById('biological_age').textContent;
         
         personalInformationPages.drawText(`${name }`, { x: 380, y: 678, size: 12, color: rgb(0,0,0) });
         personalInformationPages.drawText(`${surname}`, { x: 455, y: 678, size: 12, color: rgb(0,0,0) });
-        personalInformationPages.drawText(`${dob}`, { x: 360, y: 664, size: 12, color: rgb(0,0,0) });
+        personalInformationPages.drawText(`${dob}`, { x: 340, y: 664, size: 12, color: rgb(0,0,0) });
         personalInformationPages.drawText(`${cf}`, { x: 295, y: 650, size: 12, color: rgb(0,0,0) });
-        personalInformationPages.drawText(`${place_birth}`, { x: 300, y: 664, size: 12, color: rgb(0,0,0) });
+        personalInformationPages.drawText(`${place_birth}`, { x: 280, y: 664, size: 12, color: rgb(0,0,0) });
         personalInformationPages.drawText(`${chronological_age}`, { x: 480, y: 664, size: 12, color: rgb(0,0,0) });
        
         // Stampa Osi Value
