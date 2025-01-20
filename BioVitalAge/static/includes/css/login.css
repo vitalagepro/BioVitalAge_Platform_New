@@ -1,10 +1,11 @@
+/* ! Reset CSS */
 *{
     margin: 0;
     padding: 0;
     font-family: "Quicksand", sans-serif;
 }
 
-
+/* ! ROOT */
 :root{
     --dark1: #0c042c; 
     --dark2: #0c214b; 
@@ -25,6 +26,13 @@
     --circle-color-shadow: rgba(42, 196, 221,0.15);
     --circle-color-shadow-two: rgba(42, 196, 221,0.05)
 }
+
+
+
+
+
+
+
 
 
 .background{
