@@ -77,7 +77,6 @@
           <p>Codice Fiscale</p>
           <p>Place of Birth</p>
           <p>Chronological Age</p>
-          <p>Biological Age</p>
           <p>Ultimo Referto</p>
           <p>Cartella Paziente</p>
         </div>
@@ -92,13 +91,6 @@
                   <p>{{ persona.codice_fiscale }}</p>
                   <p>{{ persona.place_of_birth }}</p>
                   <p>{{ persona.chronological_age }}</p>
-              
-                  {% for dato in datiEstesi %}
-                    {% if dato.referto.paziente.id == persona.id %}
-                      <p>{{ dato.biological_age }}</p>
-                    {% endif %}
-      
-                  {% endfor %}
 
                   <p>
                       <a href="{% url 'persona_detail' persona.id %}">

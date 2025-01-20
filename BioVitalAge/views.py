@@ -1148,7 +1148,7 @@ class DatiBaseView(View):
             persona.sedentarieta_nota = request.POST.get('sedentarieta_nota')
 
             persona.save()
-            return redirect('dati_base', id=persona.id)  # Redirect per evitare reinvii accidentali
+            return redirect('dati_base', id=persona.id) 
 
 
 
