@@ -1,17 +1,42 @@
 /*  -----------------------------------------------------------------------------------------------
   Function for section toggles
 --------------------------------------------------------------------------------------------------- */
-document.querySelectorAll(".button-style.btn-selected").forEach((button) => {
-  button.addEventListener("click", function () {
-    const container = this.closest(".section");
-    container.classList.toggle("hidden-exam");
-    if (container.classList.contains("hidden-exam")) {
-      this.setAttribute("title", "Apri Sezione");
-    } else {
-      this.setAttribute("title", "Chiudi Sezione");
-    }
+
+// Add event listener to toggle buttons
+function setupSectionToggle() {
+  document.querySelectorAll(".button-style.btn-selected").forEach((button) => {
+    button.addEventListener("click", toggleSection);
   });
-});
+
+  // Add event listener to the section itself
+  document.querySelectorAll(".header-section-exam").forEach((section) => {
+    section.addEventListener("click", function (e) {
+      // Prevent toggle if the button inside the section is clicked
+      if (e.target.closest("button")) {
+        return;
+      }
+      toggleSection.call(section.querySelector(".button-style.btn-selected"));
+    });
+  });
+}
+
+function toggleSection() {
+  const container = this.closest(".section");
+  const buttonIcon = this.querySelector("svg");
+
+  container.classList.toggle("hidden-exam");
+
+  if (container.classList.contains("hidden-exam")) {
+    this.setAttribute("title", "Apri Sezione");
+    buttonIcon.style.transform = "rotate(0deg)"; // Reset rotation
+  } else {
+    this.setAttribute("title", "Chiudi Sezione");
+    buttonIcon.style.transform = "rotate(180deg)"; // Rotate arrow
+  }
+}
+
+// Initialize the toggle functionality
+document.addEventListener("DOMContentLoaded", setupSectionToggle);
 /*  -----------------------------------------------------------------------------------------------
 Function for gender selection
 --------------------------------------------------------------------------------------------------- */
@@ -107,7 +132,9 @@ userModalBtn.addEventListener("mouseover", showModal);
 
 // AUTO PREFILL PROVINCIA FIELD
 // Listener per l'autoprefill della provincia e del codice catastale
-document.getElementById("place_of_birth").addEventListener("input", function () {
+document
+  .getElementById("place_of_birth")
+  .addEventListener("input", function () {
     const inputCity = this.value;
     const dataList = document.getElementById("cities");
     const options = dataList.getElementsByTagName("option");
@@ -115,7 +142,8 @@ document.getElementById("place_of_birth").addEventListener("input", function () 
 
     for (let option of options) {
       if (option.value.toLowerCase() === inputCity.toLowerCase()) {
-        document.getElementById("province").value = option.getAttribute("data-province");
+        document.getElementById("province").value =
+          option.getAttribute("data-province");
         const codiceCastale = option.getAttribute("data-codice-catastale");
         found = true;
         // Correzione: Chiamare direttamente la funzione generazione del codice fiscale
@@ -128,4 +156,4 @@ document.getElementById("place_of_birth").addEventListener("input", function () 
       document.getElementById("province").value = "";
       document.getElementById("codice_fiscale").value = "";
     }
-});
+  });

@@ -19,8 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Cambia titolo del pulsante "Apri Menu" in "Salva le modifiche" solo se ci sono modifiche
   document.querySelectorAll('button[title="Apri Menu"]').forEach((button) => {
-    button.addEventListener("click", function () {
-      const menuId = this.getAttribute("onclick").match(/'(.*?)'/)?.[1];
+    button.addEventListener("click", function (event) {
+      const form = this.closest("form");
 
       if (this.title === "Apri Menu") {
         this.title = "Salva le modifiche";
@@ -28,11 +28,47 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         this.title = "Apri Menu";
         this.type = "button";
-        if (!modificationsExist && menuId) {
-          closeMenuTools(menuId);
+
+        if (modificationsExist) {
+          // Usa fetch per inviare il form senza ricaricare la pagina
+          const formData = new FormData(form);
+
+          fetch(form.action, {
+            method: form.method || "POST",
+            body: formData,
+          })
+            .then((response) => {
+              if (response.ok) {
+                showPopup("Modifiche salvate con successo!");
+                modificationsExist = false; // Resetta lo stato delle modifiche
+
+                // Disabilita tutti gli input dopo il salvataggio
+                form.querySelectorAll(".riga-container input").forEach((input) => {
+                  input.disabled = true;
+                  input.style.backgroundColor = "inherit";
+                  input.style.border = "none";
+                  // Salva lo stato attuale degli input come valore originale
+                  input.dataset.originalValue = input.value;
+                });
+
+                // Svuota righe rimosse e aggiunte dopo il salvataggio
+                removedRows.clear();
+                addedRows.clear();
+
+                // Rimuove eventuali checkbox residue
+                clearCheckboxes(form);
+              } else {
+                showPopup("Errore nel salvataggio delle modifiche.", true);
+              }
+            })
+            .catch(() => {
+              showPopup("Errore di connessione.", true);
+            });
+
+          // Previeni il comportamento predefinito del form
+          event.preventDefault();
         } else {
-          saveModifications(this.closest("form"));
-          rollbackValues(this.closest("form")); // Ripristina lo stato degli input quando si chiude il menu con "Salva le modifiche"
+          rollbackValues(form);
         }
       }
     });
@@ -57,20 +93,30 @@ document.addEventListener("DOMContentLoaded", () => {
   // Modifica righe esistenti
   document.querySelectorAll('img[title="Modifica"]').forEach((button) => {
     button.addEventListener("click", function () {
-      const inputs = this.closest("form").querySelectorAll(".riga-container input");
-      inputs.forEach((input) => {
-        input.disabled = !input.disabled;
-        input.style.backgroundColor = input.disabled ? "inherit" : "white";
-        input.style.border = input.disabled ? "none" : "1px solid var(--contrast-color-shadow)";
-        input.style.width = input.disabled ? "100%" : "max-content";
-        input.style.height = input.disabled ? "100%" : "max-content";
-        input.style.borderRadius = input.disabled ? "none" : "5px";
+      const rows = this.closest("form").querySelectorAll(".riga-container");
+      let hasModifications = false;
 
-        // Aggiungi un listener per rilevare modifiche al valore
-        input.addEventListener("input", () => {
-          modificationsExist = true;
+      rows.forEach((row) => {
+        const inputs = row.querySelectorAll("input");
+        inputs.forEach((input) => {
+          input.disabled = !input.disabled;
+          input.style.backgroundColor = input.disabled ? "inherit" : "white";
+          input.style.border = input.disabled ? "none" : "1px solid var(--contrast-color-shadow)";
+          input.style.width = input.disabled ? "100%" : "max-content";
+          input.style.height = input.disabled ? "100%" : "max-content";
+          input.style.borderRadius = input.disabled ? "none" : "5px";
+
+          // Aggiungi un listener per rilevare modifiche al valore
+          input.addEventListener("input", () => {
+            modificationsExist = true;
+            hasModifications = true;
+          });
         });
       });
+
+      if (!hasModifications) {
+        modificationsExist = true; // Anche se non ci sono modifiche, registra l'azione
+      }
     });
   });
 
@@ -78,21 +124,25 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('img[title="Cestino"]').forEach((button) => {
     button.addEventListener("click", function () {
       const tableContent = this.closest("form").querySelector(".table-content");
+      let rowRemoved = false;
 
+      // Aggiungi le checkbox se non esistono
       if (!tableContent.querySelector(".container-checkbox")) {
         tableContent.querySelectorAll(".riga-container").forEach((row) => {
-          const checkboxContainer = document.createElement("div");
-          checkboxContainer.innerHTML = `
-            <label class="container-checkbox">
-              <input type="checkbox">
-              <div class="checkmark"></div>
-            </label>
-          `;
-          row.insertAdjacentElement("afterbegin", checkboxContainer);
-          row.dataset.originalState = row.innerHTML.replace(checkboxContainer.outerHTML, ""); // Salva lo stato originale della riga senza la checkbox
+          if (!row.querySelector(".container-checkbox")) {
+            const checkboxContainer = document.createElement("div");
+            checkboxContainer.innerHTML = `
+              <label class="container-checkbox">
+                <input type="checkbox">
+                <div class="checkmark"></div>
+              </label>
+            `;
+            row.insertAdjacentElement("afterbegin", checkboxContainer);
+            row.dataset.originalState = row.innerHTML.replace(checkboxContainer.outerHTML, ""); // Salva lo stato originale della riga senza la checkbox
+          }
         });
       } else {
-        let rowRemoved = false;
+        // Rimuovi le righe selezionate
         tableContent.querySelectorAll(".container-checkbox input:checked").forEach((checkbox) => {
           const row = checkbox.closest(".riga-container");
           const rowId = Date.now() + Math.random(); // Genera un ID univoco
@@ -101,85 +151,38 @@ document.addEventListener("DOMContentLoaded", () => {
           rowRemoved = true;
         });
 
-        tableContent.querySelectorAll(".container-checkbox").forEach((container) => {
-          container.remove();
-        });
-
-        modificationsExist = rowRemoved;
+        // Rimuovi tutte le checkbox residue
+        if (!rowRemoved) {
+          tableContent.querySelectorAll(".container-checkbox").forEach((checkboxContainer) => {
+            checkboxContainer.remove();
+          });
+        }
       }
+
+      modificationsExist = true; // Segna l'azione come una modifica
     });
   });
 
   // Ripristina righe e valori originali
   function rollbackValues(form) {
-    removedRows.forEach((originalState, rowId) => {
-      const restoredRow = document.createElement("div");
-      restoredRow.classList.add("riga-container");
-      restoredRow.innerHTML = originalState; // Ripristina lo stato originale della riga senza checkbox
-      form.querySelector(".table-content").appendChild(restoredRow);
-    });
-    removedRows.clear(); // Svuota la mappa
-
-    addedRows.forEach((row) => {
-      row.remove(); // Rimuove le righe aggiunte
-    });
-    addedRows.clear(); // Svuota il set delle righe aggiunte
-
     form.querySelectorAll(".riga-container input").forEach((input) => {
       if (input.dataset.originalValue !== undefined) {
-        input.value = input.dataset.originalValue;
-        input.disabled = true;
+        input.value = input.dataset.originalValue; // Ripristina il valore originale
+        input.disabled = true; // Disabilita gli input
         input.style.backgroundColor = "inherit";
         input.style.border = "none";
       }
     });
+  
+    clearCheckboxes(form); // Rimuove eventuali checkbox residue
+    removedRows.clear(); // Pulisci righe rimosse
+    addedRows.clear(); // Pulisci righe aggiunte
+  }  
 
-    // Rimuovi eventuali checkbox residue
+  // Rimuove tutte le checkbox residue
+  function clearCheckboxes(form) {
     form.querySelectorAll(".container-checkbox").forEach((checkbox) => {
-      checkbox.remove();
-    });
-  }
-
-  // Salva modifiche
-  function saveModifications(form) {
-    if (modificationsExist) {
-      form.querySelectorAll(".riga-container[data-new-row]").forEach((row) => {
-        row.removeAttribute("data-new-row");
-      });
-
-      const formData = new FormData(form);
-      fetch(form.action, {
-        method: form.method,
-        body: formData,
-      })
-        .then((response) => {
-          if (response.ok) {
-            showPopup("Modifiche salvate con successo!");
-            removedRows.clear(); // Pulisce le righe memorizzate dopo il salvataggio
-            addedRows.clear(); // Pulisce le righe aggiunte dopo il salvataggio
-
-            // Rimuove eventuali checkbox residue dopo il salvataggio
-            form.querySelectorAll(".container-checkbox").forEach((checkbox) => {
-              checkbox.remove();
-            });
-          } else {
-            showPopup("Errore nel salvataggio delle modifiche.", true);
-          }
-        })
-        .catch(() => {
-          showPopup("Errore di connessione.", true);
-        });
-    } else {
-      showPopup("Nessuna modifica da salvare.");
-
-      // Rimuove eventuali checkbox residue
-      form.querySelectorAll(".container-checkbox").forEach((checkbox) => {
-        checkbox.remove();
-      });
-    }
-    // Rimuove eventuali checkbox residue
-    form.querySelectorAll(".container-checkbox").forEach((checkbox) => {
-      checkbox.remove();
+      checkbox.parentElement.remove();
     });
   }
 
@@ -200,21 +203,140 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => popup.remove(), 3000);
   }
 
+  // Mostra una modale con bottoni Si/No
+  function showModal(message, onConfirm, onCancel) {
+    const modalOverlay = document.createElement("div");
+    modalOverlay.style.position = "fixed";
+    modalOverlay.style.top = "0";
+    modalOverlay.style.left = "0";
+    modalOverlay.style.width = "100%";
+    modalOverlay.style.height = "100%";
+    modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    modalOverlay.style.zIndex = "1000";
+
+    const modal = document.createElement("div");
+    modal.style.position = "absolute";
+    modal.style.top = "50%";
+    modal.style.left = "50%";
+    modal.style.transform = "translate(-50%, -50%)";
+    modal.style.backgroundColor = "#f1c40f"; // Colore giallo segnaletico
+    modal.style.color = "black";
+    modal.style.padding = "20px";
+    modal.style.borderRadius = "5px";
+    modal.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
+    modal.style.textAlign = "center";
+
+    const modalText = document.createElement("p");
+    modalText.textContent = message;
+    modal.appendChild(modalText);
+
+    const buttonContainer = document.createElement("div");
+    buttonContainer.style.marginTop = "10px";
+
+    const yesButton = document.createElement("button");
+    yesButton.textContent = "Si";
+    yesButton.style.marginRight = "10px";
+    yesButton.style.padding = "5px 10px";
+    yesButton.style.border = "none";
+    yesButton.style.borderRadius = "3px";
+    yesButton.style.backgroundColor = "#27ae60";
+    yesButton.style.color = "white";
+    yesButton.style.cursor = "pointer";
+    yesButton.addEventListener("click", () => {
+      modalOverlay.remove();
+      document.body.style.overflow = ""; // Ripristina lo scroll
+      if (onConfirm) onConfirm();
+    });
+
+    const noButton = document.createElement("button");
+    noButton.textContent = "No";
+    noButton.style.padding = "5px 10px";
+    noButton.style.border = "none";
+    noButton.style.borderRadius = "3px";
+    noButton.style.backgroundColor = "#e74c3c";
+    noButton.style.color = "white";
+    noButton.style.cursor = "pointer";
+    noButton.addEventListener("click", () => {
+      modalOverlay.remove();
+      document.body.style.overflow = ""; // Ripristina lo scroll
+      if (onCancel) onCancel();
+    });
+
+    buttonContainer.appendChild(yesButton);
+    buttonContainer.appendChild(noButton);
+    modal.appendChild(buttonContainer);
+    modalOverlay.appendChild(modal);
+    document.body.appendChild(modalOverlay);
+    document.body.style.overflow = "hidden"; // Disabilita lo scroll
+  }
+
   // Chiudi con conferma
   document.querySelectorAll('img[title="Chiudi"]').forEach((button) => {
     button.addEventListener("click", function () {
       const form = this.closest("form");
-      if (modificationsExist && confirm("Ci sono modifiche non salvate. Vuoi annullarle?")) {
+      if (modificationsExist) {
+        showModal(
+          "Ci sono modifiche non salvate. Vuoi annullarle?",
+          () => {
+            rollbackValues(form);
+            modificationsExist = false;
+          },
+          () => {
+            // No action needed on cancel
+          }
+        );
+      } else {
         rollbackValues(form);
-        modificationsExist = false;
       }
-      rollbackValues(form);
     });
   });
 
   // Salva stato iniziale degli input
   document.querySelectorAll(".riga-container input").forEach((input) => {
     input.dataset.originalValue = input.value;
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Disabilita tutti gli input all'inizio
+  document.querySelectorAll(".riga-container input").forEach((input) => {
+    input.disabled = true; // Disabilita
+    input.style.backgroundColor = "inherit"; // Rimuove lo stile di modifica
+    input.style.border = "none";
+  });
+
+  // Ripristina gli input come disabilitati dopo il salvataggio
+  document.querySelectorAll("form").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault(); // Previeni il comportamento predefinito
+
+      // Debug: Mostra i dati inviati
+      const formData = new FormData(form);
+      console.log("Dati inviati:", Object.fromEntries(formData.entries()));
+
+      // Disabilita tutti gli input dopo l'invio
+      form.querySelectorAll("input").forEach((input) => {
+        input.disabled = true;
+        input.style.backgroundColor = "inherit"; // Rimuove lo stile di modifica
+        input.style.border = "none";
+      });
+
+      // Esegui la richiesta AJAX o il comportamento predefinito
+      fetch(form.action, {
+        method: form.method || "POST",
+        body: formData,
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log(`Modifiche salvate correttamente per il form ${form.id}`);
+          } else {
+            console.error(`Errore durante il salvataggio per il form ${form.id}`);
+          }
+        })
+        .catch((error) => {
+          console.error("Errore di connessione:", error);
+        });
+    });
   });
 });
 

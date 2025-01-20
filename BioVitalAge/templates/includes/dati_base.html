@@ -107,7 +107,7 @@
       <section class="container_data table_data">
         <h3 style="margin-bottom: -20px;">Informative Tables</h3>
 
-        <form id="datiBaseForm" method="POST">
+        <form id="datiBaseForm" action="" method="POST">
           {% csrf_token %}
           <div class="table-title-tools">
             <p class="table-title">Anthropometric data</p>
@@ -140,10 +140,10 @@
       
               <div class="table-content">
                 <div class="riga-container">
-                  <p><input type="text" value="{{ persona.height }}" disabled></p>
-                  <p><input type="text" value="{{ persona.weight }}" disabled></p>
-                  <p><input type="text" value="{{ persona.bmi }}" disabled></p>
-                  <p><input type="text" value="{{ persona.bmi_detection_date }}" disabled></p>
+                  <p><input name="height" type="text" value="{{ persona.height }}" disabled></p>
+                  <p><input name="weight" type="text" value="{{ persona.weight }}" disabled></p>
+                  <p><input name="bmi" type="text" value="{{ persona.bmi }}" disabled></p>
+                  <p><input name="bmi_detection_date" type="date" value="{{ persona.bmi_detection_date|date:'Y-m-d' }}" disabled></p>
                 </div>
               </div>
           </div> 
@@ -174,9 +174,9 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p> <input type="text" value="{{ persona.girth_value }}" disabled> </p>
-                  <p> <input type="text" value="{{ persona.girth_date }}" disabled> </p>
-                  <p> <input type="text" value="{{ persona.girth_notes }}" disabled> </p>
+                  <p> <input name="girth_value" type="text" value="{{ persona.girth_value }}" disabled> </p>
+                  <p> <input name="girth_date" type="date" value="{{ persona.girth_date|date:'Y-m-d' }}" disabled> </p>
+                  <p> <input name="girth_notes" type="text" value="{{ persona.girth_notes }}" disabled> </p>
                 </div>
             
               </div>
@@ -210,10 +210,10 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p> <input type="text" value="{{ persona.alcol }}" disabled> </p>
-                  <p> <input type="text" value="{{ persona.alcol_type }}" disabled> </p>
-                  <p> <input type="text" value="{{ persona.data_alcol }}" disabled> </p>
-                  <p> <input type="text" value="{{ persona.alcol_frequency }}" disabled> </p>
+                  <p> <input name="alcol" type="text" value="{{ persona.alcol }}" disabled> </p>
+                  <p> <input name="alcol_type" type="text" value="{{ persona.alcol_type }}" disabled> </p>
+                  <p> <input name="data_alcol" type="date" value="{{ persona.data_alcol|date:'Y-m-d' }}" disabled> </p>
+                  <p> <input name="alcol_frequency" type="text" value="{{ persona.alcol_frequency }}" disabled> </p>
                 </div>
               </div>
             </div>
@@ -243,9 +243,9 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p> <input type="text" value="{{ persona.smoke }}" disabled> </p>
-                  <p> <input type="text" value="{{ persona.smoke_frequency }}" disabled> </p>
-                  <p> <input type="text" value="{{ persona.reduced_intake }}" disabled> </p>
+                  <p> <input name="smoke" type="text" value="{{ persona.smoke }}" disabled> </p>
+                  <p> <input name="smoke_frequency" type="text" value="{{ persona.smoke_frequency }}" disabled> </p>
+                  <p> <input name="reduced_intake" type="text" value="{{ persona.reduced_intake }}" disabled> </p>
                 </div>
               </div>
             </div>
@@ -275,9 +275,9 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p> <input type="text" value="{{ persona.sport }}" disabled> </p>
-                  <p> <input type="text" value="{{ persona.sport_livello }}" disabled> </p>
-                  <p> <input type="text" value="{{ persona.sport_frequency }}" disabled> </p>
+                  <p> <input name="sport" type="text" value="{{ persona.sport }}" disabled> </p>
+                  <p> <input name="sport_livello" type="text" value="{{ persona.sport_livello }}" disabled> </p>
+                  <p> <input name="sport_frequency" type="text" value="{{ persona.sport_frequency }}" disabled> </p>
                 </div>
               </div>
             </div>
@@ -307,9 +307,9 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p> <input type="text" value="{{ persona.attivita_sedentaria }}" disabled> </p>
-                  <p> <input type="text" value="{{ persona.livello_sedentarieta }}" disabled> </p>
-                  <p> <input type="text" value="{{ persona.sedentarieta_nota }}" disabled> </p>
+                  <p> <input name="attivita_sedentaria" type="text" value="{{ persona.attivita_sedentaria }}" disabled> </p>
+                  <p> <input name="livello_sedentarieta" type="text" value="{{ persona.livello_sedentarieta }}" disabled> </p>
+                  <p> <input name="sedentarieta_nota" type="text" value="{{ persona.sedentarieta_nota }}" disabled> </p>
                 </div>
               </div>
             </div>

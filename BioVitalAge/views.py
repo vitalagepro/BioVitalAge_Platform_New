@@ -1115,44 +1115,51 @@ class DatiBaseView(View):
             persona = get_object_or_404(TabellaPazienti, id=id)
 
             # Aggiornamento dei dati ricevuti dal form
-            # Antropometric data
-            persona.height = request.POST.get('height')
-            persona.weight = request.POST.get('weight')
-            persona.bmi = request.POST.get('bmi')
-            persona.bmi_detection_date = request.POST.get('bmi_detection_date')
+            # Identifica il form che ha inviato i dati
+            form_id = request.POST.get('form_id')
 
-            # Abdominal girth
-            persona.girth_value = request.POST.get('girth_value')
-            persona.girth_date = request.POST.get('girth_date')
-            persona.girth_notes = request.POST.get('girth_notes')
+            # Gestione dei dati in base al form_id
+            if form_id == 'datiBaseForm1':
+                # Aggiorna i dati relativi alla prima tabella
+                persona.height = request.POST.get('height')
+                persona.weight = request.POST.get('weight')
+                persona.bmi = request.POST.get('bmi')
+                persona.bmi_detection_date = request.POST.get('bmi_detection_date')
 
-            # Alchol
-            persona.alcol = request.POST.get('alcol')
-            persona.alcol_type = request.POST.get('alcol_type')
-            persona.data_alcol = request.POST.get('data_alcol')
-            persona.alcol_frequency = request.POST.get('alcol_frequency')
+            elif form_id == 'datiBaseForm2':
+                # Aggiorna i dati relativi alla seconda tabella
+                persona.girth_value = request.POST.get('girth_value')
+                persona.girth_date = request.POST.get('girth_date')
+                persona.girth_notes = request.POST.get('girth_notes')
 
-            # Smoking
-            persona.smoke = request.POST.get('smoke')
-            persona.smoke_frequency = request.POST.get('smoke_frequency')
-            persona.reduced_intake = request.POST.get('reduced_intake')
+            elif form_id == 'datiBaseForm3':
+                # Aggiorna i dati relativi alla terza tabella
+                persona.alcol = request.POST.get('alcol')
+                persona.alcol_type = request.POST.get('alcol_type')
+                persona.data_alcol = request.POST.get('data_alcol')
+                persona.alcol_frequency = request.POST.get('alcol_frequency')
 
-            # Sport
-            persona.sport = request.POST.get('sport')
-            persona.sport_livello = request.POST.get('sport_livello')
-            persona.sport_frequency = request.POST.get('sport_frequency')
+            elif form_id == 'datiBaseForm4':
+                # Aggiorna i dati relativi alla quarta tabella
+                persona.smoke = request.POST.get('smoke')
+                persona.smoke_frequency = request.POST.get('smoke_frequency')
+                persona.reduced_intake = request.POST.get('reduced_intake')
 
-            # Sedentarietà
-            persona.attivita_sedentaria = request.POST.get('attivita_sedentaria')
-            persona.livello_sedentarieta = request.POST.get('livello_sedentarieta')
-            persona.sedentarieta_nota = request.POST.get('sedentarieta_nota')
+            elif form_id == 'datiBaseForm5':
+                # Aggiorna i dati relativi alla quinta tabella
+                persona.sport = request.POST.get('sport')
+                persona.sport_livello = request.POST.get('sport_livello')
+                persona.sport_frequency = request.POST.get('sport_frequency')
 
-            persona.save()
-            return redirect('dati_base', id=persona.id) 
+            # Salva le modifiche solo se c'è un form valido
+            if form_id:
+                persona.save()
+                print(f"Modifiche salvate per {form_id}")
+            else:
+                print("Errore: form_id non ricevuto o non valido")
 
+            return redirect('dati_base', id=persona.id)
 
-
-    
 class InserisciPazienteView(View):
 
     def get(self, request):
