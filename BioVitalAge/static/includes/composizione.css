@@ -57,7 +57,6 @@
 .datiMassaCorporea-container{
     width: 98%;
     margin: auto;
-    height: 400px;
     background-color: var(--card-color);
     border-radius: 8px;
     margin-top: 20px;
@@ -109,4 +108,17 @@ canvas{
       font-size: 18px;
       color: var(--dark1);
       background-color: white;
+}
+
+.container-btn{
+    background-color: var(--card-color);
+    width: 98%;
+    margin: auto;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;    
+}
+.container-btn .button-style{
+    width: 15rem;
+    height: 3rem;
 }

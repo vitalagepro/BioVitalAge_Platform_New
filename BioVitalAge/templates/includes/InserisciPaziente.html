@@ -53,10 +53,72 @@
       </div>
 
       {% if success %}
-      <div class="successMessage">
-        <p>{{ success}}</p>
+      <div class="successMessage" id="success">
+
+        <p>{{ success }}</p>
+        <div class="progressBarContainerSuccess">
+          <div class="progressBar" id="progressSuccess"></div>
+        </div>
+
+        <script>
+          const messaggios = document.getElementById('success');
+          const progressBars = document.getElementById('progressSuccess');
+          const durationSuccess = 6000; 
+          const intervalSuccess = 50; 
+
+          if (messaggios) {
+            let elapsedTimeSuccess = 0; 
+
+            const timerSuccess = setInterval(() => {
+              elapsedTimeSuccess += intervalSuccess;
+              const percentage = ((durationSuccess - elapsedTimeSuccess) / durationSuccess) * 100;
+              progressBars.style.width = `${percentage}%`;
+
+              if (elapsedTimeSuccess >= durationSuccess) {
+                clearInterval(timerSuccess); 
+                messaggios.style.display = 'none'; 
+              }
+            }, intervalSuccess);
+          }
+        </script>
+
+      </div>
+      {% else %}
+      {% if errore %}
+      <div class="errorSystemContainer" id="error">
+        <p>{{ errore }}</p>
+        <div class="progressBarContainer">
+          <div class="progressBar" id="progress"></div>
+        </div>
+
+        <script>
+          const messaggio = document.getElementById('error');
+          const progressBar = document.getElementById('progress');
+          const durationError = 6000; 
+          const intervalError = 50;
+
+          if (messaggio) {
+            let elapsedTimeError = 0; 
+
+            const timerError = setInterval(() => {
+              elapsedTimeError += intervalError;
+              const percentage = ((durationError - elapsedTimeError) / durationError) * 100;
+              progressBar.style.width = `${percentage}%`;
+
+              if (elapsedTimeError >= durationError) {
+                clearInterval(timerError); 
+                messaggio.style.display = 'none'; 
+              }
+            }, intervalError);
+          }
+        </script>
+
       </div>
       {% endif %}
+      {% endif %}
+
+
+     
 
       <form method="POST" action="{% url 'inserisci_paziente' %}" class="form-container" id="age-form"> 
         {% csrf_token %} 
