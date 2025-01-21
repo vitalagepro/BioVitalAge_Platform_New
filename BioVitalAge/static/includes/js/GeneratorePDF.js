@@ -8,11 +8,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   pdfButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
-      // Blocca temporaneamente l'azione di generazione del PDF
-      event.preventDefault();
+      // Verifica se il pulsante cliccato è quello con id "genereReportOS"
+      if (button.id === "genereReportOS") {
+        // Blocca temporaneamente l'azione di generazione del PDF
+        event.preventDefault();
 
-      // Mostra il disclaimer modal
-      modal.classList.remove("hidden");
+        // Mostra il disclaimer modal
+        modal.classList.remove("hidden");
+      }
     });
   });
 
@@ -20,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Nascondi il disclaimer modal
     modal.classList.add("hidden");
 
-    // Genera il PDF
+    // Genera il PDF solo se è stato cliccato il pulsante corretto
     generatePDF();
   });
 });
@@ -136,9 +139,9 @@ async function generatePDF() {
 }
 
 generaBtn.addEventListener("click", (event) => {
-    // Blocca temporaneamente la generazione del PDF
-    event.preventDefault();
+  // Blocca temporaneamente la generazione del PDF
+  event.preventDefault();
 
-    // Mostra il disclaimer modal
-    modal.classList.remove("hidden");
+  // Mostra il disclaimer modal
+  modal.classList.remove("hidden");
 });
