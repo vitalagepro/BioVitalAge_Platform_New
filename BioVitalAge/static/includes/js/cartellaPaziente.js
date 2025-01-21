@@ -75,7 +75,7 @@ function generateChart(ctx, data, label) {
         {
           label: label,
           data: data,
-          backgroundColor: "rgba(58, 37, 93, 1)",
+          backgroundColor: "#3b255d2c",
           borderColor: "#3a255d",
           tension: 0.3,
           fill: true,
