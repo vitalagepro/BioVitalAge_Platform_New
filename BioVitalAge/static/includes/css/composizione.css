@@ -1,10 +1,4 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
-:root {
+/* :root {
     --dark1: #0c042c;
     --dark2: #0c214b;
     --light1: #c3ccd4;
@@ -25,7 +19,7 @@
     --circle-color-shadow-two: rgba(42, 196, 221, 0.05);
     --text-color: rgb(34, 34, 34);
     --card-color: #f8f4fc;
-}
+} */
 
 
 .main-title-nav a{
