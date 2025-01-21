@@ -1,3 +1,4 @@
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import UtentiRegistratiCredenziali,TabellaPazienti, ArchivioReferti, DatiEstesiReferti
@@ -16,28 +17,26 @@ class LoginRenderingPage(View):
 
 
 
-
 class HomePageRender(View):
 
     def get(self, request):
         persone = TabellaPazienti.objects.all().order_by('-id')[:5]
-        
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        
-        # Ottieni il referto più recente per ogni paziente
-        ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
 
-        # Ottieni i dati estesi associati al referto più recente di ciascun paziente
-        datiEstesi = DatiEstesiReferti.objects.filter(referto=Subquery(ultimo_referto.values('id')[:1]))
+        # Calcolo di show_disclaimer
+        show_disclaimer = not request.COOKIES.get('disclaimer_accepted')  # Deve essere True se il cookie non esiste
+
+        print(f"show_disclaimer: {show_disclaimer}")  # Debug: stampa il valore
 
         context = {
             'persone': persone,
-            'datiEstesi': datiEstesi,
-            'dottore': dottore
+            'dottore': dottore,
+            'show_disclaimer': show_disclaimer  # Passa lo stato del disclaimer
         }
 
         return render(request, "includes/homePage.html", context)
+
     
     def post(self, request):
 
@@ -56,6 +55,9 @@ class HomePageRender(View):
                             dottore = UtentiRegistratiCredenziali.objects.get(email=emailInput, password=passwordInput)
                             request.session['dottore_id'] = dottore.id
 
+                            # Elimina il cookie 'disclaimer_accepted'
+                            response = redirect('HomePage')
+                            response.delete_cookie('disclaimer_accepted')
 
                             persone = TabellaPazienti.objects.all().order_by('-id')[:5]
         
@@ -78,6 +80,17 @@ class HomePageRender(View):
                         
                     else:
                         return render(request, 'includes/login.html', {'error' : 'Email inserita non valida o non registrata' })
+
+
+
+class AcceptDisclaimerView(View):
+    def post(self, request):
+        # Restituisce una risposta JSON
+        response = JsonResponse({"success": True})
+        # Imposta un cookie per indicare che il disclaimer è stato accettato
+        response.set_cookie('disclaimer_accepted', 'true', max_age=365*24*60*60)  # 1 anno
+        return response
+
 
 
 
@@ -1362,4 +1375,3 @@ class ComposizioneView(View):
         }
 
         return render(request, "includes/composizione.html", context)
-    

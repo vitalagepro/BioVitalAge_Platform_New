@@ -54,6 +54,8 @@
   </head>
   <body>
 
+      
+
     <!-- Loader -->
     {% include 'components/loader.html' %}
 
@@ -61,6 +63,30 @@
     <!-- NAVBAR -->
     {% include 'components/navBar.html' %}
 
+    <!-- Disclaimer -->
+    {% if show_disclaimer %}
+    <div class="bg-disclaimer">
+      <div class="disclaimer-container" id="disclaimerContainer">
+        <h1 class="disclaimer-title">Avviso Importante</h1>
+        <p class="disclaimer-text">
+          Questo sistema gestisce dati sensibili relativi alla salute dei pazienti. Tutte le informazioni raccolte
+          saranno trattate in conformità con le normative vigenti in materia di privacy, incluse le disposizioni del
+          GDPR
+          (Regolamento UE 2016/679). L'accesso non autorizzato o l'utilizzo improprio di questi dati è severamente
+          vietato
+          e può comportare conseguenze legali.
+        </p>
+        <div class="disclaimer-action">
+          <button class="btn-accept" onclick="acceptDisclaimer()">Accetto</button>
+        </div>
+      </div>
+    </div>
+    {% else %}
+      <p>Il disclaimer non è visibile perché il cookie è impostato.</p>
+    {% endif %}
+    <!-- Debug: stampa il valore di show_disclaimer -->
+    <!-- <p>Debug: show_disclaimer = {{ show_disclaimer }}</p> -->
+    
     <main>
       <!-- MAIN MENU TRACE -->
       <div class="main-title-nav">

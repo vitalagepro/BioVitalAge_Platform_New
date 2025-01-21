@@ -1,3 +1,64 @@
+/*  -----------------------------------------------------------------------------------------------
+  Disclaimer
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  const disclaimerContainer = document.getElementById("disclaimerContainer");
+  const disclaimerAccepted = document.cookie.includes(
+    "disclaimer_accepted=true"
+  );
+
+  if (!disclaimerAccepted && disclaimerContainer) {
+    disclaimerContainer.style.display = "block";
+    document.body.style.overflow = "hidden";
+  }
+});
+
+// Funzione per ottenere il CSRF token dal cookie
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === name + "=") {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+const csrfToken = getCookie("csrftoken");
+
+// Funzione per accettare il disclaimer
+function acceptDisclaimer() {
+  fetch("/accept-disclaimer/", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": csrfToken, // Includi il token CSRF nell'intestazione
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Errore nella risposta della rete");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.success) {
+        document.getElementById("disclaimerContainer").style.display = "none";
+        document.querySelector(".bg-disclaimer").style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+    })
+    .catch((error) => console.error("Errore:", error));
+}
+
+/*  -----------------------------------------------------------------------------------------------
+  Modal User
+--------------------------------------------------------------------------------------------------- */
 const userImg = document.getElementById("userImg");
 const userModal = document.getElementById("userModal");
 const userModalBtn = document.getElementById("nav-bar-user-modal-btn");

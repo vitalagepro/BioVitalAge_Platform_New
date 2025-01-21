@@ -26,7 +26,6 @@
     <script src="{% static 'includes/js/spinner.js' %}" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-
     <script src="{% static 'includes/js/pdfComposizione.js' %}" defer></script>
 </head>
 
@@ -40,7 +39,7 @@
     <main>
         <div class="main-title-nav">
             <div class="back-tittle">
-                <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt=""></a>
+                <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt=""></a>
                 <h2 class="main-welcome-title">Composizione Corporea, {{ persona.name }} {{ persona.surname }}</h2>
             </div>
            

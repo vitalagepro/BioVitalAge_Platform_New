@@ -53,6 +53,85 @@ body {
 
 
 
+
+/* ! DISCLAIMER */
+.bg-disclaimer{
+  background-color: rgba(0, 0, 0, 0.411);
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  z-index: 20;
+}
+
+.disclaimer-container {
+  background-color: var(--card-color);
+  box-shadow: 0 4px 6px var(--circle-color-shadow);
+  border: 1px solid var(--neutral-gray);
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 800px;
+  margin: 30px auto;
+  text-align: center;
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+}
+
+.disclaimer-title {
+  font-size: 27px;
+  font-weight: bold;
+  color: var(--contrast-color);
+  margin-bottom: 10px;
+}
+
+.disclaimer-text {
+  font-size: 14px;
+  color: var(--dark1);
+  text-align: justify;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.disclaimer-action {
+  margin-top: 20px;
+}
+
+.btn-accept {
+  background-color: var(--positive-color);
+  color: var(--tittle1);
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 3px 6px var(--contrast-color-shadow);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-accept:hover {
+  background-color: var(--contrast-color2);
+  transform: scale(1.05);
+}
+
+.btn-accept:active {
+  transform: scale(0.98);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ! LOADER PAGE */
 #loading-wrapper {
   position: fixed;
