@@ -39,6 +39,18 @@
     <!-- NAVBAR -->
     {% include 'components/navBar.html' %}
 
+    <!-- Disclaimer Modal -->
+    <div id="pdfDisclaimerModal" class="modal-pdf-container hidden">
+        <div class="modal-pdf-content">
+            <h2>Avviso Importante</h2>
+            <p>
+                Scaricando il PDF, confermi di accettare che i dati sensibili contenuti saranno gestiti in conformità alle
+                normative vigenti in materia di privacy, incluse le disposizioni del GDPR (Regolamento UE 2016/679).
+            </p>
+            <button id="closeDisclaimerBtn" class="btn-pdf-close">Chiudi</button>
+        </div>
+    </div>
+
     <main>
         <div class="main-title-nav">
             <div class="back-tittle">

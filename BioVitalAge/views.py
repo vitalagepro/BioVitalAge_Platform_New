@@ -5,8 +5,8 @@ from .models import UtentiRegistratiCredenziali,TabellaPazienti, ArchivioReferti
 from .utils import calculate_biological_age
 from django.contrib.sessions.models import Session
 from django.db.models import OuterRef, Subquery
-from django.db import transaction
-from django.contrib import messages
+# from django.db import transaction
+# from django.contrib import messages
 
 # Create your views here.
 
@@ -16,7 +16,7 @@ class LoginRenderingPage(View):
         return render(request, 'includes/login.html')
 
 
-
+# View per la homepage
 class HomePageRender(View):
 
     def get(self, request):
@@ -59,6 +59,7 @@ class HomePageRender(View):
                             response = redirect('HomePage')
                             response.delete_cookie('disclaimer_accepted')
 
+                            # Ottieni i 5 pazienti più recenti
                             persone = TabellaPazienti.objects.all().order_by('-id')[:5]
         
                             # Ottieni il referto più recente per ogni paziente
@@ -82,7 +83,7 @@ class HomePageRender(View):
                         return render(request, 'includes/login.html', {'error' : 'Email inserita non valida o non registrata' })
 
 
-
+# View per accettare il disclaimer
 class AcceptDisclaimerView(View):
     def post(self, request):
         # Restituisce una risposta JSON

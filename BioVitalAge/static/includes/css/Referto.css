@@ -1,34 +1,98 @@
+/* ! MODAL */
+.modal-pdf-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.436);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-pdf-container.hidden {
+  display: none;
+}
+
+.modal-pdf-content {
+  background: white !important;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-pdf-content h2 {
+  margin-bottom: 10px;
+}
+
+.modal-pdf-content p {
+  margin-bottom: 20px;
+}
+
+.btn-pdf-close {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-pdf-close:hover {
+  background-color: #0056b3;
+}
+
+
+
+
+
+
+
+
+
+
 .container-risultati {
   width: 98%;
   margin: 2rem auto;
 }
+
 .card-personal-info {
   background-color: var(--tittle1);
   border-radius: 8px;
   padding: 10px 20px;
 }
+
 .card-content-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
 }
+
 .card-personal-info h3,
 .exams-container h3 {
   color: var(--contrast-color);
   padding-bottom: 20px;
 }
+
 .detail-row {
   display: flex;
   justify-content: flex-start;
   align-items: center;
 }
+
 .detail-row p {
   font-size: 18px;
 }
+
 span {
   color: var(--contrast-color2);
   font-weight: bold;
   padding-right: 10px;
 }
+
 .exams-container {
   margin-top: 1rem;
   background-color: var(--card-color);
@@ -36,24 +100,28 @@ span {
   padding: 40px;
   margin: 25px;
 }
+
 .content-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
   padding: 20px 0;
 }
+
 .description {
   display: flex;
   justify-content: flex-start;
   align-items: center;
 }
+
 .indicator {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-bottom: 15px;
 }
-#indicator img{
+
+#indicator img {
   margin-top: -0.5rem;
 }
 
@@ -62,9 +130,11 @@ span {
   color: var(--negative-color-right);
   width: 30%;
 }
-.extremeNegativeRange{
+
+.extremeNegativeRange {
   text-align: right;
 }
+
 .positiveTesto {
   color: var(--positive-color);
   display: flex;
@@ -72,18 +142,22 @@ span {
   align-items: center;
   width: 50%;
 }
+
 .extremePositiveRange {
   color: var(--positive-color);
 }
+
 #middleTesto {
   width: 40%;
   color: var(--neutral-range-color);
 }
+
 #middleBar {
   width: 40%;
   left: 30%;
   background-color: var(--neutral-range-color);
 }
+
 .barra-container {
   background-color: var(--neutral-bg-color);
   border-radius: 8px;
@@ -91,12 +165,14 @@ span {
   position: relative;
   background-color: var(--negative-color-right);
 }
+
 .barra-container-none {
   background-color: var(--neutral-bg-color);
   border-radius: 8px;
   height: 1rem;
   position: relative;
 }
+
 .barra-pointer {
   height: 100%;
   position: absolute;
@@ -108,6 +184,7 @@ span {
   background-color: var(--positive-color);
   z-index: 1;
 }
+
 .barra-pointer-two {
   background-color: var(--positive-color);
   position: absolute;
@@ -117,10 +194,12 @@ span {
   height: 100%;
   border-radius: 8px;
 }
+
 #barraSpecial {
   left: 50%;
   width: 50%;
 }
+
 #indicator {
   position: absolute;
   top: -1rem;
@@ -129,6 +208,7 @@ span {
   width: 0.5rem;
   border-radius: 8px;
 }
+
 .generatePDFButton {
   height: 80%;
   width: 50%;
@@ -150,6 +230,7 @@ span {
   width: 10rem;
   margin-top: 30px;
 }
+
 .generatePDFButton::before {
   content: "";
   width: 100%;
@@ -161,6 +242,7 @@ span {
   z-index: -1;
   transition: width 0.4s ease;
 }
+
 .generatePDFButton::after {
   content: "";
   width: 0%;
@@ -172,12 +254,15 @@ span {
   z-index: -1;
   transition: width 0.4s ease;
 }
+
 .generatePDFButton:hover::before {
   width: 0;
 }
+
 .generatePDFButton:hover::after {
   width: 100%;
 }
+
 .generatePDFButton:hover {
   color: var(--tittle1);
 }
@@ -190,10 +275,12 @@ span {
   margin: 0 !important;
   padding: 0 !important;
 }
+
 .container_box {
   display: flex;
   justify-content: space-between;
 }
+
 .info_container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -202,6 +289,7 @@ span {
   row-gap: 20px;
   width: 100%;
 }
+
 .container_data {
   display: flex;
   flex-direction: column;
@@ -216,10 +304,12 @@ span {
   margin: 0 25px;
   margin-top: 25px;
 }
+
 .field {
   display: flex;
   flex-direction: column;
 }
+
 .field p:first-of-type {
   background-color: var(--contrast-color-shadow);
   border-radius: 8px;
@@ -229,6 +319,7 @@ span {
   font-weight: bold;
   padding-bottom: 25px;
 }
+
 .field p:last-of-type {
   border-bottom: 1px solid #ddd;
   border-left: 1px solid #ddd;
@@ -240,6 +331,7 @@ span {
   color: var(--dark1);
   background-color: white;
 }
+
 /*  -----------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------- */
 
@@ -247,28 +339,33 @@ span {
 
 
 
-.indicator-container{
+.indicator-container {
   border-radius: 8px;
 }
-.indicator-container{
+
+.indicator-container {
   color: var(--dark2);
   font-size: 20px;
 }
-.nome{
+
+.nome {
   background-color: var(--contrast-color-shadow);
   padding: 20px;
   border-radius: 8px;
 }
-.nome span{
+
+.nome span {
   color: var(--dark2);
   font-size: 20px;
 }
-.nome{
+
+.nome {
   display: flex;
   justify-content: space-between;
   padding-right: 20px;
 }
-#indicatori-container{
+
+#indicatori-container {
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 8px;
