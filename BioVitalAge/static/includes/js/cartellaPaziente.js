@@ -1,3 +1,139 @@
+/*  -----------------------------------------------------------------------------------------------
+  Funzione di modifica dati
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  const csrfToken = document
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content");
+
+  const editButton = document.querySelector('a[title="Modifica"]');
+  if (!editButton) {
+    console.error('Il pulsante "Modifica" non è stato trovato.');
+    return;
+  }
+
+  const emailSpan = document.getElementById("email");
+  const phoneSpan = document.getElementById("phone");
+  const successAlert = document.getElementById("successAlert");
+  const successMessage = document.getElementById("successMessage");
+  const errorAlert = document.getElementById("errorAlert");
+  const errorMessage = document.getElementById("errorMessage");
+
+  let isEditing = false; // Stato per determinare se siamo in modalità modifica
+
+  // Funzione per mostrare una notifica
+  function showAlert(alertElement, message) {
+    const messageElement = alertElement.querySelector("span");
+    messageElement.textContent = message;
+    alertElement.style.display = "block";
+    alertElement.classList.add("show");
+
+    // Nascondi la notifica dopo 3 secondi
+    setTimeout(() => {
+      alertElement.classList.remove("show");
+      setTimeout(() => (alertElement.style.display = "none"), 500);
+    }, 3000);
+  }
+
+  editButton.addEventListener("click", function (event) {
+    event.preventDefault();
+
+    if (!isEditing) {
+      // Modalità modifica
+      isEditing = true;
+
+      const emailInput = document.createElement("input");
+      emailInput.type = "text";
+      emailInput.value = emailSpan.textContent.trim();
+      emailInput.id = "emailInput";
+
+      const phoneInput = document.createElement("input");
+      phoneInput.type = "text";
+      phoneInput.value = phoneSpan.textContent.trim();
+      phoneInput.id = "phoneInput";
+
+      emailSpan.textContent = "";
+      emailSpan.appendChild(emailInput);
+
+      phoneSpan.textContent = "";
+      phoneSpan.appendChild(phoneInput);
+
+      editButton.innerHTML =
+        '<img src="/static/includes/icone/save.png" alt="save" title="Save">';
+      editButton.title = "Save";
+    } else {
+      const emailInput = document.getElementById("emailInput");
+      const phoneInput = document.getElementById("phoneInput");
+      const updatedEmail = emailInput.value;
+      const updatedPhone = phoneInput.value;
+
+      const formattedPhone = formatItalianPhoneNumber(updatedPhone);
+
+      fetch(updatePersonaUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify({
+          email: updatedEmail,
+          phone: formattedPhone,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              `HTTP Error ${response.status}: ${response.statusText}`
+            );
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data.success) {
+            console.log("Dati aggiornati con successo.");
+            emailSpan.textContent = updatedEmail;
+            phoneSpan.textContent = formattedPhone;
+
+            editButton.innerHTML =
+              '<img src="/static/includes/icone/modifica.png" alt="modifica" title="Modifica">';
+            editButton.title = "Modifica";
+
+            isEditing = false;
+
+            // Mostra il messaggio di successo
+            showAlert(successAlert, "Modifiche effettuate con successo!");
+          } else {
+            console.error("Errore dal server:", data.error);
+
+            // Mostra il messaggio di errore
+            showAlert(errorAlert, `Errore dal server: ${data.error}`);
+          }
+        })
+        .catch((error) => {
+          console.error("Errore nella richiesta:", error);
+
+          // Mostra il messaggio di errore
+          showAlert(errorAlert, `Errore nella richiesta: ${error.message}`);
+        });
+    }
+  });
+
+  function formatItalianPhoneNumber(phoneNumber) {
+    const digits = phoneNumber.replace(/\D/g, ""); // Rimuovi caratteri non numerici
+
+    if (digits.length < 10) {
+      return phoneNumber; // Restituisce il numero originale se non è valido
+    }
+
+    return digits.startsWith("39") && digits.length > 10
+      ? `+${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`
+      : `+39 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
+  }
+});
+
+/*  -----------------------------------------------------------------------------------------------
+  Funzione di loader
+--------------------------------------------------------------------------------------------------- */
 // Funzione che imposta "opacity: 0" e "z-index: -1" dopo 3 secondi
 document.addEventListener("DOMContentLoaded", function () {
   setTimeout(() => {

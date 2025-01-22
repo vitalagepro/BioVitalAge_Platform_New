@@ -26,6 +26,8 @@ class TabellaPazienti(models.Model):
     place_of_birth = models.CharField(max_length=100, null=True, blank=True)
     codice_fiscale = models.CharField(max_length=16, null=True, blank=True, unique=True)
     chronological_age = models.IntegerField(null=True, blank=True)
+    email = models.CharField(max_length=100, null=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
 
 
     # Dati antropometrici

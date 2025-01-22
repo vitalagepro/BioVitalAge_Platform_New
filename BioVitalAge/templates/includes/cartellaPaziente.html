@@ -1,9 +1,11 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <!-- Favicon -->
     <link rel="sortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
 
@@ -40,14 +42,15 @@
         <!-- MENU TRACE -->
         <div class="main-title-nav">
             <div class="back-tittle">
-                <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt=""></a>
+                <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}"
+                        alt=""></a>
                 <h2 class="main-welcome-title">Cartella Paziente, {{ persona.name }} {{ persona.surname }}</h2>
             </div>
-           
+
             <div class="main-menu-trace">
                 <a href="{% url 'HomePage' %}">
                     <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
-                </a>                    
+                </a>
                 <p>»</p>
                 <p>
                     <a href="{% url 'Risultati' %}">Pazienti</a>
@@ -60,14 +63,17 @@
 
         <!-- CARD PERSONAL INFORMATION -->
         <div class="container-datiPersonali containerStyle">
-                     
+
             <div class="header-card">
                 <h3>Personal Information</h3>
                 <div class="button-grid">
                     <a href="#"><img src="{% static 'includes/icone/note.png' %}" alt="Note" title="Note"></a>
-                    <a href="#"><img src="{% static 'includes/icone/modifica.png' %}" alt="modifica" title="Modifica"></a>
-                    <a href="" class="privacy-icon"><img src="data:image/png;base64,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" alt="data-protection" title="Privacy & Policy">
-                    </a>    
+                    <a href="#" title="Modifica"><img src="{% static 'includes/icone/modifica.png' %}" alt="modifica"
+                            title="Modifica"></a>
+                    <a href="#" class="privacy-icon"><img
+                            src="data:image/png;base64,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"
+                            alt="data-protection" title="Privacy & Policy">
+                    </a>
                 </div>
             </div>
 
@@ -75,53 +81,53 @@
 
                 <div class="info_container">
                     <div class="field">
-                            <p>Name :</p>
-                            <p>{{ persona.name }}</p>
-                    </div>
-                
-                    <div class="field">
-                            <p>Surname :</p>
-                            <p>{{ persona.surname }}</p>
+                        <p>Name :</p>
+                        <p>{{ persona.name }}</p>
                     </div>
 
                     <div class="field">
-                            <p>Date of birth :</p>
-                            <p>{{ persona.dob }}</p>
+                        <p>Surname :</p>
+                        <p>{{ persona.surname }}</p>
                     </div>
 
                     <div class="field">
-                            <p>Age :</p>
-                            <p>{{ persona.chronological_age }}</p>
+                        <p>Date of birth :</p>
+                        <p>{{ persona.dob }}</p>
                     </div>
 
                     <div class="field">
-                            <p>Codice Fiscale :</p>
-                            <p>{{ persona.codice_fiscale }}</p>
-                    </div>
-                
-                    <div class="field">
-                            <p>Place of birth :</p>
-                            <p>{{ persona.place_of_birth }}</p>
-                    </div>
-                
-                    <div class="field">
-                            <p>Place of residence:</p>
-                            <p>xxx</p>
-                    </div>
-                        
-                    <div class="field">
-                            <p>CAP :</p>
-                            <p>xxx</p>
-                    </div>
-                        
-                    <div class="field">
-                            <p>Provincia :</p>
-                            <p>xxx</p>
+                        <p>Age :</p>
+                        <p>{{ persona.chronological_age }}</p>
                     </div>
 
                     <div class="field">
-                            <p>Genere :</p>
-                            <p>{{ persona.gender }}</p>
+                        <p>Codice Fiscale :</p>
+                        <p>{{ persona.codice_fiscale }}</p>
+                    </div>
+
+                    <div class="field">
+                        <p>Place of birth :</p>
+                        <p>{{ persona.place_of_birth }}</p>
+                    </div>
+
+                    <div class="field">
+                        <p>Place of residence:</p>
+                        <p>xxx</p>
+                    </div>
+
+                    <div class="field">
+                        <p>CAP :</p>
+                        <p>xxx</p>
+                    </div>
+
+                    <div class="field">
+                        <p>Provincia :</p>
+                        <p>xxx</p>
+                    </div>
+
+                    <div class="field">
+                        <p>Genere :</p>
+                        <p>{{ persona.gender }}</p>
                     </div>
                 </div>
 
@@ -132,34 +138,48 @@
                             <div class="img-circle-container">
                                 <img src="{% static 'includes/icone/stetoscopio.png' %}" alt="">
                             </div>
-                            
-                            <p>Associate Staff<span>Dtt. Rossi</span></p>
-                         </div>
 
-                         <div class="card-subcard">
+                            <p>Associate Staff<span>Dtt. Rossi</span></p>
+                        </div>
+
+                        <div class="card-subcard">
                             <div class="img-circle-container">
                                 <img src="{% static 'includes/icone/ospedale.png' %}" alt="">
                             </div>
-                            
-                            <p>Recent Visit<span>28/08/2024</span></p>
-                         </div>
 
-                         <div class="card-subcard">
+                            <p>Recent Visit<span>28/08/2024</span></p>
+                        </div>
+
+                        <div class="card-subcard">
                             <div class="img-circle-container">
                                 <img src="{% static 'includes/icone/calendario.png' %}" alt="">
                             </div>
-                            
-                            <p>Upcoming Visit <span>10/09/2024</span></p>
-                         </div>
 
-                         <div class="card-subcard">
+                            <p>Upcoming Visit <span>10/09/2024</span></p>
+                        </div>
+
+                        <div class="card-subcard">
                             <div class="img-circle-container">
                                 <img src="{% static 'includes/icone/blood.png' %}" alt="">
                             </div>
-                            
-                            <p>Blood type<span>O +</span></p>
-                         </div>
 
+                            <p>Blood type<span>O +</span></p>
+                        </div>
+
+                    </div>
+
+                    <!-- Messaggio di Successo -->
+                    <div id="successAlert" class="alert alert-success alert-dismissible fade" role="alert"
+                        style="position: fixed; top: 20px; right: 20px; display: none; z-index: 1050;">
+                        <span id="successMessage"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Messaggio di Errore -->
+                    <div id="errorAlert" class="alert alert-danger alert-dismissible fade" role="alert"
+                        style="position: fixed; top: 20px; right: 20px; display: none; z-index: 1050;">
+                        <span id="errorMessage"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
 
                     <div class="Contact-Container">
@@ -167,27 +187,25 @@
                             <div class="img-circle-container">
                                 <img src="{% static 'includes/icone/emailNew.png' %}" alt="">
                             </div>
-                            
-                            <p>Email<span>emailinfo@gmail.com</span></p>
-                         </div>
+                            <p>Email<span id="email">{{ persona.email|default:"email@gmail.com" }}</span></p>
+                        </div>
 
-                         <div class="card-subcard">
+                        <div class="card-subcard">
                             <div class="img-circle-container">
                                 <img src="{% static 'includes/icone/phone.png' %}" alt="">
                             </div>
-                            
-                            <p>Phone<span>+39 123 45 67 890</span></p>
-                         </div>
+                            <p>Phone<span id="phone">{{ persona.phone|default:"+39 333 333 3333" }}</span></p>
+                        </div>
                     </div>
 
                 </div>
 
-                
+
             </div>
-            
+
         </div>
 
-        
+
         <!-- CARD SEZIONI DATI BASE E COMPOSIZIONE CORPOREA -->
         <div class="container-sezioniInterne containerStyle">
             <div class="cardDati">
@@ -197,7 +215,9 @@
                 </div>
                 <div class="card-content">
                     <img src="{% static 'includes/images/datiBase3.png' %}" alt="">
-                    <p>In questa sezione sono elencati tutti i dati base del paziente ovvero: Anagraphic Data, Anthropometric basic data, abdominal girth, Life Syle (alchol, smoking, sport, sedentarietà).</p>
+                    <p>In questa sezione sono elencati tutti i dati base del paziente ovvero: Anagraphic Data,
+                        Anthropometric basic data, abdominal girth, Life Syle (alchol, smoking, sport, sedentarietà).
+                    </p>
                     <a href="{% url 'dati_base' persona.id %}">Vai Alla sezione</a>
                 </div>
             </div>
@@ -210,16 +230,17 @@
                 </div>
                 <div class="card-content">
                     <img src="{% static 'includes/images/corporazione.png' %}" alt="">
-                    <p>In questa sezione sono presenti le analisi della composizione corporea e tutti i valori del paziente inerenti le analisi.</p>
+                    <p>In questa sezione sono presenti le analisi della composizione corporea e tutti i valori del
+                        paziente inerenti le analisi.</p>
                     <a href="{% url 'composizione' persona.id %}">Vai Alla sezione</a>
                 </div>
             </div>
         </div>
 
-        
+
         <!-- CARD BP, SUGAR, HEART, CHOLESTEROL -->
         <div class="dashboard">
-        
+
             <div class="card-graphic" id="card-style">
                 <div class="icon">
                     <img src="{% static 'includes/icone/pillola.png' %}" alt="BP Levels Icon">
@@ -246,7 +267,7 @@
                     </table>
                 </div>
             </div>
-        
+
             <div class="card-graphic" id="card-style">
                 <div class="icon">
                     <img src="{% static 'includes/icone/sugar.png' %}" alt="Sugar Levels Icon">
@@ -273,7 +294,7 @@
                     </table>
                 </div>
             </div>
-        
+
             <div class="card-graphic" id="card-style">
                 <div class="icon">
                     <img src="{% static 'includes/icone/heart.png' %}" alt="Heart Rate Icon">
@@ -300,7 +321,7 @@
                     </table>
                 </div>
             </div>
-        
+
             <div class="card-graphic" id="card-style">
                 <div class="icon">
                     <img src="{% static 'includes/icone/provetta.png' %}" alt="Cholesterol Icon">
@@ -341,8 +362,9 @@
                             <option value="surname">Ordinato per data meno recente</option>
                             <option value="fisc_code">Ordinato per valore positivo</option>
                             <option value="personal_association">Ordinato per valore negativo</option>
-                          </select>
-                        <a  href="{% url 'Calcolatore' %}?parametro={{ persona.codice_fiscale|urlencode }}" class="button-style">Calcola età Biologica</a>
+                        </select>
+                        <a href="{% url 'Calcolatore' %}?parametro={{ persona.codice_fiscale|urlencode }}"
+                            class="button-style">Calcola età Biologica</a>
                     </div>
                 </div>
                 <div class="table-container">
@@ -389,38 +411,38 @@
         <div class="container-indicatori containerStyle">
             <div class="card card4" id="card-style">
                 <h3 class="section-tittle">Latest Organ Health Scores</h3>
-        
-                    <div class="score-clock-graph">
-        
-                        <div class="clock" id="kidneyClock">
-                            <div class="inner"></div>
-                            <div class="percentage" id="kidneyPercentage"></div>
-        
-                            <p id="clock-description">Kidney Health</p>
-                        </div>
-        
-                        <div class="clock" id="lipidClock">
-                            <div class="inner"></div>
-                            <div class="percentage" id="lipidPercentage"></div>
-        
-                            <p id="clock-description">Lipid Health</p>
-                        </div>
-        
-                        <div class="clock" id="liverClock">
-                            <div class="inner"></div>
-                            <div class="percentage" id="liverPercentage"></div>
-        
-                            <p id="clock-description">Liver Health</p>
-                        </div>
-        
-                        <div class="clock" id="glucoseClock">
-                            <div class="inner"></div>
-                            <div class="percentage" id="glucosePercentage"></div>
-        
-                            <p id="clock-description">Glucose Health</p>
-                        </div>
-        
+
+                <div class="score-clock-graph">
+
+                    <div class="clock" id="kidneyClock">
+                        <div class="inner"></div>
+                        <div class="percentage" id="kidneyPercentage"></div>
+
+                        <p id="clock-description">Kidney Health</p>
                     </div>
+
+                    <div class="clock" id="lipidClock">
+                        <div class="inner"></div>
+                        <div class="percentage" id="lipidPercentage"></div>
+
+                        <p id="clock-description">Lipid Health</p>
+                    </div>
+
+                    <div class="clock" id="liverClock">
+                        <div class="inner"></div>
+                        <div class="percentage" id="liverPercentage"></div>
+
+                        <p id="clock-description">Liver Health</p>
+                    </div>
+
+                    <div class="clock" id="glucoseClock">
+                        <div class="inner"></div>
+                        <div class="percentage" id="glucosePercentage"></div>
+
+                        <p id="clock-description">Glucose Health</p>
+                    </div>
+
+                </div>
             </div>
 
 
@@ -441,7 +463,7 @@
 
 
 
-           <!--  <div class="card card5">
+            <!--  <div class="card card5">
                 <h2>Analisi Report</h2>
         
  -->
@@ -449,7 +471,7 @@
 
 
 
-                <!-- <div class="blood-container">
+            <!-- <div class="blood-container">
                     <h5>Blood report</h5>
                     <div class="">
                         <p><strong>Ultima analisi:</strong> &nbsp; 15/09/2000 </p>
@@ -468,17 +490,17 @@
                 <button class="button-style">Aggiorna</button>
             </div> -->
         </div>
-        
+
         <!-- DASHBOARD 2 -->
         <div class="dashboard2">
-        
+
             <div class="cardChart" id="card-style">
                 <h2>Numero Controlli</h2>
                 <div class="container-chart-dashboard2">
                     <canvas id="chartDash2_1"></canvas>
                 </div>
             </div>
-        
+
             <div class="cardChart" id="card-style">
                 <h2>Numero Esami</h2>
                 <div class="container-chart-dashboard2">
@@ -486,14 +508,20 @@
                 </div>
             </div>
         </div>
-        
-      
-              
+
+
+
     </main>
 
-    
+
     <!-- Import Js -->
+    <script>
+        const updatePersonaUrl = "{% url 'update_persona_contact' persona.id %}";
+        console.log("URL: {% url 'update_persona_contact' persona.id %}");
+        console.log("ID Persona: {{ persona.id }}")
+    </script>
     <script src="{% static 'includes/js/cartellaPaziente.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

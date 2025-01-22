@@ -5,6 +5,8 @@ from .models import UtentiRegistratiCredenziali,TabellaPazienti, ArchivioReferti
 from .utils import calculate_biological_age
 from django.contrib.sessions.models import Session
 from django.db.models import OuterRef, Subquery
+import json
+from django.views.decorators.csrf import csrf_exempt
 # from django.db import transaction
 # from django.contrib import messages
 
@@ -1376,3 +1378,53 @@ class ComposizioneView(View):
         }
 
         return render(request, "includes/composizione.html", context)
+
+
+def dettaglio_paziente(request, id):
+    try:
+        paziente = TabellaPazienti.objects.get(id=id)
+    except TabellaPazienti.DoesNotExist:
+        return redirect('pagina_errore')  # Gestione dell'errore se il paziente non esiste
+
+    # Aggiungi valori di default se email o telefono non sono disponibili
+    email = getattr(paziente, 'email', "Not provided")
+    phone = getattr(paziente, 'phone', "Not provided")
+
+    context = {
+        'persona': paziente,
+        'email': email,
+        'phone': phone,
+    }
+    return render(request, 'nome_del_tuo_template.html', context)
+
+
+  
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+@csrf_exempt  # Rimuovilo in produzione se non necessario
+def update_persona_contact(request, id):
+    if request.method == "POST":
+        try:
+            # Estrai il corpo della richiesta
+            data = json.loads(request.body)
+            email = data.get("email")
+            phone = data.get("phone")
+
+            # Recupera il modello e aggiorna i dati
+            from .models import TabellaPazienti  # Sostituisci con il tuo modello
+            persona = TabellaPazienti.objects.get(id=id)
+            persona.email = email
+            persona.phone = phone
+            persona.save()  # Salva le modifiche nel database
+
+            return JsonResponse({"success": True})
+        except TabellaPazienti.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Persona non trovata"})
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "JSON non valido"})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+    else:
+        return JsonResponse({"success": False, "error": "Metodo non valido"})

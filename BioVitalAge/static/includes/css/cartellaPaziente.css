@@ -1,4 +1,4 @@
-.main-title-nav a{
+.main-title-nav a {
   color: var(--light1) !important;
   text-decoration: none !important;
   margin: 0 !important;
@@ -12,20 +12,24 @@
   background-color: var(--card-color);
   margin: 20px auto 0px auto;
 }
+
 .containerStyle {
   padding: 20px;
   border-radius: 8px;
 }
+
 .header-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
-.header-card h3{
+
+.header-card h3 {
   color: var(--contrast-color);
   font-size: 25px;
 }
+
 .button-grid {
   display: flex;
   justify-content: center;
@@ -35,6 +39,7 @@
   border-radius: 8px;
   padding: 5px 10px;
 }
+
 .container_box {
   display: flex;
   flex-direction: column;
@@ -44,6 +49,7 @@
   border-radius: 8px;
   gap: 10px;
 }
+
 .info_container {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -52,25 +58,29 @@
   row-gap: 5px;
   width: 100%;
 }
-.other_container{
+
+.other_container {
   display: flex;
   justify-content: space-between;
 }
-.subCard-container{
+
+.subCard-container {
   width: 45%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 5px;
 }
-.Contact-Container{
+
+.Contact-Container {
   width: 30%;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   gap: 5px;
 }
-.card-subcard{
+
+.card-subcard {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -78,29 +88,55 @@
   gap: 15px;
   width: 15rem;
 }
-.card-subcard p{
+
+.card-subcard p {
   padding-top: 10px;
   padding-right: 10px;
 }
-.card-subcard span{
+
+.card-subcard span {
   display: block;
   color: var(--contrast-color);
   font-weight: bold;
 }
-.img-circle-container{
+
+.img-circle-container {
   border: 2px solid var(--contrast-color2);
   padding: 10px 10px 10px 10px;
   border-radius: 50px;
 }
-.img-circle-container img{
+
+.img-circle-container img {
   width: 30px;
   height: 30px;
 }
 
+#emailInput,
+#phoneInput {
+  display: block;
+  border: 1px solid var(--contrast-color2);
+  outline: none;
+  width: 90%;
+  padding: 0 20px;
+}
+
+.alert {
+  min-width: 250px;
+  max-width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  /* Default nascosto */
+  transition: opacity 0.5s ease-in-out;
+}
+
+.alert.show {
+  opacity: 1;
+  /* Mostra la notifica */
+}
 
 
 /* CONTAINER FOR SEZIONI INTERNET */
-.container-sezioniInterne{
+.container-sezioniInterne {
   height: 380px;
   width: 100%;
   display: flex;
@@ -108,20 +144,23 @@
   align-items: center;
   gap: 15px;
 }
-.cardDati{
+
+.cardDati {
   width: 50%;
   height: 100%;
   border-radius: 8px;
   background-color: var(--card-color);
   overflow: hidden;
 }
-.cartella-effect{
+
+.cartella-effect {
   width: 100%;
   height: 4rem;
   border-radius: 8px 8px 0px 0px;
   position: relative;
 }
-.cartella-effect h3{
+
+.cartella-effect h3 {
   background-color: var(--contrast-color-shadow);
   border-radius: 8px 0px 0px 0px;
   width: 100%;
@@ -132,7 +171,8 @@
   height: 4.5rem;
   font-size: 25px;
 }
-.space{
+
+.space {
   position: absolute;
   top: 1rem;
   right: 0;
@@ -145,7 +185,8 @@
   border-right: none;
   height: 3.5rem;
 }
-.card-content{
+
+.card-content {
   width: 102%;
   margin-left: -1%;
   height: 100%;
@@ -155,13 +196,15 @@
   border-top: none;
   position: relative;
 }
-.card-content img{
+
+.card-content img {
   position: absolute;
   right: 5rem;
   top: -1rem;
   width: 250px;
 }
-.card-content p{
+
+.card-content p {
   position: absolute;
   line-height: 1.8rem;
   letter-spacing: 1px;
@@ -169,7 +212,8 @@
   left: 2rem;
   max-width: 50%;
 }
-.card-content a{
+
+.card-content a {
   position: absolute;
   top: 12rem;
   left: 2rem;
@@ -179,12 +223,14 @@
   font-size: 20px;
   transition: transform 0.3s ease-in-out;
 }
-.card-content a::after{
+
+.card-content a::after {
   content: '➜';
   font-size: 20px;
   margin-left: 10px;
 }
-.card-content a:hover{
+
+.card-content a:hover {
   transform: translate(20px, 0px);
 }
 
@@ -200,6 +246,7 @@
   gap: 20px;
   padding: 20px;
 }
+
 .card-graphic {
   background: #fff;
   border-radius: 10px;
@@ -212,42 +259,51 @@
   height: 420px;
   overflow: hidden;
 }
+
 .card-graphic .icon img {
   width: 40px;
   height: 40px;
   margin-bottom: 10px;
 }
+
 .card-graphic h3 {
   font-size: 1.2rem;
   margin-bottom: 5px;
   color: var(--contrast-color);
 }
+
 .card-graphic p {
   color: #666;
   font-size: 0.9rem;
   margin-bottom: 15px;
 }
+
 .container_chart_dashboard {
   width: 100%;
   height: 150px;
 }
+
 .card-graphic canvas {
   width: 100%;
   object-fit: cover;
   margin-bottom: 15px;
 }
+
 .card-graphic .data {
   width: 100%;
 }
+
 .card-graphic .data table {
   width: 100%;
   border-collapse: collapse;
   border-radius: 8px;
 }
-.card-graphic .data table tr{
+
+.card-graphic .data table tr {
   display: flex;
   justify-content: space-between;
 }
+
 .card-graphic .data table td {
   text-align: left;
   padding: 5px;
@@ -259,21 +315,24 @@
 
 /* STYLE TABELLA */
 
-.contenitore-header{
+.contenitore-header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
 }
-.contenitore-header h3{
+
+.contenitore-header h3 {
   color: var(--contrast-color);
 }
-.filtri-button{
+
+.filtri-button {
   width: 29.5%;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.filtri-button a{
+
+.filtri-button a {
   width: 16rem;
   text-decoration: none;
   padding-top: 8px;
@@ -281,7 +340,8 @@
   height: 2.5rem;
   border-radius: 8px;
 }
-.filtri-button select{
+
+.filtri-button select {
   height: 2.5rem;
   border-radius: 8px;
   background-color: var(--card-color);
@@ -302,11 +362,13 @@
   gap: 15px;
   height: 390px;
 }
+
 .section-tittle {
   color: var(--contrast-color);
   font-size: 25px;
   padding: 20px;
 }
+
 .score-clock-graph {
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -317,14 +379,16 @@
   justify-content: space-between;
   align-items: center;
 }
+
 .clock {
   position: relative;
   width: 13%;
   height: 60%;
   border-radius: 50%;
   margin: 16px;
-  background: conic-gradient(black 0%, #e0e0e0 0%); 
+  background: conic-gradient(black 0%, #e0e0e0 0%);
 }
+
 .inner {
   position: absolute;
   top: 10%;
@@ -335,6 +399,7 @@
   border-radius: 50%;
   z-index: 1;
 }
+
 .percentage {
   position: absolute;
   top: 50%;
@@ -345,6 +410,7 @@
   z-index: 2;
   color: var(--contrast-color);
 }
+
 #clock-description {
   position: absolute;
   top: 110%;
@@ -356,9 +422,10 @@
 }
 
 /* ANALISI REPOPRT */
-.card5{
+.card5 {
   background-color: var(--card-color) !important;
 }
+
 .card5 h2 {
   font-size: 25px;
   font-weight: bold;
@@ -367,34 +434,41 @@
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
+
 .blood-container div,
 .exam-container div {
   display: flex;
   justify-content: space-between;
   gap: 20px;
 }
+
 .blood-container div img,
 .exam-container div img {
   width: 40px;
   margin-right: 1rem;
 }
+
 .blood-container div p,
 .exam-container div p {
   font-size: 18px;
 }
+
 .blood-container div img,
 .exam-container div img {
   transition: transform 0.3s ease-in-out;
 }
+
 .blood-container div img:hover,
 .exam-container div img:hover {
   transform: scale(1.1);
 }
-.card{
+
+.card {
   overflow: hidden;
 }
-#adjust::after{
-  content: '⟳'; 
+
+#adjust::after {
+  content: '⟳';
 }
 
 
@@ -417,6 +491,7 @@
   padding: 20px;
   margin-top: -1rem;
 }
+
 .cardChart {
   background: #fff;
   border-radius: 10px;
@@ -426,19 +501,23 @@
   overflow: hidden;
   height: 400px;
 }
+
 .cardChart h3 {
   font-size: 1.2rem;
   margin-bottom: 10px;
 }
+
 .container-chart-dashboard2 {
   width: 100%;
   overflow: hidden;
   height: 295px;
 }
+
 .cardChart canvas {
   width: 100%;
   object-fit: cover;
 }
+
 .cardChart h2 {
   font-size: 25px;
   font-weight: bold;
@@ -447,9 +526,11 @@
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   padding: 20px;
 }
+
 .contenitore-tabella {
   margin: 15px 0;
 }
+
 .recent-patients h2 {
   font-size: 25px;
   padding: 20px 0;
@@ -458,6 +539,7 @@
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
+
 .conteiner-operation {
   padding: 20px;
   margin-top: -1rem;
@@ -465,6 +547,7 @@
   gap: 20px;
   height: 300px;
 }
+
 .card7 {
   background-image: url(https://www.dimi.univr.it/documenti/Iniziativa/immagine/immagine268271.jpeg);
   position: relative;
@@ -477,6 +560,7 @@
   justify-content: center;
   align-items: flex-start;
 }
+
 .backdrop {
   position: absolute;
   top: 0rem;
@@ -487,6 +571,7 @@
   z-index: 1;
   border-radius: 8px;
 }
+
 .card8 {
   background-image: url(https://www.3ds.com/assets/invest/2024-10/lsh-pharmaceutical-and-biotech-hero-banner-1920x600.jpg);
   position: relative;
@@ -499,6 +584,7 @@
   justify-content: center;
   align-items: flex-start;
 }
+
 .card8 h2,
 .card7 h2 {
   z-index: 3;
@@ -510,11 +596,13 @@
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
+
 .card8 button,
 .card7 button {
   z-index: 3;
   margin-left: 2.5rem;
 }
+
 .risultati-ricerca {
   border: 1px solid var(--contrast-color-shadow);
 }
@@ -546,25 +634,31 @@
   display: flex;
   flex-wrap: wrap;
 }
+
 .card-body p {
   width: 30%;
   font-size: 20px;
 }
+
 .button-grid a img {
   transition: all 0.2s cubic-bezier(0.215, 0.61, 0.355, 1);
   width: 40px;
   height: 40px;
 }
+
 .button-grid a img:hover {
   transform: scale(1.1);
 }
+
 strong {
   color: var(--contrast-color);
 }
+
 .anagraphic_data h3 {
   margin: 0 !important;
   padding: 0 !important;
 }
+
 .container_data {
   display: flex;
   flex-direction: column;
@@ -577,10 +671,12 @@ strong {
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
   border-radius: 5px;
 }
+
 .field {
   display: flex;
   flex-direction: column;
 }
+
 .field p:first-of-type {
   background-color: var(--contrast-color-shadow);
   border-radius: 8px;
@@ -590,6 +686,7 @@ strong {
   font-weight: bold;
   padding-bottom: 25px;
 }
+
 .field p:last-of-type {
   border-bottom: 1px solid #ddd;
   border-left: 1px solid #ddd;
@@ -601,21 +698,12 @@ strong {
   color: var(--dark1);
   background-color: white;
 }
+
 .riga-container a img {
   width: 40px;
   transition: transform 0.3s ease-in-out;
 }
+
 .riga-container a img:hover {
   transform: scale(1.1);
 }
-
-
-
-
-
-
-
-
-
-
-
