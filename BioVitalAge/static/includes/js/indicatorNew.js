@@ -31,14 +31,14 @@ ContainerIndicatori.forEach((element) => {
 
     // Verifica se ci sono dati mancanti o non validi
     if (isNaN(valoreEsame) || isNaN(minPositive) || isNaN(maxPositive)) {
-      console.warn("Dati mancanti o non validi:", {
+      /* console.warn("Dati mancanti o non validi:", {
         valoreEsame,
         minPositive,
         maxPositive,
         rangeNegativeIndicator,
         extremeRightRangeIndicator,
       });
-      return;
+      return; */
     }
 
     // Calcola la posizione dell'indicatore
@@ -58,9 +58,9 @@ ContainerIndicatori.forEach((element) => {
       console.warn("Caso non gestito per valoreEsame:", valoreEsame);
     }
 
-    console.log("Posizione indicatore:", indicator.style.left);
+
   } catch (error) {
-    console.error("Errore durante l'elaborazione:", error, element);
+    /* console.error("Errore durante l'elaborazione:", error, element); */
   }
 });
 

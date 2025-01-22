@@ -5,8 +5,8 @@ from .models import UtentiRegistratiCredenziali,TabellaPazienti, ArchivioReferti
 from .utils import calculate_biological_age
 from django.contrib.sessions.models import Session
 from django.db.models import OuterRef, Subquery
-# from django.db import transaction
-# from django.contrib import messages
+from django.http import HttpResponse
+
 
 # Create your views here.
 

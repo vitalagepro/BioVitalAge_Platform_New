@@ -1,3 +1,33 @@
+/* ! ROOT */
+:root {
+  --dark1: #0c042c;
+  --dark2: #0c214b;
+  --light1: #c3ccd4;
+
+  --neutral-gray: #b0b8c1;
+  --neutral-bg-color: rgba(176, 184, 193, 0.2);
+  --neutral-bg-color-contrast: rgba(124, 81, 149, 0.2);
+
+  --contrast-color: #3a255d;
+  --contrast-color-shadow: #3b255d2c;
+  --contrast-color2: #6a2dcc;
+  --positive-color: #2ac670;
+
+  --tittle1: whitesmoke;
+  --tittle2: #2ac4dd;
+
+  --circle-color-shadow: rgba(42, 196, 221, 0.15);
+  --circle-color-shadow-two: rgba(42, 196, 221, 0.05);
+  --card-color: #f8f4fc;
+
+
+  /* Range color */
+  --negative-color-left: #8B1E3F;
+  --negative-color-right: #C74B5B;
+  --positive-color: #2ac670;
+  --neutral-range-color: #D4A33E;
+}
+
 /* ! MODAL */
 .modal-pdf-container {
   position: fixed;
@@ -373,3 +403,36 @@ span {
   margin-top: -1.5rem;
   padding-bottom: 30px;
 }
+
+/*  SPINNER STAMPA STYLE */
+#spinnerBackdrop{
+  background-color: rgba(0, 0, 0, 0.5);
+  width:100%;
+  height: 100%;
+  border-radius: 8px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 11;
+  display: none;
+}
+
+#snipperStampa {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  border: 8px solid #f3f3f3; 
+  border-top: 8px solid var(--contrast-color); 
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+

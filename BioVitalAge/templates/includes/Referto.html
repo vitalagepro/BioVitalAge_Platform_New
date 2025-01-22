@@ -18,8 +18,8 @@
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="{% static 'includes/js/GeneratorePDF.js' %}" defer></script>
     <script src="{% static 'includes/js/spinner.js' %}" defer></script>
+    <script src="{% static 'includes/js/pdfGenerator.js' %}" defer></script>
 
-    
     <!-- Bootstrap import -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -28,9 +28,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
    
-    <!-- Js Import -->
+    <!-- Js librerie Import -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script src="{% static 'includes/js/pdfGenerator.js' %}" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+
+
+
+
 </head>
 <body>
     <!-- Loader -->
@@ -52,67 +57,67 @@
     </div>
 
     <main>
-        <div class="main-title-nav">
-            <div class="back-tittle">
-                <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to Results"></a>
-                <h2 class="main-welcome-title">Report Patient, {{ persona.name }} {{ persona.surname }}</h2>
+            <div class="main-title-nav">
+                <div class="back-tittle">
+                    <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to Results"></a>
+                    <h2 class="main-welcome-title">Report Patient, {{ persona.name }} {{ persona.surname }}</h2>
+                </div>
+            
+                <div class="main-menu-trace">
+                    <a href="{% url 'HomePage' %}">
+                        <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+                    </a>                                    
+                    <p>»</p>
+                    <p>Elenco Pazienti</p>
+                    <p>»</p>
+                    <p>Ultimo Paziente</p>
+                </div>
             </div>
-           
-            <div class="main-menu-trace">
-                <a href="{% url 'HomePage' %}">
-                    <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
-                </a>                                    
-                <p>»</p>
-                <p>Elenco Pazienti</p>
-                <p>»</p>
-                <p>Ultimo Paziente</p>
-            </div>
-        </div>
 
-        <div class="container_data anagraphic_data">
-            <h3>Personal Information</h3>
-            <div class="container_box">
-                <div class="info_container">
-                    <div class="field">
-                        <p>Name:&nbsp;</p>
-                        <p id="name">{{ persona.name }}</p>
-                    </div>
-            
-                    <div class="field">
-                        <p>Surname:&nbsp;</p>
-                        <p id="surname">{{ persona.surname }}</p>
-                    </div>
-            
-                    <div class="field">
-                        <p>Fiscal Code:&nbsp;</p>
-                        <p id="codice_fiscale">{{ persona.codice_fiscale }}</p>
-                    </div>
-            
-                    <div class="field">
-                        <p>Place of birth:&nbsp;</p>
-                        <p id="place_birth">{{ persona.place_of_birth }}</p>
-                    </div>
-            
-                    <div class="field">
-                        <p>Age:&nbsp;</p>
-                        <p id="chronological_age">{{ persona.chronological_age }}</p>
-                    </div>
+            <div class="container_data anagraphic_data stampa">
+                <h3>Personal Information</h3>
+                <div class="container_box">
+                    <div class="info_container">
+                        <div class="field">
+                            <p>Name:&nbsp;</p>
+                            <p id="name">{{ persona.name }}</p>
+                        </div>
                 
-                    <div class="field">
-                        <p>Biological Age:&nbsp;</p>
-                        <p>{{ datiEstesi.biological_age }}</p>
-                    </div>
+                        <div class="field">
+                            <p>Surname:&nbsp;</p>
+                            <p id="surname">{{ persona.surname }}</p>
+                        </div>
+                
+                        <div class="field">
+                            <p>Fiscal Code:&nbsp;</p>
+                            <p id="codice_fiscale">{{ persona.codice_fiscale }}</p>
+                        </div>
+                
+                        <div class="field">
+                            <p>Place of birth:&nbsp;</p>
+                            <p id="place_birth">{{ persona.place_of_birth }}</p>
+                        </div>
+                
+                        <div class="field">
+                            <p>Age:&nbsp;</p>
+                            <p id="chronological_age">{{ persona.chronological_age }}</p>
+                        </div>
+                    
+                        <div class="field">
+                            <p>Biological Age:&nbsp;</p>
+                            <p>{{ datiEstesi.biological_age }}</p>
+                        </div>
 
-                    <div class="field">
-                        <p>Date of birth:&nbsp;</p>
-                        <p id="dob">{{ persona.dob }}</p>
+                        <div class="field">
+                            <p>Date of birth:&nbsp;</p>
+                            <p id="dob">{{ persona.dob }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
             <!-- OXIDATIVE -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
 
                 <h3>Oxidative Stress</h3>
                 <div class="content-container">
@@ -209,7 +214,7 @@
             </div>
 
             <!-- OMEGA SCREENING -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Omega Screening</h3>
                 <hr>
                 <h3>Fatty Acids</h3>
@@ -773,7 +778,7 @@
             </div>
 
             <!--  WHITE BLOOD CELLS -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>White Blood Cells</h3>
 
                 <div class="content-container">
@@ -1090,7 +1095,7 @@
             </div>
 
             <!-- RED BLOOD CELLS -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Red Blood Cells</h3>
 
                 <div class="content-container">
@@ -1407,7 +1412,7 @@
             </div>
 
             <!-- RENAL FUNCIONALITY -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Renal Functionality</h3>
 
                 <div class="content-container">
@@ -1585,7 +1590,7 @@
             </div>
 
             <!-- CLOTTING STATUS -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Clotting status</h3>
 
                 <div class="content-container">
@@ -1790,7 +1795,7 @@
             </div>
 
             <!-- LIPID APPARANCE -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Lipid Appearance</h3>
 
                 <div class="content-container">
@@ -1939,7 +1944,7 @@
             </div>
 
             <!-- DIABETOLOGIC SETUP -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Diabetological setup</h3>
 
                 <div class="content-container">
@@ -2060,7 +2065,7 @@
             </div>
 
             <!-- PROTEINS -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Proteins</h3>
 
                 <div class="content-container">
@@ -2635,7 +2640,7 @@
             </div>
 
             <!-- Indices of phlogosis -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Indices of phlogosis</h3>
 
                 <div class="content-container">
@@ -2701,7 +2706,7 @@
             </div>
             
             <!-- ADVANCE/SASP INFLAMMATION -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Advance/sasp inflammation</h3>
 
                 <div class="content-container">
@@ -2794,7 +2799,7 @@
             </div>
 
             <!-- MINERALS -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Minerals</h3>
 
                 <div class="content-container">
@@ -2971,7 +2976,7 @@
             </div>
 
             <!-- HORMONAL ASSETS -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Hormonal Assets</h3>
 
                 <div class="content-container">
@@ -3288,7 +3293,7 @@
             </div>
 
             <!-- MARTIAL TRIM -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Martial trim</h3>
 
                 <div class="content-container">
@@ -3410,7 +3415,7 @@
             </div>
 
             <!-- LIVER FUNCTIONALITY -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Liver Functionality</h3>
 
                 <div class="content-container">
@@ -3761,7 +3766,7 @@
             </div>
 
             <!-- OTHER EXAMS -->
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Other Exams</h3>
 
                 <div class="content-container">
@@ -4183,7 +4188,7 @@
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
             
-            <div class="exams-container">
+            <div class="exams-container stampa">
                 <h3>Telomere length</h3>
 
                 <div class="content-container">
@@ -4218,54 +4223,80 @@
                 <button class="generatePDFButton">Genera PDF</button>
             </div>
 
-        </div>
+            <button id="screenshotBtn">Genera Pdf Completo</button>
 
-        <script>
-            window.personaData = {
-                name: "{{ persona.name }}",
-                surname: "{{ persona.surname }}",
-                dob: "{{ persona.dob|date:'d/m/Y' }}",
-                gender: "{{ persona.gender }}",
-                place_of_birth: "{{ persona.place_of_birth }}",
-                codice_fiscale: "{{ persona.codice_fiscale }}",
-                chronological_age: "{{ persona.chronological_age }}",
-                biological_age: "{{ persona.biological_age }}",
-                obri_index: "{{ persona.obri_index }}",
-                d_roms: "{{ persona.d_roms }}",
-                aa_epa: "{{ persona.aa_epa }}",
-                aa_dha: "{{ persona.aa_dha }}",
-                homa_test: "{{ persona.homa_test }}",
-                cardiovascular_risk: "{{ persona.cardiovascular_risk }}",
-                osi: "{{ persona.osi }}",
-                pat: "{{ persona.pat }}",
-                wbc: "{{ persona.wbc }}",
-                baso: "{{ persona.baso }}",
-                eosi: "{{ persona.eosi }}",
-                lymph: "{{ persona.lymph }}",
-                mono: "{{ persona.mono }}",
-                neut: "{{ persona.neut }}",
-                rbc: "{{ persona.rbc }}",
-                hct: "{{ persona.hct }}",
-                hgb: "{{ persona.hgb }}",
-                mch: "{{ persona.mch }}",
-                mchc: "{{ persona.mchc }}",
-                mcv: "{{ persona.mcv }}",
-                glucose: "{{ persona.glucose }}",
-                creatinine: "{{ persona.creatinine }}",
-                ferritin: "{{ persona.ferritin }}",
-                albumin: "{{ persona.albumin }}",
-                protein: "{{ persona.protein }}",
-                bilirubin: "{{ persona.bilirubin }}",
-                uric_acid: "{{ persona.uric_acid }}"
-            };
-        </script>
+            <div id="spinnerBackdrop">
+                <div id="snipperStampa"></div>
+            </div>
+           
+
+            <script>
+                window.onload = function() {
+                    document.getElementById('screenshotBtn').addEventListener('click', function () {
+                        const cards = document.querySelectorAll('.stampa'); 
+                        const { jsPDF } = window.jspdf;
+                        const doc = new jsPDF();
+        
+                   
+                        document.getElementById('snipperStampa').style.display = 'block';
+                        document.getElementById('spinnerBackdrop').style.display = 'block';
+        
+                        let yOffset = 10; 
+        
+                        function captureCard(index) {
+                            if (index >= cards.length) {
+                             
+                                document.getElementById('snipperStampa').style.display = 'none';
+                                document.getElementById('spinnerBackdrop').style.display = 'none';
+                                doc.save('cards.pdf');  
+                                return;
+                            }
+        
+                
+                            html2canvas(cards[index]).then(function(canvas) {
+                                var img = canvas.toDataURL('image/png');
+                                var pageWidth = doc.internal.pageSize.width;
+                                var pageHeight = doc.internal.pageSize.height;
+        
+                           
+                                var imgWidth = pageWidth - 20; 
+                                var imgHeight = canvas.height * imgWidth / canvas.width;
+        
+                    
+                                if (yOffset + imgHeight > pageHeight) {
+                                    doc.addPage();
+                                    yOffset = 10; 
+                                }
+        
+                           
+                                doc.addImage(img, 'PNG', 10, yOffset, imgWidth, imgHeight);
+        
+                                yOffset += imgHeight + 10;  
+        
+                                captureCard(index + 1);
+                            }).catch(function(error) {
+                                console.error('Errore nella creazione dello screenshot:', error);
+                            });
+                        }
+        
+                        captureCard(0);
+                    });
+                };
+            </script>
+            
+            
+
+
+        </div>
 
         
         <script src="{% static 'includes/js/pdfGenerator.js' %}?v={{ timestamp }}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>        
-
+        
     </main>
 
+
+   
    
 </body>
 </html>
