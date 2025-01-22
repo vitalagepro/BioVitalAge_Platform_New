@@ -3,58 +3,94 @@
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
   const disclaimerContainer = document.getElementById("disclaimerContainer");
-  const disclaimerAccepted = document.cookie.includes(
-    "disclaimer_accepted=true"
-  );
+  const overlay = document.getElementById("cookieOverlay");
+  const initialMessage = document.getElementById("initialMessage");
+  const customizeSection = document.getElementById("customizeSection");
+  const disclaimerAccepted = document.cookie.includes("disclaimer_accepted=true");
 
+  // Mostra il disclaimer se non è stato ancora accettato
   if (!disclaimerAccepted && disclaimerContainer) {
-    disclaimerContainer.style.display = "block";
+    showDisclaimer();
+  }
+
+  // Accetta tutti i cookie
+  document.getElementById("acceptCookies").addEventListener("click", function () {
+    sendCookieSettings({ functional: true, analytics: true, marketing: true });
+    closeDisclaimer();
+  });
+
+  // Rifiuta tutti i cookie
+  document.getElementById("rejectCookies").addEventListener("click", function () {
+    sendCookieSettings({ functional: false, analytics: false, marketing: false });
+    closeDisclaimer();
+  });
+
+  // Mostra la sezione di personalizzazione
+  document.getElementById("customizeCookies").addEventListener("click", function () {
+    initialMessage.classList.add("hidden-disclaimer");
+    customizeSection.classList.remove("hidden-disclaimer");
+  });
+
+  // Salva le impostazioni personalizzate
+  document.getElementById("saveCookies").addEventListener("click", function () {
+    const functional = document.getElementById("functionalCookies").checked;
+    const analytics = document.getElementById("analyticsCookies").checked;
+    const marketing = document.getElementById("marketingCookies").checked;
+
+    sendCookieSettings({ functional, analytics, marketing });
+    closeDisclaimer();
+  });
+
+  // Mostra il disclaimer
+  function showDisclaimer() {
+    disclaimerContainer.classList.add("visible-disclaimer");
+    overlay.classList.add("visible-disclaimer");
+    disclaimerContainer.classList.remove("hidden-disclaimer");
+    overlay.classList.remove("hidden-disclaimer");
     document.body.style.overflow = "hidden";
   }
-});
 
-// Funzione per ottenere il CSRF token dal cookie
-function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== "") {
-    const cookies = document.cookie.split(";");
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === name + "=") {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
+  // Nascondi il disclaimer
+  function closeDisclaimer() {
+    disclaimerContainer.classList.remove("visible-disclaimer");
+    overlay.classList.remove("visible-disclaimer");
+    document.body.style.overflow = "auto";
+    document.cookie = "disclaimer_accepted=true; path=/; max-age=31536000"; // 1 anno
+  }
+
+  // Invia le impostazioni dei cookie al server
+  function sendCookieSettings(settings) {
+    fetch("/accept-disclaimer/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken"),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(settings),
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Errore durante il salvataggio dei cookie");
+        return response.json();
+      })
+      .then((data) => console.log("Impostazioni salvate:", data))
+      .catch((error) => console.error("Errore:", error));
+  }
+
+  // Ottieni un cookie per nome
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split("; ");
+      for (let cookie of cookies) {
+        if (cookie.startsWith(name + "=")) {
+          cookieValue = cookie.split("=")[1];
+          break;
+        }
       }
     }
+    return cookieValue;
   }
-  return cookieValue;
-}
-
-const csrfToken = getCookie("csrftoken");
-
-// Funzione per accettare il disclaimer
-function acceptDisclaimer() {
-  fetch("/accept-disclaimer/", {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": csrfToken, // Includi il token CSRF nell'intestazione
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Errore nella risposta della rete");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      if (data.success) {
-        document.getElementById("disclaimerContainer").style.display = "none";
-        document.querySelector(".bg-disclaimer").style.display = "none";
-        document.body.style.overflow = "auto";
-      }
-    })
-    .catch((error) => console.error("Errore:", error));
-}
+});
 
 /*  -----------------------------------------------------------------------------------------------
   Modal User

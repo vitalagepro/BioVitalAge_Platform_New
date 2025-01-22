@@ -119,35 +119,52 @@ document.addEventListener("DOMContentLoaded", setupSectionToggle);
 /*  -----------------------------------------------------------------------------------------------
 Function for gender selection
 --------------------------------------------------------------------------------------------------- */
-document.getElementById("gender").addEventListener("change", function () {
-  const selectedGender = this.value;
+document.addEventListener("DOMContentLoaded", function () {
+  const genderSelect = document.getElementById("gender");
 
-  // Seleziona TUTTI gli elementi di input all'interno dei form-group
-  const formGroups = document.querySelectorAll(".form-group");
+  if (!genderSelect) {
+    console.error("Elemento con ID 'gender' non trovato.");
+    return;
+  }
 
-  formGroups.forEach((group) => {
-    const label = group.querySelector("label");
-    const numberInput = group.querySelector('input[type="number"]');
-    const rangeInput = group.querySelector('input[type="range"]');
+  // Funzione per aggiornare la visibilità dei form-group
+  function updateFormGroups(selectedGender) {
+    const formGroups = document.querySelectorAll(".form-group");
 
-    if (label && numberInput && rangeInput) {
-      const isMan = label.textContent.includes("Man");
-      const isWoman = label.textContent.includes("Woman");
+    formGroups.forEach((group) => {
+      const label = group.querySelector("label");
+      const numberInput = group.querySelector('input[type="number"]');
+      const rangeInput = group.querySelector('input[type="range"]');
 
-      // Logica di disabilitazione e rimozione
-      if (
-        (selectedGender === "M" && isWoman) ||
-        (selectedGender === "F" && isMan)
-      ) {
-        numberInput.disabled = true;
-        rangeInput.disabled = true;
-        group.classList.add("hidden-form-group");
-      } else {
-        numberInput.disabled = false;
-        rangeInput.disabled = false;
-        group.classList.remove("hidden-form-group");
+      if (label && numberInput && rangeInput) {
+        const isMan = label.textContent.includes("Man");
+        const isWoman = label.textContent.includes("Woman");
+
+        if (
+          (selectedGender === "M" && isWoman) ||
+          (selectedGender === "F" && isMan)
+        ) {
+          numberInput.disabled = true;
+          rangeInput.disabled = true;
+          group.classList.add("hidden-form-group");
+        } else {
+          numberInput.disabled = false;
+          rangeInput.disabled = false;
+          group.classList.remove("hidden-form-group");
+        }
       }
-    }
+    });
+  }
+
+  // Inizializza il comportamento basato sul valore predefinito del select
+  const initialGender = genderSelect.value;
+  if (initialGender) {
+    updateFormGroups(initialGender);
+  }
+
+  // Aggiungi l'evento per reagire ai cambiamenti del select
+  genderSelect.addEventListener("change", function () {
+    updateFormGroups(this.value);
   });
 });
 

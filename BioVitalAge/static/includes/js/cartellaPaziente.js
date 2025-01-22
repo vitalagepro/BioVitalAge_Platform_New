@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
       phoneSpan.appendChild(phoneInput);
 
       editButton.innerHTML =
-        '<img src="/static/includes/icone/save.png" alt="save" title="Save">';
+        '<img src="/static/includes/icone/modifica.png" alt="save" title="Save">';
       editButton.title = "Save";
     } else {
       const emailInput = document.getElementById("emailInput");
