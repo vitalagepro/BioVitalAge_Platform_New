@@ -246,6 +246,7 @@
 
 .button-container h3 {
   color: var(--contrast-color);
+  margin-bottom: 0;
 }
 
 .reminder-list {

@@ -1,9 +1,10 @@
+from datetime import date
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import UtentiRegistratiCredenziali,TabellaPazienti, ArchivioReferti, DatiEstesiReferti
 from .utils import calculate_biological_age
-from django.contrib.sessions.models import Session
+# from django.contrib.sessions.models import Session
 from django.db.models import OuterRef, Subquery
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -15,7 +16,9 @@ from django.views.decorators.csrf import csrf_exempt
 
 class LoginRenderingPage(View):
     def get(self, request):
-        return render(request, 'includes/login.html')
+        response = render(request, 'includes/login.html')
+        response.delete_cookie('disclaimer_accepted', path='/')
+        return response
 
 
 # View per la homepage
@@ -27,7 +30,9 @@ class HomePageRender(View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
         # Calcolo di show_disclaimer
-        show_disclaimer = not request.COOKIES.get('disclaimer_accepted')  # Deve essere True se il cookie non esiste
+        show_disclaimer = not request.COOKIES.get('disclaimer_accepted', False)
+        print(f"Valore del cookie disclaimer_accepted: {request.COOKIES.get('disclaimer_accepted')}")
+        print(f"Mostrare disclaimer: {show_disclaimer}")
 
         print(f"show_disclaimer: {show_disclaimer}")  # Debug: stampa il valore
 
@@ -51,39 +56,51 @@ class HomePageRender(View):
             for key, value in record.items():
                 if key == 'email':
                     if value == emailInput: 
-
                         if record['password'] == passwordInput:
 
                             dottore = UtentiRegistratiCredenziali.objects.get(email=emailInput, password=passwordInput)
                             request.session['dottore_id'] = dottore.id
 
-                            # Elimina il cookie 'disclaimer_accepted'
-                            response = redirect('HomePage')
-                            response.delete_cookie('disclaimer_accepted')
-
                             # Ottieni i 5 pazienti più recenti
                             persone = TabellaPazienti.objects.all().order_by('-id')[:5]
-        
+            
                             # Ottieni il referto più recente per ogni paziente
                             ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
 
                             # Ottieni i dati estesi associati al referto più recente di ciascun paziente
                             datiEstesi = DatiEstesiReferti.objects.filter(referto=Subquery(ultimo_referto.values('id')[:1]))
 
-                            context = {
-                                'persone': persone,
-                                'datiEstesi': datiEstesi,
-                                'dottore': dottore
-                            }
+                            # Funzione helper per convertire i dati JSON-serializzabili
+                            def make_json_serializable(data):
+                                if isinstance(data, list):
+                                    return [make_json_serializable(item) for item in data]
+                                elif isinstance(data, dict):
+                                    return {key: make_json_serializable(value) for key, value in data.items()}
+                                elif isinstance(data, date):
+                                    return data.isoformat()  # Converte le date in stringhe
+                                return data
 
-                            return render(request, "includes/homePage.html", context)
-                        
+                            # Prepara il contesto e lo salva in sessione
+                            context = {
+                                'persone': make_json_serializable(list(persone.values())),
+                                'datiEstesi': make_json_serializable(list(datiEstesi.values())),
+                                'dottore': dottore.id  # Questo è un intero, già JSON-serializzabile
+                            }
+                            
+                            request.session['home_context'] = context
+
+                            # Reindirizza alla homepage
+                            response = redirect('HomePage')
+                            response.delete_cookie('disclaimer_accepted')
+                            response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+                            response['Pragma'] = 'no-cache'
+                            return response
+
                         else:
-                            return render(request, 'includes/login.html', {'error' : 'Password errata' })
+                            return render(request, 'includes/login.html', {'error': 'Password errata'})
                         
                     else:
-                        return render(request, 'includes/login.html', {'error' : 'Email inserita non valida o non registrata' })
-
+                        return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
 
 # View per accettare il disclaimer
 class AcceptDisclaimerView(View):

@@ -306,6 +306,77 @@ body {
 
 
 
+
+
+
+
+
+
+
+
+/* ! BUTTON STYLE GENERAL */
+/* From Uiverse.io by Creatlydev */
+.button {
+  line-height: 1;
+  text-decoration: none;
+  display: inline-flex;
+  border: none;
+  cursor: pointer;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--contrast-color2);
+  color: #fff;
+  border-radius: 18px;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  padding-left: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color 0.3s;
+}
+
+.button__icon-wrapper {
+  flex-shrink: 0;
+  width: 25px;
+  height: 25px;
+  position: relative;
+  color: var(--contrast-color2);
+  background-color: #fff;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.button:hover {
+  background-color: var(--dark1);
+}
+
+.button:hover .button__icon-wrapper {
+  color: var(--dark1);
+}
+
+.button__icon-svg--copy {
+  position: absolute;
+  transform: translate(-150%, 150%);
+}
+
+.button__icon-svg:first-child{
+  position: absolute;
+  transform: translate(0);
+}
+
+.button:hover .button__icon-svg:first-child {
+  transition: transform 0.3s ease-in-out;
+  transform: translate(150%, -150%);
+}
+
+.button:hover .button__icon-svg--copy {
+  transition: transform 0.3s ease-in-out 0.1s;
+  transform: translate(0);
+}
+
 /* BUTTON STYLE COMPONENTE */
 .button-style {
   background-color: transparent;

@@ -6,43 +6,68 @@ document.addEventListener("DOMContentLoaded", function () {
   const overlay = document.getElementById("cookieOverlay");
   const initialMessage = document.getElementById("initialMessage");
   const customizeSection = document.getElementById("customizeSection");
-  const disclaimerAccepted = document.cookie.includes("disclaimer_accepted=true");
 
-  // Mostra il disclaimer se non è stato ancora accettato
+  // Verifica la presenza del cookie
+  const disclaimerAccepted = document.cookie.includes("disclaimer_accepted=true");
+  console.log("Stato del cookie:", document.cookie); // Log per debug
+  console.log("Disclaimer accettato?", disclaimerAccepted); // Log per debug
+
+  // Mostra il disclaimer se il cookie non è stato accettato
   if (!disclaimerAccepted && disclaimerContainer) {
     showDisclaimer();
   }
 
-  // Accetta tutti i cookie
-  document.getElementById("acceptCookies").addEventListener("click", function () {
-    sendCookieSettings({ functional: true, analytics: true, marketing: true });
-    closeDisclaimer();
-  });
+  // Aggiungi i listener agli elementi solo se esistono
+  const acceptCookiesButton = document.getElementById("acceptCookies");
+  const rejectCookiesButton = document.getElementById("rejectCookies");
+  const customizeCookiesButton = document.getElementById("customizeCookies");
+  const saveCookiesButton = document.getElementById("saveCookies");
 
-  // Rifiuta tutti i cookie
-  document.getElementById("rejectCookies").addEventListener("click", function () {
-    sendCookieSettings({ functional: false, analytics: false, marketing: false });
-    closeDisclaimer();
-  });
+  if (acceptCookiesButton) {
+    acceptCookiesButton.addEventListener("click", function () {
+      sendCookieSettings({ functional: true, analytics: true, marketing: true });
+      closeDisclaimer();
+    });
+  } else {
+    console.warn("Pulsante 'Accetta tutti' non trovato nel DOM.");
+  }
 
-  // Mostra la sezione di personalizzazione
-  document.getElementById("customizeCookies").addEventListener("click", function () {
-    initialMessage.classList.add("hidden-disclaimer");
-    customizeSection.classList.remove("hidden-disclaimer");
-  });
+  if (rejectCookiesButton) {
+    rejectCookiesButton.addEventListener("click", function () {
+      sendCookieSettings({ functional: false, analytics: false, marketing: false });
+      closeDisclaimer();
+    });
+  } else {
+    console.warn("Pulsante 'Rifiuta tutti' non trovato nel DOM.");
+  }
 
-  // Salva le impostazioni personalizzate
-  document.getElementById("saveCookies").addEventListener("click", function () {
-    const functional = document.getElementById("functionalCookies").checked;
-    const analytics = document.getElementById("analyticsCookies").checked;
-    const marketing = document.getElementById("marketingCookies").checked;
+  if (customizeCookiesButton) {
+    customizeCookiesButton.addEventListener("click", function () {
+      if (initialMessage && customizeSection) {
+        initialMessage.classList.add("hidden-disclaimer");
+        customizeSection.classList.remove("hidden-disclaimer");
+      }
+    });
+  } else {
+    console.warn("Pulsante 'Personalizza' non trovato nel DOM.");
+  }
 
-    sendCookieSettings({ functional, analytics, marketing });
-    closeDisclaimer();
-  });
+  if (saveCookiesButton) {
+    saveCookiesButton.addEventListener("click", function () {
+      const functional = document.getElementById("functionalCookies")?.checked || false;
+      const analytics = document.getElementById("analyticsCookies")?.checked || false;
+      const marketing = document.getElementById("marketingCookies")?.checked || false;
+
+      sendCookieSettings({ functional, analytics, marketing });
+      closeDisclaimer();
+    });
+  } else {
+    console.warn("Pulsante 'Salva impostazioni' non trovato nel DOM.");
+  }
 
   // Mostra il disclaimer
   function showDisclaimer() {
+    console.log("Mostro il disclaimer"); // Log per debug
     disclaimerContainer.classList.add("visible-disclaimer");
     overlay.classList.add("visible-disclaimer");
     disclaimerContainer.classList.remove("hidden-disclaimer");
@@ -50,8 +75,9 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.style.overflow = "hidden";
   }
 
-  // Nascondi il disclaimer
+  // Nascondi il disclaimer e imposta il cookie
   function closeDisclaimer() {
+    console.log("Chiudo il disclaimer e imposto il cookie"); // Log per debug
     disclaimerContainer.classList.remove("visible-disclaimer");
     overlay.classList.remove("visible-disclaimer");
     document.body.style.overflow = "auto";
@@ -60,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Invia le impostazioni dei cookie al server
   function sendCookieSettings(settings) {
+    console.log("Invio le impostazioni dei cookie al server:", settings); // Log per debug
     fetch("/accept-disclaimer/", {
       method: "POST",
       headers: {
@@ -72,8 +99,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!response.ok) throw new Error("Errore durante il salvataggio dei cookie");
         return response.json();
       })
-      .then((data) => console.log("Impostazioni salvate:", data))
-      .catch((error) => console.error("Errore:", error));
+      .then((data) => console.log("Impostazioni salvate con successo:", data))
+      .catch((error) => console.error("Errore nell'invio delle impostazioni:", error));
   }
 
   // Ottieni un cookie per nome
@@ -91,6 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return cookieValue;
   }
 });
+
 
 /*  -----------------------------------------------------------------------------------------------
   Modal User

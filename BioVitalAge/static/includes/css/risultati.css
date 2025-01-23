@@ -2,12 +2,12 @@
   background-color: var(--contrast-color);
   box-shadow: 0 4px 10px var(--dark1);
   height: 5rem;
-  padding-left: 1.4rem;
   padding-top: 15px;
   padding-bottom: 15px;
+  padding: 15px 20px 15px 20px;
   border-radius: 8px;
   width: 98%;
-  margin: 2rem auto;
+  margin: 2rem 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -57,8 +57,10 @@ form ion-icon {
 .input-group {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap !important;
 }
-.input {
+
+/* .input {
   min-height: 50px;
   width: 35rem;
   padding: 0 1rem;
@@ -67,27 +69,46 @@ form ion-icon {
   border-radius: 6px 0 0 6px;
   border: none;
   background-color: var(--tittle1);
+} */
+.input {
+  width: 100%;
+  max-width: 300px;
+  padding: 12px;
+  border-radius: 12px 0 0 12px;
+  border: 1.5px solid lightgrey;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  box-shadow: 0px 0px 20px -18px;
+  background-color: var(--tittle1);
+}
+
+.input:hover {
+  border: 2px solid lightgrey;
+  box-shadow: 0px 0px 20px -17px;
+}
+
+.input:active {
+  transform: scale(0.95);
+}
+
+.input:focus {
+  border: 2px solid grey;
 }
 
 .button--submit {
   font-size: 18px;
   background-color: var(--contrast-color2);
   color: var(--tittle1);
-  width: 10rem;
+  width: 13rem;
   border: 2px solid #6a2dcc;
   border-left: none;
-  border-radius: 8px;
+  border-radius: 12px;
   transition: all 0.3s;
 }
 
 .button--submit:hover {
   opacity: 0.8;
 }
-
-.button-container {
-  margin-right: 20px;
-}
-
 #add-patient img{
   width: 40px;
   transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
