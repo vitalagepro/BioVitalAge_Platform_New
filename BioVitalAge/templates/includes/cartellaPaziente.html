@@ -24,7 +24,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 
-    <!-- Chart.js CDN -->
+    <!-- JS IMPORT -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'includes/js/spinner.js' %}" defer></script>
 </head>
@@ -213,10 +213,14 @@
         <!-- CARD SEZIONI DATI BASE E COMPOSIZIONE CORPOREA -->
         <div class="container-sezioniInterne containerStyle">
             <div class="cardDati">
+
+             
                 <div class="cartella-effect">
                     <h3>Dati Base Paziente</h3>
                     <div class="space"></div>
                 </div>
+
+
                 <div class="card-content">
                     <img src="{% static 'includes/images/datiBase3.png' %}" alt="">
                     <p>In questa sezione sono elencati tutti i dati base del paziente ovvero: Anagraphic Data,
@@ -350,6 +354,43 @@
                             <td>230</td>
                         </tr>
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD SEZIONI ETA VITALE E ANALISI SANGUE -->
+        <div class="container-sezioniInterne containerStyle" style="margin-top: -1rem;">
+            <div class="cardDati">
+
+                <div class="cartella-effect">
+                    <h3>Età Vitale</h3>
+                    <div class="space"></div>
+                </div>
+
+
+                <div class="card-content">
+                    <img src="{% static 'includes/images/etaVitale.webp' %}" alt="">
+                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
+                        Consequatur quis possimus molestias beatae expedita! 
+                        Fugiat ducimus adipisci nemo, dolores doloribus deserunt
+                         pariatur cumque nostrum sed quis nihil dicta ipsum expedita?
+                    </p>
+                    <a href="{% url 'etaVitale' persona.id %}">Vai Alla sezione</a>
+                </div>
+            </div>
+
+
+            <div class="cardDati">
+                <div class="cartella-effect">
+                    <h3>Blood Exam Report</h3>
+                    <div class="space"></div>
+                </div>
+                <div class="card-content">
+                    <img src="{% static 'includes/icone/analisi.png' %}" alt="">
+                    <p style="top: 4rem;">Referto Analisi del sangue</p>
+                    <p style="top: 6rem;"><strong>Ultima analisi:</strong> &nbsp; 15/09/2000 </p>
+                    <a href="" style="top: 10rem;" id="adjust">Aggiorna Referto</a>
+                    <a href="">Scarica Referto</a>
                 </div>
             </div>
         </div>
@@ -500,7 +541,7 @@
 
             <div class="card">
                 <div class="cartella-effect">
-                    <h3>Blood Exam report</h3>
+                    <h3>Titolo Placeholder</h3>
                     <div class="space"></div>
                 </div>
                 <div class="card-content">
@@ -515,32 +556,6 @@
 
 
 
-            <!--  <div class="card card5">
-                <h2>Analisi Report</h2>
-        
- -->
-
-
-
-
-            <!-- <div class="blood-container">
-                    <h5>Blood report</h5>
-                    <div class="">
-                        <p><strong>Ultima analisi:</strong> &nbsp; 15/09/2000 </p>
-                        <a href="#"><img src="{% static 'includes/icone/referto.png' %}" alt=""></a>
-                    </div>
-                </div>
-        
-                <div class="exam-container">
-                    <h5>Exam</h5>
-                    <div class="">
-                        <p><strong>Ultima analisi:</strong> &nbsp; 15/09/2000 </p>
-                        <a href="#"><img src="{% static 'includes/icone/referto.png' %}" alt=""></a>
-                    </div>
-                </div>
-        
-                <button class="button-style">Aggiorna</button>
-            </div> -->
         </div>
 
         <!-- DASHBOARD 2 -->

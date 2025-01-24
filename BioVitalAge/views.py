@@ -8,6 +8,9 @@ from .utils import calculate_biological_age
 from django.db.models import OuterRef, Subquery
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 # from django.db import transaction
 # from django.contrib import messages
 
@@ -1416,9 +1419,7 @@ def dettaglio_paziente(request, id):
 
 
   
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
+
 
 @csrf_exempt  # Rimuovilo in produzione se non necessario
 def update_persona_contact(request, id):
@@ -1445,3 +1446,39 @@ def update_persona_contact(request, id):
             return JsonResponse({"success": False, "error": str(e)})
     else:
         return JsonResponse({"success": False, "error": "Metodo non valido"})
+
+
+
+class EtaVitaleView(View):
+
+    def get(self,request, id):
+           
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        
+        context = {
+            'persona': persona
+        }
+
+        return render(request, "includes/EtaVitale.html", context)
+    
+    def post(self):
+        return
+    
+
+
+class TestEtaVitaleView(View):
+
+    def get(self,request, id):
+           
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        
+        context = {
+            'persona': persona
+        }
+
+        return render(request, "includes/testVitale.html", context)
+    
+    def post(self):
+        return

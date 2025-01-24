@@ -1,0 +1,111 @@
+.containerPrincipale{
+    width: 98%;
+    margin: auto;
+    background-color: var(--card-color);
+    height: 650px;
+    border-radius: 8px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.contenitoreTest h3{
+    font-size: 25px;
+    color: var(--contrast-color);
+    text-align: center;
+    font-weight: bold;
+}
+.contenitoreTest{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 30px;
+    gap: 10px;
+    height: 100%;
+    width: 50%;
+    position: relative;
+}
+.contenitoreTest::after{
+    content: '';
+    position: absolute;
+    top: 2%;
+    right: 0;
+    width: 5px;
+    background-color: var(--contrast-color);
+    height: 96%;
+    border-radius: 5px;
+}
+.contenitoreTitolo img{
+    border-radius: 50px;
+}
+.contenitoreTest-Header{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 25px;
+}
+
+.contentTest p{
+    max-width: 90%;
+    line-height: 1.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+.containerCard-test{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    height: 150px;
+    gap: 5px;
+    margin-bottom: 0px;
+}
+.contentTest h5{
+    font-weight: bold;
+}
+.containerCard-test p{
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 33%;
+    height: 6rem;
+    text-align: center;
+    padding: 20px;
+    color: var(--contrast-color2);
+    cursor: pointer;
+    background-color: white;
+    font-weight: bold;
+}
+.contenitoreTest button{
+    margin-bottom: 20px;
+}
+
+
+
+/* TABELLA REFERTI VITALE */
+.RefertiVitale{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100%;
+    width: 50%;
+}
+.TabellaVitale-header{
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 17%;
+}
+.table-container{
+    height: 73%;
+    width: 100%;
+    padding: 20px;
+}
+.TabellaVitale-header h3{
+    color: var(--contrast-color);
+    font-weight: bold;
+    font-size: 25px;
+}

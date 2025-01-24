@@ -445,7 +445,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(90deg, var(--dark1), var(--dark2));
+  background: linear-gradient(90deg, var(--dark1), var(--dark2)); 
   height: 4.5rem;
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
   z-index: 6;

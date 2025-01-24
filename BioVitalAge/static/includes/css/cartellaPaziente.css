@@ -12,19 +12,16 @@
   background-color: var(--card-color);
   margin: 20px auto 0px auto;
 }
-
 .containerStyle {
   padding: 20px;
   border-radius: 8px;
 }
-
 .header-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
-
 .header-card h3 {
   color: var(--contrast-color);
   font-size: 25px;
@@ -144,7 +141,6 @@
   align-items: center;
   gap: 15px;
 }
-
 .cardDati {
   width: 50%;
   height: 100%;
@@ -152,14 +148,12 @@
   background-color: var(--card-color);
   overflow: hidden;
 }
-
 .cartella-effect {
   width: 100%;
   height: 4rem;
   border-radius: 8px 8px 0px 0px;
   position: relative;
 }
-
 .cartella-effect h3 {
   background-color: var(--contrast-color-shadow);
   border-radius: 8px 0px 0px 0px;
@@ -171,7 +165,6 @@
   height: 4.5rem;
   font-size: 25px;
 }
-
 .space {
   position: absolute;
   top: 1rem;
@@ -185,7 +178,6 @@
   border-right: none;
   height: 3.5rem;
 }
-
 .card-content {
   width: 102%;
   margin-left: -1%;
@@ -196,14 +188,12 @@
   border-top: none;
   position: relative;
 }
-
 .card-content img {
   position: absolute;
   right: 5rem;
   top: -1rem;
   width: 250px;
 }
-
 .card-content p {
   position: absolute;
   line-height: 1.8rem;
