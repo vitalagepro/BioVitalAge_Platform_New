@@ -276,3 +276,5 @@ class DatiEstesiReferti(models.Model):
     def __str__(self):
         return f"Dati Estesi Referto ID: {self.referto.id}"
     
+
+

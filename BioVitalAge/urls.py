@@ -14,7 +14,9 @@ urlpatterns = [
     path("AggiungiPaziente/", views.InserisciPazienteView.as_view(), name="inserisci_paziente"),
     path("Home_Page/Statistiche", views.StatisticheView.as_view(), name="statistiche"),
     path("Patients/<int:id>/Composizione", views.ComposizioneView.as_view(), name="composizione"),
-    path('update-persona/<int:id>/', views.update_persona_contact, name='update_persona_contact')
+    path('update-persona/<int:id>/', views.update_persona_contact, name='update_persona_contact'),
+    path('EtaVitale/<int:id>/', views.EtaVitaleView.as_view(), name='etaVitale'),
+    path('TestVitale/<int:id>/', views.TestEtaVitaleView.as_view(), name='TestetaVitale'),
 ]
 
 

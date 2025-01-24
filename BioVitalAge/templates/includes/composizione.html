@@ -37,6 +37,8 @@
     {% include 'components/navBar.html' %}
 
     <main>
+
+        <!-- MAIN MENU TRACE -->
         <div class="main-title-nav">
             <div class="back-tittle">
                 <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt=""></a>
@@ -61,6 +63,7 @@
             </div>
         </div>
 
+        <!-- DATI ANAGRAFICI CON MASSA CORPOREA -->
         <div class="datiMassaCorporea-container">
             <h3>Dati Massa Corporea Paziente</h3>
             <div class="container_box">
@@ -119,8 +122,11 @@
       
                 </div>
             </div>
-        </div>
+        </div>  
 
+        
+
+        <!-- CONTAINER GRAFICI MASSA CORPOREA -->
         <div class="container-grafici">
             <div class="card-grafico">
                 <h3>Grasso Corporeo</h3>
