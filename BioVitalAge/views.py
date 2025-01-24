@@ -1480,5 +1480,14 @@ class TestEtaVitaleView(View):
 
         return render(request, "includes/testVitale.html", context)
     
-    def post(self):
-        return
+    def post(self, request, id):
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        print(self.request)
+        
+        context = {
+            'persona': persona
+        }
+
+        return render(request, "includes/EtaVitale.html", context)

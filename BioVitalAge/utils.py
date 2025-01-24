@@ -455,3 +455,133 @@ def calculate_biological_age(chronological_age, d_roms, osi, pat, wbc, basophils
 
 
     return biological_age 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# CALCOLO CAPACITA BIOVITALE
+
+ #   def __init__(self, isq_responses, fss_responses, biomarcatori, antropometria, performance_fisica):
+ #       self.isq_responses = isq_responses  # Risposte del questionario ISQ
+  #      self.fss_responses = fss_responses  # Risposte del questionario FSS
+  #      self.biomarcatori = biomarcatori  # Dati biomarcatori (dizionario)
+  #      self.antropometria = antropometria  # Misurazioni antropometriche (dizionario)
+   #     self.performance_fisica = performance_fisica  # Punteggio performance fisica (SPPB)
+
+def calcola_isq(self):
+        punteggio_intermedio = sum(self.isq_responses.values())
+        if punteggio_intermedio >= 15:
+            return 0
+        elif punteggio_intermedio == 14:
+            return 1
+        elif punteggio_intermedio == 13:
+            return 2
+        elif punteggio_intermedio in [12, 11]:
+            return 3
+        elif punteggio_intermedio == 10:
+            return 4
+        elif punteggio_intermedio in [8, 9]:
+            return 5
+        elif punteggio_intermedio == 7:
+            return 6
+        elif punteggio_intermedio == 6:
+            return 7
+        elif punteggio_intermedio == 5:
+            return 8
+        elif punteggio_intermedio in [3, 4]:
+            return 9
+        else:
+            return 10
+
+def calcola_fss(self):
+        return sum(self.fss_responses.values()) / len(self.fss_responses)
+
+def normalizza_biomarcatori(self):
+        punteggio = 0
+        for chiave, valore in self.biomarcatori.items():
+            if chiave == "lymph" and 15 <= valore <= 45:
+                punteggio += 1
+            elif chiave == "wbc" and 4.0 <= valore <= 10.0:
+                punteggio += 1
+            elif chiave == "pcr" and valore < 5:
+                punteggio += 1
+            elif chiave == "il6" and valore < 4.4:
+                punteggio += 1
+            elif chiave == "tnf" and 4.6 <= valore <= 12.4:
+                punteggio += 1
+        return punteggio
+
+def valuta_antropometria(self):
+        punteggio = 0
+        if self.antropometria["polpaccio"] > 33:
+            punteggio += 2
+        elif 28 <= self.antropometria["polpaccio"] <= 33:
+            punteggio += 1
+        if self.antropometria["waist_hip_ratio"] < 0.75:
+            punteggio += 2
+        elif 0.75 <= self.antropometria["waist_hip_ratio"] <= 0.85:
+            punteggio += 1
+        return punteggio
+
+def calcola_punteggio_finale(self):
+        punteggio_isq = self.calcola_isq()
+        punteggio_fss = self.calcola_fss()
+        punteggio_biomarcatori = self.normalizza_biomarcatori()
+        punteggio_antropometria = self.valuta_antropometria()
+        punteggio_performance = self.performance_fisica
+
+        punteggio_totale = (
+            punteggio_isq * 0.2 +
+            punteggio_fss * 0.2 +
+            punteggio_biomarcatori * 0.3 +
+            punteggio_antropometria * 0.2 +
+            punteggio_performance * 0.1
+        )
+
+        return round(punteggio_totale, 2)
+
+# Esempio di utilizzo:
+#if __name__ == "__main__":
+   # isq_responses = {"febbre": 2, "diarrea": 1, "mal_di_testa": 3, "pelle": 2, "dolori": 1, "raffreddore": 1, "tosse": 0}
+   # fss_responses = {
+      #  "motivazione": 5,
+      #  "attivita_fisica": 6,
+       # "facilita_fatica": 5,
+      #  "interferenza_fisica": 4,
+       # "problemi_fatica": 4,
+      #  "attivita_prolungate": 5,
+      #  "sintomi_invalidanti": 6,
+       # "interferenza_sociale": 4
+   # }
+   # biomarcatori = {"lymph": 35, "wbc": 8.0, "pcr": 2.5, "il6": 3.5, "tnf": 6.0}
+  #  antropometria = {"polpaccio": 34, "waist_hip_ratio": 0.8}
+  #  performance_fisica = 10
+
+  #  algoritmo = CapacitaBiovitale(isq_responses, fss_responses, biomarcatori, antropometria, performance_fisica)
+   # punteggio_finale = algoritmo.calcola_punteggio_finale()
+   # print(f"Punteggio finale della capacitÃ biovitale: {punteggio_finale}")
+#... (1 riga a disposizione)
