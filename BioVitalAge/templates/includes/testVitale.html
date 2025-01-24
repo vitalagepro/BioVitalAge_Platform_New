@@ -68,168 +68,660 @@
         <!-- CARD QUIZ -->
          <div class="card-container">
 
-            <div id="quiz-container">
+            <form method="POST" action="{% url 'TestetaVitale' persona.id %}"  >
+                {% csrf_token %}
+                <div id="quiz-container">
 
-                <div class="question active" data-group="1">
-                    <h3>Personal Information</h3>   
-                    <p>Controlla se le informazioni personali sono corrette, se non lo sono torna nella cartella pazienti e modifica i dati</p>
+                    <div class="question active" data-group="1">
+                        <h3>Personal Information</h3>   
+                        <p>Controlla se le informazioni personali sono corrette, se non lo sono torna nella cartella pazienti e modifica i dati</p>
 
-                    <div class="info_container">
-                        <div class="field">
-                            <p>Name :</p>
-                            <p>{{ persona.name }}</p>
-                        </div>
-        
-                        <div class="field">
-                            <p>Surname :</p>
-                            <p>{{ persona.surname }}</p>
-                        </div>
-        
-                        <div class="field">
-                            <p>Date of birth :</p>
-                            <p>{{ persona.dob }}</p>
-                        </div>
-        
-                        <div class="field">
-                            <p>Age :</p>
-                            <p>{{ persona.chronological_age }}</p>
-                        </div>
-        
-                        <div class="field">
-                            <p>Codice Fiscale :</p>
-                            <p>{{ persona.codice_fiscale }}</p>
-                        </div>
-        
-                        <div class="field">
-                            <p>Place of birth :</p>
-                            <p>{{ persona.place_of_birth }}</p>
+                        <div class="info_container">
+                            <div class="field">
+                                <p>Name :</p>
+                                <p>{{ persona.name }}</p>
+                            </div>
+            
+                            <div class="field">
+                                <p>Surname :</p>
+                                <p>{{ persona.surname }}</p>
+                            </div>
+            
+                            <div class="field">
+                                <p>Date of birth :</p>
+                                <p>{{ persona.dob }}</p>
+                            </div>
+            
+                            <div class="field">
+                                <p>Age :</p>
+                                <p>{{ persona.chronological_age }}</p>
+                            </div>
+            
+                            <div class="field">
+                                <p>Codice Fiscale :</p>
+                                <p>{{ persona.codice_fiscale }}</p>
+                            </div>
+            
+                            <div class="field">
+                                <p>Place of birth :</p>
+                                <p>{{ persona.place_of_birth }}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-
-                <div class="question" data-group="2">
-                    <h3>Sistema Immunitario</h3>
-                    <div class="table-header">
-                        <p>0</p>
+                    <div class="question" data-group="2">
+                        <h3>Sistema Immunitario</h3>
+                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
+                        
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">Sistema immunitario ottimale</p>
+                                <p class="subtitle">Sistema immunitario moderatamente vulnerabile</p>
+                                <p class="subtitle">Sistema immunitario gravemente compromesso</p>
+                            </div>
+                            <div class="tableAnswer-container">
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>0</p>
+                                    <input type="checkbox" name="sistemaImmunitario" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>1</p>
+                                    <input type="checkbox" name="sistemaImmunitario" value="1">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>2</p>
+                                    <input type="checkbox" name="sistemaImmunitario" value="2">
+                                </div>
+                            </div>
+                        </div>  
                     </div>
-                    <input type="checkbox">
-                </div>
 
-                <div class="question" data-group="3">
-                    
-                    test 3
-                </div>
+                    <div class="question" data-group="3">
+                        <h3>Biomarcatori Circolanti dell'infiammazione</h3>
+                        <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
 
-                <div class="question" data-group="4">test4</div>
+                        <div class="tableAnswer" id="esami">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">Descrizione</p>
+                                <p class="subtitle">Esito</p>
+                                <p class="subtitle">Unità di misura</p>
+                                <p class="subtitle">Valori di riferimento</p>
+                            </div>
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Lymph</p>
+                                    <p>valore</p>
+                                    <p>%</p>
+                                    <p>15 - 45</p>
+                                </div>
+                            
+                                <div class="tableRow">
+                                    <p>Lymph </p>
+                                    <p>valore</p>
+                                    <p>10^3/uL</p>
+                                    <p>1.0 - 3.5 </p>
+                                </div>
 
-                <div class="question" data-group="5">test5</div>
+                                <div class="tableRow">
+                                    <p>Wbc</p>
+                                    <p>valore</p>
+                                    <p>10^3/uL</p>
+                                    <p>4.0 - 10.0 </p>
+                                </div>
 
-                <div class="question" data-group="6">test6</div>
+                                <div class="tableRow">
+                                    <p>Proteina C reattiva</p>
+                                    <p>valore</p>
+                                    <p>%</p>
+                                    <p>15 - 45</p>
+                                </div>
+                            </div>
+                        </div>
 
-            </div>
 
+                    </div>
+
+                    <div class="question" data-group="4">
+                        <h3>Biomarcatori Circolanti dell'infiammazione</h3>
+                        <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
+
+                        <div class="tableAnswer" id="esami">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">Descrizione</p>
+                                <p class="subtitle">Esito</p>
+                                <p class="subtitle">Unità di misura</p>
+                                <p class="subtitle">Valori di riferimento</p>
+                            </div>
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Interleuchina 6</p>
+                                    <p>valore</p>
+                                    <p>pg/mL </p>
+                                    <p>4.4 </p>
+                                </div>
+                            
+                                <div class="tableRow">
+                                    <p>TNF (Tumor Necrosis 
+                                        Factor) alfa  </p>
+                                    <p>valore</p>
+                                    <p>pg/mL </p>
+                                    <p>4,60 - 12,40</p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Mono </p>
+                                    <p>valore</p>
+                                    <p>%</p>
+                                    <p>0 - 10</p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Mono </p>
+                                    <p>valore</p>
+                                    <p>0^3/uL</p>
+                                    <p>0-0.99</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question" data-group="5">
+                        <h3>Energia e Metabolismo</h3>
+                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
+                        
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">Fatigue Security Scale</p>
+                                
+                            </div>
+                            <div class="tableAnswer-container">
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>0</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>1</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>2</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+
+                    <div class="question" data-group="6">
+                        <h3>Energia e Metabolismo</h3>
+                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
+                        
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">Circonferenza del polpaccio</p>
+                                
+                            </div>
+                            <div class="tableAnswer-container">
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>0</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>1</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>2</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                            </div>
+                        </div>  
+                        
+
+
+                    </div>
+
+                    <div class="question" data-group="7">
+                        <h3>Energia e Metabolismo</h3>
+                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
+                        
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">Weist-hip ratio</p>
+                                
+                            </div>
+                            <div class="tableAnswer-container">
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>0</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>1</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>2</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                            </div>
+                        </div>  
+                        
+
+
+                    </div>
+
+                    <div class="question" data-group="8">
+                        <h3>Energia e Metabolismo</h3>
+                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
+                        
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">Weist-height ratio</p>
+                                
+                            </div>
+                            <div class="tableAnswer-container">
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>0</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>1</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>2</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                            </div>
+                        </div>  
+                        
+
+
+                    </div>
+
+                    <div class="question" data-group="9">
+                        <h3>Biomarcatori Circolanti del Metabolismo</h3>
+                        <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
+
+                        <div class="tableAnswer" id="esami">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">Descrizione</p>
+                                <p class="subtitle">Esito</p>
+                                <p class="subtitle">Unità di misura</p>
+                                <p class="subtitle">Valori di riferimento</p>
+                            </div>
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Glicemia a digiuno </p>
+                                    <p>valore</p>
+                                    <p>mg/dL  </p>
+                                    <p>info</p>  <!-- INSERIRE MODALE CHE MOSTRA I VALORI COMPLETI 
+                                                        Valori normali: 74-106 mg/dL 
+                                                        Ipoglicemia: < 74 mg/dL 
+                                                        Pre-diabete: 107-125 mg/dL 
+                                                        Diabete: ≥ 126 mg/dL  -->
+                                </div>
+                            
+                                <div class="tableRow">
+                                    <p>Emoglobina glicata 
+                                        (HbA1c) </p>
+                                    <p>valore</p>
+                                    <p>%  </p>
+                                    <p>info</p> <!-- Valori normali: 4-6% 
+                                                        Pre-diabete: 6,1% - 6,4% 
+                                                        Diabete: ≥ 6,5%  -->
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Insulina a digiuno </p>
+                                    <p>valore</p>
+                                    <p>IU/mL </p>
+                                    <p>Valori normali: < 20 IU/mL </p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Peptide C </p>
+                                    <p>valore</p>
+                                    <p>ng/mL </p>
+                                    <p>Valori normali: 0,8–4,2 ng/mL </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question" data-group="10">
+                        <h3>Biomarcatori Circolanti del Metabolismo</h3>
+                        <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
+
+                        <div class="tableAnswer" id="esami">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">Descrizione</p>
+                                <p class="subtitle">Esito</p>
+                                <p class="subtitle">Unità di misura</p>
+                                <p class="subtitle">Valori di riferimento</p>
+                            </div>
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Colesterolo totale </p>
+                                    <p>valore</p>
+                                    <p>mg/dL</p>
+                                    <p>info</p>  <!-- INSERIRE MODALE CHE MOSTRA I VALORI COMPLETI 
+                                                        Valori desiderabili: 130 - 200 
+                                                        mg/dL 
+                                                        Borderline (rischio lieve): 200
+                                                        239 mg/dL 
+                                                        Valori alti (rischio alto): ≥ 240 
+                                                        mg/dL   -->
+                                </div>
+                            
+                                <div class="tableRow">
+                                    <p>Colesterolo LDL </p>
+                                    <p>valore</p>
+                                    <p>mg/dL </p>
+                                    <p>info</p> <!-- Valori ottimali: < 100 mg/dL 
+                                                    Quasi 
+                                                    ottimale: 
+                                                    mg/dL 
+                                                    Borderline 
+                                                    mg/dL 
+                                                    alto: 
+                                                    Alto: 160-189 mg/dL 
+                                                    100-129 
+                                                    130-159 
+                                                    Molto alto: ≥ 190 mg/dL   -->
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Colesterolo HDL  </p>
+                                    <p>valore</p>
+                                    <p>mg/dL</p>
+                                    <p>info</p> <!-- UOMO  Nessun rischio: >55 
+                                                        mg/dL 
+                                                        Rischio moderato: 35
+                                                        55 mg/dL  
+                                                        
+                                                        Rischio alto: <35 
+                                                        mg/dL  -->
+                                                <!-- DONNA Nessun rischio: >65 
+                                                        mg/dL 
+                                                        Rischio moderato: 45
+                                                        65 mg/dL  
+                                                        
+                                                        Rischio alto: <45 mg/dL -->
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Trigliceridi </p>
+                                    <p>valore</p>
+                                    <p>mg/dL </p>
+                                    <p>info</p> <!-- Valori ottimali: < 150 mg/dL 
+                                                    Al limite (Borderline): 150
+                                                    199 md/dL 
+                                                    Alto: >200 mg/dL  -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question" data-group="10">
+                        <h3>Biomarcatori Circolanti del Metabolismo</h3>
+                        <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
+
+                        <div class="tableAnswer" id="esami">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">Descrizione</p>
+                                <p class="subtitle">Esito</p>
+                                <p class="subtitle">Unità di misura</p>
+                                <p class="subtitle">Valori di riferimento</p>
+                            </div>
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Albumina </p>
+                                    <p>valore</p>
+                                    <p>g/dL </p>
+                                    <p>Valori ottimali: 3,5 – 5,2 g/dL </p>
+                                </div>
+                                <div class="tableRow">
+                                    <p>Clearance urea </p>
+                                    <p>valore</p>
+                                    <p>ml/min</p>
+                                    <p>Valori ottimali: 60-90 ml/min</p> 
+                                </div>
+                            
+                                <div class="tableRow">
+                                    <p>IGF-1 </p>
+                                    <p>valore</p>
+                                    <p> 
+                                        ng/mL </p>
+                                    <p>info</p> <!-- BAMBINI/ ADOLESCENTI Valori ottimali: 100 600 ng/mL
+                                                    ADULTI FINO A 50 anni  Valori ottimali: 100 300 ng/mL  
+                                                    Adulti sopra i 50 anni  Valori ottimali: 200 ng/mL 50 -->
+                                </div>
+                            
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question" data-group="11">
+                        <h3>Funzione Neuromuscolare</h3>
+                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
+                        
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">Questionario SARC-F</p>
+
+                            </div>
+                            <div class="tableAnswer-container">
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>0</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>1</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+
+                    <div class="question" data-group="12">
+                        <h3>Funzione Neuromuscolare</h3>
+                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
+                        
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">Hand Grip Strenght Test</p>
         
+                            </div>
+                            <div class="tableAnswer-container">
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>0</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>1</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>2</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
 
-            <div class="button-container">
-                <div class="left-right-btn">
+
+                    <div class="question" data-group="12">
+                        <h3>Performance Fisica</h3>
+                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
+                        
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">
+                                    Short Physical Performance Battery</p>
+        
+                            </div>
+                            <div class="tableAnswer-container">
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>0</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>1</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>2</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>3</p>
+                                    <input type="checkbox" value="0">
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
                 
-                    <button class="button button--submit" id="prev-btn">
-                        <span class="button__icon-wrapper">
-                            <svg
-                              viewBox="0 0 14 15"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="button__icon-svg"
-                              width="10"
-                            >
-                              <path
-                                d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
-                                fill="currentColor"
-                              ></path>
-                            </svg>
-              
-                            <svg
-                              viewBox="0 0 14 15"
-                              fill="none"
-                              width="10"
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="button__icon-svg button__icon-svg--copy"
-                            >
-                              <path
-                                d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
-                                fill="currentColor"
-                              ></path>
-                            </svg>
-                        </span>
-                        Precedente
-                    </button>
-
-                    <button class="button button--submit" id="next-btn">
-                        <span class="button__icon-wrapper">
-                            <svg
-                              viewBox="0 0 14 15"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="button__icon-svg"
-                              width="10"
-                            >
-                              <path
-                                d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
-                                fill="currentColor"
-                              ></path>
-                            </svg>
-              
-                            <svg
-                              viewBox="0 0 14 15"
-                              fill="none"
-                              width="10"
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="button__icon-svg button__icon-svg--copy"
-                            >
-                              <path
-                                d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
-                                fill="currentColor"
-                              ></path>
-                            </svg>
-                        </span>
-                        Successivo
-                    </button>
-
                 </div>
 
-                <button class="button button--submit" id="next-btn" type="submit">
-                    <span class="button__icon-wrapper">
-                        <svg
-                          viewBox="0 0 14 15"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="button__icon-svg"
-                          width="10"
-                        >
-                          <path
-                            d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
-                            fill="currentColor"
-                          ></path>
-                        </svg>
-          
-                        <svg
-                          viewBox="0 0 14 15"
-                          fill="none"
-                          width="10"
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="button__icon-svg button__icon-svg--copy"
-                        >
-                          <path
-                            d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
-                            fill="currentColor"
-                          ></path>
-                        </svg>
-                    </span>
-                    invia
-                </button>
-            </div>
+                <div class="button-container">
+                    <div class="left-right-btn">
+                    
+                        <button class="button button--submit" id="prev-btn" type="button">
+                            <span class="button__icon-wrapper">
+                                <svg
+                                viewBox="0 0 14 15"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="button__icon-svg"
+                                width="10"
+                                >
+                                <path
+                                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+                                    fill="currentColor"
+                                ></path>
+                                </svg>
+                
+                                <svg
+                                viewBox="0 0 14 15"
+                                fill="none"
+                                width="10"
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="button__icon-svg button__icon-svg--copy"
+                                >
+                                <path
+                                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+                                    fill="currentColor"
+                                ></path>
+                                </svg>
+                            </span>
+                            Precedente
+                        </button>
 
+                        <button class="button button--submit" id="next-btn" type="button">
+                            <span class="button__icon-wrapper">
+                                <svg
+                                viewBox="0 0 14 15"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="button__icon-svg"
+                                width="10"
+                                >
+                                <path
+                                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+                                    fill="currentColor"
+                                ></path>
+                                </svg>
+                
+                                <svg
+                                viewBox="0 0 14 15"
+                                fill="none"
+                                width="10"
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="button__icon-svg button__icon-svg--copy"
+                                >
+                                <path
+                                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+                                    fill="currentColor"
+                                ></path>
+                                </svg>
+                            </span>
+                            Successivo
+                        </button>
+
+                    </div>
+
+                    <button class="button button--submit" id="next-btn" type="submit">
+                        <span class="button__icon-wrapper">
+                            <svg
+                            viewBox="0 0 14 15"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="button__icon-svg"
+                            width="10"
+                            >
+                            <path
+                                d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+                                fill="currentColor"
+                            ></path>
+                            </svg>
+            
+                            <svg
+                            viewBox="0 0 14 15"
+                            fill="none"
+                            width="10"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="button__icon-svg button__icon-svg--copy"
+                            >
+                            <path
+                                d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+                                fill="currentColor"
+                            ></path>
+                            </svg>
+                        </span>
+                        invia
+                    </button>
+                </div>
+            </form>
+
+        </div>
+
+        <!-- DA SISTEMARE LA POSSIBILITA' DI CLICCARE SOLO UN CHECKBOX -->
+        <script>
+            document.querySelectorAll('.exclusive-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        document.querySelectorAll('.exclusive-checkbox').forEach(cb => {
+                            if (cb !== this) cb.checked = false;
+                        });
+                    }
+                });
+            });
+        </script>
+           
 
 
          </div>

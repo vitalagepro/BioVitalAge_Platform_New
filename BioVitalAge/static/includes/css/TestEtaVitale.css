@@ -90,3 +90,83 @@
     margin-top: 0rem;
     height: 3rem;
 }
+.tableAnswer{
+    height: 300px;
+    background-color: white;
+    width: 100%;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.tableAnswer-header{
+    width: 100%;
+    background-color: var(--contrast-color);
+    padding: 20px;
+    height: 5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.subtitle{
+    color: white;
+    font-size: 20px;
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
+}
+.question p{
+    letter-spacing: 1px;
+}
+.question p span{
+    color: var(--contrast-color);
+    cursor: pointer;
+    font-weight: bold;
+}
+.tableAnswer-container{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.tableInput{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 10rem;
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+.tableInput input{
+    width: 30px;
+    height: 30px;
+}
+.tableRow{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 5rem;
+}
+.tableRow p{
+    text-align: center;
+    width: 100%;
+    border-bottom: 1px solid #ddd ;
+    padding: 20px;
+    border-left: 1px solid #ddd;
+}
+.tableRow p:first-of-type{
+    border-left: none;
+}
+#secondTypeTable{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+#esami{
+    height: 400px;
+}
