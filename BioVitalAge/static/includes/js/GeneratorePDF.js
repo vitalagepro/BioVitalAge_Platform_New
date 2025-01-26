@@ -1,5 +1,5 @@
 /*  -----------------------------------------------------------------------------------------------
-    Disclaimer
+    Disclaimer PDF
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
   const pdfButtons = document.querySelectorAll(".generatePDFButton");
@@ -133,7 +133,7 @@ async function generatePDF() {
     link.href = URL.createObjectURL(blob);
     const nameUpperCase = name.toUpperCase();
     const surnameUpperCase = surname.toUpperCase();
-    link.download = `${nameUpperCase}-${surnameUpperCase}-ESAME().pdf`;
+    link.download = `${nameUpperCase}-${surnameUpperCase}-OXIDATIVE-S(${new Date().toISOString().slice(0, 10)}).pdf`;
     link.click();
   } catch (error) {
     console.error("Errore durante la generazione del PDF:", error);
