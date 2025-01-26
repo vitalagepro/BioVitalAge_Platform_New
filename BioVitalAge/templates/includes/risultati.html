@@ -116,9 +116,17 @@
                     <button type="submit">Search</button> -->
         </form>
         <div class="button-container">
-          <a href="{% url 'inserisci_paziente' %}" title="Add Patient" id="add-patient">
-            <img src="{% static 'includes/icone/add-user.png' %}" alt="Add User" title="Aggiungi Utente">
+          <a href="{% url 'inserisci_paziente' %}" title="Add Patient" id="add-patient" class="add-patient-btn" onclick="animateButton()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Aggiungi Paziente
           </a>
+          <!-- <a href="{% url 'inserisci_paziente' %}" title="Add Patient" id="add-patient">
+            <img src="{% static 'includes/icone/add-user.png' %}" alt="Add User" title="Aggiungi Utente">
+          </a> -->
         </div>
       </div>
     
@@ -167,6 +175,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+      /*  -----------------------------------------------------------------------------------------------
+      Animate Button
+      --------------------------------------------------------------------------------------------------- */
+      function animateButton() {
+        gsap.to(".add-patient-btn", { scale: 1.1, duration: 0.2, yoyo: true, repeat: 1 });
+      }
       /*  -----------------------------------------------------------------------------------------------
       Modal User
       --------------------------------------------------------------------------------------------------- */

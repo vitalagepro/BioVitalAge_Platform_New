@@ -5051,16 +5051,79 @@
                         </svg>
                     </span>
                     Genera PDF             
-                </button>            
+                </button>       
             </div>
 
-            <button id="screenshotBtn" class="button-style" style="margin-left: 30px; margin-bottom: 30px; border-radius: 4px; width: 15rem; height: 3rem;">Genera Pdf Completo</button>
+            <!-- GENERA PDF COMPLETO -->
+            <button class="generatePDFButton button" id="screenshotBtn">
+                <span class="button__icon-wrapper">
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    width="18"
+                    class="button__icon-svg"
+                    >
+                    <path
+                        d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    ></path>
+                    <path
+                        d="M14 2V6H18"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    ></path>
+                    </svg>
+                    
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    width="18"
+                    class="button__icon-svg button__icon-svg--copy"
+                    >
+                    <path
+                        d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    ></path>
+                    <path
+                        d="M14 2V6H18"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    ></path>
+                    </svg>
+                </span>
+                Genera PDF Completo           
+            </button>
 
+            <!-- SPINNER -->
             <div id="spinnerBackdrop">
-                <div id="snipperStampa"></div>
+                <!-- From Uiverse.io by milley69 -->
+                 <!-- From Uiverse.io by Nawsome --> 
+                <div id="snipperStampa">
+                    <div class="slide"><i></i></div>
+                    <div class="paper"></div>
+                    <div class="keyboard"></div>
+                </div>
+                <!-- <div id="snipperStampa">
+                    <svg width="128px" height="96px" viewBox="0 0 64 48" style="width: 128px; height: 96px;">
+                        <polyline points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24" id="back"></polyline>
+                        <polyline points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24" id="front"></polyline>
+                    </svg>
+                </div> -->
             </div>
            
-
+            <!-- SCRIPT -->
             <script>
                 /*  -----------------------------------------------------------------------------------------------
                 User Modal log out
@@ -5092,6 +5155,7 @@
                    
                         document.getElementById('snipperStampa').style.display = 'block';
                         document.getElementById('spinnerBackdrop').style.display = 'block';
+                        document.body.style.overflow = 'hidden';
         
                         let yOffset = 10; 
         
@@ -5100,7 +5164,8 @@
                              
                                 document.getElementById('snipperStampa').style.display = 'none';
                                 document.getElementById('spinnerBackdrop').style.display = 'none';
-                                doc.save('cards.pdf');  
+                                document.body.style.overflow = 'auto';
+                                doc.save('FULL-REPORT.pdf');
                                 return;
                             }
         

@@ -1,4 +1,4 @@
-.containerPrincipale{
+.containerPrincipale {
     width: 98%;
     margin: auto;
     background-color: var(--card-color);
@@ -9,13 +9,15 @@
     justify-content: space-between;
     align-items: center;
 }
-.contenitoreTest h3{
+
+.contenitoreTest h3 {
     font-size: 25px;
     color: var(--contrast-color);
     text-align: center;
     font-weight: bold;
 }
-.contenitoreTest{
+
+.contenitoreTest {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -26,7 +28,8 @@
     width: 50%;
     position: relative;
 }
-.contenitoreTest::after{
+
+.contenitoreTest::after {
     content: '';
     position: absolute;
     top: 2%;
@@ -36,23 +39,26 @@
     height: 96%;
     border-radius: 5px;
 }
-.contenitoreTitolo img{
+
+.contenitoreTitolo img {
     border-radius: 50px;
 }
-.contenitoreTest-Header{
+
+.contenitoreTest-Header {
     display: flex;
     justify-content: flex-start;
     align-items: center;
     gap: 25px;
 }
 
-.contentTest p{
+.contentTest p {
     max-width: 90%;
     line-height: 1.8rem;
     letter-spacing: 1px;
     margin-bottom: 10px;
 }
-.containerCard-test{
+
+.containerCard-test {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -61,10 +67,12 @@
     gap: 5px;
     margin-bottom: 0px;
 }
-.contentTest h5{
+
+.contentTest h5 {
     font-weight: bold;
 }
-.containerCard-test p{
+
+.containerCard-test p {
     border: 1px solid #ddd;
     border-radius: 8px;
     width: 33%;
@@ -76,14 +84,15 @@
     background-color: white;
     font-weight: bold;
 }
-.contenitoreTest button{
+
+.contenitoreTest button {
     margin-bottom: 20px;
 }
 
 
 
 /* TABELLA REFERTI VITALE */
-.RefertiVitale{
+.RefertiVitale {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -91,7 +100,8 @@
     height: 100%;
     width: 50%;
 }
-.TabellaVitale-header{
+
+.TabellaVitale-header {
     width: 100%;
     padding: 20px;
     display: flex;
@@ -99,13 +109,56 @@
     align-items: center;
     height: 17%;
 }
-.table-container{
+
+.table-container {
     height: 73%;
     width: 100%;
     padding: 20px;
 }
-.TabellaVitale-header h3{
+
+.TabellaVitale-header h3 {
     color: var(--contrast-color);
     font-weight: bold;
     font-size: 25px;
+}
+
+/* ! FILTRI */
+.filtri-button {
+    position: relative;
+    width: auto;
+    display: inline-block;
+}
+
+.custom-select {
+    appearance: none;
+    width: 245px;
+    padding: 5px 30px 5px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    background-image: none;
+}
+
+.custom-select:focus {
+    outline: none;
+    border-color: var(--contrast-color);
+    box-shadow: 0 0 5px var(--contrast-color2);
+}
+
+/* Nuova freccia */
+.custom-arrow {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 8px;
+    height: 5px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="%23999"/></svg>');
+    background-size: 8px;
+    background-repeat: no-repeat;
+    transform: translateY(-50%) rotate(0);
+    transition: transform 0.2s ease;
+    pointer-events: none;
 }

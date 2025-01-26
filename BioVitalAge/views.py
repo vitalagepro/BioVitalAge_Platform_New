@@ -1307,11 +1307,18 @@ class InserisciPazienteView(View):
                         dottore=dottore,
                         name=request.POST.get('name'),
                         surname=request.POST.get('surname'),
+                        email=request.POST.get('email'),
+                        phone=request.POST.get('phone'),
                         dob=parse_date(request.POST.get('dob')),
                         gender=request.POST.get('gender'),
+                        cap=request.POST.get('cap'),
                         place_of_birth=request.POST.get('place_of_birth'),
                         codice_fiscale=codice_fiscale,
                         chronological_age=request.POST.get('chronological_age'),
+                        blood_group=request.POST.get('blood_group'),
+                        associate_staff=request.POST.get('associate_staff'),
+                        lastVisit=parse_date(request.POST.get('lastVisit')),
+                        upcomingVisit=parse_date(request.POST.get('upcomingVisit')),
 
                         # Dati antropometrici
                         height=request.POST.get('height'),
@@ -1346,6 +1353,8 @@ class InserisciPazienteView(View):
                         sedentarieta_nota=request.POST.get('sedentarieta_nota'),
                     )
                     print("sono qui")
+                    print(TabellaPazienti.objects.get(lastVisit=parse_date(request.POST.get('lastVisit'))))
+                    print(TabellaPazienti.objects.get(upcomingVisit=parse_date(request.POST.get('upcomingVisit'))))
                     context = {
                         "success": success, 
                         'dottore' : dottore,
@@ -1429,12 +1438,20 @@ def update_persona_contact(request, id):
             data = json.loads(request.body)
             email = data.get("email")
             phone = data.get("phone")
+            associate_staff = data.get("associate_staff")
+            lastVisit = data.get("lastVisit")
+            upcomingVisit = data.get("upcomingVisit")
+            blood_group = data.get("blood_group")
 
             # Recupera il modello e aggiorna i dati
             from .models import TabellaPazienti  # Sostituisci con il tuo modello
             persona = TabellaPazienti.objects.get(id=id)
             persona.email = email
             persona.phone = phone
+            persona.associate_staff = associate_staff
+            persona.lastVisit = lastVisit
+            persona.upcomingVisit = upcomingVisit
+            persona.blood_group = blood_group
             persona.save()  # Salva le modifiche nel database
 
             return JsonResponse({"success": True})
@@ -1491,3 +1508,10 @@ class TestEtaVitaleView(View):
         }
 
         return render(request, "includes/EtaVitale.html", context)
+
+
+
+# Referto View
+def referti_view(request, referto_id):
+    referto = ArchivioReferti.objects.get(id=referto_id)
+    return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})

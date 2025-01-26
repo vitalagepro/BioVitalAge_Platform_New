@@ -14,6 +14,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const emailSpan = document.getElementById("email");
   const phoneSpan = document.getElementById("phone");
+  const associateStaffSpan = document.getElementById("associate_staff");
+  const lastVisitSpan = document.getElementById("lastVisit");
+  const upcomingVisitSpan = document.getElementById("upcomingVisit");
+  const bloodGroupSpan = document.getElementById("blood_group");
   const successAlert = document.getElementById("successAlert");
   const successMessage = document.getElementById("successMessage");
   const errorAlert = document.getElementById("errorAlert");
@@ -52,11 +56,43 @@ document.addEventListener("DOMContentLoaded", function () {
       phoneInput.value = phoneSpan.textContent.trim();
       phoneInput.id = "phoneInput";
 
+      const associateStaffInput = document.createElement("input");
+      associateStaffInput.type = "text";
+      associateStaffInput.value = associateStaffSpan.textContent.trim();
+      associateStaffInput.id = "associateStaffInput";
+
+      const lastVisitInput = document.createElement("input");
+      lastVisitInput.type = "date";
+      lastVisitInput.value = lastVisitSpan.textContent.trim();
+      lastVisitInput.id = "lastVisitInput";
+
+      const upcomingVisitInput = document.createElement("input");
+      upcomingVisitInput.type = "date";
+      upcomingVisitInput.value = upcomingVisitSpan.textContent.trim();
+      upcomingVisitInput.id = "upcomingVisitInput";
+
+      const bloodGroupInput = document.createElement("input");
+      bloodGroupInput.type = "text";
+      bloodGroupInput.value = bloodGroupSpan.textContent.trim();
+      bloodGroupInput.id = "bloodGroupInput";
+
       emailSpan.textContent = "";
       emailSpan.appendChild(emailInput);
 
       phoneSpan.textContent = "";
       phoneSpan.appendChild(phoneInput);
+
+      associateStaffSpan.textContent = "";
+      associateStaffSpan.appendChild(associateStaffInput);
+
+      lastVisitSpan.textContent = "";
+      lastVisitSpan.appendChild(lastVisitInput);
+
+      upcomingVisitSpan.textContent = "";
+      upcomingVisitSpan.appendChild(upcomingVisitInput);
+
+      bloodGroupSpan.textContent = "";
+      bloodGroupSpan.appendChild(bloodGroupInput);
 
       editButton.innerHTML =
         `
@@ -77,8 +113,17 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       const emailInput = document.getElementById("emailInput");
       const phoneInput = document.getElementById("phoneInput");
+      const associateStaffInput = document.getElementById("associateStaffInput");
+      const lastVisitInput = document.getElementById("lastVisitInput");
+      const upcomingVisitInput = document.getElementById("upcomingVisitInput");
+      const bloodGroupInput = document.getElementById("bloodGroupInput");
+      
       const updatedEmail = emailInput.value;
       const updatedPhone = phoneInput.value;
+      const updatedAssociateStaff = associateStaffInput.value;
+      const updatedLastVisit = lastVisitInput.value;
+      const updatedUpcomingVisit = upcomingVisitInput.value;
+      const updatedBloodGroup = bloodGroupInput.value;
 
       const formattedPhone = formatItalianPhoneNumber(updatedPhone);
 
@@ -91,6 +136,10 @@ document.addEventListener("DOMContentLoaded", function () {
         body: JSON.stringify({
           email: updatedEmail,
           phone: formattedPhone,
+          associate_staff: updatedAssociateStaff,
+          last_visit: updatedLastVisit,
+          upcoming_visit: updatedUpcomingVisit,
+          blood_group: updatedBloodGroup
         }),
       })
         .then((response) => {
@@ -106,6 +155,10 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("Dati aggiornati con successo.");
             emailSpan.textContent = updatedEmail;
             phoneSpan.textContent = formattedPhone;
+            associateStaffSpan.textContent = updatedAssociateStaff;
+            lastVisitSpan.textContent = updatedLastVisit;
+            upcomingVisitSpan.textContent = updatedUpcomingVisit;
+            bloodGroupSpan.textContent = updatedBloodGroup;
 
             editButton.innerHTML =
               `Edit

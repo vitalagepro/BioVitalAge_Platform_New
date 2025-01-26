@@ -128,12 +128,13 @@ async function generatePDF() {
 
     // Salva Pdf e scarica
     const modifiedPdfBytes = await pdfDoc.save();
+    const dataReferto = "{{ paziente.data_referto|date:'Y-m-d' }}";
     const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     const nameUpperCase = name.toUpperCase();
     const surnameUpperCase = surname.toUpperCase();
-    link.download = `${nameUpperCase}-${surnameUpperCase}-OXIDATIVE-S(${new Date().toISOString().slice(0, 10)}).pdf`;
+    link.download = `${nameUpperCase}-${surnameUpperCase}-OXIDATIVE-S(${dataReferto}).pdf`;
     link.click();
   } catch (error) {
     console.error("Errore durante la generazione del PDF:", error);
