@@ -129,24 +129,16 @@
                 </div>
                 <div class="table-container">
                         <div class="table-header">
-                            <p>Chronological Age</p>
-                            <p>Biological Age</p>
-                            <p>Valore Referto</p>
+                            <p>Punteggio Ottenuto</p>
                             <p>Data Referto</p>
                             <p>Mostra Referto</p>
                             <p>Scarica Referto</p>
                         </div>
                         <div class="table-content">
-                            {% for referto in referti_recenti %}
+                            {% for referto in referti_test_recenti %}
                             <div class="riga-container">
-                                <p>{{ persona.chronological_age }}</p>
-                                {% for dato in dati_estesi %}
-                                {% if dato.referto.id == referto.id %}
-                                <p>{{ dato.biological_age }}</p>
-                                {% endif %}
-                                {% endfor %}
-                                <p>{{ referto.descrizione }}</p>
-                                <p>{{ referto.data_referto|date:"d/m/Y" }}</p>
+                                <p>{{ referto.punteggio }}</p>
+                                <p>{{ referto.data_referto }}</p>
                                 <p>
                                     <a href="{% url 'persona_detail' persona.id %}">
                                         <img src="{% static 'includes/icone/referto.png' %}" alt="" />

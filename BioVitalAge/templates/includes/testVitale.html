@@ -72,6 +72,7 @@
                 {% csrf_token %}
                 <div id="quiz-container">
 
+                    <!-- PERSONAL INFORMATION -->
                     <div class="question active" data-group="1">
                         <h3>Personal Information</h3>   
                         <p>Controlla se le informazioni personali sono corrette, se non lo sono torna nella cartella pazienti e modifica i dati</p>
@@ -109,36 +110,88 @@
                         </div>
                     </div>
 
+                    <!-- SISTEMA IMMUNITARIO -->
                     <div class="question" data-group="2">
                         <h3>Sistema Immunitario</h3>
-                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
+                        <p style="margin-top: 0rem;">In base al name="Lymph" 1 inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
                         
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
-                                <p class="subtitle">Sistema immunitario ottimale</p>
-                                <p class="subtitle">Sistema immunitario moderatamente vulnerabile</p>
-                                <p class="subtitle">Sistema immunitario gravemente compromesso</p>
+                                <p class="subtitle"></p>
+                                <p class="subtitle">Mai</p>
+                                <p class="subtitle">A volte</p>
+                                <p class="subtitle">Regolarmente</p>
+                                <p class="subtitle">Spesso</p>
+                                <p class="subtitle">Quasi sempre</p>
                             </div>
-                            <div class="tableAnswer-container">
-                                <div class="tableInput">
-                                    <p>punteggio</p>
-                                    <p>0</p>
-                                    <input type="checkbox" name="sistemaImmunitario" value="0">
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow" style="margin-top: 10px;">
+                                    <p>Febbre Alta Improvvisa</p>
+                                    <p><input type="checkbox" name="SiIm_1"  value="0"></p>
+                                    <p><input type="checkbox" name="SiIm_1"  value="1"></p>
+                                    <p><input type="checkbox" name="SiIm_1"  value="2"></p>
+                                    <p><input type="checkbox" name="SiIm_1"  value="3"></p>
+                                    <p><input type="checkbox" name="SiIm_1"  value="4"></p>
                                 </div>
-                                <div class="tableInput">
-                                    <p>punteggio</p>
-                                    <p>1</p>
-                                    <input type="checkbox" name="sistemaImmunitario" value="1">
+                                <div class="tableRow">
+                                    <p>Diarrea</p>
+                                    <p><input type="checkbox" name="SiIm_2"  value="0"></p>
+                                    <p><input type="checkbox" name="SiIm_2"  value="1"></p>
+                                    <p><input type="checkbox" name="SiIm_2"  value="2"></p>
+                                    <p><input type="checkbox" name="SiIm_2"  value="3"></p>
+                                    <p><input type="checkbox" name="SiIm_2"  value="4"></p>
                                 </div>
-                                <div class="tableInput">
-                                    <p>punteggio</p>
-                                    <p>2</p>
-                                    <input type="checkbox" name="sistemaImmunitario" value="2">
+
+                                <div class="tableRow">
+                                    <p>Mal di Testa</p>
+                                    <p><input type="checkbox" name="SiIm_3"  value="0"></p>
+                                    <p><input type="checkbox" name="SiIm_3"  value="1"></p>
+                                    <p><input type="checkbox" name="SiIm_3"  value="2"></p>
+                                    <p><input type="checkbox" name="SiIm_3"  value="3"></p>
+                                    <p><input type="checkbox" name="SiIm_3"  value="4"></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Problemi della Pelle</p>
+                                    <p><input type="checkbox" name="SiIm_4"  value="0"></p>
+                                    <p><input type="checkbox" name="SiIm_4"  value="1"></p>
+                                    <p><input type="checkbox" name="SiIm_4"  value="2"></p>
+                                    <p><input type="checkbox" name="SiIm_4"  value="3"></p>
+                                    <p><input type="checkbox" name="SiIm_4"  value="4"></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Dolori Muscolari e Articolari</p>
+                                    <p><input type="checkbox" name="SiIm_5"  value="0"></p>
+                                    <p><input type="checkbox" name="SiIm_5"  value="1"></p>
+                                    <p><input type="checkbox" name="SiIm_5"  value="2"></p>
+                                    <p><input type="checkbox" name="SiIm_5"  value="3"></p>
+                                    <p><input type="checkbox" name="SiIm_5"  value="4"></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Raffreddore</p>
+                                    <p><input type="checkbox" name="SiIm_6"  value="0"></p>
+                                    <p><input type="checkbox" name="SiIm_6"  value="1"></p>
+                                    <p><input type="checkbox" name="SiIm_6"  value="2"></p>
+                                    <p><input type="checkbox" name="SiIm_6"  value="3"></p>
+                                    <p><input type="checkbox" name="SiIm_6"  value="4"></p>     
+                                </div>
+                                
+                                <div class="tableRow">
+                                    <p>Tosse</p>
+                                    <p><input type="checkbox" name="SiIm_7"  value="0"></p>
+                                    <p><input type="checkbox" name="SiIm_7"  value="1"></p>
+                                    <p><input type="checkbox" name="SiIm_7"  value="2"></p>
+                                    <p><input type="checkbox" name="SiIm_7"  value="3"></p>
+                                    <p><input type="checkbox" name="SiIm_7"  value="4"></p>
                                 </div>
                             </div>
                         </div>  
                     </div>
 
+                    <!-- BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE -->
                     <div class="question" data-group="3">
                         <h3>Biomarcatori Circolanti dell'infiammazione</h3>
                         <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
@@ -151,54 +204,40 @@
                                 <p class="subtitle">Valori di riferimento</p>
                             </div>
                             <div class="tableAnswer-container" id="secondTypeTable">
-                                <div class="tableRow">
+                                <div class="tableRow" style="margin-top: 10px;">
                                     <p>Lymph</p>
-                                    <p>valore</p>
+                                    <p name="Lymph">{{ dati_estesi.lymph }}</p>
                                     <p>%</p>
                                     <p>15 - 45</p>
                                 </div>
                             
                                 <div class="tableRow">
                                     <p>Lymph </p>
-                                    <p>valore</p>
+                                    <p name="Lymph_el">{{ dati_estesi.lymph_ul }}</p>
                                     <p>10^3/uL</p>
                                     <p>1.0 - 3.5 </p>
                                 </div>
 
                                 <div class="tableRow">
                                     <p>Wbc</p>
-                                    <p>valore</p>
+                                    <p name="wbc"> {{ dati_estesi.wbc }}</p>
                                     <p>10^3/uL</p>
                                     <p>4.0 - 10.0 </p>
                                 </div>
 
                                 <div class="tableRow">
                                     <p>Proteina C reattiva</p>
-                                    <p>valore</p>
+                                    <p> 
+                                        <input type="text" name="Proteins_c" required placeholder="inserisci valore">
+                                    </p>
+                                   
                                     <p>%</p>
                                     <p>15 - 45</p>
                                 </div>
-                            </div>
-                        </div>
 
-
-                    </div>
-
-                    <div class="question" data-group="4">
-                        <h3>Biomarcatori Circolanti dell'infiammazione</h3>
-                        <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
-
-                        <div class="tableAnswer" id="esami">
-                            <div class="tableAnswer-header">
-                                <p class="subtitle">Descrizione</p>
-                                <p class="subtitle">Esito</p>
-                                <p class="subtitle">Unità di misura</p>
-                                <p class="subtitle">Valori di riferimento</p>
-                            </div>
-                            <div class="tableAnswer-container" id="secondTypeTable">
                                 <div class="tableRow">
                                     <p>Interleuchina 6</p>
-                                    <p>valore</p>
+                                    <p name="Inter_6">{{ dati_estesi.inter_6 }}</p>
                                     <p>pg/mL </p>
                                     <p>4.4 </p>
                                 </div>
@@ -206,21 +245,21 @@
                                 <div class="tableRow">
                                     <p>TNF (Tumor Necrosis 
                                         Factor) alfa  </p>
-                                    <p>valore</p>
+                                    <p name="Tnf">{{ dati_estesi.tnf_a }}</p>
                                     <p>pg/mL </p>
                                     <p>4,60 - 12,40</p>
                                 </div>
 
                                 <div class="tableRow">
                                     <p>Mono </p>
-                                    <p>valore</p>
+                                    <p name="Mono">{{ dati_estesi.mono}}</p>
                                     <p>%</p>
                                     <p>0 - 10</p>
                                 </div>
 
                                 <div class="tableRow">
                                     <p>Mono </p>
-                                    <p>valore</p>
+                                    <p name="Mono_el">{{ dati_estesi.mono_ul }}</p>
                                     <p>0^3/uL</p>
                                     <p>0-0.99</p>
                                 </div>
@@ -228,41 +267,123 @@
                         </div>
                     </div>
 
-                    <div class="question" data-group="5">
+                    <!-- ENERGIA E METABOLISMO -->
+                    <div class="question" data-group="4">
                         <h3>Energia e Metabolismo</h3>
-                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
+                        <p style="margin-top: 0rem;">Questionario sulla stanchezza percepita (Fatigue Severity Scale)</p>
                         
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
-                                <p class="subtitle">Fatigue Security Scale</p>
-                                
+                                <p class="subtitle"></p>
+                                <p class="subtitle">Fortemente in disaccordo</p>
+                                <p class="subtitle"></p>
+                                <p class="subtitle"></p>
+                                <p class="subtitle">Nè d'accordo nè in disaccordo</p>
+                                <p class="subtitle"></p>
+                                <p class="subtitle"></p>
+                                <p class="subtitle">Fortemente d'accordo</p>
                             </div>
-                            <div class="tableAnswer-container">
-                                <div class="tableInput">
-                                    <p>punteggio</p>
-                                    <p>0</p>
-                                    <input type="checkbox" value="0">
+
+                            <div class="tableAnswer-container" id="secondTypeTable">
+
+                                <div class="tableRow" style="margin-top: 10px;">
+                                    <p>Quando sono affaticato, la mia motivazione è bassa</p>
+                                    <p><input type="checkbox" name="fss_1"  value="1"></p>
+                                    <p><input type="checkbox" name="fss_1"  value="2"></p>
+                                    <p><input type="checkbox" name="fss_1"  value="3"></p>
+                                    <p><input type="checkbox" name="fss_1"  value="4"></p>
+                                    <p><input type="checkbox" name="fss_1"  value="5"></p>
+                                    <p><input type="checkbox" name="fss_1"  value="6"></p>
+                                    <p><input type="checkbox" name="fss_1"  value="7"></p>
                                 </div>
-                                <div class="tableInput">
-                                    <p>punteggio</p>
-                                    <p>1</p>
-                                    <input type="checkbox" value="0">
+                                
+                                <div class="tableRow">
+                                    <p>Mi sento affaticato con l'attività fisica</p>
+                                    <p><input type="checkbox" name="fss_2"  value="1"></p>
+                                    <p><input type="checkbox" name="fss_2"  value="2"></p>
+                                    <p><input type="checkbox" name="fss_2"  value="3"></p>
+                                    <p><input type="checkbox" name="fss_2"  value="4"></p>
+                                    <p><input type="checkbox" name="fss_2"  value="5"></p>
+                                    <p><input type="checkbox" name="fss_2"  value="6"></p>
+                                    <p><input type="checkbox" name="fss_2"  value="7"></p>
                                 </div>
-                                <div class="tableInput">
-                                    <p>punteggio</p>
-                                    <p>2</p>
-                                    <input type="checkbox" value="0">
+
+                                <div class="tableRow">
+                                    <p>Mi sento affaticato facilmente</p>
+                                    <p><input type="checkbox" name="fss_3"  value="1"></p>
+                                    <p><input type="checkbox" name="fss_3"  value="2"></p>
+                                    <p><input type="checkbox" name="fss_3"  value="3"></p>
+                                    <p><input type="checkbox" name="fss_3"  value="4"></p>
+                                    <p><input type="checkbox" name="fss_3"  value="5"></p>
+                                    <p><input type="checkbox" name="fss_3"  value="6"></p>
+                                    <p><input type="checkbox" name="fss_3"  value="7"></p>
                                 </div>
+
+                                <div class="tableRow">
+                                    <p>La fatica interferisce con le mie funzioni fisiche</p>
+                                    <p><input type="checkbox" name="fss_4"  value="1"></p>
+                                    <p><input type="checkbox" name="fss_4"  value="2"></p>
+                                    <p><input type="checkbox" name="fss_4"  value="3"></p>
+                                    <p><input type="checkbox" name="fss_4"  value="4"></p>
+                                    <p><input type="checkbox" name="fss_4"  value="5"></p>
+                                    <p><input type="checkbox" name="fss_4"  value="6"></p>
+                                    <p><input type="checkbox" name="fss_4"  value="7"></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>La fatica mi causa problemi frequenti</p>
+                                    <p><input type="checkbox" name="fss_5"  value="1"></p>
+                                    <p><input type="checkbox" name="fss_5"  value="2"></p>
+                                    <p><input type="checkbox" name="fss_5"  value="3"></p>
+                                    <p><input type="checkbox" name="fss_5"  value="4"></p>
+                                    <p><input type="checkbox" name="fss_5"  value="5"></p>
+                                    <p><input type="checkbox" name="fss_5"  value="6"></p>
+                                    <p><input type="checkbox" name="fss_5"  value="7"></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>La fatica mi impedisce di svolgere attività fisiche prolungate</p>
+                                    <p><input type="checkbox" name="fss_6"  value="1"></p>
+                                    <p><input type="checkbox" name="fss_6"  value="2"></p>
+                                    <p><input type="checkbox" name="fss_6"  value="3"></p>
+                                    <p><input type="checkbox" name="fss_6"  value="4"></p>
+                                    <p><input type="checkbox" name="fss_6"  value="5"></p>
+                                    <p><input type="checkbox" name="fss_6"  value="6"></p>
+                                    <p><input type="checkbox" name="fss_6"  value="7"></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>La fatica è tra i miei 3 sintomi più invalidanti</p>
+                                    <p><input type="checkbox" name="fss_7"  value="1"></p>
+                                    <p><input type="checkbox" name="fss_7"  value="2"></p>
+                                    <p><input type="checkbox" name="fss_7"  value="3"></p>
+                                    <p><input type="checkbox" name="fss_7"  value="4"></p>
+                                    <p><input type="checkbox" name="fss_7"  value="5"></p>
+                                    <p><input type="checkbox" name="fss_7"  value="6"></p>
+                                    <p><input type="checkbox" name="fss_7"  value="7"></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>La fatica interferisce con il lavoro, la famiglia e la vita sociale</p>
+                                    <p><input type="checkbox" name="fss_8"  value="1"></p>
+                                    <p><input type="checkbox" name="fss_8"  value="2"></p>
+                                    <p><input type="checkbox" name="fss_8"  value="3"></p>
+                                    <p><input type="checkbox" name="fss_8"  value="4"></p>
+                                    <p><input type="checkbox" name="fss_8"  value="5"></p>
+                                    <p><input type="checkbox" name="fss_8"  value="6"></p>
+                                    <p><input type="checkbox" name="fss_8"  value="7"></p>
+                                </div>
+
                             </div>
                         </div>  
                     </div>
 
-                    <div class="question" data-group="6">
+                    <div class="question" data-group="5">
                         <h3>Energia e Metabolismo</h3>
-                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
+                        <p style="margin-top: 0rem;">In base al name="Lymph" 1 inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
                         
                         <div class="tableAnswer">
-                            <div class="tableAnswer-header">
+                            <div class="tableAnswer-header" style="height: 4rem;">
                                 <p class="subtitle">Circonferenza del polpaccio</p>
                                 
                             </div>
@@ -270,63 +391,23 @@
                                 <div class="tableInput">
                                     <p>punteggio</p>
                                     <p>0</p>
-                                    <input type="checkbox" value="0">
+                                    <input type="checkbox" name="CirPolp" value="0">
                                 </div>
                                 <div class="tableInput">
                                     <p>punteggio</p>
                                     <p>1</p>
-                                    <input type="checkbox" value="0">
+                                    <input type="checkbox" name="CirPolp" value="1">
                                 </div>
                                 <div class="tableInput">
                                     <p>punteggio</p>
                                     <p>2</p>
-                                    <input type="checkbox" value="0">
+                                    <input type="checkbox" name="CirPolp" value="2">
                                 </div>
                             </div>
                         </div>  
-                        
 
-
-                    </div>
-
-                    <div class="question" data-group="7">
-                        <h3>Energia e Metabolismo</h3>
-                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
-                        
                         <div class="tableAnswer">
-                            <div class="tableAnswer-header">
-                                <p class="subtitle">Weist-hip ratio</p>
-                                
-                            </div>
-                            <div class="tableAnswer-container">
-                                <div class="tableInput">
-                                    <p>punteggio</p>
-                                    <p>0</p>
-                                    <input type="checkbox" value="0">
-                                </div>
-                                <div class="tableInput">
-                                    <p>punteggio</p>
-                                    <p>1</p>
-                                    <input type="checkbox" value="0">
-                                </div>
-                                <div class="tableInput">
-                                    <p>punteggio</p>
-                                    <p>2</p>
-                                    <input type="checkbox" value="0">
-                                </div>
-                            </div>
-                        </div>  
-                        
-
-
-                    </div>
-
-                    <div class="question" data-group="8">
-                        <h3>Energia e Metabolismo</h3>
-                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
-                        
-                        <div class="tableAnswer">
-                            <div class="tableAnswer-header">
+                            <div class="tableAnswer-header" style="height: 4rem;">
                                 <p class="subtitle">Weist-height ratio</p>
                                 
                             </div>
@@ -334,26 +415,49 @@
                                 <div class="tableInput">
                                     <p>punteggio</p>
                                     <p>0</p>
-                                    <input type="checkbox" value="0">
+                                    <input type="checkbox" name="WH_ratio"  value="0">
                                 </div>
                                 <div class="tableInput">
                                     <p>punteggio</p>
                                     <p>1</p>
-                                    <input type="checkbox" value="0">
+                                    <input type="checkbox" name="WH_ratio"  value="1">
                                 </div>
                                 <div class="tableInput">
                                     <p>punteggio</p>
                                     <p>2</p>
-                                    <input type="checkbox" value="0">
+                                    <input type="checkbox" name="WH_ratio" value="2">
                                 </div>
                             </div>
                         </div>  
                         
-
-
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header" style="height: 4rem;">
+                                <p class="subtitle">Weist-hip ratio</p>
+                                
+                            </div>
+                            <div class="tableAnswer-container">
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>0</p>
+                                    <input type="checkbox" name="WHip_ratio" value="0">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>1</p>
+                                    <input type="checkbox" name="WHip_ratio"  value="1">
+                                </div>
+                                <div class="tableInput">
+                                    <p>punteggio</p>
+                                    <p>2</p>
+                                    <input type="checkbox" name="WHip_ratio"  value="2">
+                                </div>
+                            </div>
+                        </div>  
                     </div>
 
-                    <div class="question" data-group="9">
+                    
+                    <!-- BIOMARCATORI CIRCOLANTI DEL METABOLISMO -->
+                    <div class="question" data-group="8">
                         <h3>Biomarcatori Circolanti del Metabolismo</h3>
                         <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
 
@@ -365,9 +469,9 @@
                                 <p class="subtitle">Valori di riferimento</p>
                             </div>
                             <div class="tableAnswer-container" id="secondTypeTable">
-                                <div class="tableRow">
+                                <div class="tableRow" style="margin-top: 10px;">
                                     <p>Glicemia a digiuno </p>
-                                    <p>valore</p>
+                                    <p name="Glic">{{ dati_estesi.glicemy }}</p>
                                     <p>mg/dL  </p>
                                     <p>info</p>  <!-- INSERIRE MODALE CHE MOSTRA I VALORI COMPLETI 
                                                         Valori normali: 74-106 mg/dL 
@@ -379,7 +483,9 @@
                                 <div class="tableRow">
                                     <p>Emoglobina glicata 
                                         (HbA1c) </p>
-                                    <p>valore</p>
+                                    <p>
+                                        <input type="text" name="Emog" required placeholder="Inserisci il valore">
+                                    </p>       
                                     <p>%  </p>
                                     <p>info</p> <!-- Valori normali: 4-6% 
                                                         Pre-diabete: 6,1% - 6,4% 
@@ -388,36 +494,24 @@
 
                                 <div class="tableRow">
                                     <p>Insulina a digiuno </p>
-                                    <p>valore</p>
+                                    <p name="Insu">{{ dati_estesi.insulin }}</p>
                                     <p>IU/mL </p>
                                     <p>Valori normali: < 20 IU/mL </p>
                                 </div>
 
                                 <div class="tableRow">
                                     <p>Peptide C </p>
-                                    <p>valore</p>
+                                    <p>
+                                        <input type="text" name="Pept_c" required placeholder="Inserisci il valore">
+                                    </p>
+                                   
                                     <p>ng/mL </p>
                                     <p>Valori normali: 0,8–4,2 ng/mL </p>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="question" data-group="10">
-                        <h3>Biomarcatori Circolanti del Metabolismo</h3>
-                        <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
-
-                        <div class="tableAnswer" id="esami">
-                            <div class="tableAnswer-header">
-                                <p class="subtitle">Descrizione</p>
-                                <p class="subtitle">Esito</p>
-                                <p class="subtitle">Unità di misura</p>
-                                <p class="subtitle">Valori di riferimento</p>
-                            </div>
-                            <div class="tableAnswer-container" id="secondTypeTable">
                                 <div class="tableRow">
                                     <p>Colesterolo totale </p>
-                                    <p>valore</p>
+                                    <p name="Col_tot">{{ dati_estesi.tot_chol }}</p>
                                     <p>mg/dL</p>
                                     <p>info</p>  <!-- INSERIRE MODALE CHE MOSTRA I VALORI COMPLETI 
                                                         Valori desiderabili: 130 - 200 
@@ -430,7 +524,7 @@
                             
                                 <div class="tableRow">
                                     <p>Colesterolo LDL </p>
-                                    <p>valore</p>
+                                    <p name="Col_ldl">{{ dati_estesi.ldl_chol }}</p>
                                     <p>mg/dL </p>
                                     <p>info</p> <!-- Valori ottimali: < 100 mg/dL 
                                                     Quasi 
@@ -447,7 +541,7 @@
 
                                 <div class="tableRow">
                                     <p>Colesterolo HDL  </p>
-                                    <p>valore</p>
+                                    <p name="Col_hdl">{{ dati_estesi.hdl_chol_m }}</p>
                                     <p>mg/dL</p>
                                     <p>info</p> <!-- UOMO  Nessun rischio: >55 
                                                         mg/dL 
@@ -466,75 +560,88 @@
 
                                 <div class="tableRow">
                                     <p>Trigliceridi </p>
-                                    <p>valore</p>
+                                    <p name="Trigl">{{ dati_estesi.trigl }}</p>
                                     <p>mg/dL </p>
                                     <p>info</p> <!-- Valori ottimali: < 150 mg/dL 
                                                     Al limite (Borderline): 150
                                                     199 md/dL 
                                                     Alto: >200 mg/dL  -->
                                 </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="question" data-group="10">
-                        <h3>Biomarcatori Circolanti del Metabolismo</h3>
-                        <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
-
-                        <div class="tableAnswer" id="esami">
-                            <div class="tableAnswer-header">
-                                <p class="subtitle">Descrizione</p>
-                                <p class="subtitle">Esito</p>
-                                <p class="subtitle">Unità di misura</p>
-                                <p class="subtitle">Valori di riferimento</p>
-                            </div>
-                            <div class="tableAnswer-container" id="secondTypeTable">
                                 <div class="tableRow">
                                     <p>Albumina </p>
-                                    <p>valore</p>
+                                    <p name="albumina">{{ dati_estesi.albumin_dI }}</p>
                                     <p>g/dL </p>
                                     <p>Valori ottimali: 3,5 – 5,2 g/dL </p>
                                 </div>
                                 <div class="tableRow">
                                     <p>Clearance urea </p>
-                                    <p>valore</p>
+                                    <p><input type="text" name="clearance_urea" required placeholder="Inserisci il valore"></p>
                                     <p>ml/min</p>
                                     <p>Valori ottimali: 60-90 ml/min</p> 
                                 </div>
                             
                                 <div class="tableRow">
                                     <p>IGF-1 </p>
-                                    <p>valore</p>
+                                    <p>
+                                        <input type="text" name="ifg_1" placeholder="Inserisci il valore">
+                                    </p>
                                     <p> 
                                         ng/mL </p>
                                     <p>info</p> <!-- BAMBINI/ ADOLESCENTI Valori ottimali: 100 600 ng/mL
                                                     ADULTI FINO A 50 anni  Valori ottimali: 100 300 ng/mL  
                                                     Adulti sopra i 50 anni  Valori ottimali: 200 ng/mL 50 -->
                                 </div>
-                            
                             </div>
                         </div>
                     </div>
-
+               
+                    <!-- FUNZIONE NEUROMUSCOLARE -->
                     <div class="question" data-group="11">
                         <h3>Funzione Neuromuscolare</h3>
-                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
+                        <p style="margin-top: 0rem;">Questionario Sarcopenia</p>
                         
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
-                                <p class="subtitle">Questionario SARC-F</p>
+                                <p class="subtitle"></p>
+                                <p class="subtitle">Mai</p>
+                                <p class="subtitle">A volte</p>
+                                <p class="subtitle">Spesso/Con ausili/Inabile</p>
 
                             </div>
-                            <div class="tableAnswer-container">
-                                <div class="tableInput">
-                                    <p>punteggio</p>
-                                    <p>0</p>
-                                    <input type="checkbox" value="0">
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow" style="margin-top: 10px;">
+                                    <p>Forza</p>
+                                    <p><input type="checkbox" name="Sarc_1"  value="0"></p>
+                                    <p><input type="checkbox" name="Sarc_1"  value="1"></p>
+                                    <p><input type="checkbox" name="Sarc_1"  value="2"></p>
                                 </div>
-                                <div class="tableInput">
-                                    <p>punteggio</p>
-                                    <p>1</p>
-                                    <input type="checkbox" value="0">
+                                <div class="tableRow">
+                                    <p>Assistenza alla deambulazione</p>
+                                    <p><input type="checkbox" name="Sarc_2"  value="0"></p>
+                                    <p><input type="checkbox" name="Sarc_2"  value="1"></p>
+                                    <p><input type="checkbox" name="Sarc_2"  value="2"></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Alzarsi dalla sedia</p>
+                                    <p><input type="checkbox" name="Sarc_3"  value="0"></p>
+                                    <p><input type="checkbox" name="Sarc_3"  value="1"></p>
+                                    <p><input type="checkbox" name="Sarc_3"  value="2"></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Salire le scale</p>
+                                    <p><input type="checkbox" name="Sarc_4"  value="0"></p>
+                                    <p><input type="checkbox" name="Sarc_4"  value="1"></p>
+                                    <p><input type="checkbox" name="Sarc_4"  value="2"></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Cadute</p>
+                                    <p><input type="checkbox" name="Sarc_5"  value="0"></p>
+                                    <p><input type="checkbox" name="Sarc_5"  value="1"></p>
+                                    <p><input type="checkbox" name="Sarc_5"  value="2"></p>
                                 </div>
                             </div>
                         </div>  
@@ -542,7 +649,7 @@
 
                     <div class="question" data-group="12">
                         <h3>Funzione Neuromuscolare</h3>
-                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
+                        <p style="margin-top: 0rem;">In base al name="Lymph" 1 inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
                         
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
@@ -553,26 +660,26 @@
                                 <div class="tableInput">
                                     <p>punteggio</p>
                                     <p>0</p>
-                                    <input type="checkbox" value="0">
+                                    <input type="checkbox" name="HGS_test" value="0">
                                 </div>
                                 <div class="tableInput">
                                     <p>punteggio</p>
                                     <p>1</p>
-                                    <input type="checkbox" value="0">
+                                    <input type="checkbox" name="HGS_test" value="1">
                                 </div>
                                 <div class="tableInput">
                                     <p>punteggio</p>
                                     <p>2</p>
-                                    <input type="checkbox" value="0">
+                                    <input type="checkbox" name="HGS_test" value="2">
                                 </div>
                             </div>
                         </div>  
                     </div>
 
-
+                    <!-- PERFORMANCE FISICA -->
                     <div class="question" data-group="12">
                         <h3>Performance Fisica</h3>
-                        <p style="margin-top: 0rem;">In base al valore inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
+                        <p style="margin-top: 0rem;">In base al name="Lymph" 1 inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
                         
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
@@ -584,22 +691,22 @@
                                 <div class="tableInput">
                                     <p>punteggio</p>
                                     <p>0</p>
-                                    <input type="checkbox" value="0">
+                                    <input type="checkbox" name="SPPB" value="0">
                                 </div>
                                 <div class="tableInput">
                                     <p>punteggio</p>
                                     <p>1</p>
-                                    <input type="checkbox" value="0">
+                                    <input type="checkbox" name="SPPB" value="1">
                                 </div>
                                 <div class="tableInput">
                                     <p>punteggio</p>
                                     <p>2</p>
-                                    <input type="checkbox" value="0">
+                                    <input type="checkbox" name="SPPB" value="2">
                                 </div>
                                 <div class="tableInput">
                                     <p>punteggio</p>
                                     <p>3</p>
-                                    <input type="checkbox" value="0">
+                                    <input type="checkbox" name="SPPB" value="3">
                                 </div>
                             </div>
                         </div>  

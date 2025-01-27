@@ -74,6 +74,7 @@ class TabellaPazienti(models.Model):
         return f"Paziente: {self.name} {self.surname}"  
 
 
+
 # Tabella archivio referti associata ai pazienti
 class ArchivioReferti(models.Model):
     paziente = models.ForeignKey(
@@ -285,3 +286,68 @@ class DatiEstesiReferti(models.Model):
     
 
 
+# Tabella archivio referti Quiz associata ai pazienti
+class ArchivioRefertiTest(models.Model):
+    paziente = models.ForeignKey(
+        TabellaPazienti, 
+        on_delete=models.CASCADE, 
+        related_name='referti_test'
+    )
+    data_referto = models.DateField(auto_now_add=True)
+    data_ora_creazione = models.DateTimeField(auto_now_add=True, null=True)
+    punteggio = models.TextField(null=True, blank=True)
+    documento = models.FileField(upload_to='referti/', null=True, blank=True)
+
+    def __str__(self):
+        return f"Referto ID: {self.id} - Paziente: {self.paziente.name} {self.paziente.surname}"
+
+
+# Nuova tabella per i dati estesi dei referti
+class DatiEstesiRefertiTest(models.Model):
+    referto = models.OneToOneField(
+        ArchivioRefertiTest, 
+        on_delete=models.CASCADE, 
+        related_name='dati_estesi_test'
+    )
+
+    SiIm = models.IntegerField(null=True, blank=True)
+    Lymph = models.FloatField(null=True, blank=True)
+    Lymph_el = models.FloatField(null=True, blank=True)
+    wbc = models.FloatField(null=True, blank=True)
+    Proteins_c = models.FloatField(null=True, blank=True)
+
+    #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
+    Inter_6 = models.FloatField(null=True, blank=True)
+    Tnf = models.FloatField(null=True, blank=True)
+    Mono = models.FloatField(null=True, blank=True)
+    Mono_el = models.FloatField(null=True, blank=True)
+
+    #ENERGIA E MTABOLISMO
+    Fss = models.FloatField(null=True, blank=True)
+    CirPolp = models.FloatField(null=True, blank=True)
+    WHip_ratio = models.FloatField(null=True, blank=True)
+    WH_ratio = models.FloatField(null=True, blank=True)
+
+    #BIOMARCATORI CIRCOLANTI DEL METABOLISMO
+    Glic = models.FloatField(null=True, blank=True)
+    Emog = models.FloatField(null=True, blank=True)
+    Insu = models.FloatField(null=True, blank=True)
+    Pept_c = models.FloatField(null=True, blank=True)
+    Col_tot = models.FloatField(null=True, blank=True)
+    Col_ldl = models.FloatField(null=True, blank=True)
+    Col_hdl = models.FloatField(null=True, blank=True)
+    Trigl = models.FloatField(null=True, blank=True)
+    albumina = models.FloatField(null=True, blank=True)
+    clearance_urea = models.FloatField(null=True, blank=True)
+    igf_1 = models.FloatField(null=True, blank=True)
+    
+    # Funzione Neuromuscolare
+    sarc_f = models.IntegerField(null=True, blank=True)
+    hgs_test = models.IntegerField(null=True, blank=True)
+    
+    # Performance Fisica
+    sppb = models.IntegerField(null=True, blank=True)
+    
+    def __str__(self):
+        return f"Dati Estesi Referto ID: {self.referto.id}"
+    
