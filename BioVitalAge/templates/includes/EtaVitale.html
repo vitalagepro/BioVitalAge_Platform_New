@@ -9,7 +9,7 @@
     <!-- Favicon -->
     <link rel="sortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
 
-    <title>Eta Vitale, {{ persona.name }}</title>
+    <title>Eta Bio-Vitale, {{ persona.name }}</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}">
@@ -25,6 +25,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 
     <!-- JS IMPORT -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="{% static 'includes/js/spinner.js' %}" defer></script>
 </head>
 
@@ -38,13 +39,11 @@
     
 
     <main>
-
         <!-- MENU TRACE -->
         <div class="main-title-nav">
             <div class="back-tittle">
                 <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}"
                         alt=""></a>
-            
             </div>
 
             <div class="main-menu-trace">
@@ -68,7 +67,7 @@
             <div class="contenitoreTest">
                 <div class="contenitoreTest-Header">
                     <img src="{% static 'includes/images/etaWelcome.webp' %}" alt="" width="50px" height="50px">
-                    <h3>Test Dell'età Vitale</h3>
+                    <h3>Test Dell'età Bio-Vitale</h3>
                 </div>
                 
                 <div class="contentTest">
@@ -92,34 +91,26 @@
                 
                 <button class="button button--submit" onclick="window.location.href= '{% url 'TestetaVitale' persona.id %}'">
                     <span class="button__icon-wrapper">
-                        <svg
-                          viewBox="0 0 14 15"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="button__icon-svg"
-                          width="10"
-                        >
-                          <path
-                            d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
-                            fill="currentColor"
-                          ></path>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-label="Start Quiz"
+                            role="img" class="button__icon-svg">
+                            <!-- Icona quiz - punto di domanda stilizzato -->
+                            <path
+                                d="M12 2C9.243 2 7 4.243 7 7H9C9 5.346 10.346 4 12 4C13.654 4 15 5.346 15 7C15 8.207 14.117 8.901 13.268 9.493C12.478 10.043 11.819 10.526 11.819 12H13.819C13.819 11.204 14.482 10.739 15.268 10.207C16.283 9.536 17 8.707 17 7C17 4.243 14.757 2 12 2ZM11 17H13V19H11V17ZM11 14H13V15H11V14Z"
+                                fill="currentColor" />
                         </svg>
-          
-                        <svg
-                          viewBox="0 0 14 15"
-                          fill="none"
-                          width="10"
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="button__icon-svg button__icon-svg--copy"
-                        >
-                          <path
-                            d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
-                            fill="currentColor"
-                          ></path>
+                    
+                    
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-label="Start Quiz"
+                            role="img" class="button__icon-svg button__icon-svg--copy">
+                            <!-- Icona quiz - punto di domanda stilizzato -->
+                            <path
+                                d="M12 2C9.243 2 7 4.243 7 7H9C9 5.346 10.346 4 12 4C13.654 4 15 5.346 15 7C15 8.207 14.117 8.901 13.268 9.493C12.478 10.043 11.819 10.526 11.819 12H13.819C13.819 11.204 14.482 10.739 15.268 10.207C16.283 9.536 17 8.707 17 7C17 4.243 14.757 2 12 2ZM11 17H13V19H11V17ZM11 14H13V15H11V14Z"
+                                fill="currentColor" />
                         </svg>
+                    
                     </span>
                     Inizia Test
-                </button>
+                  </button>                  
             </div>
 
              <!-- TABELLA REFERTI -->
@@ -127,12 +118,13 @@
                 <div class="TabellaVitale-header">
                     <h3>Elenco referti età Vitale</h3>
                     <div class="filtri-button">
-                        <select name="filter" id="filter">
+                        <select name="filter" id="filter" class="custom-select">
                             <option value="name">Ordinato per data più recente</option>
                             <option value="surname">Ordinato per data meno recente</option>
                             <option value="fisc_code">Ordinato per valore positivo</option>
                             <option value="personal_association">Ordinato per valore negativo</option>
                         </select>
+                        <span class="custom-arrow"></span>
                     </div>
                 </div>
                 <div class="table-container">
@@ -172,9 +164,23 @@
                         </div>
                 </div>
             </div>
-       
         </div>
     </main>
+    <!-- JS Import -->
+    <script>
+        const select = document.querySelector('.custom-select');
+        const arrow = document.querySelector('.custom-arrow');
+        let isOpen = false; // Stato del menu
 
+        select.addEventListener('click', () => {
+            isOpen = !isOpen; // Toggle dello stato
+            gsap.to(arrow, { rotate: isOpen ? 180 : 0, duration: 0.2 });
+        });
+
+        select.addEventListener('blur', () => {
+            isOpen = false; // Reset dello stato quando perde il focus
+            gsap.to(arrow, { rotate: 0, duration: 0.2 });
+        });
+    </script>
 </body>
 </html>

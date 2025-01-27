@@ -85,32 +85,32 @@
 
                 <div class="info_container">
                     <div class="field">
-                        <p>Name :</p>
+                        <p>Name:</p>
                         <p>{{ persona.name }}</p>
                     </div>
 
                     <div class="field">
-                        <p>Surname :</p>
+                        <p>Surname:</p>
                         <p>{{ persona.surname }}</p>
                     </div>
 
                     <div class="field">
-                        <p>Date of birth :</p>
+                        <p>Date of birth:</p>
                         <p>{{ persona.dob }}</p>
                     </div>
 
                     <div class="field">
-                        <p>Age :</p>
+                        <p>Age:</p>
                         <p>{{ persona.chronological_age }}</p>
                     </div>
 
                     <div class="field">
-                        <p>Codice Fiscale :</p>
+                        <p>Fiscal Code:</p>
                         <p>{{ persona.codice_fiscale }}</p>
                     </div>
 
                     <div class="field">
-                        <p>Place of birth :</p>
+                        <p>Place of birth:</p>
                         <p>{{ persona.place_of_birth }}</p>
                     </div>
 
@@ -120,13 +120,13 @@
                     </div>
 
                     <div class="field">
-                        <p>CAP :</p>
-                        <p>xxx</p>
+                        <p>CAP:</p>
+                        <p>{{ persona.cap|default:"00000"}}</p>
                     </div>
 
                     <div class="field">
-                        <p>Provincia :</p>
-                        <p>xxx</p>
+                        <p>Province:</p>
+                        <p>{{ persona.province|default:"N/A" }}</p>
                     </div>
 
                     <div class="field">
@@ -143,7 +143,7 @@
                                 <img src="{% static 'includes/icone/stetoscopio.png' %}" alt="">
                             </div>
 
-                            <p>Associate Staff<span>Dtt. Rossi</span></p>
+                            <p>Associate Staff<span id="associate_staff">{{ persona.associate_staff|default:persona.dottore }}</span></p>
                         </div>
 
                         <div class="card-subcard">
@@ -151,7 +151,7 @@
                                 <img src="{% static 'includes/icone/ospedale.png' %}" alt="">
                             </div>
 
-                            <p>Recent Visit<span>28/08/2024</span></p>
+                            <p>Recent Visit<span id="lastVisit">{{ persona.lastVisit|default:"28/08/2024"}}</span></p>
                         </div>
 
                         <div class="card-subcard">
@@ -159,7 +159,7 @@
                                 <img src="{% static 'includes/icone/calendario.png' %}" alt="">
                             </div>
 
-                            <p>Upcoming Visit <span>10/09/2024</span></p>
+                            <p>Upcoming Visit <span id="upcomingVisit">{{persona.upcomingVisit|default:"10/09/2024"}}</span></p>
                         </div>
 
                         <div class="card-subcard">
@@ -167,7 +167,7 @@
                                 <img src="{% static 'includes/icone/blood.png' %}" alt="">
                             </div>
 
-                            <p>Blood type<span>O +</span></p>
+                            <p>Blood type<span id="blood_group">{{ persona.blood_group|default:"0 +" }}</span></p>
                         </div>
 
                     </div>
@@ -363,7 +363,7 @@
             <div class="cardDati">
 
                 <div class="cartella-effect">
-                    <h3>Età Vitale</h3>
+                    <h3>Età Bio-Vitale</h3>
                     <div class="space"></div>
                 </div>
 

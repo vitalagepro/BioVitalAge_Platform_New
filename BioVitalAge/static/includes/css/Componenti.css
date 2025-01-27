@@ -643,6 +643,11 @@ main {
   gap: 15px;
 }
 
+.main-menu-trace a {
+  text-decoration: none;
+  color: var(--light1);
+}
+
 .back-tittle {
   display: flex;
   justify-content: center;
@@ -776,9 +781,10 @@ main {
   align-items: center;
   color: var(--tittle1);
   font-weight: bold;
+  text-align: center;
   width: 100%;
   height: 100%;
-  margin-top: 0.5rem;
+  margin: 0;
 }
 
 .table-content {

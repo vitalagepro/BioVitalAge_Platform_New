@@ -9,7 +9,7 @@
     <!-- Favicon -->
     <link rel="sortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
 
-    <title>Eta Vitale, {{ persona.name }}</title>
+    <title>Eta Bio-Vitale, {{ persona.name }}</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}">
@@ -45,7 +45,7 @@
         <div class="main-title-nav">
             <div class="back-tittle">
                 <a id="back" href="{% url 'etaVitale' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt=""></a>
-                <h2 class="main-welcome-title">Quiz Età Vitale</h2>
+                <h2 class="main-welcome-title">Quiz Età Bio-Vitale</h2>
             </div>
 
             <div class="main-menu-trace">
@@ -612,34 +612,34 @@
                     
                         <button class="button button--submit" id="prev-btn" type="button">
                             <span class="button__icon-wrapper">
-                                <svg
+                              <svg
                                 viewBox="0 0 14 15"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
                                 class="button__icon-svg"
-                                width="10"
-                                >
+                                width="12"
+                              >
                                 <path
-                                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
-                                    fill="currentColor"
+                                  d="M0.624 3.448l.264 10.44 10.44.24-.024-2.28-6.96.048 6.024-6.072-1.488-1.488-9.432 9.432.048-6.912-2.304-.024z"
+                                  fill="currentColor"
                                 ></path>
-                                </svg>
-                
-                                <svg
+                              </svg>
+                          
+                              <svg
                                 viewBox="0 0 14 15"
                                 fill="none"
-                                width="10"
+                                width="12"
                                 xmlns="http://www.w3.org/2000/svg"
                                 class="button__icon-svg button__icon-svg--copy"
-                                >
+                              >
                                 <path
-                                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
-                                    fill="currentColor"
+                                  d="M0.624 3.448l.264 10.44 10.44.24-.024-2.28-6.96.048 6.024-6.072-1.488-1.488-9.432 9.432.048-6.912-2.304-.024z"
+                                  fill="currentColor"
                                 ></path>
-                                </svg>
+                              </svg>
                             </span>
                             Precedente
-                        </button>
+                          </button>                          
 
                         <button class="button button--submit" id="next-btn" type="button">
                             <span class="button__icon-wrapper">

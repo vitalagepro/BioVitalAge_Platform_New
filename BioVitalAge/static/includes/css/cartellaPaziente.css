@@ -87,8 +87,7 @@
 }
 
 .card-subcard p {
-  padding-top: 10px;
-  padding-right: 10px;
+  margin: 0 !important;
 }
 
 .card-subcard span {
@@ -109,7 +108,11 @@
 }
 
 #emailInput,
-#phoneInput {
+#phoneInput,
+#associateStaffInput,
+#lastVisitInput,
+#upcomingVisitInput,
+#bloodGroupInput {
   display: block;
   border: 1px solid var(--contrast-color2);
   outline: none;

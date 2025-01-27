@@ -19,15 +19,22 @@ class TabellaPazienti(models.Model):
         related_name='pazienti',
         null=True
     )
+    # Dati personali
     name = models.CharField(max_length=50, null=True, blank=True)
     surname = models.CharField(max_length=50, null=True, blank=True)
+    email = models.CharField(max_length=100, null=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
     dob = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=1, null=True, blank=True, choices=[('M', 'Male'), ('F', 'Female')])
+    cap = models.CharField(max_length=5, null=True, blank=True)
+    province = models.CharField(max_length=100, null=True, blank=True)
     place_of_birth = models.CharField(max_length=100, null=True, blank=True)
     codice_fiscale = models.CharField(max_length=16, null=True, blank=True, unique=True)
     chronological_age = models.IntegerField(null=True, blank=True)
-    email = models.CharField(max_length=100, null=True, blank=True)
-    phone = models.CharField(max_length=20, null=True, blank=True)
+    blood_group = models.CharField(max_length=3, null=True, blank=True)
+    associate_staff = models.CharField(max_length=100, null=True, blank=True)
+    lastVisit = models.DateField(null=True, blank=True)
+    upcomingVisit = models.DateField(null=True, blank=True)
 
 
     # Dati antropometrici
@@ -75,7 +82,7 @@ class ArchivioReferti(models.Model):
         related_name='referti'
     )
     data_referto = models.DateField(auto_now_add=True)
-    data_ora_creazione = models.DateTimeField(auto_now_add=True, null=True) 
+    data_ora_creazione = models.DateTimeField(auto_now_add=True, null=True)
     descrizione = models.TextField(null=True, blank=True)
     documento = models.FileField(upload_to='referti/', null=True, blank=True)
 
