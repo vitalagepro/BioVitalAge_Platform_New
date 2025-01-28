@@ -1233,17 +1233,21 @@ class InserisciPazienteView(View):
             if paziente_esistente:
 
                 campi_opzionali = [
-                    'height', 'weight', 'bmi', 'bmi_detection_date',
+                    'email', 'phone', 'associate_staff', 'height', 'weight', 'bmi', 'bmi_detection_date',
                     'girth_value', 'girth_notes', 'girth_date',
                     'alcol', 'alcol_type', 'data_alcol', 'alcol_frequency',
                     'smoke', 'smoke_frequency', 'reduced_intake',
                     'sport', 'sport_livello', 'sport_frequency',
-                    'attivita_sedentaria', 'livello_sedentarieta', 'sedentarieta_nota'
+                    'attivita_sedentaria', 'livello_sedentarieta', 'sedentarieta_nota', 'blood_group'
                 ]
 
         
                 if any(request.POST.get(campo) for campo in campi_opzionali):
                 
+                    paziente_esistente.email = request.POST.get('email')
+                    paziente_esistente.phone = request.POST.get('phone')
+                    paziente_esistente.associate_staff = request.POST.get('associate_staff')
+
                     paziente_esistente.height = request.POST.get('height')
                     paziente_esistente.weight = request.POST.get('weight')
                     paziente_esistente.bmi = request.POST.get('bmi')
@@ -1272,6 +1276,8 @@ class InserisciPazienteView(View):
                     paziente_esistente.attivita_sedentaria = request.POST.get('attivita_sedentaria')
                     paziente_esistente.livello_sedentarieta = request.POST.get('livello_sedentarieta')
                     paziente_esistente.sedentarieta_nota = request.POST.get('sedentarieta_nota')
+
+                    paziente_esistente.blood_group = request.POST.get('blood_group')
                 
 
                     paziente_esistente.save()
@@ -1293,12 +1299,12 @@ class InserisciPazienteView(View):
             else:
 
                 campi_opzionali = [
-                    'height', 'weight', 'bmi', 'bmi_detection_date',
+                    'email', 'phone', 'associate_staff', 'height', 'weight', 'bmi', 'bmi_detection_date',
                     'girth_value', 'girth_notes', 'girth_date',
                     'alcol', 'alcol_type', 'data_alcol', 'alcol_frequency',
                     'smoke', 'smoke_frequency', 'reduced_intake',
                     'sport', 'sport_livello', 'sport_frequency',
-                    'attivita_sedentaria', 'livello_sedentarieta', 'sedentarieta_nota'
+                    'attivita_sedentaria', 'livello_sedentarieta', 'sedentarieta_nota', 'blood_group'
                 ]
 
                 if any(request.POST.get(campo) for campo in campi_opzionali):
@@ -1317,8 +1323,6 @@ class InserisciPazienteView(View):
                         chronological_age=request.POST.get('chronological_age'),
                         blood_group=request.POST.get('blood_group'),
                         associate_staff=request.POST.get('associate_staff'),
-                        lastVisit=parse_date(request.POST.get('lastVisit')),
-                        upcomingVisit=parse_date(request.POST.get('upcomingVisit')),
 
                         # Dati antropometrici
                         height=request.POST.get('height'),

@@ -117,37 +117,6 @@ form ion-icon {
 #add-patient img:hover{
   transform: scale(1.1);
 } */
-.add-patient-btn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background-color: var(--contrast-color);
-  color: var(--tittle1);
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  text-decoration: none;
-  cursor: pointer;
-  box-shadow: 0px 4px 6px var(--contrast-color-shadow);
-  transition: background-color 0.3s ease;
-}
-
-.add-patient-btn:hover {
-  box-shadow: 0px 8px 15px var(--contrast-color-shadow);
-  background-color: var(--contrast-color2);
-}
-
-.add-patient-btn svg {
-  width: 20px;
-  height: 20px;
-  transition: transform 0.3s ease;
-}
-
-.add-patient-btn:hover svg {
-  transform: rotate(90deg);
-}
-
 .input:focus,
 .input:focus-visible {
   border-color: var(--contrast-color2);

@@ -173,6 +173,27 @@
   align-items: center;
 }
 
+.banner-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 52%;
+  background: var(--contrast-color);
+  background-image: var(--banner-bg);
+  background-position: right;
+  background-repeat: no-repeat;
+  border-radius: 5px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  padding: 10px;
+  padding-left: 30px;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
 .banner-info::before {
   content: "";
   position: absolute;
