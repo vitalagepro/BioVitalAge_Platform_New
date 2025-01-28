@@ -481,7 +481,7 @@
                             <p>{{ referto.descrizione }}</p>
                             <p>{{ referto.data_referto|date:"d/m/Y" }}</p>
                             <p>
-                                <a href="{% url 'persona_detail' persona.id %}" data-referto-id="{{ referto.id }}" data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
+                                <a href="{% url 'persona_detail' persona.id %}?referto_id={{ referto.id }}" data-referto-id="{{ referto.id }}" data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
                                     <img src="{% static 'includes/icone/referto.png' %}" alt="" />
                                 </a>
                             </p>

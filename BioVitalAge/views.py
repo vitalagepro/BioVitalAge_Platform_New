@@ -1067,39 +1067,32 @@ class RisultatiRender(View):
 
 
 class PersonaDetailView(View):
-   
-    def get(self, request, id, referto_id=None):
+    def get(self, request, id):
         # Ottieni il paziente con l'ID specificato
         persona = get_object_or_404(TabellaPazienti, id=id)
 
+        # Recupera l'ID del referto dalla query string
         referto_id = request.GET.get('referto_id')
-        print(f"Referto ID ricevuto: {referto_id}")
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        # Ottieni il referto specifico se l'ID è passato, altrimenti l'ultimo
+        # Recupera il referto specifico se l'ID è passato, altrimenti l'ultimo referto
         if referto_id:
             referto = get_object_or_404(ArchivioReferti, id=referto_id, paziente=persona)
         else:
             referto = ArchivioReferti.objects.filter(paziente=persona).order_by("-data_ora_creazione").first()
 
-        # Ottieni l'ultimo referto del paziente
-        ultimo_referto = ArchivioReferti.objects.filter(paziente=persona).order_by('-data_ora_creazione').first()
+        # Ottieni i dati estesi associati al referto selezionato
+        dati_estesi = DatiEstesiReferti.objects.filter(referto=referto).first() if referto else None
 
-        # Ottieni i dati estesi associati all'ultimo referto (se esiste)
-        datiEstesi = None
-        if ultimo_referto:
-            datiEstesi = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
-        
-        datiEstesi = DatiEstesiReferti.objects.filter(referto=referto).first()
+        # Recupera il dottore dalla sessione
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
+        # Preparazione del contesto per il template
         context = {
             'persona': persona,
-            'ultimo_referto': ultimo_referto,
             'referto': referto,
-            'datiEstesi': datiEstesi,
-            'dottore' : dottore
+            'datiEstesi': dati_estesi,
+            'dottore': dottore,
         }
         return render(request, "includes/Referto.html", context)
 
