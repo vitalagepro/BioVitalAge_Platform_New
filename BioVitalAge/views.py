@@ -1427,8 +1427,6 @@ def dettaglio_paziente(request, id):
     return render(request, 'nome_del_tuo_template.html', context)
 
 
-  
-
 
 @csrf_exempt  # Rimuovilo in produzione se non necessario
 def update_persona_contact(request, id):
@@ -1472,7 +1470,9 @@ class EtaVitaleView(View):
 
         persona = get_object_or_404(TabellaPazienti, id=id)
   
-        referti_test_recenti = persona.referti_test.all().order_by('-data_referto')[:5]
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')[:5]
+
+        print(referti_test_recenti)
       
         context = {
             'persona': persona,
@@ -1551,9 +1551,11 @@ class TestEtaVitaleView(View):
             "waist_hip_ratio": safe_float(data, 'WHip_ratio')
         }
 
-        performance_fisica = int(data.get('SPPB'))
+        performance_fisica = int(data.get('SPPB', 0))
 
         punteggioFinale = calcola_punteggio_finale(SiIm_Somma, Fss_Somma,Sarc_f_Somma, biomarcatori, antropometria, performance_fisica )
+
+        print(punteggioFinale)
 
         referto = ArchivioRefertiTest(
             paziente = persona,
@@ -1617,6 +1619,34 @@ class TestEtaVitaleView(View):
         return render(request, "includes/EtaVitale.html", context)
 
 
+class RefertoQuizView(View):
+    def get(self, request, id):
+
+        # Ottieni il paziente con l'ID specificato
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        # Ottieni l'ultimo referto del paziente
+        ultimo_referto = ArchivioRefertiTest.objects.filter(paziente=persona).order_by('-data_ora_creazione').first()
+
+        # Ottieni i dati estesi associati all'ultimo referto (se esiste)
+        datiEstesi = None
+        if ultimo_referto:
+            datiEstesi = DatiEstesiRefertiTest.objects.filter(referto=ultimo_referto).first()
+
+        context = {
+            'persona': persona,
+            'ultimo_referto': ultimo_referto,
+            'datiEstesi': datiEstesi,
+            'dottore' : dottore
+        }
+
+        return render(request, "includes/RefertoQuiz.html", context)
+
+    def post(self, request, id):
+        return
 
 # Referto View
 def referti_view(request, referto_id):
