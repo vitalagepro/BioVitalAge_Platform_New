@@ -2,8 +2,8 @@ from datetime import date
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
-from .models import UtentiRegistratiCredenziali,TabellaPazienti, ArchivioReferti, DatiEstesiReferti
-from .utils import calculate_biological_age
+from .models import *
+from .utils import calculate_biological_age, calcola_punteggio_finale
 # from django.contrib.sessions.models import Session
 from django.db.models import OuterRef, Subquery
 import json
@@ -1474,13 +1474,15 @@ def update_persona_contact(request, id):
 
 class EtaVitaleView(View):
 
-    def get(self,request, id):
-           
-        persona = get_object_or_404(TabellaPazienti, id=id)
+    def get(self, request, id):
 
-        
+        persona = get_object_or_404(TabellaPazienti, id=id)
+  
+        referti_test_recenti = persona.referti_test.all().order_by('-data_referto')[:5]
+      
         context = {
-            'persona': persona
+            'persona': persona,
+            'referti_test_recenti': referti_test_recenti
         }
 
         return render(request, "includes/EtaVitale.html", context)
@@ -1496,21 +1498,126 @@ class TestEtaVitaleView(View):
            
         persona = get_object_or_404(TabellaPazienti, id=id)
 
+        ultimo_referto = persona.referti.order_by('-data_referto').first()
+
+        dati_estesi = None
+        if ultimo_referto:
+            dati_estesi = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
         
         context = {
-            'persona': persona
+            'persona': persona,
+            'dati_estesi': dati_estesi
         }
 
         return render(request, "includes/testVitale.html", context)
     
     def post(self, request, id):
-
         persona = get_object_or_404(TabellaPazienti, id=id)
+        data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
 
-        print(self.request)
-        
+        SiIm_Somma = (
+            int(data.get('SiIm_1', 0)) +
+            int(data.get('SiIm_2', 0)) +
+            int(data.get('SiIm_3', 0)) +
+            int(data.get('SiIm_4', 0)) +
+            int(data.get('SiIm_5', 0)) +
+            int(data.get('SiIm_6', 0)) +
+            int(data.get('SiIm_7', 0))
+        )
+
+        Fss_Somma = (
+            int(data.get('fss_1', 0)) +
+            int(data.get('fss_2', 0)) +
+            int(data.get('fss_3', 0)) +
+            int(data.get('fss_4', 0)) +
+            int(data.get('fss_5', 0)) +
+            int(data.get('fss_6', 0)) +
+            int(data.get('fss_7', 0)) +
+            int(data.get('fss_8', 0))
+        )
+          
+        Sarc_f_Somma = (
+            int(data.get('Sarc_f_1', 0)) +
+            int(data.get('Sarc_f_2', 0)) +
+            int(data.get('Sarc_f_3', 0)) +
+            int(data.get('Sarc_f_4', 0)) +
+            int(data.get('Sarc_f_5', 0)) 
+        )
+
+        biomarcatori = {
+            "lymph": safe_float(data, 'Lymph'), 
+            "wbc": safe_float(data, 'wbc'),
+            "pcr": safe_float(data, 'Proteins_c'),
+            "il6": safe_float(data, 'Inter_6'),
+            "tnf": safe_float(data, 'Tnf')
+        }
+
+        antropometria = {
+            "polpaccio": safe_float(data, 'CirPolp'),
+            "waist_hip_ratio": safe_float(data, 'WHip_ratio')
+        }
+
+        performance_fisica = int(data.get('SPPB'))
+
+        punteggioFinale = calcola_punteggio_finale(SiIm_Somma, Fss_Somma,Sarc_f_Somma, biomarcatori, antropometria, performance_fisica )
+
+        referto = ArchivioRefertiTest(
+            paziente = persona,
+            punteggio = punteggioFinale,
+            #documento = request.FILES.get('documento')
+        )
+        referto.save()
+
+
+        datiEstesi = DatiEstesiRefertiTest(
+            referto = referto,
+
+            SiIm = SiIm_Somma,
+            Lymph = safe_float(data, 'Lymph'),
+            Lymph_el = safe_float(data, 'Lymph_el'),
+            wbc = safe_float(data, 'wbc'),
+            Proteins_c = safe_float(data, 'Proteins_c'),
+
+            #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
+            Inter_6 = safe_float(data, 'Inter_6'),
+            Tnf = safe_float(data, 'Tnf'),
+            Mono = safe_float(data, 'Mono'),
+            Mono_el = safe_float(data, 'Mono_el'),
+
+            #ENERGIA E MTABOLISMO
+            Fss = Fss_Somma,
+            CirPolp = safe_float(data, 'CirPolp'),
+            WHip_ratio = safe_float(data, 'WHip_ratio'),
+            WH_ratio = safe_float(data, 'WH_ratio'),
+
+            #BIOMARCATORI CIRCOLANTI DEL METABOLISMO
+            Glic = safe_float(data, 'Glic'),
+            Emog = safe_float(data, 'Emog'),
+            Insu = safe_float(data, 'Insu'),
+            Pept_c = safe_float(data, 'Pept_c'),
+            Col_tot = safe_float(data, 'Col_tot'),
+            Col_ldl = safe_float(data, 'Col_ldl'),
+            Col_hdl = safe_float(data, 'Col_hdl'),
+            Trigl = safe_float(data, 'Trigl'),
+            albumina = safe_float(data, 'albumina'),
+            clearance_urea = safe_float(data, 'clearance_urea'),
+            igf_1 = safe_float(data, 'ifg_1'),
+            
+            # Funzione Neuromuscolare
+            sarc_f = Sarc_f_Somma,
+            hgs_test = data.get('HGS_test'),
+            
+            # Performance Fisica
+            sppb = data.get('SPPB')
+        )
+        datiEstesi.save()
+
+
+
         context = {
-            'persona': persona
+            'persona': persona,
+            'modal' : True,
+            'Referto': referto
         }
 
         return render(request, "includes/EtaVitale.html", context)

@@ -5,29 +5,37 @@ const prevBtn = document.getElementById('prev-btn');
 
 let currentQuestionIndex = 0;
 
-
 function nextAnswer() {
     questions[currentQuestionIndex].classList.remove('active');
-    
+
     currentQuestionIndex++;
     if (currentQuestionIndex >= questions.length) {
         currentQuestionIndex = questions.length - 1; 
     }
-    
- 
+
     questions[currentQuestionIndex].classList.add('active');
+
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' 
+    });
 }
 
 function prevAnswer() {
     questions[currentQuestionIndex].classList.remove('active');
-    
+
     currentQuestionIndex--;
     if (currentQuestionIndex < 0) {
         currentQuestionIndex = 0; 
     }
-    questions[currentQuestionIndex].classList.add('active');
-}
 
+    questions[currentQuestionIndex].classList.add('active');
+
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
 
 nextBtn.addEventListener('click', nextAnswer);
 prevBtn.addEventListener('click', prevAnswer);
