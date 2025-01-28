@@ -1454,6 +1454,8 @@ def update_persona_contact(request, id):
             persona.blood_group = blood_group
             persona.save()  # Salva le modifiche nel database
 
+            print(f"Persona {id} aggiornata con email: {email}, telefono: {phone}, associate_staff: {associate_staff}, lastVisit: {lastVisit}, upcomingVisit: {upcomingVisit}, blood_group: {blood_group}")
+
             return JsonResponse({"success": True})
         except TabellaPazienti.DoesNotExist:
             return JsonResponse({"success": False, "error": "Persona non trovata"})
