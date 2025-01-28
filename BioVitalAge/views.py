@@ -4,13 +4,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import *
 from .utils import calculate_biological_age, calcola_punteggio_finale
+import json
 # from django.contrib.sessions.models import Session
 from django.db.models import OuterRef, Subquery
-import json
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
+from .models import TabellaPazienti, ArchivioReferti
 # from django.db import transaction
 # from django.contrib import messages
 
@@ -1070,12 +1068,21 @@ class RisultatiRender(View):
 
 class PersonaDetailView(View):
    
-    def get(self, request, id):
+    def get(self, request, id, referto_id=None):
         # Ottieni il paziente con l'ID specificato
         persona = get_object_or_404(TabellaPazienti, id=id)
 
+        referto_id = request.GET.get('referto_id')
+        print(f"Referto ID ricevuto: {referto_id}")
+
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        # Ottieni il referto specifico se l'ID è passato, altrimenti l'ultimo
+        if referto_id:
+            referto = get_object_or_404(ArchivioReferti, id=referto_id, paziente=persona)
+        else:
+            referto = ArchivioReferti.objects.filter(paziente=persona).order_by("-data_ora_creazione").first()
 
         # Ottieni l'ultimo referto del paziente
         ultimo_referto = ArchivioReferti.objects.filter(paziente=persona).order_by('-data_ora_creazione').first()
@@ -1084,15 +1091,17 @@ class PersonaDetailView(View):
         datiEstesi = None
         if ultimo_referto:
             datiEstesi = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+        
+        datiEstesi = DatiEstesiReferti.objects.filter(referto=referto).first()
 
         context = {
             'persona': persona,
             'ultimo_referto': ultimo_referto,
+            'referto': referto,
             'datiEstesi': datiEstesi,
             'dottore' : dottore
         }
         return render(request, "includes/Referto.html", context)
-
 
 
 
@@ -1104,6 +1113,7 @@ class CartellaPazienteView(View):
 
         # Ottieni i 5 referti più recenti del paziente
         referti_recenti = persona.referti.all().order_by('-data_referto')[:5]
+        print("Referti Recenti:", referti_recenti)
 
         # Ottieni i dati estesi associati a questi referti
         dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
@@ -1621,10 +1631,3 @@ class TestEtaVitaleView(View):
         }
 
         return render(request, "includes/EtaVitale.html", context)
-
-
-
-# Referto View
-def referti_view(request, referto_id):
-    referto = ArchivioReferti.objects.get(id=referto_id)
-    return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})

@@ -128,7 +128,7 @@ async function generatePDF() {
 
     // Salva Pdf e scarica
     const modifiedPdfBytes = await pdfDoc.save();
-    const dataReferto = "{{ paziente.data_referto|date:'Y-m-d' }}";
+    const dataReferto = generaBtn.getAttribute("data-referto-date");
     const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);

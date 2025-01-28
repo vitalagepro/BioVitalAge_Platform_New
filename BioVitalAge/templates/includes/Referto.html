@@ -204,8 +204,20 @@
                         </div>
                     </div>    
                 </div>
-                
-                <button class="generatePDFButton button" id="genereReportOS">
+
+
+                <!-- <h1>Debug Referto</h1>
+                <p>ID Referto: {{ referto.id }}</p>
+                <p>Data Referto: {{ referto.data_referto|date:"d/m/Y" }}</p>
+                <p>Descrizione: {{ referto.descrizione }}</p>
+                    
+                <h2>Dati Estesi</h2>
+                {% if datiEstesi %}
+                        <p>Dettaglio Esteso: {{ datiEstesi.d_roms }}</p>
+                {% else %}
+                        <p>Nessun dato esteso trovato.</p>
+                {% endif %} -->
+                <button class="generatePDFButton button" id="genereReportOS" data-referto-id="{{ referto.id }}" data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
                     <span class="button__icon-wrapper">
                         <svg
                         xmlns="http://www.w3.org/2000/svg"
