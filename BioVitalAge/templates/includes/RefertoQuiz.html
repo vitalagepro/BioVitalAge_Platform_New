@@ -18,7 +18,7 @@
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script src="{% static 'includes/js/GeneratorePDF.js' %}" defer></script>
     <script src="{% static 'includes/js/spinner.js' %}" defer></script>
-    <!-- <script src="{% static 'includes/js/pdfGenerator.js' %}" defer></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <!-- Bootstrap import -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -53,217 +53,233 @@
     </div>
 
     <main>
-            <div class="main-title-nav">
-                <div class="back-tittle">
-                    <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to Results"></a>
-                    <h2 class="main-welcome-title">Report Patient, {{ persona.name }} {{ persona.surname }}</h2>
-                </div>
-            
-                <div class="main-menu-trace">
-                    <a href="{% url 'HomePage' %}">
-                        <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
-                    </a>                                    
-                    <p>»</p>
-                    <p>Elenco Pazienti</p>
-                    <p>»</p>
-                    <p>Cartella Paziente</p>
-                    <p>»</p>
-                    <p>Capacità BioVItale</p>
-                    <p>»</p>
-                    <p>Referto Capacità Biovitale</p>
-                </div>
+        <div class="main-title-nav">
+            <div class="back-tittle">
+                <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}"
+                        alt="back_ico" title="Back to Results"></a>
+                <h2 class="main-welcome-title">Report Patient, {{ persona.name }} {{ persona.surname }}</h2>
             </div>
-
-            <div class="container_data anagraphic_data stampa">
-                <h3>Personal Information</h3>
-                <div class="container_box">
-                    <div class="info_container">
-                        <div class="field">
-                            <p>Name:&nbsp;</p>
-                            <p id="name">{{ persona.name }}</p>
-                        </div>
-                
-                        <div class="field">
-                            <p>Surname:&nbsp;</p>
-                            <p id="surname">{{ persona.surname }}</p>
-                        </div>
-                
-                        <div class="field">
-                            <p>Fiscal Code:&nbsp;</p>
-                            <p id="codice_fiscale">{{ persona.codice_fiscale }}</p>
-                        </div>
-                
-                        <div class="field">
-                            <p>Place of birth:&nbsp;</p>
-                            <p id="place_birth">{{ persona.place_of_birth }}</p>
-                        </div>
-                
-                        <div class="field">
-                            <p>Age:&nbsp;</p>
-                            <p id="chronological_age">{{ persona.chronological_age }}</p>
-                        </div>
-                    
-                        <div class="field">
-                            <p>Date of birth:&nbsp;</p>
-                            <p id="dob">{{ persona.dob }}</p>
-                        </div>
+    
+            <div class="main-menu-trace">
+                <a href="{% url 'HomePage' %}">
+                    <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+                </a>
+                <p>»</p>
+                <p>Elenco Pazienti</p>
+                <p>»</p>
+                <p>Cartella Paziente</p>
+                <p>»</p>
+                <p>Capacità BioVItale</p>
+                <p>»</p>
+                <p>Referto Capacità Biovitale</p>
+            </div>
+        </div>
+    
+        <div class="container_data anagraphic_data stampa">
+            <h3>Personal Information</h3>
+            <div class="container_box">
+                <div class="info_container">
+                    <div class="field">
+                        <p>Name:&nbsp;</p>
+                        <p id="name">{{ persona.name }}</p>
+                    </div>
+    
+                    <div class="field">
+                        <p>Surname:&nbsp;</p>
+                        <p id="surname">{{ persona.surname }}</p>
+                    </div>
+    
+                    <div class="field">
+                        <p>Fiscal Code:&nbsp;</p>
+                        <p id="codice_fiscale">{{ persona.codice_fiscale }}</p>
+                    </div>
+    
+                    <div class="field">
+                        <p>Place of birth:&nbsp;</p>
+                        <p id="place_birth">{{ persona.place_of_birth }}</p>
+                    </div>
+    
+                    <div class="field">
+                        <p>Age:&nbsp;</p>
+                        <p id="chronological_age">{{ persona.chronological_age }}</p>
+                    </div>
+    
+                    <div class="field">
+                        <p>Date of birth:&nbsp;</p>
+                        <p id="dob">{{ persona.dob }}</p>
                     </div>
                 </div>
             </div>
-
-            <div class="container">
-                <h3>Sistema Immunitario</h3>
-            </div>
-
-
-
-            <!-- GENERA PDF COMPLETO -->
-            <button class="generatePDFButton button" id="screenshotBtn">
-                <span class="button__icon-wrapper">
-                    <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    width="18"
-                    class="button__icon-svg"
-                    >
-                    <path
-                        d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    ></path>
-                    <path
-                        d="M14 2V6H18"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    ></path>
-                    </svg>
-                    
-                    <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    width="18"
-                    class="button__icon-svg button__icon-svg--copy"
-                    >
-                    <path
-                        d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    ></path>
-                    <path
-                        d="M14 2V6H18"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    ></path>
-                    </svg>
-                </span>
-                Genera PDF Completo           
-            </button>
-
-            <!-- SPINNER -->
-            <div id="spinnerBackdrop">
-                <!-- From Uiverse.io by milley69 -->
-                 <!-- From Uiverse.io by Nawsome --> 
-                <div id="snipperStampa">
-                    <div class="slide"><i></i></div>
-                    <div class="paper"></div>
-                    <div class="keyboard"></div>
+        </div>
+    
+        <div class="container-box-score">
+            <h3>Sistema Immunitario</h3>
+            <div class="container-score">
+                <div class="score-box">
+                    <div class="score-label">Stress Ossidativo</div>
+                    <div class="track">
+                        <div class="bar" id="stress"></div>
+                    </div>
+                    <div class="indicators">
+                        <span>1</span><span>2</span><span>3</span>
+                    </div>
                 </div>
-                <!-- <div id="snipperStampa">
-                    <svg width="128px" height="96px" viewBox="0 0 64 48" style="width: 128px; height: 96px;">
-                        <polyline points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24" id="back"></polyline>
-                        <polyline points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24" id="front"></polyline>
-                    </svg>
-                </div> -->
+    
+                <div class="score-box">
+                    <div class="score-label">Disbiosi Intestinale</div>
+                    <div class="track">
+                        <div class="bar" id="disbiosi"></div>
+                    </div>
+                    <div class="indicators">
+                        <span>1</span><span>2</span><span>3</span>
+                    </div>
+                </div>
+    
+                <div class="score-box">
+                    <div class="score-label">Sistema immunitario</div>
+                    <div class="track">
+                        <div class="bar" id="immunitary_sistem"></div>
+                    </div>
+                    <div class="indicators">
+                        <span>1</span><span>2</span><span>3</span>
+                    </div>
+                </div>
             </div>
-           
-            <!-- SCRIPT -->
-            <script>
-                /*  -----------------------------------------------------------------------------------------------
-                User Modal log out
-                --------------------------------------------------------------------------------------------------- */
-                const userImg = document.getElementById("userImg");
-                const userModal = document.getElementById("userModal");
-                const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
-
-                function showModal() {
-                userModal.classList.add("show");
-                }
-
-                userImg.addEventListener("mouseover", showModal);
-
-                userModal.addEventListener("mouseout", () => {
-                userModal.classList.remove("show");
+        </div>
+    
+    
+    
+        <!-- GENERA PDF COMPLETO -->
+        <button class="generatePDFButton button" id="screenshotBtn">
+            <span class="button__icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+                    <path d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M14 2V6H18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round"></path>
+                </svg>
+    
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
+                    class="button__icon-svg button__icon-svg--copy">
+                    <path d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M14 2V6H18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round"></path>
+                </svg>
+            </span>
+            Genera PDF Completo
+        </button>
+    
+        <!-- SPINNER -->
+        <div id="spinnerBackdrop">
+            <!-- From Uiverse.io by milley69 -->
+            <!-- From Uiverse.io by Nawsome -->
+            <div id="snipperStampa">
+                <div class="slide"><i></i></div>
+                <div class="paper"></div>
+                <div class="keyboard"></div>
+            </div>
+            <!-- <div id="snipperStampa">
+                        <svg width="128px" height="96px" viewBox="0 0 64 48" style="width: 128px; height: 96px;">
+                            <polyline points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24" id="back"></polyline>
+                            <polyline points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24" id="front"></polyline>
+                        </svg>
+                    </div> -->
+        </div>
+    
+        <!-- SCRIPT -->
+        <script>
+            /*  -----------------------------------------------------------------------------------------------
+            Set Score with gsap
+            --------------------------------------------------------------------------------------------------- */
+            function setScore(id, score, maxScore = 3) {
+                const percentage = (score / maxScore) * 100;
+                gsap.to(`#${id}`, {
+                    width: `${percentage}%`,
+                    duration: 1.5,
+                    ease: "power2.out",
                 });
+            }
 
-                userModalBtn.addEventListener("mouseover", showModal);
-                /*  -----------------------------------------------------------------------------------------------
-                  GENERA PDF COMPLETO
-                --------------------------------------------------------------------------------------------------- */
-                window.onload = function() {
-                    document.getElementById('screenshotBtn').addEventListener('click', function () {
-                        const cards = document.querySelectorAll('.stampa'); 
-                        const { jsPDF } = window.jspdf;
-                        const doc = new jsPDF();
-        
-                   
-                        document.getElementById('snipperStampa').style.display = 'block';
-                        document.getElementById('spinnerBackdrop').style.display = 'block';
-                        document.body.style.overflow = 'hidden';
-        
-                        let yOffset = 10; 
-        
-                        function captureCard(index) {
-                            if (index >= cards.length) {
-                             
-                                document.getElementById('snipperStampa').style.display = 'none';
-                                document.getElementById('spinnerBackdrop').style.display = 'none';
-                                document.body.style.overflow = 'auto';
-                                doc.save('FULL-REPORT.pdf');
-                                return;
-                            }
-        
-                
-                            html2canvas(cards[index]).then(function(canvas) {
-                                var img = canvas.toDataURL('image/png');
-                                var pageWidth = doc.internal.pageSize.width;
-                                var pageHeight = doc.internal.pageSize.height;
-        
-                           
-                                var imgWidth = pageWidth - 20; 
-                                var imgHeight = canvas.height * imgWidth / canvas.width;
-        
-                    
-                                if (yOffset + imgHeight > pageHeight) {
-                                    doc.addPage();
-                                    yOffset = 10; 
-                                }
-        
-                           
-                                doc.addImage(img, 'PNG', 10, yOffset, imgWidth, imgHeight);
-        
-                                yOffset += imgHeight + 10;  
-        
-                                captureCard(index + 1);
-                            }).catch(function(error) {
-                                console.error('Errore nella creazione dello screenshot:', error);
-                            });
+            setScore("stress", 2.5);
+            setScore("disbiosi", 1.8);
+            setScore("immunitary_sistem", 2.9);
+            /*  -----------------------------------------------------------------------------------------------
+            User Modal log out
+            --------------------------------------------------------------------------------------------------- */
+            const userImg = document.getElementById("userImg");
+            const userModal = document.getElementById("userModal");
+            const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
+
+            function showModal() {
+                userModal.classList.add("show");
+            }
+
+            userImg.addEventListener("mouseover", showModal);
+
+            userModal.addEventListener("mouseout", () => {
+                userModal.classList.remove("show");
+            });
+
+            userModalBtn.addEventListener("mouseover", showModal);
+            /*  -----------------------------------------------------------------------------------------------
+              GENERA PDF COMPLETO
+            --------------------------------------------------------------------------------------------------- */
+            window.onload = function () {
+                document.getElementById('screenshotBtn').addEventListener('click', function () {
+                    const cards = document.querySelectorAll('.stampa');
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+
+                    document.getElementById('snipperStampa').style.display = 'block';
+                    document.getElementById('spinnerBackdrop').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+
+                    let yOffset = 10;
+
+                    function captureCard(index) {
+                        if (index >= cards.length) {
+
+                            document.getElementById('snipperStampa').style.display = 'none';
+                            document.getElementById('spinnerBackdrop').style.display = 'none';
+                            document.body.style.overflow = 'auto';
+                            doc.save('FULL-REPORT.pdf');
+                            return;
                         }
-        
-                        captureCard(0);
-                    });
-                };
-            </script>
-        </div>        
+
+
+                        html2canvas(cards[index]).then(function (canvas) {
+                            var img = canvas.toDataURL('image/png');
+                            var pageWidth = doc.internal.pageSize.width;
+                            var pageHeight = doc.internal.pageSize.height;
+
+
+                            var imgWidth = pageWidth - 20;
+                            var imgHeight = canvas.height * imgWidth / canvas.width;
+
+
+                            if (yOffset + imgHeight > pageHeight) {
+                                doc.addPage();
+                                yOffset = 10;
+                            }
+
+
+                            doc.addImage(img, 'PNG', 10, yOffset, imgWidth, imgHeight);
+
+                            yOffset += imgHeight + 10;
+
+                            captureCard(index + 1);
+                        }).catch(function (error) {
+                            console.error('Errore nella creazione dello screenshot:', error);
+                        });
+                    }
+
+                    captureCard(0);
+                });
+            };
+        </script>
+        </div>
     </main>
 
 

@@ -165,6 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sidebarTitle.textContent = section;
       switch (section) {
         case "Notifiche":
+          sidebarContent.style.padding = "0px";
           sidebarContent.innerHTML = `
             <div id="notification-list">
               <h3 class="title-notice">Ultime Novità</h3>
@@ -401,12 +402,15 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
           break;
         case "Email":
-          sidebarContent.innerHTML = "<p>Qui trovi tutte le email.</p>";
+          sidebarContent.style.padding = "20px 0 0 20px";
+          sidebarContent.innerHTML = "<p>Nessuna email recente disponibile.</p>";
           break;
         case "Update":
-          sidebarContent.innerHTML = "<p>Qui trovi gli aggiornamenti.</p>";
+          sidebarContent.style.padding = "20px 0 0 20px";
+          sidebarContent.innerHTML = "<p>Nessun aggiornamento disponibile.</p>";
           break;
         default:
+          sidebarContent.style.padding = "20px 0 0 20px";
           sidebarContent.innerHTML = "<p>Contenuto non disponibile.</p>";
       }
 

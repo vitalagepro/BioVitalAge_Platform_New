@@ -619,6 +619,10 @@ tbody tr:hover {
   color: white;
 }
 
+#sidebar-content {
+  padding: 20px 0 0 20px;
+}
+
 #closeSidebar {
   background: none;
   border: none;
