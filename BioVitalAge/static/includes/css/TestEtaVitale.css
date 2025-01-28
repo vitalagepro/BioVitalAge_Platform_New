@@ -120,9 +120,8 @@
     letter-spacing: 1px;
 }
 .question p span{
-    color: var(--contrast-color);
-    cursor: pointer;
-    font-weight: bold;
+    color: var(--dark1);;
+    font-size: 14px;
 }
 .tableAnswer-container{
     width: 100%;
@@ -162,18 +161,19 @@
     padding: 20px;
     border-left: 1px solid #ddd;
 }
-input[type="checkbox"] {
+input[type="radio"] {
     appearance: none; 
     -webkit-appearance: none; 
-    background-color: white;
-    width: 25px;
-    height: 25px;
+    width: 2rem;
+    height: 2rem;
+    background-color: var(--card-color);
     border: 2px solid var(--contrast-color-shadow);
     cursor: pointer;
 }
-input[type="checkbox"]:checked {
+input[type="radio"]:checked {
     background-color: var(--contrast-color2);
 }
+
 .tableRow p:first-of-type{
     border-left: none;
 }
@@ -184,7 +184,7 @@ input[type="checkbox"]:checked {
     align-items: center;
 }
 
-.tableRow input:not([type="checkbox"]) {
+.tableRow input:not([type="radio"]) {
     width: 100%;
     padding: 0px 20px;
     border: none;
@@ -193,3 +193,48 @@ input[type="checkbox"]:checked {
     height: 100%;
 }
 
+#long-p{
+    flex-direction: column;
+}
+#Long-p #info{
+    color: var(--dark1);
+    font-weight: 100;
+}
+
+
+
+
+#pagination {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    width: 60%;
+    height: 100%;
+}
+
+.pagination-btn {
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 2px solid var(--contrast-color);
+    border-radius: 100px;
+    width: 38px;
+    background-color: var(--dark2);
+    position: relative;
+    color: white;
+}
+
+
+.pagination-btn.active {
+    background-color: var(--contrast-color);
+    color: white;
+    font-weight: bold;
+}
+
+button:disabled{
+    cursor: not-allowed;
+    background-color: var(--contrast-color);
+}
+button:disabled:hover{
+    pointer-events: none;
+}

@@ -103,7 +103,7 @@
             <div class="contenitoreTest">
                 <div class="contenitoreTest-Header">
                     <img src="{% static 'includes/images/etaWelcome.webp' %}" alt="" width="50px" height="50px">
-                    <h3>Test Dell'età Bio-Vitale</h3>
+                    <h3>Test della capacità Vitale</h3>
                 </div>
                 
                 <div class="contentTest">
@@ -152,7 +152,7 @@
              <!-- TABELLA REFERTI -->
             <div class="RefertiVitale">
                 <div class="TabellaVitale-header">
-                    <h3>Elenco referti età Vitale</h3>
+                    <h3>Elenco referti capacità Vitale</h3>
                     <div class="filtri-button">
                         <select name="filter" id="filter" class="custom-select">
                             <option value="name">Ordinato per data più recente</option>
@@ -176,12 +176,12 @@
                                 <p>{{ referto.punteggio }}</p>
                                 <p>{{ referto.data_referto }}</p>
                                 <p>
-                                    <a href="{% url 'persona_detail' persona.id %}">
+                                    <a href="{% url 'referto_test' persona.id %}">
                                         <img src="{% static 'includes/icone/referto.png' %}" alt="" />
                                     </a>
                                 </p>
                                 <p>
-                                    <a href="{% url 'cartella_paziente' persona.id %}">
+                                    <a href="#">
                                         <img src="{% static 'includes/icone/download.png' %}" alt="" />
                                     </a>
                                 </p>

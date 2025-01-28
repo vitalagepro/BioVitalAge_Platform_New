@@ -18,6 +18,7 @@ urlpatterns = [
     path('update-persona/<int:id>/', views.update_persona_contact, name='update_persona_contact'),
     path('EtaVitale/<int:id>/', views.EtaVitaleView.as_view(), name='etaVitale'),
     path('TestVitale/<int:id>/', views.TestEtaVitaleView.as_view(), name='TestetaVitale'),
+    path('RefertoTest/<int:id>/', views.RefertoQuizView.as_view(), name='referto_test'),
 ]
 
 
