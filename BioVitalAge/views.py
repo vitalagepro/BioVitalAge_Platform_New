@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import *
-from .utils import calculate_biological_age
+from .utils import calculate_biological_age, calcola_punteggio_finale
 # from django.contrib.sessions.models import Session
 from django.db.models import OuterRef, Subquery
 import json
@@ -1506,18 +1506,8 @@ class TestEtaVitaleView(View):
         return render(request, "includes/testVitale.html", context)
     
     def post(self, request, id):
-
-        #punteggio = chiamata a funzione utils per il caclolo del punteggio
-
         persona = get_object_or_404(TabellaPazienti, id=id)
         data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
-
-        referto = ArchivioRefertiTest(
-            paziente = persona,
-            #punteggio = punteggio,
-            #documento = request.FILES.get('documento')
-        )
-        referto.save()
 
         SiIm_Somma = (
             int(data.get('SiIm_1', 0)) +
@@ -1548,11 +1538,35 @@ class TestEtaVitaleView(View):
             int(data.get('Sarc_f_5', 0)) 
         )
 
+        biomarcatori = {
+            "lymph": safe_float(data, 'Lymph'), 
+            "wbc": safe_float(data, 'wbc'),
+            "pcr": safe_float(data, 'Proteins_c'),
+            "il6": safe_float(data, 'Inter_6'),
+            "tnf": safe_float(data, 'Tnf')
+        }
+
+        antropometria = {
+            "polpaccio": safe_float(data, 'CirPolp'),
+            "waist_hip_ratio": safe_float(data, 'WHip_ratio')
+        }
+
+        performance_fisica = int(data.get('SPPB'))
+
+        punteggioFinale = calcola_punteggio_finale(SiIm_Somma, Fss_Somma,Sarc_f_Somma, biomarcatori, antropometria, performance_fisica )
+
+        referto = ArchivioRefertiTest(
+            paziente = persona,
+            punteggio = punteggioFinale,
+            #documento = request.FILES.get('documento')
+        )
+        referto.save()
+
 
         datiEstesi = DatiEstesiRefertiTest(
             referto = referto,
 
-            SiIm = SiIm,
+            SiIm = SiIm_Somma,
             Lymph = safe_float(data, 'Lymph'),
             Lymph_el = safe_float(data, 'Lymph_el'),
             wbc = safe_float(data, 'wbc'),
@@ -1565,7 +1579,7 @@ class TestEtaVitaleView(View):
             Mono_el = safe_float(data, 'Mono_el'),
 
             #ENERGIA E MTABOLISMO
-            Fss = Fss,
+            Fss = Fss_Somma,
             CirPolp = safe_float(data, 'CirPolp'),
             WHip_ratio = safe_float(data, 'WHip_ratio'),
             WH_ratio = safe_float(data, 'WH_ratio'),
@@ -1584,7 +1598,7 @@ class TestEtaVitaleView(View):
             igf_1 = safe_float(data, 'ifg_1'),
             
             # Funzione Neuromuscolare
-            sarc_f = Sarc_f,
+            sarc_f = Sarc_f_Somma,
             hgs_test = data.get('HGS_test'),
             
             # Performance Fisica
@@ -1595,7 +1609,9 @@ class TestEtaVitaleView(View):
 
 
         context = {
-            'persona': persona
+            'persona': persona,
+            'modal' : True,
+            'Referto': referto
         }
 
         return render(request, "includes/EtaVitale.html", context)
