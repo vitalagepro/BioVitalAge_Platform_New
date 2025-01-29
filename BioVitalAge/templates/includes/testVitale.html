@@ -197,39 +197,70 @@
                         <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
 
                         <div class="tableAnswer" id="esami">
+
                             <div class="tableAnswer-header">
                                 <p class="subtitle">Descrizione</p>
                                 <p class="subtitle">Esito</p>
                                 <p class="subtitle">Unità di misura</p>
                                 <p class="subtitle">Valori di riferimento</p>
                             </div>
+
                             <div class="tableAnswer-container" id="secondTypeTable">
+
                                 <div class="tableRow" style="margin-top: 10px;">
                                     <p>Lymph</p>
-                                    <p name="Lymph">{{ dati_estesi.lymph }}</p>
+                                    {% if dati_estesi %}
+                                        <p name="Lymph">
+                                            {{ dati_estesi.lymph }}
+                                        </p>
+                                    {% else %}
+                                        <p>
+                                            <input type="text" name="Lymph" required placeholder="Inserisci il valore">
+                                        </p>
+                                    {% endif %}
                                     <p>%</p>
                                     <p>15 - 45</p>
                                 </div>
                             
                                 <div class="tableRow">
                                     <p>Lymph </p>
-                                    <p name="Lymph_el">{{ dati_estesi.lymph_ul }}</p>
+
+                                    {% if dati_estesi %}
+                                        <p name="Lymph_el">{{ dati_estesi.lymph_ul }}</p>
+                                    {% else %}
+                                        <p>
+                                            <input type="text" name="Lymph_el" required placeholder="Inserisci il valore">
+                                        </p>
+                                    {% endif %}
+                                    
                                     <p>10^3/uL</p>
                                     <p>1.0 - 3.5 </p>
                                 </div>
 
                                 <div class="tableRow">
                                     <p>Wbc</p>
-                                    <p name="wbc"> {{ dati_estesi.wbc }}</p>
+                                    
+                                    {% if dati_estesi %}
+                                        <p name="wbc"> {{ dati_estesi.wbc }}</p>
+                                    {% else %}
+                                        <p>
+                                            <input type="text" name="wbc" required placeholder="Inserisci il valore">
+                                        </p>
+                                    {% endif %}
+                                    
                                     <p>10^3/uL</p>
                                     <p>4.0 - 10.0 </p>
                                 </div>
 
                                 <div class="tableRow">
                                     <p>Proteina C reattiva</p>
-                                    <p> 
-                                        <input type="text" name="Proteins_c" required placeholder="inserisci valore">
-                                    </p>
+                                    {% if dati_estesi %}
+                                        <p name="Proteins_c"> {{ dati_estesi.Proteins_c }}</p>
+                                    {% else %}
+                                        <p>
+                                            <input type="text" name="Proteins_c" required placeholder="Inserisci il valore">
+                                        </p>
+                                    {% endif %}
                                    
                                     <p>%</p>
                                     <p>15 - 45</p>
@@ -237,7 +268,16 @@
 
                                 <div class="tableRow">
                                     <p>Interleuchina 6</p>
-                                    <p name="Inter_6">{{ dati_estesi.inter_6 }}</p>
+
+                                    {% if dati_estesi %}
+                                        <p name="Inter_6"> {{ dati_estesi.inter_6  }}</p>
+                                    {% else %}
+                                        <p>
+                                            <input type="text" name="Inter_6" required placeholder="Inserisci il valore">
+                                        </p>
+                                    {% endif %}
+
+                                   
                                     <p>pg/mL </p>
                                     <p>4.4 </p>
                                 </div>
@@ -245,21 +285,45 @@
                                 <div class="tableRow">
                                     <p>TNF (Tumor Necrosis 
                                         Factor) alfa  </p>
-                                    <p name="Tnf">{{ dati_estesi.tnf_a }}</p>
+
+                                    {% if dati_estesi %}
+                                        <p name="Tnf">{{ dati_estesi.Tnf }}</p>
+                                    {% else %}
+                                        <p>
+                                            <input type="text" name="Tnf" required placeholder="Inserisci il valore">
+                                        </p>
+                                    {% endif %}
+  
                                     <p>pg/mL </p>
                                     <p>4,60 - 12,40</p>
                                 </div>
 
                                 <div class="tableRow">
                                     <p>Mono </p>
-                                    <p name="Mono">{{ dati_estesi.mono}}</p>
+
+                                    {% if dati_estesi %}
+                                        <p name="Mono">{{ dati_estesi.mono }}</p>
+                                    {% else %}
+                                        <p>
+                                            <input type="text" name="Mono" required placeholder="Inserisci il valore">
+                                        </p>
+                                    {% endif %}
+
                                     <p>%</p>
                                     <p>0 - 10</p>
                                 </div>
 
                                 <div class="tableRow">
                                     <p>Mono </p>
-                                    <p name="Mono_el">{{ dati_estesi.mono_ul }}</p>
+
+                                    {% if dati_estesi %}
+                                        <p name="Mono_el">{{ dati_estesi.mono_ul }}</p>
+                                    {% else %}
+                                        <p>
+                                            <input type="text" name="Mono_el" required placeholder="Inserisci il valore">
+                                        </p>
+                                    {% endif %}
+                                 
                                     <p>0^3/uL</p>
                                     <p>0-0.99</p>
                                 </div>
@@ -454,8 +518,7 @@
                             </div>
                         </div>  
                     </div>
-
-                    
+          
                     <!-- BIOMARCATORI CIRCOLANTI DEL METABOLISMO -->
                     <div class="question" data-group="8">
                         <h3>Biomarcatori Circolanti del Metabolismo</h3>
@@ -471,7 +534,15 @@
                             <div class="tableAnswer-container" id="secondTypeTable">
                                 <div class="tableRow" style="margin-top: 10px;">
                                     <p>Glicemia a digiuno </p>
-                                    <p name="Glic">{{ dati_estesi.glicemy }}</p>
+
+                                    {% if dati_estesi %}
+                                        <p name="Glic">{{ dati_estesi.glicemy }}</p>
+                                    {% else %}
+                                        <p>
+                                            <input type="text" name="Glic" required placeholder="Inserisci il valore">
+                                        </p>
+                                    {% endif %}
+                                    
                                     <p>mg/dL  </p>
                                     <p id="long-p">
                                         <span>Valori normali: 74-106 mg/dL</span>
@@ -497,13 +568,22 @@
 
                                 <div class="tableRow">
                                     <p>Insulina a digiuno </p>
-                                    <p name="Insu">{{ dati_estesi.insulin }}</p>
+
+                                    {% if dati_estesi %}
+                                        <p name="Insu">{{ dati_estesi.insulin }}</p>
+                                    {% else %}
+                                    <p>
+                                        <input type="text" name="Insu" required placeholder="Inserisci il valore">
+                                    </p>
+                                    {% endif %}
+
                                     <p>IU/mL </p>
                                     <p>Valori normali: < 20 IU/mL </p>
                                 </div>
 
                                 <div class="tableRow">
                                     <p>Peptide C </p>
+
                                     <p>
                                         <input type="text" name="Pept_c" required placeholder="Inserisci il valore">
                                     </p>
@@ -514,7 +594,15 @@
 
                                 <div class="tableRow">
                                     <p>Colesterolo totale </p>
-                                    <p name="Col_tot">{{ dati_estesi.tot_chol }}</p>
+
+                                    {% if dati_estesi %}
+                                        <p name="Col_tot">{{ dati_estesi.tot_chol }}</p>
+                                    {% else %}
+                                    <p>
+                                        <input type="text" name="Col_tot" required placeholder="Inserisci il valore">
+                                    </p>
+                                    {% endif %}
+                                 
                                     <p>mg/dL</p>
                                     <p id="long-p">
                                         <span> Valori desiderabili: 130 - 200 mg/dL</span>
@@ -525,7 +613,15 @@
                             
                                 <div class="tableRow">
                                     <p>Colesterolo LDL </p>
-                                    <p name="Col_ldl">{{ dati_estesi.ldl_chol }}</p>
+
+                                    {% if dati_estesi %}
+                                        <p name="Col_ldl">{{ dati_estesi.ldl_chol }}</p>
+                                    {% else %}
+                                    <p>
+                                        <input type="text" name="Col_ldl" required placeholder="Inserisci il valore">
+                                    </p>
+                                    {% endif %}
+
                                     <p>mg/dL </p>
                                     <p id="long-p">
                                         <span>Valori ottimali: < 100 mg/dL </span>
@@ -537,7 +633,15 @@
 
                                 <div class="tableRow">
                                     <p>Colesterolo HDL  </p>
-                                    <p name="Col_hdl">{{ dati_estesi.hdl_chol_m }}</p>
+
+                                    {% if dati_estesi %}
+                                        <p name="Col_hdl">{{ dati_estesi.hdl_chol_m }}</p>
+                                    {% else %}
+                                    <p>
+                                        <input type="text" name="Col_ldl" required placeholder="Inserisci il valore">
+                                    </p>
+                                    {% endif %}
+                   
                                     <p>mg/dL</p>
                                     <p id="long-p">
                                         <span> UOMO  Nessun rischio: >55 mg/dL Rischio moderato: 35-55 mg/dL  </span>
@@ -548,7 +652,15 @@
 
                                 <div class="tableRow">
                                     <p>Trigliceridi </p>
-                                    <p name="Trigl">{{ dati_estesi.trigl }}</p>
+
+                                    {% if dati_estesi %}
+                                        <p name="Trigl">{{ dati_estesi.trigl }}</p>
+                                    {% else %}
+                                    <p>
+                                        <input type="text" name="Trigl" required placeholder="Inserisci il valore">
+                                    </p>
+                                    {% endif %}
+
                                     <p>mg/dL </p>
                                     <p id="long-p">
                                         <span>Valori ottimali: < 150 mg/dL</span>
@@ -559,10 +671,19 @@
 
                                 <div class="tableRow">
                                     <p>Albumina </p>
-                                    <p name="albumina">{{ dati_estesi.albumin_dI }}</p>
+
+                                    {% if dati_estesi %}
+                                        <p name="albumina">{{ dati_estesi.albumin_dI }}</p>
+                                    {% else %}
+                                    <p>
+                                        <input type="text" name="albumina" required placeholder="Inserisci il valore">
+                                    </p>
+                                    {% endif %}
+
                                     <p>g/dL </p>
                                     <p>Valori ottimali: 3,5 – 5,2 g/dL </p>
                                 </div>
+
                                 <div class="tableRow">
                                     <p>Clearance urea </p>
                                     <p><input type="text" name="clearance_urea" required placeholder="Inserisci il valore"></p>

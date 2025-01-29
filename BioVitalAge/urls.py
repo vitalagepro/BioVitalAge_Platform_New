@@ -1,10 +1,11 @@
 from django.urls import path
 from . import views
-from .views import HomePageRender, AcceptDisclaimerView
+from .views import *
 
 urlpatterns = [
     path("", views.LoginRenderingPage.as_view(), name='loginPage'),
     path("Home_Page", HomePageRender.as_view(), name='HomePage'),
+    path("Login",LogOutRender.as_view(), name="logout"),
     path('accept-disclaimer/', AcceptDisclaimerView.as_view(), name='accept_disclaimer'),
     path("Calcolatore_Page", views.CalcolatoreRender.as_view(), name='Calcolatore'),
     path("Risultati_Page", views.RisultatiRender.as_view(), name='Risultati'),
@@ -18,7 +19,7 @@ urlpatterns = [
     path('update-persona/<int:id>/', views.update_persona_contact, name='update_persona_contact'),
     path('EtaVitale/<int:id>/', views.EtaVitaleView.as_view(), name='etaVitale'),
     path('TestVitale/<int:id>/', views.TestEtaVitaleView.as_view(), name='TestetaVitale'),
-    path('RefertoTest/<int:id>/', views.RefertoQuizView.as_view(), name='referto_test'),
+    path('RefertoTest/<int:persona_id>/<int:referto_id>/', views.RefertoQuizView.as_view(), name='referto_test'),
 ]
 
 

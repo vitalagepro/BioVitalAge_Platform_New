@@ -55,9 +55,9 @@
     <main>
         <div class="main-title-nav">
             <div class="back-tittle">
-                <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}"
+                <a id="back" href="{% url 'etaVitale' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}"
                         alt="back_ico" title="Back to Results"></a>
-                <h2 class="main-welcome-title">Report Patient, {{ persona.name }} {{ persona.surname }}</h2>
+                <h2 class="main-welcome-title">Referto Capacità Vitale, {{ persona.name }} {{ persona.surname }}</h2>
             </div>
     
             <div class="main-menu-trace">
@@ -65,16 +65,17 @@
                     <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
                 </a>
                 <p>»</p>
-                <p>Elenco Pazienti</p>
+                <a href="{% url 'Risultati' %}">Elenco Pazienti</a>
                 <p>»</p>
-                <p>Cartella Paziente</p>
+                <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
                 <p>»</p>
-                <p>Capacità BioVItale</p>
+                <a href="{% url 'etaVitale' persona.id %}">Capacità BioVitale</a>
                 <p>»</p>
                 <p>Referto Capacità Biovitale</p>
             </div>
         </div>
     
+        <!-- ANGRAFIC DATA -->
         <div class="container_data anagraphic_data stampa">
             <h3>Personal Information</h3>
             <div class="container_box">
@@ -111,7 +112,33 @@
                 </div>
             </div>
         </div>
-    
+
+        <!-- FUNZIONE MUSCOLARE -->
+        <div class="container-box-score">
+            <h3>Risultato del calcolo della Capacità Vitale</h3>
+            <p>
+                I dati del questionario vengono suddivisi in sezioni per le quali ogni sezione ha un punteggio finale calcolato,
+                che vengono poi sommati per dare il risultato finale che sarà la capacità vitale. Le sezioni prese in considerazione 
+                per il calcolo sono: Questionario del sistema immunitario, Questionario della stanchezza percepita, Energia e metabolismo,
+                Questionario della Sarcopenia, funzione muscolare, performance fisica, biomarcatori circolanti dell'infiammazione,
+                biomarcatori circolanti del metabolismo.
+            </p>
+
+            <div class="container-score">
+                <div class="score-box" style="width: 100%;">
+                    <div class="score-label">Capacità Vitale</div>
+                    <div class="track">
+                        <div class="bar" id="stress"></div>
+                    </div>
+                    <div class="indicators">
+                        <span>1</span><span>2</span><span>3</span>
+                    </div>
+                </div>                
+            </div>
+        </div>
+
+        
+        <!-- SISTEMA IMMUNITARIO -->
         <div class="container-box-score">
             <h3>Sistema Immunitario</h3>
             <div class="container-score">
@@ -146,9 +173,229 @@
                 </div>
             </div>
         </div>
-    
-    
-    
+        
+        <!-- ENERGIA E METABOLISMO -->
+        <div class="container-box-score">
+            <h3>Energia e metabolismo</h3>
+
+            <div class="container-score">
+                <div class="secondType-scoreBox">
+                    <p>Punteggio Totalizzato dal questionario sulla stanchezza percepita (Fatigue Severity Scale)</p>
+                    <p class="value">{{ datiEstesi.Fss }}</p>
+                </div>
+
+                <div class="score-box">
+                    <div class="score-label">Weist height ratio</div>
+                    <div class="track">
+                        <div class="bar" id="stress"></div>
+                    </div>
+                    <div class="indicators">
+                        <span>1</span><span>2</span><span>3</span>
+                    </div>
+                </div>
+
+
+                <div class="score-box">
+                    <div class="score-label">Weist hip ratio</div>
+                    <div class="track">
+                        <div class="bar" id="stress"></div>
+                    </div>
+                    <div class="indicators">
+                        <span>1</span><span>2</span><span>3</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FUNZIONE MUSCOLARE -->
+        <div class="container-box-score">
+            <h3>Funzione Muscolare</h3>
+
+            <div class="container-score">
+                <div class="secondType-scoreBox">
+                    <p>Punteggio Totalizzato dal questionario della Sarcopenia</p>
+                    <p class="value">{{ datiEstesi.sarc_f }}</p>
+                </div>
+
+                <div class="score-box">
+                    <div class="score-label">Hand Grip Strenght Test</div>
+                    <div class="track">
+                        <div class="bar" id="stress"></div>
+                    </div>
+                    <div class="indicators">
+                        <span>1</span><span>2</span><span>3</span>
+                    </div>
+                </div>
+
+                <div class="score-box">
+                    <div class="score-label">Circonferenza del Polpaccio</div>
+                    <div class="track">
+                        <div class="bar" id="stress"></div>
+                    </div>
+                    <div class="indicators">
+                        <span>1</span><span>2</span><span>3</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- PERFORMANCE FISICA -->
+        <div class="container-box-score">
+            <h3>Performance Fisica</h3>
+
+            <div class="container-score">
+                <div class="score-box" style="width: 33%;">
+                    <div class="score-label">Hand Grip Strenght Test</div>
+                    <div class="track">
+                        <div class="bar" id="stress"></div>
+                    </div>
+                    <div class="indicators">
+                        <span>1</span><span>2</span><span>3</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        
+        <!-- BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE-->
+        <div class="container-box-score">
+            <h3>Biomarcatori Circolanti dell'Infiammazione</h3>
+
+            <div class="container-score" style="margin-top: 1rem;">
+                <div class="secondType-scoreBox">
+                    <p>Lymph %</p>
+                    <p class="value">{{ datiEstesi.Lymph }}</p>
+                </div>
+
+                <div class="secondType-scoreBox">
+                    <p>Lymph</p>
+                    <p class="value">{{ datiEstesi.Lymph_el }}</p>
+                </div>
+
+                <div class="secondType-scoreBox">
+                    <p>Wbc</p>
+                    <p class="value">{{ datiEstesi.wbc }}</p>
+                </div>
+
+                <div class="secondType-scoreBox">
+                    <p>Proteina C reattiva</p>
+                    <p class="value">{{ datiEstesi.Proteins_c }}</p>
+                </div>
+            </div>
+
+            <div class="container-score" style="margin-top: 1rem;">
+
+                <div class="secondType-scoreBox">
+                    <p>Interleuchina 6</p>
+                    <p class="value">{{ datiEstesi.Inter_6 }}</p>
+                </div>
+
+                <div class="secondType-scoreBox">
+                    <p>TNF (Tumor Necrosis 
+                        Factor) alfa </p>
+                    <p class="value">{{ datiEstesi.Tnf }}</p>
+                </div>
+
+                <div class="secondType-scoreBox">
+                    <p>Mono %</p>
+                    <p class="value">{{ datiEstesi.Mono }}</p>
+                </div>
+
+                <div class="secondType-scoreBox">
+                    <p>Mono </p>
+                    <p class="value">{{ datiEstesi.Mono_el }}</p>
+                </div>
+               
+            </div>
+        </div>
+
+        <!-- BIOMARCATORI CIRCOLANTI DEL METABOLISMO -->
+        <div class="container-box-score">
+            <h3>Biomarcatori Circolanti del Metabolismo</h3>
+
+            <div class="container-score" style="margin-top: 1rem;">
+                <div class="secondType-scoreBox">
+                    <p>Glicemia a digiuno</p>
+                    <p class="value">{{ datiEstesi.Glic }}</p>
+                </div>
+
+                <div class="secondType-scoreBox">
+                    <p>Emoglobina glicata (HbA1c)</p>
+                    <p class="value">{{ datiEstesi.Emog }}</p>
+                </div>
+
+                <div class="secondType-scoreBox">
+                    <p>Insulina a digiuno </p>
+                    <p class="value">{{ datiEstesi.Insu }}</p>
+                </div>
+                <div class="secondType-scoreBox">
+                    <p>Peptide C </p>
+                    <p class="value">{{ datiEstesi.Pept_c }}</p>
+                </div>
+
+                
+            </div>
+
+            <div class="container-score" style="margin-top: 1rem;">
+
+                <div class="secondType-scoreBox">
+                    <p>Colesterolo totale </p>
+                    <p class="value">{{ datiEstesi.Col_tot }}</p>
+                </div>
+
+                <div class="secondType-scoreBox">
+                    <p>Colesterolo LDL </p>
+                    <p class="value">{{ datiEstesi.Col_ldl }}</p>
+                </div>
+
+                <div class="secondType-scoreBox">
+                    <p>Colesterolo HDL  </p>
+                    <p class="value">{{ datiEstesi.Col_hdl }}</p>
+                </div>
+
+                <div class="secondType-scoreBox">
+                    <p>Trigliceridi </p>
+                    <p class="value">{{ datiEstesi.Trigl }}</p>
+                </div>
+               
+            </div>
+
+            <div class="container-score" style="margin-top: 1rem;">
+
+                <div class="secondType-scoreBox">
+                    <p>Albumina </p>
+                    <p class="value">{{ datiEstesi.albumina }}</p>
+                </div>
+
+                <div class="secondType-scoreBox">
+                    <p>Clearance urea </p>
+                    <p class="value">{{ datiEstesi.clearance_urea }}</p>
+                </div>
+
+                <div class="secondType-scoreBox">
+                    <p>IGF-1 </p>
+                    <p class="value">{{ datiEstesi.igf_1 }}</p>
+                </div>
+
+                <div class="secondType-scoreBox" style="background-color: var(--card-color);">
+                    <p style="color: var(--card-color);">Trigliceridi </p>
+                    <p style="color: var(--card-color); background-color: var(--card-color);" class="value">1</p>
+                </div>
+               
+            </div>
+
+            
+        </div>
+
+
+
+
+
+
+
         <!-- GENERA PDF COMPLETO -->
         <button class="generatePDFButton button" id="screenshotBtn">
             <span class="button__icon-wrapper">

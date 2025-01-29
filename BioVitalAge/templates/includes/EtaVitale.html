@@ -176,7 +176,7 @@
                                 <p>{{ referto.punteggio }}</p>
                                 <p>{{ referto.data_referto }}</p>
                                 <p>
-                                    <a href="{% url 'referto_test' persona.id %}">
+                                    <a href="{% url 'referto_test' persona.id referto.id %}">
                                         <img src="{% static 'includes/icone/referto.png' %}" alt="" />
                                     </a>
                                 </p>
