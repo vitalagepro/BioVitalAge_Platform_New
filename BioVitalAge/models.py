@@ -60,12 +60,12 @@ class TabellaPazienti(models.Model):
     reduced_intake = models.CharField(max_length=100, blank=True, null=True)
 
     # Sport
-    sport = models.CharField(default=False,max_length=100, null=True)
+    sport = models.CharField(default=False, max_length=100, null=True)
     sport_livello = models.CharField(max_length=100, blank=True, null=True)
     sport_frequency = models.CharField(max_length=100, blank=True, null=True)
 
     # Sedentarietà
-    attivita_sedentaria = models.CharField(default=False,max_length=100, null=True)
+    attivita_sedentaria = models.CharField(default=False, max_length=100, null=True)
     livello_sedentarieta = models.CharField(max_length=100, blank=True, null=True)
     sedentarieta_nota = models.TextField(blank=True, null=True)
 
@@ -78,7 +78,7 @@ class TabellaPazienti(models.Model):
 # Tabella archivio referti associata ai pazienti
 class ArchivioReferti(models.Model):
     paziente = models.ForeignKey(
-        TabellaPazienti, 
+        TabellaPazienti,
         on_delete=models.CASCADE, 
         related_name='referti'
     )
@@ -88,6 +88,7 @@ class ArchivioReferti(models.Model):
     documento = models.FileField(upload_to='referti/', null=True, blank=True)
 
     def __str__(self):
+        print(f"Referto ID: {self.id} - Paziente: {self.paziente.name} {self.paziente.surname}")
         return f"Referto ID: {self.id} - Paziente: {self.paziente.name} {self.paziente.surname}"
 
 

@@ -8,10 +8,12 @@
 
 body {
   height: 100vh;
-  background: linear-gradient(to right,
-      var(--dark2),
-      var(--contrast-color),
-      var(--dark2));
+  background: linear-gradient(
+    to right,
+    var(--dark2),
+    var(--contrast-color),
+    var(--dark2)
+  );
 }
 
 /* ! ROOT */
@@ -36,26 +38,15 @@ body {
   --circle-color-shadow-two: rgba(42, 196, 221, 0.05);
   --card-color: #f8f4fc;
 
-
   /* Range color */
-  --negative-color-left: #8B1E3F;
-  --negative-color-right: #C74B5B;
+  --negative-color-left: #8b1e3f;
+  --negative-color-right: #c74b5b;
   --positive-color: #2ac670;
-  --neutral-range-color: #D4A33E;
+  --neutral-range-color: #d4a33e;
 }
 
-
-
-
-
-
-
-
-
-
-
 /* ! DISCLAIMER */
-.bg-disclaimer{
+.bg-disclaimer {
   background-color: rgba(0, 0, 0, 0.411);
   height: 100vh;
   width: 100vw;
@@ -120,25 +111,13 @@ body {
   transform: scale(0.98);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 /* ! LOADER PAGE */
 #loading-wrapper {
   position: fixed;
   top: 0;
   left: 0;
   opacity: 1;
-  transition: all 0.5s cubic-bezier(.215, .61, .355, 1);
+  transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
   width: 100%;
   height: 100%;
   z-index: 5000;
@@ -279,11 +258,6 @@ body {
   animation-delay: -1.1s;
 }
 
-
-
-
-
-
 /* SCROLLBAR */
 ::-webkit-scrollbar {
   width: 12px;
@@ -302,17 +276,6 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--contrast-color2);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 /* ! BUTTON STYLE GENERAL */
 /* From Uiverse.io by Creatlydev */
@@ -362,7 +325,7 @@ body {
   transform: translate(-150%, 150%);
 }
 
-.button__icon-svg:first-child{
+.button__icon-svg:first-child {
   position: absolute;
   transform: translate(0);
 }
@@ -432,20 +395,13 @@ body {
   color: #d3d3d3;
 }
 
-
-
-
-
-
-
-
 /* NAV BAR STYLE */
 .nav-bar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(90deg, var(--dark1), var(--dark2)); 
+  background: linear-gradient(90deg, var(--dark1), var(--dark2));
   height: 4.5rem;
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
   z-index: 6;
@@ -584,36 +540,18 @@ header {
   cursor: pointer;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 /* main style */
 main {
   position: absolute;
   top: 4.5rem;
   width: 100%;
-  background: linear-gradient(to right,
-      var(--dark2),
-      var(--contrast-color),
-      var(--dark2));
+  background: linear-gradient(
+    to right,
+    var(--dark2),
+    var(--contrast-color),
+    var(--dark2)
+  );
 }
-
-
-
-
-
-
-
-
 
 /* Menu Tracer Style */
 .main-title-nav {
@@ -756,15 +694,6 @@ main {
   transition: opacity 0.3s ease;
 }
 
-
-
-
-
-
-
-
-
-
 /* ! Tabelle */
 .table-header {
   background-color: var(--contrast-color);
@@ -832,16 +761,6 @@ main {
   transform: scale(1.1);
 }
 
-
-
-
-
-
-
-
-
-
-
 /* ERRORE SYSTEM COMPONENTE */
 .errorSystemContainer {
   color: rgb(255, 255, 255);
@@ -868,7 +787,6 @@ main {
   margin-top: 15px;
   margin-bottom: 5px;
 }
-
 
 .progressBarContainer {
   position: relative;

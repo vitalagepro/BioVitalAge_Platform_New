@@ -39,6 +39,28 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 3000);
   }
 
+  // Funzione per convertire la data da "DD/MM/YYYY" a "YYYY-MM-DD" per input[type="date"]
+  function formatDateForInput(dateString) {
+    if (!dateString) return ""; // Se è vuoto, restituisci stringa vuota
+
+    // Controlla se è già in formato YYYY-MM-DD
+    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      return dateString;
+    }
+
+    // Prova a convertire una data in formato testuale ("June 25, 2024", "Jan. 31, 2025")
+    const parsedDate = new Date(dateString);
+    if (!isNaN(parsedDate.getTime())) {
+      // Aggiunge l'offset del fuso orario locale per evitare lo shift di un giorno
+      parsedDate.setMinutes(
+        parsedDate.getMinutes() - parsedDate.getTimezoneOffset()
+      );
+      return parsedDate.toISOString().split("T")[0]; // Ora mantiene il giorno corretto!
+    }
+
+    return ""; // Se la conversione fallisce, restituisce stringa vuota
+  }
+
   editButton.addEventListener("click", function (event) {
     event.preventDefault();
 
@@ -63,12 +85,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const lastVisitInput = document.createElement("input");
       lastVisitInput.type = "date";
-      lastVisitInput.value = lastVisitSpan.textContent.trim();
+      lastVisitInput.value = formatDateForInput(
+        lastVisitSpan.textContent.trim()
+      );
       lastVisitInput.id = "lastVisitInput";
+      console.log(lastVisitSpan.textContent.trim());
+      console.log(upcomingVisitSpan.textContent.trim());
 
       const upcomingVisitInput = document.createElement("input");
       upcomingVisitInput.type = "date";
-      upcomingVisitInput.value = upcomingVisitSpan.textContent.trim();
+      upcomingVisitInput.value = formatDateForInput(
+        upcomingVisitSpan.textContent.trim()
+      );
       upcomingVisitInput.id = "upcomingVisitInput";
 
       const bloodGroupInput = document.createElement("input");
@@ -94,8 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
       bloodGroupSpan.textContent = "";
       bloodGroupSpan.appendChild(bloodGroupInput);
 
-      editButton.innerHTML =
-        `
+      editButton.innerHTML = `
         Save 
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -113,16 +140,22 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       const emailInput = document.getElementById("emailInput");
       const phoneInput = document.getElementById("phoneInput");
-      const associateStaffInput = document.getElementById("associateStaffInput");
+      const associateStaffInput = document.getElementById(
+        "associateStaffInput"
+      );
       const lastVisitInput = document.getElementById("lastVisitInput");
       const upcomingVisitInput = document.getElementById("upcomingVisitInput");
       const bloodGroupInput = document.getElementById("bloodGroupInput");
-      
+
       const updatedEmail = emailInput.value;
       const updatedPhone = phoneInput.value;
       const updatedAssociateStaff = associateStaffInput.value;
-      const updatedLastVisit = lastVisitInput.value;
-      const updatedUpcomingVisit = upcomingVisitInput.value;
+      const updatedLastVisit = lastVisitInput.value
+        ? lastVisitInput.value
+        : null;
+      const updatedUpcomingVisit = upcomingVisitInput.value
+        ? upcomingVisitInput.value
+        : null;
       const updatedBloodGroup = bloodGroupInput.value;
 
       const formattedPhone = formatItalianPhoneNumber(updatedPhone);
@@ -137,9 +170,9 @@ document.addEventListener("DOMContentLoaded", function () {
           email: updatedEmail,
           phone: formattedPhone,
           associate_staff: updatedAssociateStaff,
-          last_visit: updatedLastVisit,
-          upcoming_visit: updatedUpcomingVisit,
-          blood_group: updatedBloodGroup
+          lastVisit: updatedLastVisit,
+          upcomingVisit: updatedUpcomingVisit,
+          blood_group: updatedBloodGroup,
         }),
       })
         .then((response) => {
@@ -160,8 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
             upcomingVisitSpan.textContent = updatedUpcomingVisit;
             bloodGroupSpan.textContent = updatedBloodGroup;
 
-            editButton.innerHTML =
-              `Edit
+            editButton.innerHTML = `Edit
                   <svg class="svg" viewBox="0 0 512 512">
                     <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path>
                   </svg>`;
@@ -195,7 +227,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     return digits.startsWith("39") && digits.length > 10
-      ? `+${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`
+      ? `+${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(
+          5,
+          8
+        )} ${digits.slice(8)}`
       : `+39 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
   }
 });

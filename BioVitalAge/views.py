@@ -4,15 +4,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import *
 from .utils import calculate_biological_age, calcola_punteggio_finale
-# from django.contrib.sessions.models import Session
+import json
 from django.db.models import OuterRef, Subquery
-import json
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-# from django.db import transaction
-# from django.contrib import messages
+from .models import TabellaPazienti, ArchivioReferti
 
 # Create your views here.
 
@@ -34,10 +29,6 @@ class HomePageRender(View):
 
         # Calcolo di show_disclaimer
         show_disclaimer = not request.COOKIES.get('disclaimer_accepted', False)
-        print(f"Valore del cookie disclaimer_accepted: {request.COOKIES.get('disclaimer_accepted')}")
-        print(f"Mostrare disclaimer: {show_disclaimer}")
-
-        print(f"show_disclaimer: {show_disclaimer}")  # Debug: stampa il valore
 
         context = {
             'persone': persone,
@@ -204,7 +195,6 @@ class CalcolatoreRender(View):
                 if any(data.get(campo) for campo in campi_opzionali):
 
 
-                    print('sono qui')
                     paziente_query = get_object_or_404(TabellaPazienti, id=paziente.id)
 
                     # Salva i dati del referto
@@ -1069,30 +1059,34 @@ class RisultatiRender(View):
 
 
 class PersonaDetailView(View):
-   
     def get(self, request, id):
         # Ottieni il paziente con l'ID specificato
         persona = get_object_or_404(TabellaPazienti, id=id)
 
+        # Recupera l'ID del referto dalla query string
+        referto_id = request.GET.get('referto_id')
+
+        # Recupera il referto specifico se l'ID è passato, altrimenti l'ultimo referto
+        if referto_id:
+            referto = get_object_or_404(ArchivioReferti, id=referto_id, paziente=persona)
+        else:
+            referto = ArchivioReferti.objects.filter(paziente=persona).order_by("-data_ora_creazione").first()
+
+        # Ottieni i dati estesi associati al referto selezionato
+        dati_estesi = DatiEstesiReferti.objects.filter(referto=referto).first() if referto else None
+
+        # Recupera il dottore dalla sessione
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
-        # Ottieni l'ultimo referto del paziente
-        ultimo_referto = ArchivioReferti.objects.filter(paziente=persona).order_by('-data_ora_creazione').first()
-
-        # Ottieni i dati estesi associati all'ultimo referto (se esiste)
-        datiEstesi = None
-        if ultimo_referto:
-            datiEstesi = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
-
+        # Preparazione del contesto per il template
         context = {
             'persona': persona,
-            'ultimo_referto': ultimo_referto,
-            'datiEstesi': datiEstesi,
-            'dottore' : dottore
+            'referto': referto,
+            'datiEstesi': dati_estesi,
+            'dottore': dottore,
         }
         return render(request, "includes/Referto.html", context)
-
 
 
 
@@ -1233,17 +1227,23 @@ class InserisciPazienteView(View):
             if paziente_esistente:
 
                 campi_opzionali = [
-                    'height', 'weight', 'bmi', 'bmi_detection_date',
+                    'province', 'cap', 'email', 'phone', 'associate_staff', 'height', 'weight', 'bmi', 'bmi_detection_date',
                     'girth_value', 'girth_notes', 'girth_date',
                     'alcol', 'alcol_type', 'data_alcol', 'alcol_frequency',
                     'smoke', 'smoke_frequency', 'reduced_intake',
                     'sport', 'sport_livello', 'sport_frequency',
-                    'attivita_sedentaria', 'livello_sedentarieta', 'sedentarieta_nota'
+                    'attivita_sedentaria', 'livello_sedentarieta', 'sedentarieta_nota', 'blood_group'
                 ]
 
         
                 if any(request.POST.get(campo) for campo in campi_opzionali):
                 
+                    paziente_esistente.email = request.POST.get('email')
+                    paziente_esistente.phone = request.POST.get('phone')
+                    paziente_esistente.cap = request.POST.get('cap')
+                    paziente_esistente.province = request.POST.get('province')
+                    paziente_esistente.associate_staff = request.POST.get('associate_staff')
+
                     paziente_esistente.height = request.POST.get('height')
                     paziente_esistente.weight = request.POST.get('weight')
                     paziente_esistente.bmi = request.POST.get('bmi')
@@ -1272,6 +1272,8 @@ class InserisciPazienteView(View):
                     paziente_esistente.attivita_sedentaria = request.POST.get('attivita_sedentaria')
                     paziente_esistente.livello_sedentarieta = request.POST.get('livello_sedentarieta')
                     paziente_esistente.sedentarieta_nota = request.POST.get('sedentarieta_nota')
+
+                    paziente_esistente.blood_group = request.POST.get('blood_group')
                 
 
                     paziente_esistente.save()
@@ -1293,12 +1295,12 @@ class InserisciPazienteView(View):
             else:
 
                 campi_opzionali = [
-                    'height', 'weight', 'bmi', 'bmi_detection_date',
+                    'province', 'cap', 'email', 'phone', 'associate_staff', 'height', 'weight', 'bmi', 'bmi_detection_date',
                     'girth_value', 'girth_notes', 'girth_date',
                     'alcol', 'alcol_type', 'data_alcol', 'alcol_frequency',
                     'smoke', 'smoke_frequency', 'reduced_intake',
                     'sport', 'sport_livello', 'sport_frequency',
-                    'attivita_sedentaria', 'livello_sedentarieta', 'sedentarieta_nota'
+                    'attivita_sedentaria', 'livello_sedentarieta', 'sedentarieta_nota', 'blood_group'
                 ]
 
                 if any(request.POST.get(campo) for campo in campi_opzionali):
@@ -1312,13 +1314,12 @@ class InserisciPazienteView(View):
                         dob=parse_date(request.POST.get('dob')),
                         gender=request.POST.get('gender'),
                         cap=request.POST.get('cap'),
+                        province=request.POST.get('province'),
                         place_of_birth=request.POST.get('place_of_birth'),
                         codice_fiscale=codice_fiscale,
                         chronological_age=request.POST.get('chronological_age'),
                         blood_group=request.POST.get('blood_group'),
                         associate_staff=request.POST.get('associate_staff'),
-                        lastVisit=parse_date(request.POST.get('lastVisit')),
-                        upcomingVisit=parse_date(request.POST.get('upcomingVisit')),
 
                         # Dati antropometrici
                         height=request.POST.get('height'),
@@ -1352,9 +1353,6 @@ class InserisciPazienteView(View):
                         livello_sedentarieta=request.POST.get('livello_sedentarieta'),
                         sedentarieta_nota=request.POST.get('sedentarieta_nota'),
                     )
-                    print("sono qui")
-                    print(TabellaPazienti.objects.get(lastVisit=parse_date(request.POST.get('lastVisit'))))
-                    print(TabellaPazienti.objects.get(upcomingVisit=parse_date(request.POST.get('upcomingVisit'))))
                     context = {
                         "success": success, 
                         'dottore' : dottore,
@@ -1369,10 +1367,13 @@ class InserisciPazienteView(View):
                         name=request.POST.get('name'),
                         surname=request.POST.get('surname'),
                         dob=parse_date(request.POST.get('dob')),
+                        cap=request.POST.get('cap'),
+                        province=request.POST.get('province'),
                         gender=request.POST.get('gender'),
                         place_of_birth=request.POST.get('place_of_birth'),
                         codice_fiscale=codice_fiscale,
                         chronological_age=request.POST.get('chronological_age'),
+                        associate_staff=request.POST.get('associate_staff')
                     )
                     success = "Nuovo paziente salvato con successo!"
                     context = {
@@ -1451,6 +1452,8 @@ def update_persona_contact(request, id):
             persona.upcomingVisit = upcomingVisit
             persona.blood_group = blood_group
             persona.save()  # Salva le modifiche nel database
+
+            # print(f"Persona {id} aggiornata con email: {email}, telefono: {phone}, associate_staff: {associate_staff}, lastVisit: {lastVisit}, upcomingVisit: {upcomingVisit}, blood_group: {blood_group}")
 
             return JsonResponse({"success": True})
         except TabellaPazienti.DoesNotExist:

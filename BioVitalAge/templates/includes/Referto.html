@@ -101,7 +101,7 @@
                     
                         <div class="field">
                             <p>Biological Age:&nbsp;</p>
-                            <p>{{ datiEstesi.biological_age }}</p>
+                            <p>{{ datiEstesi.biological_age|default:"N/A" }}</p>
                         </div>
 
                         <div class="field">
@@ -204,8 +204,7 @@
                         </div>
                     </div>    
                 </div>
-                
-                <button class="generatePDFButton button" id="genereReportOS">
+                <button class="generatePDFButton button" id="genereReportOS" data-referto-id="{{ referto.id }}" data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
                     <span class="button__icon-wrapper">
                         <svg
                         xmlns="http://www.w3.org/2000/svg"
