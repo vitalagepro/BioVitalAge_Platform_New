@@ -626,7 +626,8 @@ class CalcolatoreRender(View):
                         gender=data.get('gender'),
                         place_of_birth=data.get('place_of_birth'),
                         codice_fiscale=data.get('codice_fiscale'),
-                        chronological_age = data.get('chronological_age')
+                        chronological_age = data.get('chronological_age'),
+                        province = data.get('province'),
                     )
                     paziente.save()
 
@@ -647,6 +648,7 @@ class CalcolatoreRender(View):
                         place_of_birth= data.get('place_of_birth'),
                         codice_fiscale= data.get('codice_fiscale'),
                         chronological_age= data.get('chronological_age'),
+                        province= data.get('province'),
                     )
                     paziente.save()
               
@@ -1109,7 +1111,7 @@ class CartellaPazienteView(View):
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         # Ottieni i 5 referti più recenti del paziente
-        referti_recenti = persona.referti.all().order_by('-data_referto')[:5]
+        referti_recenti = persona.referti.all().order_by('-data_referto')
 
         # Ottieni i dati estesi associati a questi referti
         dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
@@ -1485,9 +1487,7 @@ class EtaVitaleView(View):
 
         persona = get_object_or_404(TabellaPazienti, id=id)
   
-        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')[:5]
-
-        print(referti_test_recenti)
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
       
         context = {
             'persona': persona,
@@ -1623,12 +1623,13 @@ class TestEtaVitaleView(View):
         )
         datiEstesi.save()
 
-
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
 
         context = {
             'persona': persona,
             'modal' : True,
-            'Referto': referto
+            'Referto': referto,
+            'referti_test_recenti': referti_test_recenti
         }
 
         return render(request, "includes/EtaVitale.html", context)

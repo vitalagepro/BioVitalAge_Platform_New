@@ -5142,62 +5142,6 @@
                 });
 
                 userModalBtn.addEventListener("mouseover", showModal);
-                /*  -----------------------------------------------------------------------------------------------
-                  GENERA PDF COMPLETO
-                --------------------------------------------------------------------------------------------------- */
-                window.onload = function() {
-                    document.getElementById('screenshotBtn').addEventListener('click', function () {
-                        const cards = document.querySelectorAll('.stampa'); 
-                        const { jsPDF } = window.jspdf;
-                        const doc = new jsPDF();
-        
-                   
-                        document.getElementById('snipperStampa').style.display = 'block';
-                        document.getElementById('spinnerBackdrop').style.display = 'block';
-                        document.body.style.overflow = 'hidden';
-        
-                        let yOffset = 10; 
-        
-                        function captureCard(index) {
-                            if (index >= cards.length) {
-                             
-                                document.getElementById('snipperStampa').style.display = 'none';
-                                document.getElementById('spinnerBackdrop').style.display = 'none';
-                                document.body.style.overflow = 'auto';
-                                doc.save('FULL-REPORT.pdf');
-                                return;
-                            }
-        
-                
-                            html2canvas(cards[index]).then(function(canvas) {
-                                var img = canvas.toDataURL('image/png');
-                                var pageWidth = doc.internal.pageSize.width;
-                                var pageHeight = doc.internal.pageSize.height;
-        
-                           
-                                var imgWidth = pageWidth - 20; 
-                                var imgHeight = canvas.height * imgWidth / canvas.width;
-        
-                    
-                                if (yOffset + imgHeight > pageHeight) {
-                                    doc.addPage();
-                                    yOffset = 10; 
-                                }
-        
-                           
-                                doc.addImage(img, 'PNG', 10, yOffset, imgWidth, imgHeight);
-        
-                                yOffset += imgHeight + 10;  
-        
-                                captureCard(index + 1);
-                            }).catch(function(error) {
-                                console.error('Errore nella creazione dello screenshot:', error);
-                            });
-                        }
-        
-                        captureCard(0);
-                    });
-                };
             </script>
         </div>        
     </main>

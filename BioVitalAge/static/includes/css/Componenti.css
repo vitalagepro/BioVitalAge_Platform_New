@@ -726,6 +726,8 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  border-bottom: 1px solid #ddd;
+  border-left: 1px solid #ddd;
 }
 
 .riga-container {
@@ -761,6 +763,45 @@ main {
 .table-content a img:hover {
   transform: scale(1.1);
 }
+
+.pagination-controls{
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  align-items: center;
+  padding-left: 8px;
+  margin: 8px 0;
+}
+
+.pagination-controls button{
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  margin: 0;
+  background-color: var(--contrast-color);
+  color: var(--light1);
+  border: none;
+  border-radius: 100%;
+  transition: all 0.2s cubic-bezier(.215, .61, .355, 1);
+}
+
+.pagination-controls button:hover{
+  background-color: var(--contrast-color2);
+}
+
+.active{
+  background-color: var(--contrast-color2) !important;
+  font-weight: bold !important;
+}
+
+
+
+
+
+
+
+
 
 /* ERRORE SYSTEM COMPONENTE */
 .errorSystemContainer {

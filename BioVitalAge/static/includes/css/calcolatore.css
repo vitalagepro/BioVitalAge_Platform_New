@@ -275,15 +275,28 @@ input[type="range"]::-ms-thumb {
 
 .button-container a {
   text-decoration: none;
-  width: 15rem;
   height: 3rem;
   text-align: center;
   padding-top: 10px;
 }
 
+.hidden-exam .btn-selected {
+  background-color: var(--contrast-color);
+}
+
+.hidden-exam .btn-selected:hover {
+  background-color: var(--contrast-color2);
+}
+
 .btn-selected {
   position: relative;
   z-index: 1;
+  border: none;
+  border-radius: 100%;
+  padding: 5px;
+  background-color: var(--contrast-color2);
+  color: var(--light1);
+  transition: all 0.2s ease-in-out;
 }
 
 .btn-selected svg {
@@ -423,6 +436,10 @@ input[type="range"]::-ms-thumb {
   align-items: center;
   gap: 15px;
   margin-top: 30px;
+}
+
+.btn-closed-modal{
+  height: 50px;
 }
 
 /* ! Keyframe Animazione Modale */
