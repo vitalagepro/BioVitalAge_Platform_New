@@ -333,9 +333,78 @@
                 </div>
             </div>
         </div>
+        
+        <!-- TABELLA ELENCO PRESCRIZIONI -->
+        <div class="contenitore-tabella" style="margin-top: 0; ">
+            <div class="recent-patients" id="card-style">
+                <div class="contenitore-header">
+                    <h3>Elenco Prescrizioni</h3>
+                    <div class="filtri-button">
+                        <select name="filter" id="filter">
+                            <option>-- Ordina per --</option>
+                            <option value="name">Data più recente</option>
+                            <option value="surname">Data meno recente</option>
+                            <option value="fisc_code">Valore positivo</option>
+                            <option value="personal_association">Valore negativo</option>
+                        </select>
+                        <a href="#" class="button">
+                            <span class="button__icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
+                                    class="button__icon-svg">
+                                    <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
+                                    <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
+                                    class="button__icon-svg button__icon-svg--copy">
+                                    <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
+                                    <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                            XXXXXXX
+                        </a>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <div class="table-header">
+                        <p>Codice univoco esame piattaforma</p>
+                        <p>Descrizione Esame</p>
+                        <p>Cod ASL</p>
+                        <p>Cod REG</p>
+                        <p>Apparato\i Sistemi</p>
+                        <p>Visualizza Prescrizione</p>
+                    </div>
+                    <div class="table-content">
+                        {% for prescription in prescriptions %}
+                        <div class="riga-container">
+                            <p>{{ persona.chronological_age }}</p>
+                            {% for dato in dati_estesi %}
+                            {% if dato.referto.id == referto.id %}
+                            <p>{{ dato.biological_age }}</p>
+                            {% endif %}
+                            {% endfor %}
+                            <p>{{ referto.descrizione|default:"N/A" }}</p>
+                            <p>{{ referto.data_referto|date:"d/m/Y" }}</p>
+                            <p>
+                                <a href="{% url 'persona_detail' persona.id %}?referto_id={{ referto.id }}"
+                                    data-referto-id="{{ referto.id }}"
+                                    data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
+                                    <img src="{% static 'includes/icone/referto.png' %}" alt="" />
+                                </a>
+                            </p>
+                        </div>
+                        {% empty %}
+                        <p class="text-center mt-2 mb-2">No recent prescription found.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- TABELLA REFERTI -->
-        <div class="contenitore-tabella" style="margin-top: 0; margin-bottom: 0;">
+        <div class="contenitore-tabella" style="margin-top: 0;">
             <div class="recent-patients" id="card-style">
                 <div class="contenitore-header">
                     <h3>Elenco referti età biologica</h3>
@@ -401,75 +470,6 @@
                         </div>
                         {% empty %}
                         <p class="text-center mb-2 mt-2">No recent reports found.</p>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TABELLA ELENCO PRESCRIZIONI -->
-        <div class="contenitore-tabella" style="margin-top: 20px;">
-            <div class="recent-patients" id="card-style">
-                <div class="contenitore-header">
-                    <h3>Elenco Prescrizioni</h3>
-                    <div class="filtri-button">
-                        <select name="filter" id="filter">
-                            <option>-- Ordina per --</option>
-                            <option value="name">Data più recente</option>
-                            <option value="surname">Data meno recente</option>
-                            <option value="fisc_code">Valore positivo</option>
-                            <option value="personal_association">Valore negativo</option>
-                        </select>
-                        <a href="#" class="button">
-                            <span class="button__icon-wrapper">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
-                                    class="button__icon-svg">
-                                    <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
-                                    <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
-                                    class="button__icon-svg button__icon-svg--copy">
-                                    <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
-                                    <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                            XXXXXXX
-                        </a>
-                    </div>
-                </div>
-                <div class="table-container">
-                    <div class="table-header">
-                        <p>Codice univoco esame piattaforma</p>
-                        <p>Descrizione Esame</p>
-                        <p>Cod ASL</p>
-                        <p>Cod REG</p>
-                        <p>Apparato\i Sistemi</p>
-                        <p>Visualizza Prescrizione</p>
-                    </div>
-                    <div class="table-content">
-                        {% for prescription in prescriptions %}
-                        <div class="riga-container">
-                            <p>{{ persona.chronological_age }}</p>
-                            {% for dato in dati_estesi %}
-                            {% if dato.referto.id == referto.id %}
-                            <p>{{ dato.biological_age }}</p>
-                            {% endif %}
-                            {% endfor %}
-                            <p>{{ referto.descrizione|default:"N/A" }}</p>
-                            <p>{{ referto.data_referto|date:"d/m/Y" }}</p>
-                            <p>
-                                <a href="{% url 'persona_detail' persona.id %}?referto_id={{ referto.id }}"
-                                    data-referto-id="{{ referto.id }}"
-                                    data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
-                                    <img src="{% static 'includes/icone/referto.png' %}" alt="" />
-                                </a>
-                            </p>
-                        </div>
-                        {% empty %}
-                        <p class="text-center mt-2 mb-2">No recent prescription found.</p>
                         {% endfor %}
                     </div>
                 </div>
