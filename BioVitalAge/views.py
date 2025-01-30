@@ -1663,3 +1663,28 @@ class RefertoQuizView(View):
 def referti_view(request, referto_id):
     referto = ArchivioReferti.objects.get(id=referto_id)
     return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
+
+
+
+
+#PRESCRIZIONI VIEW
+class PrescrizioniView(View):
+
+    def get(self, request, persona_id):
+
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+        }
+
+        return render(request, "includes/prescrizioni.html", context)
+
+
+
+
+

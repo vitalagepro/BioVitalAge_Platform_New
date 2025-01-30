@@ -1,0 +1,258 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <!-- Favicon -->
+    <link rel="sortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+
+    <title>Cartella Paziente, {{ persona.name }}</title>
+
+    <!-- Css Import -->
+    <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}">
+    <link rel="stylesheet" href="{% static 'includes/css/Prescrizione.css' %}">
+    <link rel="stylesheet" href="{% static 'includes/css/homePage.css' %}">
+
+    <!-- Bootstrap import -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Import  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+
+    <!-- JS IMPORT -->
+    <script src="{% static 'includes/js/spinner.js' %}" defer></script>
+    <script type="module" src="{% static 'includes/js/Prescrizioni.js' %}"></script>
+</head>
+
+<body>
+    <!-- Loader -->
+    {% include 'components/loader.html' %}
+
+    <!-- NAVBAR -->
+    {% include 'components/navBar.html' %}
+
+
+    <script>
+        function openModal(){
+            document.getElementById('backdropModale').style.display = 'block'
+            document.getElementById('ModaleInserimento').style.display = 'block'
+        }
+
+        function closeModal(){
+            document.getElementById('backdropModale').style.display = 'none'
+            document.getElementById('ModaleInserimento').style.display = 'none'
+        }
+    </script>
+
+
+    <main>  
+
+        <!-- MENU TRACE -->
+        <div class="main-title-nav">
+            <div class="back-tittle">
+                <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}"
+                        alt=""></a>
+                <h2 class="main-welcome-title">Inserisci Prescrizioni , {{ persona.name }} {{ persona.surname }}</h2>
+            </div>
+
+            <div class="main-menu-trace">
+                <a href="{% url 'HomePage' %}">
+                    <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+                </a>
+                <p>»</p>
+                <p>
+                    <a href="{% url 'Risultati' %}">Pazienti</a>
+                </p>
+                <p>»</p>
+                <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
+                <p>»</p>
+                <p>Prescrizioni Paziente</p>
+            </div>
+        </div>
+
+        <!-- Tabella Prescrizione -->
+        <div id="backdropModale"></div>
+
+        <div id="ModaleInserimento">
+            <div class="title-header-container">
+                <h3>Aggiungi Prescrizione</h3>
+                <button class="close" onclick="closeModal()">X</button>
+            </div>
+            
+            <div class="ModaleHeader">
+
+                <select name="filtri" id="filtri">
+                    <option value="0">Tutti</option>
+                    <option value="1">Descrizione Esame crescente</option>
+                    <option value="2">Descrizione Esame decrescente</option>
+                    <option value="3">Metodica</option>
+                    <option value="4">Codice Asl</option>
+                    <option value="5">Codice Regione</option>
+                    <option value="6">Apparato / Sistemi</option>
+                </select>
+
+                <div class="barra-ricercaModale">
+                    <input type="text" class="input" id="Email" name="inputField" placeholder="Type name here" required>
+                    <button class="button button--submit" type="submit">
+                      
+                        <span class="button__icon-wrapper">
+
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          width="15"
+                          class="button__icon-svg"
+                        >
+                          <circle
+                            cx="11"
+                            cy="11"
+                            r="7"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          ></circle>
+                          <line
+                            x1="16"
+                            y1="16"
+                            x2="21"
+                            y2="21"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                          ></line>
+                        </svg>
+            
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          width="15"
+                          class="button__icon-svg button__icon-svg--copy"
+                        >
+                          <circle
+                            cx="11"
+                            cy="11"
+                            r="7"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          ></circle>
+                          <line
+                            x1="16"
+                            y1="16"
+                            x2="21"
+                            y2="21"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                          ></line>
+                        </svg>
+
+                        </span>
+                     
+                      Search
+                    </button>
+
+                    
+                </div>
+
+                <select name="" id="menu_tendina_prescrizioni" class="tendinaPrescrizioni">
+                    <!-- DINAMICAMENTE POPOLATO CON JAVASCRIPT -->
+                </select>  
+
+            </div>
+
+            <div class="Modale-Result-content">
+                <!-- DINAMICAMENTE POPOLATO CON JAVASCRIPT -->
+            </div>
+            
+            <p style="font-weight: bold; padding-left: 20px;">Prescrizione selezionate</p>
+
+            <div class="conteiner-CodaPrescrizioni">
+                <!-- DINAMICAMENTE POPOLATO CON JAVASCRIPT -->
+            </div>
+
+            <a href="" title="Add Patient" class="button" id="buttonAdd">
+                <span class="button__icon-wrapper">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14"
+                    height="14">
+                    <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+              
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    class="button__icon-svg button__icon-svg--copy" width="14" height="14">
+                    <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+              
+                </span>
+                Aggiungi Prescrizioni
+            </a>
+        </div>
+
+       
+        <div class="container-card-prescrizioni">
+
+            <div class="header-tools">
+
+                <select name="" id="">
+                    <option value="">filtri</option>
+                </select>
+
+                <div class="search-container">
+                    <input type="text">
+                    <button>search</button>
+                </div>
+
+                <button title="Add Patient" class="button" onclick="openModal()">
+                    <span class="button__icon-wrapper">
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14"
+                        height="14">
+                        <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" />
+                      </svg>
+                  
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="button__icon-svg button__icon-svg--copy" width="14" height="14">
+                        <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" />
+                      </svg>
+                  
+                    </span>
+                    Aggiungi Prescrizione
+                </button>
+                
+            </div>
+
+            <div class="tabella-prescrizioni">
+                <div class="header-table">
+                    <p>Codice Univoco Esame</p>
+                    <p>Descrizione Esame</p>
+                    <p>Codice Asl</p>
+                    <p>Codice Regione</p>
+                    <p>Metodica</p>
+                    <p>Apparato/Sistemi</p>
+                    <p></p>
+                </div>
+                <div class="table-content">
+                    <!-- Da Popolare Dinamicamente -->
+                </div>
+
+            </div>
+
+        </div>
+
+        
+
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
