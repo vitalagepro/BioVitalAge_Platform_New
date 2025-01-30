@@ -53,6 +53,7 @@
           <option value="fisc_code">Filtra per Codici Fiscali</option>
           <option value="personal_association">Filtra per Personale Associato</option>
         </select>
+        
         <form method="POST">
           {% csrf_token %}
           <div class="input-group">
@@ -115,6 +116,7 @@
           <!-- <input type="text" placeholder="Type name here" name="inputField" required>
                     <button type="submit">Search</button> -->
         </form>
+
         <div class="button-container">
           <a href="{% url 'inserisci_paziente' %}" title="Add Patient" class="button">
             <span class="button__icon-wrapper">

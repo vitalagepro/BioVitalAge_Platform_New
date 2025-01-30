@@ -1,34 +1,4 @@
 /*  -----------------------------------------------------------------------------------------------
-  Call JSON to archive platform
---------------------------------------------------------------------------------------------------- */
-const archivePlatform = [];
-
-async function fetchData() {
-  try {
-    const response = await fetch(
-      "/static/includes/json/ARCHIVIO PER PIATTAFORMA.json"
-    );
-    const data = await response.json();
-    archivePlatform.push(data);
-  } catch (error) {
-    console.error("Error:", error);
-  }
-}
-
-fetchData();
-console.log(archivePlatform);
-
-document.getElementById("btn-fetch-archive").addEventListener("click", () => {
-  archivePlatform.forEach(archive => {
-    const archiveData = archive.Foglio1;
-    archiveData.forEach(element => {
-      const code_exam = element.CODICE_UNIVOCO_ESAME_PIATTAFORMA;
-      console.log(code_exam);
-    })
-  });
-})
-
-/*  -----------------------------------------------------------------------------------------------
         Modal User
         --------------------------------------------------------------------------------------------------- */
 const userImg = document.getElementById("userImg");
