@@ -8,6 +8,7 @@ import json
 from django.db.models import OuterRef, Subquery
 from django.views.decorators.csrf import csrf_exempt
 from .models import TabellaPazienti, ArchivioReferti
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 
@@ -1203,6 +1204,35 @@ class DatiBaseView(View):
                 print("Errore: form_id non ricevuto o non valido")
 
             return redirect('dati_base', id=persona.id)
+
+
+# Blood Group view
+@method_decorator(csrf_exempt, name='dispatch')
+class UpdateBloodDataView(View):
+
+    def post(self, request, id):
+        try:
+            # Estrai i dati dalla richiesta JSON
+            data = json.loads(request.body)
+            blood_group = data.get("blood_group", "N/A")
+            rh_factor = data.get("rh_factor", "N/A")
+
+            # Recupera il paziente corrispondente
+            persona = get_object_or_404(TabellaPazienti, id=id)
+
+            # Aggiorna i dati
+            persona.blood_group = blood_group
+            persona.rh_factor = rh_factor
+            persona.save()
+
+            return JsonResponse({"status": "success", "message": "Dati aggiornati correttamente"})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Formato JSON non valido"}, status=400)
+
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
 
 class InserisciPazienteView(View):
 

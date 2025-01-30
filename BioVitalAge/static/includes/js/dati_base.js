@@ -43,13 +43,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 modificationsExist = false; // Resetta lo stato delle modifiche
 
                 // Disabilita tutti gli input dopo il salvataggio
-                form.querySelectorAll(".riga-container input").forEach((input) => {
-                  input.disabled = true;
-                  input.style.backgroundColor = "inherit";
-                  input.style.border = "none";
-                  // Salva lo stato attuale degli input come valore originale
-                  input.dataset.originalValue = input.value;
-                });
+                form
+                  .querySelectorAll(".riga-container input")
+                  .forEach((input) => {
+                    input.disabled = true;
+                    input.style.backgroundColor = "inherit";
+                    input.style.border = "none";
+                    // Salva lo stato attuale degli input come valore originale
+                    input.dataset.originalValue = input.value;
+                  });
 
                 // Svuota righe rimosse e aggiunte dopo il salvataggio
                 removedRows.clear();
@@ -79,10 +81,15 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", function () {
       const tableContent = this.closest("form").querySelector(".table-content");
       const existingRow = tableContent.querySelector(".riga-container");
-      const columnCount = existingRow ? existingRow.querySelectorAll("p").length : 3; // Default to 3 columns if no rows exist
+      const columnCount = existingRow
+        ? existingRow.querySelectorAll("p").length
+        : 3; // Default to 3 columns if no rows exist
       const newRow = document.createElement("div");
       newRow.classList.add("riga-container");
-      newRow.innerHTML = `<p><input type="text" style="background-color: inherit; color: inherit;"></p>`.repeat(columnCount);
+      newRow.innerHTML =
+        `<p><input type="text" style="background-color: inherit; color: inherit;"></p>`.repeat(
+          columnCount
+        );
       newRow.dataset.newRow = "true";
       tableContent.appendChild(newRow);
       addedRows.add(newRow); // Memorizza la riga aggiunta
@@ -101,7 +108,9 @@ document.addEventListener("DOMContentLoaded", () => {
         inputs.forEach((input) => {
           input.disabled = !input.disabled;
           input.style.backgroundColor = input.disabled ? "inherit" : "white";
-          input.style.border = input.disabled ? "none" : "1px solid var(--contrast-color-shadow)";
+          input.style.border = input.disabled
+            ? "none"
+            : "1px solid var(--contrast-color-shadow)";
           input.style.width = input.disabled ? "100%" : "max-content";
           input.style.height = input.disabled ? "100%" : "max-content";
           input.style.borderRadius = input.disabled ? "none" : "5px";
@@ -138,24 +147,31 @@ document.addEventListener("DOMContentLoaded", () => {
               </label>
             `;
             row.insertAdjacentElement("afterbegin", checkboxContainer);
-            row.dataset.originalState = row.innerHTML.replace(checkboxContainer.outerHTML, ""); // Salva lo stato originale della riga senza la checkbox
+            row.dataset.originalState = row.innerHTML.replace(
+              checkboxContainer.outerHTML,
+              ""
+            ); // Salva lo stato originale della riga senza la checkbox
           }
         });
       } else {
         // Rimuovi le righe selezionate
-        tableContent.querySelectorAll(".container-checkbox input:checked").forEach((checkbox) => {
-          const row = checkbox.closest(".riga-container");
-          const rowId = Date.now() + Math.random(); // Genera un ID univoco
-          removedRows.set(rowId, row.dataset.originalState); // Salva lo stato originale nella mappa
-          row.remove();
-          rowRemoved = true;
-        });
+        tableContent
+          .querySelectorAll(".container-checkbox input:checked")
+          .forEach((checkbox) => {
+            const row = checkbox.closest(".riga-container");
+            const rowId = Date.now() + Math.random(); // Genera un ID univoco
+            removedRows.set(rowId, row.dataset.originalState); // Salva lo stato originale nella mappa
+            row.remove();
+            rowRemoved = true;
+          });
 
         // Rimuovi tutte le checkbox residue
         if (!rowRemoved) {
-          tableContent.querySelectorAll(".container-checkbox").forEach((checkboxContainer) => {
-            checkboxContainer.remove();
-          });
+          tableContent
+            .querySelectorAll(".container-checkbox")
+            .forEach((checkboxContainer) => {
+              checkboxContainer.remove();
+            });
         }
       }
 
@@ -173,11 +189,11 @@ document.addEventListener("DOMContentLoaded", () => {
         input.style.border = "none";
       }
     });
-  
+
     clearCheckboxes(form); // Rimuove eventuali checkbox residue
     removedRows.clear(); // Pulisci righe rimosse
     addedRows.clear(); // Pulisci righe aggiunte
-  }  
+  }
 
   // Rimuove tutte le checkbox residue
   function clearCheckboxes(form) {
@@ -328,9 +344,13 @@ document.addEventListener("DOMContentLoaded", () => {
       })
         .then((response) => {
           if (response.ok) {
-            console.log(`Modifiche salvate correttamente per il form ${form.id}`);
+            console.log(
+              `Modifiche salvate correttamente per il form ${form.id}`
+            );
           } else {
-            console.error(`Errore durante il salvataggio per il form ${form.id}`);
+            console.error(
+              `Errore durante il salvataggio per il form ${form.id}`
+            );
           }
         })
         .catch((error) => {
@@ -344,112 +364,26 @@ document.addEventListener("DOMContentLoaded", () => {
       ! Blood Data
   --------------------------------------------------------------------------------------------------- */
 
-const btn = document.getElementById("btn_blood_group");
-const bloodGroupInput = document.getElementById("blood_group");
-const rhInput = document.getElementById("rh");
-const bloodDataSection = document.querySelector(".blood_data");
+document.addEventListener("DOMContentLoaded", () => {
+  let modificationsExist = false;
 
-let isEditing = false;
+  const btn = document.getElementById("btn_blood_group");
+  const bloodGroupInput = document.getElementById("blood_group");
+  const rhInput = document.getElementById("rh");
+  const bloodDataSection = document.querySelector(".blood_data");
 
-btn.addEventListener("click", function () {
-  if (!isEditing) {
-    // Abilita la modifica
-    bloodGroupInput.removeAttribute("readonly");
-    rhInput.removeAttribute("readonly");
+  let isEditing = false;
 
-    // Aggiunge la classe 'editing' per modificare il CSS
-    bloodDataSection.classList.add("editing");
+  // Abilita la modifica dei campi quando si preme il bottone
+  btn.addEventListener("click", function () {
+    if (!isEditing) {
+      bloodGroupInput.removeAttribute("readonly");
+      rhInput.removeAttribute("readonly");
 
-    // Cambia il testo del bottone
-    btn.innerHTML = `
-    <span class="button__icon-wrapper">
-      <svg
-        viewBox="0 0 14 15"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        class="button__icon-svg"
-        width="14"
-      >
-        <path
-          d="M2 2H12V13H2V2Z"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-        <path
-          d="M4 2V6H10V2"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-        <path
-          d="M4 9H10"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
+      bloodDataSection.classList.add("editing");
 
-      <svg
-        viewBox="0 0 14 15"
-        fill="none"
-        width="14"
-        xmlns="http://www.w3.org/2000/svg"
-        class="button__icon-svg button__icon-svg--copy"
-      >
-        <path
-          d="M2 2H12V13H2V2Z"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-        <path
-          d="M4 2V6H10V2"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-        <path
-          d="M4 9H10"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </span>
-    Save
-    `;
-    isEditing = true;
-  } else {
-    // Disabilita la modifica e salva i valori
-    bloodGroupInput.setAttribute("readonly", true);
-    rhInput.setAttribute("readonly", true);
-
-    // Rimuove la classe 'editing'
-    bloodDataSection.classList.remove("editing");
-
-    // Recupera i valori modificati
-    const newBloodGroup = bloodGroupInput.value;
-    const newRh = rhInput.value;
-
-    // Esegui azioni di salvataggio (ad esempio localStorage o chiamate AJAX)
-    // localStorage.setItem('blood_group', newBloodGroup);
-    // localStorage.setItem('rh', newRh);
-
-    console.log("Salvataggio completato:", {
-      bloodGroup: newBloodGroup,
-      rh: newRh,
-    });
-
-    // Ripristina il testo del bottone
-    btn.innerHTML = `
-      <span class="button__icon-wrapper">
+      btn.innerHTML = `
+        <span class="button__icon-wrapper">
           <svg
             viewBox="0 0 14 15"
             fill="none"
@@ -458,34 +392,181 @@ btn.addEventListener("click", function () {
             width="14"
           >
             <path
-              d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
+              d="M2 2H12V13H2V2Z"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 2V6H10V2"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 9H10"
               stroke="currentColor"
               stroke-width="1.5"
               stroke-linecap="round"
               stroke-linejoin="round"
             />
           </svg>
-          
+
           <svg
             viewBox="0 0 14 15"
             fill="none"
-            width="14"
             xmlns="http://www.w3.org/2000/svg"
             class="button__icon-svg button__icon-svg--copy"
+            width="14"
           >
             <path
-              d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
+              d="M2 2H12V13H2V2Z"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 2V6H10V2"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 9H10"
               stroke="currentColor"
               stroke-width="1.5"
               stroke-linecap="round"
               stroke-linejoin="round"
             />
           </svg>
-      </span>
-      Update
-    `;
-    isEditing = false;
+        </span>
+        Save
+        `;
+      isEditing = true;
+    } else {
+      // Disabilita i campi dopo la modifica
+      bloodGroupInput.setAttribute("readonly", true);
+      rhInput.setAttribute("readonly", true);
+
+      bloodDataSection.classList.remove("editing");
+
+      const newBloodGroup = bloodGroupInput.value.trim();
+      const newRh = rhInput.value.trim();
+
+      // Solo se ci sono modifiche
+      if (
+        newBloodGroup !== bloodGroupInput.dataset.originalValue ||
+        newRh !== rhInput.dataset.originalValue
+      ) {
+        modificationsExist = true;
+      }
+
+      if (modificationsExist) {
+        const patientId = document.getElementById("blood_group").dataset.patientId; // Supponiamo che l'ID sia in un dataset
+
+        // Invia i dati modificati al backend Django
+        fetch(`/api/update_blood_data/${patientId}/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken(), // Recupera il CSRF token
+          },
+          body: JSON.stringify({
+            blood_group: newBloodGroup,
+            rh_factor: newRh,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              showPopup("Modifiche salvate con successo!");
+              modificationsExist = false; // Resetta lo stato
+            } else {
+              showPopup("Errore nel salvataggio.", true);
+            }
+          })
+          .catch(() => {
+            showPopup("Errore di connessione.", true);
+          });
+
+        // Memorizza il nuovo valore originale
+        bloodGroupInput.dataset.originalValue = newBloodGroup;
+        rhInput.dataset.originalValue = newRh;
+      }
+
+      btn.innerHTML = `
+          <span class="button__icon-wrapper">
+              <svg
+                viewBox="0 0 14 15"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="button__icon-svg"
+                width="14"
+              >
+                <path
+                  d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+
+              <svg
+                viewBox="0 0 14 15"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="button__icon-svg button__icon-svg--copy"
+                width="14"
+              >
+                <path
+                  d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+          </span>
+          Update
+        `;
+      isEditing = false;
+    }
+  });
+
+  // Funzione per ottenere il token CSRF dai cookie
+  function getCSRFToken() {
+    const cookieValue = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("csrftoken="))
+      ?.split("=")[1];
+    return cookieValue || "";
   }
+
+  // Funzione per mostrare popup di notifica
+  function showPopup(message, isError = false) {
+    const popup = document.createElement("div");
+    popup.textContent = message;
+    popup.style.position = "fixed";
+    popup.style.top = "80px";
+    popup.style.right = "50%";
+    popup.style.backgroundColor = isError ? "#e74c3c" : "#2ecc71";
+    popup.style.color = "white";
+    popup.style.padding = "10px 20px";
+    popup.style.borderRadius = "5px";
+    popup.style.zIndex = "1000";
+    document.body.appendChild(popup);
+
+    setTimeout(() => popup.remove(), 3000);
+  }
+
+  // Memorizza lo stato originale dei campi
+  bloodGroupInput.dataset.originalValue = bloodGroupInput.value;
+  rhInput.dataset.originalValue = rhInput.value;
 });
 
 /*  ----------------

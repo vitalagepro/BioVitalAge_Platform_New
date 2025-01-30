@@ -32,6 +32,7 @@ class TabellaPazienti(models.Model):
     codice_fiscale = models.CharField(max_length=16, null=True, blank=True, unique=True)
     chronological_age = models.IntegerField(null=True, blank=True)
     blood_group = models.CharField(max_length=3, null=True, blank=True)
+    rh_factor = models.CharField(max_length=3, null=True, blank=True)
     associate_staff = models.CharField(max_length=100, null=True, blank=True)
     lastVisit = models.DateField(null=True, blank=True)
     upcomingVisit = models.DateField(null=True, blank=True)

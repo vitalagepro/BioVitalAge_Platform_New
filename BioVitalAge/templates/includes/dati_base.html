@@ -312,9 +312,9 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p> <input name="attivita_sedentaria" type="text" value="{{ persona.attivita_sedentaria }}" disabled> </p>
-                  <p> <input name="livello_sedentarieta" type="text" value="{{ persona.livello_sedentarieta }}" disabled> </p>
-                  <p> <input name="sedentarieta_nota" type="text" value="{{ persona.sedentarieta_nota }}" disabled> </p>
+                  <p> <input name="attivita_sedentaria" type="text" value="{{ persona.attivita_sedentaria|default:'N/A' }}" disabled> </p>
+                  <p> <input name="livello_sedentarieta" type="text" value="{{ persona.livello_sedentarieta|default:'N/A' }}" disabled> </p>
+                  <p> <input name="sedentarieta_nota" type="text" value="{{ persona.sedentarieta_nota|default:'N/A' }}" disabled> </p>
                   <input type="hidden" name="form_id" value="datiBaseForm6">
                 </div>
               </div>
@@ -327,12 +327,12 @@
         <div class="container-blood-input">
           <div class="container">
             <h3>Blood Group</h3>
-            <input type="text" readonly id="blood_group" value="{{ persona.blood_group|default:'N/A' }}"/>
+            <input type="text" readonly id="blood_group" value="{{ persona.blood_group|default:'N/A' }}" data-patient-id="{{ persona.id }}"/>
           </div>
 
           <div class="container">
               <h3>Factor rh</h3>
-              <input type="text" readonly id="rh" />
+              <input type="text" readonly id="rh" value="{{ persona.rh_factor|default:'N/A' }}" data-patient-id="{{ persona.id }}"/>
           </div>
         </div>
         <button class="button" id="btn_blood_group">
