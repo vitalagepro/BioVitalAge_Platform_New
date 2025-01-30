@@ -47,18 +47,24 @@
       </div>
     
       <div class="barra-ricerca">
+
         <select name="filter" id="filter">
           <option value="name">Filtra per Nomi</option>
           <option value="surname">Filtra per Cognomi</option>
           <option value="fisc_code">Filtra per Codici Fiscali</option>
           <option value="personal_association">Filtra per Personale Associato</option>
         </select>
+
         <form method="POST">
           {% csrf_token %}
           <div class="input-group">
+
             <input type="text" class="input" id="Email" name="inputField" placeholder="Type name here" required>
+
             <button class="button button--submit" type="submit">
+
               <span class="button__icon-wrapper">
+
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -108,16 +114,22 @@
                     stroke-linecap="round"
                   ></line>
                 </svg>
+
               </span>
               Search
             </button>
+
           </div>
           <!-- <input type="text" placeholder="Type name here" name="inputField" required>
                     <button type="submit">Search</button> -->
         </form>
+
         <div class="button-container">
+
           <a href="{% url 'inserisci_paziente' %}" title="Add Patient" class="button">
+
             <span class="button__icon-wrapper">
+
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14"
                 height="14">
                 <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -137,10 +149,13 @@
             <img src="{% static 'includes/icone/add-user.png' %}" alt="Add User" title="Aggiungi Utente">
           </a> -->
         </div>
+
       </div>
     
       <div class="table-container">
+
         <div class="table-header">
+
           <p>Name</p>
           <p>Surname</p>
           <p>Date of Birth</p>
@@ -149,9 +164,11 @@
           <p>Chronological Age</p>
           <p>Ultimo Referto</p>
           <p>Cartella Paziente</p>
+
         </div>
       
         <div class="bg-white">
+
           <div class="table-content">
             {% for persona in persone %}
               <div class="riga-container">
@@ -167,22 +184,28 @@
                           <img src="{% static 'includes/icone/referto.png' %}" alt="Referto" />
                       </a>
                   </p>
+
                   <p>
                       <a href="{% url 'cartella_paziente' persona.id %}">
                           <img src="{% static 'includes/icone/cartella.png' %}" alt="Cartella" />
                       </a>
                   </p>
+
               </div>
            {% endfor %}
 
           </div>
+
         </div>
+
       </div>
+
   </main>
 
     
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
       /*  -----------------------------------------------------------------------------------------------
       Animate Button

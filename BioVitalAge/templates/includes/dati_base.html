@@ -97,7 +97,7 @@
 
               <div class="field">
                 <p>Associate staff:&nbsp;</p>
-                <p>xxx</p>
+                <p>{{ persona.associate_staff }}</p>
               </div>
 
           </div>
@@ -212,10 +212,10 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p> <input name="alcol" type="text" value="{{ persona.alcol }}" disabled> </p>
-                  <p> <input name="alcol_type" type="text" value="{{ persona.alcol_type }}" disabled> </p>
-                  <p> <input name="data_alcol" type="date" value="{{ persona.data_alcol|date:'Y-m-d' }}" disabled> </p>
-                  <p> <input name="alcol_frequency" type="text" value="{{ persona.alcol_frequency }}" disabled> </p>
+                  <p> <input name="alcol" type="text" value="{{ persona.alcol|default:'N/A' }}" disabled> </p>
+                  <p> <input name="alcol_type" type="text" value="{{ persona.alcol_type|default:'N/A' }}" disabled> </p>
+                  <p> <input name="data_alcol" type="date" value="{{ persona.data_alcol|date:'Y-m-d'|default:'N/A' }}" disabled> </p>
+                  <p> <input name="alcol_frequency" type="text" value="{{ persona.alcol_frequency|default:'N/A' }}" disabled> </p>
                   <input type="hidden" name="form_id" value="datiBaseForm3">
                 </div>
               </div>
@@ -246,9 +246,9 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p> <input name="smoke" type="text" value="{{ persona.smoke }}" disabled> </p>
-                  <p> <input name="smoke_frequency" type="text" value="{{ persona.smoke_frequency }}" disabled> </p>
-                  <p> <input name="reduced_intake" type="text" value="{{ persona.reduced_intake }}" disabled> </p>
+                  <p> <input name="smoke" type="text" value="{{ persona.smoke|default:'N/A' }}" disabled> </p>
+                  <p> <input name="smoke_frequency" type="text" value="{{ persona.smoke_frequency|default:'N/A' }}" disabled> </p>
+                  <p> <input name="reduced_intake" type="text" value="{{ persona.reduced_intake|default:'N/A' }}" disabled> </p>
                   <input type="hidden" name="form_id" value="datiBaseForm4">
                 </div>
               </div>
@@ -279,9 +279,9 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p> <input name="sport" type="text" value="{{ persona.sport }}" disabled> </p>
-                  <p> <input name="sport_livello" type="text" value="{{ persona.sport_livello }}" disabled> </p>
-                  <p> <input name="sport_frequency" type="text" value="{{ persona.sport_frequency }}" disabled> </p>
+                  <p> <input name="sport" type="text" value="{{ persona.sport|default:'N/A' }}" disabled> </p>
+                  <p> <input name="sport_livello" type="text" value="{{ persona.sport_livello|default:'N/A' }}" disabled> </p>
+                  <p> <input name="sport_frequency" type="text" value="{{ persona.sport_frequency|default:'N/A' }}" disabled> </p>
                   <input type="hidden" name="form_id" value="datiBaseForm5">
                 </div>
               </div>
@@ -327,7 +327,7 @@
         <div class="container-blood-input">
           <div class="container">
             <h3>Blood Group</h3>
-            <input type="text" readonly id="blood_group" />
+            <input type="text" readonly id="blood_group" value="{{ persona.blood_group|default:'N/A' }}"/>
           </div>
 
           <div class="container">
@@ -335,8 +335,42 @@
               <input type="text" readonly id="rh" />
           </div>
         </div>
-      
-        <button class="button-style" id="btn_blood_group">Update</button>
+        <button class="button" id="btn_blood_group">
+          <span class="button__icon-wrapper">
+            <svg
+            viewBox="0 0 14 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="button__icon-svg"
+            width="14"
+          >
+            <path
+              d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          
+          <svg
+            viewBox="0 0 14 15"
+            fill="none"
+            width="14"
+            xmlns="http://www.w3.org/2000/svg"
+            class="button__icon-svg button__icon-svg--copy"
+          >
+            <path
+              d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          </span>
+          Update
+        </button>
       </section>
     </main>
 

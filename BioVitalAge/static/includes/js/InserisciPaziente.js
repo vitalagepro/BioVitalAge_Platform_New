@@ -1,36 +1,6 @@
 /*  -----------------------------------------------------------------------------------------------
-  Call JSON to archive platform
---------------------------------------------------------------------------------------------------- */
-const archivePlatform = [];
-
-async function fetchData() {
-  try {
-    const response = await fetch(
-      "/static/includes/json/ARCHIVIO PER PIATTAFORMA.json"
-    );
-    const data = await response.json();
-    archivePlatform.push(data);
-  } catch (error) {
-    console.error("Error:", error);
-  }
-}
-
-fetchData();
-console.log(archivePlatform);
-
-document.getElementById("btn-fetch-archive").addEventListener("click", () => {
-  archivePlatform.forEach(archive => {
-    const archiveData = archive.Foglio1;
-    archiveData.forEach(element => {
-      const code_exam = element.CODICE_UNIVOCO_ESAME_PIATTAFORMA;
-      console.log(code_exam);
-    })
-  });
-})
-
-/*  -----------------------------------------------------------------------------------------------
         Modal User
-        --------------------------------------------------------------------------------------------------- */
+--------------------------------------------------------------------------------------------------- */
 const userImg = document.getElementById("userImg");
 const userModal = document.getElementById("userModal");
 const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
@@ -48,7 +18,7 @@ userModal.addEventListener("mouseout", () => {
 userModalBtn.addEventListener("mouseover", showModal);
 /*  -----------------------------------------------------------------------------------------------
         Script per la logica dei pulsanti "Yes/No"
-      --------------------------------------------------------------------------------------------------- */
+--------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
   // Selezioniamo tutti i blocchi che contengono i pulsanti "Yes/No"
   const chooseButtonsContainers = document.querySelectorAll(".choose-buttons");
@@ -70,6 +40,21 @@ document.addEventListener("DOMContentLoaded", () => {
       '[data-lifestyle="sedentary-lifestyle"]'
     );
 
+    function toggleInputsInHiddenTables() {
+      document.querySelectorAll(".responsive-table.hidden").forEach(table => {
+        table.querySelectorAll("input").forEach(input => {
+          input.setAttribute("disabled", "true");
+        });
+      });
+    
+      document.querySelectorAll(".responsive-table:not(.hidden)").forEach(table => {
+        table.querySelectorAll("input").forEach(input => {
+          input.removeAttribute("disabled");
+        });
+      });
+    }
+    
+
     // Se esistono entrambe, vuol dire che è la sezione "Sport"
     if (sportingLifestyle && sedentaryLifestyle) {
       // Di default rimangono entrambe nascoste, perché nel tuo HTML
@@ -80,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
         sportingLifestyle.classList.remove("hidden");
         sedentaryLifestyle.classList.add("hidden");
+        toggleInputsInHiddenTables();
       });
 
       // Se clicco "No" → mostro sedentary, nascondo sporting
@@ -87,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
         sportingLifestyle.classList.add("hidden");
         sedentaryLifestyle.classList.remove("hidden");
+        toggleInputsInHiddenTables();
       });
     } else {
       // Se non è la sezione "Sport", manteniamo la logica generica
@@ -96,11 +83,38 @@ document.addEventListener("DOMContentLoaded", () => {
       yesButton.addEventListener("click", (event) => {
         event.preventDefault();
         hiddenTable?.classList.remove("hidden");
+        toggleInputsInHiddenTables();
       });
       noButton.addEventListener("click", (event) => {
         event.preventDefault();
         hiddenTable?.classList.add("hidden");
+        toggleInputsInHiddenTables();
       });
     }
   });
+});
+
+/*  -----------------------------------------------------------------------------------------------
+  BMI CALCULATOR
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  const heightInput = document.querySelector("input[name='height']");
+  const weightInput = document.querySelector("input[name='weight']");
+  const bmiInput = document.querySelector("input[name='bmi']");
+
+  function calculateBMI() {
+    const heightValue = parseFloat(heightInput.value);
+    const weightValue = parseFloat(weightInput.value);
+
+    if (!isNaN(heightValue) && !isNaN(weightValue) && heightValue > 0) {
+      const heightInMeters = heightValue / 100; // Convert cm to meters
+      const bmi = weightValue / (heightInMeters * heightInMeters);
+      bmiInput.value = bmi.toFixed(2); // Set BMI with 2 decimal places
+    } else {
+      bmiInput.value = ""; // Clear BMI if values are invalid
+    }
+  }
+
+  heightInput.addEventListener("input", calculateBMI);
+  weightInput.addEventListener("input", calculateBMI);
 });

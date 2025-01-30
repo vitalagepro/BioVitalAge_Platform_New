@@ -361,7 +361,70 @@ btn.addEventListener("click", function () {
     bloodDataSection.classList.add("editing");
 
     // Cambia il testo del bottone
-    btn.textContent = "Save";
+    btn.innerHTML = `
+    <span class="button__icon-wrapper">
+      <svg
+        viewBox="0 0 14 15"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="button__icon-svg"
+        width="14"
+      >
+        <path
+          d="M2 2H12V13H2V2Z"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M4 2V6H10V2"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M4 9H10"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+
+      <svg
+        viewBox="0 0 14 15"
+        fill="none"
+        width="14"
+        xmlns="http://www.w3.org/2000/svg"
+        class="button__icon-svg button__icon-svg--copy"
+      >
+        <path
+          d="M2 2H12V13H2V2Z"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M4 2V6H10V2"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M4 9H10"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </span>
+    Save
+    `;
     isEditing = true;
   } else {
     // Disabilita la modifica e salva i valori
@@ -385,7 +448,42 @@ btn.addEventListener("click", function () {
     });
 
     // Ripristina il testo del bottone
-    btn.textContent = "Update";
+    btn.innerHTML = `
+      <span class="button__icon-wrapper">
+          <svg
+            viewBox="0 0 14 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="button__icon-svg"
+            width="14"
+          >
+            <path
+              d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          
+          <svg
+            viewBox="0 0 14 15"
+            fill="none"
+            width="14"
+            xmlns="http://www.w3.org/2000/svg"
+            class="button__icon-svg button__icon-svg--copy"
+          >
+            <path
+              d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+      </span>
+      Update
+    `;
     isEditing = false;
   }
 });

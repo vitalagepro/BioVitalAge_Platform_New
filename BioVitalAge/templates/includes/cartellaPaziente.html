@@ -281,7 +281,7 @@
         </div>
 
         <!-- TABELLA REFERTI -->
-        <div class="contenitore-tabella" style="margin-top: 20px; margin-bottom: 0;">
+        <div class="contenitore-tabella" style="margin-top: 0; margin-bottom: 0;">
             <div class="recent-patients" id="card-style">
                 <div class="contenitore-header">
                     <h3>Elenco referti età biologica</h3>
@@ -346,7 +346,7 @@
                             </p>
                         </div>
                         {% empty %}
-                        <p class="text-center">No recent reports found.</p>
+                        <p class="text-center mb-2 mt-2">No recent reports found.</p>
                         {% endfor %}
                     </div>
                 </div>
@@ -360,12 +360,13 @@
                     <h3>Elenco Prescrizioni</h3>
                     <div class="filtri-button">
                         <select name="filter" id="filter">
-                            <option value="name">Ordinato per data più recente</option>
-                            <option value="surname">Ordinato per data meno recente</option>
-                            <option value="fisc_code">Ordinato per valore positivo</option>
-                            <option value="personal_association">Ordinato per valore negativo</option>
+                            <option>-- Ordina per --</option>
+                            <option value="name">Data più recente</option>
+                            <option value="surname">Data meno recente</option>
+                            <option value="fisc_code">Valore positivo</option>
+                            <option value="personal_association">Valore negativo</option>
                         </select>
-                        <a href="" class="button">
+                        <a href="#" class="button">
                             <span class="button__icon-wrapper">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
                                     class="button__icon-svg">
