@@ -1,112 +1,112 @@
 def adjust_age_basophils(basophils):
     basophils = float(basophils) if basophils else 0
-    if 4 <= basophils <= 11:
+    if 0 <= basophils <= 0.2:
         return 0
-    elif basophils > 11:
+    elif basophils > 0.2:
         return 2
     return 0
 
 def adjust_age_eosinophils(eosinophils):
     eosinophils = float(eosinophils) if eosinophils else 0
-    if 4 <= eosinophils <= 11:
+    if 0 <= eosinophils <= 5:
         return 0
-    elif eosinophils > 11:
+    elif eosinophils > 5:
         return 2
     return 0
 
 def adjust_age_lymphocytes(lymphocytes):
     lymphocytes = float(lymphocytes) if lymphocytes else 0
-    if 4 <= lymphocytes <= 11:
+    if 20 <= lymphocytes <= 40:
         return 0
-    elif lymphocytes > 11:
+    elif 20 < lymphocytes > 40:
         return 2
     return 0
 
 def adjust_age_monocytes(monocytes):
     monocytes = float(monocytes) if monocytes else 0
-    if 4 <= monocytes <= 11:
+    if 2 <= monocytes <= 10:
         return 0
-    elif monocytes > 11:
+    elif 2 < monocytes > 10:
         return 2
     return 0
 
 def adjust_age_neutrophils(neutrophils):
     neutrophils = float(neutrophils) if neutrophils else 0
-    if 4 <= neutrophils <= 11:
+    if 40 <= neutrophils <= 70:
         return 0
-    elif neutrophils > 11:
+    elif 40 < neutrophils > 70:
         return 2
     return 0
 
 def adjust_age_rbc(rbc):
     rbc = float(rbc) if rbc else 0
-    if 4 <= rbc <= 11:
+    if 4.2 <= rbc <= 5.4:
         return 0
-    elif rbc > 11:
+    elif 4.2 < rbc > 5.4:
         return 2
     return 0
 
 def adjust_age_hct(hct):
     hct = float(hct) if hct else 0
-    if 4 <= hct <= 11:
+    if 38 <= hct <= 48:
         return 0
-    elif hct > 11:
+    elif 38 < hct > 48:
         return 2
     return 0
 
 def adjust_age_hgb(hgb):
     hgb = float(hgb) if hgb else 0
-    if 4 <= hgb <= 11:
+    if 12 <= hgb <= 16:
         return 0
-    elif hgb > 11:
+    elif 12 < hgb > 16:
         return 2
     return 0
 
 def adjust_age_mch(mch):
     mch = float(mch) if mch else 0
-    if 4 <= mch <= 11:
+    if 27 <= mch <= 31:
         return 0
-    elif mch > 11:
+    elif 27 < mch > 31:
         return 2
     return 0
 
 def adjust_age_mchc(mchc):
     mchc = float(mchc) if mchc else 0
-    if 4 <= mchc <= 11:
+    if 32 <= mchc <= 36:
         return 0
-    elif mchc > 11:
+    elif 32 < mchc > 36:
         return 2
     return 0
 
 def adjust_age_mcv(mcv):
     mcv = float(mcv) if mcv else 0
-    if 4 <= mcv <= 11:
+    if 80 <= mcv <= 100:
         return 0
-    elif mcv > 11:
+    elif 80 < mcv > 100:
         return 2
     return 0
 
 def adjust_age_mpv(mpv):
     mpv = float(mpv) if mpv else 0
-    if 4 <= mpv <= 11:
+    if 9.1 <= mpv <= 12.3 :
         return 0
-    elif mpv > 11:
+    elif 9.1 < mpv > 12.3:
         return 2
     return 0
 
 def adjust_age_mpd(mpd):
     mpd = float(mpd) if mpd else 0
-    if 4 <= mpd <= 11:
+    if 10 <= mpd <= 16:
         return 0
-    elif mpd > 11:
+    elif 10 < mpd > 16:
         return 2
     return 0
 
 def adjust_age_wbc(wbc):
     wbc = float(wbc) if wbc else 0
-    if 4 <= wbc <= 11:
+    if 4000 <= wbc <= 11000:
         return 0
-    elif wbc > 11:
+    elif 4000 < wbc > 11000:
         return 2
     return 0
 
@@ -128,9 +128,9 @@ def adjust_age_uric_acid(uric_acid):
 
 def adjust_age_rdw(rdw):
     rdw = float(rdw) if rdw else 0
-    if 4 <= rdw <= 11:
+    if 11 <= rdw <= 15:
         return 0
-    elif rdw > 11:
+    elif 11 < rdw > 15:
         return 2
     return 0
 
