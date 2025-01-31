@@ -1736,8 +1736,7 @@ class PrescrizioniView(View):
         esamiList = []
 
         for codici in codiciEsami:
-            print(f"Codice trovato: {codici.codicePrescrizione}")
-
+        
             for esame in data['Foglio1']:
                 if int(codici.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
                     esamiList.append(esame)
