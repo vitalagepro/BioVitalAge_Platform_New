@@ -160,14 +160,14 @@ class CalcolatoreRender(View):
         codice_fiscale = request.GET.get('parametro')
 
         if codice_fiscale:
-            paziente = TabellaPazienti.objects.get(codice_fiscale=codice_fiscale)
-            paziente_id = paziente.id
-
-            context = {
+            try:
+                paziente = TabellaPazienti.objects.get(codice_fiscale=codice_fiscale)
+                context.update({
                     "paziente": paziente,
-                    "id_persona": paziente_id,
-            }
-
+                    "id_persona": paziente.id
+                })
+            except TabellaPazienti.DoesNotExist:
+                context.update({"error": "Paziente non trovato."})
 
             return render(request, 'includes/calcolatore.html', context)
         
