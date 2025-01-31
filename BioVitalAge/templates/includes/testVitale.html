@@ -110,11 +110,425 @@
                         </div>
                     </div>
 
-                    <!-- SISTEMA IMMUNITARIO -->
+                    <!-- DOMINIO COGNITIVO -->
                     <div class="question" data-group="2">
-                        <h3>Sistema Immunitario</h3>
-                        <p style="margin-top: 0rem;">In base al name="Lymph" 1 inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
-                        
+                        <h2 class="fw-bolder">Dominio Cognitivo</h2>
+                        <h4>Test MMSE</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">0</p>
+                                <p class="subtitle">1</p>
+                                <p class="subtitle">2</p>
+                                <p class="subtitle">3</p>
+                                <p class="subtitle">4</p>
+                                <p class="subtitle">5</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p class="small">ORIENTAMENTO: Il paziente sa riferire: giorno del mese, anno, mese, giorno della settimana e stagione.</p>
+                                    <p><input type="radio" name="SiIm_1"  value="0" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="3" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="4" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="5" required></p>
+                                </div>
+                                <div class="tableRow">
+                                    <p class="small">ORIENTAMENTO: Il paziente sa riferire: luogo in cui i trova, a quale piano, città, regione, stato.</p>
+                                    <p><input type="radio" name="SiIm_2"  value="0" required></p>
+                                    <p><input type="radio" name="SiIm_2"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_2"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_2"  value="3" required></p>
+                                    <p><input type="radio" name="SiIm_2"  value="4" required></p>
+                                    <p><input type="radio" name="SiIm_2"  value="5" required></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p class="smaller-text text-justify">
+                                        MEMORIA: L'esaminatore pronuncia ad alta voce tre termini (casa, pane, gatto) e chiede al paziente di ripeterli immediatamente.
+                                        L'esaminatore deve ripeterli fino a quando il paziente non li abbia imparati(max 6 ripetizioni).
+                                    </p>
+                                    <p><input type="radio" name="SiIm_3"  value="0" required></p>
+                                    <p><input type="radio" name="SiIm_3"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_3"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_3"  value="3" required></p>
+                                    <p></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p class="smaller-text">
+                                        ATTENZIONE AL CALCOLO: Partendo da 100 far contare sottraendo 7 all'indietro fermandosi dopo le prime cinque risposte.  
+                                        In caso di difficoltà di calcolo far scandire al contrario la parola "mondo" ("odnom").
+                                    </p>
+                                    <p><input type="radio" name="SiIm_4"  value="0" required></p>
+                                    <p><input type="radio" name="SiIm_4"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_4"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_4"  value="3" required></p>
+                                    <p><input type="radio" name="SiIm_4"  value="4" required></p>
+                                    <p><input type="radio" name="SiIm_4"  value="5" required></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p class="small-text">RICHIAMO DELLE TRE PAROLE(RICHIAMO ALLA MEMORIA): Richiamare i tre termini precedentemente imparati.</p>
+                                    <p><input type="radio" name="SiIm_5"  value="0" required></p>
+                                    <p><input type="radio" name="SiIm_5"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_5"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_5"  value="3" required></p>
+                                    <p></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p class="small-text">LINGUAGGIO: Il paziente deve riconoscere due oggetti. Come si chiama questo (matita)? Come si chiama questo (orologio)?</p>
+                                    <p><input type="radio" name="SiIm_6"  value="0" required></p>
+                                    <p><input type="radio" name="SiIm_6"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_6"  value="2" required></p>
+                                    <p></p>
+                                    <p></p>
+                                    <p></p>   
+                                </div>
+                                
+                                <div class="tableRow">
+                                    <p>LINGUAGGIO: Il paziente deve ripetere la frase "TIGRE CONTRO TIGRE"</p>
+                                    <p><input type="radio" name="SiIm_7"  value="0" required></p>
+                                    <p><input type="radio" name="SiIm_7"  value="1" required></p>
+                                    <p></p>
+                                    <p></p>
+                                    <p></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p class="smaller-text">LINGUAGGIO: Il paziente deve eseguire un compito su comando: a) prenda un foglio con la mano destra, b) lo pieghi a metà; c) e lo butti dal tavolo/metta sul pavimento</p>
+                                    <p><input type="radio" name="SiIm_7"  value="0" required></p>
+                                    <p><input type="radio" name="SiIm_7"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_7"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_7"  value="3" required></p>
+                                    <p></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>LINGUAGGIO: Far eseguire al paziente il comando scritto "CHIUDA GLI OCCHI"</p>
+                                    <p><input type="radio" name="SiIm_7"  value="0" required></p>
+                                    <p><input type="radio" name="SiIm_7"  value="1" required></p>
+                                    <p></p>
+                                    <p></p>
+                                    <p></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p class="small-text">LINGUAGGIO: Far scrivere al paziente una frase di senso compiuto formata almeno da soggetto e verbo. N.B. conservare il materiale</p>
+                                    <p><input type="radio" name="SiIm_7"  value="0" required></p>
+                                    <p><input type="radio" name="SiIm_7"  value="1" required></p>
+                                    <p></p>
+                                    <p></p>
+                                    <p></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p class="small-text">LINGUAGGIO: Far disegnare al paziente un orologio che indichi al paziente un orario preciso con lancetta di minuti e ore.</p>
+                                    <p><input type="radio" name="SiIm_7"  value="0" required></p>
+                                    <p><input type="radio" name="SiIm_7"  value="1" required></p>
+                                    <p></p>
+                                    <p></p>
+                                    <p></p>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+
+                    <!-- DOMINIO PSICOLOGICO -->
+                    <div class="question" data-group="3">
+                        <h2 class="fw-bolder">Dominio Psicologico</h2>
+                        <h4>Geriatric Depression Scale (GDS)</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">SI</p>
+                                <p class="subtitle">NO</p>
+                                <p class="subtitle"></p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>È fondamentalmente soddisfatto della sua vita?</p>
+                                    <p><input type="radio" name="SiIm_1" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_1" value="no" required></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Ha abbandonato molte delle sue attività e dei suoi interessi?</p>
+                                    <p><input type="radio" name="SiIm_2" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_2" value="no" required></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Sente che la sua vita è vuota?</p>
+                                    <p><input type="radio" name="SiIm_2" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_2" value="no" required></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Si annoia spesso?</p>
+                                    <p><input type="radio" name="SiIm_2" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_2" value="no" required></p>
+                                    <p></p>
+                                </div>
+                                
+                                <div class="tableRow">
+                                    <p>È di buon umore la maggior parte del tempo?</p>
+                                    <p><input type="radio" name="SiIm_2" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_2" value="no" required></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Ha paura che qualcosa di brutto stia per succedere?</p>
+                                    <p><input type="radio" name="SiIm_2" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_2" value="no" required></p>
+                                    <p></p>
+                                </div>
+                                
+                                <div class="tableRow">
+                                    <p>Si sente più felice la maggior parte del tempo?</p>
+                                    <p><input type="radio" name="SiIm_2" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_2" value="no" required></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Si sente spesso impotente?</p>
+                                    <p><input type="radio" name="SiIm_2" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_2" value="no" required></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Preferisce restare a casa piuttosto che uscire e fare cose nuove?</p>
+                                    <p><input type="radio" name="SiIm_2" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_2" value="no" required></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Ritiene di vere più problemi con la memoria della maggior parte delle persone?</p>
+                                    <p><input type="radio" name="SiIm_2" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_2" value="no" required></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Pensa che la vita sia meravigliosa?</p>
+                                    <p><input type="radio" name="SiIm_2" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_2" value="no" required></p>
+                                    <p></p>
+                                </div>
+                                
+                                <div class="tableRow">
+                                    <p>Si sente pittosto inutile così com'è?</p>
+                                    <p><input type="radio" name="SiIm_2" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_2" value="no" required></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Si sente pieno di energie?</p>
+                                    <p><input type="radio" name="SiIm_2" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_2" value="no" required></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Ha l'impressione che la sua situazione sia disperata?</p>
+                                    <p><input type="radio" name="SiIm_2" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_2" value="no" required></p>
+                                    <p></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Pensa che la maggior parte delle persone sia migliore di lei?</p>
+                                    <p><input type="radio" name="SiIm_2" value="yes" required></p>
+                                    <p><input type="radio" name="SiIm_2" value="no" required></p>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+
+                    <div class="question" data-group="4">
+                        <h2 class="fw-bolder">Dominio Psicologico</h2>
+                        <h4>Locus of Control – Percezione del controllo sulla propria vita (8 items)</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">AFFERMAZIONI</p>
+                                <p class="subtitle">Per niente d'accordo (1)</p>
+                                <p class="subtitle">Poco d'accordo (2)</p>
+                                <p class="subtitle fs-5-3">Né d'accordo né in disaccordo (3)</p>
+                                <p class="subtitle">Abbastanza d'accordo (4)</p>
+                                <p class="subtitle">Completamente d'accordo (5)</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Credo che il mio futuro dipenda principalmente dalle mie scelte.</p>
+                                    <p><input type="radio" name="SiIm_1"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="3" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="4" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="5" required></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Il successo nella vita non è una questione di fortuna o destino.</p>
+                                    <p><input type="radio" name="SiIm_1"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="3" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="4" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="5" required></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Se mi impegno abbastanza, posso ottenere ciò che voglio.</p>
+                                    <p><input type="radio" name="SiIm_1"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="3" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="4" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="5" required></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Gli eventi importanti della mia vita sono sotto il mio controllo.</p>
+                                    <p><input type="radio" name="SiIm_1"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="3" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="4" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="5" required></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Penso che la mia vita si determinata principalmente dalle mie azioni.</p>
+                                    <p><input type="radio" name="SiIm_1"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="3" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="4" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="5" required></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Non mi sento mai impotente di fronte a ciò che accade nella mia vita.</p>
+                                    <p><input type="radio" name="SiIm_1"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="3" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="4" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="5" required></p>
+                                </div>
+                                
+                                <div class="tableRow">
+                                    <p>Le mie decisioni personali influenzano direttamente il mio futuro.</p>
+                                    <p><input type="radio" name="SiIm_1"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="3" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="4" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="5" required></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p>Molti degli eventi della mia vita dipendono solo da me e non dagli altri.</p>
+                                    <p><input type="radio" name="SiIm_1"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="3" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="4" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="5" required></p>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+
+                    <!-- DOMINIO SENSORIALE -->
+                    <div class="question" data-group="5">
+                        <h2 class="fw-bolder">Dominio Sensoriale</h2>
+                        <h4>Vista Autopercepita</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">1</p>
+                                <p class="subtitle">2</p>
+                                <p class="subtitle">3</p>
+                                <p class="subtitle">4</p>
+                                <p class="subtitle">5</p>
+                                <p class="subtitle">6</p>
+                                <p class="subtitle">7</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p class="small-text">Come vedi per vedere da lontano (con gli occhiali) e per riconoscere un amico dall'altra parte della strada?</p>
+                                    <p><input type="radio" name="SiIm_1"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="3" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="4" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="5" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="6" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="7" required></p>
+                                </div>
+
+                                <div class="tableRow">
+                                    <p class="small-text">Com'è la tua vista per vedere da vicino (con gli occhiali) e per leggere il giornale o per vedere le fotografie su una rivista?</p>
+                                    <p><input type="radio" name="SiIm_1"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="3" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="4" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="5" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="6" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="7" required></p>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+
+                    <div class="question" data-group="6">
+                        <h2 class="fw-bolder">Dominio Sensoriale</h2>
+                        <h4>Udito Autopercepito</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">1</p>
+                                <p class="subtitle">2</p>
+                                <p class="subtitle">3</p>
+                                <p class="subtitle">4</p>
+                                <p class="subtitle">5</p>
+                                <p class="subtitle">6</p>
+                                <p class="subtitle">7</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Com'è il tuo udito in generale (con l'apparecchio acustico)?</p>
+                                    <p><input type="radio" name="SiIm_1"  value="1" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="2" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="3" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="4" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="5" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="6" required></p>
+                                    <p><input type="radio" name="SiIm_1"  value="7" required></p>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+
+                    <!-- SISTEMA IMMUNITARIO -->
+                    <div class="question" data-group="7">
+                        <h3>Sistema Immunitario</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
                                 <p class="subtitle"></p>
@@ -126,7 +540,7 @@
                             </div>
                 
                             <div class="tableAnswer-container" id="secondTypeTable">
-                                <div class="tableRow" style="margin-top: 10px;">
+                                <div class="tableRow">
                                     <p>Febbre Alta Improvvisa</p>
                                     <p><input type="radio" name="SiIm_1"  value="0" required></p>
                                     <p><input type="radio" name="SiIm_1"  value="1" required></p>
@@ -192,7 +606,7 @@
                     </div>
 
                     <!-- BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE -->
-                    <div class="question" data-group="3">
+                    <div class="question" data-group="8">
                         <h3>Biomarcatori Circolanti dell'infiammazione</h3>
                         <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
 
@@ -207,7 +621,7 @@
 
                             <div class="tableAnswer-container" id="secondTypeTable">
 
-                                <div class="tableRow" style="margin-top: 10px;">
+                                <div class="tableRow">
                                     <p>Lymph</p>
                                     {% if dati_estesi %}
                                         <p name="Lymph">
@@ -320,7 +734,7 @@
                     </div>
 
                     <!-- ENERGIA E METABOLISMO -->
-                    <div class="question" data-group="4">
+                    <div class="question" data-group="9">
                         <h3>Energia e Metabolismo</h3>
                         <p style="margin-top: 0rem;">Questionario sulla stanchezza percepita (Fatigue Severity Scale)</p>
                         
@@ -430,10 +844,8 @@
                         </div>  
                     </div>
 
-                    <div class="question" data-group="5">
-                        <h3>Energia e Metabolismo</h3>
-                        <p style="margin-top: 0rem;">In base al name="Lymph" 1 inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
-                        
+                    <div class="question" data-group="10">
+                        <h3>Energia e Metabolismo</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header" style="height: 4rem;">
                                 <p class="subtitle">Circonferenza del polpaccio</p>
@@ -508,7 +920,7 @@
                     </div>
           
                     <!-- BIOMARCATORI CIRCOLANTI DEL METABOLISMO -->
-                    <div class="question" data-group="8">
+                    <div class="question" data-group="11">
                         <h3>Biomarcatori Circolanti del Metabolismo</h3>
                         <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
 
@@ -520,7 +932,7 @@
                                 <p class="subtitle">Valori di riferimento</p>
                             </div>
                             <div class="tableAnswer-container" id="secondTypeTable">
-                                <div class="tableRow" style="margin-top: 10px;">
+                                <div class="tableRow">
                                     <p>Glicemia a digiuno </p>
 
                                     {% if dati_estesi %}
@@ -697,7 +1109,7 @@
                     </div>
                
                     <!-- FUNZIONE NEUROMUSCOLARE -->
-                    <div class="question" data-group="11">
+                    <div class="question" data-group="12">
                         <h3>Funzione Neuromuscolare</h3>
                         <p style="margin-top: 0rem;">Questionario Sarcopenia</p>
                         
@@ -710,7 +1122,7 @@
 
                             </div>
                             <div class="tableAnswer-container" id="secondTypeTable">
-                                <div class="tableRow" style="margin-top: 10px;">
+                                <div class="tableRow">
                                     <p>Forza</p>
                                     <p><input type="radio" name="Sarc_1" required value="0"></p>
                                     <p><input type="radio" name="Sarc_1" required value="0.5"></p>
@@ -747,10 +1159,8 @@
                         </div>  
                     </div>
 
-                    <div class="question" data-group="12">
-                        <h3>Funzione Neuromuscolare</h3>
-                        <p style="margin-top: 0rem;">In base al name="Lymph" 1 inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
-                        
+                    <div class="question" data-group="13">
+                        <h3>Funzione Neuromuscolare</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
                                 <p class="subtitle">Hand Grip Strenght Test</p>
@@ -777,10 +1187,8 @@
                     </div>
 
                     <!-- PERFORMANCE FISICA -->
-                    <div class="question" data-group="12">
-                        <h3>Performance Fisica</h3>
-                        <p style="margin-top: 0rem;">In base al name="Lymph" 1 inserito il punteggio puo variare. Clicca <span>qui</span> per maggiori informazioni inerenti ai valori inseriti</p>
-                        
+                    <div class="question" data-group="14">
+                        <h3>Performance Fisica</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
                                 <p class="subtitle">
