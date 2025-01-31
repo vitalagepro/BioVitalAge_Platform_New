@@ -142,7 +142,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 }
 .cardDati {
   width: 50%;
@@ -307,7 +307,6 @@
 
 
 /* STYLE TABELLA */
-
 .contenitore-header {
   display: flex;
   justify-content: space-between;
@@ -319,21 +318,24 @@
 }
 
 .filtri-button {
-  width: 29.5%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 20px;
   align-items: center;
 }
 
 .filtri-button select {
-  height: 2.5rem;
-  border-radius: 8px;
+  border-radius: 18px;
+  height: 2.9rem;
   background-color: var(--card-color);
-  border: 1px solid var(--contrast-color2);
+  border: 2px solid var(--contrast-color2);
   color: var(--dark2);
   padding: 5px;
   outline: none;
+  text-align: center;
 }
+
+
 
 
 
@@ -345,12 +347,16 @@
   align-items: center;
 }
 
+.container-indicatori .card{
+  border-radius: 10px;
+}
+
 .container-indicatori {
   margin-top: -1rem;
   display: grid;
-  grid-template-columns: 50% 49.2%;
-  gap: 15px;
-  height: 390px;
+  grid-template-columns: 100%;
+  gap: 20px;
+  height: 490px;
 }
 
 .section-tittle {
@@ -363,7 +369,7 @@
   border: 1px solid #ddd;
   border-radius: 8px;
   width: 98%;
-  height: 14rem;
+  height: 21rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -372,7 +378,7 @@
 .clock {
   position: relative;
   width: 13%;
-  height: 52%;
+  height: 68%;
   border-radius: 50%;
   margin: 16px;
   background: conic-gradient(black 0%, #e0e0e0 0%);
@@ -518,6 +524,10 @@
 
 .contenitore-tabella {
   margin: 15px 0;
+}
+
+.recent-patients{
+  margin-bottom: 0 !important;
 }
 
 .recent-patients h2 {

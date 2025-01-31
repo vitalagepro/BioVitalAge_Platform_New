@@ -119,33 +119,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-
-/*  -----------------------------------------------------------------------------------------------
-  Modal User
---------------------------------------------------------------------------------------------------- */
-const userImg = document.getElementById("userImg");
-const userModal = document.getElementById("userModal");
-const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
-
-function showModal() {
-  userModal.classList.add("show");
-}
-
-userImg.addEventListener("mouseover", showModal);
-
-userModal.addEventListener("mouseout", () => {
-  userModal.classList.remove("show");
-});
-
-userModalBtn.addEventListener("mouseover", showModal);
-
-function goToPatientsPage() {
-  alert("Vai alla pagina di tutti i pazienti");
-}
-function goToRefertiPage() {
-  alert("Vai alla pagina dei referti dei pazienti");
-}
-
 /*  -----------------------------------------------------------------------------------------------
   JS SIDEBAR
 --------------------------------------------------------------------------------------------------- */

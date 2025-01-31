@@ -125,7 +125,6 @@
         {% csrf_token %} 
         <div class="section">
           <h3>Patient Information</h3>
-          <button id="btn-fetch-archive" type="button" class="button mb-3">Click to fetch</button>
           <div class="patient-info">
               <div class="form-group">
                   <label for="name">Name</label>
@@ -8482,10 +8481,10 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <td><input type="text" placeholder="1 bottle" name="alcol" /></td>
-                        <td><input type="text" placeholder="Wine" name="alcol_type"/></td>
-                        <td><input type="date" placeholder="2023-01-01" name="data_alcol" /></td>
-                        <td><input type="text" placeholder="Occasional" name="alcol_frequency" /></td>
+                        <td><input type="text" id="alcol" placeholder="1 bottle" name="alcol" disabled/></td>
+                        <td><input type="text" id="alcol_type" placeholder="Wine" name="alcol_type" disabled/></td>
+                        <td><input type="date" id="data_alcol" placeholder="2023-01-01" name="data_alcol" disabled/></td>
+                        <td><input type="text" id="alcol_frequency" placeholder="Occasional" name="alcol_frequency" disabled/></td>
                       </tr>
                     </tbody>
                   </table>
@@ -8497,7 +8496,7 @@
               <div class="table-title lifestyle">
                 <span>Smoking</span>
               </div>
-              <div class="container-card">
+              <div class="container-card" data-lifestyle="alcohol">
                 <div class="choose-buttons">
                   <button class="button-style-choose" data-choice="yes">Yes</button>
                   <button class="button-style-choose" data-choice="no">No</button>
@@ -8541,9 +8540,9 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <td><input type="text" placeholder="Football" name="sport" /></td>
-                        <td><input type="text" placeholder="Amateur" name="sport_livello" /></td>
-                        <td><input type="text" placeholder="Weekly" name="sport_frequency" /></td>
+                        <td><input type="text" id="sport" placeholder="Football" name="sport" /></td>
+                        <td><input type="text" id="sport_livello" placeholder="Amateur" name="sport_livello" /></td>
+                        <td><input type="text" id="sport_frequency" placeholder="Weekly" name="sport_frequency" /></td>
                       </tr>
                     </tbody>
                   </table>
@@ -8559,9 +8558,9 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <td><input type="text" placeholder="Office work" name="attivita_sedentaria" /></td>
-                        <td><input type="text" placeholder="Minimal activity" name="livello_sedentarieta" /></td>
-                        <td><input type="text" placeholder="Rare workouts" name="sedentarieta_nota" /></td>
+                        <td><input type="text" id="attivita_sedentaria" placeholder="Office work" name="attivita_sedentaria" /></td>
+                        <td><input type="text" id="livello_sedentarieta" placeholder="Minimal activity" name="livello_sedentarieta" /></td>
+                        <td><input type="text" id="sedentarieta_nota" placeholder="Rare workouts" name="sedentarieta_nota" /></td>
                       </tr>
                     </tbody>
                   </table>
@@ -8644,30 +8643,6 @@
     <!-- Import Js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'includes/js/CodiceFiscale.js' %}" defer></script> 
-
   </body>
 
 </html>
-
-
-   <!--   <div class="form-group">
-                    <label for="cap">CAP</label>
-                    <input type="text" id="cap" name="cap" required placeholder="Enter cap (e.g., 70100)">
-                </div>
-                <div class="form-group">
-                    <label for="residence">Residence</label>
-                    <input type="text" id="residence" name="residence" min="0" max="100" required placeholder="Enter residence">
-                </div> -->
-             
-              <!--  <div class="form-group">
-                    <label for="associated_personal">Personal Associated</label>
-                    <input type="text" id="associated_personal" name="associated_personal" min="0" max="100" required placeholder="Enter your associated personal">
-                </div>
-                <div class="form-group">
-                  <label for="blood_group">Blood Group</label>
-                  <input type="text" id="blood_group" name="blood_group" placeholder="Insert your blood group">
-                </div>
-                <div class="form-group">
-                  <label for="rh_factor">Factor rh</label>
-                  <input type="text" id="rh_factor" name="rh_factor" placeholder="Insert your factor rh">
-                </div> -->

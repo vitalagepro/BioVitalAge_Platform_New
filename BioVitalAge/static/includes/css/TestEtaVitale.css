@@ -216,24 +216,28 @@ input[type="radio"]:checked {
 .pagination-btn {
     cursor: pointer;
     padding: 5px 10px;
-    border: 2px solid var(--contrast-color);
+    border: none;
     border-radius: 100px;
-    width: 38px;
-    background-color: var(--dark2);
+    width: 35px;
+    height: 35px;
+    background-color: var(--contrast-color);
     position: relative;
     color: white;
+    transition: all 0.2s ease-in-out;
 }
 
+.pagination-btn:hover{
+    background-color: var(--contrast-color2);
+}
 
 .pagination-btn.active {
-    background-color: var(--contrast-color);
-    color: white;
+    background-color: var(--contrast-color2);
     font-weight: bold;
 }
 
 button:disabled{
     cursor: not-allowed;
-    background-color: var(--contrast-color);
+    background-color: var(--contrast-color2);
 }
 button:disabled:hover{
     pointer-events: none;

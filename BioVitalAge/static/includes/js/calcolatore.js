@@ -83,7 +83,7 @@ ContainerIndicatori.forEach((element) => {
 
 // Add event listener to toggle buttons
 function setupSectionToggle() {
-  document.querySelectorAll(".button-style.btn-selected").forEach((button) => {
+  document.querySelectorAll(".btn-selected").forEach((button) => {
     button.addEventListener("click", toggleSection);
   });
 
@@ -94,7 +94,7 @@ function setupSectionToggle() {
       if (e.target.closest("button")) {
         return;
       }
-      toggleSection.call(section.querySelector(".button-style.btn-selected"));
+      toggleSection.call(section.querySelector(".btn-selected"));
     });
   });
 }
@@ -206,25 +206,6 @@ document.addEventListener("DOMContentLoaded", function () {
     slider.style.setProperty("--value", `${value}%`);
   }
 });
-
-/*  -----------------------------------------------------------------------------------------------
-  User Modal log out
---------------------------------------------------------------------------------------------------- */
-const userImg = document.getElementById("userImg");
-const userModal = document.getElementById("userModal");
-const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
-
-function showModal() {
-  userModal.classList.add("show");
-}
-
-userImg.addEventListener("mouseover", showModal);
-
-userModal.addEventListener("mouseout", () => {
-  userModal.classList.remove("show");
-});
-
-userModalBtn.addEventListener("mouseover", showModal);
 
 // AUTO PREFILL PROVINCIA FIELD
 // Listener per l'autoprefill della provincia e del codice catastale

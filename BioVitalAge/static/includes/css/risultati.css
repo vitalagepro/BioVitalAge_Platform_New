@@ -176,17 +176,11 @@ form ion-icon {
   background-color: white;
   border-radius: 0px 0px 8px 8px;
 }
-.pagination-controls{
-  padding: 15px;
-  display: flex;
-  gap: 10px;
+
+.pagination-controls {
+  padding-bottom: 10px;
 }
-.pagination-controls .button-style{
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  margin: 0;
-}
+
 .no-results-message {
   color: red;
   width: 100%;

@@ -116,11 +116,29 @@
     padding: 20px;
 }
 
+.table-content{
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+
 .TabellaVitale-header h3 {
     color: var(--contrast-color);
     font-weight: bold;
     font-size: 25px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* ! FILTRI */
 .filtri-button {
