@@ -8,6 +8,9 @@ import json
 from django.db.models import OuterRef, Subquery
 from django.views.decorators.csrf import csrf_exempt
 from .models import TabellaPazienti, ArchivioReferti
+import os
+from django.http import JsonResponse
+from django.conf import settings
 
 # Create your views here.
 
@@ -1671,7 +1674,26 @@ class PrescrizioniView(View):
 
     def get(self, request, persona_id):
 
+        json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
+
+        if not os.path.exists(json_path):
+            return JsonResponse({"error": f"File JSON non trovato: {json_path}"}, status=404)
+
+        with open(json_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
+        codiciEsami = PrescrizioniUtenti.objects.filter(paziente=persona)
+
+        esamiList = []
+
+        for codici in codiciEsami:
+            print(f"Codice trovato: {codici.codicePrescrizione}")
+
+            for esame in data['Foglio1']:
+                if int(codici.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
+                    esamiList.append(esame)
+        
 
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
@@ -1679,10 +1701,57 @@ class PrescrizioniView(View):
         context = {
             'persona': persona,
             'dottore': dottore,
+            'esamiPrescritti' : esamiList
         }
 
         return render(request, "includes/prescrizioni.html", context)
 
+
+
+    def post(self, request, persona_id):
+
+        json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
+
+        if not os.path.exists(json_path):
+            return JsonResponse({"error": f"File JSON non trovato: {json_path}"}, status=404)
+
+        with open(json_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        
+        codiciEsami = request.POST.getlist('codiceEsame')
+
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        for codici in codiciEsami:
+
+            prescrizioni = PrescrizioniUtenti(
+                    paziente = persona,
+                    codicePrescrizione = codici
+            )            
+            prescrizioni.save()
+
+        codiciEsami = PrescrizioniUtenti.objects.filter(paziente=persona)
+
+        esamiList = []
+
+        for codici in codiciEsami:
+            print(f"Codice trovato: {codici.codicePrescrizione}")
+
+            for esame in data['Foglio1']:
+                if int(codici.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
+                    esamiList.append(esame)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+            'esamiPrescritti' : esamiList
+        }
+
+        return render(request, "includes/prescrizioni.html", context )
 
 
 

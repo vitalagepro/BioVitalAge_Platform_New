@@ -260,3 +260,39 @@
     width: 20%;
 }
 
+
+
+
+
+/* STILE TABELLA ELENCO PRESCRIZIONI ATTIVE SUL PAZIENTE */
+
+.rowTable{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    height: 5rem;
+}
+.rowTable p{
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #ddd;
+}
+#button-container{
+    width: 30%;
+}
+#button-container button{
+    padding: 5px;
+    width: 2.5rem;
+    border:  none;
+    background: none;
+}
+#button-container button:hover{
+    transform: scale(1.1);
+}

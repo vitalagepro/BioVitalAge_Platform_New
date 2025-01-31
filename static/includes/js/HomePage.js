@@ -1,3 +1,128 @@
+/*  -----------------------------------------------------------------------------------------------
+  Disclaimer
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  const disclaimerContainer = document.getElementById("disclaimerContainer");
+  const overlay = document.getElementById("cookieOverlay");
+  const initialMessage = document.getElementById("initialMessage");
+  const customizeSection = document.getElementById("customizeSection");
+
+  // Verifica la presenza del cookie
+  const disclaimerAccepted = document.cookie.includes("disclaimer_accepted=true");
+  console.log("Stato del cookie:", document.cookie); // Log per debug
+  console.log("Disclaimer accettato?", disclaimerAccepted); // Log per debug
+
+  // Mostra il disclaimer se il cookie non è stato accettato
+  if (!disclaimerAccepted && disclaimerContainer) {
+    showDisclaimer();
+  }
+
+  // Aggiungi i listener agli elementi solo se esistono
+  const acceptCookiesButton = document.getElementById("acceptCookies");
+  const rejectCookiesButton = document.getElementById("rejectCookies");
+  const customizeCookiesButton = document.getElementById("customizeCookies");
+  const saveCookiesButton = document.getElementById("saveCookies");
+
+  if (acceptCookiesButton) {
+    acceptCookiesButton.addEventListener("click", function () {
+      sendCookieSettings({ functional: true, analytics: true, marketing: true });
+      closeDisclaimer();
+    });
+  } else {
+    console.warn("Pulsante 'Accetta tutti' non trovato nel DOM.");
+  }
+
+  if (rejectCookiesButton) {
+    rejectCookiesButton.addEventListener("click", function () {
+      sendCookieSettings({ functional: false, analytics: false, marketing: false });
+      closeDisclaimer();
+    });
+  } else {
+    console.warn("Pulsante 'Rifiuta tutti' non trovato nel DOM.");
+  }
+
+  if (customizeCookiesButton) {
+    customizeCookiesButton.addEventListener("click", function () {
+      if (initialMessage && customizeSection) {
+        initialMessage.classList.add("hidden-disclaimer");
+        customizeSection.classList.remove("hidden-disclaimer");
+      }
+    });
+  } else {
+    console.warn("Pulsante 'Personalizza' non trovato nel DOM.");
+  }
+
+  if (saveCookiesButton) {
+    saveCookiesButton.addEventListener("click", function () {
+      const functional = document.getElementById("functionalCookies")?.checked || false;
+      const analytics = document.getElementById("analyticsCookies")?.checked || false;
+      const marketing = document.getElementById("marketingCookies")?.checked || false;
+
+      sendCookieSettings({ functional, analytics, marketing });
+      closeDisclaimer();
+    });
+  } else {
+    console.warn("Pulsante 'Salva impostazioni' non trovato nel DOM.");
+  }
+
+  // Mostra il disclaimer
+  function showDisclaimer() {
+    console.log("Mostro il disclaimer"); // Log per debug
+    disclaimerContainer.classList.add("visible-disclaimer");
+    overlay.classList.add("visible-disclaimer");
+    disclaimerContainer.classList.remove("hidden-disclaimer");
+    overlay.classList.remove("hidden-disclaimer");
+    document.body.style.overflow = "hidden";
+  }
+
+  // Nascondi il disclaimer e imposta il cookie
+  function closeDisclaimer() {
+    console.log("Chiudo il disclaimer e imposto il cookie"); // Log per debug
+    disclaimerContainer.classList.remove("visible-disclaimer");
+    overlay.classList.remove("visible-disclaimer");
+    document.body.style.overflow = "auto";
+    document.cookie = "disclaimer_accepted=true; path=/; max-age=31536000"; // 1 anno
+  }
+
+  // Invia le impostazioni dei cookie al server
+  function sendCookieSettings(settings) {
+    console.log("Invio le impostazioni dei cookie al server:", settings); // Log per debug
+    fetch("/accept-disclaimer/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken"),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(settings),
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Errore durante il salvataggio dei cookie");
+        return response.json();
+      })
+      .then((data) => console.log("Impostazioni salvate con successo:", data))
+      .catch((error) => console.error("Errore nell'invio delle impostazioni:", error));
+  }
+
+  // Ottieni un cookie per nome
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split("; ");
+      for (let cookie of cookies) {
+        if (cookie.startsWith(name + "=")) {
+          cookieValue = cookie.split("=")[1];
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+});
+
+
+/*  -----------------------------------------------------------------------------------------------
+  Modal User
+--------------------------------------------------------------------------------------------------- */
 const userImg = document.getElementById("userImg");
 const userModal = document.getElementById("userModal");
 const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
@@ -21,168 +146,10 @@ function goToRefertiPage() {
   alert("Vai alla pagina dei referti dei pazienti");
 }
 
-// Funzione che imposta "opacity: 0" e "z-index: -1" dopo 3 secondi
-document.addEventListener("DOMContentLoaded", function () {
-  setTimeout(() => {
-    document.getElementById("loading-wrapper").style.opacity = "0";
-    document.getElementById("loading-wrapper").style.zIndex = "-1";
-  }, 500);
-});
-
-// Grafici
-const weeklyCtx = document.getElementById("weeklyPatientsChart");
-new Chart(weeklyCtx, {
-  type: "line",
-  data: {
-    labels: ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"],
-    datasets: [
-      {
-        label: "Pazienti Visitati",
-        data: [5, 10, 8, 12, 15, 20, 5],
-        borderColor: "#fff",
-        backgroundColor: "rgba(255,255,255,0.3)",
-        fill: true,
-        tension: 0.3,
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    scales: {
-      x: {
-        ticks: { color: "#fff" },
-        grid: { color: "rgba(255,255,255,0.2)" },
-      },
-      y: {
-        ticks: { color: "#fff" },
-        grid: { color: "rgba(255,255,255,0.2)" },
-      },
-    },
-    plugins: {
-      legend: { display: false },
-    },
-  },
-});
-
-const patientsCtx = document.getElementById("patientsChart");
-new Chart(patientsCtx, {
-  type: "bar",
-  data: {
-    labels: [
-      "Gen",
-      "Feb",
-      "Mar",
-      "Apr",
-      "Mag",
-      "Giu",
-      "Lug",
-      "Ago",
-      "Set",
-      "Ott",
-      "Nov",
-      "Dic",
-    ],
-    datasets: [
-      {
-        label: "Pazienti Inseriti",
-        data: [30, 45, 60, 50, 41, 66, 30, 50, 70, 90, 100, 120],
-        backgroundColor: "#6a2dcc",
-        categoryPercentage: 2.8, // Maggior spazio tra le categorie
-        barPercentage: 0.1, // Barre più sottili
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { display: false },
-    },
-    scales: {
-      x: {
-        ticks: {
-          autoSkip: false, // Mostra tutte le etichette
-        },
-      },
-      y: {
-        beginAtZero: true,
-      },
-    },
-  },
-});
-
-const monthlyCtx = document.getElementById("monthlyPatientsChart");
-const monthlyData = {
-  labels: [
-    "Gen",
-    "Feb",
-    "Mar",
-    "Apr",
-    "Mag",
-    "Giu",
-    "Lug",
-    "Ago",
-    "Set",
-    "Ott",
-    "Nov",
-    "Dic",
-  ],
-  datasets: [
-    {
-      label: "Pazienti Mensili",
-      data: [40, 60, 55, 70, 80, 90, 100, 85, 75, 95, 110, 120],
-      backgroundColor: "#c3b0ec",
-      borderColor: "#6a2dcc",
-      borderWidth: 2,
-      fill: true,
-    },
-  ],
-};
-
-let monthlyPatientsChart = new Chart(monthlyCtx, {
-  type: "line",
-  data: monthlyData,
-  options: {
-    responsive: true,
-    interaction: {
-      mode: "index",
-      intersect: false,
-    },
-    plugins: {
-      legend: { display: false },
-    },
-    scales: {
-      y: { beginAtZero: true },
-    },
-    onHover: (event, chartElement) => {
-      const tooltip = document.getElementById("monthlyTooltip");
-      if (chartElement.length > 0) {
-        const index = chartElement[0].index;
-        const monthLabel = monthlyData.labels[index];
-        const patientCount = monthlyData.datasets[0].data[index];
-        const calcCount = Math.floor(patientCount * 0.6);
-
-        tooltip.innerHTML = `
-                      <strong>${monthLabel}</strong><br>
-                      Pazienti: ${patientCount}<br>
-                      Con calcolo età bio: ${calcCount}
-                  `;
-        const canvasPos = monthlyCtx.getBoundingClientRect();
-        tooltip.style.opacity = 1;
-        tooltip.style.left = event.clientX - canvasPos.left + "px";
-        tooltip.style.top = event.clientY - canvasPos.top + "px";
-      } else {
-        const tooltip = document.getElementById("monthlyTooltip");
-        tooltip.style.opacity = 0;
-      }
-    },
-  },
-});
-
 /*  -----------------------------------------------------------------------------------------------
   JS SIDEBAR
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-  const sidebar = document.querySelectorAll("#sidebar");
   const sidebarTitle = document.getElementById("sidebar-title");
   const sidebarContent = document.getElementById("sidebar-content");
   const closeSidebar = document.getElementById("closeSidebar");
@@ -198,6 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sidebarTitle.textContent = section;
       switch (section) {
         case "Notifiche":
+          sidebarContent.style.padding = "0px";
           sidebarContent.innerHTML = `
             <div id="notification-list">
               <h3 class="title-notice">Ultime Novità</h3>
@@ -434,12 +402,15 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
           break;
         case "Email":
-          sidebarContent.innerHTML = "<p>Qui trovi tutte le email.</p>";
+          sidebarContent.style.padding = "20px 0 0 20px";
+          sidebarContent.innerHTML = "<p>Nessuna email recente disponibile.</p>";
           break;
         case "Update":
-          sidebarContent.innerHTML = "<p>Qui trovi gli aggiornamenti.</p>";
+          sidebarContent.style.padding = "20px 0 0 20px";
+          sidebarContent.innerHTML = "<p>Nessun aggiornamento disponibile.</p>";
           break;
         default:
+          sidebarContent.style.padding = "20px 0 0 20px";
           sidebarContent.innerHTML = "<p>Contenuto non disponibile.</p>";
       }
 

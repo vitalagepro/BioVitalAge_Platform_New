@@ -1,126 +1,124 @@
-document.addEventListener("DOMContentLoaded", function () {
-  // Assegna l'evento al form
-  const form = document.getElementById("age-form");
-  if (!form) {
-    console.error("Il form con ID 'age-form' non esiste nel DOM.");
-    return;
+// AUTO PREFILL PROVINCIA FIELD
+// Listener per l'autoprefill della provincia e del codice catastale
+document.getElementById('place_of_birth').addEventListener('input', function () {
+  const inputCity = this.value;
+  const dataList = document.getElementById('cities');
+  const options = dataList.getElementsByTagName('option');
+  let found = false;
+
+  for (let option of options) {
+    if (option.value.toLowerCase() === inputCity.toLowerCase()) {
+      document.getElementById('province').value = option.getAttribute('data-province');
+      const codiceCastale = option.getAttribute('data-codice-catastale');
+      found = true;
+      // Correzione: Chiamare direttamente la funzione generazione del codice fiscale
+      generateFiscalCode(codiceCastale);
+      break;
+    }
   }
 
-  form.addEventListener("input", function () {
-    const name = document.getElementById("name")?.value || "";
-    const surname = document.getElementById("surname")?.value || "";
-    const dob = document.getElementById("dob")?.value || "";
-    const gender = document.getElementById("gender")?.value || "";
-    const placeOfBirth = document.getElementById("place_of_birth")?.value || "";
-    const province = document.getElementById("province")?.value || "";
-
-    // Verifica che tutti i campi necessari siano compilati
-    if (name && surname && dob && gender && placeOfBirth && province) {
-      const codiceFiscale = calculateCodiceFiscale(
-        name,
-        surname,
-        dob,
-        gender,
-        placeOfBirth,
-        province
-      );
-      document.getElementById("codice_fiscale").value = codiceFiscale;
-    }
-  });
+  if (!found) {
+    document.getElementById('province').value = '';
+    document.getElementById('codice_fiscale').value = '';
+  }
 });
 
-// Funzione per calcolare il codice fiscale
-function calculateCodiceFiscale(
-  name,
-  surname,
-  dob,
-  gender,
-  placeOfBirth,
-  province
-) {
-  const [year, month, day] = dob.split("-");
-  const surnameCode = getSurnameCode(surname);
-  const nameCode = getNameCode(name);
-  const yearCode = getYearCode(year);
-  const monthCode = getMonthCode(month);
-  const dayAndGenderCode = getDayAndGenderCode(day, gender);
-  const comuneCode = getComuneCode(placeOfBirth, province); // Usa il comune e la provincia
-  const controlCharacter = getControlCharacter(
-    surnameCode +
-      nameCode +
-      yearCode +
-      monthCode +
-      dayAndGenderCode +
-      comuneCode
-  );
+// Funzione per generare il codice fiscale
+function generateFiscalCode(codiceCastale) {
+  const name = document.getElementById('name').value.toUpperCase();
+  const surname = document.getElementById('surname').value.toUpperCase();
+  const dob = document.getElementById('dob').value;
+  const gender = document.getElementById('gender').value;
 
-  return (
-    surnameCode +
-    nameCode +
-    yearCode +
-    monthCode +
-    dayAndGenderCode +
-    comuneCode +
-    controlCharacter
-  );
+  // if (!name || !surname || !dob || !gender || !codiceCastale) {
+  //   return;
+  // }
+
+  const surnameCode = getCodeFromName(surname, false);
+  const nameCode = getCodeFromName(name, true);
+  const year = dob.slice(2, 4);
+  const month = getMonthCode(dob.slice(5, 7));
+  const day = getDayCode(dob.slice(8, 10), gender);
+
+  const partialCode = surnameCode + nameCode + year + month + day + codiceCastale;
+  const controlChar = calculateControlChar(partialCode);
+
+  const fiscalCode = partialCode + controlChar;
+
+  document.getElementById('codice_fiscale').value = fiscalCode;
 }
 
-// Funzioni di supporto per il calcolo del codice fiscale
-function getSurnameCode(surname) {
-  let consonants = surname.replace(/[aeiou]/gi, "");
-  let vowels = surname.replace(/[^aeiou]/gi, "");
-  return (consonants + vowels + "XXX").substring(0, 3).toUpperCase();
-}
+// Funzioni di supporto
+function getCodeFromName(name, isFirstName) {
+  const consonants = name.replace(/[^BCDFGHJKLMNPQRSTVWXYZ]/g, '');
+  const vowels = name.replace(/[^AEIOU]/g, '');
 
-function getNameCode(name) {
-  let consonants = name.replace(/[aeiou]/gi, "");
-  if (consonants.length >= 4) {
-    return (consonants[0] + consonants[2] + consonants[3]).toUpperCase();
-  } else {
-    let vowels = name.replace(/[^aeiou]/gi, "");
-    return (consonants + vowels + "XXX").substring(0, 3).toUpperCase();
+  if (isFirstName && consonants.length >= 4) {
+    return consonants[0] + consonants[2] + consonants[3];
   }
-}
-
-function getYearCode(year) {
-  return year.slice(-2); // Ultime due cifre dell'anno
+  return (consonants + vowels + 'XXX').slice(0, 3);
 }
 
 function getMonthCode(month) {
-  const monthMap = {
-    "01": "A",
-    "02": "B",
-    "03": "C",
-    "04": "D",
-    "05": "E",
-    "06": "H",
-    "07": "L",
-    "08": "M",
-    "09": "P",
-    10: "R",
-    11: "S",
-    12: "T",
+  const codes = ['A', 'B', 'C', 'D', 'E', 'H', 'L', 'M', 'P', 'R', 'S', 'T'];
+  return codes[parseInt(month, 10) - 1];
+}
+
+function getDayCode(day, gender) {
+  let dayInt = parseInt(day, 10);
+  if (gender === 'F') dayInt += 40;
+  return dayInt.toString().padStart(2, '0');
+}
+
+function calculateControlChar(partialCode) {
+  const oddValues = {
+    '0': 1, '1': 0, '2': 5, '3': 7, '4': 9, '5': 13, '6': 15,
+    '7': 17, '8': 19, '9': 21, 'A': 1, 'B': 0, 'C': 5, 'D': 7,
+    'E': 9, 'F': 13, 'G': 15, 'H': 17, 'I': 19, 'J': 21,
+    'K': 2, 'L': 4, 'M': 18, 'N': 20, 'O': 11, 'P': 3,
+    'Q': 6, 'R': 8, 'S': 12, 'T': 14, 'U': 16, 'V': 10,
+    'W': 22, 'X': 25, 'Y': 24, 'Z': 23
   };
-  return monthMap[month];
-}
 
-function getDayAndGenderCode(day, gender) {
-  let dayCode = parseInt(day, 10);
-  if (gender === "F") {
-    dayCode += 40; // Aggiungi 40 per le donne
+  const evenValues = {
+    '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6,
+    '7': 7, '8': 8, '9': 9, 'A': 0, 'B': 1, 'C': 2, 'D': 3,
+    'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9,
+    'K': 10, 'L': 11, 'M': 12, 'N': 13, 'O': 14, 'P': 15,
+    'Q': 16, 'R': 17, 'S': 18, 'T': 19, 'U': 20, 'V': 21,
+    'W': 22, 'X': 23, 'Y': 24, 'Z': 25
+  };
+
+  const remainderToLetter = [
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+    'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+    'U', 'V', 'W', 'X', 'Y', 'Z'
+  ];
+
+  let sum = 0;
+  for (let i = 0; i < partialCode.length; i++) {
+    const char = partialCode[i];
+    sum += (i % 2 === 0) ? oddValues[char] : evenValues[char];
   }
-  return dayCode.toString().padStart(2, "0");
+  const remainder = sum % 26;
+  return remainderToLetter[remainder];
 }
 
-function getComuneCode(placeOfBirth, province) {
-  // Concatenazione di comune e provincia
-  return (
-    placeOfBirth.substring(0, 3).toUpperCase() +
-    province.substring(0, 2).toUpperCase()
-  );
-}
+// Listener per calcolare automaticamente l'età dal DOB
+document.getElementById('dob').addEventListener('input', function () {
+  const dob = new Date(this.value);
+  const today = new Date();
 
-function getControlCharacter(codiceFiscale) {
-  // Implementazione del carattere di controllo
-  return "X"; // Placeholder, implementa la logica effettiva per il carattere di controllo
-}
+  // Calcolo dell'età
+  let age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
+  const dayDiff = today.getDate() - dob.getDate();
+
+  // Corregge l'età se il compleanno non è ancora passato quest'anno
+  if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+    age--;
+  }
+
+  // Aggiorna il campo dell'età
+  document.getElementById('chronological_age').value = age;
+});
