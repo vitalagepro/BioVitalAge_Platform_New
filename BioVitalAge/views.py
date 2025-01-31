@@ -1603,6 +1603,8 @@ class RefertoQuizView(View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
         referto = get_object_or_404(ArchivioRefertiTest, id=referto_id)
+
+        ultimo_referto = persona.referti.order_by('-data_referto')
         
         datiEstesi = None
         if referto:
@@ -1612,7 +1614,8 @@ class RefertoQuizView(View):
             'persona': persona,
             'ultimo_referto': referto,
             'datiEstesi': datiEstesi,
-            'dottore' : dottore
+            'dottore' : dottore,
+            'referto' : ultimo_referto
         }
 
         return render(request, "includes/RefertoQuiz.html", context)
