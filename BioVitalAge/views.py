@@ -8,7 +8,9 @@ import json
 from django.db.models import OuterRef, Subquery
 from django.views.decorators.csrf import csrf_exempt
 from .models import TabellaPazienti, ArchivioReferti
-from django.utils.decorators import method_decorator
+import os
+from django.http import JsonResponse
+from django.conf import settings
 
 # Create your views here.
 
@@ -627,8 +629,7 @@ class CalcolatoreRender(View):
                         gender=data.get('gender'),
                         place_of_birth=data.get('place_of_birth'),
                         codice_fiscale=data.get('codice_fiscale'),
-                        chronological_age = data.get('chronological_age'),
-                        province = data.get('province'),
+                        chronological_age = data.get('chronological_age')
                     )
                     paziente.save()
 
@@ -649,7 +650,6 @@ class CalcolatoreRender(View):
                         place_of_birth= data.get('place_of_birth'),
                         codice_fiscale= data.get('codice_fiscale'),
                         chronological_age= data.get('chronological_age'),
-                        province= data.get('province'),
                     )
                     paziente.save()
               
@@ -1112,7 +1112,7 @@ class CartellaPazienteView(View):
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         # Ottieni i 5 referti più recenti del paziente
-        referti_recenti = persona.referti.all().order_by('-data_referto')
+        referti_recenti = persona.referti.all().order_by('-data_referto')[:5]
 
         # Ottieni i dati estesi associati a questi referti
         dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
@@ -1204,35 +1204,6 @@ class DatiBaseView(View):
                 print("Errore: form_id non ricevuto o non valido")
 
             return redirect('dati_base', id=persona.id)
-
-
-# Blood Group view
-@method_decorator(csrf_exempt, name='dispatch')
-class UpdateBloodDataView(View):
-
-    def post(self, request, id):
-        try:
-            # Estrai i dati dalla richiesta JSON
-            data = json.loads(request.body)
-            blood_group = data.get("blood_group", "N/A")
-            rh_factor = data.get("rh_factor", "N/A")
-
-            # Recupera il paziente corrispondente
-            persona = get_object_or_404(TabellaPazienti, id=id)
-
-            # Aggiorna i dati
-            persona.blood_group = blood_group
-            persona.rh_factor = rh_factor
-            persona.save()
-
-            return JsonResponse({"status": "success", "message": "Dati aggiornati correttamente"})
-
-        except json.JSONDecodeError:
-            return JsonResponse({"status": "error", "message": "Formato JSON non valido"}, status=400)
-
-        except Exception as e:
-            return JsonResponse({"status": "error", "message": str(e)}, status=500)
-
 
 class InserisciPazienteView(View):
 
@@ -1440,7 +1411,9 @@ class EtaVitaleView(View):
 
         persona = get_object_or_404(TabellaPazienti, id=id)
   
-        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')[:5]
+
+        print(referti_test_recenti)
       
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
 
@@ -1581,13 +1554,12 @@ class TestEtaVitaleView(View):
         )
         datiEstesi.save()
 
-        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+
 
         context = {
             'persona': persona,
             'modal' : True,
-            'Referto': referto,
-            'referti_test_recenti': referti_test_recenti
+            'Referto': referto
         }
 
         return render(request, "includes/EtaVitale.html", context)
@@ -1630,7 +1602,26 @@ class PrescrizioniView(View):
 
     def get(self, request, persona_id):
 
+        json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
+
+        if not os.path.exists(json_path):
+            return JsonResponse({"error": f"File JSON non trovato: {json_path}"}, status=404)
+
+        with open(json_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
+        codiciEsami = PrescrizioniUtenti.objects.filter(paziente=persona)
+
+        esamiList = []
+
+        for codici in codiciEsami:
+            print(f"Codice trovato: {codici.codicePrescrizione}")
+
+            for esame in data['Foglio1']:
+                if int(codici.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
+                    esamiList.append(esame)
+        
 
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
@@ -1638,10 +1629,57 @@ class PrescrizioniView(View):
         context = {
             'persona': persona,
             'dottore': dottore,
+            'esamiPrescritti' : esamiList
         }
 
         return render(request, "includes/prescrizioni.html", context)
 
+
+
+    def post(self, request, persona_id):
+
+        json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
+
+        if not os.path.exists(json_path):
+            return JsonResponse({"error": f"File JSON non trovato: {json_path}"}, status=404)
+
+        with open(json_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        
+        codiciEsami = request.POST.getlist('codiceEsame')
+
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        for codici in codiciEsami:
+
+            prescrizioni = PrescrizioniUtenti(
+                    paziente = persona,
+                    codicePrescrizione = codici
+            )            
+            prescrizioni.save()
+
+        codiciEsami = PrescrizioniUtenti.objects.filter(paziente=persona)
+
+        esamiList = []
+
+        for codici in codiciEsami:
+            print(f"Codice trovato: {codici.codicePrescrizione}")
+
+            for esame in data['Foglio1']:
+                if int(codici.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
+                    esamiList.append(esame)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+            'esamiPrescritti' : esamiList
+        }
+
+        return render(request, "includes/prescrizioni.html", context )
 
 
 

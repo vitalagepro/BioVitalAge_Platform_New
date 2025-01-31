@@ -353,3 +353,17 @@ class DatiEstesiRefertiTest(models.Model):
     def __str__(self):
         return f"Dati Estesi Referto ID: {self.referto.id}"
     
+
+
+#Prescrizioni Pazienti
+class PrescrizioniUtenti(models.Model):
+    paziente = models.ForeignKey(
+        TabellaPazienti, 
+        on_delete=models.CASCADE, 
+        related_name='PrescrizioniEsami'
+    )
+    codicePrescrizione = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Dati Estesi Referto ID: {self.paziente.id}"
+    

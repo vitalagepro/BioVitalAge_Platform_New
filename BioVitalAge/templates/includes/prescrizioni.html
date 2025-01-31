@@ -172,27 +172,31 @@
             
             <p style="font-weight: bold; padding-left: 20px;">Prescrizione selezionate</p>
 
-            <div class="conteiner-CodaPrescrizioni">
-                <!-- DINAMICAMENTE POPOLATO CON JAVASCRIPT -->
-            </div>
+            <form method="POST" action="{% url 'prescrizioni' persona.id %}">
+                {% csrf_token %}
+                
+                <div class="conteiner-CodaPrescrizioni">
+                    <!-- DINAMICAMENTE POPOLATO CON JAVASCRIPT -->
+                </div>
 
-            <a href="" title="Add Patient" class="button" id="buttonAdd">
-                <span class="button__icon-wrapper">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14"
-                    height="14">
-                    <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                      stroke-linejoin="round" />
-                  </svg>
-              
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                    class="button__icon-svg button__icon-svg--copy" width="14" height="14">
-                    <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                      stroke-linejoin="round" />
-                  </svg>
-              
-                </span>
-                Aggiungi Prescrizioni
-            </a>
+                <button type="submit" title="Add Patient" class="button" id="buttonAdd">
+                    <span class="button__icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14"
+                        height="14">
+                        <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    </svg>
+                
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="button__icon-svg button__icon-svg--copy" width="14" height="14">
+                        <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    </svg>
+                
+                    </span>
+                    Aggiungi Prescrizioni
+                </button>
+            </form>
         </div>
 
        
@@ -241,12 +245,25 @@
                 </div>
                 <div class="table-content">
                     <!-- Da Popolare Dinamicamente -->
+                    
+                    {% for esami in esamiPrescritti %}
+                        <div class="rowTable">
+                            <p>{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}</p>
+                            <p>{{ esami.DESCRIZIONE_ESAME }}</p>
+                            <p>{{ esami.COD_ASL }}</p>
+                            <p>{{ esami.COD_REG }}</p>
+                            <p>{{ esami.METODICA }}</p>
+                            <p>{{ esami.APPARATO_or_I_SISTEMI|slice:":50" }}</p>
+                            <p id="button-container"><button>❌</button></p>
+                        </div>
+                    {% endfor %}
                 </div>
 
             </div>
 
         </div>
 
+      
         
 
 
