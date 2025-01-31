@@ -1693,8 +1693,7 @@ class PrescrizioniView(View):
         esamiList = []
 
         for codici in codiciEsami:
-            print(f"Codice trovato: {codici.codicePrescrizione}")
-
+        
             for esame in data['Foglio1']:
                 if int(codici.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
                     esamiList.append(esame)
@@ -1711,5 +1710,28 @@ class PrescrizioniView(View):
         return render(request, "includes/prescrizioni.html", context )
 
 
+
+class DeletePrescrizioniView(View):
+
+        def post(self, request, persona_id,):
+            
+            print("sono qui")
+
+            persona = get_object_or_404(TabellaPazienti, id=persona_id)
+            dottore_id = request.session.get('dottore_id')
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+            codiceUnivoco = request.POST
+            PrescrizioniUtenti.objects.filter(paziente=persona, id=codiceUnivoco).delete()
+            
+            esamiList = PrescrizioniUtenti.objects.filter(paziente=persona)
+
+            context = {
+                'persona': persona,
+                'dottore': dottore,
+                'esamiPrescritti': esamiList
+            }
+            return render(request, "includes/prescrizioni.html", context)
+        
 
 

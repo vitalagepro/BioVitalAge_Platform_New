@@ -246,18 +246,33 @@
                 </div>
                 <div class="table-content">
                     <!-- Da Popolare Dinamicamente -->
-                    
-                    {% for esami in esamiPrescritti %}
+                    {% if esamiPrescritti %}
+
+                        {% for esami in esamiPrescritti %}
+                            <div class="rowTable">
+                                <p>{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}</p>
+                                <p>{{ esami.DESCRIZIONE_ESAME }}</p>
+                                <p>{{ esami.COD_ASL }}</p>
+                                <p>{{ esami.COD_REG }}</p>
+                                <p>{{ esami.METODICA }}</p>
+                                <p style="padding:10px;">{{ esami.APPARATO_or_I_SISTEMI|slice:":50" }}</p>
+                                
+                                <form method="POST" action="{% url 'delete_exam' persona.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="codiceUnivoco" value="{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}">
+
+                                    <button type="submit" style="cursor:pointer;">❌</button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                
+
+                    {% else %}
                         <div class="rowTable">
-                            <p>{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}</p>
-                            <p>{{ esami.DESCRIZIONE_ESAME }}</p>
-                            <p>{{ esami.COD_ASL }}</p>
-                            <p>{{ esami.COD_REG }}</p>
-                            <p>{{ esami.METODICA }}</p>
-                            <p>{{ esami.APPARATO_or_I_SISTEMI|slice:":50" }}</p>
-                            <p id="button-container"><button>❌</button></p>
+                            <p>Nessuna preiscrizione inserita</p>
                         </div>
-                    {% endfor %}
+                    {% endif %}
+
                 </div>
 
             </div>

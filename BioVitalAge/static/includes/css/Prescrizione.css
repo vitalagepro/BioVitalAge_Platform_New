@@ -179,21 +179,24 @@
 .tabella-prescrizioni{
     width: 98%;
     margin: auto;
-    height: 500px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-top: 20px;
 }
 .header-table{
     background-color: var(--contrast-color);
-    margin-top: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: white;
-    height: 4rem;
+    height: 70px;
     border-radius: 8px 8px 0px 0px;
 }
 .table-content{
     background-color: white;
-    height: 480px;
+    height: 500px;
     border: 1px solid #ddd;
 }
 .add-btn,
@@ -265,15 +268,15 @@
 
 
 /* STILE TABELLA ELENCO PRESCRIZIONI ATTIVE SUL PAZIENTE */
-
 .rowTable{
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: white;
-    height: 5rem;
+    height: 100%;
 }
+
 .rowTable p{
     background-color: white;
     width: 100%;
@@ -281,18 +284,29 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 5px;
     border: 1px solid #ddd;
 }
-#button-container{
+.rowTable form{
+    height: 100%;
     width: 30%;
+    margin-top: -1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
 }
-#button-container button{
+
+.rowTable form button{
     padding: 5px;
     width: 2.5rem;
     border:  none;
     background: none;
 }
-#button-container button:hover{
+.rowTable form button:hover{
     transform: scale(1.1);
+}
+
+.pagination-controls{
+    height: 30px;
+    padding: 20px;
 }
