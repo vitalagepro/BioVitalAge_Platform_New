@@ -1113,7 +1113,7 @@ class CartellaPazienteView(View):
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         # Ottieni i 5 referti più recenti del paziente
-        referti_recenti = persona.referti.all().order_by('-data_referto')[:5]
+        referti_recenti = persona.referti.all().order_by('-data_referto')
 
         # Ottieni i dati estesi associati a questi referti
         dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
@@ -1440,7 +1440,7 @@ class EtaVitaleView(View):
 
         persona = get_object_or_404(TabellaPazienti, id=id)
   
-        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')[:5]
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
 
         print(referti_test_recenti)
       
