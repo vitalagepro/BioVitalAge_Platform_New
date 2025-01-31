@@ -207,25 +207,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-/*  -----------------------------------------------------------------------------------------------
-  User Modal log out
---------------------------------------------------------------------------------------------------- */
-const userImg = document.getElementById("userImg");
-const userModal = document.getElementById("userModal");
-const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
-
-function showModal() {
-  userModal.classList.add("show");
-}
-
-userImg.addEventListener("mouseover", showModal);
-
-userModal.addEventListener("mouseout", () => {
-  userModal.classList.remove("show");
-});
-
-userModalBtn.addEventListener("mouseover", showModal);
-
 // AUTO PREFILL PROVINCIA FIELD
 // Listener per l'autoprefill della provincia e del codice catastale
 document

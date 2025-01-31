@@ -790,7 +790,7 @@ main {
   background-color: var(--contrast-color2);
 }
 
-.active{
+.pagination-controls .active{
   background-color: var(--contrast-color2) !important;
   font-weight: bold !important;
 }

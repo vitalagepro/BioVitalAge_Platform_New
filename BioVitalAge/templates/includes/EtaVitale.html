@@ -187,7 +187,7 @@
                                 </p>
                             </div>
                             {% empty %}
-                            <p class="text-center">No recent reports found.</p>
+                            <p class="text-center mt-2 mb-2">No recent reports found.</p>
                             {% endfor %}
                         </div>
                 </div>
@@ -205,11 +205,22 @@
             let currentPage = 1;
             const totalPages = Math.ceil(rows.length / rowsPerPage);
 
-            function showPage(page) {
-                rows.forEach((row, index) => {
-                    row.style.display = (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) ? "flex" : "none";
+            function showPage(page, filteredRows = rows) {
+                rows.forEach(row => gsap.to(row, { opacity: 0, height: 0, duration: 0.3, onComplete: () => (row.style.display = "none") }));
+
+                filteredRows.forEach((row, index) => {
+                    if (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) {
+                        gsap.to(row, {
+                            opacity: 1,
+                            height: "5rem",
+                            duration: 0.3,
+                            display: "flex",
+                            onStart: () => (row.style.display = "flex")
+                        });
+                    }
                 });
             }
+
 
             function updatePaginationControls() {
                 const paginationContainer = document.querySelector(".table-content");

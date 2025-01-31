@@ -452,24 +452,6 @@
             setScore("disbiosi", 1.8);
             setScore("immunitary_sistem", 2.9);
             /*  -----------------------------------------------------------------------------------------------
-            User Modal log out
-            --------------------------------------------------------------------------------------------------- */
-            const userImg = document.getElementById("userImg");
-            const userModal = document.getElementById("userModal");
-            const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
-
-            function showModal() {
-                userModal.classList.add("show");
-            }
-
-            userImg.addEventListener("mouseover", showModal);
-
-            userModal.addEventListener("mouseout", () => {
-                userModal.classList.remove("show");
-            });
-
-            userModalBtn.addEventListener("mouseover", showModal);
-            /*  -----------------------------------------------------------------------------------------------
               GENERA PDF COMPLETO
             --------------------------------------------------------------------------------------------------- */
             window.onload = function () {

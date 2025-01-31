@@ -27,6 +27,8 @@
     <!-- JS IMPORT -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'includes/js/spinner.js' %}" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/libphonenumber-js/bundle/libphonenumber-js.min.js"></script>
 </head>
 
 <body>
@@ -205,7 +207,7 @@
                                 <img src="{% static 'includes/icone/ospedale.png' %}" alt="">
                             </div>
 
-                            <p>Recent Visit<span id="lastVisit">{{ persona.lastVisit|default:"28/08/2024"}}</span></p>
+                            <p>Recent Visit<span id="lastVisit">{{ persona.lastVisit|default:"dd/mm/yyyy"}}</span></p>
                         </div>
 
                         <div class="card-subcard">
@@ -213,7 +215,7 @@
                                 <img src="{% static 'includes/icone/calendario.png' %}" alt="">
                             </div>
 
-                            <p>Upcoming Visit <span id="upcomingVisit">{{persona.upcomingVisit|default:"10/09/2024"}}</span></p>
+                            <p>Upcoming Visit <span id="upcomingVisit">{{persona.upcomingVisit|default:"dd/mm/yyyy"}}</span></p>
                         </div>
 
                         <div class="card-subcard">
@@ -376,17 +378,18 @@
                         <p>Apparato\i Sistemi</p>
                         <p>Visualizza Prescrizione</p>
                     </div>
-                    <div class="table-content">
+                    <div class="table-content prescriptions">
                         {% for prescription in prescriptions %}
                         <div class="riga-container">
-                            <p>{{ persona.chronological_age }}</p>
+                            <p>{{ persona.unique_code|default:"N/A" }}</p>
                             {% for dato in dati_estesi %}
-                            {% if dato.referto.id == referto.id %}
-                            <p>{{ dato.biological_age }}</p>
+                            {% if dato.prescription.id == prescription.id %}
+                            <p>{{ dato.exam_description|default:"N/A" }}</p>
                             {% endif %}
                             {% endfor %}
-                            <p>{{ referto.descrizione|default:"N/A" }}</p>
-                            <p>{{ referto.data_referto|date:"d/m/Y" }}</p>
+                            <p>{{ referto.codice_asl|default:"N/A" }}</p>
+                            <p>{{ referto.codice_reg|default:"N/A" }}</p>
+                            <p>{{ referto.apparato|default:"N/A" }}</p>
                             <p>
                                 <a href="{% url 'persona_detail' persona.id %}?referto_id={{ referto.id }}"
                                     data-referto-id="{{ referto.id }}"
