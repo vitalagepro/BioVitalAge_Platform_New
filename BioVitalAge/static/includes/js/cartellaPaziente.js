@@ -10,12 +10,26 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentPage = 1;
     const totalPages = Math.ceil(rows.length / rowsPerPage);
 
-    function showPage(page) {
-      rows.forEach((row, index) => {
-        row.style.display =
-          index >= (page - 1) * rowsPerPage && index < page * rowsPerPage
-            ? "flex"
-            : "none";
+    function showPage(page, filteredRows = rows) {
+      rows.forEach((row) =>
+        gsap.to(row, {
+          opacity: 0,
+          height: 0,
+          duration: 0.3,
+          onComplete: () => (row.style.display = "none"),
+        })
+      );
+
+      filteredRows.forEach((row, index) => {
+        if (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) {
+          gsap.to(row, {
+            opacity: 1,
+            height: "5rem",
+            duration: 0.3,
+            display: "flex",
+            onStart: () => (row.style.display = "flex"),
+          });
+        }
       });
     }
 
@@ -98,6 +112,33 @@ document.addEventListener("DOMContentLoaded", function () {
     showPage(currentPage);
     updatePaginationControls();
   });
+});
+
+/*  -----------------------------------------------------------------------------------------------
+  Funzione di formattazione del telefono
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  function formatItalianPhoneNumber(phoneNumber) {
+      const digits = phoneNumber.replace(/\D/g, ""); // Rimuove caratteri non numerici
+      
+      if (digits.length < 10) {
+          return phoneNumber; // Restituisce il numero originale se non è valido
+      }
+
+      // Se il numero inizia con 39 (senza il "+"), assume che abbia già il prefisso internazionale
+      if (digits.startsWith("39") && digits.length > 10) {
+          return `+${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`;
+      } 
+      
+      // Se il numero è lungo 10 cifre (formato italiano senza prefisso), aggiunge +39
+      return `+39 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
+  }
+
+  let phoneElement = document.getElementById("phone");
+  if (phoneElement) {
+      let formattedPhone = formatItalianPhoneNumber(phoneElement.innerText.trim());
+      phoneElement.innerText = formattedPhone;
+  }
 });
 
 /*  -----------------------------------------------------------------------------------------------
@@ -461,22 +502,3 @@ document.addEventListener("DOMContentLoaded", () => {
     "Cholesterol"
   );
 });
-
-/*  -----------------------------------------------------------------------------------------------
-  User Modal log out
---------------------------------------------------------------------------------------------------- */
-const userImg = document.getElementById("userImg");
-const userModal = document.getElementById("userModal");
-const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
-
-function showModal() {
-  userModal.classList.add("show");
-}
-
-userImg.addEventListener("mouseover", showModal);
-
-userModal.addEventListener("mouseout", () => {
-  userModal.classList.remove("show");
-});
-
-userModalBtn.addEventListener("mouseover", showModal);
