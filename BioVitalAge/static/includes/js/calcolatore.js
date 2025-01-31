@@ -83,7 +83,7 @@ ContainerIndicatori.forEach((element) => {
 
 // Add event listener to toggle buttons
 function setupSectionToggle() {
-  document.querySelectorAll(".button-style.btn-selected").forEach((button) => {
+  document.querySelectorAll(".btn-selected").forEach((button) => {
     button.addEventListener("click", toggleSection);
   });
 
@@ -94,7 +94,7 @@ function setupSectionToggle() {
       if (e.target.closest("button")) {
         return;
       }
-      toggleSection.call(section.querySelector(".button-style.btn-selected"));
+      toggleSection.call(section.querySelector(".btn-selected"));
     });
   });
 }

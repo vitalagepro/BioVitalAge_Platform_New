@@ -1,4 +1,102 @@
 /*  -----------------------------------------------------------------------------------------------
+  Funzione di paginazione
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  const rows = document.querySelectorAll(".riga-container");
+  const rowsPerPage = 6;
+  let currentPage = 1;
+  const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+  function showPage(page) {
+    rows.forEach((row, index) => {
+      row.style.display =
+        index >= (page - 1) * rowsPerPage && index < page * rowsPerPage
+          ? "flex"
+          : "none";
+    });
+  }
+
+  function updatePaginationControls() {
+    const paginationContainer = document.querySelector(".table-content");
+    const existingControls = document.querySelector(".pagination-controls");
+
+    // Rimuovere i controlli esistenti
+    if (existingControls) existingControls.remove();
+
+    // Condizione per mostrare la paginazione solo se necessario
+    if (rows.length > rowsPerPage) {
+      const controls = document.createElement("div");
+      controls.classList.add("pagination-controls");
+
+      const range = 10; // Numero massimo di bottoni visibili
+      let startPage = Math.max(1, currentPage - Math.floor(range / 2));
+      let endPage = Math.min(totalPages, startPage + range - 1);
+
+      // Aggiusta la visualizzazione se siamo vicini all'inizio o alla fine
+      if (endPage - startPage < range - 1) {
+        startPage = Math.max(1, endPage - range + 1);
+      }
+
+      // Bottone per andare alla prima pagina
+      if (startPage > 1) {
+        const firstPageBtn = document.createElement("button");
+        firstPageBtn.classList.add("button-style-pagination");
+        firstPageBtn.textContent = "1";
+        firstPageBtn.addEventListener("click", () => {
+          currentPage = 1;
+          showPage(currentPage);
+          updatePaginationControls();
+        });
+        controls.appendChild(firstPageBtn);
+
+        // Aggiungi i dots
+        const dots = document.createElement("span");
+        dots.textContent = "...";
+        controls.appendChild(dots);
+      }
+
+      // Bottoni numerati
+      for (let i = startPage; i <= endPage; i++) {
+        const btn = document.createElement("button");
+        btn.classList.add("button-style-pagination");
+        btn.textContent = i;
+        if (i === currentPage) {
+          btn.classList.add("active");
+        }
+        btn.addEventListener("click", () => {
+          currentPage = i;
+          showPage(currentPage);
+          updatePaginationControls();
+        });
+        controls.appendChild(btn);
+      }
+
+      // Bottone per andare all'ultima pagina
+      if (endPage < totalPages) {
+        const dots = document.createElement("span");
+        dots.textContent = "...";
+        controls.appendChild(dots);
+
+        const lastPageBtn = document.createElement("button");
+        lastPageBtn.classList.add("button-style-pagination");
+        lastPageBtn.textContent = totalPages;
+        lastPageBtn.addEventListener("click", () => {
+          currentPage = totalPages;
+          showPage(currentPage);
+          updatePaginationControls();
+        });
+        controls.appendChild(lastPageBtn);
+      }
+
+      paginationContainer.appendChild(controls);
+    }
+  }
+
+  // Mostra la prima pagina e controlla se la paginazione è necessaria
+  showPage(currentPage);
+  updatePaginationControls();
+});
+/*  -----------------------------------------------------------------------------------------------
   Funzione di modifica dati
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
@@ -358,88 +456,6 @@ document.addEventListener("DOMContentLoaded", () => {
     [180, 220, 240, 200, 210],
     "Cholesterol"
   );
-});
-
-const ctx1 = document.getElementById("chartDash2_1").getContext("2d");
-new Chart(ctx1, {
-  type: "bar",
-  data: {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
-    datasets: [
-      {
-        label: "Claims",
-        data: [5, 10, 15, 7, 8, 5, 12, 10, 6, 8, 9, 15],
-        backgroundColor: "rgba(58, 37, 93, 0.8)",
-        borderColor: "rgba(58, 37, 93, 1)",
-        borderWidth: 1,
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-    },
-    scales: {
-      x: {
-        grid: { display: false },
-        ticks: { color: "#666" },
-      },
-      y: {
-        grid: { color: "#ddd" },
-        ticks: { color: "#666" },
-      },
-    },
-  },
-});
-
-const ctx2 = document.getElementById("chartDash_2").getContext("2d");
-new Chart(ctx2, {
-  type: "line",
-  data: {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Expenses",
-        data: [200, 400, 600, 500, 700, 300],
-        borderColor: "rgba(58, 37, 93, 0.5)",
-        backgroundColor: "rgba(58, 37, 93, 1)",
-        fill: true,
-        tension: 0.3,
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-    },
-    scales: {
-      x: {
-        grid: { display: false },
-        ticks: { color: "#666" },
-      },
-      y: {
-        grid: { color: "#ddd" },
-        ticks: { color: "#666" },
-      },
-    },
-  },
 });
 
 /*  -----------------------------------------------------------------------------------------------

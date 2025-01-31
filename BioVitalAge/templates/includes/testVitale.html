@@ -254,14 +254,9 @@
 
                                 <div class="tableRow">
                                     <p>Proteina C reattiva</p>
-                                    {% if dati_estesi %}
-                                        <p name="Proteins_c"> {{ dati_estesi.Proteins_c }}</p>
-                                    {% else %}
-                                        <p>
-                                            <input type="text" name="Proteins_c" required placeholder="Inserisci il valore">
-                                        </p>
-                                    {% endif %}
-                                   
+                                    <p>
+                                        <input type="text" name="Proteins_c" required placeholder="Inserisci il valore">
+                                    </p>
                                     <p>%</p>
                                     <p>15 - 45</p>
                                 </div>
@@ -283,17 +278,10 @@
                                 </div>
                             
                                 <div class="tableRow">
-                                    <p>TNF (Tumor Necrosis 
-                                        Factor) alfa  </p>
-
-                                    {% if dati_estesi %}
-                                        <p name="Tnf">{{ dati_estesi.Tnf }}</p>
-                                    {% else %}
-                                        <p>
-                                            <input type="text" name="Tnf" required placeholder="Inserisci il valore">
-                                        </p>
-                                    {% endif %}
-  
+                                    <p>TNF (Tumor Necrosis Factor) alfa </p>
+                                    <p>
+                                        <input type="text" name="Tnf" required placeholder="Inserisci il valore">
+                                    </p>
                                     <p>pg/mL </p>
                                     <p>4,60 - 12,40</p>
                                 </div>

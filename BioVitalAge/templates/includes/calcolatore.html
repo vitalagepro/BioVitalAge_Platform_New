@@ -4055,11 +4055,58 @@
 
                 <div class="button-container-modal">
                     {% if id_persona %}
-                    <a href="{% url 'persona_detail' id_persona %}">
-                        <button class="button-style">Results Page</button>
+                    <a href="{% url 'persona_detail' id_persona %}" class="button"> 
+                        <span class="button__icon-wrapper">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                width="18"
+                                class="button__icon-svg"
+                                >
+                                <circle
+                                    cx="12"
+                                    cy="7"
+                                    r="4"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                ></circle>
+                                <path
+                                    d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                ></path>
+                            </svg>
+
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                width="18"
+                                class="button__icon-svg button__icon-svg--copy"
+                                >
+                                <circle
+                                    cx="12"
+                                    cy="7"
+                                    r="4"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                ></circle>
+                                <path
+                                    d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                ></path>
+                            </svg>
+                        </span>
+                        Results Page
                     </a>
                     {% endif %}
-                    <button class="button-style" onclick="closeModal()">Chiudi</button>
+                    <button class="button btn-closed-modal" onclick="closeModal()">Chiudi</button>
                 </div>
             </div>
         </div>
@@ -12430,7 +12477,7 @@
             <div class="section hidden-exam" id="flexed-section">
                 <div class="header-section-exam">
                     <h3>Oxidative Stress</h3>
-                    <button class="button-style btn-selected" data-selection="ox_stress" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="ox_stress" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -12463,7 +12510,7 @@
             <div class="section hidden-exam">
                 <div class="header-section-exam">
                     <h3>Omega Screening</h3>
-                    <button class="button-style btn-selected" data-selection="o-screening" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="o-screening" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -12607,7 +12654,7 @@
             <div class="section hidden-exam">
                 <div class="header-section-exam">
                     <h3>White Blood Cells</h3>
-                    <button class="button-style btn-selected" data-selection="wbc" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="wbc" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -12691,7 +12738,7 @@
             <div class="section hidden-exam">
                 <div class="header-section-exam">
                     <h3>Red Blood Cells</h3>
-                    <button class="button-style btn-selected" data-selection="rbc" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="rbc" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -12765,7 +12812,7 @@
             <div class="section hidden-exam" id="flexed-section">
                 <div class="header-section-exam">
                     <h3>Renal Functionality</h3>
-                    <button class="button-style btn-selected" data-selection="r_function" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="r_function" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -12813,7 +12860,7 @@
             <div class="section hidden-exam">
                 <div class="header-section-exam">
                     <h3>Clotting status</h3>
-                    <button class="button-style btn-selected" data-selection="clotting_s" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="clotting_s" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -12866,7 +12913,7 @@
             <div class="section hidden-exam">
                 <div class="header-section-exam">
                     <h3>Lipid Appearance</h3>
-                    <button class="button-style btn-selected" data-selection="lipid_app" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="lipid_app" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -12909,7 +12956,7 @@
             <div class="section hidden-exam">
                 <div class="header-section-exam">
                     <h3>Minerals</h3>
-                    <button class="button-style btn-selected" data-selection="minerals" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="minerals" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -12957,7 +13004,7 @@
             <div class="section hidden-exam">
                 <div class="header-section-exam">
                     <h3>Hormonal Assets</h3>
-                    <button class="button-style btn-selected" data-selection="hor_assets" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="hor_assets" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -13030,7 +13077,7 @@
             <div class="section hidden-exam" id="flexed-section">
                 <div class="header-section-exam">
                     <h3>Martial trim</h3>
-                    <button class="button-style btn-selected" data-selection="martial_trim" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="martial_trim" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -13068,7 +13115,7 @@
             <div class="section hidden-exam">
                 <div class="header-section-exam">
                     <h3>Diabetological setup</h3>
-                    <button class="button-style btn-selected" data-selection="diab_setup" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="diab_setup" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -13106,7 +13153,7 @@
             <div class="section hidden-exam">
                 <div class="header-section-exam">
                     <h3>Proteins</h3>
-                    <button class="button-style btn-selected" data-selection="proteins" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="proteins" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -13223,7 +13270,7 @@
             <div class="section hidden-exam">
                 <div class="header-section-exam">
                     <h3>Liver Functionality</h3>
-                    <button class="button-style btn-selected" data-selection="liver_func" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="liver_func" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -13310,7 +13357,7 @@
             <div class="section hidden-exam" id="flexed-section">
                 <div class="header-section-exam">
                     <h3>Indices of phlogosis</h3>
-                    <button class="button-style btn-selected" data-selection="indices_ph" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="indices_ph" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -13338,7 +13385,7 @@
             <div class="section hidden-exam" id="flexed-section">
                 <div class="header-section-exam">
                     <h3>Advance/sasp inflammation</h3>
-                    <button class="button-style btn-selected" data-selection="ad_sasp_inf" type='button' title="Apri Sezione">
+                    <button class="btn-selected" data-selection="ad_sasp_inf" type='button' title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -13374,7 +13421,7 @@
             <div class="section hidden-exam" id="flex-section">
                 <div class="header-section-exam">
                     <h3>Disbiosi Test</h3>
-                    <button class="button-style btn-selected" data-selection="disbiosi" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="disbiosi" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -13404,7 +13451,7 @@
             <div class="section hidden-exam" id="flex-section">
                 <div class="header-section-exam">
                     <h3 style="margin-bottom: 40px;">Other Exams</h3>
-                    <button class="button-style btn-selected" data-selection="liver_func" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="liver_func" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -13516,7 +13563,7 @@
             <div class="section hidden-exam" id="flex-section">
                 <div class="header-section-exam">
                     <h3>Telomere length</h3>
-                    <button class="button-style btn-selected" data-selection="liver_func" type="button" title="Apri Sezione">
+                    <button class="btn-selected" data-selection="liver_func" type="button" title="Apri Sezione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-chevron-down">
@@ -13537,19 +13584,48 @@
             </div>
 
             <div class="button-container">
-                <button class="button-style" id="calculateButton" type="submit">Calculate Biological Age</button>
-                <a class="button-style" href="{% url 'Risultati' %}">View Results</a>
+                <button id="calculateButton" type="submit" class="button">
+                    <span class="button__icon-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
+                            <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+            
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
+                            class="button__icon-svg button__icon-svg--copy">
+                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
+                            <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </span>
+                    Calculate Biological Age 
+                </button>
+                <a href="{% url 'Risultati' %}" class="button">
+                    <span class="button__icon-wrapper">
+                        <svg viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="10">
+                            <path
+                                d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+                                fill="currentColor"></path>
+                        </svg>
+            
+                        <svg viewBox="0 0 14 15" fill="none" width="10" xmlns="http://www.w3.org/2000/svg"
+                            class="button__icon-svg button__icon-svg--copy">
+                            <path
+                                d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+                                fill="currentColor"></path>
+                        </svg>
+                    </span>
+                    View Results
+                </a>
             </div>
-        </form>
-
-        
-        
+        </form> 
     </main>
 
-    <!-- Gestione Modal -->
-    <script>       
+    <script>
+        // Gestione Modal
         function openModal() {
-            document.body.classList.add('no-scroll'); 
+            document.body.classList.add('no-scroll');
             const modal = document.getElementById('myModal');
             const backdrop = document.getElementById('backdrop');
 
@@ -13572,16 +13648,15 @@
 
         const modal = document.getElementById("myModal");
         if (modal) {
-          {% if show_modal %}
-          openModal("visible", "hidden");
-          {% endif %}
+            {% if show_modal %}
+            openModal("visible", "hidden");
+            {% endif %}
         } else {
-          console.log("Modal not found");
+            console.log("Modal not found");
         }
     </script>
-
     
-
+    <!-- Import Js Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     
     {% if modal %}
