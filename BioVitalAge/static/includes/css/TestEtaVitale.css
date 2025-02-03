@@ -251,10 +251,19 @@ input[type="radio"]:checked {
     font-weight: bold;
 }
 
-button:disabled{
+.button:disabled{
     cursor: not-allowed;
     background-color: var(--contrast-color2);
+    opacity: 0.7;
 }
-button:disabled:hover{
-    pointer-events: none;
+.button:disabled:hover .button__icon-svg--copy{
+    transform: translate(-150%, 150%);
+}
+
+.button:disabled:hover .button__icon-svg:first-child{
+    transform: translate(0);
+}
+
+.button:disabled:hover .button__icon-wrapper{
+    color: var(--contrast-color2);
 }

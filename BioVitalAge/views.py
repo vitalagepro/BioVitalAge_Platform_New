@@ -1442,7 +1442,7 @@ class EtaVitaleView(View):
   
         referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
 
-        print(referti_test_recenti)
+        print('Referto recente: ', referti_test_recenti)
       
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
 
@@ -1467,6 +1467,7 @@ class TestEtaVitaleView(View):
 
         ultimo_referto = persona.referti.order_by('-data_referto').first()
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
 
         dati_estesi = None
         if ultimo_referto:
@@ -1475,7 +1476,8 @@ class TestEtaVitaleView(View):
         context = {
             'persona': persona,
             'dati_estesi': dati_estesi,
-            'dottore' : dottore
+            'dottore' : dottore,
+            'referti_test_recenti': referti_test_recenti
         }
 
         return render(request, "includes/testVitale.html", context)
@@ -1483,6 +1485,8 @@ class TestEtaVitaleView(View):
     def post(self, request, id):
         persona = get_object_or_404(TabellaPazienti, id=id)
         data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
 
         SiIm_Somma = (
             int(data.get('SiIm_1', 0)) +
@@ -1588,7 +1592,9 @@ class TestEtaVitaleView(View):
         context = {
             'persona': persona,
             'modal' : True,
-            'Referto': referto
+            'Referto': referto,
+            'referti_test_recenti': referti_test_recenti,
+            'dottore': dottore
         }
 
         return render(request, "includes/EtaVitale.html", context)
