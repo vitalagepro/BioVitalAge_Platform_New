@@ -1113,7 +1113,7 @@ class CartellaPazienteView(View):
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         # Ottieni i 5 referti più recenti del paziente
-        referti_recenti = persona.referti.all().order_by('-data_referto')[:5]
+        referti_recenti = persona.referti.all().order_by('-data_referto')
 
         # Ottieni i dati estesi associati a questi referti
         dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
@@ -1439,9 +1439,9 @@ class EtaVitaleView(View):
 
         persona = get_object_or_404(TabellaPazienti, id=id)
   
-        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')[:5]
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
 
-        print(referti_test_recenti)
+        print('Referto recente: ', referti_test_recenti)
       
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
 
@@ -1466,6 +1466,7 @@ class TestEtaVitaleView(View):
 
         ultimo_referto = persona.referti.order_by('-data_referto').first()
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
 
         dati_estesi = None
         if ultimo_referto:
@@ -1474,7 +1475,8 @@ class TestEtaVitaleView(View):
         context = {
             'persona': persona,
             'dati_estesi': dati_estesi,
-            'dottore' : dottore
+            'dottore' : dottore,
+            'referti_test_recenti': referti_test_recenti
         }
 
         return render(request, "includes/testVitale.html", context)
@@ -1482,6 +1484,8 @@ class TestEtaVitaleView(View):
     def post(self, request, id):
         persona = get_object_or_404(TabellaPazienti, id=id)
         data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
 
         SiIm_Somma = (
             int(data.get('SiIm_1', 0)) +
@@ -1587,7 +1591,9 @@ class TestEtaVitaleView(View):
         context = {
             'persona': persona,
             'modal' : True,
-            'Referto': referto
+            'Referto': referto,
+            'referti_test_recenti': referti_test_recenti,
+            'dottore': dottore
         }
 
         return render(request, "includes/EtaVitale.html", context)
@@ -1602,6 +1608,8 @@ class RefertoQuizView(View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
         referto = get_object_or_404(ArchivioRefertiTest, id=referto_id)
+
+        ultimo_referto = persona.referti.order_by('-data_referto')
         
         datiEstesi = None
         if referto:
@@ -1611,7 +1619,8 @@ class RefertoQuizView(View):
             'persona': persona,
             'ultimo_referto': referto,
             'datiEstesi': datiEstesi,
-            'dottore' : dottore
+            'dottore' : dottore,
+            'referto' : ultimo_referto
         }
 
         return render(request, "includes/RefertoQuiz.html", context)

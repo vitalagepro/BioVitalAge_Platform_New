@@ -45,6 +45,23 @@ body {
   --neutral-range-color: #d4a33e;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ! DISCLAIMER */
 .bg-disclaimer {
   background-color: rgba(0, 0, 0, 0.411);
@@ -110,6 +127,28 @@ body {
 .btn-accept:active {
   transform: scale(0.98);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* ! LOADER PAGE */
 #loading-wrapper {
@@ -277,6 +316,25 @@ body {
   background: var(--contrast-color2);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ! BUTTON STYLE GENERAL */
 /* From Uiverse.io by Creatlydev */
 .button {
@@ -394,6 +452,28 @@ body {
 .button-style:hover {
   color: #d3d3d3;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* NAV BAR STYLE */
 .nav-bar {
@@ -539,6 +619,23 @@ header {
   transform: scale(1.1);
   cursor: pointer;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* main style */
 main {
@@ -695,6 +792,23 @@ main {
   transition: opacity 0.3s ease;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ! Tabelle */
 .table-header {
   background-color: var(--contrast-color);
@@ -794,6 +908,12 @@ main {
   background-color: var(--contrast-color2) !important;
   font-weight: bold !important;
 }
+
+
+
+
+
+
 
 
 

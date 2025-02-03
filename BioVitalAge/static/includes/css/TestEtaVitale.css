@@ -102,7 +102,7 @@
 .tableAnswer-header{
     width: 100%;
     background-color: var(--contrast-color);
-    padding: 20px;
+    padding: 20px 0;
     height: 5rem;
     display: flex;
     justify-content: space-between;
@@ -147,6 +147,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid #ddd ;
     width: 100%;
     height: 6rem;
 }
@@ -157,10 +158,23 @@
     text-align: center;
     width: 100%;
     height: 100%;
-    border-bottom: 1px solid #ddd ;
     padding: 20px;
     border-left: 1px solid #ddd;
+    margin-bottom: 0 !important;
 }
+
+.fs-5-3{
+    font-size: 1.13rem !important;
+}
+
+.smaller-text{
+    font-size: 10px !important;
+}
+
+.small-text{
+    font-size: 12.4px !important;
+}
+
 input[type="radio"] {
     appearance: none; 
     -webkit-appearance: none; 
@@ -172,6 +186,11 @@ input[type="radio"] {
 }
 input[type="radio"]:checked {
     background-color: var(--contrast-color2);
+}
+
+input:disabled{
+    background-color: inherit;
+    cursor: not-allowed;
 }
 
 .tableRow p:first-of-type{
@@ -214,8 +233,10 @@ input[type="radio"]:checked {
 }
 
 .pagination-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    padding: 5px 10px;
     border: none;
     border-radius: 100px;
     width: 35px;
@@ -235,10 +256,19 @@ input[type="radio"]:checked {
     font-weight: bold;
 }
 
-button:disabled{
+.button:disabled{
     cursor: not-allowed;
     background-color: var(--contrast-color2);
+    opacity: 0.7;
 }
-button:disabled:hover{
-    pointer-events: none;
+.button:disabled:hover .button__icon-svg--copy{
+    transform: translate(-150%, 150%);
+}
+
+.button:disabled:hover .button__icon-svg:first-child{
+    transform: translate(0);
+}
+
+.button:disabled:hover .button__icon-wrapper{
+    color: var(--contrast-color2);
 }
