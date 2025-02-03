@@ -1275,7 +1275,6 @@ class InserisciPazienteView(View):
                 ]
 
                 if any(request.POST.get(campo) for campo in campi_opzionali):
-                    # ✅ Aggiornamento dati paziente
                     paziente_esistente.email = request.POST.get('email')
                     paziente_esistente.phone = request.POST.get('phone')
                     paziente_esistente.cap = request.POST.get('cap')
@@ -1666,7 +1665,6 @@ class PrescrizioniView(View):
 
 
     def post(self, request, persona_id):
-
         json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
 
         if not os.path.exists(json_path):
@@ -1675,55 +1673,85 @@ class PrescrizioniView(View):
         with open(json_path, "r", encoding="utf-8") as file:
             data = json.load(file)
 
-        
         codiciEsami = request.POST.getlist('codiceEsame')
-
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
 
-        for codici in codiciEsami:
+        esami_duplicati = []
+        esami_nuovi = []
 
-            prescrizioni = PrescrizioniUtenti(
-                    paziente = persona,
-                    codicePrescrizione = codici
-            )            
-            prescrizioni.save()
+        for codice in codiciEsami:
+            if PrescrizioniUtenti.objects.filter(paziente=persona, codicePrescrizione=codice).exists():
+                esami_duplicati.append(codice)
+            else:
+                prescrizione = PrescrizioniUtenti(paziente=persona, codicePrescrizione=codice)
+                prescrizione.save()
+                esami_nuovi.append(codice)
 
         codiciEsami = PrescrizioniUtenti.objects.filter(paziente=persona)
 
         esamiList = []
-
-        for codici in codiciEsami:
-        
+        for codice in codiciEsami:
             for esame in data['Foglio1']:
-                if int(codici.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
+                if int(codice.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
                     esamiList.append(esame)
 
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
+    
+        if esami_duplicati:
+
+            print(esami_duplicati)
+            with open(json_path, "r", encoding="utf-8") as file:
+                data = json.load(file)
+            
+            dataList = data['Foglio1']
+            
+            nome_esame = ''
+
+            for dictionary in dataList:
+                if int(dictionary['CODICE_UNIVOCO_ESAME_PIATTAFORMA']) == int(esami_duplicati[0]):
+                    nome_esame = dictionary['DESCRIZIONE_ESAME']
+
+
+            context = {
+                'persona': persona,
+                'dottore': dottore,
+                'esamiPrescritti': esamiList,
+                'errore': f"L'esame '{nome_esame}' è già presente nell'elenco delle prescrizioni per questo paziente"
+            }
+
+
+            return render(request, "includes/prescrizioni.html", context)
+        
         context = {
             'persona': persona,
             'dottore': dottore,
-            'esamiPrescritti' : esamiList
+            'esamiPrescritti': esamiList,
+            'success': "Le prescrizioni sono state correttamente aggiunte"   
         }
 
-        return render(request, "includes/prescrizioni.html", context )
+        return render(request, "includes/prescrizioni.html", context)
 
 
 
 class DeletePrescrizioniView(View):
 
-        def post(self, request, persona_id,):
-            
-            print("sono qui")
+        def post(self, request, persona_id):
 
             persona = get_object_or_404(TabellaPazienti, id=persona_id)
             dottore_id = request.session.get('dottore_id')
             dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
-            codiceUnivoco = request.POST
-            PrescrizioniUtenti.objects.filter(paziente=persona, id=codiceUnivoco).delete()
-            
+            codice_univoco = request.POST.get("codiceUnivoco")
+            esame = PrescrizioniUtenti.objects.filter(paziente=persona, codicePrescrizione=codice_univoco)
+
+            if esame.exists():
+                esame.delete()
+                print("Esame eliminato correttamente.")
+            else:
+                print("Nessun esame trovato con i criteri dati.")
+                
             esamiList = PrescrizioniUtenti.objects.filter(paziente=persona)
 
             context = {
@@ -1732,6 +1760,5 @@ class DeletePrescrizioniView(View):
                 'esamiPrescritti': esamiList
             }
             return render(request, "includes/prescrizioni.html", context)
-        
 
 

@@ -37,7 +37,6 @@
     <!-- NAVBAR -->
     {% include 'components/navBar.html' %}
 
-
     <script>
         function openModal(){
             document.getElementById('backdropModale').style.display = 'block'
@@ -75,6 +74,7 @@
                 <p>Prescrizioni Paziente</p>
             </div>
         </div>
+
 
         <!-- Tabella Prescrizione -->
         <div id="backdropModale"></div>
@@ -200,18 +200,147 @@
             </form>
         </div>
 
-       
-        <div class="container-card-prescrizioni">
+        <!-- MODALE MESSAGE -->
+        {% if success %}
+            <div class="successMessage" id="success">
 
-            <div class="header-tools">
+                <p>{{ success }}</p>
+                <div class="progressBarContainerSuccess">
+                <div class="progressBar" id="progressSuccess"></div>
+                </div>
 
-                <select name="" id="">
-                    <option value="">filtri</option>
+                <script>
+                const messaggios = document.getElementById('success');
+                const progressBars = document.getElementById('progressSuccess');
+                const durationSuccess = 6000; 
+                const intervalSuccess = 50; 
+
+                if (messaggios) {
+                    let elapsedTimeSuccess = 0; 
+
+                    const timerSuccess = setInterval(() => {
+                    elapsedTimeSuccess += intervalSuccess;
+                    const percentage = ((durationSuccess - elapsedTimeSuccess) / durationSuccess) * 100;
+                    progressBars.style.width = `${percentage}%`;
+
+                    if (elapsedTimeSuccess >= durationSuccess) {
+                        clearInterval(timerSuccess); 
+                        messaggios.style.display = 'none'; 
+                    }
+                    }, intervalSuccess);
+                }
+                </script>
+
+            </div>
+        {% else %}
+            {% if errore %}
+                <div class="errorSystemContainer" id="error">
+                    <p>{{ errore }}</p>
+                    <div class="progressBarContainer">
+                    <div class="progressBar" id="progress"></div>
+                    </div>
+
+                    <script>
+                    const messaggio = document.getElementById('error');
+                    const progressBar = document.getElementById('progress');
+                    const durationError = 6000; 
+                    const intervalError = 50;
+
+                    if (messaggio) {
+                        let elapsedTimeError = 0; 
+
+                        const timerError = setInterval(() => {
+                        elapsedTimeError += intervalError;
+                        const percentage = ((durationError - elapsedTimeError) / durationError) * 100;
+                        progressBar.style.width = `${percentage}%`;
+
+                        if (elapsedTimeError >= durationError) {
+                            clearInterval(timerError); 
+                            messaggio.style.display = 'none'; 
+                        }
+                        }, intervalError);
+                    }
+                    </script>
+
+                </div>
+            {% endif %}
+        {% endif %}
+
+
+
+        <!-- TABELLA RISULTATI -->    
+        <div class="header-tools">
+
+                <select name="filtriTabellaResult" id="filtriTabellaResult">
+                    <option value="0">Tutti</option>
+                    <option value="1">Descrizione Esame crescente</option>
+                    <option value="2">Descrizione Esame decrescente</option>
+                    <option value="3">Metodica</option>
+                    <option value="4">Codice Asl</option>
+                    <option value="5">Codice Regione</option>
+                    <option value="6">Apparato / Sistemi</option>
                 </select>
 
-                <div class="search-container">
-                    <input type="text">
-                    <button>search</button>
+                <div class="barra-ricerca">
+                    <input type="text" class="input" id="inputRicerca" name="inputField" placeholder="Type name here" required>
+                    <button class="button button--submit" type="submit">
+                      
+                        <span class="button__icon-wrapper">
+
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          width="15"
+                          class="button__icon-svg"
+                        >
+                          <circle
+                            cx="11"
+                            cy="11"
+                            r="7"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          ></circle>
+                          <line
+                            x1="16"
+                            y1="16"
+                            x2="21"
+                            y2="21"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                          ></line>
+                        </svg>
+            
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          width="15"
+                          class="button__icon-svg button__icon-svg--copy"
+                        >
+                          <circle
+                            cx="11"
+                            cy="11"
+                            r="7"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          ></circle>
+                          <line
+                            x1="16"
+                            y1="16"
+                            x2="21"
+                            y2="21"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                          ></line>
+                        </svg>
+
+                        </span>
+                     
+                      Search
+                    </button>
                 </div>
 
                 <button title="Add Patient" class="button" onclick="openModal()">
@@ -232,56 +361,73 @@
                     Aggiungi Prescrizione
                 </button>
                 
-            </div>
-
-            <div class="tabella-prescrizioni">
-                <div class="header-table">
-                    <p>Codice Univoco Esame</p>
-                    <p>Descrizione Esame</p>
-                    <p>Codice Asl</p>
-                    <p>Codice Regione</p>
-                    <p>Metodica</p>
-                    <p>Apparato/Sistemi</p>
-                    <p></p>
-                </div>
-                <div class="table-content">
-                    <!-- Da Popolare Dinamicamente -->
-                    {% if esamiPrescritti %}
-
-                        {% for esami in esamiPrescritti %}
-                            <div class="rowTable">
-                                <p>{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}</p>
-                                <p>{{ esami.DESCRIZIONE_ESAME }}</p>
-                                <p>{{ esami.COD_ASL }}</p>
-                                <p>{{ esami.COD_REG }}</p>
-                                <p>{{ esami.METODICA }}</p>
-                                <p style="padding:10px;">{{ esami.APPARATO_or_I_SISTEMI|slice:":50" }}</p>
-                                
-                                <form method="POST" action="{% url 'delete_exam' persona.id %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="codiceUnivoco" value="{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}">
-
-                                    <button type="submit" style="cursor:pointer;">❌</button>
-                                </form>
-                            </div>
-                        {% endfor %}
-                
-
-                    {% else %}
-                        <div class="rowTable">
-                            <p>Nessuna preiscrizione inserita</p>
-                        </div>
-                    {% endif %}
-
-                </div>
-
-            </div>
-
         </div>
-
-      
         
+        
+        <div class="tabella-prescrizioni">
+            <div class="header-table">
+                <p>Codice Univoco Esame</p>
+                <p>Descrizione Esame</p>
+                <p>Codice Asl</p>
+                <p>Codice Regione</p>
+                <p>Metodica</p>
+                <p>Apparato/Sistemi</p>
+                <p></p>
+            </div>
+            <div class="table-content">
+                <!-- Da Popolare Dinamicamente -->
+                {% if esamiPrescritti %}
 
+                    {% for esami in esamiPrescritti %}
+                    <div class="rowTable" id="esame-{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}">
+                        <p>{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}</p>
+                        <p>{{ esami.DESCRIZIONE_ESAME }}</p>
+                        <p>{{ esami.COD_ASL }}</p>
+                        <p>{{ esami.COD_REG }}</p>
+                        <p>{{ esami.METODICA }}</p>
+                        <p style="padding:10px;">{{ esami.APPARATO_or_I_SISTEMI|slice:":50" }}</p>
+                        
+                        <p id="cellaButton">
+                            <button class="delete-button" data-codice="{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}">❌</button>
+                        </p>
+                       
+                    </div>
+                    {% endfor %}
+        
+                {% else %}
+                    <div class="Message">
+                        <p>Nessuna preiscrizione inserita</p>
+                    </div>
+                {% endif %}
+
+                <!-- FUNZIONE AJAX PER RICHIESTA DI DELETE -->
+                <script>
+                    document.querySelectorAll('.delete-button').forEach(button => {
+                        button.addEventListener('click', function() {
+                            let codiceUnivoco = this.getAttribute('data-codice');
+                            let esameRow = document.getElementById(`esame-${codiceUnivoco}`);
+                    
+                            fetch("{% url 'delete_exam' persona.id %}", {
+                                method: "POST",
+                                headers: {
+                                    "X-CSRFToken": "{{ csrf_token }}",
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                                body: `codiceUnivoco=${codiceUnivoco}`
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    esameRow.remove(); 
+                                } else {
+                                    alert("Errore nell'eliminazione dell'esame.");
+                                }
+                            });
+                        });
+                    });
+                </script>
+                    
+            </div>
+        </div>
 
     </main>
 
