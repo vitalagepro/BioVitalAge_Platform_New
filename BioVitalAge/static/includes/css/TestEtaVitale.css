@@ -188,6 +188,11 @@ input[type="radio"]:checked {
     background-color: var(--contrast-color2);
 }
 
+input:disabled{
+    background-color: inherit;
+    cursor: not-allowed;
+}
+
 .tableRow p:first-of-type{
     border-left: none;
 }
