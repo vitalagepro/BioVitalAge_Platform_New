@@ -1,20 +1,142 @@
+/* Stile Tabella Result */
 .container-card-prescrizioni{
     width: 98%;
     margin: auto;
     background-color: var(--card-color);
-    height: 700px;
+    height: 200px;
     border-radius: 8px;
     margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .header-tools{
-    background-color: var(--contrast-color-shadow);
+    background-color: var(--contrast-color);
+    width: 98%;
+    border-radius: 8px;
+    margin: 20px auto;
     padding: 20px;
     height: 5rem;
-    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
+#filtriTabellaResult{
+    height: 2.5rem;
+    border-radius: 8px;
+    outline: none;
+    border: 1px solid #ddd;
+    padding: 10px;
+    cursor: pointer;
+}
+.barra-ricerca{
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.barra-ricerca input{
+    height: 100%;
+    height: 3rem;
+    border-radius: 12px 0px 0px 12px;
+    border: 1px solid #ddd;
+    padding-left: 10px;
+    width: 75%;
+    outline-color: var(--contrast-color2);
+}
+.barra-ricerca button{
+    width: 25%;
+    height: 3rem;
+    border-radius: 0px 12px 12px 0px;
+}
+
+
+/* Tabella contenuto */
+.tabella-prescrizioni{
+    width: 98%;
+    margin: auto;
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+.header-table{
+    background-color: var(--contrast-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    width: 100%;
+    height: 60px;
+    border-radius: 8px 8px 0px 0px;
+}
+.header-table p{
+    font-weight: bold;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+.header-table p:last-of-type{
+    width: 40%;
+}
+
+.table-content{
+    width: 100%;
+    background-color: white;
+    height: 500px;
+    border: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+.add-btn,
+.delete-button,
+.remove-btn{
+    border: none;
+    background: none;
+    transition: transform 0.3s ease-in-out;
+}
+#cellaButton{
+    width: 30%;
+}
+.Message{
+    width: 100%;
+}
+.Message p{
+    padding: 40px 0px;
+    text-align: center;
+}
+.add-btn:hover,
+.delete-button:hover,
+.remove-btn:hover{
+    transform: scale(1.2);
+}
+.colModale{
+    width: 10%;
+    text-align: center;
+    padding: 20px;
+    height: 5rem;
+}
+.colModale span{
+    display: block;
+}
+.colModale.nomeEsame{
+    width: 40%;
+}
+.colModale.metodica{
+    width: 20%;
+}
+
+
 
 
 
@@ -155,6 +277,7 @@
 }
 
 
+
 /* WEBKIT SCROLL MODALE STYLE */
 ::-webkit-scrollbar {
     width: 8px; 
@@ -171,60 +294,6 @@
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(0, 0, 0, 0.5); 
 }
-
-
-
-
-/* Stile Tabella Result */
-.tabella-prescrizioni{
-    width: 98%;
-    margin: auto;
-    height: 600px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    margin-top: 20px;
-}
-.header-table{
-    background-color: var(--contrast-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: white;
-    height: 70px;
-    border-radius: 8px 8px 0px 0px;
-}
-.table-content{
-    background-color: white;
-    height: 500px;
-    border: 1px solid #ddd;
-}
-.add-btn,
-.remove-btn{
-    border: none;
-    background: none;
-    transition: transform 0.3s ease-in-out;
-}
-.add-btn:hover,
-.remove-btn:hover{
-    transform: scale(1.1);
-}
-.colModale{
-    width: 10%;
-    text-align: center;
-    padding: 20px;
-    height: 5rem;
-}
-.colModale span{
-    display: block;
-}
-.colModale.nomeEsame{
-    width: 40%;
-}
-.colModale.metodica{
-    width: 20%;
-}
-
 
 
 
@@ -265,8 +334,6 @@
 
 
 
-
-
 /* STILE TABELLA ELENCO PRESCRIZIONI ATTIVE SUL PAZIENTE */
 .rowTable{
     width: 100%;
@@ -276,37 +343,28 @@
     background-color: white;
     height: 100%;
 }
-
 .rowTable p{
     background-color: white;
     width: 100%;
     height: 100%;
     display: flex;
+    font-size: 16px;
     justify-content: center;
     align-items: center;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
-.rowTable form{
-    height: 100%;
-    width: 30%;
-    margin-top: -1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #ddd;
-}
-
-.rowTable form button{
-    padding: 5px;
-    width: 2.5rem;
-    border:  none;
-    background: none;
-}
-.rowTable form button:hover{
-    transform: scale(1.1);
-}
-
 .pagination-controls{
     height: 30px;
+    padding: 20px;
+}
+
+
+
+
+.messageError{
+    background-color: rgba(118, 0, 0, 0.5);
+    width: 98%;
+    height: 4rem;
+    margin: 20px auto;
     padding: 20px;
 }
