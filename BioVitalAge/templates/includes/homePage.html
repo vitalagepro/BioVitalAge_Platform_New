@@ -52,23 +52,23 @@
     <div id="initialMessage" class="cookie-initial">
       <p>
         <strong>Cookie settings</strong><br>
-        We use cookies to deliver and improve our services, analyze site usage, and if you agree, to customize or
-        personalize your experience and market our services to you.
-        You can read our <a href="#" target="_blank">Cookie Policy</a> here.
+        Utilizziamo i cookie per fornire e migliorare i nostri servizi, analizzare l'utilizzo del sito e, se l'utente è
+        d'accordo, per personalizzare la sua esperienza e commercializzare i nostri servizi. È possibile leggere la nostra <a
+          href="#" target="_blank">Cookie Policy</a> qui.
       </p>
       <div class="cookie-buttons">
-        <button id="acceptCookies" class="btn-cookie">Accept all cookies</button>
-        <button id="rejectCookies" class="btn-cookie">Reject all cookies</button>
-        <button id="customizeCookies" class="btn-cookie">Customize cookie settings</button>
+        <button id="acceptCookies" class="btn-cookie">Accetta tutti</button>
+        <button id="rejectCookies" class="btn-cookie">Rifiuta tutti</button>
+        <button id="customizeCookies" class="btn-cookie">Personalizza la scelta</button>
       </div>
     </div>
 
     <div id="customizeSection" class="cookie-customize hidden-disclaimer">
-      <h3>Customize your cookie settings</h3>
-      <p>Choose which types of cookies you want to enable:</p>
+      <h3>Personalizza la scelta di cookie</h3>
+      <p>Scegliere i tipi di cookie che si desidera abilitare:</p>
 
       <div class="toggle-group">
-        <label>Functional Cookies</label>
+        <label>Cookies funzionali</label>
         <div class="toggle-wrapper">
           <input class="toggle-checkbox" type="checkbox" id="functionalCookies">
           <div class="toggle-container">
@@ -97,7 +97,7 @@
         </div>
       </div>
 
-      <button id="saveCookies" class="btn-cookie">Save settings</button>
+      <button id="saveCookies" class="btn-cookie">Salva le scelte</button>
     </div>
   </div>
   {% else %}
@@ -151,7 +151,7 @@
     <!-- BANNER SECTION -->
     <div class="banner">
       <div class="banner-info">
-        <h3>Good Morning</h3>
+        <h3>Buongiorno</h3>
         <h2 class="main-welcome-title" id="nameUser">{{ dottore }}</h2>
         <div class="box-icons">
           <div class="box-info">
@@ -164,7 +164,7 @@
             </div>
             <div class="icon-description">
               <h3>86</h3>
-              <p>Visited Patients</p>
+              <p>Pazienti Visitati</p>
             </div>
           </div>
           <div class="box-info">
@@ -177,7 +177,7 @@
             </div>
             <div class="icon-description">
               <h3>23</h3>
-              <p>BioVitalAge Clock</p>
+              <p>Calcoli BioVitalAge</p>
             </div>
           </div>
         </div>
@@ -185,7 +185,7 @@
 
       <div class="reminders">
         <div class="button-container">
-          <h3>Reminders</h3>
+          <h3>Promemoria</h3>
           <button class="button">
             <span class="button__icon-wrapper">
               <svg
@@ -214,15 +214,15 @@
                 ></path>
               </svg>
             </span>
-            View All
+            Vedi Tutti
           </button>
         </div>
         <ul class="reminder-list">
           <li>
             <div class="reminder-text">
-              <span>-</span> Check lab results for patient William Mathews.
+              <span>-</span> Controllare i risultati di laboratorio del paziente William Mathews.
             </div>
-            <span class="urgency-badge high">High priority</span>
+            <span class="urgency-badge high">Priorità alta</span>
             <div class="reminder-time">Due: 10:00 AM</div>
             <div class="reminder-actions">
               <button class="action-btn approve">✔</button>
@@ -231,9 +231,9 @@
           </li>
           <li>
             <div class="reminder-text">
-              <span>-</span> Prepare consultation notes for Adam Bradley.
+              <span>-</span> Preparare le note di consultazione per Adam Bradley.
             </div>
-            <span class="urgency-badge medium">Medium priority</span>
+            <span class="urgency-badge medium">Priorità media</span>
             <div class="reminder-time">Due: 2:30 PM</div>
             <div class="reminder-actions">
               <button class="action-btn approve">✔</button>
@@ -242,10 +242,10 @@
           </li>
           <li>
             <div class="reminder-text">
-              <span>-</span> Schedule follow-up appointment with Kathy Atkinson.
+              <span>-</span> Fissare un appuntamento di follow-up con Kathy Atkinson.
             </div>
-            <span class="urgency-badge low">Low priority</span>
-            <div class="reminder-time">Due: Tomorrow</div>
+            <span class="urgency-badge low">Priorità Bassa</span>
+            <div class="reminder-time">Due: Domani</div>
             <div class="reminder-actions">
               <button class="action-btn approve">✔</button>
               <button class="action-btn delete">✖</button>
@@ -259,7 +259,7 @@
     <div class="cardAppuntamenti">
 
       <div class="button-container">
-        <h3>Appointments</h3>
+        <h3>Appuntamenti</h3>
         <button class="button">
           <span class="button__icon-wrapper">
             <svg
@@ -288,19 +288,19 @@
               ></path>
             </svg>
           </span>
-          View All
+          Vedi Tutti
         </button>
     </div>
       <table>
         <thead>
           <tr>
             <th>#</th>
-            <th>Patient Name</th>
-            <th>Age</th>
-            <th>Time</th>
-            <th>Diagnosis</th>
-            <th>Type</th>
-            <th>Actions</th>
+            <th>Nome Paziente</th>
+            <th>Età</th>
+            <th>Ora</th>
+            <th>Diagnosi</th>
+            <th>Tipologia</th>
+            <th>Azione</th>
           </tr>
         </thead>
         <tbody>
@@ -309,8 +309,8 @@
             <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> William Mathews</td>
             <td>21</td>
             <td>10:30AM</td>
-            <td>Heart Attack</td>
-            <td><span class="badge general">General</span></td>
+            <td>Attacco Cardiaco</td>
+            <td><span class="badge general">Generale</span></td>
             <td>
               <button class="action-btn approve">✔</button>
               <button class="action-btn delete">✖</button>
@@ -321,8 +321,20 @@
             <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> Adam Bradley</td>
             <td>36</td>
             <td>10:45AM</td>
-            <td>Diabetes</td>
-            <td><span class="badge consulting">Consulting</span></td>
+            <td>Diabetico</td>
+            <td><span class="badge consulting">Consulenza</span></td>
+            <td>
+              <button class="action-btn approve">✔</button>
+              <button class="action-btn delete">✖</button>
+            </td>
+          </tr>
+          <tr>
+            <td>002</td>
+            <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar">Adam Bradley</td>
+            <td>36</td>
+            <td>10:45AM</td>
+            <td>Diabetico</td>
+            <td><span class="badge consulting">Consulenza</span></td>
             <td>
               <button class="action-btn approve">✔</button>
               <button class="action-btn delete">✖</button>
@@ -333,20 +345,8 @@
             <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> Adam Bradley</td>
             <td>36</td>
             <td>10:45AM</td>
-            <td>Diabetes</td>
-            <td><span class="badge consulting">Consulting</span></td>
-            <td>
-              <button class="action-btn approve">✔</button>
-              <button class="action-btn delete">✖</button>
-            </td>
-          </tr>
-          <tr>
-            <td>002</td>
-            <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> Adam Bradley</td>
-            <td>36</td>
-            <td>10:45AM</td>
-            <td>Diabetes</td>
-            <td><span class="badge consulting">Consulting</span></td>
+            <td>Diabetico</td>
+            <td><span class="badge consulting">Consulenza</span></td>
             <td>
               <button class="action-btn approve">✔</button>
               <button class="action-btn delete">✖</button>
@@ -369,13 +369,13 @@
             <h3>Totale Pazienti</h3>
             <div class="report-info-detail">
               <p class="primary-info">150</p>
-              <p> &nbsp;+ 20 &nbsp;last week</p>
+              <p> &nbsp;+ 20 &nbsp;settimana scorsa</p>
             </div>
           </div>
         </div>
 
 
-        <p id="mediaPercentage">20% Higher than last week.</p>
+        <p id="mediaPercentage">20% in più rispetto alla settimana scorsa.</p>
 
       </div>
 
@@ -388,11 +388,11 @@
             <h3>Totale Prescrizioni</h3>
             <div class="report-info-detail">
               <p class="primary-info">80</p>
-              <p> &nbsp;+ 20 &nbsp;last week</p>
+              <p> &nbsp;+ 20 &nbsp;settimana scorsa</p>
             </div>
           </div>
         </div>
-        <p id="mediaPercentage">20% Higher than last week.</p>
+        <p id="mediaPercentage">20% in più rispetto alla settimana scorsa.</p>
       </div>
 
       <div class="report-card" id="card-style">
@@ -401,14 +401,14 @@
             <img src="{% static 'includes/icone/heart.png' %}" alt="">
           </div>
           <div class="report-description">
-            <h3>Avarage Patients Age</h3>
+            <h3>Età media dei pazienti</h3>
             <div class="report-info-detail">
-              <p><span>45</span> years old</p>
-              <p>to <span>52</span> years old</p>
+              <p><span>45</span> Anni</p>
+              <p>a <span>52</span> Anni</p>
             </div>
           </div>
         </div>
-        <p id="mediaPercentage">Mind - high age </p>
+        <p id="mediaPercentage">Mente - età elevata </p>
       </div>
 
       <div class="report-card" id="card-style">
@@ -417,13 +417,13 @@
             <img src="{% static 'includes/icone/income.png' %}" alt="">
           </div>
           <div class="report-description">
-            <h3>Earnings</h3>
+            <h3>Guadagni</h3>
             <div class="report-info-detail">
-              <p> &nbsp;+ 980$ &nbsp;last month</p>
+              <p> &nbsp;+ 980€ &nbsp;il mese scorso</p>
             </div>
           </div>
         </div>
-        <p id="mediaPercentage">20% Higher than last month.</p>
+        <p id="mediaPercentage">20% in più rispetto al mese scorso.</p>
       </div>
     </div>
 
@@ -453,12 +453,12 @@
       </div>
       <div class="table-container">
         <div class="table-header">
-          <p>Name</p>
-          <p>Surname</p>
-          <p>Date of Birth</p>
+          <p>Nome</p>
+          <p>Cognome</p>
+          <p>Data di nascita</p>
           <p>Codice Fiscale</p>
-          <p>Place of Birth</p>
-          <p>Chronological Age</p>
+          <p>Città di nascita</p>
+          <p>Età cronologica</p>
           <p>Ultimo Referto</p>
           <p>Cartella Paziente</p>
         </div>

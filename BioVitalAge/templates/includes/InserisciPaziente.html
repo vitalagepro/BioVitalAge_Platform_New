@@ -40,15 +40,15 @@
       <div class="main-title-nav">
         <div class="back-tittle">
           <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico"
-              title="Back to patients"></a>
-          <h2 class="main-welcome-title">Patients</h2>
+              title="Torna alla sezione Pazienti"></a>
+          <h2 class="main-welcome-title">Pazienti</h2>
         </div>
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
             <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
           </a>
           <span>»</span>
-          <span>Insert patient</span>
+          <span>Inserisci Pazienti</span>
         </div>
       </div>
 
@@ -126,28 +126,28 @@
           <h3>Patient Information</h3>
           <div class="patient-info">
               <div class="form-group">
-                  <label for="name">Name</label>
-                  <input type="text" id="name" name="name" required placeholder="Insert your name">
+                  <label for="name">Nome</label>
+                  <input type="text" id="name" name="name" required placeholder="Inserisci il Nome">
               </div>
               <div class="form-group">
-                  <label for="surname">Surname</label>
-                  <input type="text" id="surname" name="surname" required placeholder="Insert your surname">
+                  <label for="surname">Cognome</label>
+                  <input type="text" id="surname" name="surname" required placeholder="Inserisci il Cognome">
               </div>
               <div class="form-group">
-                  <label for="dob">Date of Birth</label>
+                  <label for="dob">Data di nascita</label>
                   <input type="date" id="dob" name="dob" >
               </div>
               <div class="form-group">
-                  <label for="gender">Gender</label>
+                  <label for="gender">Genere</label>
                   <select id="gender" name="gender" >
-                      <option value="">-- Select gender --</option>
-                      <option value="M">Male</option>
-                      <option value="F">Female</option>
+                      <option value="">-- Seleziona il Genere --</option>
+                      <option value="M">Uomo</option>
+                      <option value="F">Donna</option>
                   </select>
               </div>
               <div class="form-group">
-                  <label for="place_of_birth">Place of Birth</label>
-                  <input type="text" id="place_of_birth" list="cities" name="place_of_birth" required placeholder="Insert your place of birth">
+                  <label for="place_of_birth">Città di nascita</label>
+                  <input type="text" id="place_of_birth" list="cities" name="place_of_birth" required placeholder="Inserisci la città di nascita">
 
 
                   <datalist id="cities">
@@ -8378,52 +8378,52 @@
 
               </div>
               <div class="form-group">
-                  <label for="province">Province</label>
-                  <input type="text" id="province" name="province" required placeholder="Enter province (e.g., RM)">
+                  <label for="province">Provincia</label>
+                  <input type="text" id="province" name="province" required placeholder="Inserisci la provincia (e.g., RM)">
               </div>
 
               <div class="form-group">
                   <label for="email">E-mail</label>
-                  <input type="email" id="email" name="email" placeholder="Enter email">
+                  <input type="email" id="email" name="email" placeholder="Inserisci l'email">
               </div> 
 
               <div class="form-group">
-                  <label for="phone">Phone</label>
-                  <input type="text" id="phone" name="phone" placeholder="Enter phone">
+                  <label for="phone">Telefono</label>
+                  <input type="text" id="phone" name="phone" placeholder="Inserisci il telefono">
               </div> 
       
               <div class="form-group">
                   <label for="codice_fiscale">Codice Fiscale</label>
-                  <input type="text" id="codice_fiscale" name="codice_fiscale" required placeholder="Insert your fiscal code">
+                  <input type="text" id="codice_fiscale" name="codice_fiscale" required placeholder="Inserisci il Codice Fiscale">
               </div>
               <div class="form-group">
-                  <label for="chronological_age">Chronological Age</label>
-                  <input type="number" id="chronological_age" name="chronological_age" required placeholder="Enter chronological age">
+                  <label for="chronological_age">Età Cronologica</label>
+                  <input type="number" id="chronological_age" name="chronological_age" required placeholder="Inserisci l'età cronologica">
               </div>
               <div class="form-group">
-                  <label for="blood_group">Blood Group</label>
-                  <input type="text" id="blood_group" name="blood_group" placeholder="Enter blood group">
+                  <label for="blood_group">Gruppo Sanguigno</label>
+                  <input type="text" id="blood_group" name="blood_group" placeholder="Inserisci il gruppo sanguigno">
               </div>
               <div class="form-group">
-                  <label for="associate_staff">Associate Staff</label>
-                  <input type="text" id="associate_staff" name="associate_staff" placeholder="Enter associate staff">
+                  <label for="associate_staff">Dottore Associato</label>
+                  <input type="text" id="associate_staff" name="associate_staff" placeholder="Inserisci il dottore associato">
               </div>
           </div>
         </div>
            
         <section class="container_data table_data">
-          <h3>Informative Tables</h3>
+          <h3>Dati Base</h3>
           <div class="table-container">
             <div>
-              <div class="table-title">Anthropometric data</div>
+              <div class="table-title">Dati Antropometrici</div>
               <div class="responsive-table">
                 <table>
                   <thead>
                     <tr>
-                      <th>Height</th>
-                      <th>Weight</th>
+                      <th>Altezza</th>
+                      <th>Peso</th>
                       <th>BMI</th>
-                      <th>BMI detection date</th>
+                      <th>Data di rilevamento BMI</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -8439,20 +8439,20 @@
             </div>
         
             <div>
-              <div class="table-title">Abdominal girth</div>
+              <div class="table-title">Circonferenza Addominale</div>
               <div class="responsive-table">
                 <table>
                   <thead>
                     <tr>
-                      <th>Girth value</th>
-                      <th>Notes</th>
-                      <th>Date measurement</th>
+                      <th>Valore della circonferenza</th>
+                      <th>Note</th>
+                      <th>Data di misurazione</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
                       <td><input type="text" placeholder="85 cm" name="girth_value"/></td>
-                      <td><input type="text" placeholder="Normal" name="girth_notes"/></td>
+                      <td><input type="text" placeholder="Nella norma" name="girth_notes"/></td>
                       <td><input type="date" placeholder="2023-02-10" name="girth_date"/></td>
                     </tr>
                   </tbody>
@@ -8460,30 +8460,30 @@
               </div>
             </div>
         
-            <h3 class="category-title">Life style</h3>
+            <h3 class="category-title">Stile di vita</h3>
             <div class="table-container-lifestyle">
               <div class="table-title lifestyle">Alcohol</div>
               <div class="container-card">
                 <div class="choose-buttons">
-                  <button class="button-style-choose" data-choice="yes">Yes</button>
+                  <button class="button-style-choose" data-choice="yes">Si</button>
                   <button class="button-style-choose" data-choice="no">No</button>
                 </div>
                 <div class="responsive-table hidden">
                   <table>
                     <thead>
                       <tr>
-                        <th>Quantity per day</th>
-                        <th>Type of alcohol</th>
-                        <th>Day</th>
-                        <th>Notes</th>
+                        <th>Quantità giornaliera</th>
+                        <th>Tipo</th>
+                        <th>Data</th>
+                        <th>Note</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td><input type="text" id="alcol" placeholder="1 bottle" name="alcol" disabled/></td>
-                        <td><input type="text" id="alcol_type" placeholder="Wine" name="alcol_type" disabled/></td>
+                        <td><input type="text" id="alcol" placeholder="1 bottiglia" name="alcol" disabled/></td>
+                        <td><input type="text" id="alcol_type" placeholder="Vino" name="alcol_type" disabled/></td>
                         <td><input type="date" id="data_alcol" placeholder="2023-01-01" name="data_alcol" disabled/></td>
-                        <td><input type="text" id="alcol_frequency" placeholder="Occasional" name="alcol_frequency" disabled/></td>
+                        <td><input type="text" id="alcol_frequency" placeholder="Occasionalmente" name="alcol_frequency" disabled/></td>
                       </tr>
                     </tbody>
                   </table>
@@ -8493,27 +8493,27 @@
         
             <div class="table-container-lifestyle">
               <div class="table-title lifestyle">
-                <span>Smoking</span>
+                <span>Fumo</span>
               </div>
-              <div class="container-card" data-lifestyle="alcohol">
+              <div class="container-card">
                 <div class="choose-buttons">
-                  <button class="button-style-choose" data-choice="yes">Yes</button>
+                  <button class="button-style-choose" data-choice="yes">Si</button>
                   <button class="button-style-choose" data-choice="no">No</button>
                 </div>
                 <div class="responsive-table hidden">
                   <table>
                     <thead>
                       <tr>
-                        <th>Daily quantity</th>
-                        <th>Days Smoking</th>
-                        <th>Notes</th>
+                        <th>Quantità giornaliera</th>
+                        <th>Giorni</th>
+                        <th>Note</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td><input type="text" placeholder="5 cigarettes" name="smoke"/></td>
-                        <td><input type="text" placeholder="7 days" name="smoke_frequency"/></td>
-                        <td><input type="text" placeholder="Reduced intake" name="reduced_intake"/></td>
+                        <td><input type="text" placeholder="5 sigarette" name="smoke"/></td>
+                        <td><input type="text" placeholder="7 giorni" name="smoke_frequency"/></td>
+                        <td><input type="text" placeholder="Assunzione ridotta" name="reduced_intake"/></td>
                       </tr>
                     </tbody>
                   </table>
@@ -8525,23 +8525,23 @@
               <div class="table-title lifestyle">Sport</div>
               <div class="container-card">
                 <div class="choose-buttons">
-                  <button class="button-style-choose" data-choice="yes">Yes</button>
+                  <button class="button-style-choose" data-choice="yes">Si</button>
                   <button class="button-style-choose" data-choice="no">No</button>
                 </div>
                 <div class="responsive-table" data-lifestyle="sporting-lifestyle">
                   <table>
                     <thead>
                       <tr>
-                        <th>Physical Activity</th>
-                        <th>Level</th>
-                        <th>Notes</th>
+                        <th>Attività Fisica</th>
+                        <th>Livello</th>
+                        <th>Note</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td><input type="text" id="sport" placeholder="Football" name="sport" /></td>
-                        <td><input type="text" id="sport_livello" placeholder="Amateur" name="sport_livello" /></td>
-                        <td><input type="text" id="sport_frequency" placeholder="Weekly" name="sport_frequency" /></td>
+                        <td><input type="text" id="sport" placeholder="Pallavolo" name="sport" /></td>
+                        <td><input type="text" id="sport_livello" placeholder="Amatoriale" name="sport_livello" /></td>
+                        <td><input type="text" id="sport_frequency" placeholder="Settimanale" name="sport_frequency" /></td>
                       </tr>
                     </tbody>
                   </table>
@@ -8550,16 +8550,16 @@
                   <table>
                     <thead>
                       <tr>
-                        <th>Sedentary</th>
-                        <th>Level</th>
-                        <th>Notes</th>
+                        <th>Sedentarietà</th>
+                        <th>Livello</th>
+                        <th>Note</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td><input type="text" id="attivita_sedentaria" placeholder="Office work" name="attivita_sedentaria" /></td>
-                        <td><input type="text" id="livello_sedentarieta" placeholder="Minimal activity" name="livello_sedentarieta" /></td>
-                        <td><input type="text" id="sedentarieta_nota" placeholder="Rare workouts" name="sedentarieta_nota" /></td>
+                        <td><input type="text" id="attivita_sedentaria" placeholder="Lavoro da ufficio" name="attivita_sedentaria" /></td>
+                        <td><input type="text" id="livello_sedentarieta" placeholder="Attività minima" name="livello_sedentarieta" /></td>
+                        <td><input type="text" id="sedentarieta_nota" placeholder="Raramente" name="sedentarieta_nota" /></td>
                       </tr>
                     </tbody>
                   </table>
