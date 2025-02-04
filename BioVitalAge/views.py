@@ -12,6 +12,8 @@ import os
 from django.http import JsonResponse
 from django.conf import settings
 from django.utils.decorators import method_decorator
+import traceback
+from django.shortcuts import redirect
 
 # Create your views here.
 
@@ -210,7 +212,6 @@ class CalcolatoreRender(View):
                 # Verifica se almeno un campo opzionale è stato inserito
                 if any(data.get(campo) for campo in campi_opzionali):
 
-
                     paziente_query = get_object_or_404(TabellaPazienti, id=paziente.id)
 
                     # Salva i dati del referto
@@ -384,34 +385,71 @@ class CalcolatoreRender(View):
                     telotest = safe_float(data, 'telotest')
 
 
-                    exams = [
-                            my_acid, p_acid, st_acid, ar_acid, beenic_acid, pal_acid, 
-                            ol_acid, ner_acid, a_linoleic_acid, eico_acid, doco_acid, 
-                            lin_acid, gamma_lin_acid, dih_gamma_lin_acid, arachidonic_acid, 
-                            sa_un_fatty_acid, o3o6_fatty_acid_quotient, aa_epa, o3_index,
-                            neut_ul, lymph_ul, mono_ul, eosi_ul, baso_ul, rdwcv, hct_w, 
-                            hgb_w, rbc_w, azotemia, uric_acid, creatinine_m, creatinine_w, 
-                            uricemy_m, uricemy_w, cistatine_c, plt, mpv, plcr, pct, pdw, 
-                            d_dimero, pai_1, tot_chol, ldl_chol, hdl_chol_m, hdl_chol_w, 
-                            trigl, na, k, mg, ci, ca, p, dhea_m, dhea_w, testo_m, 
-                            testo_w, tsh, ft3, ft4, beta_es_m, beta_es_w, prog_m, prog_w, 
-                            fe, transferrin, ferritin_m, ferritin_w, glicemy, insulin, homa, 
-                            ir, albuminemia, tot_prot, tot_prot_ele, albumin_ele, a_1, a_2, 
-                            b_1, b_2, gamma, albumin_dI, a_1_dI, a_2_dI, b_1_dI, b_2_dI, 
-                            gamma_dI, ag_rap, cm, b_2_spike, b_2_spike_m1, got_m, got_w, 
-                            gpt_m, gpt_w, g_gt_m, g_gt_w, a_photo_m, a_photo_w, tot_bili, 
-                            direct_bili, indirect_bili, ves, pcr_c, tnf_a, inter_6, inter_10, 
-                            scatolo, indicano, s_weight, ph, proteins_ex, blood_ex, ketones, 
-                            uro, bilirubin_ex, leuc, glucose, shbg_m, shbg_w, nt_pro, v_b12, 
-                            v_d, ves2, telotest
-                        ]
+                    if paziente.gender == 'M':
+                        exams = [
+                        {'my_acid': my_acid}, {'p_acid': p_acid}, {'st_acid': st_acid}, {'ar_acid': ar_acid},
+                        {'beenic_acid': beenic_acid}, {'pal_acid': pal_acid}, {'ol_acid': ol_acid}, {'ner_acid': ner_acid}, 
+                        {'a_linoleic_acid': a_linoleic_acid}, {'eico_acid': eico_acid}, {'doco_acid': doco_acid},
+                        {'lin_acid': lin_acid}, {'gamma_lin_acid': gamma_lin_acid}, {'dih_gamma_lin_acid': dih_gamma_lin_acid},
+                        {'arachidonic_acid': arachidonic_acid}, {'sa_un_fatty_acid': sa_un_fatty_acid},
+                        {'o3o6_fatty_acid_quotient': o3o6_fatty_acid_quotient}, {'aa_epa': aa_epa}, {'o3_index': o3_index},
+                        {'neut_ul': neut_ul}, {'lymph_ul': lymph_ul}, {'mono_ul': mono_ul}, {'eosi_ul': eosi_ul},
+                        {'baso_ul': baso_ul}, {'rdwcv': rdwcv}, {'azotemia': azotemia}, {'creatinine_m': creatinine_m},
+                        {'uricemy_m': uricemy_m}, {'cistatine_c': cistatine_c}, {'plt': plt}, {'pct': pct}, {'pdw': pdw},
+                        {'d_dimero': d_dimero}, {'pai_1': pai_1}, {'tot_chol': tot_chol}, {'ldl_chol': ldl_chol},
+                        {'hdl_chol_m': hdl_chol_m}, {'trigl': trigl}, {'na': na}, {'k': k}, {'mg': mg},
+                        {'ci': ci}, {'ca': ca}, {'p': p}, {'dhea_m': dhea_m}, {'testo_m': testo_m}, {'tsh': tsh}, {'ft3': ft3},
+                        {'ft4': ft4}, {'mpv': mpv}, {'plcr': plcr}, {'uric_acid': uric_acid}, {'beta_es_m': beta_es_m}, 
+                        {'prog_m': prog_m}, {'fe': fe}, {'transferrin': transferrin}, {'ferritin_m': ferritin_m},
+                        {'glicemy': glicemy}, {'insulin': insulin}, {'homa': homa}, {'ir': ir}, {'albuminemia': albuminemia},
+                        {'tot_prot': tot_prot}, {'tot_prot_ele': tot_prot_ele}, {'albumin_ele': albumin_ele}, {'a_1': a_1},
+                        {'a_2': a_2}, {'b_1': b_1}, {'b_2': b_2}, {'gamma': gamma}, {'albumin_dI': albumin_dI},
+                        {'a_1_dI': a_1_dI}, {'a_2_dI': a_2_dI}, {'b_1_dI': b_1_dI}, {'b_2_dI': b_2_dI}, {'gamma_dI': gamma_dI},
+                        {'ag_rap': ag_rap}, {'cm': cm}, {'b_2_spike': b_2_spike}, {'b_2_spike_m1': b_2_spike_m1},
+                        {'got_m': got_m}, {'gpt_m': gpt_m}, {'g_gt_m': g_gt_m}, {'a_photo_m': a_photo_m}, {'tot_bili': tot_bili},
+                        {'direct_bili': direct_bili}, {'indirect_bili': indirect_bili}, {'ves': ves}, {'pcr_c': pcr_c},
+                        {'tnf_a': tnf_a}, {'inter_6': inter_6}, {'inter_10': inter_10}, {'scatolo': scatolo},
+                        {'indicano': indicano},{'ph': ph}, {'proteins_ex': proteins_ex}, {'blood_ex': blood_ex}, {'ketones': ketones},
+                        {'uro': uro}, {'bilirubin_ex': bilirubin_ex}, {'leuc': leuc}, {'glucose': glucose}, {'shbg_m': shbg_m}, 
+                        {'nt_pro': nt_pro}, {'v_b12': v_b12}, {'v_d': v_d}, {'ves2': ves2}, {'telotest': telotest}
+                    ]
 
+
+                    if paziente.gender == 'F':
+                        exams = [
+                            {'my_acid': my_acid}, {'p_acid': p_acid}, {'st_acid': st_acid}, {'ar_acid': ar_acid}, {'beenic_acid': beenic_acid},
+                            {'pal_acid': pal_acid}, {'ol_acid': ol_acid}, {'ner_acid': ner_acid}, {'a_linoleic_acid': a_linoleic_acid},
+                            {'eico_acid': eico_acid}, {'doco_acid': doco_acid}, {'lin_acid': lin_acid}, {'gamma_lin_acid': gamma_lin_acid},
+                            {'dih_gamma_lin_acid': dih_gamma_lin_acid}, {'arachidonic_acid': arachidonic_acid},
+                            {'sa_un_fatty_acid': sa_un_fatty_acid}, {'o3o6_fatty_acid_quotient': o3o6_fatty_acid_quotient},
+                            {'aa_epa': aa_epa}, {'o3_index': o3_index}, {'neut_ul': neut_ul}, {'lymph_ul': lymph_ul},
+                            {'mono_ul': mono_ul}, {'eosi_ul': eosi_ul}, {'baso_ul': baso_ul}, {'rdwcv': rdwcv}, {'hct_w': hct_w},
+                            {'hgb_w': hgb_w}, {'rbc_w': rbc_w}, {'azotemia': azotemia}, {'uric_acid': uric_acid}, {'creatinine_w': creatinine_w},
+                            {'uricemy_w': uricemy_w}, {'cistatine_c': cistatine_c}, {'plt': plt}, {'mpv': mpv}, {'plcr': plcr},
+                            {'pct': pct}, {'pdw': pdw}, {'d_dimero': d_dimero}, {'pai_1': pai_1}, {'tot_chol': tot_chol},
+                            {'ldl_chol': ldl_chol},  {'hdl_chol_w': hdl_chol_w}, {'trigl': trigl},
+                            {'na': na}, {'k': k}, {'mg': mg}, {'ci': ci}, {'ca': ca}, {'p': p}, {'dhea_w': dhea_w},
+                            {'testo_w': testo_w}, {'tsh': tsh}, {'ft3': ft3}, {'ft4': ft4}, {'beta_es_w': beta_es_w}, {'prog_w': prog_w},
+                            {'fe': fe}, {'transferrin': transferrin}, {'ferritin_w': ferritin_w},
+                            {'glicemy': glicemy}, {'insulin': insulin}, {'homa': homa}, {'ir': ir}, {'albuminemia': albuminemia},
+                            {'tot_prot': tot_prot}, {'tot_prot_ele': tot_prot_ele}, {'albumin_ele': albumin_ele}, {'a_1': a_1},
+                            {'a_2': a_2}, {'b_1': b_1}, {'b_2': b_2}, {'gamma': gamma}, {'albumin_dI': albumin_dI},
+                            {'a_1_dI': a_1_dI}, {'a_2_dI': a_2_dI}, {'b_1_dI': b_1_dI}, {'b_2_dI': b_2_dI}, {'gamma_dI': gamma_dI},
+                            {'ag_rap': ag_rap}, {'cm': cm}, {'b_2_spike': b_2_spike}, {'got_w': got_w}, {'gpt_w': gpt_w}, 
+                            {'g_gt_w': g_gt_w},  {'a_photo_w': a_photo_w}, {'tot_bili': tot_bili},
+                            {'direct_bili': direct_bili}, {'indirect_bili': indirect_bili}, {'ves': ves}, {'pcr_c': pcr_c},
+                            {'tnf_a': tnf_a}, {'inter_6': inter_6}, {'inter_10': inter_10}, {'scatolo': scatolo},
+                            {'indicano': indicano}, {'s_weight': s_weight}, {'ph': ph}, {'proteins_ex': proteins_ex},
+                            {'blood_ex': blood_ex}, {'ketones': ketones}, {'uro': uro}, {'bilirubin_ex': bilirubin_ex},
+                            {'leuc': leuc}, {'glucose': glucose}, {'shbg_w': shbg_w}, {'nt_pro': nt_pro},
+                            {'v_b12': v_b12}, {'v_d': v_d}, {'ves2': ves2}, {'telotest': telotest}
+                    ]
 
                     # Calcolo dell'età biologica
                     biological_age = calculate_biological_age(
                         chronological_age, d_roms, osi, pat, wbc, baso,
                         eosi, lymph, mono, neut, rbc_m, hgb_m, 
-                        hct_m, mcv, mch, mchc, rdwsd, exams
+                        hct_m, mcv, mch, mchc, rdwsd, exams, gender=paziente.gender
                     )
 
                     # Salvataggio dei dati
@@ -832,33 +870,73 @@ class CalcolatoreRender(View):
 
                     telotest = safe_float(data, 'telotest')
 
-                    exams = [
-                            my_acid, p_acid, st_acid, ar_acid, beenic_acid, pal_acid, 
-                            ol_acid, ner_acid, a_linoleic_acid, eico_acid, doco_acid, 
-                            lin_acid, gamma_lin_acid, dih_gamma_lin_acid, arachidonic_acid, 
-                            sa_un_fatty_acid, o3o6_fatty_acid_quotient, aa_epa, o3_index,
-                            neut_ul, lymph_ul, mono_ul, eosi_ul, baso_ul, rdwcv, hct_w, 
-                            hgb_w, rbc_w, azotemia, uric_acid, creatinine_m, creatinine_w, 
-                            uricemy_m, uricemy_w, cistatine_c, plt, mpv, plcr, pct, pdw, 
-                            d_dimero, pai_1, tot_chol, ldl_chol, hdl_chol_m, hdl_chol_w, 
-                            trigl, na, k, mg, ci, ca, p, dhea_m, dhea_w, testo_m, 
-                            testo_w, tsh, ft3, ft4, beta_es_m, beta_es_w, prog_m, prog_w, 
-                            fe, transferrin, ferritin_m, ferritin_w, glicemy, insulin, homa, 
-                            ir, albuminemia, tot_prot, tot_prot_ele, albumin_ele, a_1, a_2, 
-                            b_1, b_2, gamma, albumin_dI, a_1_dI, a_2_dI, b_1_dI, b_2_dI, 
-                            gamma_dI, ag_rap, cm, b_2_spike, b_2_spike_m1, got_m, got_w, 
-                            gpt_m, gpt_w, g_gt_m, g_gt_w, a_photo_m, a_photo_w, tot_bili, 
-                            direct_bili, indirect_bili, ves, pcr_c, tnf_a, inter_6, inter_10, 
-                            scatolo, indicano, s_weight, ph, proteins_ex, blood_ex, ketones, 
-                            uro, bilirubin_ex, leuc, glucose, shbg_m, shbg_w, nt_pro, v_b12, 
-                            v_d, ves2, telotest
-                        ]
+
+                    if paziente.gender == 'M':
+                        exams = [
+                        {'my_acid': my_acid}, {'p_acid': p_acid}, {'st_acid': st_acid}, {'ar_acid': ar_acid},
+                        {'beenic_acid': beenic_acid}, {'pal_acid': pal_acid}, {'ol_acid': ol_acid}, {'ner_acid': ner_acid}, 
+                        {'a_linoleic_acid': a_linoleic_acid}, {'eico_acid': eico_acid}, {'doco_acid': doco_acid},
+                        {'lin_acid': lin_acid}, {'gamma_lin_acid': gamma_lin_acid}, {'dih_gamma_lin_acid': dih_gamma_lin_acid},
+                        {'arachidonic_acid': arachidonic_acid}, {'sa_un_fatty_acid': sa_un_fatty_acid},
+                        {'o3o6_fatty_acid_quotient': o3o6_fatty_acid_quotient}, {'aa_epa': aa_epa}, {'o3_index': o3_index},
+                        {'neut_ul': neut_ul}, {'lymph_ul': lymph_ul}, {'mono_ul': mono_ul}, {'eosi_ul': eosi_ul},
+                        {'baso_ul': baso_ul}, {'rdwcv': rdwcv}, {'azotemia': azotemia}, {'creatinine_m': creatinine_m},
+                        {'uricemy_m': uricemy_m}, {'cistatine_c': cistatine_c}, {'plt': plt}, {'pct': pct}, {'pdw': pdw},
+                        {'d_dimero': d_dimero}, {'pai_1': pai_1}, {'tot_chol': tot_chol}, {'ldl_chol': ldl_chol},
+                        {'hdl_chol_m': hdl_chol_m}, {'trigl': trigl}, {'na': na}, {'k': k}, {'mg': mg},
+                        {'ci': ci}, {'ca': ca}, {'p': p}, {'dhea_m': dhea_m}, {'testo_m': testo_m}, {'tsh': tsh}, {'ft3': ft3},
+                        {'ft4': ft4}, {'mpv': mpv}, {'plcr': plcr}, {'uric_acid': uric_acid}, {'beta_es_m': beta_es_m}, 
+                        {'prog_m': prog_m}, {'fe': fe}, {'transferrin': transferrin}, {'ferritin_m': ferritin_m},
+                        {'glicemy': glicemy}, {'insulin': insulin}, {'homa': homa}, {'ir': ir}, {'albuminemia': albuminemia},
+                        {'tot_prot': tot_prot}, {'tot_prot_ele': tot_prot_ele}, {'albumin_ele': albumin_ele}, {'a_1': a_1},
+                        {'a_2': a_2}, {'b_1': b_1}, {'b_2': b_2}, {'gamma': gamma}, {'albumin_dI': albumin_dI},
+                        {'a_1_dI': a_1_dI}, {'a_2_dI': a_2_dI}, {'b_1_dI': b_1_dI}, {'b_2_dI': b_2_dI}, {'gamma_dI': gamma_dI},
+                        {'ag_rap': ag_rap}, {'cm': cm}, {'b_2_spike': b_2_spike}, {'b_2_spike_m1': b_2_spike_m1},
+                        {'got_m': got_m}, {'gpt_m': gpt_m}, {'g_gt_m': g_gt_m}, {'a_photo_m': a_photo_m}, {'tot_bili': tot_bili},
+                        {'direct_bili': direct_bili}, {'indirect_bili': indirect_bili}, {'ves': ves}, {'pcr_c': pcr_c},
+                        {'tnf_a': tnf_a}, {'inter_6': inter_6}, {'inter_10': inter_10}, {'scatolo': scatolo},
+                        {'indicano': indicano},{'ph': ph}, {'proteins_ex': proteins_ex}, {'blood_ex': blood_ex}, {'ketones': ketones},
+                        {'uro': uro}, {'bilirubin_ex': bilirubin_ex}, {'leuc': leuc}, {'glucose': glucose}, {'shbg_m': shbg_m}, 
+                        {'nt_pro': nt_pro}, {'v_b12': v_b12}, {'v_d': v_d}, {'ves2': ves2}, {'telotest': telotest}
+                    ]
+
+
+                    if paziente.gender == 'F':
+                        exams = [
+                            {'my_acid': my_acid}, {'p_acid': p_acid}, {'st_acid': st_acid}, {'ar_acid': ar_acid}, {'beenic_acid': beenic_acid},
+                            {'pal_acid': pal_acid}, {'ol_acid': ol_acid}, {'ner_acid': ner_acid}, {'a_linoleic_acid': a_linoleic_acid},
+                            {'eico_acid': eico_acid}, {'doco_acid': doco_acid}, {'lin_acid': lin_acid}, {'gamma_lin_acid': gamma_lin_acid},
+                            {'dih_gamma_lin_acid': dih_gamma_lin_acid}, {'arachidonic_acid': arachidonic_acid},
+                            {'sa_un_fatty_acid': sa_un_fatty_acid}, {'o3o6_fatty_acid_quotient': o3o6_fatty_acid_quotient},
+                            {'aa_epa': aa_epa}, {'o3_index': o3_index}, {'neut_ul': neut_ul}, {'lymph_ul': lymph_ul},
+                            {'mono_ul': mono_ul}, {'eosi_ul': eosi_ul}, {'baso_ul': baso_ul}, {'rdwcv': rdwcv}, {'hct_w': hct_w},
+                            {'hgb_w': hgb_w}, {'rbc_w': rbc_w}, {'azotemia': azotemia}, {'uric_acid': uric_acid}, {'creatinine_w': creatinine_w},
+                            {'uricemy_w': uricemy_w}, {'cistatine_c': cistatine_c}, {'plt': plt}, {'mpv': mpv}, {'plcr': plcr},
+                            {'pct': pct}, {'pdw': pdw}, {'d_dimero': d_dimero}, {'pai_1': pai_1}, {'tot_chol': tot_chol},
+                            {'ldl_chol': ldl_chol},  {'hdl_chol_w': hdl_chol_w}, {'trigl': trigl},
+                            {'na': na}, {'k': k}, {'mg': mg}, {'ci': ci}, {'ca': ca}, {'p': p}, {'dhea_w': dhea_w},
+                            {'testo_w': testo_w}, {'tsh': tsh}, {'ft3': ft3}, {'ft4': ft4}, {'beta_es_w': beta_es_w}, {'prog_w': prog_w},
+                            {'fe': fe}, {'transferrin': transferrin}, {'ferritin_w': ferritin_w},
+                            {'glicemy': glicemy}, {'insulin': insulin}, {'homa': homa}, {'ir': ir}, {'albuminemia': albuminemia},
+                            {'tot_prot': tot_prot}, {'tot_prot_ele': tot_prot_ele}, {'albumin_ele': albumin_ele}, {'a_1': a_1},
+                            {'a_2': a_2}, {'b_1': b_1}, {'b_2': b_2}, {'gamma': gamma}, {'albumin_dI': albumin_dI},
+                            {'a_1_dI': a_1_dI}, {'a_2_dI': a_2_dI}, {'b_1_dI': b_1_dI}, {'b_2_dI': b_2_dI}, {'gamma_dI': gamma_dI},
+                            {'ag_rap': ag_rap}, {'cm': cm}, {'b_2_spike': b_2_spike}, {'got_w': got_w}, {'gpt_w': gpt_w}, 
+                            {'g_gt_w': g_gt_w},  {'a_photo_w': a_photo_w}, {'tot_bili': tot_bili},
+                            {'direct_bili': direct_bili}, {'indirect_bili': indirect_bili}, {'ves': ves}, {'pcr_c': pcr_c},
+                            {'tnf_a': tnf_a}, {'inter_6': inter_6}, {'inter_10': inter_10}, {'scatolo': scatolo},
+                            {'indicano': indicano}, {'s_weight': s_weight}, {'ph': ph}, {'proteins_ex': proteins_ex},
+                            {'blood_ex': blood_ex}, {'ketones': ketones}, {'uro': uro}, {'bilirubin_ex': bilirubin_ex},
+                            {'leuc': leuc}, {'glucose': glucose}, {'shbg_w': shbg_w}, {'nt_pro': nt_pro},
+                            {'v_b12': v_b12}, {'v_d': v_d}, {'ves2': ves2}, {'telotest': telotest}
+                    ]
+
 
                     # Calcolo dell'età biologica
                     biological_age = calculate_biological_age(
                         chronological_age, d_roms, osi, pat, wbc, baso,
                         eosi, lymph, mono, neut, rbc_m, hgb_m, 
-                        hct_m, mcv, mch, mchc, rdwsd, exams
+                        hct_m, mcv, mch, mchc, rdwsd, exams, gender=paziente.gender
                     )
 
                     # Salvataggio dei dati
@@ -1041,9 +1119,12 @@ class CalcolatoreRender(View):
                 return render(request, "includes/calcolatore.html", context)
 
         except Exception as e:
-    
+            error_message = f"System error: {str(e)}\n{traceback.format_exc()}"
+            print(error_message)
+
             context = {
-                "error": "system error: " + str(e) + " --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova.",
+                "error": "Si è verificato un errore di sistema. Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova.",
+                "dettaglio": error_message 
             }
             return render(request, "includes/calcolatore.html", context)
 
@@ -1109,33 +1190,49 @@ class PersonaDetailView(View):
 class CartellaPazienteView(View):
 
     def get(self, request, id):
-        # Ottieni il paziente con l'ID specificato
-        persona = get_object_or_404(TabellaPazienti, id=id)
-
-        # Ottieni i 5 referti più recenti del paziente
-        referti_recenti = persona.referti.all().order_by('-data_referto')
-
-        # Ottieni i dati estesi associati a questi referti
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
-
-        # Ottieni l'ultimo referto (il più recente)
-        ultimo_referto = referti_recenti.first() if referti_recenti else None
-
+        
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=id)
 
-        # Ottieni i dati estesi dell'ultimo referto
+        #DATI REFERTI ETA' BIOLOGICA
+        referti_recenti = persona.referti.all().order_by('-data_referto')
+        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+        ultimo_referto = referti_recenti.first() if referti_recenti else None
+        
         dati_estesi_ultimo_referto = None
         if ultimo_referto:
             dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
 
+        #DATI REFERTI PRESCRIZIONI
+        json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
+
+        if not os.path.exists(json_path):
+            return JsonResponse({"error": f"File JSON non trovato: {json_path}"}, status=404)
+
+        with open(json_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        codiciEsami = PrescrizioniUtenti.objects.filter(paziente=persona)
+
+        esamiList = []
+
+        for codici in codiciEsami:
+            print(f"Codice trovato: {codici.codicePrescrizione}")
+
+            for esame in data['Foglio1']:
+                if int(codici.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
+                    esamiList.append(esame)
+        
+        
         context = {
             'persona': persona,
             'referti_recenti': referti_recenti,
             'dati_estesi': dati_estesi,
             'ultimo_referto': ultimo_referto,
             'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
-            'dottore' : dottore
+            'dottore' : dottore,
+            'esamiPrescritti' : esamiList
         }
 
         return render(request, "includes/cartellaPaziente.html", context)
@@ -1638,7 +1735,6 @@ def referti_view(request, referto_id):
 class PrescrizioniView(View):
 
     def get(self, request, persona_id):
-
         json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
 
         if not os.path.exists(json_path):
@@ -1653,24 +1749,25 @@ class PrescrizioniView(View):
         esamiList = []
 
         for codici in codiciEsami:
-            print(f"Codice trovato: {codici.codicePrescrizione}")
-
             for esame in data['Foglio1']:
                 if int(codici.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
                     esamiList.append(esame)
-        
 
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
+        success_message = request.session.pop('success', None)
+        error_message = request.session.pop('errore', None)
+
         context = {
             'persona': persona,
             'dottore': dottore,
-            'esamiPrescritti' : esamiList
+            'esamiPrescritti': esamiList,
+            'success': success_message, 
+            'errore': error_message, 
         }
 
         return render(request, "includes/prescrizioni.html", context)
-
 
 
     def post(self, request, persona_id):
@@ -1696,78 +1793,63 @@ class PrescrizioniView(View):
                 prescrizione.save()
                 esami_nuovi.append(codice)
 
-        codiciEsami = PrescrizioniUtenti.objects.filter(paziente=persona)
-
-        esamiList = []
-        for codice in codiciEsami:
-            for esame in data['Foglio1']:
-                if int(codice.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
-                    esamiList.append(esame)
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-    
         if esami_duplicati:
-
-            print(esami_duplicati)
             with open(json_path, "r", encoding="utf-8") as file:
                 data = json.load(file)
             
             dataList = data['Foglio1']
-            
             nome_esame = ''
 
             for dictionary in dataList:
                 if int(dictionary['CODICE_UNIVOCO_ESAME_PIATTAFORMA']) == int(esami_duplicati[0]):
                     nome_esame = dictionary['DESCRIZIONE_ESAME']
 
+            request.session['errore'] = f"L'esame '{nome_esame}' è già presente nell'elenco delle prescrizioni per questo paziente"
+        else:
+            
+            request.session['success'] = "Le prescrizioni sono state correttamente aggiunte"
 
-            context = {
-                'persona': persona,
-                'dottore': dottore,
-                'esamiPrescritti': esamiList,
-                'errore': f"L'esame '{nome_esame}' è già presente nell'elenco delle prescrizioni per questo paziente"
-            }
+        return redirect('prescrizioni', persona_id)
+ 
 
 
-            return render(request, "includes/prescrizioni.html", context)
-        
-        context = {
-            'persona': persona,
-            'dottore': dottore,
-            'esamiPrescritti': esamiList,
-            'success': "Le prescrizioni sono state correttamente aggiunte"   
-        }
 
-        return render(request, "includes/prescrizioni.html", context)
 
 
 
 class DeletePrescrizioniView(View):
-
-        def post(self, request, persona_id):
-
+    
+    def post(self, request, persona_id):
+        try:
             persona = get_object_or_404(TabellaPazienti, id=persona_id)
-            dottore_id = request.session.get('dottore_id')
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
             codice_univoco = request.POST.get("codiceUnivoco")
+
+            if not codice_univoco:
+                return JsonResponse({"error": "Codice esame non fornito"}, status=400)
+
             esame = PrescrizioniUtenti.objects.filter(paziente=persona, codicePrescrizione=codice_univoco)
 
-            if esame.exists():
-                esame.delete()
-                print("Esame eliminato correttamente.")
-            else:
-                print("Nessun esame trovato con i criteri dati.")
-                
-            esamiList = PrescrizioniUtenti.objects.filter(paziente=persona)
+            if not esame.exists():
+                return JsonResponse({"error": "Esame non trovato"}, status=404)
 
-            context = {
-                'persona': persona,
-                'dottore': dottore,
-                'esamiPrescritti': esamiList
-            }
-            return render(request, "includes/prescrizioni.html", context)
+            nome_esame = ""
+            primo_elemento = esame.first()
+
+            json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
+            if os.path.exists(json_path):
+                with open(json_path, "r", encoding="utf-8") as file:
+                    data = json.load(file)
+                    for dictionary in data.get("Foglio1", []):
+                        if int(dictionary["CODICE_UNIVOCO_ESAME_PIATTAFORMA"]) == int(primo_elemento.codicePrescrizione):
+                            nome_esame = dictionary["DESCRIZIONE_ESAME"]
+
+            esame.delete()
+
+            request.session['success'] = f"L'esame '{nome_esame}' è stato eliminato"
+
+            return JsonResponse({"reload": True}) 
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
 
 

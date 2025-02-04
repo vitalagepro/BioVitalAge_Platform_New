@@ -82,56 +82,7 @@
                           <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path></svg>
                     </a>
 
-                    <a href="{% url 'prescrizioni' persona.id %}" class="button" style="height: 2.5rem; border-radius: 12px;"> 
-                        <span class="button__icon-wrapper">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                width="18"
-                                class="button__icon-svg"
-                                >
-                                <circle
-                                    cx="12"
-                                    cy="7"
-                                    r="4"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                ></circle>
-                                <path
-                                    d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                ></path>
-                            </svg>
-
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                width="18"
-                                class="button__icon-svg button__icon-svg--copy"
-                                >
-                                <circle
-                                    cx="12"
-                                    cy="7"
-                                    r="4"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                ></circle>
-                                <path
-                                    d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                ></path>
-                            </svg>
-                        </span>
-                        Prescrizioni
-                    </a>
+                    
                     
                 </div>
             </div>
@@ -263,6 +214,8 @@
             </div>
 
         </div>
+
+
         <!-- CARD SEZIONI DATI BASE E COMPOSIZIONE CORPOREA -->
         <div class="container-sezioniInterne containerStyle">
             <div class="cardDati">
@@ -338,18 +291,79 @@
         <!-- TABELLA ELENCO PRESCRIZIONI -->
         <div class="contenitore-tabella" style="margin-top: 0; ">
             <div class="recent-patients" id="card-style">
+
                 <div class="contenitore-header">
                     <h3>Elenco Prescrizioni</h3>
+
                     <div class="filtri-button">
+
                         <select name="filter" id="filter">
-                            <option>-- Ordina per --</option>
-                            <option value="name">Data più recente</option>
-                            <option value="surname">Data meno recente</option>
-                            <option value="fisc_code">Valore positivo</option>
-                            <option value="personal_association">Valore negativo</option>
+
+                            <option>Tutti</option>
+                            <option value="0">Descrizione Esame Crescente</option>
+                            <option value="1">Descrizione Esame Decrescente</option>
+                            <option value="2">Metodica</option>
+                            <option value="3">Codice Asl</option>
+                            <option value="4">Codice Regione</option>
+                            <option value="5">Apparati / Sitemi</option>
+
                         </select>
+
+                        <a href="{% url 'prescrizioni' persona.id %}" class="button" style="width: 15rem;"> 
+                            <span class="button__icon-wrapper">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    width="18"
+                                    class="button__icon-svg"
+                                    >
+                                    <circle
+                                        cx="12"
+                                        cy="7"
+                                        r="4"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    ></circle>
+                                    <path
+                                        d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    ></path>
+                                </svg>
+    
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    width="18"
+                                    class="button__icon-svg button__icon-svg--copy"
+                                    >
+                                    <circle
+                                        cx="12"
+                                        cy="7"
+                                        r="4"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    ></circle>
+                                    <path
+                                        d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    ></path>
+                                </svg>
+                            </span>
+                            Aggiungi Prescrizioni
+                        </a>
+
                     </div>
+
                 </div>
+
                 <div class="table-container">
                     <div class="table-header">
                         <p>Codice univoco esame piattaforma</p>
@@ -360,25 +374,24 @@
                         <p>Visualizza Prescrizione</p>
                     </div>
                     <div class="table-content prescriptions">
-                        {% for prescription in prescriptions %}
+
+
+                        {% for esami in esamiPrescritti %}
                         <div class="riga-container">
-                            <p>{{ persona.unique_code|default:"N/A" }}</p>
-                            {% for dato in dati_estesi %}
-                            {% if dato.prescription.id == prescription.id %}
-                            <p>{{ dato.exam_description|default:"N/A" }}</p>
-                            {% endif %}
-                            {% endfor %}
-                            <p>{{ referto.codice_asl|default:"N/A" }}</p>
-                            <p>{{ referto.codice_reg|default:"N/A" }}</p>
-                            <p>{{ referto.apparato|default:"N/A" }}</p>
+                            
+                            <p>{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}</p>
+                            <p>{{ esami.DESCRIZIONE_ESAME }}</p>
+                            <p>{{ esami.COD_ASL }}</p>
+                            <p>{{ esami.COD_REG }}</p>
+                            <p>{{ esami.METODICA }}</p>
+                            <p style="padding:10px;">{{ esami.APPARATO_or_I_SISTEMI|slice:":50" }}</p>
                             <p>
-                                <a href="{% url 'persona_detail' persona.id %}?referto_id={{ referto.id }}"
-                                    data-referto-id="{{ referto.id }}"
-                                    data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
-                                    <img src="{% static 'includes/icone/referto.png' %}" alt="" />
+                                <a href="#">
+                                   <img src="{% static 'includes/icone/referto.png' %}" alt="" />
                                 </a>
                             </p>
                         </div>
+         
                         {% empty %}
                         <p class="text-center mt-2 mb-2">No recent prescription found.</p>
                         {% endfor %}
