@@ -135,7 +135,9 @@ def adjust_age_rdw(rdw):
     return 0
 
 def adjust_age_glucose(glucose):
-    glucose = float(glucose) if glucose else 0  # Conversione a float
+
+    glucose = float(glucose) if glucose else 0 
+
     if 70 <= glucose <= 105:
         return 0  # Range normale
     elif 106 <= glucose <= 140:
@@ -276,29 +278,20 @@ def adjust_age_pat(pat):
     else:
         return -5
 
-def adjust_age_exams(exams):
+
+
+# Funzione del calcolo del range
+def is_value_in_range(key, value, normal_values):
+    if key in normal_values:
+        min_val, max_val = normal_values[key] 
+        return min_val <= value <= max_val  
+    return False  
+     
+def adjust_age_examsF(exams):
     age_adjustment = 0
+   
     normal_values = {
         'glucose': (0, 5),
-
-        #UOMO
-        'creatinine_m': (0.7, 1.2),
-        'uricemy_m':(0.56, 5.7),
-        'dhea_m':(0.084, 0.408),
-        'hdl_chol_m': (35, 55),
-        'testo_m':(2.49, 8.36),
-        'ferritin_m': (30, 400),
-        'gpt_m': (0, 41),
-        'g_gt_m': (0, 60),
-        'a_photo_m': (40, 129),
-        'got_m': (0, 40),
-        'beta_es_m':(11.3, 43.2),
-        'prog_m':(0.05, 0.149),
-        'shbg_m':(14.4, 70.7),
-        'hct_m':(42, 54),
-        'hgb_m':(13,17),
-        'rbc_m':(4.5, 6.0),
-
 
         #DONNA
         'creatinine_w': (0.5, 0.9), 
@@ -317,7 +310,6 @@ def adjust_age_exams(exams):
         'hct_w':(38, 48),
         'hgb_w':(12, 16),
         'rbc_w':(4.0, 5.5),
-
 
         #GENERIC
         'my_acid': (24, 64),
@@ -406,25 +398,167 @@ def adjust_age_exams(exams):
         'v_d': (10, 100),
         'telotest':(0, 0.49),
         'ves2': (5, 15),
-
-        # 'uric_acid',
-        #'cm',
-        #'b_2_spike', 
-        #'b_2_spike_m1', 
    }
-    for key, value in exams.items():
-        value = float(value) if value else 0
-        if normal_values.get(key) and not (normal_values[key][0] <= value <= normal_values[key][1]):
-            age_adjustment += 1 
+    
+    for exam in exams:
+        for key, value in exam.items():
+            if isinstance(value, (int, float, str)): 
+                value = float(value) if value else 0
+            else:
+                print(f"⚠️ Errore: Il valore di '{key}' non è un numero, ma un {type(value)}: {value}")
+                value = 0  
+
+            if key in normal_values:
+                if is_value_in_range(key, value, normal_values):
+                    age_adjustment -= 0.2
+                else:
+                    age_adjustment += 0.4
+
     return age_adjustment
+
+def adjust_age_examsM(exams):
+    age_adjustment = 0
+
+    normal_values = {
+        'glucose': (0, 5),
+
+        #UOMO
+        'creatinine_m': (0.7, 1.2),
+        'uricemy_m':(0.56, 5.7),
+        'dhea_m':(0.084, 0.408),
+        'hdl_chol_m': (35, 55),
+        'testo_m':(2.49, 8.36),
+        'ferritin_m': (30, 400),
+        'gpt_m': (0, 41),
+        'g_gt_m': (0, 60),
+        'a_photo_m': (40, 129),
+        'got_m': (0, 40),
+        'beta_es_m':(11.3, 43.2),
+        'prog_m':(0.05, 0.149),
+        'shbg_m':(14.4, 70.7),
+        'hct_m':(42, 54),
+        'hgb_m':(13,17),
+        'rbc_m':(4.5, 6.0),
+
+        #GENERIC
+        'my_acid': (24, 64),
+        'p_acid': (609, 893),
+        'st_acid': (186, 279),
+        'ar_acid': (5, 9),
+        'beenic_acid': (14, 26),
+        'pal_acid': (48, 124), 
+        'ol_acid': (593, 916),
+        'ner_acid': (24, 41),
+        'a_linoleic_acid': (13, 33),
+        'eico_acid': (16, 61),
+        'doco_acid': (44, 111), 
+        'lin_acid': (781, 1167),
+        'gamma_lin_acid': (8, 25),
+        'dih_gamma_lin_acid': (37, 75),
+        'arachidonic_acid': (188, 343),
+        'sa_un_fatty_acid': (0.4, 0.6),
+        'o3o6_fatty_acid_quotient': (5-14, 64),
+        'aa_epa': (0, 4),
+        'o3_index': (6, 8),
+        'rdwcv': (11.0, 15.0),
+        'azotemia': (16.6, 48.5),
+        'cistatine_c': (0.56, 0.95),
+        'plt': (150, 450),
+        'mpv': (9.1, 12.3),
+        'plcr': (16.4, 44.2),
+        'pct': (0.158, 0.425),
+        'pdw': (10, 16),
+        'd_dimero': (0, 200),
+        'pai_1': (98, 122),
+        'tot_chol': (0, 200),
+        'ldl_chol': (0, 100),
+        'trigl': (150, 200),
+        'na':(136, 145),
+        'k':(3.5, 5.1),
+        'mg':(1.6, 2.6),
+        'ci':(98, 107),
+        'ca':(8.6, 10.0),
+        'p':(2.5, 4.5),
+        'tsh':(0.270, 4.20),
+        'ft3':(2.0, 4.4),
+        'ft4':(0.93, 1.70),
+        'fe':(33, 193),
+        'transferrin': (200, 360),
+        'glicemy': (74, 106),
+        'insulin': (3, 16),
+        'homa': (0.23, 2.5),
+        'ir': (1, 3),
+        'albuminemia':(3.50, 5.20),
+        'tot_prot': (6.6, 8.7),
+        'tot_prot_ele': (6.6, 8.7),
+        'albumin_ele': (52.7, 67.4),
+        'a_1': (3.6, 8.0),
+        'a_2': (6.4, 11.50),
+        'b_1': (5.2, 8.30),
+        'b_2': (2.2, 8.0),
+        'gamma': (8.7, 18.0),
+        'albumin_dI': (3.50, 5.20),
+        'a_1_dI': (0.24, 0.70),
+        'a_2_dI': (0.42, 1.0),
+        'b_1_dI': (0.34, 0.72),
+        'b_2_dI': (0.15, 0.70),
+        'gamma_dI': (0.57, 1.56),
+        'ag_rap': (1.20, 2.06),
+        'tot_bili': (0, 1.20),
+        'direct_bili':(0, 0.30),
+        'indirect_bili':(0, 1.00),
+        'ves':(0, 20),
+        'pcr_c':(0, 5),
+        'tnf_a':(4.60, 12.40),
+        'inter_6':(0, 4.4),
+        'inter_10':(0, 10.8),
+        'scatolo': (10, 40),
+        'indicano': (20, 80),
+        's_weight':(1000, 1030),
+        'ph':(5.0, 9.0),
+        'proteins_ex':(0, 15),
+        'blood_ex':(0, 0),
+        'ketones':(0, 5),
+        'uro':(0, 17),
+        'bilirubin_ex':(0, 1),
+        'leuc':(0, 15),
+        'nt_pro': (0, 125),
+        'v_b12': (5, 15),
+        'v_d': (10, 100),
+        'telotest':(0, 0.49),
+        'ves2': (5, 15),
+   }
+    
+    for exam in exams:
+        for key, value in exam.items():
+            if isinstance(value, (int, float, str)): 
+                value = float(value) if value else 0
+            else:
+                print(f"⚠️ Errore: Il valore di '{key}' non è un numero, ma un {type(value)}: {value}")
+                value = 0  
+
+            if key in normal_values:
+                print(age_adjustment)
+
+                if is_value_in_range(key, value, normal_values):
+                    age_adjustment -= 2  
+                else:
+                    age_adjustment += 4  
+
+    return int(age_adjustment)
+
 
 def calculate_biological_age(chronological_age, d_roms, osi, pat, wbc, basophils,
                 eosinophils, lymphocytes, monocytes, neutrophils, rbc, hgb, 
-                hct, mcv, mch, mchc, rdw, exams):
+                hct, mcv, mch, mchc, rdw, exams, gender):
     
     biological_age = chronological_age
 
-
+    if gender == 'M':
+        biological_age += adjust_age_examsM(exams)
+    
+    if gender == 'F':
+        biological_age += adjust_age_examsF(exams)
 
     # Aggiustamenti basati sui vari parametri
     biological_age += adjust_age_d_roms(d_roms)
@@ -445,16 +579,15 @@ def calculate_biological_age(chronological_age, d_roms, osi, pat, wbc, basophils
     biological_age += adjust_age_rdw(rdw)
 
     # Aggiustamenti basati sugli esami specifici
-    biological_age += adjust_age_glucose(exams[0])
-    biological_age += adjust_age_creatinine(exams[1])
-    biological_age += adjust_age_ferritin(exams[2])
-    biological_age += adjust_age_albumin(exams[3])
-    biological_age += adjust_age_protein(exams[4])
-    biological_age += adjust_age_bilirubin(exams[5])
-    biological_age += adjust_age_uric_acid(exams[6])
+    biological_age += adjust_age_glucose(exams[0].get('glucose', 0))
+    biological_age += adjust_age_creatinine(exams[1].get('creatinine_m', 0))
+    biological_age += adjust_age_ferritin(exams[2].get('ferritin_m', 0))
+    biological_age += adjust_age_albumin(exams[3].get('albuminemia', 0))
+    biological_age += adjust_age_protein(exams[4].get('tot_prot', 0))
+    biological_age += adjust_age_bilirubin(exams[5].get('tot_bili', 0))
+    biological_age += adjust_age_uric_acid(exams[6].get('uric_acid', 0))
 
-
-    return biological_age 
+    return int(biological_age)
 
 
 
