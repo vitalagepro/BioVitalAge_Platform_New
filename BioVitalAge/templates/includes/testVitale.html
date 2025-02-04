@@ -881,8 +881,175 @@
                         </div>
                     </div>
                     
-                    <!-- SISTEMA IMMUNITARIO -->
                     <div class="question" data-group="7">
+                        <h3 class="mt-2">Dominio della Vitalità</h3>
+                        <h4>Indice di massa corporea(BMI)</h4>
+                        <!-- BMI -->
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">Risultato</p>
+                                <p class="subtitle">Valori di riferimento</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>BMI</p>
+                                    <p>
+                                        <input type="text" name="bmi-1" required placeholder="Inserisci il valore">
+                                    </p>
+                                    <p id="long-p">
+                                        <span class="small-text">Ottimale (0): Handgrip alto + Peak Flow alto + BMI normale (18.5-25)</span>
+                                        <span class="small-text">Lieve compromissione (1): Uno tra handgrip basso, Peak Flow ridotto o BMI sovrappeso/sottopeso</span>
+                                        <span class="small-text">Grave compromissione (2): Handgrip molto basso + Peak Flow molto ridotto + BMI <18.5 o >30</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Circonferenza polpaccio -->
+                        <h4 class="mt-2">Circonferenza polpaccio</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">0</p>
+                                <p class="subtitle">1</p>
+                                <p class="subtitle">2</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Punteggio</p>
+                                    <p><input type="radio" name="cir_polp_1"  value="0" required></p>
+                                    <p><input type="radio" name="cir_polp_1"  value="1" required></p>
+                                    <p><input type="radio" name="cir_polp_1"  value="2" required></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Weist-hip ratio -->
+                        <h4 class="mt-2">Weist-hip ratio</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">0</p>
+                                <p class="subtitle">1</p>
+                                <p class="subtitle">2</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Punteggio</p>
+                                    <p><input type="radio" name="wh_ratio_1"  value="0" required></p>
+                                    <p><input type="radio" name="wh_ratio_1"  value="1" required></p>
+                                    <p><input type="radio" name="wh_ratio_1"  value="2" required></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Weist-height ratio -->
+                        <h4 class="mt-2">Weist-height ratio:</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">0</p>
+                                <p class="subtitle">1</p>
+                                <p class="subtitle">2</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Punteggio</p>
+                                    <p><input type="radio" name="w_height_ratio_1" value="0" required></p>
+                                    <p><input type="radio" name="w_height_ratio_1" value="1" required></p>
+                                    <p><input type="radio" name="w_height_ratio_1" value="2" required></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DOMINIO DELLA LOCOMOZIONE -->
+                    <div class="question" data-group="8">
+                        <h3>Dominio della Locomozione</h3>
+                        
+                        <h4>Test di alzata da sedia (Chair Stand Test)</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">N° Ripetizioni</p>
+                                <p class="subtitle">Tempo tot in secondi</p>
+                                <p class="subtitle">Formula del punteggio</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>5STS</p>
+                                    <p>
+                                        <input type="text" name="numero_rip" required placeholder="Inserisci il valore">
+                                    </p>
+                                    <p>
+                                        <input type="text" name="tot_secondi" required placeholder="Inserisci il valore">
+                                    </p>
+                                    <p id="long-p">
+                                        <span>Punteggio 5STS = </span>
+                                        <span>Numero di ripetizioni (5) <br> <span class="line-divisor d-block"></span> </span>
+                                        <span>Tempo totale in secondi</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="mt-2">Test della velocità del cammino (Gait Speed)</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">Distanza</p>
+                                <p class="subtitle">Tempo in secondi</p>
+                                <p class="subtitle">Formula del punteggio</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Gait Speed</p>
+                                    <p>
+                                        <input type="text" name="distanza" required placeholder="Inserisci il valore">
+                                    </p>
+                                    <p>
+                                        <input type="text" name="tempo_s" required placeholder="Inserisci il valore">
+                                    </p>
+                                    <p id="long-p">
+                                        <span>Velocità di andatura = </span>
+                                        <span>Distanza (3 metri) <br> <span class="line-divisor d-block"></span> </span>
+                                        <span>Tempo in secondi</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="mt-2">Pick Pencil Test</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">Tempo in secondi</p>
+                                <p class="subtitle">Formula del punteggio</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>
+                                        <input type="text" name="tempo_s_pick" required placeholder="Inserisci il valore">
+                                    </p>
+                                    <p id="long-p">
+                                        <span>Punteggio Pick Pencil Test = </span>
+                                        <span>1</span>
+                                        <span><span class="line-divisor d-block"></span> Tempo in secondi</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SISTEMA IMMUNITARIO -->
+                    <div class="question" data-group="11">
                         <h3>Sistema Immunitario</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
@@ -961,7 +1128,7 @@
                     </div>
 
                     <!-- BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE -->
-                    <div class="question" data-group="8">
+                    <div class="question" data-group="12">
                         <h3>Biomarcatori Circolanti dell'infiammazione</h3>
                         <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
 
@@ -1089,7 +1256,7 @@
                     </div>
 
                     <!-- ENERGIA E METABOLISMO -->
-                    <div class="question" data-group="9">
+                    <div class="question" data-group="13">
                         <h3>Energia e Metabolismo</h3>
                         <p style="margin-top: 0rem;">Questionario sulla stanchezza percepita (Fatigue Severity Scale)</p>
                         
@@ -1199,7 +1366,7 @@
                         </div>  
                     </div>
 
-                    <div class="question" data-group="10">
+                    <div class="question" data-group="14">
                         <h3>Energia e Metabolismo</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header" style="height: 4rem;">
@@ -1275,7 +1442,7 @@
                     </div>
           
                     <!-- BIOMARCATORI CIRCOLANTI DEL METABOLISMO -->
-                    <div class="question" data-group="11">
+                    <div class="question" data-group="15">
                         <h3>Biomarcatori Circolanti del Metabolismo</h3>
                         <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
 
@@ -1464,7 +1631,7 @@
                     </div>
                
                     <!-- FUNZIONE NEUROMUSCOLARE -->
-                    <div class="question" data-group="12">
+                    <div class="question" data-group="16">
                         <h3>Funzione Neuromuscolare</h3>
                         <p style="margin-top: 0rem;">Questionario Sarcopenia</p>
                         
@@ -1514,7 +1681,7 @@
                         </div>  
                     </div>
 
-                    <div class="question" data-group="13">
+                    <div class="question" data-group="17">
                         <h3>Funzione Neuromuscolare</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
@@ -1542,7 +1709,7 @@
                     </div>
 
                     <!-- PERFORMANCE FISICA -->
-                    <div class="question" data-group="14">
+                    <div class="question" data-group="18">
                         <h3>Performance Fisica</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
