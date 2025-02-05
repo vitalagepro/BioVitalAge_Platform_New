@@ -36,24 +36,23 @@ document.addEventListener("DOMContentLoaded", function () {
     function updatePaginationControls() {
       let existingControls = table.querySelector(".pagination-controls");
 
-      // Rimuovere i controlli esistenti
+ 
       if (existingControls) existingControls.remove();
 
-      // Condizione per mostrare la paginazione solo se necessario
+
       if (rows.length > rowsPerPage) {
         const controls = document.createElement("div");
         controls.classList.add("pagination-controls");
 
-        const range = 10; // Numero massimo di bottoni visibili
+        const range = 10;
         let startPage = Math.max(1, currentPage - Math.floor(range / 2));
         let endPage = Math.min(totalPages, startPage + range - 1);
 
-        // Aggiusta la visualizzazione se siamo vicini all'inizio o alla fine
+
         if (endPage - startPage < range - 1) {
           startPage = Math.max(1, endPage - range + 1);
         }
 
-        // Bottone per andare alla prima pagina
         if (startPage > 1) {
           const firstPageBtn = document.createElement("button");
           firstPageBtn.classList.add("button-style-pagination");
@@ -71,7 +70,6 @@ document.addEventListener("DOMContentLoaded", function () {
           controls.appendChild(dots);
         }
 
-        // Bottoni numerati
         for (let i = startPage; i <= endPage; i++) {
           const btn = document.createElement("button");
           btn.classList.add("button-style-pagination");
@@ -87,7 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
           controls.appendChild(btn);
         }
 
-        // Bottone per andare all'ultima pagina
         if (endPage < totalPages) {
           const dots = document.createElement("span");
           dots.textContent = "...";
