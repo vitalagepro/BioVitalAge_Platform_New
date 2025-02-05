@@ -499,3 +499,35 @@ document.addEventListener("DOMContentLoaded", () => {
     "Cholesterol"
   );
 });
+
+
+
+
+
+/* FILTRI TABELLA PRESCRIZIONE */
+document.addEventListener("DOMContentLoaded", function () {
+  const filterSelect = document.getElementById("filter");
+  const tableContent = document.querySelector(".table-content.prescriptions");
+
+  filterSelect.addEventListener("change", function () {
+      let selectedFilter = filterSelect.value;
+      let rows = Array.from(tableContent.getElementsByClassName("riga-container"));
+
+      if (selectedFilter === "Tutti") {
+          rows.forEach(row => row.style.display = "flex");
+          return;
+      }
+
+      let columnIndex = parseInt(selectedFilter, 10);
+      let isAscending = columnIndex === 0;
+
+      rows.sort((a, b) => {
+          let textA = a.getElementsByTagName("p")[columnIndex].innerText.trim().toLowerCase();
+          let textB = b.getElementsByTagName("p")[columnIndex].innerText.trim().toLowerCase();
+
+          return isAscending ? textA.localeCompare(textB) : textB.localeCompare(textA);
+      });
+
+      rows.forEach(row => tableContent.appendChild(row));
+  });
+});

@@ -370,6 +370,7 @@
                         <p>Descrizione Esame</p>
                         <p>Cod ASL</p>
                         <p>Cod REG</p>
+                        <p>Metodica</p>
                         <p>Apparato\i Sistemi</p>
                         <p>Visualizza Prescrizione</p>
                     </div>
@@ -384,7 +385,7 @@
                             <p>{{ esami.COD_ASL }}</p>
                             <p>{{ esami.COD_REG }}</p>
                             <p>{{ esami.METODICA }}</p>
-                            <p style="padding:10px;">{{ esami.APPARATO_or_I_SISTEMI|slice:":50" }}</p>
+                            <p style="padding:10px; text-align: center;">{{ esami.APPARATO_or_I_SISTEMI|slice:":40" }}</p>
                             <p>
                                 <a href="#">
                                    <img src="{% static 'includes/icone/referto.png' %}" alt="" />
