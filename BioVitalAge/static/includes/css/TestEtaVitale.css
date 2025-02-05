@@ -219,7 +219,11 @@ input:disabled{
     color: var(--dark1);
     font-weight: 100;
 }
-
+.line-divisor{
+    height: 1px;
+    background: #232323;
+    width: 100%;
+}
 
 
 

@@ -13,11 +13,11 @@
         <div class="col-md-8 nav-bar-linkage">
             <a href="{% url 'Risultati' %}"
                 class="{% if request.resolver_match.url_name == 'Risultati' %}active-link{% endif %}">
-                Patients
+                Pazienti
             </a>
             <a href="{% url 'Calcolatore' %}"
                 class="{% if request.resolver_match.url_name == 'Calcolatore' %}active-link{% endif %}">
-                BioVitalAge Clock
+                Calcolatore BioVitalAge
             </a>
         </div>
 
@@ -30,7 +30,7 @@
                 <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user">
             </div>
             <div class="nav-bar-user-modal" id="userModal">
-                <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn" onclick="window.location.href='{% url 'logout' %}'">Log out</button> <!-- @ts-ignore  -->
+                <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn" onclick="window.location.href='{% url 'logout' %}'">Disconnettiti</button> <!-- @ts-ignore  -->
             </div>
         </div>
     </nav>

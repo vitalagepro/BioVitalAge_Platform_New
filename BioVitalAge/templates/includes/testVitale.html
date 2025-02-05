@@ -529,330 +529,444 @@
                         <div class="tableAnswer" id="esami">
                             <div class="tableAnswer-header">
                                 <p class="subtitle">Età</p>
-                                <p class="subtitle">Uomo</p>
-                                <p class="subtitle">Donna</p>
+                                {% if persona.gender == "M" %}
+                                <p class="subtitle">Paziente Uomo</p>
                                 <p class="subtitle">Valori di riferimento uomini</p>
+                                {% else %}
+                                <p class="subtitle">Paziente Donna</p>
                                 <p class="subtitle">Valori di riferimento donne</p>
+                                {% endif %}
                             </div>
                             <div class="tableAnswer-container" id="secondTypeTable">
                                 <div class="tableRow">
                                     <p>10 - 11</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-1" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-1" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <12.6 </span>
                                         <span>Normal: 12.6-22.4 </span>
                                         <span>Strong: >22.4 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <11.8 </span>
                                         <span>Normal: 11.8-21.6 </span>
                                         <span>Strong: >21.6 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
                             
                                 <div class="tableRow">
                                     <p>12 - 13</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-2" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-2" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <19.4 </span>
                                         <span>Normal: 19.4-31.2 </span>
                                         <span>Strong: >31.2 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <14.6 </span>
                                         <span>Normal: 14.6-24.4 </span>
                                         <span>Strong: >24.4 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
 
                                 <div class="tableRow">
                                     <p>14 - 15</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-3" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-3" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <28.5 </span>
                                         <span>Normal: 28.5-44.3 </span>
                                         <span>Strong: >44.3 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <15.5 </span>
                                         <span>Normal: 15.5-27.3 </span>
                                         <span>Strong: >27.3 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
 
                                 <div class="tableRow">
                                     <p>16 - 17</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-4" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-4" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <32.6 </span>
                                         <span>Normal: 32.6-52.4 </span>
                                         <span>Strong: >52.4 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <17.2 </span>
                                         <span>Normal: 17.2-29.0 </span>
                                         <span>Strong: >29.0 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
 
                                 <div class="tableRow">
                                     <p>18 - 19</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-5" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-5" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <35.7 </span>
                                         <span>Normal: 35.7-55.5 </span>
                                         <span>Strong: >55.5 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <19.2 </span>
                                         <span>Normal: 19.2-31.0 </span>
                                         <span>Strong: >31.0 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
                             
                                 <div class="tableRow">
                                     <p>20 - 24</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-6" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-6" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <36.8 </span>
                                         <span>Normal: 36.8-56.6 </span>
                                         <span>Strong: >56.6 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <21.5 </span>
                                         <span>Normal: 21.5-35.3 </span>
                                         <span>Strong: >35.3 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
 
                                 <div class="tableRow">
                                     <p>25 - 29</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-7" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-7" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <37.7 </span>
                                         <span>Normal: 37.7-57.5 </span>
                                         <span>Strong: >57.5 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <25.6 </span>
                                         <span>Normal: 25.6-41.4 </span>
                                         <span>Strong: >41.4 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
 
                                 <div class="tableRow">
                                     <p>30 - 34</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-8" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-8" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <36.0 </span>
                                         <span>Normal: 36.0-55.8 </span>
                                         <span>Strong: >55.8 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <21.5 </span>
                                         <span>Normal: 21.5-35.3 </span>
                                         <span>Strong: >35.3 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
 
                                 <div class="tableRow">
                                     <p>35 - 39</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-9" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-9" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <35.8 </span>
                                         <span>Normal: 35.8-55.6 </span>
                                         <span>Strong: >55.6 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <20.3 </span>
                                         <span>Normal: 20.3-34.1 </span>
                                         <span>Strong: >34.1 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
 
                                 <div class="tableRow">
                                     <p>40 - 44</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-10" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-10" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <35.5 </span>
                                         <span>Normal: 35.5-55.3 </span>
                                         <span>Strong: >55.3 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <18.9 </span>
                                         <span>Normal: 18.9-32.7 </span>
                                         <span>Strong: >32.7 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
                             
                                 <div class="tableRow">
                                     <p>45 - 49</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-11" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-11" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <34.7 </span>
                                         <span>Normal: 34.7-54.5 </span>
                                         <span>Strong: >54.5 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <18.6 </span>
                                         <span>Normal: 18.6-32.4 </span>
                                         <span>Strong: >32.4 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
 
                                 <div class="tableRow">
                                     <p>50 - 54</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-12" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-12" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <32.9 </span>
                                         <span>Normal: 32.9-54.5 </span>
                                         <span>Strong: >54.5 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <18.6 </span>
                                         <span>Normal: 18.6-50.7 </span>
                                         <span>Strong: >50.7 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
 
                                 <div class="tableRow">
                                     <p>55 - 59</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-13" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-13" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <30.7 </span>
                                         <span>Normal: 30.7-48.5 </span>
                                         <span>Strong: >48.5 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <17.7 </span>
                                         <span>Normal: 17.7-31.5 </span>
                                         <span>Strong: >31.5 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
 
                                 <div class="tableRow">
                                     <p>60 - 64</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-14" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-14" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <30.2 </span>
                                         <span>Normal: 30.2-48.0 </span>
                                         <span>Strong: >48.0 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <17.2 </span>
                                         <span>Normal: 17.2-31.0 </span>
                                         <span>Strong: >31.0 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
 
                                 <div class="tableRow">
                                     <p>65 - 69</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-15" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-15" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <28.2 </span>
                                         <span>Normal: 28.2-44.0 </span>
                                         <span>Strong: >44.0 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <15.4 </span>
                                         <span>Normal: 15.4-27.2 </span>
                                         <span>Strong: >27.2 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
 
                                 <div class="tableRow">
                                     <p>70 - 99</p>
+                                    {% if persona.gender == "M" %}
                                     <p>
                                         <input type="text" name="dodv-16" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% else %}
                                     <p>
                                         <input type="text" name="dodv-16" required placeholder="Inserisci il valore">
                                     </p>
+                                    {% endif %}
+
+                                    {% if persona.gender == "M" %}
                                     <p id="long-p">
                                         <span>Weak: <21.3 </span>
                                         <span>Normal: 21.3-35.1 </span>
                                         <span>Strong: >35.1 </span>
                                     </p>
+                                    {% else %}
                                     <p id="long-p">
                                         <span>Weak: <14.7 </span>
                                         <span>Normal: 14.7-24.5 </span>
                                         <span>Strong: >24.5 </span>
                                     </p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -881,8 +995,175 @@
                         </div>
                     </div>
                     
-                    <!-- SISTEMA IMMUNITARIO -->
                     <div class="question" data-group="7">
+                        <h3 class="mt-2">Dominio della Vitalità</h3>
+                        <h4>Indice di massa corporea(BMI)</h4>
+                        <!-- BMI -->
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">Risultato</p>
+                                <p class="subtitle">Valori di riferimento</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>BMI</p>
+                                    <p>
+                                        <input type="text" name="bmi-1" required placeholder="Inserisci il valore">
+                                    </p>
+                                    <p id="long-p">
+                                        <span class="small-text">Ottimale (0): Handgrip alto + Peak Flow alto + BMI normale (18.5-25)</span>
+                                        <span class="small-text">Lieve compromissione (1): Uno tra handgrip basso, Peak Flow ridotto o BMI sovrappeso/sottopeso</span>
+                                        <span class="small-text">Grave compromissione (2): Handgrip molto basso + Peak Flow molto ridotto + BMI <18.5 o >30</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Circonferenza polpaccio -->
+                        <h4 class="mt-2">Circonferenza polpaccio</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">0</p>
+                                <p class="subtitle">1</p>
+                                <p class="subtitle">2</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Punteggio</p>
+                                    <p><input type="radio" name="cir_polp_1"  value="0" required></p>
+                                    <p><input type="radio" name="cir_polp_1"  value="1" required></p>
+                                    <p><input type="radio" name="cir_polp_1"  value="2" required></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Weist-hip ratio -->
+                        <h4 class="mt-2">Weist-hip ratio</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">0</p>
+                                <p class="subtitle">1</p>
+                                <p class="subtitle">2</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Punteggio</p>
+                                    <p><input type="radio" name="wh_ratio_1"  value="0" required></p>
+                                    <p><input type="radio" name="wh_ratio_1"  value="1" required></p>
+                                    <p><input type="radio" name="wh_ratio_1"  value="2" required></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Weist-height ratio -->
+                        <h4 class="mt-2">Weist-height ratio:</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">0</p>
+                                <p class="subtitle">1</p>
+                                <p class="subtitle">2</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Punteggio</p>
+                                    <p><input type="radio" name="w_height_ratio_1" value="0" required></p>
+                                    <p><input type="radio" name="w_height_ratio_1" value="1" required></p>
+                                    <p><input type="radio" name="w_height_ratio_1" value="2" required></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DOMINIO DELLA LOCOMOZIONE -->
+                    <div class="question" data-group="8">
+                        <h3>Dominio della Locomozione</h3>
+                        
+                        <h4>Test di alzata da sedia (Chair Stand Test)</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">N° Ripetizioni</p>
+                                <p class="subtitle">Tempo tot in secondi</p>
+                                <p class="subtitle">Formula del punteggio</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>5STS</p>
+                                    <p>
+                                        <input type="text" name="numero_rip" required placeholder="Inserisci il valore">
+                                    </p>
+                                    <p>
+                                        <input type="text" name="tot_secondi" required placeholder="Inserisci il valore">
+                                    </p>
+                                    <p id="long-p">
+                                        <span>Punteggio 5STS = </span>
+                                        <span>Numero di ripetizioni (5) <br> <span class="line-divisor d-block"></span> </span>
+                                        <span>Tempo totale in secondi</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="mt-2">Test della velocità del cammino (Gait Speed)</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle"></p>
+                                <p class="subtitle">Distanza</p>
+                                <p class="subtitle">Tempo in secondi</p>
+                                <p class="subtitle">Formula del punteggio</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>Gait Speed</p>
+                                    <p>
+                                        <input type="text" name="distanza" required placeholder="Inserisci il valore">
+                                    </p>
+                                    <p>
+                                        <input type="text" name="tempo_s" required placeholder="Inserisci il valore">
+                                    </p>
+                                    <p id="long-p">
+                                        <span>Velocità di andatura = </span>
+                                        <span>Distanza (3 metri) <br> <span class="line-divisor d-block"></span> </span>
+                                        <span>Tempo in secondi</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="mt-2">Pick Pencil Test</h4>
+                        <div class="tableAnswer">
+                            <div class="tableAnswer-header">
+                                <p class="subtitle">Tempo in secondi</p>
+                                <p class="subtitle">Formula del punteggio</p>
+                            </div>
+                
+                            <div class="tableAnswer-container" id="secondTypeTable">
+                                <div class="tableRow">
+                                    <p>
+                                        <input type="text" name="tempo_s_pick" required placeholder="Inserisci il valore">
+                                    </p>
+                                    <p id="long-p">
+                                        <span>Punteggio Pick Pencil Test = </span>
+                                        <span>1</span>
+                                        <span><span class="line-divisor d-block"></span> Tempo in secondi</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SISTEMA IMMUNITARIO -->
+                    <div class="question" data-group="9">
                         <h3>Sistema Immunitario</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
@@ -961,7 +1242,7 @@
                     </div>
 
                     <!-- BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE -->
-                    <div class="question" data-group="8">
+                    <div class="question" data-group="10">
                         <h3>Biomarcatori Circolanti dell'infiammazione</h3>
                         <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
 
@@ -1089,7 +1370,7 @@
                     </div>
 
                     <!-- ENERGIA E METABOLISMO -->
-                    <div class="question" data-group="9">
+                    <div class="question" data-group="11">
                         <h3>Energia e Metabolismo</h3>
                         <p style="margin-top: 0rem;">Questionario sulla stanchezza percepita (Fatigue Severity Scale)</p>
                         
@@ -1199,7 +1480,7 @@
                         </div>  
                     </div>
 
-                    <div class="question" data-group="10">
+                    <div class="question" data-group="12">
                         <h3>Energia e Metabolismo</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header" style="height: 4rem;">
@@ -1273,9 +1554,9 @@
                             </div>
                         </div>  
                     </div>
-          
+      
                     <!-- BIOMARCATORI CIRCOLANTI DEL METABOLISMO -->
-                    <div class="question" data-group="11">
+                    <div class="question" data-group="13">
                         <h3>Biomarcatori Circolanti del Metabolismo</h3>
                         <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
 
@@ -1387,10 +1668,14 @@
                                 </div>
 
                                 <div class="tableRow">
-                                    <p>Colesterolo HDL  </p>
+                                    <p>Colesterolo HDL </p>
 
                                     {% if dati_estesi %}
-                                        <p name="Col_hdl">{{ dati_estesi.hdl_chol_m }}</p>
+                                        {% if persona.gender == "M" %}
+                                            <p name="Col_hdl">{{ dati_estesi.hdl_chol_m }}</p>
+                                        {% else %}
+                                            <p name="Col_hdl">{{ dati_estesi.hdl_chol_w }}</p>
+                                        {% endif %}
                                     {% else %}
                                     <p>
                                         <input type="text" name="Col_ldl" required placeholder="Inserisci il valore">
@@ -1399,8 +1684,11 @@
                    
                                     <p>mg/dL</p>
                                     <p id="long-p">
-                                        <span> UOMO  Nessun rischio: >55 mg/dL Rischio moderato: 35-55 mg/dL  </span>
-                                        <span> DONNA Nessun rischio: >65 mg/dL Rischio moderato: 45-65 mg/dL Rischio alto: < 45 mg/dl </span>
+                                        {% if persona.gender == "M" %}
+                                            <span> Nessun rischio: >55 mg/dL Rischio moderato: 35-55 mg/dL  </span>
+                                        {% else %}
+                                            <span> Nessun rischio: >65 mg/dL Rischio moderato: 45-65 mg/dL Rischio alto: < 45 mg/dl </span>
+                                        {% endif %}
                                     </p> 
                                 
                                 </div>
@@ -1462,9 +1750,9 @@
                             </div>
                         </div>
                     </div>
-               
+
                     <!-- FUNZIONE NEUROMUSCOLARE -->
-                    <div class="question" data-group="12">
+                    <div class="question" data-group="14">
                         <h3>Funzione Neuromuscolare</h3>
                         <p style="margin-top: 0rem;">Questionario Sarcopenia</p>
                         
@@ -1514,7 +1802,7 @@
                         </div>  
                     </div>
 
-                    <div class="question" data-group="13">
+                    <div class="question" data-group="15">
                         <h3>Funzione Neuromuscolare</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
@@ -1542,7 +1830,7 @@
                     </div>
 
                     <!-- PERFORMANCE FISICA -->
-                    <div class="question" data-group="14">
+                    <div class="question" data-group="16">
                         <h3>Performance Fisica</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
@@ -1574,7 +1862,6 @@
                             </div>
                         </div>  
                     </div>
-                
                 </div>
 
                 <div class="button-container">
