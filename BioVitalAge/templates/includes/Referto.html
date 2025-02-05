@@ -7,7 +7,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
 
-    <title>BioVitalAge - Report</title>
+    <title>BioVitalAge - Referto</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/Referto.css' %}">
@@ -55,7 +55,7 @@
             <div class="main-title-nav">
                 <div class="back-tittle">
                     <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to Results"></a>
-                    <h2 class="main-welcome-title">Report Patient, {{ persona.name }} {{ persona.surname }}</h2>
+                    <h2 class="main-welcome-title">Referto Paziente, {{ persona.name }} {{ persona.surname }}</h2>
                 </div>
             
                 <div class="main-menu-trace">
@@ -65,56 +65,56 @@
                     <p>»</p>
                     <p>Elenco Pazienti</p>
                     <p>»</p>
-                    <p>Ultimo Paziente</p>
+                    <p>{{ persona.name }} {{ persona.surname }}</p>
                 </div>
             </div>
 
             <div class="container_data anagraphic_data stampa">
-                <h3>Personal Information</h3>
+                <h3>Informazioni Personali</h3>
                 <div class="container_box">
                     <div class="info_container">
                         <div class="field">
-                            <p>Name:&nbsp;</p>
+                            <p>Nome:&nbsp;</p>
                             <p id="name">{{ persona.name }}</p>
                         </div>
                 
                         <div class="field">
-                            <p>Surname:&nbsp;</p>
+                            <p>Cognome:&nbsp;</p>
                             <p id="surname">{{ persona.surname }}</p>
                         </div>
                 
                         <div class="field">
-                            <p>Fiscal Code:&nbsp;</p>
+                            <p>Codice Fiscale:&nbsp;</p>
                             <p id="codice_fiscale">{{ persona.codice_fiscale }}</p>
                         </div>
                 
                         <div class="field">
-                            <p>Place of birth:&nbsp;</p>
+                            <p>Città di nascita:&nbsp;</p>
                             <p id="place_birth">{{ persona.place_of_birth }}</p>
                         </div>
                 
                         <div class="field">
-                            <p>Age:&nbsp;</p>
+                            <p>Età:&nbsp;</p>
                             <p id="chronological_age">{{ persona.chronological_age }}</p>
                         </div>
                     
                         <div class="field">
-                            <p>Biological Age:&nbsp;</p>
+                            <p>Età Biologica:&nbsp;</p>
                             <p>{{ datiEstesi.biological_age|default:"N/A" }}</p>
                         </div>
 
                         <div class="field">
-                            <p>Date of birth:&nbsp;</p>
+                            <p>Data di nascita:&nbsp;</p>
                             <p id="dob">{{ persona.dob }}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- OXIDATIVE -->
+            <!-- STRESS OSSIDATIVO -->
             <div class="exams-container stampa">
 
-                <h3>Oxidative Stress</h3>
+                <h3>Stress Ossidativo</h3>
                 <div class="content-container">
                     <div class="indicator-container">
                         <p class="nome" data-value="{{ datiEstesi.d_roms }}" id="d-ROMs"><span>d-ROMs:</span>{{ datiEstesi.d_roms }}</p>
@@ -261,11 +261,11 @@
             <div class="exams-container stampa">
                 <h3>Omega Screening</h3>
                 <hr>
-                <h3>Fatty Acids</h3>
+                <h3>Acidi Grassi Saturi</h3>
 
                 <div class="content-container">
                     <div class="indicator-container">
-                        <p class="nome"><span>Myristic acid:</span>{{ datiEstesi.my_acid }}</p>
+                        <p class="nome"><span>Acido Miristico:</span>{{ datiEstesi.my_acid }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -293,7 +293,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Palmitic acid:</span>{{ datiEstesi.p_acid }}</p>
+                        <p class="nome"><span>Acido Palmitico:</span>{{ datiEstesi.p_acid }}</p>
                         <div class="indicator-content-container" id="indicatori-container" >
 
                             <div class="indicator">
@@ -318,7 +318,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Stearic acid:</span>{{ datiEstesi.st_acid }}</p>
+                        <p class="nome"><span>Acido Stearico:</span>{{ datiEstesi.st_acid }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -346,7 +346,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Arachidic acid:</span>{{ datiEstesi.ar_acid }}</p>
+                        <p class="nome"><span>Acido Arachidico:</span>{{ datiEstesi.ar_acid }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -374,7 +374,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Beenic acid:</span>{{ datiEstesi.beenic_acid}}</p>
+                        <p class="nome"><span>Acido Beenico:</span>{{ datiEstesi.beenic_acid}}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -403,7 +403,7 @@
                 </div>
 
 
-                <h3 style="margin-top: 20px;">Unsaturated fatty acids</h3>
+                <h3 style="margin-top: 20px;">Acidi Grassi Insaturi</h3>
             
                 <div class="d-flex">
                     <h4 style="margin-right: 500px;">Omega 7</h4><h4>Omega 9</h4>
@@ -412,7 +412,7 @@
                 <div class="content-container">
                  
                     <div class="indicator-container">
-                        <p class="nome"><span>Palmitoleic acid:</span>{{ datiEstesi.p_acid }}</p>
+                        <p class="nome"><span>Acido Palmitoleico:</span>{{ datiEstesi.p_acid }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -440,7 +440,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Oleic acid:</span>{{ datiEstesi.ol_acid }}</p>
+                        <p class="nome"><span>Acido Oleico:</span>{{ datiEstesi.ol_acid }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -468,7 +468,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Nervonic acid:</span>{{ datiEstesi.ner_acid }}</p>
+                        <p class="nome"><span>Acido Nervonico:</span>{{ datiEstesi.ner_acid }}</p>
                         <div class="indicator-content-container"  id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -500,7 +500,7 @@
 
                 <div class="content-container">
                     <div class="indicator-container">
-                        <p class="nome"><span>Alpha linoleic acid:</span>{{ datiEstesi.a_linoleic_acid }}</p>
+                        <p class="nome"><span>Acido Alpha Linolenico:</span>{{ datiEstesi.a_linoleic_acid }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -528,7 +528,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Eicosapentaenoic acid(EPA):</span>{{ datiEstesi.eico_acid }}</p>
+                        <p class="nome"><span>Acido Eicosapentaenoico (EPA):</span>{{ datiEstesi.eico_acid }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -556,7 +556,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Docosaesaenoic acid(DHA):</span>{{ datiEstesi.doco_acid }}</p>
+                        <p class="nome"><span>Acido Docosaesaenoico (DHA):</span>{{ datiEstesi.doco_acid }}</p>
                         <div class="indicator-content-container" id="indicatori-container"> 
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -588,7 +588,7 @@
                 <div class="content-container">
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Linoleic acid:</span>{{ datiEstesi.lin_acid }}</p>
+                        <p class="nome"><span>Acido Linolenico:</span>{{ datiEstesi.lin_acid }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -616,7 +616,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Gamma linoleic acid:</span>{{ datiEstesi.gamma_lin_acid }}</p>
+                        <p class="nome"><span>Acido Gamma linolenico:</span>{{ datiEstesi.gamma_lin_acid }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -644,7 +644,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Dihomo gamma linoleic acid:</span>{{ datiEstesi.dih_gamma_lin_acid }}</p>
+                        <p class="nome"><span>Acido Diomo gamma linoleico:</span>{{ datiEstesi.dih_gamma_lin_acid }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -672,7 +672,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Arachidonic acid:</span>{{ datiEstesi.arachidonic_acid }}</p>
+                        <p class="nome"><span>Acido Arachidonico:</span>{{ datiEstesi.arachidonic_acid }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -706,7 +706,7 @@
                 <div class="content-container">
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Saturated/unsaturated fatty acid quotient:</span>{{ datiEstesi.sa_un_fatty_acid }}</p>
+                        <p class="nome"><span>Quoziente acidi grassi Saturi/Insaturi:</span>{{ datiEstesi.sa_un_fatty_acid }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -734,7 +734,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>O-6/O-3 fatty acid quotient (AA/DHA):</span>{{ datiEstesi.o3o6_fatty_acid_quotient }}</p>
+                        <p class="nome"><span>Quoziente acidi grassi O-6/O-3(AA/DHA):</span>{{ datiEstesi.o3o6_fatty_acid_quotient }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -762,7 +762,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>(AA/EPA) quozient:</span>{{ datiEstesi.aa_epa }}</p>
+                        <p class="nome"><span>Quoziente AA/EPA:</span>{{ datiEstesi.aa_epa }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -870,14 +870,14 @@
                 </button>
             </div>
 
-            <!--  WHITE BLOOD CELLS -->
+            <!--  GLOBULI BIANCHI -->
             <div class="exams-container stampa">
-                <h3>White Blood Cells</h3>
+                <h3>Globuli Bianchi</h3>
 
                 <div class="content-container">
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Basophils (%):</span>{{ datiEstesi.baso }}</p>
+                        <p class="nome"><span>Basofili (%):</span>{{ datiEstesi.baso }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -905,7 +905,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Eosinophils (%):</span>{{ datiEstesi.eosi }}</p>
+                        <p class="nome"><span>Eosinofili (%):</span>{{ datiEstesi.eosi }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -933,7 +933,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Lymphocytes (%):</span>{{ datiEstesi.lymph }}</p>
+                        <p class="nome"><span>Linfociti (%):</span>{{ datiEstesi.lymph }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -961,7 +961,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Monocytes (%):</span>{{ datiEstesi.mono }}</p>
+                        <p class="nome"><span>Monociti (%):</span>{{ datiEstesi.mono }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -989,7 +989,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Neutrophils (%):</span>{{ datiEstesi.neut }}</p>
+                        <p class="nome"><span>Neutrofili (%):</span>{{ datiEstesi.neut }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1017,7 +1017,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>White Blood Cells (10^3/uL):</span>{{ datiEstesi.wbc }}</p>
+                        <p class="nome"><span>Globuli Bianchi (10^3/uL):</span>{{ datiEstesi.wbc }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1045,7 +1045,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Neutrophils (10^3/uL):</span>{{ datiEstesi.neut_ul }}</p>
+                        <p class="nome"><span>Neutrofili (10^3/uL):</span>{{ datiEstesi.neut_ul }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1073,7 +1073,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Lymphocytes (10^3/uL):</span>{{ datiEstesi.lymph_ul }}</p>
+                        <p class="nome"><span>Linfociti (10^3/uL):</span>{{ datiEstesi.lymph_ul }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1101,7 +1101,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Monocytes (10^3/uL):</span>{{ datiEstesi.mono_ul }}</p>
+                        <p class="nome"><span>Monociti (10^3/uL):</span>{{ datiEstesi.mono_ul }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1129,7 +1129,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Eosinophils (10^3/uL):</span>{{ datiEstesi.eosi_ul }}</p>
+                        <p class="nome"><span>Eosinofili (10^3/uL):</span>{{ datiEstesi.eosi_ul }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1157,7 +1157,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Baso (10^3/uL):</span>{{ datiEstesi.baso_ul }}</p>
+                        <p class="nome"><span>Basofili (10^3/uL):</span>{{ datiEstesi.baso_ul }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1236,14 +1236,15 @@
                 </button>
             </div>
 
-            <!-- RED BLOOD CELLS -->
+            <!-- GLOBULI ROSSI -->
             <div class="exams-container stampa">
-                <h3>Red Blood Cells</h3>
+                <h3>Globuli Rossi</h3>
 
                 <div class="content-container">
 
+                    {% if persona.gender == 'M' %}
                     <div class="indicator-container">
-                        <p class="nome"><span>Hematocrit Man(%):</span>{{ datiEstesi.hct_m }}</p>
+                        <p class="nome"><span>Hematocrit Uomo(%):</span>{{ datiEstesi.hct_m }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1270,8 +1271,9 @@
                         </div>
                     </div>
 
+                    {% else %}
                     <div class="indicator-container">
-                        <p class="nome"><span>Hematocrit Woman(%):</span>{{ datiEstesi.hct_w }}</p>
+                        <p class="nome"><span>Hematocrit Donna(%):</span>{{ datiEstesi.hct_w }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1297,9 +1299,11 @@
                             {% endif %}
                         </div>
                     </div>
+                    {% endif %}
 
+                    {% if persona.gender == 'M' %}
                     <div class="indicator-container">
-                        <p class="nome"><span>Hemoglobin Man(g/dL):</span>{{ datiEstesi.hgb_m }}</p>
+                        <p class="nome"><span>Emoglobina Uomo(g/dL):</span>{{ datiEstesi.hgb_m }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1326,8 +1330,10 @@
                         </div>
                     </div>
 
+                    {% else %}
+
                     <div class="indicator-container">
-                        <p class="nome"><span>Hemoglobin Woman(g/dL):</span>{{ datiEstesi.hgb_w }}</p>
+                        <p class="nome"><span>Emoglobina Donna(g/dL):</span>{{ datiEstesi.hgb_w }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1354,8 +1360,10 @@
                         </div>
                     </div>
 
+                    {% endif %}
+
                     <div class="indicator-container">
-                        <p class="nome"><span>Mean Corpuscular Hemoglobin (pg):</span>{{ datiEstesi.mch }}</p>
+                        <p class="nome"><span>Emoglobina corpuscolare media (pg):</span>{{ datiEstesi.mch }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1383,7 +1391,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Mean Corpuscular Hemoglobin Concentration (g/dL):</span>{{ datiEstesi.mchc }}</p>
+                        <p class="nome"><span>Concentrazione corpuscolare media di emoglobina (g/dL):</span>{{ datiEstesi.mchc }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1411,7 +1419,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Mean Corpuscular Volume (fL):</span>{{ datiEstesi.mcv }}</p>
+                        <p class="nome"><span>Volume corpuscolare medio (fL):</span>{{ datiEstesi.mcv }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1438,8 +1446,9 @@
                         </div>
                     </div>
 
+                    {% if persona.gender == 'M' %}
                     <div class="indicator-container">
-                        <p class="nome"><span>Red Blood Cells Man(10^6/uL):</span>{{ datiEstesi.rbc_m }}</p>
+                        <p class="nome"><span>Globuli Rossi Uomo(10^6/uL):</span>{{ datiEstesi.rbc_m }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1466,8 +1475,10 @@
                         </div>
                     </div>
 
+                    {% else %}
+
                     <div class="indicator-container">
-                        <p class="nome"><span>Red Blood Cells Woman(10^6/uL):</span>{{ datiEstesi.rbc_w }}</p>
+                        <p class="nome"><span>Globuli Rossi Donna(10^6/uL):</span>{{ datiEstesi.rbc_w }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1493,6 +1504,8 @@
                             {% endif %}
                         </div>
                     </div>
+
+                    {% endif %}
 
                     <div class="indicator-container">
                         <p class="nome"><span>RDW-SD (fL):</span>{{ datiEstesi.rdwsd }}</p>
@@ -1604,7 +1617,7 @@
 
             <!-- RENAL FUNCIONALITY -->
             <div class="exams-container stampa">
-                <h3>Renal Functionality</h3>
+                <h3>Funzionalità Renale</h3>
 
                 <div class="content-container">
 
@@ -1636,8 +1649,9 @@
                         </div>
                     </div>
 
+                    {% if persona.gender == 'M' %}
                     <div class="indicator-container">
-                        <p class="nome"><span>Creatinine Man(mg/dL):</span>{{ datiEstesi.creatinine_m }}</p>
+                        <p class="nome"><span>Creatinina Uomo(mg/dL):</span>{{ datiEstesi.creatinine_m }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1664,8 +1678,10 @@
                         </div>
                     </div>
 
+                    {% else %}
+
                     <div class="indicator-container">
-                        <p class="nome"><span>Creatinine Woman(mg/dL):</span>{{ datiEstesi.creatinine_w }}</p>
+                        <p class="nome"><span>Creatinina Donna(mg/dL):</span>{{ datiEstesi.creatinine_w }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1692,8 +1708,10 @@
                         </div>
                     </div>
 
+                    {% endif %}
+
                     <div class="indicator-container">
-                        <p class="nome"><span>Cistatine C (mg/dL):</span>{{ datiEstesi.cistatine_c }}</p>
+                        <p class="nome"><span>Cistatina C (mg/dL):</span>{{ datiEstesi.cistatine_c }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1720,8 +1738,9 @@
                         </div>
                     </div>
 
+                    {% if persona.gender == 'M' %}
                     <div class="indicator-container">
-                        <p class="nome"><span>Uricemy Man(mg/dL):</span>{{ datiEstesi.uricemy_m }}</p>
+                        <p class="nome"><span>Uricemia Uomo(mg/dL):</span>{{ datiEstesi.uricemy_m }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1748,8 +1767,10 @@
                         </div>
                     </div>
 
+                    {% else %}
+
                     <div class="indicator-container">
-                        <p class="nome"><span>Uricemy Woman(mg/dL):</span>{{ datiEstesi.uricemy_w }}</p>
+                        <p class="nome"><span>Uricemia Donna(mg/dL):</span>{{ datiEstesi.uricemy_w }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1775,6 +1796,8 @@
                             {% endif %}
                         </div>
                     </div>
+
+                    {% endif %}
 
                 </div>
                 <button class="generatePDFButton button" id="genereReportRenal">
@@ -1829,14 +1852,14 @@
                 </button>
             </div>
 
-            <!-- CLOTTING STATUS -->
+            <!-- STATO DELLA COAGULAZIONE -->
             <div class="exams-container stampa">
-                <h3>Clotting status</h3>
+                <h3>Stato della Coagulazione</h3>
 
                 <div class="content-container">
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Platelets (10^3/uL):</span>{{ datiEstesi.plt }}</p>
+                        <p class="nome"><span>Piastrine (10^3/uL):</span>{{ datiEstesi.plt }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1864,7 +1887,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Mean Platelet Volume (fL):</span>{{ datiEstesi.mpv }}</p>
+                        <p class="nome"><span>Volume medio delle piastrine (fL):</span>{{ datiEstesi.mpv }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1920,7 +1943,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Plateletcrit (%):</span>{{ datiEstesi.pct }}</p>
+                        <p class="nome"><span>Procalcitonina (%):</span>{{ datiEstesi.pct }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -1948,7 +1971,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Platelet Distribution Width (fL):</span>{{ datiEstesi.pdw }}</p>
+                        <p class="nome"><span>Larghezza di distribuzione delle piastrine (fL):</span>{{ datiEstesi.pdw }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2004,7 +2027,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Plasminogen Activator Inhibitor-1:</span>{{ datiEstesi.pai_1 }}</p>
+                        <p class="nome"><span>Inibitore dell'attivatore del plasminogeno-1:</span>{{ datiEstesi.pai_1 }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2083,14 +2106,14 @@
                 </button>            
             </div>
 
-            <!-- LIPID APPARANCE -->
+            <!-- ASSETTO LIPIDICO -->
             <div class="exams-container stampa">
-                <h3>Lipid Appearance</h3>
+                <h3>Assetto Lipidico</h3>
 
                 <div class="content-container">
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Total cholesterol (mg/dI):</span>{{ datiEstesi.tot_chol }}</p>
+                        <p class="nome"><span>Colesterolo Totale (mg/dI):</span>{{ datiEstesi.tot_chol }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2118,7 +2141,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>LDL cholesterol (mg/dL):</span>{{ datiEstesi.ldl_chol }}</p>
+                        <p class="nome"><span>Colesterolo LDL (mg/dL):</span>{{ datiEstesi.ldl_chol }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2145,8 +2168,9 @@
                         </div>
                     </div>
 
+                    {% if persona.gender == 'M' %}
                     <div class="indicator-container">
-                        <p class="nome"><span>Cholesterol HDL Man(mg/dL):</span>{{ datiEstesi.hdl_chol_m }}</p>
+                        <p class="nome"><span>Colesterolo HDL Uomo(mg/dL):</span>{{ datiEstesi.hdl_chol_m }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2173,8 +2197,10 @@
                         </div>
                     </div>
 
+                    {% else %}
+
                     <div class="indicator-container">
-                        <p class="nome"><span>Cholesterol HDL Woman(mg/dL):</span>{{ datiEstesi.hdl_chol_w }}</p>
+                        <p class="nome"><span>Colesterolo HDL Donna(mg/dL):</span>{{ datiEstesi.hdl_chol_w }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2201,8 +2227,10 @@
                         </div>
                     </div>
 
+                    {% endif %}
+
                     <div class="indicator-container">
-                        <p class="nome"><span>Triglicerides (mg/dL):</span>{{ datiEstesi.trigl }}</p>
+                        <p class="nome"><span>Trigliceridi (mg/dL):</span>{{ datiEstesi.trigl }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2281,14 +2309,14 @@
                 </button>            
             </div>
 
-            <!-- DIABETOLOGIC SETUP -->
+            <!-- ASSETTO DIABETOLOGICO -->
             <div class="exams-container stampa">
-                <h3>Diabetological setup</h3>
+                <h3>Assetto Diabetologico</h3>
 
                 <div class="content-container">
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Blood glucose (mg/dL):</span>{{ datiEstesi.glicemy }}</p>
+                        <p class="nome"><span>Glicemia (mg/dL):</span>{{ datiEstesi.glicemy }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2316,7 +2344,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Insulin (ng/mL):</span>{{ datiEstesi.insulin }}</p>
+                        <p class="nome"><span>Insulina (ng/mL):</span>{{ datiEstesi.insulin }}</p>
                         <div class="indicator-content-container"  id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2451,9 +2479,9 @@
                 </button>            
             </div>
 
-            <!-- PROTEINS -->
+            <!-- PROTEINE -->
             <div class="exams-container stampa">
-                <h3>Proteins</h3>
+                <h3>Proteine</h3>
 
                 <div class="content-container">
 
@@ -2486,7 +2514,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Total proteins (g/dI):</span>{{ datiEstesi.tot_prot }}</p>
+                        <p class="nome"><span>Proteine Totali (g/dI):</span>{{ datiEstesi.tot_prot }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2516,11 +2544,11 @@
                 </div>
 
                 <hr>
-                <h3>Seroprotein Electrophoresis</h3>
+                <h3>Elettroforesi Sieroproteica</h3>
                 <div class="content-container">
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Total Proteins (%):</span>{{ datiEstesi.tot_prot_ele }}</p>
+                        <p class="nome"><span>Proteine Totali (%):</span>{{ datiEstesi.tot_prot_ele }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2548,7 +2576,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Albumin (%):</span>{{ datiEstesi.albumin_ele }}</p>
+                        <p class="nome"><span>Albumina (%):</span>{{ datiEstesi.albumin_ele }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2716,7 +2744,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Albumin (g/dI):</span>{{ datiEstesi.albumin_dI }}</p>
+                        <p class="nome"><span>Albumina (g/dI):</span>{{ datiEstesi.albumin_dI }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2884,7 +2912,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Insulin (ng/mL):</span>{{ datiEstesi.insulin }}</p>
+                        <p class="nome"><span>Insulina (ng/mL):</span>{{ datiEstesi.insulin }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2968,7 +2996,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Beta 2 spike M 1% (%):</span>{{ datiEstesi.b_2_spike }}</p>
+                        <p class="nome"><span>Beta 2 picco M 1% (%):</span>{{ datiEstesi.b_2_spike }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -2996,7 +3024,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Beta 2 spike M 1 (g/dI):</span>{{ datiEstesi.b_2_spike_m1 }}</p>
+                        <p class="nome"><span>Beta 2 picco M 1 (g/dI):</span>{{ datiEstesi.b_2_spike_m1 }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3075,9 +3103,9 @@
                 </button>            
             </div>
 
-            <!-- Indices of phlogosis -->
+            <!-- INDICE DI FLOGOSI -->
             <div class="exams-container stampa">
-                <h3>Indices of phlogosis</h3>
+                <h3>Indice di flogosi</h3>
 
                 <div class="content-container">
 
@@ -3110,7 +3138,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>PCR-C-Reactive Protein (mg/I):</span>{{ datiEstesi.pcr_c }}</p>
+                        <p class="nome"><span>PCR-C-Proteina Reattiva (mg/I):</span>{{ datiEstesi.pcr_c }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3190,9 +3218,9 @@
                 </button>            
             </div>
             
-            <!-- ADVANCE/SASP INFLAMMATION -->
+            <!-- INFIAMMAZIONE ADVANCE/SASP -->
             <div class="exams-container stampa">
-                <h3>Advance/sasp inflammation</h3>
+                <h3>Infiammazione Advance/Sasp</h3>
 
                 <div class="content-container">
 
@@ -3225,7 +3253,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Interleukin-6 (pg/ml):</span>{{ datiEstesi.inter_6 }}</p>
+                        <p class="nome"><span>Interleuchina-6 (pg/ml):</span>{{ datiEstesi.inter_6 }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3253,7 +3281,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Interleukin-10 (ng/ml):</span>{{ datiEstesi.inter_10 }}</p>
+                        <p class="nome"><span>Interleuchina-10 (ng/ml):</span>{{ datiEstesi.inter_10 }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3332,14 +3360,14 @@
                 </button>            
             </div>
 
-            <!-- MINERALS -->
+            <!-- MINERALI -->
             <div class="exams-container stampa">
-                <h3>Minerals</h3>
+                <h3>Minerali</h3>
 
                 <div class="content-container">
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Sodium (mEq/L):</span>{{ datiEstesi.na }}</p>
+                        <p class="nome"><span>Sodio (mEq/L):</span>{{ datiEstesi.na }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3367,7 +3395,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Potassium (mEq/L):</span>{{ datiEstesi.k }}</p>
+                        <p class="nome"><span>Potassio (mEq/L):</span>{{ datiEstesi.k }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3395,7 +3423,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Magnesium (mg/dL):</span>{{ datiEstesi.mg }}</p>
+                        <p class="nome"><span>Magnesio (mg/dL):</span>{{ datiEstesi.mg }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3423,7 +3451,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Chlorides (mEq/L):</span>{{ datiEstesi.ci }}</p>
+                        <p class="nome"><span>Cloruri (mEq/L):</span>{{ datiEstesi.ci }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3451,7 +3479,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Calcium (mg/dL):</span>{{ datiEstesi.ca }}</p>
+                        <p class="nome"><span>Calcio (mg/dL):</span>{{ datiEstesi.ca }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3479,7 +3507,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Phosphorus (mg/dL):</span>{{ datiEstesi.p }}</p>
+                        <p class="nome"><span>Fosforo (mg/dL):</span>{{ datiEstesi.p }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3558,14 +3586,15 @@
                 </button>            
             </div>
 
-            <!-- HORMONAL ASSETS -->
+            <!-- ASSETTO ORMONALE -->
             <div class="exams-container stampa">
-                <h3>Hormonal Assets</h3>
+                <h3>Assetto Ormonale</h3>
 
                 <div class="content-container">
 
+                    {% if persona.gender == 'M' %}
                     <div class="indicator-container">
-                        <p class="nome"><span>DHEA Man(ng/ml):</span>{{ datiEstesi.dhea_m }}</p>
+                        <p class="nome"><span>DHEA Uomo(ng/ml):</span>{{ datiEstesi.dhea_m }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3592,8 +3621,10 @@
                         </div>
                     </div>
 
+                    {% else %}
+
                     <div class="indicator-container">
-                        <p class="nome"><span>DHEA Woman(ng/ml):</span>{{ datiEstesi.dhea_w }}</p>
+                        <p class="nome"><span>DHEA Donna(ng/ml):</span>{{ datiEstesi.dhea_w }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3620,8 +3651,11 @@
                         </div>
                     </div>
 
+                    {% endif %}
+
+                    {% if persona.gender == 'M' %}
                     <div class="indicator-container">
-                        <p class="nome"><span>Testosterone Man(ng/mI):</span>{{ datiEstesi.testo_m }}</p>
+                        <p class="nome"><span>Testosterone Uomo(ng/mI):</span>{{ datiEstesi.testo_m }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3648,8 +3682,10 @@
                         </div>
                     </div>
 
+                    {% else %}
+
                     <div class="indicator-container">
-                        <p class="nome"><span>Testosterone Woman(ng/mI):</span>{{ datiEstesi.testo_w }}</p>
+                        <p class="nome"><span>Testosterone Donna(ng/mI):</span>{{ datiEstesi.testo_w }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3676,8 +3712,10 @@
                         </div>
                     </div>
 
+                    {% endif %}
+
                     <div class="indicator-container">
-                        <p class="nome"><span>Thyroid Stimulating Hormone (uIU/ml):</span>{{ datiEstesi.tsh }}</p>
+                        <p class="nome"><span>Ormone stimolante della tiroide (uIU/ml):</span>{{ datiEstesi.tsh }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3705,7 +3743,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Free Triiodothyronine (pg/ml):</span>{{ datiEstesi.ft3 }}</p>
+                        <p class="nome"><span>Triodotironina libera (pg/ml):</span>{{ datiEstesi.ft3 }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3733,7 +3771,7 @@
                     </div>
 
                     <div class="indicator-container">
-                        <p class="nome"><span>Free Thyroxine (ng/dL):</span>{{ datiEstesi.ft4 }}</p>
+                        <p class="nome"><span>Tiroxina libera (ng/dL):</span>{{ datiEstesi.ft4 }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3760,8 +3798,9 @@
                         </div>
                     </div>
 
+                    {% if persona.gender == 'F' %}
                     <div class="indicator-container">
-                        <p class="nome"><span>17 beta estradiol Woman:</span>{{ datiEstesi.beta_es_w }}</p>
+                        <p class="nome"><span>17 beta estradiolo Donna:</span>{{ datiEstesi.beta_es_w }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3788,8 +3827,10 @@
                         </div>
                     </div>
 
+                    {% else %}
+
                     <div class="indicator-container">
-                        <p class="nome"><span>17 beta estradiol Man:</span>{{ datiEstesi.beta_es_m }}</p>
+                        <p class="nome"><span>17 beta estradiolo Uomo:</span>{{ datiEstesi.beta_es_m }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3816,8 +3857,11 @@
                         </div>
                     </div>
 
+                    {% endif %}
+
+                    {% if persona.gender == 'M' %}
                     <div class="indicator-container">
-                        <p class="nome"><span>Progesterone Man:</span>{{ datiEstesi.prog_m }}</p>
+                        <p class="nome"><span>Progesterone Uomo:</span>{{ datiEstesi.prog_m }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3844,8 +3888,10 @@
                         </div>
                     </div>
 
+                    {% else %}
+
                     <div class="indicator-container">
-                        <p class="nome"><span>Progesterone Woman:</span>{{ datiEstesi.prog_w }}</p>
+                        <p class="nome"><span>Progesterone Donna:</span>{{ datiEstesi.prog_w }}</p>
                         <div class="indicator-content-container" id="indicatori-container">
                             <div class="indicator">
                                 <p class="negativeTesto">0</p>
@@ -3871,6 +3917,9 @@
                             {% endif %}
                         </div>
                     </div>
+
+                    {% endif %}
+
                 </div>
                 <button class="generatePDFButton button" id="genereReportHAssets">
                     <span class="button__icon-wrapper">
@@ -3924,9 +3973,9 @@
                 </button>            
             </div>
 
-            <!-- MARTIAL TRIM -->
+            <!-- ASSETTO MARZIALE -->
             <div class="exams-container stampa">
-                <h3>Martial trim</h3>
+                <h3>Assetto Marziale</h3>
 
                 <div class="content-container">
 
@@ -5106,26 +5155,52 @@
 
             <!-- SPINNER -->
             <div id="spinnerBackdrop">
-                <!-- From Uiverse.io by milley69 -->
-                 <!-- From Uiverse.io by Nawsome --> 
                 <div id="snipperStampa">
                     <div class="slide"><i></i></div>
                     <div class="paper"></div>
                     <div class="keyboard"></div>
                 </div>
-                <!-- <div id="snipperStampa">
-                    <svg width="128px" height="96px" viewBox="0 0 64 48" style="width: 128px; height: 96px;">
-                        <polyline points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24" id="back"></polyline>
-                        <polyline points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24" id="front"></polyline>
-                    </svg>
-                </div> -->
             </div>
         </div>        
     </main>
 
+    <!-- JS IMPORT INLINE -->
+    <script>
+        /*  -----------------------------------------------------------------------------------------------
+          function to transform the first letter of a string to uppercase
+        --------------------------------------------------------------------------------------------------- */
+        document.addEventListener("DOMContentLoaded", function () {
+            // Seleziona tutti gli elementi con la classe 'field'
+            let fields = document.querySelectorAll(".info_container .field");
 
-   
-   
+            fields.forEach((field) => {
+                let label = field.querySelector("p:first-of-type"); // Prende il primo <p> (etichetta)
+                let valueP = field.querySelector("p:nth-of-type(2)"); // Prende il secondo <p> (valore)
+
+                if (label && valueP) {
+                    let labelText = label.innerText.trim();
+
+                    // Controlla se il campo è "Nome:" o "Cognome:"
+                    if (labelText === "Nome:" || labelText === "Cognome:") {
+                        let text = valueP.innerText.trim();
+                        if (text.length > 0) {
+                            // Converte la prima lettera in maiuscolo di ogni parola se la parola è tutta in minuscolo
+                            let formattedText = text
+                                .split(" ") // Divide il testo in parole
+                                .map((word) =>
+                                    word === word.toLowerCase()
+                                        ? word.charAt(0).toUpperCase() + word.slice(1)
+                                        : word
+                                ) // Se è minuscola, la corregge
+                                .join(" "); // Ricompone la stringa
+
+                            valueP.innerText = formattedText;
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
 

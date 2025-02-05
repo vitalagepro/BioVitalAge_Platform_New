@@ -55,17 +55,17 @@
       </div>
 
       <section class="container_data anagraphic_data">
-        <h3>Anagraphic Data</h3>
+        <h3>Dati Anagrafici</h3>
         <div class="container_box">
           <div class="info_container">
 
               <div class="field">
-                <p>Name:&nbsp;</p>
+                <p>Nome:&nbsp;</p>
                 <p>{{ persona.name }}</p>
               </div>
 
               <div class="field">
-                <p>Surname:&nbsp;</p>
+                <p>Cognome:&nbsp;</p>
                 <p>{{ persona.surname }}</p>
               </div>
 
@@ -80,22 +80,22 @@
               </div>
 
               <div class="field">
-                <p>Age:&nbsp;</p>
+                <p>Età:&nbsp;</p>
                 <p>{{ persona.chronological_age }}</p>
               </div>
 
               <div class="field">
-                <p>Date of birth:&nbsp;</p>
+                <p>Data di nascita:&nbsp;</p>
                 <p>{{ persona.dob }}</p>
               </div>
       
               <div class="field">
-                <p>Phone:&nbsp;</p>
+                <p>Telefono:&nbsp;</p>
                 <p>{{ persona.phone }}</p>
               </div>
 
               <div class="field">
-                <p>Associate staff:&nbsp;</p>
+                <p>Dottore Associato:&nbsp;</p>
                 <p>{{ persona.associate_staff }}</p>
               </div>
 
@@ -104,12 +104,12 @@
       </section>
 
       <section class="container_data table_data">
-        <h3 style="margin-bottom: -20px;">Informative Tables</h3>
+        <h3 style="margin-bottom: -20px;">Dati Base</h3>
 
         <form id="datiBaseForm" action="" method="POST">
           {% csrf_token %}
           <div class="table-title-tools">
-            <p class="table-title">Anthropometric data</p>
+            <p class="table-title">Dati antropometrici</p>
             
             <!-- Menu Tools con effetto translate e opacity -->
              <div class="container-menu">
@@ -131,10 +131,10 @@
       
           <div class="table-container">
               <div class="table-header">
-                  <p>Height</p>
-                  <p>Weight</p>
+                  <p>Altezza</p>
+                  <p>Peso</p>
                   <p>BMI</p>
-                  <p>BMI detection date</p>
+                  <p>Data di rilevamento del BMI</p>
               </div>
       
               <div class="table-content">
@@ -152,7 +152,7 @@
         <form id="datiBaseForm1" method="POST">
           {% csrf_token %}
           <div class="table-title-tools">
-            <p class="table-title">Abdominal girth</p>
+            <p class="table-title">Circonferenza addominale</p>
             <div class="container-menu">
               <div class="tools-menu-button" id="menu-2">
                 <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-2')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
@@ -167,9 +167,9 @@
 
             <div class="table-container">
               <div class="table-header">
-                <p>Girth value</p>
-                <p>Date measurement</p>
-                <p>Notes</p>
+                <p>Circonferenza</p>
+                <p>Data di misurazione</p>
+                <p>Note</p>
               </div>
             
               <div class="table-content">
@@ -183,7 +183,7 @@
               </div>
             </div>
         </form>
-        <h3 style="margin-top: 20px; margin-bottom: -20px;">Life style</h3>
+        <h3 style="margin-top: 20px; margin-bottom: -20px;">Stile di vita</h3>
   
         <form id="datiBaseForm2" method="POST">
           {% csrf_token %} 
@@ -203,10 +203,10 @@
             
             <div class="table-container">
               <div class="table-header">
-                <p>Quantity of cc per day</p>
-                <p>Taken alcohol</p>
+                <p>Quantità di cc al giorno</p>
+                <p>Assunzione di alcol</p>
                 <p>Data</p>
-                <p>Notes</p>
+                <p>Note</p>
               </div>
             
               <div class="table-content">
@@ -224,7 +224,7 @@
         <form id="datiBaseForm3" method="POST">
           {% csrf_token %} 
             <div class="table-title-tools">
-              <p class="table-title">Smoking</p>
+              <p class="table-title">Fumo</p>
               <div class="container-menu">
                 <div class="tools-menu-button" id="menu-4">
                   <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-4')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
@@ -238,9 +238,9 @@
             </div>
             <div class="table-container">
               <div class="table-header">
-                <p>Smoke</p>
-                <p>Type of smoke</p>
-                <p>Notes</p>
+                <p>Quantità giornaliera</p>
+                <p>Giorni</p>
+                <p>Note</p>
               </div>
             
               <div class="table-content">
@@ -271,9 +271,9 @@
             </div>
             <div class="table-container">
               <div class="table-header">
-                <p>Sport played</p>
-                <p>Level</p>
-                <p>Frequency</p>
+                <p>Attività Fisica</p>
+                <p>Livello</p>
+                <p>Frequenza</p>
               </div>
             
               <div class="table-content">
@@ -305,8 +305,8 @@
             <div class="table-container">
               <div class="table-header">
                 <p>Attività Sedentaria</p>
-                <p>Level</p>
-                <p>Notes</p>
+                <p>Livello</p>
+                <p>Note</p>
               </div>
             
               <div class="table-content">
@@ -325,12 +325,12 @@
 
         <div class="container-blood-input">
           <div class="container">
-            <h3>Blood Group</h3>
+            <h3>Gruppo Sanguigno</h3>
             <input type="text" readonly id="blood_group" value="{{ persona.blood_group|default:'N/A' }}" data-patient-id="{{ persona.id }}"/>
           </div>
 
           <div class="container">
-              <h3>Factor rh</h3>
+              <h3>Fattore rh</h3>
               <input type="text" readonly id="rh" value="{{ persona.rh_factor|default:'N/A' }}" data-patient-id="{{ persona.id }}"/>
           </div>
         </div>

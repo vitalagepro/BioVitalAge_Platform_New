@@ -137,8 +137,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const rangeInput = group.querySelector('input[type="range"]');
 
       if (label && numberInput && rangeInput) {
-        const isMan = label.textContent.includes("Man");
-        const isWoman = label.textContent.includes("Woman");
+        const isMan = label.textContent.includes("Uomo");
+        const isWoman = label.textContent.includes("Donna");
 
         if (
           (selectedGender === "M" && isWoman) ||
