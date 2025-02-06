@@ -723,8 +723,8 @@ main {
 }
 
 .linkage-container a img {
-  width: 25px;
-  height: 25px;
+  width: 35px;
+  height: 35px;
 }
 
 .linkage-container a {
@@ -865,7 +865,6 @@ main {
   width: 100%;
   height: 100%;
   position: relative;
-
   margin: 0;
 }
 

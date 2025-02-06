@@ -1,12 +1,36 @@
 /*  -----------------------------------------------------------------------------------------------
-  ! Loader
+  function to transform the first letter of a string to uppercase
 --------------------------------------------------------------------------------------------------- */
-// Funzione che imposta "opacity: 0" e "z-index: -1" dopo 3 secondi
 document.addEventListener("DOMContentLoaded", function () {
-  setTimeout(() => {
-    document.getElementById("loading-wrapper").style.opacity = "0";
-    document.getElementById("loading-wrapper").style.zIndex = "-1";
-  }, 500);
+  // Seleziona tutti gli elementi con la classe 'field'
+  let fields = document.querySelectorAll(".info_container .field");
+
+  fields.forEach((field) => {
+    let label = field.querySelector("p:first-of-type"); // Prende il primo <p> (etichetta)
+    let valueP = field.querySelector("p:nth-of-type(2)"); // Prende il secondo <p> (valore)
+
+    if (label && valueP) {
+      let labelText = label.innerText.trim();
+
+      // Controlla se il campo è "Nome:" o "Cognome:"
+      if (labelText === "Nome:" || labelText === "Cognome:") {
+        let text = valueP.innerText.trim();
+        if (text.length > 0) {
+          // Converte la prima lettera in maiuscolo di ogni parola se la parola è tutta in minuscolo
+          let formattedText = text
+            .split(" ") // Divide il testo in parole
+            .map((word) =>
+              word === word.toLowerCase()
+                ? word.charAt(0).toUpperCase() + word.slice(1)
+                : word
+            ) // Se è minuscola, la corregge
+            .join(" "); // Ricompone la stringa
+
+          valueP.innerText = formattedText;
+        }
+      }
+    }
+  });
 });
 
 /*  -----------------------------------------------------------------------------------------------
@@ -43,15 +67,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 modificationsExist = false; // Resetta lo stato delle modifiche
 
                 // Disabilita tutti gli input dopo il salvataggio
-                form
-                  .querySelectorAll(".riga-container input")
-                  .forEach((input) => {
-                    input.disabled = true;
-                    input.style.backgroundColor = "inherit";
-                    input.style.border = "none";
-                    // Salva lo stato attuale degli input come valore originale
-                    input.dataset.originalValue = input.value;
-                  });
+                form.querySelectorAll(".riga-container input").forEach((input) => {
+                  input.disabled = true;
+                  input.style.backgroundColor = "inherit";
+                  input.style.border = "none";
+                  // Salva lo stato attuale degli input come valore originale
+                  input.dataset.originalValue = input.value;
+                });
 
                 // Svuota righe rimosse e aggiunte dopo il salvataggio
                 removedRows.clear();
@@ -81,15 +103,10 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", function () {
       const tableContent = this.closest("form").querySelector(".table-content");
       const existingRow = tableContent.querySelector(".riga-container");
-      const columnCount = existingRow
-        ? existingRow.querySelectorAll("p").length
-        : 3; // Default to 3 columns if no rows exist
+      const columnCount = existingRow ? existingRow.querySelectorAll("p").length : 3; // Default to 3 columns if no rows exist
       const newRow = document.createElement("div");
       newRow.classList.add("riga-container");
-      newRow.innerHTML =
-        `<p><input type="text" style="background-color: inherit; color: inherit;"></p>`.repeat(
-          columnCount
-        );
+      newRow.innerHTML = `<p><input type="text" style="background-color: inherit; color: inherit;"></p>`.repeat(columnCount);
       newRow.dataset.newRow = "true";
       tableContent.appendChild(newRow);
       addedRows.add(newRow); // Memorizza la riga aggiunta
@@ -108,9 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         inputs.forEach((input) => {
           input.disabled = !input.disabled;
           input.style.backgroundColor = input.disabled ? "inherit" : "white";
-          input.style.border = input.disabled
-            ? "none"
-            : "1px solid var(--contrast-color-shadow)";
+          input.style.border = input.disabled ? "none" : "1px solid var(--contrast-color-shadow)";
           input.style.width = input.disabled ? "100%" : "max-content";
           input.style.height = input.disabled ? "100%" : "max-content";
           input.style.borderRadius = input.disabled ? "none" : "5px";
@@ -147,31 +162,24 @@ document.addEventListener("DOMContentLoaded", () => {
               </label>
             `;
             row.insertAdjacentElement("afterbegin", checkboxContainer);
-            row.dataset.originalState = row.innerHTML.replace(
-              checkboxContainer.outerHTML,
-              ""
-            ); // Salva lo stato originale della riga senza la checkbox
+            row.dataset.originalState = row.innerHTML.replace(checkboxContainer.outerHTML, ""); // Salva lo stato originale della riga senza la checkbox
           }
         });
       } else {
         // Rimuovi le righe selezionate
-        tableContent
-          .querySelectorAll(".container-checkbox input:checked")
-          .forEach((checkbox) => {
-            const row = checkbox.closest(".riga-container");
-            const rowId = Date.now() + Math.random(); // Genera un ID univoco
-            removedRows.set(rowId, row.dataset.originalState); // Salva lo stato originale nella mappa
-            row.remove();
-            rowRemoved = true;
-          });
+        tableContent.querySelectorAll(".container-checkbox input:checked").forEach((checkbox) => {
+          const row = checkbox.closest(".riga-container");
+          const rowId = Date.now() + Math.random(); // Genera un ID univoco
+          removedRows.set(rowId, row.dataset.originalState); // Salva lo stato originale nella mappa
+          row.remove();
+          rowRemoved = true;
+        });
 
         // Rimuovi tutte le checkbox residue
         if (!rowRemoved) {
-          tableContent
-            .querySelectorAll(".container-checkbox")
-            .forEach((checkboxContainer) => {
-              checkboxContainer.remove();
-            });
+          tableContent.querySelectorAll(".container-checkbox").forEach((checkboxContainer) => {
+            checkboxContainer.remove();
+          });
         }
       }
 
@@ -189,11 +197,11 @@ document.addEventListener("DOMContentLoaded", () => {
         input.style.border = "none";
       }
     });
-
+  
     clearCheckboxes(form); // Rimuove eventuali checkbox residue
     removedRows.clear(); // Pulisci righe rimosse
     addedRows.clear(); // Pulisci righe aggiunte
-  }
+  }  
 
   // Rimuove tutte le checkbox residue
   function clearCheckboxes(form) {
@@ -344,13 +352,9 @@ document.addEventListener("DOMContentLoaded", () => {
       })
         .then((response) => {
           if (response.ok) {
-            console.log(
-              `Modifiche salvate correttamente per il form ${form.id}`
-            );
+            console.log(`Modifiche salvate correttamente per il form ${form.id}`);
           } else {
-            console.error(
-              `Errore durante il salvataggio per il form ${form.id}`
-            );
+            console.error(`Errore durante il salvataggio per il form ${form.id}`);
           }
         })
         .catch((error) => {
@@ -368,6 +372,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let modificationsExist = false;
 
   const btn = document.getElementById("btn_blood_group");
+  const pressureInput = document.getElementById("pressure")
+  const heartRateInput = document.getElementById("heart_rate")
   const bloodGroupInput = document.getElementById("blood_group");
   const rhInput = document.getElementById("rh");
   const bloodDataSection = document.querySelector(".blood_data");
@@ -379,6 +385,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isEditing) {
       bloodGroupInput.removeAttribute("readonly");
       rhInput.removeAttribute("readonly");
+      pressureInput.removeAttribute("readonly");
+      heartRateInput.removeAttribute("readonly");
 
       bloodDataSection.classList.add("editing");
 
@@ -451,22 +459,29 @@ document.addEventListener("DOMContentLoaded", () => {
       // Disabilita i campi dopo la modifica
       bloodGroupInput.setAttribute("readonly", true);
       rhInput.setAttribute("readonly", true);
+      pressureInput.setAttribute("readonly", true);
+      heartRateInput.setAttribute("readonly", true);
 
       bloodDataSection.classList.remove("editing");
 
       const newBloodGroup = bloodGroupInput.value.trim();
       const newRh = rhInput.value.trim();
+      const newPressureInput = pressureInput.value.trim();
+      const newHeartRateInput = heartRateInput.value.trim();
 
       // Solo se ci sono modifiche
       if (
         newBloodGroup !== bloodGroupInput.dataset.originalValue ||
-        newRh !== rhInput.dataset.originalValue
+        newRh !== rhInput.dataset.originalValue ||
+        newPressureInput !== pressureInput.dataset.originalValue ||
+        newHeartRateInput !== heartRateInput.dataset.originalValue
       ) {
         modificationsExist = true;
       }
 
       if (modificationsExist) {
-        const patientId = document.getElementById("blood_group").dataset.patientId; // Supponiamo che l'ID sia in un dataset
+        const patientId =
+          document.getElementById("blood_group").dataset.patientId; // Supponiamo che l'ID sia in un dataset
 
         // Invia i dati modificati al backend Django
         fetch(`/api/update_blood_data/${patientId}/`, {
@@ -478,6 +493,8 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify({
             blood_group: newBloodGroup,
             rh_factor: newRh,
+            pressure: newPressureInput,
+            heart_rate: newHeartRateInput
           }),
         })
           .then((response) => response.json())

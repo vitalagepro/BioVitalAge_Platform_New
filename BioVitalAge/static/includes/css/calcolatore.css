@@ -183,7 +183,7 @@ input[type="range"]::-ms-thumb {
   align-items: center;
   justify-content: space-between;
   gap: 15px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   width: 100%;
 }
 
@@ -208,7 +208,6 @@ input[type="range"]::-ms-thumb {
 }
 
 .section h3 {
-  margin-bottom: 0 !important;
   color: var(--dark2);
 }
 
@@ -239,6 +238,10 @@ input[type="range"]::-ms-thumb {
 
 .hidden-exam .header-section-exam {
   margin-bottom: 0;
+}
+
+.hidden-exam h3{
+  margin-bottom: 0 !important;
 }
 
 .hidden-exam .container-exam-calculator {

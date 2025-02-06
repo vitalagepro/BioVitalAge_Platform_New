@@ -1,4 +1,39 @@
 /*  -----------------------------------------------------------------------------------------------
+  function to transform the first letter of a string to uppercase
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  // Seleziona tutti gli elementi con la classe 'field'
+  let fields = document.querySelectorAll(".info_container .field");
+
+  fields.forEach((field) => {
+    let label = field.querySelector("p:first-of-type"); // Prende il primo <p> (etichetta)
+    let valueP = field.querySelector("p:nth-of-type(2)"); // Prende il secondo <p> (valore)
+
+    if (label && valueP) {
+      let labelText = label.innerText.trim();
+
+      // Controlla se il campo è "Nome:" o "Cognome:"
+      if (labelText === "Nome:" || labelText === "Cognome:") {
+        let text = valueP.innerText.trim();
+        if (text.length > 0) {
+          // Converte la prima lettera in maiuscolo di ogni parola se la parola è tutta in minuscolo
+          let formattedText = text
+            .split(" ") // Divide il testo in parole
+            .map((word) =>
+              word === word.toLowerCase()
+                ? word.charAt(0).toUpperCase() + word.slice(1)
+                : word
+            ) // Se è minuscola, la corregge
+            .join(" "); // Ricompone la stringa
+
+          valueP.innerText = formattedText;
+        }
+      }
+    }
+  });
+});
+
+/*  -----------------------------------------------------------------------------------------------
     Function to select man or woman in strong test
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
@@ -15,9 +50,9 @@ document.addEventListener("DOMContentLoaded", function () {
           femaleInput.removeAttribute("required");
           femaleInput.setAttribute("placeholder", "N/A");
         } else {
-            femaleInput.disabled = false;
-            femaleInput.setAttribute("required", "required");
-            femaleInput.setAttribute("placeholder", "Inserisci il valore");
+          femaleInput.disabled = false;
+          femaleInput.setAttribute("required", "required");
+          femaleInput.setAttribute("placeholder", "Inserisci il valore");
         }
       });
 

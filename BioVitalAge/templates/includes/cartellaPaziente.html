@@ -69,7 +69,7 @@
         <div class="container-datiPersonali containerStyle">
 
             <div class="header-card">
-                <h3>Personal Information</h3>
+                <h3>Informazioni Personali</h3>
                 
                 <div class="button-grid">
 
@@ -80,13 +80,10 @@
                             alt="data-protection" title="Privacy & Policy">
                     </a>             
 
-                    <a class="Btn-modify" title="Modifica">Edit 
+                    <a class="Btn-modify" title="Modifica">Edita 
                         <svg class="svg" viewBox="0 0 512 512">
                           <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path></svg>
                     </a>
-
-                    
-                    
                 </div>
             </div>
 
@@ -94,37 +91,37 @@
 
                 <div class="info_container">
                     <div class="field">
-                        <p>Name:</p>
+                        <p>Nome:</p>
                         <p>{{ persona.name }}</p>
                     </div>
 
                     <div class="field">
-                        <p>Surname:</p>
+                        <p>Cognome:</p>
                         <p>{{ persona.surname }}</p>
                     </div>
 
                     <div class="field">
-                        <p>Date of birth:</p>
+                        <p>Data di nascita:</p>
                         <p>{{ persona.dob }}</p>
                     </div>
 
                     <div class="field">
-                        <p>Age:</p>
+                        <p>Età:</p>
                         <p>{{ persona.chronological_age }}</p>
                     </div>
 
                     <div class="field">
-                        <p>Fiscal Code:</p>
+                        <p>Codice Fiscale:</p>
                         <p>{{ persona.codice_fiscale }}</p>
                     </div>
 
                     <div class="field">
-                        <p>Place of birth:</p>
+                        <p>Città di nascita:</p>
                         <p>{{ persona.place_of_birth }}</p>
                     </div>
 
                     <div class="field">
-                        <p>Place of residence:</p>
+                        <p>Città di residenza:</p>
                         <p>{{ persona.place_of_birth }}</p>
                     </div>
 
@@ -134,12 +131,12 @@
                     </div>
 
                     <div class="field">
-                        <p>Province:</p>
+                        <p>Provincia:</p>
                         <p>{{ persona.province|default:"N/A" }}</p>
                     </div>
 
                     <div class="field">
-                        <p>Genere :</p>
+                        <p>Genere:</p>
                         <p>{{ persona.gender }}</p>
                     </div>
                 </div>
@@ -152,7 +149,7 @@
                                 <img src="{% static 'includes/icone/stetoscopio.png' %}" alt="">
                             </div>
 
-                            <p>Associate Staff<span id="associate_staff">{{ persona.associate_staff|default:persona.dottore }}</span></p>
+                            <p>Dottore Associato<span id="associate_staff">{{ persona.associate_staff|default:persona.dottore }}</span></p>
                         </div>
 
                         <div class="card-subcard">
@@ -160,7 +157,7 @@
                                 <img src="{% static 'includes/icone/ospedale.png' %}" alt="">
                             </div>
 
-                            <p>Recent Visit<span id="lastVisit">{{ persona.lastVisit|default:"dd/mm/yyyy"}}</span></p>
+                            <p>Visita Recente<span id="lastVisit">{{ persona.lastVisit|default:"dd/mm/yyyy"}}</span></p>
                         </div>
 
                         <div class="card-subcard">
@@ -168,7 +165,7 @@
                                 <img src="{% static 'includes/icone/calendario.png' %}" alt="">
                             </div>
 
-                            <p>Upcoming Visit <span id="upcomingVisit">{{persona.upcomingVisit|default:"dd/mm/yyyy"}}</span></p>
+                            <p>Prossima Visita<span id="upcomingVisit">{{persona.upcomingVisit|default:"dd/mm/yyyy"}}</span></p>
                         </div>
 
                         <div class="card-subcard">
@@ -176,7 +173,7 @@
                                 <img src="{% static 'includes/icone/blood.png' %}" alt="">
                             </div>
 
-                            <p>Blood type<span id="blood_group">{{ persona.blood_group|default:"0 +" }}</span></p>
+                            <p>Gruppo Sanguigno<span id="blood_group">{{ persona.blood_group|default:"0 +" }}</span></p>
                         </div>
 
                     </div>
@@ -207,7 +204,7 @@
                             <div class="img-circle-container">
                                 <img src="{% static 'includes/icone/phone.png' %}" alt="">
                             </div>
-                            <p>Phone<span id="phone">{{ persona.phone|default:"+39 333 333 3333" }}</span></p>
+                            <p>Telefono<span id="phone">{{ persona.phone|default:"+39 333 333 3333" }}</span></p>
                         </div>
                     </div>
 
@@ -235,7 +232,7 @@
                     <p>In questa sezione sono elencati tutti i dati base del paziente ovvero: Anagraphic Data,
                         Anthropometric basic data, abdominal girth, Life Syle (alchol, smoking, sport, sedentarietà).
                     </p>
-                    <a href="{% url 'dati_base' persona.id %}">Vai Alla sezione</a>
+                    <a href="{% url 'dati_base' persona.id %}">Vai alla sezione</a>
                 </div>
             </div>
 
@@ -249,7 +246,7 @@
                     <img src="{% static 'includes/images/corporazione.png' %}" alt="">
                     <p>In questa sezione sono presenti le analisi della composizione corporea e tutti i valori del
                         paziente inerenti le analisi.</p>
-                    <a href="{% url 'composizione' persona.id %}">Vai Alla sezione</a>
+                    <a href="{% url 'composizione' persona.id %}">Vai alla sezione</a>
                 </div>
             </div>
         </div>
@@ -271,14 +268,14 @@
                         Fugiat ducimus adipisci nemo, dolores doloribus deserunt
                          pariatur cumque nostrum sed quis nihil dicta ipsum expedita?
                     </p>
-                    <a href="{% url 'etaVitale' persona.id %}">Vai Alla sezione</a>
+                    <a href="{% url 'etaVitale' persona.id %}">Vai alla sezione</a>
                 </div>
             </div>
 
 
             <div class="cardDati">
                 <div class="cartella-effect">
-                    <h3>Blood Exam Report</h3>
+                    <h3>Rapporto sull'esame del sangue</h3>
                     <div class="space"></div>
                 </div>
                 <div class="card-content">
@@ -520,8 +517,8 @@
                 </div>
                 <div class="table-container">
                     <div class="table-header">
-                        <p>Chronological Age</p>
-                        <p>Biological Age</p>
+                        <p>Età Cronologica</p>
+                        <p>Età Biologica</p>
                         <p>Valore Referto</p>
                         <p>Data Referto</p>
                         <p>Mostra Referto</p>
@@ -552,7 +549,7 @@
                             </p>
                         </div>
                         {% empty %}
-                        <p class="text-center mb-2 mt-2">No recent reports found.</p>
+                        <p class="text-center mb-2 mt-2">Nessun referto recente trovato.</p>
                         {% endfor %}
                     </div>
                 </div>
@@ -566,8 +563,8 @@
                 <div class="icon">
                     <img src="{% static 'includes/icone/pillola.png' %}" alt="BP Levels Icon">
                 </div>
-                <h3>BP Levels</h3>
-                <p>Recent five visits</p>
+                <h3>Livello BP</h3>
+                <p>Ultime 5 visite</p>
                 <div class="container_chart_dashboard">
                     <canvas id="chart1"></canvas>
                 </div>
@@ -593,8 +590,8 @@
                 <div class="icon">
                     <img src="{% static 'includes/icone/sugar.png' %}" alt="Sugar Levels Icon">
                 </div>
-                <h3>Sugar Levels</h3>
-                <p>Recent five visits</p>
+                <h3>Livello di zuccheri</h3>
+                <p>Ultime 5 visite</p>
                 <div class="container_chart_dashboard">
                     <canvas id="chart2"></canvas>
                 </div>
@@ -620,8 +617,8 @@
                 <div class="icon">
                     <img src="{% static 'includes/icone/heart.png' %}" alt="Heart Rate Icon">
                 </div>
-                <h3>Heart Rate</h3>
-                <p>Recent five visits</p>
+                <h3>Frequenza Cardiaca</h3>
+                <p>Ultime 5 visite</p>
                 <div class="container_chart_dashboard">
                     <canvas id="chart3"></canvas>
                 </div>
@@ -647,8 +644,8 @@
                 <div class="icon">
                     <img src="{% static 'includes/icone/provetta.png' %}" alt="Cholesterol Icon">
                 </div>
-                <h3>Cholesterol</h3>
-                <p>Recent five visits</p>
+                <h3>Colesterolo</h3>
+                <p>Ultime 5 visite</p>
                 <div class="container_chart_dashboard">
                     <canvas id="chart4"></canvas>
                 </div>
@@ -674,7 +671,7 @@
         <!-- CARD CLOCK -->
         <div class="container-indicatori containerStyle">
             <div class="card card4" id="card-style">
-                <h3 class="section-tittle">Latest Organ Health Scores</h3>
+                <h3 class="section-tittle">Ultimi punteggi sulla salute degli organi</h3>
 
                 <div class="score-clock-graph">
 
@@ -682,28 +679,28 @@
                         <div class="inner"></div>
                         <div class="percentage" id="kidneyPercentage"></div>
 
-                        <p id="clock-description">Kidney Health</p>
+                        <p id="clock-description">Salute dei reni</p>
                     </div>
 
                     <div class="clock" id="lipidClock">
                         <div class="inner"></div>
                         <div class="percentage" id="lipidPercentage"></div>
 
-                        <p id="clock-description">Lipid Health</p>
+                        <p id="clock-description">Salute dei lipidi</p>
                     </div>
 
                     <div class="clock" id="liverClock">
                         <div class="inner"></div>
                         <div class="percentage" id="liverPercentage"></div>
 
-                        <p id="clock-description">Liver Health</p>
+                        <p id="clock-description">Salute del fegato</p>
                     </div>
 
                     <div class="clock" id="glucoseClock">
                         <div class="inner"></div>
                         <div class="percentage" id="glucosePercentage"></div>
 
-                        <p id="clock-description">Glucose Health</p>
+                        <p id="clock-description">Salute del glucosio</p>
                     </div>
 
                 </div>
