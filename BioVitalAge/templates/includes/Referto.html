@@ -95,12 +95,12 @@
                 
                         <div class="field">
                             <p>Età:&nbsp;</p>
-                            <p id="chronological_age">{{ persona.chronological_age }}</p>
+                            <p id="chronological_age" data-value="{{ persona.chronological_age }}">{{ persona.chronological_age }}</p>
                         </div>
                     
                         <div class="field">
                             <p>Età Biologica:&nbsp;</p>
-                            <p>{{ datiEstesi.biological_age|default:"N/A" }}</p>
+                            <p id="biological_age" data-value="{{ datiEstesi.biological_age|default:'NaN' }}">{{ datiEstesi.biological_age|default:"N/A" }}</p>
                         </div>
 
                         <div class="field">
@@ -5102,7 +5102,7 @@
             </div>
 
             <!-- GENERA PDF COMPLETO -->
-            <button class="generatePDFButton button" id="screenshotBtn">
+            <button class="generatePDFButton button" id="screenshotBtn" data-referto-id="{{ referto.id }}" data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
                 <span class="button__icon-wrapper">
                     <svg
                     xmlns="http://www.w3.org/2000/svg"
