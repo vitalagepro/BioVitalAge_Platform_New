@@ -668,7 +668,8 @@ class CalcolatoreRender(View):
                         gender=data.get('gender'),
                         place_of_birth=data.get('place_of_birth'),
                         codice_fiscale=data.get('codice_fiscale'),
-                        chronological_age = data.get('chronological_age')
+                        chronological_age = data.get('chronological_age'),
+                        province = data.get('province')
                     )
                     paziente.save()
 
@@ -689,6 +690,7 @@ class CalcolatoreRender(View):
                         place_of_birth= data.get('place_of_birth'),
                         codice_fiscale= data.get('codice_fiscale'),
                         chronological_age= data.get('chronological_age'),
+                        province = data.get('province')
                     )
                     paziente.save()
               
@@ -1194,6 +1196,7 @@ class CartellaPazienteView(View):
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
         persona = get_object_or_404(TabellaPazienti, id=id)
+        print('Persona: ', persona)
 
         #DATI REFERTI ETA' BIOLOGICA
         referti_recenti = persona.referti.all().order_by('-data_referto')
@@ -1314,6 +1317,8 @@ class UpdateBloodDataView(View):
             data = json.loads(request.body)
             blood_group = data.get("blood_group", "N/A")
             rh_factor = data.get("rh_factor", "N/A")
+            pressure = data.get("pressure", "Inserisci i valori")
+            heart_rate = data.get("heart_rate", "Inserisci i valori")
 
             # Recupera il paziente corrispondente
             persona = get_object_or_404(TabellaPazienti, id=id)
@@ -1321,6 +1326,8 @@ class UpdateBloodDataView(View):
             # Aggiorna i dati
             persona.blood_group = blood_group
             persona.rh_factor = rh_factor
+            persona.pressure = pressure
+            persona.heart_rate = heart_rate
             persona.save()
 
             return JsonResponse({"status": "success", "message": "Dati aggiornati correttamente"})

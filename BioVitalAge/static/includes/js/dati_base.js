@@ -372,6 +372,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let modificationsExist = false;
 
   const btn = document.getElementById("btn_blood_group");
+  const pressureInput = document.getElementById("pressure")
+  const heartRateInput = document.getElementById("heart_rate")
   const bloodGroupInput = document.getElementById("blood_group");
   const rhInput = document.getElementById("rh");
   const bloodDataSection = document.querySelector(".blood_data");
@@ -383,6 +385,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isEditing) {
       bloodGroupInput.removeAttribute("readonly");
       rhInput.removeAttribute("readonly");
+      pressureInput.removeAttribute("readonly");
+      heartRateInput.removeAttribute("readonly");
 
       bloodDataSection.classList.add("editing");
 
@@ -455,16 +459,22 @@ document.addEventListener("DOMContentLoaded", () => {
       // Disabilita i campi dopo la modifica
       bloodGroupInput.setAttribute("readonly", true);
       rhInput.setAttribute("readonly", true);
+      pressureInput.setAttribute("readonly", true);
+      heartRateInput.setAttribute("readonly", true);
 
       bloodDataSection.classList.remove("editing");
 
       const newBloodGroup = bloodGroupInput.value.trim();
       const newRh = rhInput.value.trim();
+      const newPressureInput = pressureInput.value.trim();
+      const newHeartRateInput = heartRateInput.value.trim();
 
       // Solo se ci sono modifiche
       if (
         newBloodGroup !== bloodGroupInput.dataset.originalValue ||
-        newRh !== rhInput.dataset.originalValue
+        newRh !== rhInput.dataset.originalValue ||
+        newPressureInput !== pressureInput.dataset.originalValue ||
+        newHeartRateInput !== heartRateInput.dataset.originalValue
       ) {
         modificationsExist = true;
       }
@@ -483,6 +493,8 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify({
             blood_group: newBloodGroup,
             rh_factor: newRh,
+            pressure: newPressureInput,
+            heart_rate: newHeartRateInput
           }),
         })
           .then((response) => response.json())

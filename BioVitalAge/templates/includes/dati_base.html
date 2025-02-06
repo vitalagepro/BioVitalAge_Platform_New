@@ -322,17 +322,34 @@
       </section>
 
       <section class="container_data blood_data">
-
+        
         <div class="container-blood-input">
-          <div class="container">
-            <h3>Gruppo Sanguigno</h3>
-            <input type="text" readonly id="blood_group" value="{{ persona.blood_group|default:'N/A' }}" data-patient-id="{{ persona.id }}"/>
+          <div class="column">
+            <div class="container mb-4">
+              <h3>Pressione Arteriosa</h3>
+              <input type="text" readonly id="pressure" value="{{ persona.pressure|default:'Inserisci valori' }}"
+                data-patient-id="{{ persona.id }}" />
+            </div>
+          
+            <div class="container">
+              <h3>Frequenza Cardiaca</h3>
+              <input type="text" readonly id="heart_rate" value="{{ persona.heart_rate|default:'Inserisci valori' }}"
+                data-patient-id="{{ persona.id }}" />
+            </div>
           </div>
 
-          <div class="container">
-              <h3>Fattore rh</h3>
-              <input type="text" readonly id="rh" value="{{ persona.rh_factor|default:'N/A' }}" data-patient-id="{{ persona.id }}"/>
+          <div class="column">
+            <div class="container mb-4">
+              <h3>Gruppo Sanguigno</h3>
+              <input type="text" readonly id="blood_group" value="{{ persona.blood_group|default:'N/A' }}" data-patient-id="{{ persona.id }}"/>
+            </div>
+  
+            <div class="container">
+                <h3>Fattore rh</h3>
+                <input type="text" readonly id="rh" value="{{ persona.rh_factor|default:'N/A' }}" data-patient-id="{{ persona.id }}"/>
+            </div>
           </div>
+
         </div>
         <button class="button" id="btn_blood_group">
           <span class="button__icon-wrapper">
