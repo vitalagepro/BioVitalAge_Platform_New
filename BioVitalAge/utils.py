@@ -1,8 +1,8 @@
 def adjust_age_basophils(basophils):
     basophils = float(basophils) if basophils else 0
-    if 0 <= basophils <= 0.2:
+    if 0 <= basophils <= 2.5:
         return 0
-    elif basophils > 0.2:
+    elif basophils > 2.5:
         return 2
     return 0
 
@@ -16,10 +16,13 @@ def adjust_age_eosinophils(eosinophils):
 
 def adjust_age_lymphocytes(lymphocytes):
     lymphocytes = float(lymphocytes) if lymphocytes else 0
-    if 20 <= lymphocytes <= 40:
+
+    if 15 <= lymphocytes <= 45:
         return 0
-    elif 20 < lymphocytes > 40:
+    
+    else:
         return 2
+    
     return 0
 
 def adjust_age_monocytes(monocytes):
@@ -72,10 +75,13 @@ def adjust_age_mch(mch):
 
 def adjust_age_mchc(mchc):
     mchc = float(mchc) if mchc else 0
-    if 32 <= mchc <= 36:
+
+    if 32 <= mchc <= 37:
         return 0
-    elif 32 < mchc > 36:
+    
+    elif mchc < 32 or mchc > 37:
         return 2
+    
     return 0
 
 def adjust_age_mcv(mcv):
@@ -118,19 +124,35 @@ def adjust_age_bilirubin(bilirubin):
         return 2
     return 0
 
-def adjust_age_uric_acid(uric_acid):
+def adjust_age_uric_acidM(uric_acid):
     uric_acid = float(uric_acid) if uric_acid else 0
-    if 3.5 <= uric_acid <= 7.2:
+
+    if 3.4 <= uric_acid <= 7.0:
         return 0
-    elif uric_acid < 3.5:
+    
+    elif uric_acid < 3.4:
         return 2
+    
+    return 0
+
+def adjust_age_uric_acidF(uric_acid):
+    uric_acid = float(uric_acid) if uric_acid else 0
+
+    if 2.4 <= uric_acid <= 5.7:
+        return 0
+    
+    elif uric_acid < 2.4:
+        return 2
+    
     return 0
 
 def adjust_age_rdw(rdw):
     rdw = float(rdw) if rdw else 0
-    if 11 <= rdw <= 15:
+
+    if 38 <= rdw <= 48:
         return 0
-    elif 11 < rdw > 15:
+    
+    elif rdw < 38 or rdw > 48:
         return 2
     return 0
 
@@ -148,8 +170,10 @@ def adjust_age_glucose(glucose):
 
 def adjust_age_creatinine(creatinine):
     creatinine = float(creatinine) if creatinine else 0
+
     if 0.5 <= creatinine <= 0.9:
         return 0
+    
     elif creatinine > 0.9:
         return 3
     return 0
@@ -158,14 +182,17 @@ def adjust_age_ferritin(ferritin):
     ferritin = float(ferritin) if ferritin else 0
     if 13 <= ferritin <= 150:
         return 0
+    
     elif ferritin > 150:
         return 2
     return 0
 
 def adjust_age_albumin(albumin):
+
     albumin = float(albumin) if albumin else 0
     if 3.5 <= albumin <= 5.2:
         return 0
+    
     elif albumin < 3.5:
         return 2
     return 0
@@ -279,14 +306,6 @@ def adjust_age_pat(pat):
         return -5
 
 
-
-# Funzione del calcolo del range
-def is_value_in_range(key, value, normal_values):
-    if key in normal_values:
-        min_val, max_val = normal_values[key] 
-        return min_val <= value <= max_val  
-    return False  
-     
 def adjust_age_examsF(exams):
     age_adjustment = 0
    
@@ -312,6 +331,13 @@ def adjust_age_examsF(exams):
         'rbc_w':(4.0, 5.5),
 
         #GENERIC
+        'uric_acid': (2.4, 5.7),
+        'rdwcv': (11, 15),
+        'baso_ul': (0, 0.1),
+        'eosi_ul': (0, 0.7),
+        'mono_ul': (0, 0.99),
+        'lymph_ul': (1.0, 3.5),
+        'neut_ul' : (2.0, 7.5),
         'my_acid': (24, 64),
         'p_acid': (609, 893),
         'st_acid': (186, 279),
@@ -328,7 +354,7 @@ def adjust_age_examsF(exams):
         'dih_gamma_lin_acid': (37, 75),
         'arachidonic_acid': (188, 343),
         'sa_un_fatty_acid': (0.4, 0.6),
-        'o3o6_fatty_acid_quotient': (5-14, 64),
+        'o3o6_fatty_acid_quotient': (14, 64),
         'aa_epa': (0, 4),
         'o3_index': (6, 8),
         'rdwcv': (11.0, 15.0),
@@ -341,7 +367,7 @@ def adjust_age_examsF(exams):
         'pdw': (10, 16),
         'd_dimero': (0, 200),
         'pai_1': (98, 122),
-        'tot_chol': (0, 200),
+        'tot_chol': (0, 200), 
         'ldl_chol': (0, 100),
         'trigl': (150, 200),
         'na':(136, 145),
@@ -402,18 +428,26 @@ def adjust_age_examsF(exams):
     
     for exam in exams:
         for key, value in exam.items():
-            if isinstance(value, (int, float, str)): 
-                value = float(value) if value else 0
-            else:
-                print(f"⚠️ Errore: Il valore di '{key}' non è un numero, ma un {type(value)}: {value}")
-                value = 0  
+            value = float(value)
+
+            if value == 0:
+                minValue, maxValue = normal_values[key]
+                if minValue != 0:
+                    age_adjustment += 0
+                    #print(f"{key}: ✅ {value} il valore non è stato inserito ({minValue}, {maxValue})")
+                    continue
 
             if key in normal_values:
-                if is_value_in_range(key, value, normal_values):
-                    age_adjustment -= 0.2
-                else:
-                    age_adjustment += 0.4
 
+                minValue, maxValue = normal_values[key]
+            
+                if minValue <= value <= maxValue:
+                    #print(f"{key}: ✅ {value} è dentro il range ({minValue}, {maxValue})")
+                    age_adjustment -= 0.2  
+                else:
+                    #print(f"{key}: ❌ {value} è FUORI dal range ({minValue}, {maxValue})")
+                    age_adjustment += 0.4 
+         
     return age_adjustment
 
 def adjust_age_examsM(exams):
@@ -441,6 +475,13 @@ def adjust_age_examsM(exams):
         'rbc_m':(4.5, 6.0),
 
         #GENERIC
+        'uric_acid': (2.4, 5.7),
+        'rdwcv': (11, 15),
+        'baso_ul': (0, 0.1),
+        'eosi_ul': (0, 0.7),
+        'mono_ul': (0, 0.99),
+        'lymph_ul': (1.0, 3.5),
+        'neut_ul' : (2.0, 7.5),
         'my_acid': (24, 64),
         'p_acid': (609, 893),
         'st_acid': (186, 279),
@@ -531,26 +572,34 @@ def adjust_age_examsM(exams):
     
     for exam in exams:
         for key, value in exam.items():
-            if isinstance(value, (int, float, str)): 
-                value = float(value) if value else 0
-            else:
-                print(f"⚠️ Errore: Il valore di '{key}' non è un numero, ma un {type(value)}: {value}")
-                value = 0  
+            value = float(value)
+
+            if value == 0:
+                minValue, maxValue = normal_values[key]
+                if minValue != 0:
+                    age_adjustment += 0
+                    #print(f"{key}: ✅ {value} il valore non è stato inserito ({minValue}, {maxValue})")
+                    continue
 
             if key in normal_values:
-                print(age_adjustment)
 
-                if is_value_in_range(key, value, normal_values):
-                    age_adjustment -= 2  
+                minValue, maxValue = normal_values[key]
+            
+                if minValue <= value <= maxValue:
+                    #print(f"{key}: ✅ {value} è dentro il range ({minValue}, {maxValue})")
+                    age_adjustment -= 0.2  
                 else:
-                    age_adjustment += 4  
+                    #print(f"{key}: ❌ {value} è FUORI dal range ({minValue}, {maxValue})")
+                    age_adjustment += 0.4 
+         
+    return age_adjustment
 
-    return int(age_adjustment)
 
 
-def calculate_biological_age(chronological_age, d_roms, osi, pat, wbc, basophils,
-                eosinophils, lymphocytes, monocytes, neutrophils, rbc, hgb, 
-                hct, mcv, mch, mchc, rdw, exams, gender):
+
+def calculate_biological_age(chronological_age, d_roms = 260, osi = 10, pat = 2500, wbc = 5000, basophils = 0.1,
+                eosinophils = 1, lymphocytes = 30, monocytes = 5, neutrophils = 50, rbc = 5, hgb = 14, 
+                hct = 40, mcv = 90, mch = 33 , mchc =  33, rdw = 12 , exams = [], gender = 'F'):
     
     biological_age = chronological_age
 
@@ -579,30 +628,30 @@ def calculate_biological_age(chronological_age, d_roms, osi, pat, wbc, basophils
     biological_age += adjust_age_rdw(rdw)
 
     # Aggiustamenti basati sugli esami specifici
-    biological_age += adjust_age_glucose(exams[0].get('glucose', 0))
-    biological_age += adjust_age_creatinine(exams[1].get('creatinine_m', 0))
-    biological_age += adjust_age_ferritin(exams[2].get('ferritin_m', 0))
-    biological_age += adjust_age_albumin(exams[3].get('albuminemia', 0))
-    biological_age += adjust_age_protein(exams[4].get('tot_prot', 0))
-    biological_age += adjust_age_bilirubin(exams[5].get('tot_bili', 0))
-    biological_age += adjust_age_uric_acid(exams[6].get('uric_acid', 0))
+    biological_age += adjust_age_glucose(exams[102].get('glucose', 0))
+   
 
+    if gender == 'M':
+        biological_age += adjust_age_ferritin(exams[59].get('ferritin_m', 0))
+        biological_age += adjust_age_creatinine(exams[30].get('creatinine_m', 0))
+        biological_age += adjust_age_uric_acidM(exams[29].get('uric_acid', 0))
+
+    if gender == 'F':
+        biological_age += adjust_age_ferritin(exams[59].get('ferritin_w', 0))
+        biological_age += adjust_age_creatinine(exams[30].get('creatinine_w', 0))
+        biological_age += adjust_age_uric_acidF(exams[29].get('uric_acid', 0))
+
+    biological_age += adjust_age_albumin(exams[73].get('albumin_dI', 0))
+    biological_age += adjust_age_protein(exams[65].get('tot_prot', 0))
+    biological_age += adjust_age_bilirubin(exams[84].get('tot_bili', 0))
+
+    print(biological_age)
     return int(biological_age)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+#risultatoTest = calculate_biological_age(chronological_age = 53, wbc = 5430 , basophils = 0.6,
+               # lymphocytes = 36.8, monocytes = 0.2, neutrophils = 54.3 , rbc = 4.45, hgb = 13.6, 
+               # hct = 37.7, mcv = 84.7, mch = 30.6, mchc = 36.1, rdw = 37.4, gender = 'F', exams = exams)
 
 
 
@@ -641,7 +690,7 @@ def calcola_isq(punteggio_intermedio):
             return 10
 
 def calcola_fss(Fss):
-        return Fss / 8   #numero di risposte per fss
+        return Fss / 8 
 
 def normalizza_biomarcatori(biomarcatori):
         punteggio = 0
@@ -669,8 +718,6 @@ def valuta_antropometria(antropometria):
         elif 0.75 <= antropometria["waist_hip_ratio"] <= 0.85:
             punteggio += 1
         return punteggio
-
-
 
 def calcola_punteggio_finale(SiIm, Fss, Sarc_f_Somma, biomarcatori, antropometria, performance_fisica):   #SARC_F NON UTILIZZATO
         punteggio_isq = calcola_isq(SiIm)

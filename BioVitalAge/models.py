@@ -230,10 +230,7 @@ class DatiEstesiReferti(models.Model):
     b_2_dI = models.FloatField(null=True, blank=True)
     gamma_dI = models.FloatField(null=True, blank=True)
     ag_rap = models.FloatField(null=True, blank=True)
-    cm = models.FloatField(null=True, blank=True)
-    b_2_spike = models.FloatField(null=True, blank=True)
-    b_2_spike_m1 = models.FloatField(null=True, blank=True)
-
+    
     # Liver Functionality
     got_m = models.FloatField(null=True, blank=True)  
     got_w = models.FloatField(null=True, blank=True)  
