@@ -358,7 +358,7 @@ def adjust_age_examsF(exams):
         'aa_epa': (0, 4),
         'o3_index': (6, 8),
         'rdwcv': (11.0, 15.0),
-        'azotemia': (16.6, 48.5),#
+        'azotemia': (16.6, 48.5),
         'cistatine_c': (0.56, 0.95),
         'plt': (150, 450),
         'mpv': (9.1, 12.3),
@@ -367,7 +367,7 @@ def adjust_age_examsF(exams):
         'pdw': (10, 16),
         'd_dimero': (0, 200),
         'pai_1': (98, 122),
-        'tot_chol': (0, 200), #
+        'tot_chol': (0, 200), 
         'ldl_chol': (0, 100),
         'trigl': (150, 200),
         'na':(136, 145),
@@ -428,8 +428,15 @@ def adjust_age_examsF(exams):
     
     for exam in exams:
         for key, value in exam.items():
-            value = float(value) if value else 0
-            
+            value = float(value)
+
+            if value == 0:
+                minValue, maxValue = normal_values[key]
+                if minValue != 0:
+                    age_adjustment += 0
+                    #print(f"{key}: ✅ {value} il valore non è stato inserito ({minValue}, {maxValue})")
+                    continue
+
             if key in normal_values:
 
                 minValue, maxValue = normal_values[key]
@@ -437,19 +444,11 @@ def adjust_age_examsF(exams):
                 if minValue <= value <= maxValue:
                     #print(f"{key}: ✅ {value} è dentro il range ({minValue}, {maxValue})")
                     age_adjustment -= 0.2  
-
                 else:
                     #print(f"{key}: ❌ {value} è FUORI dal range ({minValue}, {maxValue})")
                     age_adjustment += 0.4 
- 
-            else:
-                age_adjustment += 0
          
-
     return age_adjustment
-
-
-
 
 def adjust_age_examsM(exams):
     age_adjustment = 0
@@ -476,6 +475,13 @@ def adjust_age_examsM(exams):
         'rbc_m':(4.5, 6.0),
 
         #GENERIC
+        'uric_acid': (2.4, 5.7),
+        'rdwcv': (11, 15),
+        'baso_ul': (0, 0.1),
+        'eosi_ul': (0, 0.7),
+        'mono_ul': (0, 0.99),
+        'lymph_ul': (1.0, 3.5),
+        'neut_ul' : (2.0, 7.5),
         'my_acid': (24, 64),
         'p_acid': (609, 893),
         'st_acid': (186, 279),
@@ -566,102 +572,34 @@ def adjust_age_examsM(exams):
     
     for exam in exams:
         for key, value in exam.items():
-            if isinstance(value, (int, float, str)): 
-                value = float(value) if value else 0
-            else:
-                print(f"⚠️ Errore: Il valore di '{key}' non è un numero, ma un {type(value)}: {value}")
-                value = 0  
+            value = float(value)
+
+            if value == 0:
+                minValue, maxValue = normal_values[key]
+                if minValue != 0:
+                    age_adjustment += 0
+                    #print(f"{key}: ✅ {value} il valore non è stato inserito ({minValue}, {maxValue})")
+                    continue
 
             if key in normal_values:
-                print(age_adjustment)
 
-                if is_value_in_range(key, value, normal_values):
-                    age_adjustment -= 0.2
-
-                elif not is_value_in_range(key, value, normal_values):
-                    age_adjustment += 0.4
-
+                minValue, maxValue = normal_values[key]
+            
+                if minValue <= value <= maxValue:
+                    #print(f"{key}: ✅ {value} è dentro il range ({minValue}, {maxValue})")
+                    age_adjustment -= 0.2  
                 else:
-                    age_adjustment += 0 
+                    #print(f"{key}: ❌ {value} è FUORI dal range ({minValue}, {maxValue})")
+                    age_adjustment += 0.4 
+         
+    return age_adjustment
 
-    return int(age_adjustment)
 
-
-exams = [
-        {'aa_epa': 0},
-        {'neut_ul': 2.95},
-        {'lymph_ul': 2},
-        {'mono_ul': 0.28},
-        {'eosi_ul': 0.17},
-        {'baso_ul': 0.03},
-        {'rdwcv': 12.2},
-        {'hct_w': 37.7},
-        {'hgb_w': 13.6},
-        {'rbc_w': 4.45},
-        {'azotemia': 55},
-        {'uric_acid': 2.9},
-        {'creatinine_w': 0.7},
-        {'uricemy_w': 2.9},
-        {'plt': 209},
-        {'mpv': 10.8},
-        {'plcr': 32.0},
-        {'pct': 0.230},
-        {'pdw': 12},
-        {'d_dimero': 0},
-        {'na': 141},
-        {'k': 4.3},
-        {'mg': 1.8},
-        {'ca': 9.9},
-        {'p': 4.3},
-        {'tsh': 3.97},
-        {'transferrin': 212},
-        {'ferritin_w': 280.3},
-        {'glicemy': 93},
-        {'insulin': 4.2},
-        {'tot_prot': 7.30},
-        {'tot_prot_ele': 7.30},
-        {'albumin_ele': 63.6},
-        {'a_1': 7.80},             
-        {'a_2': 8.02},
-        {'b_1': 5.34},
-        {'b_2': 3.34},
-        {'gamma': 12.15},
-        {'albumin_dI': 4.6},              
-        {'a_1_dI': 0.57},
-        {'a_2_dI': 0.59},
-        {'b_1_dI': 0.39},
-        {'b_2_dI': 0.24},
-        {'gamma_dI': 0.89},                      
-        {'ag_rap': 1.73},
-        {'cm': 0},
-        {'b_2_spike': 0},
-        {'got_w': 18},
-        {'gpt_w': 16},                    
-        {'g_gt_w': 6},
-        {'a_photo_w': 61},
-        {'tot_bili': 0.43},                   
-        {'direct_bili': 0.19},
-        {'indirect_bili': 0.24},
-        {'ves': 0},
-        {'pcr_c': 0.5},                  
-        {'inter_6': 0},
-        {'inter_10': 0},
-        {'ph': 5},
-        {'proteins_ex': 0},                      
-        {'blood_ex': 0},
-        {'ketones': 0},
-        {'uro': 0.2},
-        {'bilirubin_ex': 0.0}, 
-        {'leuc': 3},
-        {'glucose': 0},
-        {'nt_pro': 0},  
-        {'telotest': 0},                        
-]
 
 
 def calculate_biological_age(chronological_age, d_roms = 260, osi = 10, pat = 2500, wbc = 5000, basophils = 0.1,
                 eosinophils = 1, lymphocytes = 30, monocytes = 5, neutrophils = 50, rbc = 5, hgb = 14, 
-                hct = 40, mcv = 90, mch = 33 , mchc =  33, rdw = 12 , exams = exams, gender = 'F'):
+                hct = 40, mcv = 90, mch = 33 , mchc =  33, rdw = 12 , exams = [], gender = 'F'):
     
     biological_age = chronological_age
 
@@ -670,8 +608,6 @@ def calculate_biological_age(chronological_age, d_roms = 260, osi = 10, pat = 25
     
     if gender == 'F':
         biological_age += adjust_age_examsF(exams)
-
-    print(adjust_age_examsF(exams))
 
     # Aggiustamenti basati sui vari parametri
     biological_age += adjust_age_d_roms(d_roms)
@@ -692,31 +628,30 @@ def calculate_biological_age(chronological_age, d_roms = 260, osi = 10, pat = 25
     biological_age += adjust_age_rdw(rdw)
 
     # Aggiustamenti basati sugli esami specifici
-    biological_age += adjust_age_glucose(exams[0].get('glucose', 0))
+    biological_age += adjust_age_glucose(exams[102].get('glucose', 0))
+   
 
     if gender == 'M':
-        biological_age += adjust_age_ferritin(exams[21].get('ferritin_m', 0))
-        biological_age += adjust_age_creatinine(exams[12].get('creatinine_m', 0))
-        biological_age += adjust_age_uric_acidM(exams[11].get('uric_acid', 0))
+        biological_age += adjust_age_ferritin(exams[59].get('ferritin_m', 0))
+        biological_age += adjust_age_creatinine(exams[30].get('creatinine_m', 0))
+        biological_age += adjust_age_uric_acidM(exams[29].get('uric_acid', 0))
 
     if gender == 'F':
-        biological_age += adjust_age_ferritin(exams[21].get('ferritin_w', 0))
-        biological_age += adjust_age_creatinine(exams[12].get('creatinine_w', 0))
-        biological_age += adjust_age_uric_acidF(exams[11].get('uric_acid', 0))
-    
-    biological_age += adjust_age_albumin(exams[38].get('albumin_dI', 0))
-    biological_age += adjust_age_protein(exams[30].get('tot_prot', 0))
-    biological_age += adjust_age_bilirubin(exams[51].get('tot_bili', 0))
+        biological_age += adjust_age_ferritin(exams[59].get('ferritin_w', 0))
+        biological_age += adjust_age_creatinine(exams[30].get('creatinine_w', 0))
+        biological_age += adjust_age_uric_acidF(exams[29].get('uric_acid', 0))
 
+    biological_age += adjust_age_albumin(exams[73].get('albumin_dI', 0))
+    biological_age += adjust_age_protein(exams[65].get('tot_prot', 0))
+    biological_age += adjust_age_bilirubin(exams[84].get('tot_bili', 0))
+
+    print(biological_age)
     return int(biological_age)
 
 
-risultatoTest = calculate_biological_age(chronological_age = 53, wbc = 5430 , basophils = 0.6,
-                lymphocytes = 36.8, monocytes = 0.2, neutrophils = 54.3 , rbc = 4.45, hgb = 13.6, 
-                hct = 37.7, mcv = 84.7, mch = 30.6, mchc = 36.1, rdw = 37.4, gender = 'F', exams = exams)
-
-
-print(risultatoTest)
+#risultatoTest = calculate_biological_age(chronological_age = 53, wbc = 5430 , basophils = 0.6,
+               # lymphocytes = 36.8, monocytes = 0.2, neutrophils = 54.3 , rbc = 4.45, hgb = 13.6, 
+               # hct = 37.7, mcv = 84.7, mch = 30.6, mchc = 36.1, rdw = 37.4, gender = 'F', exams = exams)
 
 
 
@@ -755,7 +690,7 @@ def calcola_isq(punteggio_intermedio):
             return 10
 
 def calcola_fss(Fss):
-        return Fss / 8   #numero di risposte per fss
+        return Fss / 8 
 
 def normalizza_biomarcatori(biomarcatori):
         punteggio = 0
