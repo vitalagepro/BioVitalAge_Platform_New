@@ -611,7 +611,6 @@ class CalcolatoreRender(View):
                     )
                     dati_estesi.save()
 
-                    print(data)
 
                     # Context da mostrare nel template
                     context = {
