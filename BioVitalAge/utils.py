@@ -305,7 +305,6 @@ def adjust_age_pat(pat):
     else:
         return -5
 
-
 def adjust_age_examsF(exams):
     age_adjustment = 0
    
@@ -594,9 +593,6 @@ def adjust_age_examsM(exams):
          
     return age_adjustment
 
-
-
-
 def calculate_biological_age(chronological_age, d_roms = 260, osi = 10, pat = 2500, wbc = 5000, basophils = 0.1,
                 eosinophils = 1, lymphocytes = 30, monocytes = 5, neutrophils = 50, rbc = 5, hgb = 14, 
                 hct = 40, mcv = 90, mch = 33 , mchc =  33, rdw = 12 , exams = [], gender = 'F'):
@@ -630,7 +626,6 @@ def calculate_biological_age(chronological_age, d_roms = 260, osi = 10, pat = 25
     # Aggiustamenti basati sugli esami specifici
     biological_age += adjust_age_glucose(exams[102].get('glucose', 0))
    
-
     if gender == 'M':
         biological_age += adjust_age_ferritin(exams[59].get('ferritin_m', 0))
         biological_age += adjust_age_creatinine(exams[30].get('creatinine_m', 0))
@@ -645,7 +640,6 @@ def calculate_biological_age(chronological_age, d_roms = 260, osi = 10, pat = 25
     biological_age += adjust_age_protein(exams[65].get('tot_prot', 0))
     biological_age += adjust_age_bilirubin(exams[84].get('tot_bili', 0))
 
-    print(biological_age)
     return int(biological_age)
 
 

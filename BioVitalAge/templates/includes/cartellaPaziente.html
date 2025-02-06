@@ -28,6 +28,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://unpkg.com/libphonenumber-js/bundle/libphonenumber-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
+
+
 </head>
 
 <body>
@@ -376,26 +379,108 @@
                     </div>
                     <div class="table-content prescriptions">
 
-
                         {% for esami in esamiPrescritti %}
-                        <div class="riga-container">
-                            
-                            <p>{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}</p>
-                            <p>{{ esami.DESCRIZIONE_ESAME }}</p>
-                            <p>{{ esami.COD_ASL }}</p>
-                            <p>{{ esami.COD_REG }}</p>
-                            <p>{{ esami.METODICA }}</p>
-                            <p style="padding:10px; text-align: center;">{{ esami.APPARATO_or_I_SISTEMI|slice:":40" }}</p>
-                            <p>
-                                <a href="#">
-                                   <img src="{% static 'includes/icone/referto.png' %}" alt="" />
-                                </a>
-                            </p>
-                        </div>
-         
-                        {% empty %}
-                        <p class="text-center mt-2 mb-2">No recent prescription found.</p>
+                            <div class="riga-container">
+                                <p>{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}</p>
+                                <p>{{ esami.DESCRIZIONE_ESAME }}</p>
+                                <p>{{ esami.COD_ASL }}</p>
+                                <p>{{ esami.COD_REG }}</p>
+                                <p>{{ esami.METODICA }}</p>
+                                <p style="padding:10px; text-align: center;">{{ esami.APPARATO_or_I_SISTEMI|slice:":40" }}</p>
+                                <p>
+                                    <button class="generatePDFButton" id="btnTabellaPrescrizioni"
+                                        data-pdf-url="{% static 'includes/pdfTemplates/prescrizioneTemplate.pdf' %}"
+                                        data-name="{{ persona.name }}"
+                                        data-surname="{{ persona.surname }}"
+                                        data-nomeDottore="{{ dottore.nome }}"
+                                        data-cognomeDottore="{{ dottore.cognome }}"
+                                        data-cf="{{ persona.codice_fiscale }}"
+                                        data-nomeAnalisi = "{{ esami.DESCRIZIONE_ESAME }}">
+                                        <img src="{% static 'includes/icone/referto.png' %}" alt="Visualizza Referto" />
+                                    </button>
+                                </p>
+                            </div>
+
+                            {% empty %}
+                            <p class="text-center mt-2 mb-2">No recent prescription found.</p>
                         {% endfor %}
+
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                            document.querySelectorAll(".generatePDFButton").forEach((button) => {
+                                button.addEventListener("click", async (event) => {
+                                    event.preventDefault();
+
+                                    // DATI PAZIENTE
+                                    const pdfUrl = button.getAttribute("data-pdf-url");
+                                    const name = button.getAttribute("data-name") || "N/A";
+                                    const surname = button.getAttribute("data-surname") || "N/A";
+                                    const dob = button.getAttribute("data-dob") || "N/A";
+                                    const cf = button.getAttribute("data-cf") || "N/A";
+
+                                    // DATI DOTTORE
+                                    const nomeDottore = button.getAttribute("data-nomeDottore") || "N/A";
+                                    const cognomeDottore = button.getAttribute("data-cognomeDottore") || "N/A";
+
+                                    // DATI ESAME
+                                    const nomeEsame = button.getAttribute("data-nomeAnalisi") || "N/A";
+
+                                    if (!pdfUrl || pdfUrl === "#") {
+                                        console.error("Nessun URL PDF specificato!");
+                                        return;
+                                    }
+
+                                    try {
+                                      
+                                        const { PDFDocument, rgb } = PDFLib;
+
+                                
+                                        const existingPdfBytes = await fetch(pdfUrl).then((res) => res.arrayBuffer());
+                                        const pdfDoc = await PDFDocument.load(existingPdfBytes);
+                                        const pages = pdfDoc.getPages();
+                                        const firstPage = pages[0]; 
+
+                                        // TITOLO
+                                        firstPage.drawText(`PRESCRIZIONE ESAMI`, {x: 80, y: 780, size: 12, color: rgb(106 / 255, 45 / 255, 204 / 255) });
+
+                                        // DATI PAZIENTE
+                                        firstPage.drawText(`Dati Paziente`, { x: 80, y: 720, size: 12, color: rgb(106 / 255, 45 / 255, 204 / 255) });
+                                        firstPage.drawText(`Nome: ${name}`, { x: 80, y: 700, size: 12, color: rgb(0, 0, 0) });
+                                        firstPage.drawText(`Cognome: ${surname}`, { x: 80, y: 680, size: 12, color: rgb(0, 0, 0) });
+                                        firstPage.drawText(`Codice Fiscale: ${cf}`, { x: 80, y: 660, size: 12, color: rgb(0, 0, 0) });
+
+
+                                        // DATI DOTTORE
+                                        firstPage.drawText(`Dati Dottore`, { x: 80, y: 600, size: 12, color: rgb(106 / 255, 45 / 255, 204 / 255) });
+                                        firstPage.drawText(`Nome Dottore: ${nomeDottore}`, { x: 80, y: 580, size: 12, color: rgb(0, 0, 0) });
+                                        firstPage.drawText(`Cognome Dottore: ${cognomeDottore}`, { x: 80, y: 560, size: 12, color: rgb(0, 0, 0) });
+
+                                        // DATI ESAME
+                                        firstPage.drawText(`Esame Prescritto`, { x: 80, y: 500, size: 12, color: rgb(106 / 255, 45 / 255, 204 / 255) });
+                                        firstPage.drawText(`Nome Esame: ${nomeEsame}`, { x: 80, y: 480, size: 12, color: rgb(0, 0, 0) });
+                                      
+                                        // DATA PRESCRIZIONE
+                                        firstPage.drawText(`DATA`, { x: 400, y: 720, size: 12, color: rgb(106 / 255, 45 / 255, 204 / 255) });
+                                
+                                        // Generiamo il nuovo PDF con i dati modificati
+                                        const modifiedPdfBytes = await pdfDoc.save();
+                                        const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
+
+                                        // Creiamo un link per scaricare il PDF
+                                        const link = document.createElement("a");
+                                        link.href = URL.createObjectURL(blob);
+                                        link.download = `${surname.toUpperCase()}_${name.toUpperCase()}_Prescrizione.pdf`;
+                                        link.click();
+
+                                    } catch (error) {
+                                        console.error("Errore nella generazione del PDF:", error);
+                                    }
+                                });
+                            });
+                        });
+
+                        </script>
+
                     </div>
                 </div>
             </div>

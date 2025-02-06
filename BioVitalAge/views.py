@@ -14,6 +14,7 @@ from django.conf import settings
 from django.utils.decorators import method_decorator
 import traceback
 from django.shortcuts import redirect
+from django.http import FileResponse
 
 # Create your views here.
 
@@ -204,7 +205,7 @@ class CalcolatoreRender(View):
                     'cistatine_c', 'plt', 'mpv', 'plcr', 'pct', 'pdw', 'd_dimero', 'pai_1', 'tot_chol', 'ldl_chol', 'hdl_chol_m', 'hdl_chol_w', 'trigl', 'na', 'k', 
                     'mg', 'ci', 'ca', 'p', 'dhea_m', 'dhea_w', 'testo_m', 'testo_w', 'tsh', 'ft3', 'ft4', 'beta_es_m', 'beta_es_w', 'prog_m', 'prog_w', 'fe', 'transferrin',
                     'ferritin_m', 'ferritin_w', 'glicemy', 'insulin', 'homa', 'ir', 'albuminemia', 'tot_prot', 'tot_prot_ele', 'albumin_ele', 'a_1', 'a_2', 'b_1', 'b_2',
-                    'gamma', 'albumin_dI', 'a_1_dI', 'a_2_dI', 'b_1_dI', 'b_2_dI', 'gamma_dI', 'ag_rap', 'cm', 'b_2_spike', 'b_2_spike_m1', 'got_m', 'got_w', 'gpt_m', 'gpt_w',
+                    'gamma', 'albumin_dI', 'a_1_dI', 'a_2_dI', 'b_1_dI', 'b_2_dI', 'gamma_dI', 'ag_rap', 'got_m', 'got_w', 'gpt_m', 'gpt_w',
                     'g_gt_m', 'g_gt_w', 'a_photo_m', 'a_photo_w', 'tot_bili', 'direct_bili', 'indirect_bili', 'ves', 'pcr_c', 's_weight',
                     'ph', 'proteins_ex', 'blood_ex', 'ketones', 'uro', 'bilirubin_ex', 'leuc', 'glucose', 'shbg_m', 'shbg_w', 'nt_pro', 'v_b12', 'v_d', 'ves2', 'telotest'
                 ]
@@ -339,9 +340,6 @@ class CalcolatoreRender(View):
                     b_2_dI = safe_float(data, 'b_2_dI')
                     gamma_dI = safe_float(data, 'gamma_dI')
                     ag_rap = safe_float(data, 'ag_rap')
-                    cm = safe_float(data, 'cm')
-                    b_2_spike = safe_float(data, 'b_2_spike')
-                    b_2_spike_m1 = safe_float(data, 'b_2_spike_m1')
               
                     got_m = safe_float(data, 'got_m')
                     got_w = safe_float(data, 'got_w')
@@ -613,6 +611,8 @@ class CalcolatoreRender(View):
                     )
                     dati_estesi.save()
 
+                    print(data)
+
                     # Context da mostrare nel template
                     context = {
                         "show_modal": True,
@@ -644,7 +644,7 @@ class CalcolatoreRender(View):
                     'cistatine_c', 'plt', 'mpv', 'plcr', 'pct', 'pdw', 'd_dimero', 'pai_1', 'tot_chol', 'ldl_chol', 'hdl_chol_m', 'hdl_chol_w', 'trigl', 'na', 'k', 
                     'mg', 'ci', 'ca', 'p', 'dhea_m', 'dhea_w', 'testo_m', 'testo_w', 'tsh', 'ft3', 'ft4', 'beta_es_m', 'beta_es_w', 'prog_m', 'prog_w', 'fe', 'transferrin',
                     'ferritin_m', 'ferritin_w', 'glicemy', 'insulin', 'homa', 'ir', 'albuminemia', 'tot_prot', 'tot_prot_ele', 'albumin_ele', 'a_1', 'a_2', 'b_1', 'b_2',
-                    'gamma', 'albumin_dI', 'a_1_dI', 'a_2_dI', 'b_1_dI', 'b_2_dI', 'gamma_dI', 'ag_rap', 'cm', 'b_2_spike', 'b_2_spike_m1', 'got_m', 'got_w', 'gpt_m', 'gpt_w',
+                    'gamma', 'albumin_dI', 'a_1_dI', 'a_2_dI', 'b_1_dI', 'b_2_dI', 'gamma_dI', 'ag_rap', 'got_m', 'got_w', 'gpt_m', 'gpt_w',
                     'g_gt_m', 'g_gt_w', 'a_photo_m', 'a_photo_w', 'tot_bili', 'direct_bili', 'indirect_bili', 'ves', 'pcr_c', 's_weight',
                     'ph', 'proteins_ex', 'blood_ex', 'ketones', 'uro', 'bilirubin_ex', 'leuc', 'glucose', 'shbg_m', 'shbg_w', 'nt_pro', 'v_b12', 'v_d', 'ves2', 'telotest'
                 ]
@@ -818,9 +818,6 @@ class CalcolatoreRender(View):
                     b_2_dI = safe_float(data, 'b_2_dI')
                     gamma_dI = safe_float(data, 'gamma_dI')
                     ag_rap = safe_float(data, 'ag_rap')
-                    cm = safe_float(data, 'cm')
-                    b_2_spike = safe_float(data, 'b_2_spike')
-                    b_2_spike_m1 = safe_float(data, 'b_2_spike_m1')
               
                     got_m = safe_float(data, 'got_m')
                     got_w = safe_float(data, 'got_w')
@@ -864,72 +861,68 @@ class CalcolatoreRender(View):
                     telotest = safe_float(data, 'telotest')
 
 
-                    if paziente.gender == 'M':
-                        exams = [
-                        {'my_acid': my_acid}, {'p_acid': p_acid}, {'st_acid': st_acid}, {'ar_acid': ar_acid},
-                        {'beenic_acid': beenic_acid}, {'pal_acid': pal_acid}, {'ol_acid': ol_acid}, {'ner_acid': ner_acid}, 
-                        {'a_linoleic_acid': a_linoleic_acid}, {'eico_acid': eico_acid}, {'doco_acid': doco_acid},
-                        {'lin_acid': lin_acid}, {'gamma_lin_acid': gamma_lin_acid}, {'dih_gamma_lin_acid': dih_gamma_lin_acid},
-                        {'arachidonic_acid': arachidonic_acid}, {'sa_un_fatty_acid': sa_un_fatty_acid},
-                        {'o3o6_fatty_acid_quotient': o3o6_fatty_acid_quotient}, {'aa_epa': aa_epa}, {'o3_index': o3_index},
-                        {'neut_ul': neut_ul}, {'lymph_ul': lymph_ul}, {'mono_ul': mono_ul}, {'eosi_ul': eosi_ul},
-                        {'baso_ul': baso_ul}, {'rdwcv': rdwcv}, {'azotemia': azotemia}, {'creatinine_m': creatinine_m},
-                        {'uricemy_m': uricemy_m}, {'cistatine_c': cistatine_c}, {'plt': plt}, {'pct': pct}, {'pdw': pdw},
-                        {'d_dimero': d_dimero}, {'pai_1': pai_1}, {'tot_chol': tot_chol}, {'ldl_chol': ldl_chol},
-                        {'hdl_chol_m': hdl_chol_m}, {'trigl': trigl}, {'na': na}, {'k': k}, {'mg': mg},
-                        {'ci': ci}, {'ca': ca}, {'p': p}, {'dhea_m': dhea_m}, {'testo_m': testo_m}, {'tsh': tsh}, {'ft3': ft3},
-                        {'ft4': ft4}, {'mpv': mpv}, {'plcr': plcr}, {'uric_acid': uric_acid}, {'beta_es_m': beta_es_m}, 
-                        {'prog_m': prog_m}, {'fe': fe}, {'transferrin': transferrin}, {'ferritin_m': ferritin_m},
-                        {'glicemy': glicemy}, {'insulin': insulin}, {'homa': homa}, {'ir': ir}, {'albuminemia': albuminemia},
-                        {'tot_prot': tot_prot}, {'tot_prot_ele': tot_prot_ele}, {'albumin_ele': albumin_ele}, {'a_1': a_1},
-                        {'a_2': a_2}, {'b_1': b_1}, {'b_2': b_2}, {'gamma': gamma}, {'albumin_dI': albumin_dI},
-                        {'a_1_dI': a_1_dI}, {'a_2_dI': a_2_dI}, {'b_1_dI': b_1_dI}, {'b_2_dI': b_2_dI}, {'gamma_dI': gamma_dI},
-                        {'ag_rap': ag_rap}, {'cm': cm}, {'b_2_spike': b_2_spike}, {'b_2_spike_m1': b_2_spike_m1},
-                        {'got_m': got_m}, {'gpt_m': gpt_m}, {'g_gt_m': g_gt_m}, {'a_photo_m': a_photo_m}, {'tot_bili': tot_bili},
-                        {'direct_bili': direct_bili}, {'indirect_bili': indirect_bili}, {'ves': ves}, {'pcr_c': pcr_c},
-                        {'tnf_a': tnf_a}, {'inter_6': inter_6}, {'inter_10': inter_10}, {'scatolo': scatolo},
-                        {'indicano': indicano},{'ph': ph}, {'proteins_ex': proteins_ex}, {'blood_ex': blood_ex}, {'ketones': ketones},
-                        {'uro': uro}, {'bilirubin_ex': bilirubin_ex}, {'leuc': leuc}, {'glucose': glucose}, {'shbg_m': shbg_m}, 
-                        {'nt_pro': nt_pro}, {'v_b12': v_b12}, {'v_d': v_d}, {'ves2': ves2}, {'telotest': telotest}
-                    ]
+                    exams = []
 
+                    if paziente.gender == 'M':
+
+                        exams = [
+                            {'my_acid': my_acid}, {'p_acid': p_acid}, {'st_acid': st_acid}, {'ar_acid': ar_acid},
+                            {'beenic_acid': beenic_acid}, {'pal_acid': pal_acid}, {'ol_acid': ol_acid}, {'ner_acid': ner_acid},
+                            {'a_linoleic_acid': a_linoleic_acid}, {'eico_acid': eico_acid}, {'doco_acid': doco_acid}, {'lin_acid': lin_acid},
+                            {'gamma_lin_acid': gamma_lin_acid}, {'dih_gamma_lin_acid': dih_gamma_lin_acid}, {'arachidonic_acid': arachidonic_acid},
+                            {'sa_un_fatty_acid': sa_un_fatty_acid}, {'o3o6_fatty_acid_quotient': o3o6_fatty_acid_quotient}, {'aa_epa': aa_epa},
+                            {'o3_index': o3_index}, {'neut_ul': neut_ul}, {'lymph_ul': lymph_ul}, {'mono_ul': mono_ul}, {'eosi_ul': eosi_ul},
+                            {'baso_ul': baso_ul}, {'rdwcv': rdwcv}, {'hct_m': hct_m}, {'hgb_m': hgb_m}, {'rbc_m': rbc_m}, {'azotemia': azotemia},
+                            {'uric_acid': uric_acid}, {'creatinine_m': creatinine_m}, {'uricemy_m': uricemy_m}, {'cistatine_c': cistatine_c},
+                            {'plt': plt}, {'mpv': mpv}, {'plcr': plcr}, {'pct': pct}, {'pdw': pdw}, {'d_dimero': d_dimero}, {'pai_1': pai_1},
+                            {'tot_chol': tot_chol}, {'ldl_chol': ldl_chol}, {'hdl_chol_m': hdl_chol_m}, {'trigl': trigl}, {'na': na}, {'k': k},
+                            {'mg': mg}, {'ci': ci}, {'ca': ca}, {'p': p}, {'dhea_m': dhea_m}, {'testo_m': testo_m}, {'tsh': tsh}, {'ft3': ft3},
+                            {'ft4': ft4}, {'beta_es_m': beta_es_m}, {'prog_m': prog_m}, {'fe': fe}, {'transferrin': transferrin},
+                            {'ferritin_m': ferritin_m}, {'glicemy': glicemy}, {'insulin': insulin}, {'homa': homa}, {'ir': ir},
+                            {'albuminemia': albuminemia}, {'tot_prot': tot_prot}, {'tot_prot_ele': tot_prot_ele}, {'albumin_ele': albumin_ele},
+                            {'a_1': a_1}, {'a_2': a_2}, {'b_1': b_1}, {'b_2': b_2}, {'gamma': gamma}, {'albumin_dI': albumin_dI},
+                            {'a_1_dI': a_1_dI}, {'a_2_dI': a_2_dI}, {'b_1_dI': b_1_dI}, {'b_2_dI': b_2_dI}, {'gamma_dI': gamma_dI},
+                            {'ag_rap': ag_rap}, {'got_m': got_m}, {'gpt_m': gpt_m}, {'g_gt_m': g_gt_m}, {'a_photo_m': a_photo_m},
+                            {'tot_bili': tot_bili}, {'direct_bili': direct_bili}, {'indirect_bili': indirect_bili}, {'ves': ves},
+                            {'pcr_c': pcr_c}, {'tnf_a': tnf_a}, {'inter_6': inter_6}, {'inter_10': inter_10}, {'scatolo': scatolo},
+                            {'indicano': indicano}, {'s_weight': s_weight}, {'ph': ph}, {'proteins_ex': proteins_ex}, {'blood_ex': blood_ex},
+                            {'ketones': ketones}, {'uro': uro}, {'bilirubin_ex': bilirubin_ex}, {'leuc': leuc}, {'glucose': glucose},
+                            {'shbg_m': shbg_m}, {'nt_pro': nt_pro}, {'v_b12': v_b12}, {'v_d': v_d}, {'ves2': ves2}, {'telotest': telotest}
+                        ]
 
                     if paziente.gender == 'F':
+                        
                         exams = [
-                            {'my_acid': my_acid}, {'p_acid': p_acid}, {'st_acid': st_acid}, {'ar_acid': ar_acid}, {'beenic_acid': beenic_acid},
-                            {'pal_acid': pal_acid}, {'ol_acid': ol_acid}, {'ner_acid': ner_acid}, {'a_linoleic_acid': a_linoleic_acid},
-                            {'eico_acid': eico_acid}, {'doco_acid': doco_acid}, {'lin_acid': lin_acid}, {'gamma_lin_acid': gamma_lin_acid},
-                            {'dih_gamma_lin_acid': dih_gamma_lin_acid}, {'arachidonic_acid': arachidonic_acid},
-                            {'sa_un_fatty_acid': sa_un_fatty_acid}, {'o3o6_fatty_acid_quotient': o3o6_fatty_acid_quotient},
-                            {'aa_epa': aa_epa}, {'o3_index': o3_index}, {'neut_ul': neut_ul}, {'lymph_ul': lymph_ul},
-                            {'mono_ul': mono_ul}, {'eosi_ul': eosi_ul}, {'baso_ul': baso_ul}, {'rdwcv': rdwcv}, {'hct_w': hct_w},
-                            {'hgb_w': hgb_w}, {'rbc_w': rbc_w}, {'azotemia': azotemia}, {'uric_acid': uric_acid}, {'creatinine_w': creatinine_w},
-                            {'uricemy_w': uricemy_w}, {'cistatine_c': cistatine_c}, {'plt': plt}, {'mpv': mpv}, {'plcr': plcr},
-                            {'pct': pct}, {'pdw': pdw}, {'d_dimero': d_dimero}, {'pai_1': pai_1}, {'tot_chol': tot_chol},
-                            {'ldl_chol': ldl_chol},  {'hdl_chol_w': hdl_chol_w}, {'trigl': trigl},
-                            {'na': na}, {'k': k}, {'mg': mg}, {'ci': ci}, {'ca': ca}, {'p': p}, {'dhea_w': dhea_w},
-                            {'testo_w': testo_w}, {'tsh': tsh}, {'ft3': ft3}, {'ft4': ft4}, {'beta_es_w': beta_es_w}, {'prog_w': prog_w},
-                            {'fe': fe}, {'transferrin': transferrin}, {'ferritin_w': ferritin_w},
-                            {'glicemy': glicemy}, {'insulin': insulin}, {'homa': homa}, {'ir': ir}, {'albuminemia': albuminemia},
-                            {'tot_prot': tot_prot}, {'tot_prot_ele': tot_prot_ele}, {'albumin_ele': albumin_ele}, {'a_1': a_1},
-                            {'a_2': a_2}, {'b_1': b_1}, {'b_2': b_2}, {'gamma': gamma}, {'albumin_dI': albumin_dI},
+                            {'my_acid': my_acid}, {'p_acid': p_acid}, {'st_acid': st_acid}, {'ar_acid': ar_acid},
+                            {'beenic_acid': beenic_acid}, {'pal_acid': pal_acid}, {'ol_acid': ol_acid}, {'ner_acid': ner_acid},
+                            {'a_linoleic_acid': a_linoleic_acid}, {'eico_acid': eico_acid}, {'doco_acid': doco_acid}, {'lin_acid': lin_acid},
+                            {'gamma_lin_acid': gamma_lin_acid}, {'dih_gamma_lin_acid': dih_gamma_lin_acid}, {'arachidonic_acid': arachidonic_acid},
+                            {'sa_un_fatty_acid': sa_un_fatty_acid}, {'o3o6_fatty_acid_quotient': o3o6_fatty_acid_quotient}, {'aa_epa': aa_epa},
+                            {'o3_index': o3_index}, {'neut_ul': neut_ul}, {'lymph_ul': lymph_ul}, {'mono_ul': mono_ul}, {'eosi_ul': eosi_ul},
+                            {'baso_ul': baso_ul}, {'rdwcv': rdwcv}, {'hct_w': hct_w}, {'hgb_w': hgb_w}, {'rbc_w': rbc_w}, {'azotemia': azotemia},
+                            {'uric_acid': uric_acid}, {'creatinine_w': creatinine_w}, {'uricemy_w': uricemy_w}, {'cistatine_c': cistatine_c},
+                            {'plt': plt}, {'mpv': mpv}, {'plcr': plcr}, {'pct': pct}, {'pdw': pdw}, {'d_dimero': d_dimero}, {'pai_1': pai_1},
+                            {'tot_chol': tot_chol}, {'ldl_chol': ldl_chol}, {'hdl_chol_w': hdl_chol_w}, {'trigl': trigl}, {'na': na}, {'k': k},
+                            {'mg': mg}, {'ci': ci}, {'ca': ca}, {'p': p}, {'dhea_w': dhea_w}, {'testo_w': testo_w}, {'tsh': tsh}, {'ft3': ft3},
+                            {'ft4': ft4}, {'beta_es_w': beta_es_w}, {'prog_w': prog_w}, {'fe': fe}, {'transferrin': transferrin},
+                            {'ferritin_w': ferritin_w}, {'glicemy': glicemy}, {'insulin': insulin}, {'homa': homa}, {'ir': ir},
+                            {'albuminemia': albuminemia}, {'tot_prot': tot_prot}, {'tot_prot_ele': tot_prot_ele}, {'albumin_ele': albumin_ele},
+                            {'a_1': a_1}, {'a_2': a_2}, {'b_1': b_1}, {'b_2': b_2}, {'gamma': gamma}, {'albumin_dI': albumin_dI},
                             {'a_1_dI': a_1_dI}, {'a_2_dI': a_2_dI}, {'b_1_dI': b_1_dI}, {'b_2_dI': b_2_dI}, {'gamma_dI': gamma_dI},
-                            {'ag_rap': ag_rap}, {'cm': cm}, {'b_2_spike': b_2_spike}, {'got_w': got_w}, {'gpt_w': gpt_w}, 
-                            {'g_gt_w': g_gt_w},  {'a_photo_w': a_photo_w}, {'tot_bili': tot_bili},
-                            {'direct_bili': direct_bili}, {'indirect_bili': indirect_bili}, {'ves': ves}, {'pcr_c': pcr_c},
-                            {'tnf_a': tnf_a}, {'inter_6': inter_6}, {'inter_10': inter_10}, {'scatolo': scatolo},
-                            {'indicano': indicano}, {'s_weight': s_weight}, {'ph': ph}, {'proteins_ex': proteins_ex},
-                            {'blood_ex': blood_ex}, {'ketones': ketones}, {'uro': uro}, {'bilirubin_ex': bilirubin_ex},
-                            {'leuc': leuc}, {'glucose': glucose}, {'shbg_w': shbg_w}, {'nt_pro': nt_pro},
-                            {'v_b12': v_b12}, {'v_d': v_d}, {'ves2': ves2}, {'telotest': telotest}
-                    ]
+                            {'ag_rap': ag_rap}, {'got_w': got_w}, {'gpt_w': gpt_w}, {'g_gt_w': g_gt_w}, {'a_photo_w': a_photo_w},
+                            {'tot_bili': tot_bili}, {'direct_bili': direct_bili}, {'indirect_bili': indirect_bili}, {'ves': ves},
+                            {'pcr_c': pcr_c}, {'tnf_a': tnf_a}, {'inter_6': inter_6}, {'inter_10': inter_10}, {'scatolo': scatolo},
+                            {'indicano': indicano}, {'s_weight': s_weight}, {'ph': ph}, {'proteins_ex': proteins_ex}, {'blood_ex': blood_ex},
+                            {'ketones': ketones}, {'uro': uro}, {'bilirubin_ex': bilirubin_ex}, {'leuc': leuc}, {'glucose': glucose},
+                            {'shbg_w': shbg_w}, {'nt_pro': nt_pro}, {'v_b12': v_b12}, {'v_d': v_d}, {'ves2': ves2}, {'telotest': telotest}
+                        ]
 
-
+  
                     # Calcolo dell'età biologica
                     biological_age = calculate_biological_age(
-                        chronological_age, d_roms, osi, pat, wbc, baso,
-                        eosi, lymph, mono, neut, rbc_m, hgb_m, 
-                        hct_m, mcv, mch, mchc, rdwsd, exams, gender=paziente.gender
+                        chronological_age, d_roms = d_roms, osi = osi, pat = pat, wbc = wbc, basophils = baso_ul,
+                        eosinophils = eosi, lymphocytes = lymph, monocytes = mono, neutrophils = neut, rbc = rbc_m, hgb = hgb_m, 
+                        hct = hct_m, mcv = mcv, mch = mch, mchc = mchc, rdw = rdwsd, exams = exams, gender=paziente.gender
                     )
 
                     # Salvataggio dei dati
@@ -1051,9 +1044,6 @@ class CalcolatoreRender(View):
                         b_2_dI=b_2_dI,
                         gamma_dI=gamma_dI,
                         ag_rap=ag_rap,
-                        cm=cm,
-                        b_2_spike=b_2_spike,
-                        b_2_spike_m1=b_2_spike_m1,
                       
                         got_m=got_m,
                         got_w=got_w,
@@ -1844,5 +1834,10 @@ class DeletePrescrizioniView(View):
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
+
+
+
+
+
 
 

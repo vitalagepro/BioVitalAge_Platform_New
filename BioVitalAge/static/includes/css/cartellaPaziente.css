@@ -756,3 +756,16 @@ strong {
 .riga-container a img:hover {
   transform: scale(1.1);
 }
+
+#btnTabellaPrescrizioni{
+  background: none;
+  border: none;
+  transition: transform 0.3s ease-in-out;
+}
+#btnTabellaPrescrizioni:hover{
+  transform: scale(1.1);
+}
+#btnTabellaPrescrizioni img{
+  width: 40px;
+  height: 40px;
+}

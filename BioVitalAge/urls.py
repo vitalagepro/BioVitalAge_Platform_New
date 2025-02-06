@@ -22,7 +22,7 @@ urlpatterns = [
     path('RefertoTest/<int:persona_id>/<int:referto_id>/', views.RefertoQuizView.as_view(), name='referto_test'),
     path('Prescrizioni/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
     path("api/update_blood_data/<int:id>/", UpdateBloodDataView.as_view(), name="update_blood_data"),
-    path('PrescrizioniUpdated/<int:persona_id>/', views.DeletePrescrizioniView.as_view(), name='delete_exam')
+    path('PrescrizioniUpdated/<int:persona_id>/', views.DeletePrescrizioniView.as_view(), name='delete_exam'),
 ]
 
 

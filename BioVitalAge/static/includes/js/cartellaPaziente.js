@@ -531,3 +531,44 @@ document.addEventListener("DOMContentLoaded", function () {
       rows.forEach(row => tableContent.appendChild(row));
   });
 });
+
+
+
+/* FUNZIONE SCARICA PDF PRESCRIZIONE */
+document.addEventListener("DOMContentLoaded", function () {
+  const pdfButtons = document.querySelectorAll(".generatePDFButton");
+  const modal = document.getElementById("pdfDisclaimerModal");
+  const closeBtn = document.getElementById("closeDisclaimerBtn");
+
+  pdfButtons.forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      event.preventDefault();
+      
+      const pdfUrl = button.getAttribute("data-pdf-url");
+      const name = button.getAttribute("data-name") || "N/A";
+      const surname = button.getAttribute("data-surname") || "N/A";
+      const dob = button.getAttribute("data-dob") || "N/A";
+      const cf = button.getAttribute("data-cf") || "N/A";
+
+      if (!pdfUrl) {
+        console.error("Errore: URL PDF non trovato!");
+        return;
+      }
+
+      // Mostra il disclaimer modal
+      modal.classList.remove("hidden");
+
+      // Dopo che il disclaimer viene accettato, genera il PDF
+      closeBtn.addEventListener("click", async () => {
+        modal.classList.add("hidden");
+        await generatePDF(pdfUrl, name, surname, dob, cf);
+      }, { once: true }); // `{ once: true }` evita multiple generazioni
+    });
+  });
+});
+
+/* -----------------------------------------------------------------------------------------------
+    Generatore PDF
+--------------------------------------------------------------------------------------------------- */
+
+
