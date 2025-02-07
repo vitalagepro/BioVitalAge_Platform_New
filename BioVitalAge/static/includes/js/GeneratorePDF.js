@@ -171,8 +171,14 @@ const chronologicalAge = document.getElementById("chronological_age").getAttribu
 const ageDifference = (parseFloat(biologicalAge) - parseFloat(chronologicalAge)).toFixed(2);
 
 const generateBtn = document.getElementById("screenshotBtn");
+
 async function generatePDFull() {
   try {
+    // Mostra lo spinner
+    document.getElementById("snipperStampa").style.display = "block";
+    document.getElementById("spinnerBackdrop").style.display = "block";
+    document.body.style.overflow = "hidden";
+
     const existingPdfBytes = await fetch(
       "/static/includes/pdfTemplates/RefertoEtaBiologica.pdf"
     ).then((res) => res.arrayBuffer());
@@ -186,7 +192,8 @@ async function generatePDFull() {
     const dob = document.getElementById("dob").textContent;
     const cf = document.getElementById("codice_fiscale").textContent;
     const place_birth = document.getElementById("place_birth").textContent;
-    const chronological_age = document.getElementById("chronological_age").textContent;
+    const chronological_age =
+      document.getElementById("chronological_age").textContent;
     const dataRefertoFull = generateBtn.getAttribute("data-referto-date");
 
     personalInformationPages.drawText(`${dataRefertoFull}`, {
@@ -195,43 +202,36 @@ async function generatePDFull() {
       size: 10,
       color: rgb(0, 0, 0),
     });
-
-    
     personalInformationPages.drawText(`${surname}`, {
       x: 350,
       y: 667,
       size: 10,
       color: rgb(0, 0, 0),
     });
-    
     personalInformationPages.drawText(`${name}`, {
       x: 455,
       y: 667,
       size: 10,
       color: rgb(0, 0, 0),
     });
-
     personalInformationPages.drawText(`${dob}`, {
       x: 340,
       y: 653,
       size: 10,
       color: rgb(0, 0, 0),
     });
-
     personalInformationPages.drawText(`${cf}`, {
       x: 320,
       y: 638,
       size: 10,
       color: rgb(0, 0, 0),
     });
-
     personalInformationPages.drawText(`${place_birth}`, {
       x: 280,
       y: 653,
       size: 10,
       color: rgb(0, 0, 0),
     });
-
     personalInformationPages.drawText(`${chronological_age}`, {
       x: 480,
       y: 653,
@@ -241,21 +241,18 @@ async function generatePDFull() {
 
     // Stampa valori età biologica
     const agePage = pages[0];
-
     agePage.drawText(`${ageDifference}`, {
       x: 310,
       y: 558,
       size: 10,
       color: rgb(0, 0, 0),
     });
-
     agePage.drawText(`${biologicalAge}`, {
       x: 310,
       y: 585,
       size: 10,
       color: rgb(0, 0, 0),
     });
-
     agePage.drawText(`${chronologicalAge}`, {
       x: 310,
       y: 572,
@@ -274,6 +271,11 @@ async function generatePDFull() {
     link.click();
   } catch (error) {
     console.error("Errore durante la generazione del PDF:", error);
+  } finally {
+    // Nasconde lo spinner alla fine, indipendentemente dal successo o errore
+    document.getElementById("snipperStampa").style.display = "none";
+    document.getElementById("spinnerBackdrop").style.display = "none";
+    document.body.style.overflow = "auto";
   }
 }
 
@@ -281,6 +283,18 @@ generateBtn.addEventListener("click", (event) => {
   event.preventDefault();
   generatePDFull();
 });
+
+
+
+
+
+
+
+
+
+
+// BACK-UP BEFORE HTML2CANVAS LIBRARY METHOD
+
 // window.onload = function () {
 //   document
 //     .getElementById("screenshotBtn")
