@@ -135,38 +135,106 @@ document.addEventListener("DOMContentLoaded", () => {
           sidebarTitle.textContent = section;
           
           switch (section) {
-              case "Notifiche":
-                  sidebarContent.style.padding = "0px";
-                  sidebarContent.innerHTML = notifications.map(notifica => `
+            case "Notifiche":
+              sidebarContent.style.padding = "0px";
+              sidebarContent.innerHTML = notifications
+                .map(
+                  (notifica) => `
                       <div class="alert alert-${notifica.type} notification">
                           ${notifica.message} <button type="button" class="btn-close" onclick="removeNotification(this.parentElement)"></button>
                       </div>
-                  `).join("");
-                  gsap.to(".notification", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.2 });
-                  break;
-              case "Email":
-                  sidebarContent.style.padding = "0px";
-                  sidebarContent.innerHTML = emails.map(email => `
+                  `
+                )
+                .join("");
+              gsap.to(".notification", {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "power2.out",
+                stagger: 0.2,
+              });
+              break;
+            case "Email":
+              sidebarContent.style.padding = "0px";
+              sidebarContent.innerHTML = emails
+                .map(
+                  (email) => `
                       <div class="alert alert-info notification">
                           <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" style="text-decoration: none; color: inherit;">
                               ${email.subject} - ${email.sender}
                           </a>
                       </div>
-                  `).join("");
-                  gsap.to(".notification", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.2 });
-                  break;
-              case "Update":
-                  sidebarContent.style.padding = "0px";
-                  sidebarContent.innerHTML = updates.map(update => `
+                  `
+                )
+                .join("");
+              gsap.to(".notification", {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "power2.out",
+                stagger: 0.2,
+              });
+              break;
+            case "Update":
+              sidebarContent.style.padding = "0px";
+              sidebarContent.innerHTML = updates
+                .map(
+                  (update) => `
                       <div class="alert alert-warning notification">
                           ${update.version} - ${update.description}
                       </div>
-                  `).join("");
-                  gsap.to(".notification", { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.2 });
-                  break;
-              default:
-                  sidebarContent.style.padding = "0px";
-                  sidebarContent.innerHTML = "<p>Contenuto non disponibile.</p>";
+                  `
+                )
+                .join("");
+              gsap.to(".notification", {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "power2.out",
+                stagger: 0.2,
+              });
+              break;
+            case "Configurazione":
+              sidebarContent.style.padding = "0px";
+              sidebarContent.innerHTML = configurations
+                .map(
+                  (config) => `
+                        <div class="alert alert-secondary notification">
+                            ${config.setting} - ${config.value}
+                        </div>
+                    `
+                )
+                .join("");
+              gsap.to(".notification", {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "power2.out",
+                stagger: 0.2,
+              });
+              break;
+            case "Funzionalità":
+              sidebarContent.style.padding = "0px";
+              sidebarContent.innerHTML = features
+                .map(
+                  (feature) => `
+                        <div class="alert alert-success notification">
+                            ${feature.name} - ${feature.description}
+                        </div>
+                    `
+                )
+                .join("");
+              gsap.to(".notification", {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "power2.out",
+                stagger: 0.2,
+              });
+              break;
+            default:
+              sidebarContent.style.padding = "0px";
+              sidebarContent.innerHTML = "<p>Contenuto non disponibile.</p>";
           }
 
           document.body.classList.add("visible");
@@ -196,6 +264,16 @@ const emails = [
 const updates = [
   { version: "v1.2.3", description: "Correzione bug e miglioramenti UI" },
   { version: "v1.3.0", description: "Nuove funzionalità di gestione appuntamenti" }
+];
+
+const configurations = [
+  { setting: "Lingua", value: "Italiano" },
+  { setting: "Tema", value: "Chiaro" }
+];
+
+const features = [
+  { name: "Gestione Appuntamenti", description: "Permette di pianificare e gestire appuntamenti con i pazienti." },
+  { name: "Monitoraggio Referti", description: "Consente di tenere traccia dei referti e delle analisi di laboratorio." }
 ];
 
 function removeNotification(notification) {
