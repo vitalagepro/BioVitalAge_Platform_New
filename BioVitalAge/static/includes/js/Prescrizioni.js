@@ -29,93 +29,97 @@ async function populateDropdown() {
 
 async function populateResults(filteredData = null) {
   if (!filteredData) {
-    const data = await renderingRisultati();
-    arrayFoglio1 = data[0].Foglio1;
-    filteredData = arrayFoglio1;
+      const data = await renderingRisultati();
+      arrayFoglio1 = data[0].Foglio1;
+      filteredData = arrayFoglio1;
   }
 
   const resultContainer = document.querySelector(".Modale-Result-content");
-  const queueContainer = document.querySelector(".conteiner-CodaPrescrizioni");
+  const tableContainer = document.querySelector(".table-content");
 
   resultContainer.innerHTML = "";
 
   filteredData.forEach((item) => {
-    const row = document.createElement("div");
-    row.classList.add("rowModale");
+      const row = document.createElement("div");
+      row.classList.add("rowModale");
 
-    let rowContent = `
-            <div class="colModale">${
-              item.CODICE_UNIVOCO_ESAME_PIATTAFORMA || ""
-            }</div>
-            <div class="colModale nomeEsame">${
-              item.DESCRIZIONE_ESAME || ""
-            }</div>
-            <div class="colModale">${
-              item.COD_ASL ? `${item.COD_ASL} <span> (cod. asl) </span>` : ""
-            }</div>
-            <div class="colModale">${
-              item.COD_REG ? `${item.COD_REG}<span> (cod. reg)</span>` : ""
-            }</div>
-            <div class="colModale metodica">${item.METODICA || ""}</div>
-            <div class="colModale">
-                <button class="add-btn" data-id="${item.id}" data-nome="${
-      item.DESCRIZIONE_ESAME
-    }" data-codice="${item.CODICE_UNIVOCO_ESAME_PIATTAFORMA || ""}" data-asl="${
-      item.COD_ASL || ""
-    }" data-reg="${item.COD_REG || ""}" data-metodica="${
-      item.METODICA || ""
-    }">➕</button>
-            </div>
-        `;
+      let rowContent = `
+          <div class="colModale">${item.CODICE_UNIVOCO_ESAME_PIATTAFORMA || ""}</div>
+          <div class="colModale nomeEsame">${item.DESCRIZIONE_ESAME || ""}</div>
+          <div class="colModale">${item.COD_ASL ? `${item.COD_ASL} <span> (cod. asl) </span>` : ""}</div>
+          <div class="colModale">${item.COD_REG ? `${item.COD_REG}<span> (cod. reg)</span>` : ""}</div>
+          <div class="colModale metodica">${item.METODICA || ""}</div>
+          <div class="colModale apparato">${(item.APPARATO_or_I_SISTEMI || "").slice(0, 25)}</div>
+          <div class="colModale">
+              <button class="add-btn" 
+                  data-id="${item.id}"
+                  data-nome="${item.DESCRIZIONE_ESAME}" 
+                  data-codice="${item.CODICE_UNIVOCO_ESAME_PIATTAFORMA || ""}"
+                  data-asl="${item.COD_ASL || ""}"
+                  data-reg="${item.COD_REG || ""}" 
+                  data-metodica="${item.METODICA || ""}"
+                  data-apparato="${item.APPARATO_or_I_SISTEMI || ""}">
+                  ➕
+              </button>
+          </div>
+      `;
 
-    row.innerHTML = rowContent;
-    resultContainer.appendChild(row);
+      row.innerHTML = rowContent;
+      resultContainer.appendChild(row);
   });
 
   document.querySelectorAll(".add-btn").forEach((button) => {
-    button.addEventListener("click", (event) => {
-        const esameId = event.target.getAttribute("data-id");
-        const esameNome = event.target.getAttribute("data-nome");
-        const esameCodice = event.target.getAttribute("data-codice");
-        const esameAsl = event.target.getAttribute("data-asl");
-        const esameReg = event.target.getAttribute("data-reg");
-        const esameMetodica = event.target.getAttribute("data-metodica");
+      button.addEventListener("click", (event) => {
+          const esameId = event.target.getAttribute("data-id");
+          const esameNome = event.target.getAttribute("data-nome");
+          const esameCodice = event.target.getAttribute("data-codice");
+          const esameAsl = event.target.getAttribute("data-asl");
+          const esameReg = event.target.getAttribute("data-reg");
+          const esameMetodica = event.target.getAttribute("data-metodica");
+          const esameApparato = event.target.getAttribute("data-apparato");
 
-        const queueContainer = document.querySelector(".conteiner-CodaPrescrizioni");
+          // Verifica se l'esame è già stato aggiunto
+          const alreadyExists = Array.from(tableContainer.children).some(row => 
+              row.querySelector('[name="codiceEsame"]')?.textContent === esameCodice
+          );
 
-        // Verifica se esiste già un elemento con lo stesso codice univoco
-        const alreadyExists = Array.from(queueContainer.children).some(row => 
-            row.querySelector('[name="codiceEsame"]')?.textContent === esameCodice
-        );
+          if (alreadyExists) {
+              alert("L'esame è già stato aggiunto!");
+              return;
+          }
 
-        if (alreadyExists) {
-            alert("L'esame è già stato aggiunto!");
-            return;
-        }
+          // Creazione della riga per la tabella
+          const tableRow = document.createElement("div");
+          tableRow.classList.add("rowModale", "coda-item"); // Mantiene le tue classi originali
+          tableRow.setAttribute("data-id", esameId);
+          tableRow.innerHTML = `
+              <div class="colModale" name="codiceEsame">${esameCodice}</div>
+              <input type="hidden" id="codiceEsameInput" name="codiceEsame" value="${esameCodice}">
+              <div class="colModale nomeEsame">${esameNome}</div>
+              <div class="colModale">${esameAsl ? `${esameAsl} (cod. asl)` : ""}</div>
+              <div class="colModale">${esameReg ? `${esameReg} (cod. reg)` : ""}</div>
+              <div class="colModale metodica">${esameMetodica}</div>
+              <div class="colModale apparati">${esameMetodica}</div>
+              <div class="colModale">
+                  <button class="remove-btn">❌</button>
+              </div>
+          `;
 
-        const codaItem = document.createElement("div");
-        codaItem.classList.add("rowModale", "coda-item");
-        codaItem.setAttribute("data-id", esameId);
-        codaItem.innerHTML = `
-            <div class="colModale" name="codiceEsame">${esameCodice}</div>
-            <input type="hidden" id="codiceEsameInput" name="codiceEsame" value="${esameCodice}">
-            <div class="colModale nomeEsame">${esameNome}</div>
-            <div class="colModale">${esameAsl ? `${esameAsl} (cod. asl)` : ""}</div>
-            <div class="colModale">${esameReg ? `${esameReg} (cod. reg)` : ""}</div>
-            <div class="colModale metodica">${esameMetodica}</div>
-            <div class="colModale">
-                <button class="remove-btn">❌</button>
-            </div>
-        `;
+          tableContainer.appendChild(tableRow);
 
-        queueContainer.appendChild(codaItem);
+          // Aggiunge l'evento di rimozione alla riga
+          tableRow.querySelector(".remove-btn").addEventListener("click", () => {
+              tableRow.remove();
+              updatePagination(); // Aggiorna la paginazione dopo la rimozione
+          });
 
-        codaItem.querySelector(".remove-btn").addEventListener("click", () => {
-            codaItem.remove();
-        });
-    });
+          updatePagination(); // Aggiorna la paginazione dopo l'aggiunta
+      });
   });
+
+  updatePagination();
 }
+
 
 function filterResults() {
   console.log("Filtraggio in corso...");
@@ -355,78 +359,47 @@ document.addEventListener("DOMContentLoaded", function () {
 /*  -----------------------------------------------------------------------------------------------
   Funzione di paginazione con controllo di tabelle con la stessa classe
 --------------------------------------------------------------------------------------------------- */
-document.addEventListener("DOMContentLoaded", function () {
-  const tables = document.querySelectorAll(".table-content");
+function updatePagination() {
+  const tableContainer = document.querySelector(".table-content");
+  const paginationContainer = document.getElementById("pagination_download");
+  const rows = tableContainer.querySelectorAll(".rowModale"); // Mantiene le tue classi
+  const rowsPerPage = 5;
+  
+  let currentPage = 1;
+  let totalPages = Math.ceil(rows.length / rowsPerPage);
 
-  tables.forEach((table) => {
-    const rows = table.querySelectorAll(".rowTable");
-    const rowsPerPage = 5;
-    let currentPage = 1;
-    const totalPages = Math.ceil(rows.length / rowsPerPage);
-
-    function showPage(page, filteredRows = rows) {
-      rows.forEach((row) =>
-        gsap.to(row, {
-          opacity: 0,
-          height: 0,
-          duration: 0.3,
-          onComplete: () => (row.style.display = "none"),
-        })
-      );
-
-      filteredRows.forEach((row, index) => {
-        if (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) {
-          gsap.to(row, {
-            opacity: 1,
-            height: "5rem",
-            duration: 0.3,
-            display: "flex",
-            onStart: () => (row.style.display = "flex"),
-          });
-        }
+  function showPage(page) {
+      rows.forEach((row, index) => {
+          if (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) {
+              gsap.to(row, {
+                  opacity: 1,
+                  height: "5rem",
+                  duration: 0.3,
+                  display: "flex",
+                  onStart: () => (row.style.display = "flex"),
+              });
+          } else {
+              gsap.to(row, {
+                  opacity: 0,
+                  height: 0,
+                  duration: 0.3,
+                  onComplete: () => (row.style.display = "none"),
+              });
+          }
       });
-    }
+  }
 
-    function updatePaginationControls(filteredRows = rows) {
-      let existingControls = table.querySelector(".pagination-controls");
-  
-      // Rimuove i controlli esistenti
+  function updatePaginationControls() {
+      let existingControls = paginationContainer.querySelector(".pagination-controls");
+
+      // Rimuove solo la paginazione, senza eliminare `downloadButton-Container`
       if (existingControls) existingControls.remove();
-  
-      const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-  
-      // Mostra la paginazione solo se necessario
-      if (filteredRows.length > rowsPerPage) {
+
+      if (rows.length > rowsPerPage) {
           const controls = document.createElement("div");
           controls.classList.add("pagination-controls");
-  
-          const range = 10;
-          let startPage = Math.max(1, currentPage - Math.floor(range / 2));
-          let endPage = Math.min(totalPages, startPage + range - 1);
-  
-          if (endPage - startPage < range - 1) {
-              startPage = Math.max(1, endPage - range + 1);
-          }
-  
-          // Bottone per la prima pagina
-          if (startPage > 1) {
-              const firstPageBtn = document.createElement("button");
-              firstPageBtn.classList.add("button-style-pagination");
-              firstPageBtn.textContent = "1";
-              firstPageBtn.addEventListener("click", () => {
-                  currentPage = 1;
-                  showPage(currentPage, filteredRows);
-                  updatePaginationControls(filteredRows);
-              });
-              controls.appendChild(firstPageBtn);
-  
-              const dots = document.createElement("span");
-              dots.textContent = "...";
-              controls.appendChild(dots);
-          }
-  
-          // Bottoni numerati
-          for (let i = startPage; i <= endPage; i++) {
+
+          for (let i = 1; i <= totalPages; i++) {
               const btn = document.createElement("button");
               btn.classList.add("button-style-pagination");
               btn.textContent = i;
@@ -435,36 +408,39 @@ document.addEventListener("DOMContentLoaded", function () {
               }
               btn.addEventListener("click", () => {
                   currentPage = i;
-                  showPage(currentPage, filteredRows);
-                  updatePaginationControls(filteredRows);
+                  showPage(currentPage);
+                  updatePaginationControls();
               });
               controls.appendChild(btn);
           }
-  
-          // Bottone per l'ultima pagina
-          if (endPage < totalPages) {
-              const dots = document.createElement("span");
-              dots.textContent = "...";
-              controls.appendChild(dots);
-  
-              const lastPageBtn = document.createElement("button");
-              lastPageBtn.classList.add("button-style-pagination");
-              lastPageBtn.textContent = totalPages;
-              lastPageBtn.addEventListener("click", () => {
-                  currentPage = totalPages;
-                  showPage(currentPage, filteredRows);
-                  updatePaginationControls(filteredRows);
-              });
-              controls.appendChild(lastPageBtn);
-          }
-  
-          table.appendChild(controls);
+
+          // Aggiunge la paginazione senza toccare `downloadButton-Container`
+          paginationContainer.appendChild(controls);
       }
   }
-  
 
-    // Mostra la prima pagina e controlla se la paginazione è necessaria
-    showPage(currentPage);
-    updatePaginationControls();
+  showPage(currentPage);
+  updatePaginationControls();
+}
+
+
+
+/* FUNZIONE PER INVIARE I CODICI UNIVOCHI EGLI ESAMI ALLA VIEW */
+document.getElementById("btnPdfGeneralPrescrizioni").addEventListener("click", function (event) {
+  event.preventDefault();
+
+  const tableContainer = document.querySelector(".table-content");
+  const codiceEsami = [];
+
+  tableContainer.querySelectorAll(".rowModale [name='codiceEsame']").forEach((cell) => {
+      codiceEsami.push(cell.textContent.trim());
   });
+
+  if (codiceEsami.length === 0) {
+      alert("Nessun esame presente per il salvataggio.");
+      return;
+  }
+
+  document.getElementById("codiciEsamiInput").value = JSON.stringify(codiceEsami);
+  document.getElementById("saveForm").submit();
 });

@@ -1198,16 +1198,16 @@ class CartellaPazienteView(View):
         with open(json_path, "r", encoding="utf-8") as file:
             data = json.load(file)
 
-        codiciEsami = PrescrizioniUtenti.objects.filter(paziente=persona)
+        #codiciEsami = PrescrizioniUtenti.objects.filter(paziente=persona)
 
-        esamiList = []
+        #esamiList = []
 
-        for codici in codiciEsami:
-            print(f"Codice trovato: {codici.codicePrescrizione}")
+       # for codici in codiciEsami:
+          
 
-            for esame in data['Foglio1']:
-                if int(codici.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
-                    esamiList.append(esame)
+            #for esame in data['Foglio1']:
+               # if int(codici.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
+                #    esamiList.append(esame)
         
         
         context = {
@@ -1217,7 +1217,7 @@ class CartellaPazienteView(View):
             'ultimo_referto': ultimo_referto,
             'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
             'dottore' : dottore,
-            'esamiPrescritti' : esamiList
+             #'esamiPrescritti' : esamiList
         }
 
         return render(request, "includes/cartellaPaziente.html", context)
@@ -1724,42 +1724,24 @@ def referti_view(request, referto_id):
 class PrescrizioniView(View):
 
     def get(self, request, persona_id):
-        json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
-
-        if not os.path.exists(json_path):
-            return JsonResponse({"error": f"File JSON non trovato: {json_path}"}, status=404)
-
-        with open(json_path, "r", encoding="utf-8") as file:
-            data = json.load(file)
 
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
-        codiciEsami = PrescrizioniUtenti.objects.filter(paziente=persona)
-
-        esamiList = []
-
-        for codici in codiciEsami:
-            for esame in data['Foglio1']:
-                if int(codici.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
-                    esamiList.append(esame)
 
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
-        success_message = request.session.pop('success', None)
-        error_message = request.session.pop('errore', None)
-
         context = {
             'persona': persona,
             'dottore': dottore,
-            'esamiPrescritti': esamiList,
-            'success': success_message, 
-            'errore': error_message, 
         }
 
         return render(request, "includes/prescrizioni.html", context)
 
 
     def post(self, request, persona_id):
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+        
+
         json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
 
         if not os.path.exists(json_path):
@@ -1768,37 +1750,19 @@ class PrescrizioniView(View):
         with open(json_path, "r", encoding="utf-8") as file:
             data = json.load(file)
 
-        codiciEsami = request.POST.getlist('codiceEsame')
-        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+        listaCodici = request.POST.get('codici_esami')
+        data_list = json.loads(listaCodici)
+        numeri = [x for x in data_list if x.isdigit()]
 
-        esami_duplicati = []
-        esami_nuovi = []
+        for numero in numeri:
 
-        for codice in codiciEsami:
-            if PrescrizioniUtenti.objects.filter(paziente=persona, codicePrescrizione=codice).exists():
-                esami_duplicati.append(codice)
-            else:
-                prescrizione = PrescrizioniUtenti(paziente=persona, codicePrescrizione=codice)
-                prescrizione.save()
-                esami_nuovi.append(codice)
+            prescrizione = PrescrizioniUtenti(paziente=persona, codicePrescrizione=codice)
+            prescrizione.save()
+            esami_nuovi.append(codice)
 
-        if esami_duplicati:
-            with open(json_path, "r", encoding="utf-8") as file:
-                data = json.load(file)
-            
-            dataList = data['Foglio1']
-            nome_esame = ''
 
-            for dictionary in dataList:
-                if int(dictionary['CODICE_UNIVOCO_ESAME_PIATTAFORMA']) == int(esami_duplicati[0]):
-                    nome_esame = dictionary['DESCRIZIONE_ESAME']
-
-            request.session['errore'] = f"L'esame '{nome_esame}' è già presente nell'elenco delle prescrizioni per questo paziente"
-        else:
-            
-            request.session['success'] = "Le prescrizioni sono state correttamente aggiunte"
-
-        return redirect('prescrizioni', persona_id)
+    
+        return redirect('cartella_paziente', persona_id)
  
 
 

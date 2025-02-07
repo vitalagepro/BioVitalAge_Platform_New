@@ -120,6 +120,20 @@
 .remove-btn:hover{
     transform: scale(1.2);
 }
+.table-content{
+    border-radius: 0px;
+    border: none;
+}
+
+
+.table-content .rowModale{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 5rem;
+    border-bottom: 1px solid #ddd;
+}
 .colModale{
     width: 10%;
     text-align: center;
@@ -130,11 +144,44 @@
     display: block;
 }
 .colModale.nomeEsame{
-    width: 40%;
+    width: 30%;
+}
+.colModale.apparato{
+    width: 30%;
 }
 .colModale.metodica{
     width: 20%;
 }
+
+
+
+/* Paginazione Tabella prescrizioni */
+.pagination-download{
+    width: 100%;
+    height: 5rem;
+    padding: 18px;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border-radius: 0px 0px 8px 8px;
+}
+
+#btnPdfGeneralPrescrizioni{
+    border-radius: 50px;
+    width: 65px;
+
+}
+.pagination-controls{
+    width: 50%;
+}
+
+
+
+
+
+
 
 
 
@@ -156,7 +203,7 @@
     background-color: var(--card-color);
     border-radius: 8px;
     width: 1400px;
-    height: 750px;
+    height: 580px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -202,7 +249,7 @@
 }
 .Modale-Result-content{
     background-color: var(--contrast-color-shadow);
-    max-height: 260px;
+    max-height: 400px;
     width: 98%;
     margin: 1rem auto;
     border-radius: 8px;
@@ -297,74 +344,8 @@
 
 
 
-/* Stile tabella coda prescrizioni */
-.conteiner-CodaPrescrizioni{
-    width: 98%;
-    margin: auto;
-    height: 200px;
-    flex-direction: column;
-    background-color: var(--contrast-color-shadow);
-    border-radius: 8px;
-    overflow-y:  auto;
-    padding: 10px;
-    display: flex;
-    gap: 5px;
-}
-.conteiner-CodaPrescrizioni .rowModale{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-}
-.conteiner-CodaPrescrizioni .colModale{
-    width: 10%;
-    text-align: center;
-    padding: 20px;
-    height: 5rem;
-}
-.conteiner-CodaPrescrizioni .colModale span{
-    display: block;
-}
-.conteiner-CodaPrescrizioni .colModale.nomeEsame{
-    width: 40%;
-}
-.conteiner-CodaPrescrizioni .colModale.metodica{
-    width: 20%;
-}
-
-
-
-/* STILE TABELLA ELENCO PRESCRIZIONI ATTIVE SUL PAZIENTE */
-.rowTable{
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-    height: 100%;
-}
-.rowTable p{
-    background-color: white;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    font-size: 16px;
-    justify-content: center;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-}
-.pagination-controls{
-    height: 30px;
-    padding: 20px;
-}
 
 
 
 
-.messageError{
-    background-color: rgba(118, 0, 0, 0.5);
-    width: 98%;
-    height: 4rem;
-    margin: 20px auto;
-    padding: 20px;
-}
+

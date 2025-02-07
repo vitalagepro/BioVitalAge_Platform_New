@@ -38,6 +38,8 @@ document.addEventListener("DOMContentLoaded", function () {
   --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
   const tables = document.querySelectorAll(".table-content");
+  const paginationContainer = document.getElementById('pagination_download');
+
 
   tables.forEach((table) => {
     const rows = table.querySelectorAll(".riga-container");
@@ -136,11 +138,10 @@ document.addEventListener("DOMContentLoaded", function () {
           controls.appendChild(lastPageBtn);
         }
 
-        table.appendChild(controls);
+        paginationContainer.appendChild(controls);
       }
     }
 
-    // Mostra la prima pagina e controlla se la paginazione è necessaria
     showPage(currentPage);
     updatePaginationControls();
   });
@@ -595,9 +596,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
-
-/* -----------------------------------------------------------------------------------------------
-    Generatore PDF
---------------------------------------------------------------------------------------------------- */
 
 
