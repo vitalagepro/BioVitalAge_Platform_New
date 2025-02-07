@@ -8,7 +8,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'includes/icone/favicon.png' %}" type="image/x-icon" />
     
-    <title>BioVitalAge - Stile di Vita</title>
+    <title>BioVitalAge - Dati Base & Stile di Vita</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}">
@@ -41,7 +41,7 @@
       <div class="main-title-nav">
         <div class="back-tittle">
           <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to folder"></a>
-          <h2 class="main-welcome-title">Stile di Vita, {{ persona.name }} {{ persona.surname }}</h2>
+          <h2 class="main-welcome-title">Dati Base & Stile di Vita, {{ persona.name }} {{ persona.surname }}</h2>
         </div>
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
@@ -50,7 +50,7 @@
           <span>»</span>
           <span>Cartella Paziente</span>
           <span>»</span>
-          <span>Stile di Vita</span>
+          <span>Dati Base & Stile di Vita</span>
         </div>
       </div>
 

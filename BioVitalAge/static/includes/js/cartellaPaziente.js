@@ -644,14 +644,13 @@ document.addEventListener("DOMContentLoaded", function () {
       
       toggleButton.innerHTML = `
       <span class="button__icon-wrapper">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
-              <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
-              <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg button__icon-svg--copy">
-              <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
-              <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg button__icon-svg--copy">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
       </span>
       ${isHidden ? "Mostra di meno" : "Mostra di più"}
       `;

@@ -618,10 +618,6 @@ tbody tr:hover {
   color: white;
 }
 
-#sidebar-content {
-  padding: 20px 0 0 20px;
-}
-
 #closeSidebar {
   background: none;
   border: none;
@@ -692,29 +688,28 @@ tbody tr:hover {
   object-fit: cover;
 }
 
+
 .blog-text {
   display: -webkit-box;
-  /* Necessario per il line-clamp */
   -webkit-box-orient: vertical;
-  /* Imposta il contenitore su orientamento verticale */
   overflow: hidden;
-  /* Nasconde il testo in eccesso */
   text-overflow: ellipsis;
-  /* Aggiunge i "..." */
   -webkit-line-clamp: 3;
-  /* Numero massimo di righe */
   font-size: 14px;
-  /* Dimensione del font del titolo */
   line-height: 1.4;
-  /* Altezza delle righe */
   margin: 0;
   text-align: justify;
   width: 300px;
 }
 
-#notification-list .title-notice {
-  padding-top: 10px;
-  padding-left: 20px;
+.notification {
+  padding: 15px;
+  margin: 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  display: flex;
+  justify-content: space-between;
 }
 
 .risultati-ricerca {
