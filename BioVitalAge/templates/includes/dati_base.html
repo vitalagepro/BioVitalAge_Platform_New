@@ -8,7 +8,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'includes/icone/favicon.png' %}" type="image/x-icon" />
     
-    <title>BioVitalAge - Dati Base</title>
+    <title>BioVitalAge - Stile di Vita</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}">
@@ -41,7 +41,7 @@
       <div class="main-title-nav">
         <div class="back-tittle">
           <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to folder"></a>
-          <h2 class="main-welcome-title">Dati Base {{ persona.name }} {{ persona.surname }}</h2>
+          <h2 class="main-welcome-title">Stile di Vita, {{ persona.name }} {{ persona.surname }}</h2>
         </div>
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
@@ -50,7 +50,7 @@
           <span>»</span>
           <span>Cartella Paziente</span>
           <span>»</span>
-          <span>Dati Base</span>
+          <span>Stile di Vita</span>
         </div>
       </div>
 
@@ -327,13 +327,13 @@
           <div class="column">
             <div class="container mb-4">
               <h3>Pressione Arteriosa</h3>
-              <input type="text" readonly id="pressure" value="{{ persona.pressure|default:'Inserisci valori' }}"
+              <input type="text" placeholder="Inserisci valori" readonly id="pressure" value="{{ persona.pressure|default:'' }}"
                 data-patient-id="{{ persona.id }}" />
             </div>
           
             <div class="container">
               <h3>Frequenza Cardiaca</h3>
-              <input type="text" readonly id="heart_rate" value="{{ persona.heart_rate|default:'Inserisci valori' }}"
+              <input type="text" placeholder="Inserisci valori" readonly id="heart_rate" value="{{ persona.heart_rate|default:'' }}"
                 data-patient-id="{{ persona.id }}" />
             </div>
           </div>
@@ -341,12 +341,12 @@
           <div class="column">
             <div class="container mb-4">
               <h3>Gruppo Sanguigno</h3>
-              <input type="text" readonly id="blood_group" value="{{ persona.blood_group|default:'N/A' }}" data-patient-id="{{ persona.id }}"/>
+              <input type="text" readonly placeholder="Inserisci valori" id="blood_group" value="{{ persona.blood_group|default:'' }}" data-patient-id="{{ persona.id }}"/>
             </div>
   
             <div class="container">
                 <h3>Fattore rh</h3>
-                <input type="text" readonly id="rh" value="{{ persona.rh_factor|default:'N/A' }}" data-patient-id="{{ persona.id }}"/>
+                <input type="text" readonly placeholder="Inserisci valori" id="rh" value="{{ persona.rh_factor|default:'' }}" data-patient-id="{{ persona.id }}"/>
             </div>
           </div>
 
