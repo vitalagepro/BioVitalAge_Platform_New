@@ -354,15 +354,33 @@ class DatiEstesiRefertiTest(models.Model):
     
 
 
-#Prescrizioni Pazienti
-class PrescrizioniUtenti(models.Model):
+
+
+# ELENCO VISITE
+class ElencoVisitePaziente(models.Model):
     paziente = models.ForeignKey(
         TabellaPazienti, 
         on_delete=models.CASCADE, 
-        related_name='PrescrizioniEsami'
+        related_name='visite'
     )
-    codicePrescrizione = models.IntegerField(null=True, blank=True)
+    data_visita = models.DateField(auto_now_add=True)
+    #medico = models.CharField(max_length=100) 
+    #motivo_visita = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"Dati Estesi Referto ID: {self.paziente.id}"
-    
+        return f"Visita di - {self.data_visita}"
+
+
+class EsameVisita(models.Model):
+    visita = models.ForeignKey(
+        ElencoVisitePaziente, 
+        on_delete=models.CASCADE, 
+        related_name='esami'
+    )
+    codice_esame = models.CharField(max_length=50)
+    #descrizione = models.CharField(max_length=255)
+    #metodica = models.CharField(max_length=100, blank=True, null=True)
+    #risultato = models.TextField(blank=True, null=True)  
+
+    def __str__(self):
+        return f" Visita {self.visita.id}"

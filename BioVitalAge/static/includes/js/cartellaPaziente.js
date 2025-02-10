@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
   const tables = document.querySelectorAll(".table-content");
 
+
   tables.forEach((table) => {
     const rows = table.querySelectorAll(".riga-container");
     const rowsPerPage = 5;
@@ -71,7 +72,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function updatePaginationControls() {
       let existingControls = table.querySelector(".pagination-controls");
 
+ 
       if (existingControls) existingControls.remove();
+
 
       if (rows.length > rowsPerPage) {
         const controls = document.createElement("div");
@@ -80,6 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const range = 10;
         let startPage = Math.max(1, currentPage - Math.floor(range / 2));
         let endPage = Math.min(totalPages, startPage + range - 1);
+
 
         if (endPage - startPage < range - 1) {
           startPage = Math.max(1, endPage - range + 1);
@@ -133,11 +137,10 @@ document.addEventListener("DOMContentLoaded", function () {
           controls.appendChild(lastPageBtn);
         }
 
-        table.appendChild(controls);
+        tables.appendChild(controls);
       }
     }
 
-    // Mostra la prima pagina e controlla se la paginazione è necessaria
     showPage(currentPage);
     updatePaginationControls();
   });
@@ -529,46 +532,42 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 });
 
+
+
+
+
 /* FILTRI TABELLA PRESCRIZIONE */
 document.addEventListener("DOMContentLoaded", function () {
   const filterSelect = document.getElementById("filter");
   const tableContent = document.querySelector(".table-content.prescriptions");
 
   filterSelect.addEventListener("change", function () {
-    let selectedFilter = filterSelect.value;
-    let rows = Array.from(
-      tableContent.getElementsByClassName("riga-container")
-    );
+      let selectedFilter = filterSelect.value;
+      let rows = Array.from(tableContent.getElementsByClassName("riga-container"));
 
-    if (selectedFilter === "Tutti") {
-      rows.forEach((row) => (row.style.display = "flex"));
-      return;
-    }
+      if (selectedFilter === "Tutti") {
+          rows.forEach(row => row.style.display = "flex");
+          return;
+      }
 
-    let columnIndex = parseInt(selectedFilter, 10);
-    let isAscending = columnIndex === 0;
+      let columnIndex = parseInt(selectedFilter, 10);
+      let isAscending = columnIndex === 0;
 
-    rows.sort((a, b) => {
-      let textA = a
-        .getElementsByTagName("p")
-        [columnIndex].innerText.trim()
-        .toLowerCase();
-      let textB = b
-        .getElementsByTagName("p")
-        [columnIndex].innerText.trim()
-        .toLowerCase();
+      rows.sort((a, b) => {
+          let textA = a.getElementsByTagName("p")[columnIndex].innerText.trim().toLowerCase();
+          let textB = b.getElementsByTagName("p")[columnIndex].innerText.trim().toLowerCase();
 
-      return isAscending
-        ? textA.localeCompare(textB)
-        : textB.localeCompare(textA);
-    });
+          return isAscending ? textA.localeCompare(textB) : textB.localeCompare(textA);
+      });
 
-    rows.forEach((row) => tableContent.appendChild(row));
+      rows.forEach(row => tableContent.appendChild(row));
   });
 });
 
+
+
 /* FUNZIONE SCARICA PDF PRESCRIZIONE */
-document.addEventListener("DOMContentLoaded", function () {
+/* document.addEventListener("DOMContentLoaded", function () {
   const pdfButtons = document.querySelectorAll(".generatePDFButton");
   const modal = document.getElementById("pdfDisclaimerModal");
   const closeBtn = document.getElementById("closeDisclaimerBtn");
@@ -576,7 +575,7 @@ document.addEventListener("DOMContentLoaded", function () {
   pdfButtons.forEach((button) => {
     button.addEventListener("click", async (event) => {
       event.preventDefault();
-
+      
       const pdfUrl = button.getAttribute("data-pdf-url");
       const name = button.getAttribute("data-name") || "N/A";
       const surname = button.getAttribute("data-surname") || "N/A";
@@ -592,70 +591,13 @@ document.addEventListener("DOMContentLoaded", function () {
       modal.classList.remove("hidden");
 
       // Dopo che il disclaimer viene accettato, genera il PDF
-      closeBtn.addEventListener(
-        "click",
-        async () => {
-          modal.classList.add("hidden");
-          await generatePDF(pdfUrl, name, surname, dob, cf);
-        },
-        { once: true }
-      ); // `{ once: true }` evita multiple generazioni
+      closeBtn.addEventListener("click", async () => {
+        modal.classList.add("hidden");
+        await generatePDF(pdfUrl, name, surname, dob, cf);
+      }, { once: true }); // `{ once: true }` evita multiple generazioni
     });
   });
 });
+ */
 
-/*  -----------------------------------------------------------------------------------------------
-    Mostra di più
---------------------------------------------------------------------------------------------------- */
-document.addEventListener("DOMContentLoaded", function () {
-  const toggleButton = document.querySelector(".button");
-  
-  if (!toggleButton) return;
-  
-  const infoContainer = document.querySelector(".info_container");
-  const contactContainer = document.querySelector(".Contact-Container");
-  const hiddenFields = infoContainer.querySelectorAll(".field:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(4)):not(:nth-child(5))");
-  const subCardsContainer = document.querySelector(".subCard-container");
-  
-  hiddenFields.forEach(field => {
-      gsap.set(field, { opacity: 0, display: "none" });
-      infoContainer.classList.add("hidden-row-grid");
-      contactContainer.classList.add("flex-hidden-grid");
-  });
-  
-  gsap.set(subCardsContainer, { opacity: 0, display: "none" });
-  
-  toggleButton.addEventListener("click", function () {
-      const isHidden = hiddenFields[0].style.display === "none";
-      
-      hiddenFields.forEach(field => {
-          if (isHidden) {
-              gsap.to(field, { opacity: 1, display: "flex", duration: 0.5 });
-              infoContainer.classList.remove("hidden-row-grid");
-          } else {
-              gsap.to(field, { opacity: 0, display: "none", duration: 0.5 });
-          }
-      });
-      
-      if (isHidden) {
-          gsap.to(subCardsContainer, { opacity: 1, display: "flex", duration: 0.5 });
-          infoContainer.classList.remove("hidden-row-grid");
-      } else {
-          gsap.to(subCardsContainer, { opacity: 0, display: "none", duration: 0.5 });
-          infoContainer.classList.add("hidden-row-grid");
-      }
-      
-      toggleButton.innerHTML = `
-      <span class="button__icon-wrapper">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
-            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
 
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg button__icon-svg--copy">
-            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
-      </span>
-      ${isHidden ? "Mostra di meno" : "Mostra di più"}
-      `;
-  });
-});

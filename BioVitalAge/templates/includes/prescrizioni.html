@@ -169,34 +169,7 @@
             <div class="Modale-Result-content">
                 <!-- DINAMICAMENTE POPOLATO CON JAVASCRIPT -->
             </div>
-            
-            <p style="font-weight: bold; padding-left: 20px;">Prescrizione selezionate</p>
-
-            <form method="POST" action="{% url 'prescrizioni' persona.id %}">
-                {% csrf_token %}
-                
-                <div class="conteiner-CodaPrescrizioni">
-                    <!-- DINAMICAMENTE POPOLATO CON JAVASCRIPT -->
-                </div>
-
-                <button type="submit" title="Add Patient" class="button" id="buttonAdd">
-                    <span class="button__icon-wrapper">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14"
-                        height="14">
-                        <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    </svg>
-                
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                        class="button__icon-svg button__icon-svg--copy" width="14" height="14">
-                        <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    </svg>
-                
-                    </span>
-                    Aggiungi Prescrizioni
-                </button>
-            </form>
+                    
         </div>
 
         <!-- MODALE MESSAGE -->
@@ -373,71 +346,39 @@
                 <p>Apparato/Sistemi</p>
                 <p></p>
             </div>
+
             <div class="table-content">
-                <!-- Da Popolare Dinamicamente -->
-                {% if esamiPrescritti %}
-
-                    {% for esami in esamiPrescritti %}
-                    <div class="rowTable" id="esame-{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}">
-                        <p>{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}</p>
-                        <p>{{ esami.DESCRIZIONE_ESAME }}</p>
-                        <p>{{ esami.COD_ASL }}</p>
-                        <p>{{ esami.COD_REG }}</p>
-                        <p>{{ esami.METODICA }}</p>
-                        <p style="padding:10px;">{{ esami.APPARATO_or_I_SISTEMI|slice:":50" }}</p>
-                        
-                        <p id="cellaButton">
-                            <button class="delete-button" data-codice="{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}">❌</button>
-                        </p>
-                       
-                    </div>
-                    {% endfor %}
-        
-                {% else %}
-                    <div class="Message">
-                        <p>Nessuna preiscrizione inserita</p>
-                    </div>
-                {% endif %}
-
-                <!-- FUNZIONE AJAX PER RICHIESTA DI DELETE -->
-                <script>
-                   document.querySelectorAll('.delete-button').forEach(button => {
-                        button.addEventListener('click', function() {
-                            let codiceUnivoco = this.getAttribute('data-codice');
-                            let esameRow = document.getElementById(`esame-${codiceUnivoco}`);
-
-                            let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value; 
-
-                            fetch("{% url 'delete_exam' persona.id %}", {
-                                method: "POST",
-                                headers: {
-                                    "X-CSRFToken": csrfToken,
-                                    "Content-Type": "application/x-www-form-urlencoded"
-                                },
-                                body: `codiceUnivoco=${codiceUnivoco}`
-                            })
-                            .then(response => response.json()) 
-                            .then(data => {
-                                if (data.reload) {
-                                    window.location.reload(); 
-                                } else {
-                                   
-                                    let errorMessage = document.getElementById("error-message");
-                                    if (errorMessage) {
-                                        errorMessage.innerText = data.error;
-                                        errorMessage.style.display = "block";
-                                    }
-                                }
-                            })
-                            .catch(error => console.error("Errore nella richiesta:", error));
-                        });
-                    });
-
-
-
-                </script>
-                    
+                <!-- Viene Popolato Dinamicamente con Javascript -->
+                
+    
             </div>
+
+            <form id="saveForm" method="POST" action="{% url 'prescrizioni' persona.id %}" style="width: 100%;">
+                {% csrf_token %}
+            
+                <div class="pagination-download" id="pagination_download">
+
+                    <input type="hidden" name="codici_esami" id="codiciEsamiInput">
+                    <button class="button" id="btnPdfGeneralPrescrizioni"> 
+                            <span class="button__icon-wrapper">
+
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14" height="14">
+                                    <path d="M5 3H19L21 7V21H3V3H5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M17 21V14H7V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M7 3V8H13V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg button__icon-svg--copy" width="14" height="14">
+                                    <path d="M5 3H19L21 7V21H3V3H5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M17 21V14H7V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M7 3V8H13V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>                            
+
+                            </span>
+                    </button>
+                    
+                </div>
+            </form>
         </div>
 
     </main>
