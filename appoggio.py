@@ -301,3 +301,295 @@ exams = [
         {'telotest': 0},                        
 ]
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class PrescrizioniView(View):
+
+    def get(self, request, persona_id):
+        json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
+
+        if not os.path.exists(json_path):
+            return JsonResponse({"error": f"File JSON non trovato: {json_path}"}, status=404)
+
+        with open(json_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+        codiciEsami = PrescrizioniUtenti.objects.filter(paziente=persona)
+
+        esamiList = []
+
+        for codici in codiciEsami:
+            for esame in data['Foglio1']:
+                if int(codici.codicePrescrizione) == int(esame['CODICE_UNIVOCO_ESAME_PIATTAFORMA']):
+                    esamiList.append(esame)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        success_message = request.session.pop('success', None)
+        error_message = request.session.pop('errore', None)
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+            'esamiPrescritti': esamiList,
+            'success': success_message, 
+            'errore': error_message, 
+        }
+
+        return render(request, "includes/prescrizioni.html", context)
+
+
+    def post(self, request, persona_id):
+        json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
+
+        if not os.path.exists(json_path):
+            return JsonResponse({"error": f"File JSON non trovato: {json_path}"}, status=404)
+
+        with open(json_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        codiciEsami = request.POST.getlist('codiceEsame')
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        esami_duplicati = []
+        esami_nuovi = []
+
+        for codice in codiciEsami:
+            if PrescrizioniUtenti.objects.filter(paziente=persona, codicePrescrizione=codice).exists():
+                esami_duplicati.append(codice)
+            else:
+                prescrizione = PrescrizioniUtenti(paziente=persona, codicePrescrizione=codice)
+                prescrizione.save()
+                esami_nuovi.append(codice)
+
+        if esami_duplicati:
+            with open(json_path, "r", encoding="utf-8") as file:
+                data = json.load(file)
+            
+            dataList = data['Foglio1']
+            nome_esame = ''
+
+            for dictionary in dataList:
+                if int(dictionary['CODICE_UNIVOCO_ESAME_PIATTAFORMA']) == int(esami_duplicati[0]):
+                    nome_esame = dictionary['DESCRIZIONE_ESAME']
+
+            request.session['errore'] = f"L'esame '{nome_esame}' è già presente nell'elenco delle prescrizioni per questo paziente"
+        else:
+            
+            request.session['success'] = "Le prescrizioni sono state correttamente aggiunte"
+
+        return redirect('prescrizioni', persona_id)
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+class DeletePrescrizioniView(View):
+    
+    def post(self, request, persona_id):
+        try:
+            persona = get_object_or_404(TabellaPazienti, id=persona_id)
+            codice_univoco = request.POST.get("codiceUnivoco")
+
+            if not codice_univoco:
+                return JsonResponse({"error": "Codice esame non fornito"}, status=400)
+
+            esame = PrescrizioniUtenti.objects.filter(paziente=persona, codicePrescrizione=codice_univoco)
+
+            if not esame.exists():
+                return JsonResponse({"error": "Esame non trovato"}, status=404)
+
+            nome_esame = ""
+            primo_elemento = esame.first()
+
+            json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
+            if os.path.exists(json_path):
+                with open(json_path, "r", encoding="utf-8") as file:
+                    data = json.load(file)
+                    for dictionary in data.get("Foglio1", []):
+                        if int(dictionary["CODICE_UNIVOCO_ESAME_PIATTAFORMA"]) == int(primo_elemento.codicePrescrizione):
+                            nome_esame = dictionary["DESCRIZIONE_ESAME"]
+
+            esame.delete()
+
+            request.session['success'] = f"L'esame '{nome_esame}' è stato eliminato"
+
+            return JsonResponse({"reload": True}) 
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+
+
+
+
+
+<form method="POST" action="{% url 'prescrizioni' persona.id %}">
+                {% csrf_token %}
+                
+                <div class="conteiner-CodaPrescrizioni">
+                    <!-- DINAMICAMENTE POPOLATO CON JAVASCRIPT -->
+                </div>
+
+                <button type="submit" title="Add Patient" class="button" id="buttonAdd">
+                    <span class="button__icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14"
+                        height="14">
+                        <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    </svg>
+                
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="button__icon-svg button__icon-svg--copy" width="14" height="14">
+                        <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    </svg>
+                
+                    </span>
+                    Aggiungi Prescrizioni
+                </button>
+            </form>
+
+
+
+
+
+<div class="table-content">
+                <!-- Da Popolare Dinamicamente -->
+                {% if esamiPrescritti %}
+
+                    {% for esami in esamiPrescritti %}
+                    <div class="rowTable" id="esame-{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}">
+                        <p>{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}</p>
+                        <p>{{ esami.DESCRIZIONE_ESAME }}</p>
+                        <p>{{ esami.COD_ASL }}</p>
+                        <p>{{ esami.COD_REG }}</p>
+                        <p>{{ esami.METODICA }}</p>
+                        <p style="padding:10px;">{{ esami.APPARATO_or_I_SISTEMI|slice:":50" }}</p>
+                        
+                        <p id="cellaButton">
+                            <button class="delete-button" data-codice="{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}">❌</button>
+                        </p>
+                       
+                    </div>
+                    {% endfor %}
+        
+                {% else %}
+                    <div class="Message">
+                        <p>Clicca su 'Aggiungi Prescrizione' per aggiungere le prescrizioni alla visita corrente</p>
+                    </div>
+                {% endif %}
+
+                <!-- FUNZIONE AJAX PER RICHIESTA DI DELETE -->
+                <!-- <script>
+                   document.querySelectorAll('.delete-button').forEach(button => {
+                        button.addEventListener('click', function() {
+                            let codiceUnivoco = this.getAttribute('data-codice');
+                            let esameRow = document.getElementById(`esame-${codiceUnivoco}`);
+
+                            let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value; 
+
+                            fetch("{% url 'delete_exam' persona.id %}", {
+                                method: "POST",
+                                headers: {
+                                    "X-CSRFToken": csrfToken,
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                                body: `codiceUnivoco=${codiceUnivoco}`
+                            })
+                            .then(response => response.json()) 
+                            .then(data => {
+                                if (data.reload) {
+                                    window.location.reload(); 
+                                } else {
+                                   
+                                    let errorMessage = document.getElementById("error-message");
+                                    if (errorMessage) {
+                                        errorMessage.innerText = data.error;
+                                        errorMessage.style.display = "block";
+                                    }
+                                }
+                            })
+                            .catch(error => console.error("Errore nella richiesta:", error));
+                        });
+                    });
+
+
+
+                </script>
+                    
+
+                 -->
+            </div>
+
+
+
+ document.querySelectorAll(".add-btn").forEach((button) => {
+    button.addEventListener("click", (event) => {
+        const esameId = event.target.getAttribute("data-id");
+        const esameNome = event.target.getAttribute("data-nome");
+        const esameCodice = event.target.getAttribute("data-codice");
+        const esameAsl = event.target.getAttribute("data-asl");
+        const esameReg = event.target.getAttribute("data-reg");
+        const esameMetodica = event.target.getAttribute("data-metodica");
+        const esameApparato = event.target.getAttribute("data-apparato");
+
+        const queueContainer = document.querySelector(".conteiner-CodaPrescrizioni");
+
+        // Verifica se esiste già un elemento con lo stesso codice univoco
+        const alreadyExists = Array.from(queueContainer.children).some(row => 
+            row.querySelector('[name="codiceEsame"]')?.textContent === esameCodice
+        );
+
+        if (alreadyExists) {
+            alert("L'esame è già stato aggiunto!");
+            return;
+        }
+
+        const codaItem = document.createElement("div");
+        codaItem.classList.add("rowModale", "coda-item");
+        codaItem.setAttribute("data-id", esameId);
+        codaItem.innerHTML = `
+            <div class="colModale" name="codiceEsame">${esameCodice}</div>
+            <input type="hidden" id="codiceEsameInput" name="codiceEsame" value="${esameCodice}">
+            <div class="colModale nomeEsame">${esameNome}</div>
+            <div class="colModale">${esameAsl ? `${esameAsl} (cod. asl)` : ""}</div>
+            <div class="colModale">${esameReg ? `${esameReg} (cod. reg)` : ""}</div>
+            <div class="colModale metodica">${esameMetodica}</div>
+            <div class="colModale apparati">${esameMetodica}</div>
+            <div class="colModale">
+                <button class="remove-btn">❌</button>
+            </div>
+        `;
+
+        queueContainer.appendChild(codaItem);
+
+        codaItem.querySelector(".remove-btn").addEventListener("click", () => {
+            codaItem.remove();
+        });
+    });
+  });

@@ -64,7 +64,6 @@
             </div>
         </div>
 
-
         <!-- CARD PERSONAL INFORMATION -->
         <div class="container-datiPersonali containerStyle">
 
@@ -231,7 +230,6 @@
 
         </div>
 
-
         <!-- CARD SEZIONI DATI BASE E COMPOSIZIONE CORPOREA -->
         <div class="container-sezioniInterne containerStyle">
             <div class="cardDati">
@@ -287,23 +285,77 @@
             </div>
 
 
-            <div class="cardDati">
+            <div class="cardDati" >
                 <div class="cartella-effect">
                     <h3>Rapporto sull'esame del sangue</h3>
                     <div class="space"></div>
                 </div>
-                <div class="card-content">
+                <div class="card-content" >
                     <img src="{% static 'includes/icone/analisi.png' %}" alt="">
                     <p style="top: 4rem;">Referto Analisi del sangue</p>
                     <p style="top: 6rem;"><strong>Ultima analisi:</strong> &nbsp; 15/09/2000 </p>
                     <a href="" style="top: 10rem;" id="adjust">Aggiorna Referto</a>
-                    <a href="">Scarica Referto</a>
+                    <a href="" id="ScrollRender">Scarica Referto</a>
                 </div>
             </div>
         </div>
         
         <!-- TABELLA ELENCO PRESCRIZIONI -->
+
+        <!-- Modal Elenco Dettagli Visita -->
+                 
+        <script>
+            function closeModal(){
+                document.getElementById('modalePrescrizioni').style.display = 'none';
+                document.getElementById('backdropPrescrizioni').style.display = 'none';
+            }
+        </script>
+
+        {% if elencoPrescrizioni %}
+            <div class="backdropModalePrescrizioni" id="backdropPrescrizioni"></div>
+            
+            <div class="ModalPrescrizione" id="modalePrescrizioni">
+                <div class="title-container">
+                    <H3>Dettagli visita del {{ visita.data_visita }}</H3>
+                    <button onclick="closeModal()" class="close">X</button>
+                </div>
+
+                <div class="prescrizioniTable-header">
+                    <p>ID Esame</p>
+                    <p>Descrizione Esame</p>
+                    <p>Metodica</p>
+                    <p>Codice Asl</p>
+                    <p>Codice Reg</p>
+                    <p id="last">Apparato / Sistema</p>
+                </div>
+                
+                <div class="ModalPrescrizioni-content">
+                   
+                    <div class="table-content">
+                        {% for codice_esame, dettagli in elencoPrescrizioni.items %}
+                            <div class="prescrizoniRow">
+                                <p>{{ codice_esame }}</p>
+                                <p>{{ dettagli.DESCRIZIONE_ESAME }}</p>
+                                <p>{{ dettagli.METODICA }}</p>
+                                <p>{{ dettagli.COD_ASL }}</p>
+                                <p>{{ dettagli.COD_REG }}</p>
+                                <p id="last">{{ dettagli.APPARATO_or_I_SISTEMI|slice:":20" }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                </div>
+            </div>    
+        {% endif %}
+
+        {% if lista_nomi_esami %}
+            {% for esame in lista_nomi_esami %}
+            <input type="hidden" name="" id="" value="{{lista_nomi_esami}}">
+            {% endfor %}
+        {% endif %}
+
         <div class="contenitore-tabella" style="margin-top: 0; ">
+
             <div class="recent-patients" id="card-style">
 
                 <div class="contenitore-header">
@@ -378,38 +430,41 @@
 
                 </div>
 
+                
                 <div class="table-container">
                     <div class="table-header">
-                        <p>Codice univoco esame piattaforma</p>
-                        <p>Descrizione Esame</p>
-                        <p>Cod ASL</p>
-                        <p>Cod REG</p>
-                        <p>Metodica</p>
-                        <p>Apparato\i Sistemi</p>
-                        <p>Visualizza Prescrizione</p>
+                        <p>Id Visita</p>
+                        <p>Data Visita</p>
+                        <p>Visualizza Dettagli</p>
+                        <p>Scarica Prescrizione</p>
                     </div>
                     <div class="table-content prescriptions">
 
-                        {% for esami in esamiPrescritti %}
+                        {% for visite in visite %}
                             <div class="riga-container">
-                                <p>{{ esami.CODICE_UNIVOCO_ESAME_PIATTAFORMA }}</p>
-                                <p>{{ esami.DESCRIZIONE_ESAME }}</p>
-                                <p>{{ esami.COD_ASL }}</p>
-                                <p>{{ esami.COD_REG }}</p>
-                                <p>{{ esami.METODICA }}</p>
-                                <p style="padding:10px; text-align: center;">{{ esami.APPARATO_or_I_SISTEMI|slice:":40" }}</p>
+                                <p>{{ visite.id }}</p>
+                                <p>{{ visite.data_visita }}</p>
+                            
                                 <p>
-                                    <button class="generatePDFButton" id="btnTabellaPrescrizioni"
+                                    <a href="{% url 'dettagli_prescrizioni' persona.id visite.id %}">
+                                        <img src="{% static 'includes/icone/referto.png' %}" alt="" />
+                                    </a>
+                                </p>
+                                <p>
+                                    <a href="{% url 'scarica_pdf' persona.id visite.id %}" 
+                                        class="generatePDFButton"
                                         data-pdf-url="{% static 'includes/pdfTemplates/prescrizioneTemplate.pdf' %}"
+                                        data-pdf-url="{% url 'scarica_pdf' persona.id visite.id %}"
                                         data-name="{{ persona.name }}"
                                         data-surname="{{ persona.surname }}"
-                                        data-nomeDottore="{{ dottore.nome }}"
-                                        data-cognomeDottore="{{ dottore.cognome }}"
-                                        data-cf="{{ persona.codice_fiscale }}"
-                                        data-nomeAnalisi = "{{ esami.DESCRIZIONE_ESAME }}">
-                                        <img src="{% static 'includes/icone/referto.png' %}" alt="Visualizza Referto" />
-                                    </button>
+                                        data-dob="{{ persona.dob }}"
+                                        data-pob="{{ persona.place_of_birth }}"
+                                        data-nomeAnalisi="{{ esame.nome }}">
+                                        <img src="{% static 'includes/icone/download.png' %}" alt="Download" />
+                                    </a>
+
                                 </p>
+                                
                             </div>
 
                             {% empty %}
@@ -417,84 +472,98 @@
                         {% endfor %}
 
                         <script>
+                            
+
                             document.addEventListener("DOMContentLoaded", function () {
-                            document.querySelectorAll(".generatePDFButton").forEach((button) => {
-                                button.addEventListener("click", async (event) => {
-                                    event.preventDefault();
+                                document.querySelectorAll(".generatePDFButton").forEach((button) => {
+                                    button.addEventListener("click", async (event) => {
+                                        event.preventDefault();
+                                    
+                                        const pdfUrl = button.getAttribute("data-pdf-url");
+                                        const logoUrl = "/static/includes/pdfTemplates/logo.png"; 
+                                        const logo2Url = "/static/includes/pdfTemplates/logo2.png";
 
-                                    // DATI PAZIENTE
-                                    const pdfUrl = button.getAttribute("data-pdf-url");
-                                    const name = button.getAttribute("data-name") || "N/A";
-                                    const surname = button.getAttribute("data-surname") || "N/A";
-                                    const dob = button.getAttribute("data-dob") || "N/A";
-                                    const cf = button.getAttribute("data-cf") || "N/A";
-
-                                    // DATI DOTTORE
-                                    const nomeDottore = button.getAttribute("data-nomeDottore") || "N/A";
-                                    const cognomeDottore = button.getAttribute("data-cognomeDottore") || "N/A";
-
-                                    // DATI ESAME
-                                    const nomeEsame = button.getAttribute("data-nomeAnalisi") || "N/A";
-
-                                    if (!pdfUrl || pdfUrl === "#") {
-                                        console.error("Nessun URL PDF specificato!");
-                                        return;
-                                    }
-
-                                    try {
+                                        const name = button.getAttribute("data-name") || "N/A";
+                                        const surname = button.getAttribute("data-surname") || "N/A";
+                                        const dob = button.getAttribute("data-dob") || "N/A";
+                                        const pob = button.getAttribute("data-pob") || "N/A";
                                       
-                                        const { PDFDocument, rgb } = PDFLib;
+                                        const nomeEsame = button.getAttribute("data-nomeAnalisi") || "N/A";
 
-                                
-                                        const existingPdfBytes = await fetch(pdfUrl).then((res) => res.arrayBuffer());
-                                        const pdfDoc = await PDFDocument.load(existingPdfBytes);
-                                        const pages = pdfDoc.getPages();
-                                        const firstPage = pages[0]; 
+                                        const fileName = `${surname.toUpperCase()}_${name.toUpperCase()}_Prescrizione.pdf`;
 
-                                        // TITOLO
-                                        firstPage.drawText(`PRESCRIZIONE ESAMI`, {x: 80, y: 780, size: 12, color: rgb(106 / 255, 45 / 255, 204 / 255) });
+                                        if (!pdfUrl) {
+                                            console.error("Nessun URL PDF specificato!");
+                                            return;
+                                        }
 
-                                        // DATI PAZIENTE
-                                        firstPage.drawText(`Dati Paziente`, { x: 80, y: 720, size: 12, color: rgb(106 / 255, 45 / 255, 204 / 255) });
-                                        firstPage.drawText(`Nome: ${name}`, { x: 80, y: 700, size: 12, color: rgb(0, 0, 0) });
-                                        firstPage.drawText(`Cognome: ${surname}`, { x: 80, y: 680, size: 12, color: rgb(0, 0, 0) });
-                                        firstPage.drawText(`Codice Fiscale: ${cf}`, { x: 80, y: 660, size: 12, color: rgb(0, 0, 0) });
+                                        try {
+                                            const existingPdfBytes = await fetch(pdfUrl).then((res) => res.arrayBuffer());
+                                            const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+                                            const pages = pdfDoc.getPages();
+                                            const firstPage = pages[0];
+
+                                            const logoImageBytes = await fetch(logoUrl).then(res => res.arrayBuffer());
+                                            const logo2ImageBytes = await fetch(logo2Url).then(res => res.arrayBuffer());
+
+                                            const logoImage = await pdfDoc.embedPng(logoImageBytes);
+                                            const logo2Image = await pdfDoc.embedPng(logo2ImageBytes);
+
+                                            // Immagini Posizione
+                                            firstPage.drawImage(logoImage, {x: 180, y: 20, width: 250, height: 100 });
+                                            firstPage.drawImage(logo2Image, { x: 190, y: 730, width: 200, height: 100});
+
+                                            const pageWidth = firstPage.getWidth();
+                                            const marginRight = 50;  
+                                            const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+                                            const fontSize = 12;
+
+                                            const alignRight = (text, y) => {
+                                                const textWidth = font.widthOfTextAtSize(text, fontSize);
+                                                const xPosition = pageWidth - textWidth - marginRight;
+                                                firstPage.drawText(text, { x: xPosition, y: y, size: fontSize, font: font });
+                                            };
+
+                                            alignRight(`Sig.ra/Sig. ${name} ${surname}`, 640);
+                                            alignRight(`Città di nascita: ${pob}`, 615);
+                                            alignRight(`Data di nascita: ${dob}`, 590);
+
+                                            firstPage.drawImage("Si prescrivono i seguenti esami:", {x: 50, y: 500});
+                                            
 
 
-                                        // DATI DOTTORE
-                                        firstPage.drawText(`Dati Dottore`, { x: 80, y: 600, size: 12, color: rgb(106 / 255, 45 / 255, 204 / 255) });
-                                        firstPage.drawText(`Nome Dottore: ${nomeDottore}`, { x: 80, y: 580, size: 12, color: rgb(0, 0, 0) });
-                                        firstPage.drawText(`Cognome Dottore: ${cognomeDottore}`, { x: 80, y: 560, size: 12, color: rgb(0, 0, 0) });
 
-                                        // DATI ESAME
-                                        firstPage.drawText(`Esame Prescritto`, { x: 80, y: 500, size: 12, color: rgb(106 / 255, 45 / 255, 204 / 255) });
-                                        firstPage.drawText(`Nome Esame: ${nomeEsame}`, { x: 80, y: 480, size: 12, color: rgb(0, 0, 0) });
-                                      
-                                        // DATA PRESCRIZIONE
-                                        firstPage.drawText(`DATA`, { x: 400, y: 720, size: 12, color: rgb(106 / 255, 45 / 255, 204 / 255) });
-                                
-                                        // Generiamo il nuovo PDF con i dati modificati
-                                        const modifiedPdfBytes = await pdfDoc.save();
-                                        const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
 
-                                        // Creiamo un link per scaricare il PDF
-                                        const link = document.createElement("a");
-                                        link.href = URL.createObjectURL(blob);
-                                        link.download = `${surname.toUpperCase()}_${name.toUpperCase()}_Prescrizione.pdf`;
-                                        link.click();
 
-                                    } catch (error) {
-                                        console.error("Errore nella generazione del PDF:", error);
-                                    }
+                                            const modifiedPdfBytes = await pdfDoc.save();
+                                            const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
+
+                                            const link = document.createElement("a");
+                                            link.href = URL.createObjectURL(blob);
+                                            link.download = fileName;
+                                            link.click();
+
+                                        } catch (error) {
+                                            console.error("Errore nella generazione del PDF:", error);
+                                        }
+                                    });
                                 });
                             });
-                        });
+
+                            
 
                         </script>
 
-                    </div>
-                </div>
+
+                        
+
+
+                    </div>          
+                </div>            
             </div>
+
+            
+
         </div>
 
         <!-- TABELLA REFERTI -->
@@ -731,6 +800,16 @@
         console.log("ID Persona: {{ persona.id }}")
     </script>
     
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var table = document.getElementById("ScrollRender");
+            if (table) {
+                table.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        });
+    </script>
+    
+
     <script src="{% static 'includes/js/cartellaPaziente.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
