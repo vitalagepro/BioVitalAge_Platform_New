@@ -39,6 +39,17 @@ class TabellaPazienti(models.Model):
     lastVisit = models.DateField(null=True, blank=True)
     upcomingVisit = models.DateField(null=True, blank=True)
 
+    # Dati Composizione corporea
+    grasso = models.CharField(max_length=100, null=True, blank=True)
+    acqua = models.CharField(max_length=100, null=True, blank=True)
+    massa_muscolare = models.CharField(max_length=100, null=True, blank=True)
+    massa_ossea = models.CharField(max_length=100, null=True, blank=True)
+    bmr = models.CharField(max_length=100, null=True, blank=True)
+    eta_metabolica = models.CharField(max_length=100, null=True, blank=True)
+    grasso_viscerale = models.CharField(max_length=100, null=True, blank=True)
+    whr = models.CharField(max_length=100, null=True, blank=True)
+    whtr = models.CharField(max_length=100, null=True, blank=True)
+    punteggio_fisico = models.CharField(max_length=100, null=True, blank=True)
 
     # Dati antropometrici
     height = models.FloatField(help_text="Height in cm", null=True) 

@@ -1581,7 +1581,7 @@ def dettaglio_paziente(request, id):
     return render(request, 'nome_del_tuo_template.html', context)
 
 
-
+# Funzione per aggiornare i dati di una persona in cartella paziente
 @csrf_exempt  # Rimuovilo in produzione se non necessario
 def update_persona_contact(request, id):
     if request.method == "POST":
@@ -1619,6 +1619,88 @@ def update_persona_contact(request, id):
         return JsonResponse({"success": False, "error": "Metodo non valido"})
 
 
+# Funzione per aggiornare i dati di una persona in composizione corpo
+@csrf_exempt  # Rimuovilo in produzione se non necessario
+def update_persona_composizione(request, id):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            # Recupera la persona dal database
+            persona = TabellaPazienti.objects.get(id=id)
+
+            # Aggiorna solo i campi che sono stati inviati nella richiesta
+            campi_da_aggiornare = []
+
+            if "weight" in data:
+                persona.weight = data["weight"]
+                campi_da_aggiornare.append("weight")
+            if "bmi" in data:
+                persona.bmi = data["bmi"]
+                campi_da_aggiornare.append("bmi")
+            if "bmi_detection_date" in data:
+                persona.bmi_detection_date = data["bmi_detection_date"] or None
+                campi_da_aggiornare.append("bmi_detection_date")
+            if "girth_value" in data:
+                persona.girth_value = data["girth_value"]
+                campi_da_aggiornare.append("girth_value")
+            if "girth_notes" in data:
+                persona.girth_notes = data["girth_notes"]
+                campi_da_aggiornare.append("girth_notes")
+            if "girth_date" in data:
+                persona.girth_date = data["girth_date"] or None
+                campi_da_aggiornare.append("girth_date")
+            if "sport_frequency" in data:
+                persona.sport_frequency = data["sport_frequency"]
+                campi_da_aggiornare.append("sport_frequency")
+            if "livello_sedentarieta" in data:
+                persona.livello_sedentarieta = data["livello_sedentarieta"]
+                campi_da_aggiornare.append("livello_sedentarieta")
+            if "grasso" in data:
+                persona.grasso = data["grasso"]
+                campi_da_aggiornare.append("grasso")
+            if "acqua" in data:
+                persona.acqua = data["acqua"]
+                campi_da_aggiornare.append("acqua")
+            if "massa_ossea" in data:
+                persona.massa_ossea = data["massa_ossea"]
+                campi_da_aggiornare.append("massa_ossea")
+            if "massa_muscolare" in data:
+                persona.massa_muscolare = data["massa_muscolare"]
+                campi_da_aggiornare.append("massa_muscolare")
+            if "bmr" in data:
+                persona.bmr = data["bmr"]
+                campi_da_aggiornare.append("bmr")
+            if "eta_metabolica" in data:
+                persona.eta_metabolica = data["eta_metabolica"]
+                campi_da_aggiornare.append("eta_metabolica")
+            if "grasso_viscerale" in data:
+                persona.grasso_viscerale = data["grasso_viscerale"]
+                campi_da_aggiornare.append("grasso_viscerale")
+            if "whr" in data:
+                persona.whr = data["whr"]
+                campi_da_aggiornare.append("whr")
+            if "whtr" in data:
+                persona.whtr = data["whtr"]
+                campi_da_aggiornare.append("whtr")
+            if "punteggio_fisico" in data:
+                persona.punteggio_fisico = data["punteggio_fisico"]
+                campi_da_aggiornare.append("punteggio_fisico")
+
+            # Salva solo i campi aggiornati
+            if campi_da_aggiornare:
+                persona.save(update_fields=campi_da_aggiornare)
+
+            return JsonResponse({"success": True})
+        
+        except TabellaPazienti.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Persona non trovata"})
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "JSON non valido"})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+    else:
+        return JsonResponse({"success": False, "error": "Metodo non valido"})
 
 class EtaVitaleView(View):
 
