@@ -444,3 +444,7 @@ document.getElementById("btnPdfGeneralPrescrizioni").addEventListener("click", f
   document.getElementById("codiciEsamiInput").value = JSON.stringify(codiceEsami);
   document.getElementById("saveForm").submit();
 });
+
+
+
+

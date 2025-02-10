@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
   --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
   const tables = document.querySelectorAll(".table-content");
-  const paginationContainer = document.getElementById('pagination_download');
 
 
   tables.forEach((table) => {
@@ -138,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
           controls.appendChild(lastPageBtn);
         }
 
-        paginationContainer.appendChild(controls);
+        tables.appendChild(controls);
       }
     }
 
@@ -565,7 +564,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 /* FUNZIONE SCARICA PDF PRESCRIZIONE */
-document.addEventListener("DOMContentLoaded", function () {
+/* document.addEventListener("DOMContentLoaded", function () {
   const pdfButtons = document.querySelectorAll(".generatePDFButton");
   const modal = document.getElementById("pdfDisclaimerModal");
   const closeBtn = document.getElementById("closeDisclaimerBtn");
@@ -596,5 +595,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+ */
 
 
