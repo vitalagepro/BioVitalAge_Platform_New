@@ -48,7 +48,7 @@
             <div class="back-tittle">
                 <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}"
                         alt=""></a>
-                <h2 class="main-welcome-title">Cartella Paziente, {{ persona.name }} {{ persona.surname }}</h2>
+                <h2 class="main-welcome-title">{{ persona.name }} {{ persona.surname }}</h2>
             </div>
 
             <div class="main-menu-trace">
@@ -84,6 +84,22 @@
                         <svg class="svg" viewBox="0 0 512 512">
                           <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path></svg>
                     </a>
+
+                    <button type="button" class="button button-view-all">
+                        <span class="button__icon-wrapper">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+                                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"></path>
+                            </svg>
+                    
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
+                                class="button__icon-svg button__icon-svg--copy">
+                                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                        Mostra di più
+                    </button>
                 </div>
             </div>
 
@@ -222,15 +238,15 @@
 
              
                 <div class="cartella-effect">
-                    <h3>Dati Base Paziente</h3>
+                    <h3>Dati Base - Stile di Vita Paziente</h3>
                     <div class="space"></div>
                 </div>
 
 
                 <div class="card-content">
                     <img src="{% static 'includes/images/datiBase3.png' %}" alt="">
-                    <p>In questa sezione sono elencati tutti i dati base del paziente ovvero: Anagraphic Data,
-                        Anthropometric basic data, abdominal girth, Life Syle (alchol, smoking, sport, sedentarietà).
+                    <p> In questa sezione è possibile inserire informazioni inerenti le abitudini e lo stile di vita del paziente (fumo,
+                        alcol, attività fisica).
                     </p>
                     <a href="{% url 'dati_base' persona.id %}">Vai alla sezione</a>
                 </div>
@@ -244,8 +260,8 @@
                 </div>
                 <div class="card-content">
                     <img src="{% static 'includes/images/corporazione.png' %}" alt="">
-                    <p>In questa sezione sono presenti le analisi della composizione corporea e tutti i valori del
-                        paziente inerenti le analisi.</p>
+                    <p>In questa sezione è possibile inserire informazioni inerenti la composizione corporea del paziente, per una
+                        valutazione del suo stato di salute fisica.</p>
                     <a href="{% url 'composizione' persona.id %}">Vai alla sezione</a>
                 </div>
             </div>
@@ -263,10 +279,8 @@
 
                 <div class="card-content">
                     <img src="{% static 'includes/images/etaVitale.webp' %}" alt="">
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
-                        Consequatur quis possimus molestias beatae expedita! 
-                        Fugiat ducimus adipisci nemo, dolores doloribus deserunt
-                         pariatur cumque nostrum sed quis nihil dicta ipsum expedita?
+                    <p>In questa sezione è possibile calcolare un punteggio relativo alla capacità vitale del paziente, sulla base delle
+                        informazioni ricavate mediante questionari e prove fisiche.
                     </p>
                     <a href="{% url 'etaVitale' persona.id %}">Vai alla sezione</a>
                 </div>

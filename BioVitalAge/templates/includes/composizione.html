@@ -146,7 +146,56 @@
         </div>
 
         <div class="container-btn">
-            <button class="button-style" id="genereReport">Genera pdf referto</button>
+            <button class="button" id="genereReport" data-referto-id="{{ referto.id }}" data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
+                <span class="button__icon-wrapper">
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    width="18"
+                    class="button__icon-svg"
+                    >
+                    <path
+                        d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    ></path>
+                    <path
+                        d="M14 2V6H18"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    ></path>
+                    </svg>
+                    
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    width="18"
+                    class="button__icon-svg button__icon-svg--copy"
+                    >
+                    <path
+                        d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    ></path>
+                    <path
+                        d="M14 2V6H18"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    ></path>
+                    </svg>
+                </span>
+                Genera PDF referto       
+            </button>
         </div>
     </main>
 

@@ -56,6 +56,10 @@
   width: 100%;
 }
 
+.hidden-row-grid{
+  grid-template-columns: repeat(3, 1fr);
+}
+
 .other_container {
   display: flex;
   justify-content: space-between;
@@ -75,6 +79,11 @@
   justify-content: flex-end;
   align-items: center;
   gap: 5px;
+}
+
+.flex-hidden-grid{
+  justify-content: flex-start !important;
+  margin-left: 25px !important;
 }
 
 .card-subcard {
@@ -632,6 +641,12 @@
   cursor: pointer;
   border-radius: 10px;
   transition-duration: .3s;
+}
+
+.button-view-all{
+  padding: 0.48rem 1.4rem;
+  width: max-content;
+  border-radius: 10px;
 }
 
 .svg {

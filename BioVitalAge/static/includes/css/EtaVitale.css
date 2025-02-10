@@ -89,6 +89,13 @@
     margin-bottom: 20px;
 }
 
+.container-button-submit{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 20px;
+    margin: 20px 0px;
+}
 
 
 /* TABELLA REFERTI VITALE */
