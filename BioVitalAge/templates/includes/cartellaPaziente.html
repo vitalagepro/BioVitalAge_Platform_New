@@ -289,15 +289,15 @@
 
             <div class="cardDati">
                 <div class="cartella-effect">
-                    <h3>Rapporto sull'esame del sangue</h3>
+                    <h3>Referti Età Biologica</h3>
                     <div class="space"></div>
                 </div>
                 <div class="card-content">
                     <img src="{% static 'includes/icone/analisi.png' %}" alt="">
-                    <p style="top: 4rem;">Referto Analisi del sangue</p>
-                    <p style="top: 6rem;"><strong>Ultima analisi:</strong> &nbsp; 15/09/2000 </p>
-                    <a href="" style="top: 10rem;" id="adjust">Aggiorna Referto</a>
-                    <a href="">Scarica Referto</a>
+                    <p style="top: 4rem;">Referto Età Biologica</p>
+                    <p style="top: 6rem;"><strong>Ultimo Referto:</strong> &nbsp; {{ ultimo_referto.data_referto }} </p>
+                    <a href="" style="top: 10rem;" id="adjust">Vai ai referti</a>
+                    <a href="{% url 'Calcolatore' %}?parametro={{ persona.codice_fiscale|urlencode }}">Calcola Età Biologica</a>
                 </div>
             </div>
         </div>

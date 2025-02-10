@@ -412,6 +412,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+/*  -----------------------------------------------------------------------------------------------
+    CLOCK
+--------------------------------------------------------------------------------------------------- */
 // Access to :root style css
 const rootStyles = getComputedStyle(document.documentElement);
 

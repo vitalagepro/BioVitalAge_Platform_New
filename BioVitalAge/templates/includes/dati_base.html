@@ -104,85 +104,6 @@
       </section>
 
       <section class="container_data table_data">
-        <h3 style="margin-bottom: -20px;">Dati Base</h3>
-
-        <form id="datiBaseForm" action="" method="POST">
-          {% csrf_token %}
-          <div class="table-title-tools">
-            <p class="table-title">Dati antropometrici</p>
-            
-            <!-- Menu Tools con effetto translate e opacity -->
-             <div class="container-menu">
-               <div class="tools-menu-button" id="menu-1">
-                   <button class="tools-table" type="button" onclick="closeMenuTools('menu-1')" class="close-menu" style="margin-right: 20px;">
-                       <img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi">
-                   </button>
-                   <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
-                   <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
-                   <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
-               </div>
-           
-               <!-- Bottone per aprire il menu con animazione -->
-               <button title="Apri Menu" type="button" class="tools-table" class="open-menu" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-1') : openMenuTools('menu-1')">
-                   <img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu">
-               </button>
-             </div>
-          </div>
-      
-          <div class="table-container">
-              <div class="table-header">
-                  <p>Altezza</p>
-                  <p>Peso</p>
-                  <p>BMI</p>
-                  <p>Data di rilevamento del BMI</p>
-              </div>
-      
-              <div class="table-content">
-                <div class="riga-container">
-                  <p><input name="height" type="text" value="{{ persona.height }}" disabled></p>
-                  <p><input name="weight" type="text" value="{{ persona.weight }}" disabled></p>
-                  <p><input name="bmi" type="text" value="{{ persona.bmi }}" disabled></p>
-                  <p><input name="bmi_detection_date" type="date" value="{{ persona.bmi_detection_date|date:'Y-m-d' }}" disabled></p>
-                  <input type="hidden" name="form_id" value="datiBaseForm1">
-                </div>
-              </div>
-          </div> 
-        </form>
-     
-        <form id="datiBaseForm1" method="POST">
-          {% csrf_token %}
-          <div class="table-title-tools">
-            <p class="table-title">Circonferenza addominale</p>
-            <div class="container-menu">
-              <div class="tools-menu-button" id="menu-2">
-                <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-2')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
-                <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
-                <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
-                <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
-              </div>
-  
-              <button title="Apri Menu" type="button" class="tools-table" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-2') : openMenuTools('menu-2')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
-            </div>
-          </div>
-
-            <div class="table-container">
-              <div class="table-header">
-                <p>Circonferenza</p>
-                <p>Data di misurazione</p>
-                <p>Note</p>
-              </div>
-            
-              <div class="table-content">
-                <div class="riga-container">
-                  <p> <input name="girth_value" type="text" value="{{ persona.girth_value }}" disabled> </p>
-                  <p> <input name="girth_date" type="date" value="{{ persona.girth_date|date:'Y-m-d' }}" disabled> </p>
-                  <p> <input name="girth_notes" type="text" value="{{ persona.girth_notes }}" disabled> </p>
-                  <input type="hidden" name="form_id" value="datiBaseForm2">
-                </div>
-            
-              </div>
-            </div>
-        </form>
         <h3 style="margin-top: 20px; margin-bottom: -20px;">Stile di vita</h3>
   
         <form id="datiBaseForm2" method="POST">
@@ -211,7 +132,7 @@
             
               <div class="table-content">
                 <div class="riga-container">
-                  <p> <input name="alcol" type="text" value="{{ persona.alcol|default:'N/A' }}" disabled> </p>
+                  <p> <input name="alcol" type="text" value="{{ persona.alcol|default:'N/A' }} cc" disabled> </p>
                   <p> <input name="alcol_type" type="text" value="{{ persona.alcol_type|default:'N/A' }}" disabled> </p>
                   <p> <input name="data_alcol" type="date" value="{{ persona.data_alcol|date:'Y-m-d'|default:'N/A' }}" disabled> </p>
                   <p> <input name="alcol_frequency" type="text" value="{{ persona.alcol_frequency|default:'N/A' }}" disabled> </p>
