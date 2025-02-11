@@ -1,23 +1,4 @@
 /*  -----------------------------------------------------------------------------------------------
-  Modal User
---------------------------------------------------------------------------------------------------- */
-const userImg = document.getElementById("userImg");
-const userModal = document.getElementById("userModal");
-const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
-
-function showModal() {
-  userModal.classList.add("show");
-}
-
-userImg.addEventListener("mouseover", showModal);
-
-userModal.addEventListener("mouseout", () => {
-  userModal.classList.remove("show");
-});
-
-userModalBtn.addEventListener("mouseover", showModal);
-
-/*  -----------------------------------------------------------------------------------------------
   JS SIDEBAR
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
@@ -306,18 +287,18 @@ new Chart(ctx1, {
   type: "bar",
   data: {
     labels: [
-      "Jan",
+      "Gen",
       "Feb",
       "Mar",
       "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
+      "Mag",
+      "Giu",
+      "Lug",
+      "Ago",
+      "Set",
+      "Ott",
       "Nov",
-      "Dec",
+      "Dic",
     ],
     datasets: [
       {
@@ -373,29 +354,29 @@ new Chart(ctx2, {
   type: "line",
   data: {
     labels: [
-      "Jan",
+      "Gen",
       "Feb",
       "Mar",
       "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
+      "Mag",
+      "Giu",
+      "Lug",
+      "Ago",
+      "Set",
+      "Ott",
       "Nov",
-      "Dec",
+      "Dic",
     ],
     datasets: [
       {
-        label: "New",
+        label: "Nuovo",
         data: [50, 60, 55, 70, 75, 80, 90, 85, 95, 100, 105, 110],
         borderColor: "#6a2dcc",
         backgroundColor: "#3b255d2c",
         fill: true,
       },
       {
-        label: "Return",
+        label: "Ritorno",
         data: [30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85],
         borderColor: "#9666e4",
         backgroundColor: "#c3b0ec",
@@ -429,37 +410,38 @@ new Chart(ctx3, {
   type: "bar",
   data: {
     labels: [
-      "Jan",
+      "Gen",
       "Feb",
       "Mar",
       "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
+      "Mag",
+      "Giu",
+      "Lug",
+      "Ago",
+      "Set",
+      "Ott",
       "Nov",
-      "Dec",
+      "Dic",
     ],
+
     datasets: [
       {
-        label: "Neurology",
+        label: "Neurologia",
         data: [10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32],
         backgroundColor: "#6a2dcc",
       },
       {
-        label: "Dental Care",
+        label: "Cura dei denti",
         data: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
         backgroundColor: "#8041e0",
       },
       {
-        label: "Gynecology",
+        label: "Ginecologia",
         data: [8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30],
         backgroundColor: "#9666e4",
       },
       {
-        label: "Orthopedic",
+        label: "Ortopedia",
         data: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26],
         backgroundColor: "#ad8be8",
       },

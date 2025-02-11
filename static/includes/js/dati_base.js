@@ -1,12 +1,36 @@
 /*  -----------------------------------------------------------------------------------------------
-  ! Loader
+  function to transform the first letter of a string to uppercase
 --------------------------------------------------------------------------------------------------- */
-// Funzione che imposta "opacity: 0" e "z-index: -1" dopo 3 secondi
 document.addEventListener("DOMContentLoaded", function () {
-  setTimeout(() => {
-    document.getElementById("loading-wrapper").style.opacity = "0";
-    document.getElementById("loading-wrapper").style.zIndex = "-1";
-  }, 500);
+  // Seleziona tutti gli elementi con la classe 'field'
+  let fields = document.querySelectorAll(".info_container .field");
+
+  fields.forEach((field) => {
+    let label = field.querySelector("p:first-of-type"); // Prende il primo <p> (etichetta)
+    let valueP = field.querySelector("p:nth-of-type(2)"); // Prende il secondo <p> (valore)
+
+    if (label && valueP) {
+      let labelText = label.innerText.trim();
+
+      // Controlla se il campo è "Nome:" o "Cognome:"
+      if (labelText === "Nome:" || labelText === "Cognome:") {
+        let text = valueP.innerText.trim();
+        if (text.length > 0) {
+          // Converte la prima lettera in maiuscolo di ogni parola se la parola è tutta in minuscolo
+          let formattedText = text
+            .split(" ") // Divide il testo in parole
+            .map((word) =>
+              word === word.toLowerCase()
+                ? word.charAt(0).toUpperCase() + word.slice(1)
+                : word
+            ) // Se è minuscola, la corregge
+            .join(" "); // Ricompone la stringa
+
+          valueP.innerText = formattedText;
+        }
+      }
+    }
+  });
 });
 
 /*  -----------------------------------------------------------------------------------------------
@@ -339,72 +363,224 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
-
 /*  -----------------------------------------------------------------------------------------------
       ! Blood Data
   --------------------------------------------------------------------------------------------------- */
 
-const btn = document.getElementById("btn_blood_group");
-const bloodGroupInput = document.getElementById("blood_group");
-const rhInput = document.getElementById("rh");
-const bloodDataSection = document.querySelector(".blood_data");
+document.addEventListener("DOMContentLoaded", () => {
+  let modificationsExist = false;
 
-let isEditing = false;
+  const btn = document.getElementById("btn_blood_group");
+  const pressureInput = document.getElementById("pressure")
+  const heartRateInput = document.getElementById("heart_rate")
+  const bloodGroupInput = document.getElementById("blood_group");
+  const rhInput = document.getElementById("rh");
+  const bloodDataSection = document.querySelector(".blood_data");
 
-btn.addEventListener("click", function () {
-  if (!isEditing) {
-    // Abilita la modifica
-    bloodGroupInput.removeAttribute("readonly");
-    rhInput.removeAttribute("readonly");
+  let isEditing = false;
 
-    // Aggiunge la classe 'editing' per modificare il CSS
-    bloodDataSection.classList.add("editing");
+  // Abilita la modifica dei campi quando si preme il bottone
+  btn.addEventListener("click", function () {
+    if (!isEditing) {
+      bloodGroupInput.removeAttribute("readonly");
+      rhInput.removeAttribute("readonly");
+      pressureInput.removeAttribute("readonly");
+      heartRateInput.removeAttribute("readonly");
 
-    // Cambia il testo del bottone
-    btn.textContent = "Save";
-    isEditing = true;
-  } else {
-    // Disabilita la modifica e salva i valori
-    bloodGroupInput.setAttribute("readonly", true);
-    rhInput.setAttribute("readonly", true);
+      bloodDataSection.classList.add("editing");
 
-    // Rimuove la classe 'editing'
-    bloodDataSection.classList.remove("editing");
+      btn.innerHTML = `
+        <span class="button__icon-wrapper">
+          <svg
+            viewBox="0 0 14 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="button__icon-svg"
+            width="14"
+          >
+            <path
+              d="M2 2H12V13H2V2Z"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 2V6H10V2"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 9H10"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
 
-    // Recupera i valori modificati
-    const newBloodGroup = bloodGroupInput.value;
-    const newRh = rhInput.value;
+          <svg
+            viewBox="0 0 14 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="button__icon-svg button__icon-svg--copy"
+            width="14"
+          >
+            <path
+              d="M2 2H12V13H2V2Z"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 2V6H10V2"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 9H10"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+        Save
+        `;
+      isEditing = true;
+    } else {
+      // Disabilita i campi dopo la modifica
+      bloodGroupInput.setAttribute("readonly", true);
+      rhInput.setAttribute("readonly", true);
+      pressureInput.setAttribute("readonly", true);
+      heartRateInput.setAttribute("readonly", true);
 
-    // Esegui azioni di salvataggio (ad esempio localStorage o chiamate AJAX)
-    // localStorage.setItem('blood_group', newBloodGroup);
-    // localStorage.setItem('rh', newRh);
+      bloodDataSection.classList.remove("editing");
 
-    console.log("Salvataggio completato:", {
-      bloodGroup: newBloodGroup,
-      rh: newRh,
-    });
+      const newBloodGroup = bloodGroupInput.value.trim();
+      const newRh = rhInput.value.trim();
+      const newPressureInput = pressureInput.value.trim();
+      const newHeartRateInput = heartRateInput.value.trim();
 
-    // Ripristina il testo del bottone
-    btn.textContent = "Update";
-    isEditing = false;
+      // Solo se ci sono modifiche
+      if (
+        newBloodGroup !== bloodGroupInput.dataset.originalValue ||
+        newRh !== rhInput.dataset.originalValue ||
+        newPressureInput !== pressureInput.dataset.originalValue ||
+        newHeartRateInput !== heartRateInput.dataset.originalValue
+      ) {
+        modificationsExist = true;
+      }
+
+      if (modificationsExist) {
+        const patientId =
+          document.getElementById("blood_group").dataset.patientId; // Supponiamo che l'ID sia in un dataset
+
+        // Invia i dati modificati al backend Django
+        fetch(`/api/update_blood_data/${patientId}/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken(), // Recupera il CSRF token
+          },
+          body: JSON.stringify({
+            blood_group: newBloodGroup,
+            rh_factor: newRh,
+            pressure: newPressureInput,
+            heart_rate: newHeartRateInput
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              showPopup("Modifiche salvate con successo!");
+              modificationsExist = false; // Resetta lo stato
+            } else {
+              showPopup("Errore nel salvataggio.", true);
+            }
+          })
+          .catch(() => {
+            showPopup("Errore di connessione.", true);
+          });
+
+        // Memorizza il nuovo valore originale
+        bloodGroupInput.dataset.originalValue = newBloodGroup;
+        rhInput.dataset.originalValue = newRh;
+      }
+
+      btn.innerHTML = `
+          <span class="button__icon-wrapper">
+              <svg
+                viewBox="0 0 14 15"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="button__icon-svg"
+                width="14"
+              >
+                <path
+                  d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+
+              <svg
+                viewBox="0 0 14 15"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="button__icon-svg button__icon-svg--copy"
+                width="14"
+              >
+                <path
+                  d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+          </span>
+          Update
+        `;
+      isEditing = false;
+    }
+  });
+
+  // Funzione per ottenere il token CSRF dai cookie
+  function getCSRFToken() {
+    const cookieValue = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("csrftoken="))
+      ?.split("=")[1];
+    return cookieValue || "";
   }
+
+  // Funzione per mostrare popup di notifica
+  function showPopup(message, isError = false) {
+    const popup = document.createElement("div");
+    popup.textContent = message;
+    popup.style.position = "fixed";
+    popup.style.top = "80px";
+    popup.style.right = "50%";
+    popup.style.backgroundColor = isError ? "#e74c3c" : "#2ecc71";
+    popup.style.color = "white";
+    popup.style.padding = "10px 20px";
+    popup.style.borderRadius = "5px";
+    popup.style.zIndex = "1000";
+    document.body.appendChild(popup);
+
+    setTimeout(() => popup.remove(), 3000);
+  }
+
+  // Memorizza lo stato originale dei campi
+  bloodGroupInput.dataset.originalValue = bloodGroupInput.value;
+  rhInput.dataset.originalValue = rhInput.value;
 });
-
-/*  ----------------
-      User Modal
--------------------- */
-const userImg = document.getElementById("userImg");
-const userModal = document.getElementById("userModal");
-const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
-
-function showModal() {
-  userModal.classList.add("show");
-}
-
-userImg.addEventListener("mouseover", showModal);
-
-userModal.addEventListener("mouseout", () => {
-  userModal.classList.remove("show");
-});
-
-userModalBtn.addEventListener("mouseover", showModal);
