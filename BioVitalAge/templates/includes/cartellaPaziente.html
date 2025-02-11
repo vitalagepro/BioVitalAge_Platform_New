@@ -479,13 +479,16 @@
             </div>
         </div>
 
+        <script src="https://cdn.jsdelivr.net/npm/docx@7.7.0/build/index.min.js"></script>
+
+
         <script>
 
             document.addEventListener("DOMContentLoaded", function () {
                 document.querySelectorAll(".generatePDFButton").forEach((button) => {
                     button.addEventListener("click", async (event) => {
-                       /*  event.preventDefault(); */
-                    
+                        event.preventDefault();
+
                         const pdfUrl = button.getAttribute("data-pdf-url");
                         const logoUrl = "/static/includes/pdfTemplates/logo.png"; 
                         const logo2Url = "/static/includes/pdfTemplates/logo2.png";
@@ -496,6 +499,7 @@
                         const pob = button.getAttribute("data-pob") || "N/A";
 
                         const fileName = `${surname.toUpperCase()}_${name.toUpperCase()}_Prescrizione.pdf`;
+                        const wordFileName = `${surname.toUpperCase()}_${name.toUpperCase()}_Prescrizione.docx`;
 
                         if (!pdfUrl) {
                             console.error("Nessun URL PDF specificato!");
@@ -550,7 +554,6 @@
                             let yPosition = 530;  
 
                             if (esami.length > maxEsamiPerPagina) {
-                              
                                 firstPage.drawText("Vedi allegato", { x: 60, y: yPosition, size: fontSize, font: font });
 
                                 const secondPage = pdfDoc.addPage();
@@ -584,16 +587,9 @@
                             firstPage.drawText(`Bari, ${formattedDate}`, { x: 50, y: 200, size: fontSize, font: font });
 
                             const text = "Dott. Luigi Aprile:";
-
-                            // Calcola la larghezza del testo
                             const textWidth = font.widthOfTextAtSize(text, fontSize);
-
-                            // Calcola la posizione per allinearlo a destra
-                            const xPosition = pageWidth - textWidth - 50; 
-
-                            // Disegna il testo allineato a destra
+                            const xPosition = pageWidth - textWidth - 50;
                             firstPage.drawText(text, { x: xPosition, y: 150, size: fontSize, font: font });
-
 
                             // Salva il nuovo PDF
                             const modifiedPdfBytes = await pdfDoc.save();
@@ -605,6 +601,9 @@
                             link.download = fileName;
                             link.click();
 
+                            // Converti il PDF in DOCX
+                            convertPDFtoDOCX(name, surname, dob, pob, esami, wordFileName);
+
                         } catch (error) {
                             console.error("Errore nella generazione del PDF:", error);
                         }
@@ -612,6 +611,31 @@
                 });
             });
 
+            // 🔹 Funzione per convertire il PDF in DOCX
+            function convertPDFtoDOCX(name, surname, dob, pob, esami, fileName) {
+                const doc = new docx.Document({
+                    sections: [{
+                        properties: {},
+                        children: [
+                            new docx.Paragraph({ text: `Sig.ra/Sig. ${name} ${surname}`, bold: true }),
+                            new docx.Paragraph(`Città di nascita: ${pob}`),
+                            new docx.Paragraph(`Data di nascita: ${dob}`),
+                            new docx.Paragraph(""),
+                            new docx.Paragraph({ text: "Si prescrivono i seguenti esami:", bold: true }),
+                            ...esami.map(esame => new docx.Paragraph(`- ${esame}`)),
+                            new docx.Paragraph(""),
+                            new docx.Paragraph({ text: "Dott. Luigi Aprile", alignment: docx.AlignmentType.RIGHT }),
+                        ],
+                    }],
+                });
+
+                docx.Packer.toBlob(doc).then(blob => {
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = fileName;
+                    link.click();
+                });
+            }
 
         </script>
 
@@ -860,6 +884,8 @@
     
 
     <script src="{% static 'includes/js/cartellaPaziente.js' %}"></script>
+    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
