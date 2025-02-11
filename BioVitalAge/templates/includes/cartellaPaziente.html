@@ -66,7 +66,6 @@
 
         <!-- CARD PERSONAL INFORMATION -->
         <div class="container-datiPersonali containerStyle">
-
             <div class="header-card">
                 <h3>Informazioni Personali</h3>
                 
@@ -282,20 +281,21 @@
                     </p>
                     <a href="{% url 'etaVitale' persona.id %}">Vai alla sezione</a>
                 </div>
+
             </div>
 
 
-            <div class="cardDati" >
+            <div class="cardDati">
                 <div class="cartella-effect">
-                    <h3>Rapporto sull'esame del sangue</h3>
+                    <h3>Rapporto Età Biologica</h3>
                     <div class="space"></div>
                 </div>
-                <div class="card-content" >
+                <div class="card-content">
                     <img src="{% static 'includes/icone/analisi.png' %}" alt="">
-                    <p style="top: 4rem;">Referto Analisi del sangue</p>
-                    <p style="top: 6rem;"><strong>Ultima analisi:</strong> &nbsp; 15/09/2000 </p>
-                    <a href="" style="top: 10rem;" id="adjust">Aggiorna Referto</a>
-                    <a href="" id="ScrollRender">Scarica Referto</a>
+                    <p style="top: 4rem;">Referti Età Biologica</p>
+                    <p style="top: 6rem;"><strong>Ultimo Calcolo:</strong> &nbsp; {{ ultimo_referto.data_referto }} </p>
+                    <a href="{% url 'elenco_referti' persona.id %}" style="top: 10rem;" id="adjust">Vai ai referti</a>
+                    <a href="{% url 'Calcolatore' %}?parametro={{ persona.codice_fiscale|urlencode }}">Calcola Età Biologica</a>
                 </div>
             </div>
         </div>
@@ -638,79 +638,6 @@
             }
 
         </script>
-
-        <!-- TABELLA REFERTI -->
-        <div class="contenitore-tabella" style="margin-top: 0;">
-            <div class="recent-patients" id="card-style">
-                <div class="contenitore-header">
-                    <h3>Elenco referti età biologica</h3>
-                    <div class="filtri-button">
-                        <select name="filter" id="filter">
-                            <option value="name">Ordinato per data più recente</option>
-                            <option value="surname">Ordinato per data meno recente</option>
-                            <option value="fisc_code">Ordinato per valore positivo</option>
-                            <option value="personal_association">Ordinato per valore negativo</option>
-                        </select>
-                        <a href="{% url 'Calcolatore' %}?parametro={{ persona.codice_fiscale|urlencode }}" class="button">
-                            <span class="button__icon-wrapper">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
-                                    class="button__icon-svg">
-                                    <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
-                                    <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
-                                    class="button__icon-svg button__icon-svg--copy">
-                                    <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
-                                    <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                            Calcola Età Biologica
-                        </a>
-                    </div>
-                </div>
-                <div class="table-container">
-                    <div class="table-header">
-                        <p>Età Cronologica</p>
-                        <p>Età Biologica</p>
-                        <p>Valore Referto</p>
-                        <p>Data Referto</p>
-                        <p>Mostra Referto</p>
-                        <p>Scarica Referto</p>
-                    </div>
-                    <div class="table-content">
-                        {% for referto in referti_recenti %}
-                        <div class="riga-container">
-                            <p>{{ persona.chronological_age }}</p>
-                            {% for dato in dati_estesi %}
-                            {% if dato.referto.id == referto.id %}
-                            <p>{{ dato.biological_age }}</p>
-                            {% endif %}
-                            {% endfor %}
-                            <p>{{ referto.descrizione|default:"N/A" }}</p>
-                            <p>{{ referto.data_referto|date:"d/m/Y" }}</p>
-                            <p>
-                                <a href="{% url 'persona_detail' persona.id %}?referto_id={{ referto.id }}"
-                                    data-referto-id="{{ referto.id }}"
-                                    data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
-                                    <img src="{% static 'includes/icone/referto.png' %}" alt="" />
-                                </a>
-                            </p>
-                            <p>
-                                <a href="{% url 'cartella_paziente' persona.id %}">
-                                    <img src="{% static 'includes/icone/download.png' %}" alt="" />
-                                </a>
-                            </p>
-                        </div>
-                        {% empty %}
-                        <p class="text-center mb-2 mt-2">Nessun referto recente trovato.</p>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- CARD BP, SUGAR, HEART, CHOLESTEROL -->
         <div class="dashboard">

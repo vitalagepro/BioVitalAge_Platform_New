@@ -36,9 +36,6 @@ document.addEventListener("DOMContentLoaded", function () {
 /*  -----------------------------------------------------------------------------------------------
   ! Form di modifica dati base
 --------------------------------------------------------------------------------------------------- */
-/*  -----------------------------------------------------------------------------------------------
-  ! Form di modifica dati base
---------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
   let modificationsExist = false;
   const removedRows = new Map(); // Mappa per memorizzare le righe rimosse

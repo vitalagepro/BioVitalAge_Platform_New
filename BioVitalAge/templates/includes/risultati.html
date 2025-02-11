@@ -7,7 +7,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
     
-    <title>BioVitalAge - Ricerca Pazienti</title>
+    <title>BioVitalAge - Pazienti</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}" />
@@ -43,7 +43,7 @@
             <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
           </a>
           <p>»</p>
-          <p>Elenco Pazienti</p>
+          <p>Pazienti</p>
         </div>
       </div>
     
@@ -164,6 +164,7 @@
           <p>Codice Fiscale</p>
           <p>Città di nascita</p>
           <p>Età cronologica</p>
+          <p>Dottore Associato</p>
           <p>Ultimo Referto</p>
           <p>Cartella Paziente</p>
 
@@ -180,6 +181,7 @@
                   <p>{{ persona.codice_fiscale }}</p>
                   <p>{{ persona.place_of_birth }}</p>
                   <p>{{ persona.chronological_age }}</p>
+                  <p>{{ persona.associate_staff|default:'Nessun Dottore Associato' }}</p>
 
                   <p>
                       <a href="{% url 'persona_detail' persona.id %}">

@@ -63,13 +63,13 @@ class TabellaPazienti(models.Model):
     girth_date = models.DateField( null=True)
 
     # Alcol
-    alcol = models.BooleanField(default=False, null=True)
-    alcol_type = models.CharField(max_length=100, blank=True, null=True)
-    data_alcol = models.DateField(blank=True, null=True)
-    alcol_frequency = models.CharField(max_length=100, blank=True, null=True)
+    alcol = models.IntegerField(null=True, blank=True)
+    alcol_type = models.CharField(max_length=255, null=True, blank=True)
+    data_alcol = models.DateField(null=True, blank=True)
+    alcol_frequency = models.CharField(max_length=255, null=True, blank=True)
 
     # Fumo
-    smoke = models.BooleanField(default=False, null=True)
+    smoke = models.IntegerField(null=True, blank=True)
     smoke_frequency = models.CharField(max_length=100, blank=True, null=True)
     reduced_intake = models.CharField(max_length=100, blank=True, null=True)
 

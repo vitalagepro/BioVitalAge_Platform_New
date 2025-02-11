@@ -1321,7 +1321,32 @@ class CartellaPazienteView(View):
 
         return render(request, "includes/cartellaPaziente.html", context)
 
+class ElencoRefertiView(View):
+    def get(self, request, id):
+        
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        
+        #DATI REFERTI ETA' BIOLOGICA
+        referti_recenti = persona.referti.all().order_by('-data_referto')
+        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+        
+        dati_estesi_ultimo_referto = None
 
+        visite = ElencoVisitePaziente.objects.all()
+
+        context = {
+            'persona': persona,
+            'referti_recenti': referti_recenti,
+            'dati_estesi': dati_estesi,
+            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
+            'dottore' : dottore,
+            'visite': visite,
+            #'elencoPrescrizioni': elencoPrescrizioni,
+        }
+
+        return render(request, "includes/elencoReferti.html", context)
 
 
 class DatiBaseView(View):
@@ -1346,24 +1371,12 @@ class DatiBaseView(View):
             form_id = request.POST.get('form_id')
 
             # Gestione dei dati in base al form_id
-            if form_id == 'datiBaseForm1':
-                # Aggiorna i dati relativi alla prima tabella
-                persona.height = request.POST.get('height')
-                persona.weight = request.POST.get('weight')
-                persona.bmi = request.POST.get('bmi')
-                persona.bmi_detection_date = request.POST.get('bmi_detection_date')
-
-            elif form_id == 'datiBaseForm2':
-                # Aggiorna i dati relativi alla seconda tabella
-                persona.girth_value = request.POST.get('girth_value')
-                persona.girth_date = request.POST.get('girth_date')
-                persona.girth_notes = request.POST.get('girth_notes')
-
-            elif form_id == 'datiBaseForm3':
+            if form_id == 'datiBaseForm3':
                 # Aggiorna i dati relativi alla terza tabella
+                alcol_value = request.POST.get('alcol')
                 persona.alcol = request.POST.get('alcol')
                 persona.alcol_type = request.POST.get('alcol_type')
-                persona.data_alcol = request.POST.get('data_alcol')
+                persona.data_alcol = request.POST.get('data_alcol') or None
                 persona.alcol_frequency = request.POST.get('alcol_frequency')
 
             elif form_id == 'datiBaseForm4':
