@@ -43,7 +43,7 @@
         <div class="main-title-nav">
             <div class="back-tittle">
                 <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt=""></a>
-                <h2 class="main-welcome-title">Composizione Corporea, {{ persona.name }} {{ persona.surname }}</h2>
+                <h2 class="main-welcome-title">{{ persona.name }} {{ persona.surname }} - {{ persona.dob }} - {{ persona.chronological_age }} - {{ persona.codice_fiscale }} - {{ persona.phone }} - {{ persona.email }}</h2>
             </div>
            
             <div class="main-menu-trace">

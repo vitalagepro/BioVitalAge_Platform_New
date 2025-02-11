@@ -42,7 +42,7 @@
             <a href="{% url 'cartella_paziente' persona.id %}">
                 <img src="{% static 'includes/icone/arrowBack.png' %}" alt="">
             </a>
-            <h2 class="main-welcome-title">Elenco di tutti i referti</h2>
+            <h2 class="main-welcome-title">Elenco di tutti i referti di {{ persona.name }} {{ persona.surname }}</h2>
         </div>
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">

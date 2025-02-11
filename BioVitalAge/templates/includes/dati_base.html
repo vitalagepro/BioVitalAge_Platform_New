@@ -41,7 +41,7 @@
       <div class="main-title-nav">
         <div class="back-tittle">
           <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to folder"></a>
-          <h2 class="main-welcome-title">Dati Base & Stile di Vita, {{ persona.name }} {{ persona.surname }}</h2>
+          <h2 class="main-welcome-title">{{ persona.name }} {{ persona.surname }} - {{ persona.dob }} - {{ persona.chronological_age }} - {{ persona.codice_fiscale }} - {{ persona.phone }} - {{ persona.email }}</h2>
         </div>
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
@@ -53,59 +53,8 @@
           <span>Dati Base & Stile di Vita</span>
         </div>
       </div>
-
-      <section class="container_data anagraphic_data">
-        <h3>Dati Anagrafici</h3>
-        <div class="container_box">
-          <div class="info_container">
-
-              <div class="field">
-                <p>Nome:&nbsp;</p>
-                <p>{{ persona.name }}</p>
-              </div>
-
-              <div class="field">
-                <p>Cognome:&nbsp;</p>
-                <p>{{ persona.surname }}</p>
-              </div>
-
-              <div class="field">
-                <p>Codice Fiscale :&nbsp;</p>
-                <p>{{ persona.codice_fiscale }}</p>
-              </div>
-
-              <div class="field">
-                <p>Città:&nbsp;</p>
-                <p>{{ persona.place_of_birth }}</p>
-              </div>
-
-              <div class="field">
-                <p>Età:&nbsp;</p>
-                <p>{{ persona.chronological_age }}</p>
-              </div>
-
-              <div class="field">
-                <p>Data di nascita:&nbsp;</p>
-                <p>{{ persona.dob }}</p>
-              </div>
-      
-              <div class="field">
-                <p>Telefono:&nbsp;</p>
-                <p>{{ persona.phone }}</p>
-              </div>
-
-              <div class="field">
-                <p>Dottore Associato:&nbsp;</p>
-                <p>{{ persona.associate_staff }}</p>
-              </div>
-
-          </div>
-        </div>
-      </section>
-
       <section class="container_data table_data">
         <h3 style="margin-top: 20px; margin-bottom: -20px;">Stile di vita</h3>
-  
         <form id="datiBaseForm2" method="POST">
           {% csrf_token %} 
             <div class="table-title-tools">

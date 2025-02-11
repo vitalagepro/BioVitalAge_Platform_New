@@ -9,7 +9,7 @@
     <!-- Favicon -->
     <link rel="sortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
 
-    <title>Eta Bio-Vitale, {{ persona.name }}</title>
+    <title>Test Età Bio-Vitale</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}">
@@ -43,7 +43,7 @@
         <div class="main-title-nav">
             <div class="back-tittle">
                 <a id="back" href="{% url 'etaVitale' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt=""></a>
-                <h2 class="main-welcome-title">Test della capacità Vitale</h2>
+                <h2 class="main-welcome-title">{{ persona.name }} {{ persona.surname }} - {{ persona.dob }} - {{ persona.chronological_age }} - {{ persona.codice_fiscale }} - {{ persona.phone }} - {{ persona.email }}</h2>
             </div>
 
             <div class="main-menu-trace">
@@ -59,7 +59,9 @@
                     <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
                 </p>
                 <p>»</p>
-                <p>Cartella Paziente</p>
+                <p>Età Bio-Vitale</p>
+                <p>»</p>
+                <p>Test Età Bio-Vitale</p>
             </div>
         </div>
 
@@ -69,47 +71,8 @@
             <form method="POST" action="{% url 'TestetaVitale' persona.id %}"  >
                 {% csrf_token %}
                 <div id="quiz-container">
-
-                    <!-- PERSONAL INFORMATION -->
-                    <div class="question active" data-group="1">
-                        <h3>Personal Information</h3>   
-                        <p>Controlla se le informazioni personali sono corrette, se non lo sono torna nella cartella pazienti e modifica i dati</p>
-
-                        <div class="info_container">
-                            <div class="field">
-                                <p>Nome:</p>
-                                <p>{{ persona.name }}</p>
-                            </div>
-            
-                            <div class="field">
-                                <p>Cognome:</p>
-                                <p>{{ persona.surname }}</p>
-                            </div>
-            
-                            <div class="field">
-                                <p>Data di nascita:</p>
-                                <p>{{ persona.dob }}</p>
-                            </div>
-            
-                            <div class="field">
-                                <p>Età:</p>
-                                <p>{{ persona.chronological_age }}</p>
-                            </div>
-            
-                            <div class="field">
-                                <p>Codice Fiscale:</p>
-                                <p>{{ persona.codice_fiscale }}</p>
-                            </div>
-            
-                            <div class="field">
-                                <p>Città di nascita:</p>
-                                <p>{{ persona.place_of_birth }}</p>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- DOMINIO COGNITIVO -->
-                    <div class="question" data-group="2">
+                    <div class="question active" data-group="1">
                         <h2 class="fw-bolder">Dominio Cognitivo</h2>
                         <h4>Test MMSE</h4>
                         <div class="tableAnswer">
@@ -243,7 +206,7 @@
                     </div>
 
                     <!-- DOMINIO PSICOLOGICO -->
-                    <div class="question" data-group="3">
+                    <div class="question" data-group="2">
                         <h2 class="fw-bolder">Dominio Psicologico</h2>
                         <h4>Geriatric Depression Scale (GDS)</h4>
                         <div class="tableAnswer">
@@ -363,7 +326,7 @@
                         </div>  
                     </div>
 
-                    <div class="question" data-group="4">
+                    <div class="question" data-group="3">
                         <h2 class="fw-bolder">Dominio Psicologico</h2>
                         <h4>Locus of Control – Percezione del controllo sulla propria vita (8 items)</h4>
                         <div class="tableAnswer">
@@ -453,7 +416,7 @@
                     </div>
 
                     <!-- DOMINIO SENSORIALE -->
-                    <div class="question" data-group="5">
+                    <div class="question" data-group="4">
                         <h2 class="fw-bolder">Dominio Sensoriale</h2>
                         <h4>Vista Autopercepita</h4>
                         <div class="tableAnswer">
@@ -522,7 +485,7 @@
                     </div>
 
                     <!-- DOMINIO DELLA VITALITà -->
-                    <div class="question" data-group="6">
+                    <div class="question" data-group="5">
                         <h3>Dominio della Vitalità</h3>
                         <h4>Forza della presa della mano(Handgrip)</h4>
 
@@ -995,7 +958,7 @@
                         </div>
                     </div>
                     
-                    <div class="question" data-group="7">
+                    <div class="question" data-group="6">
                         <h3 class="mt-2">Dominio della Vitalità</h3>
                         <h4>Indice di massa corporea(BMI)</h4>
                         <!-- BMI -->
@@ -1083,7 +1046,7 @@
                     </div>
 
                     <!-- DOMINIO DELLA LOCOMOZIONE -->
-                    <div class="question" data-group="8">
+                    <div class="question" data-group="7">
                         <h3>Dominio della Locomozione</h3>
                         
                         <h4>Test di alzata da sedia (Chair Stand Test)</h4>
@@ -1163,7 +1126,7 @@
                     </div>
 
                     <!-- SISTEMA IMMUNITARIO -->
-                    <div class="question" data-group="9">
+                    <div class="question" data-group="8">
                         <h3>Sistema Immunitario</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
@@ -1242,7 +1205,7 @@
                     </div>
 
                     <!-- BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE -->
-                    <div class="question" data-group="10">
+                    <div class="question" data-group="9">
                         <h3>Biomarcatori Circolanti dell'infiammazione</h3>
                         <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
 
@@ -1370,7 +1333,7 @@
                     </div>
 
                     <!-- ENERGIA E METABOLISMO -->
-                    <div class="question" data-group="11">
+                    <div class="question" data-group="10">
                         <h3>Energia e Metabolismo</h3>
                         <p style="margin-top: 0rem;">Questionario sulla stanchezza percepita (Fatigue Severity Scale)</p>
                         
@@ -1480,7 +1443,7 @@
                         </div>  
                     </div>
 
-                    <div class="question" data-group="12">
+                    <div class="question" data-group="11">
                         <h3>Energia e Metabolismo</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header" style="height: 4rem;">
@@ -1556,7 +1519,7 @@
                     </div>
       
                     <!-- BIOMARCATORI CIRCOLANTI DEL METABOLISMO -->
-                    <div class="question" data-group="13">
+                    <div class="question" data-group="12">
                         <h3>Biomarcatori Circolanti del Metabolismo</h3>
                         <p>Controlla se tutti i campi sono inseriti correttamente e che i valori siano corretti</p>
 
@@ -1752,7 +1715,7 @@
                     </div>
 
                     <!-- FUNZIONE NEUROMUSCOLARE -->
-                    <div class="question" data-group="14">
+                    <div class="question" data-group="13">
                         <h3>Funzione Neuromuscolare</h3>
                         <p style="margin-top: 0rem;">Questionario Sarcopenia</p>
                         
@@ -1802,7 +1765,7 @@
                         </div>  
                     </div>
 
-                    <div class="question" data-group="15">
+                    <div class="question" data-group="14">
                         <h3>Funzione Neuromuscolare</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
@@ -1830,7 +1793,7 @@
                     </div>
 
                     <!-- PERFORMANCE FISICA -->
-                    <div class="question" data-group="16">
+                    <div class="question" data-group="15">
                         <h3>Performance Fisica</h3>                        
                         <div class="tableAnswer">
                             <div class="tableAnswer-header">
@@ -1932,7 +1895,7 @@
                     </div>
 
                     <div id="pagination">
-
+                        
                     </div>
 
                     <button class="button button--submit" id="submit-btn" type="submit" disabled>

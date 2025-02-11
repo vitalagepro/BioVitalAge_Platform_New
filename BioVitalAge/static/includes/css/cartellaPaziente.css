@@ -20,7 +20,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
 }
 .header-card h3 {
   color: var(--contrast-color);
@@ -43,21 +42,26 @@
   justify-content: space-between;
   border: 1px solid #ddd;
   padding: 20px;
+  margin-top: 20px;
   border-radius: 8px;
   gap: 10px;
+  transition: all 0.3s ease-in-out;
 }
 
 .info_container {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(1, 1fr);
   gap: 15px;
   row-gap: 5px;
   width: 100%;
 }
 
 .hidden-row-grid{
-  grid-template-columns: repeat(3, 1fr);
+  border: none;
+  height: 0 !important;
+  padding: 0 !important;
+  margin-top: 0 !important;
 }
 
 .other_container {

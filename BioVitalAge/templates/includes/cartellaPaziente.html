@@ -9,7 +9,7 @@
     <!-- Favicon -->
     <link rel="sortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
 
-    <title>Cartella Paziente, {{ persona.name }}</title>
+    <title>Cartella Paziente</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}">
@@ -40,15 +40,12 @@
     <!-- NAVBAR -->
     {% include 'components/navBar.html' %}
 
-
     <main>
-
         <!-- MENU TRACE -->
         <div class="main-title-nav">
             <div class="back-tittle">
-                <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}"
-                        alt=""></a>
-                <h2 class="main-welcome-title">{{ persona.name }} {{ persona.surname }}</h2>
+                <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" ></a>
+                <h2 class="main-welcome-title">{{ persona.name }} {{ persona.surname }} - {{ persona.dob }} - {{ persona.chronological_age }} - {{ persona.codice_fiscale }} - {{ persona.phone }} - {{ persona.email }}</h2>
             </div>
 
             <div class="main-menu-trace">
@@ -62,13 +59,14 @@
                 <p>»</p>
                 <p>Cartella Paziente</p>
             </div>
+ 
         </div>
 
         <!-- CARD PERSONAL INFORMATION -->
         <div class="container-datiPersonali containerStyle">
             <div class="header-card">
                 <h3>Informazioni Personali</h3>
-                
+ 
                 <div class="button-grid">
 
                     <a href="#"><img src="{% static 'includes/icone/note.png' %}" alt="Note" title="Note"></a>
@@ -89,12 +87,13 @@
                                 <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round"></path>
                             </svg>
-                    
+
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
                                 class="button__icon-svg button__icon-svg--copy">
                                 <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round"></path>
                             </svg>
+
                         </span>
                         Mostra di più
                     </button>
@@ -104,31 +103,6 @@
             <div class="container_box">
 
                 <div class="info_container">
-                    <div class="field">
-                        <p>Nome:</p>
-                        <p>{{ persona.name }}</p>
-                    </div>
-
-                    <div class="field">
-                        <p>Cognome:</p>
-                        <p>{{ persona.surname }}</p>
-                    </div>
-
-                    <div class="field">
-                        <p>Data di nascita:</p>
-                        <p>{{ persona.dob }}</p>
-                    </div>
-
-                    <div class="field">
-                        <p>Età:</p>
-                        <p>{{ persona.chronological_age }}</p>
-                    </div>
-
-                    <div class="field">
-                        <p>Codice Fiscale:</p>
-                        <p>{{ persona.codice_fiscale }}</p>
-                    </div>
-
                     <div class="field">
                         <p>Città di nascita:</p>
                         <p>{{ persona.place_of_birth }}</p>

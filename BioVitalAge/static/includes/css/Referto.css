@@ -257,17 +257,10 @@ span {
 
 .container_data {
   display: flex;
+  visibility: hidden;
+  height: 0;
   flex-direction: column;
   position: relative;
-  color: #0c214b;
-  gap: 20px;
-  padding: 40px;
-  font-size: 1.1rem;
-  background: var(--card-color);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-  border-radius: 5px;
-  margin: 0 25px;
-  margin-top: 25px;
 }
 
 .field {

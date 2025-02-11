@@ -665,7 +665,7 @@ main {
 .main-welcome-title {
   margin-bottom: 20px;
   color: var(--light1);
-  font-size: 25px;
+  font-size: 21px;
   padding-top: 22px;
 }
 
@@ -686,7 +686,8 @@ main {
 
 .back-tittle {
   display: flex;
-  justify-content: center;
+  width: 100%;
+  justify-content: flex-start;
   align-items: center;
   gap: 15px;
 }
@@ -878,7 +879,7 @@ main {
 }
 
 .pagination-controls{
-  width: 50%;
+  width: 100%;
   display: flex;
   justify-content: flex-start;
   gap: 8px;

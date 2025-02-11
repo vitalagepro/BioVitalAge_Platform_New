@@ -54,8 +54,8 @@
     <main>
             <div class="main-title-nav">
                 <div class="back-tittle">
-                    <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to Results"></a>
-                    <h2 class="main-welcome-title">Referto Paziente, {{ persona.name }} {{ persona.surname }}</h2>
+                    <a id="back" href="{% url 'elenco_referti' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to Results"></a>
+                    <h2 class="main-welcome-title">{{ persona.name }} {{ persona.surname }} - {{ persona.dob }} - {{ persona.chronological_age }} - {{ datiEstesi.biological_age }} - {{ persona.codice_fiscale }} - {{ persona.phone }} - {{ persona.email }}</h2>
                 </div>
             
                 <div class="main-menu-trace">
@@ -65,12 +65,11 @@
                     <p>»</p>
                     <p>Elenco Pazienti</p>
                     <p>»</p>
-                    <p>{{ persona.name }} {{ persona.surname }}</p>
+                    <p>Referto Paziente</p>
                 </div>
             </div>
 
             <div class="container_data anagraphic_data stampa">
-                <h3>Informazioni Personali</h3>
                 <div class="container_box">
                     <div class="info_container">
                         <div class="field">
