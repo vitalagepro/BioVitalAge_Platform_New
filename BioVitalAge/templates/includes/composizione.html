@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <!-- Favicon -->
     <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
     
-    <title>Cartella Paziente, {{ persona.name }}</title>
+    <title>Composizione Corporea</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}">
@@ -23,8 +24,9 @@
 
     <!-- JS Import -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
     <script src="{% static 'includes/js/pdfComposizione.js' %}" defer></script>
 </head>
 
@@ -64,38 +66,45 @@
 
         <!-- DATI ANAGRAFICI CON MASSA CORPOREA -->
         <div class="datiMassaCorporea-container">
-            <h3>Dati Massa Corporea Paziente</h3>
+            <div class="header-container-patient">
+                <h3>Dati Massa Corporea Paziente</h3>
+                <div class="icon-container">
+                    <a class="Btn-modify" title="Modifica">Edita 
+                        <svg class="svg" viewBox="0 0 512 512">
+                          <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path></svg>
+                    </a>
+                </div>
+            </div>
             <div class="container_box">
                 <div class="info_container">
-      
-                    <div class="field">
-                      <p>Nome:&nbsp;</p>
-                      <p id="name">{{ persona.name }}</p>
-                    </div>
-      
-                    <div class="field">
-                      <p>Cognome:&nbsp;</p>
-                      <p id="surname">{{ persona.surname }}</p>
+                    <div id="userData" data-name="{{ persona.name }}" data-surname="{{ persona.surname }}"
+                        data-dob="{{ persona.dob }}" data-cf="{{ persona.codice_fiscale }}" data-place_birth="{{ persona.place_birth }}"
+                        data-chronological_age="{{ persona.chronological_age }}" hidden>
                     </div>
 
                     <div class="field">
-                        <p>Città di residenza:&nbsp;</p>
-                        <p id="place_birth">{{ persona.place_of_birth }}</p>
-                    </div>
-            
-                    <div class="field">
-                      <p>Codice Fiscale:&nbsp;</p>
-                      <p id="codice_fiscale">{{ persona.codice_fiscale }}</p>
-                    </div>
-    
-                    <div class="field">
-                        <p>Data di nascita:&nbsp;</p>
-                        <p id="dob">{{ persona.dob }}</p>
+                        <p>Punteggio Fisico</p>
+                        <p id="punteggio_fisico_container">
+                            <select id="punteggio_fisico" name="punteggio_fisico" required>
+                                <option value="">-- Seleziona Punteggio --</option>
+                                <option value="1" {% if persona.punteggio_fisico == "1" %}selected{% endif %}>Obeso Latente</option>
+                                <option value="2" {% if persona.punteggio_fisico == "2" %}selected{% endif %}>Obeso</option>
+                                <option value="3" {% if persona.punteggio_fisico == "3" %}selected{% endif %}>Struttura robusta</option>
+                                <option value="4" {% if persona.punteggio_fisico == "4" %}selected{% endif %}>Insufficientemente allenati</option>
+                                <option value="5" {% if persona.punteggio_fisico == "5" %}selected{% endif %}>Regolare</option>
+                                <option value="6" {% if persona.punteggio_fisico == "6" %}selected{% endif %}>Regolare e muscoloso</option>
+                                <option value="7" {% if persona.punteggio_fisico == "7" %}selected{% endif %}>Magro</option>
+                                <option value="8" {% if persona.punteggio_fisico == "8" %}selected{% endif %}>Magro e muscoloso</option>
+                                <option value="9" {% if persona.punteggio_fisico == "9" %}selected{% endif %}>Molto muscoloso</option>
+                            </select>                            
+                        </p>
                     </div>
 
-                    <div class="field">
-                      <p>Età:&nbsp;</p>
-                      <p id="chronological_age">{{ persona.chronological_age }}</p>
+                    <div class="vignetta-container" id="vignetta-container" style="display: none;">
+                        <div class="vignetta" id="vignetta">
+                            <span class="close-btn" onclick="chiudiVignetta()">&times;</span>
+                            <span id="vignetta-content"></span>
+                        </div>
                     </div>
 
                     <div class="field">
@@ -108,17 +117,93 @@
                       <p>Peso corporeo:</p>
                       <p id="peso">{{ persona.weight }}</p>
                     </div>
-            
+
                     <div class="field">
-                      <p>Sport:</p>
-                      <p>{{ persona.sport_frequency }}</p>
+                      <p>BMI:</p>
+                      <p id="bmi">{{ persona.bmi }}</p>
                     </div>
+
+                    <div class="field">
+                      <p>Data di rilevamento del BMI:</p>
+                      <p id="bmi_detection_date">{{ persona.bmi_detection_date }}</p>
+                    </div>
+
+                    <div class="field">
+                      <p>Circonferenza Addominale:</p>
+                      <p id="girth_value">{{ persona.girth_value }}</p>
+                    </div>
+
+                    <div class="field">
+                      <p>Data di misurazione Addominale:</p>
+                      <p id="girth_date">{{ persona.girth_date }}</p>
+                    </div>
+
+                    <div class="field">
+                      <p>Note sull'addome:</p>
+                      <p id="girth_notes">{{ persona.girth_notes }}</p>
+                    </div>
+
+                    {% if persona.sport_frequency %}
+                    <div class="field">
+                      <p>Frequenza Attività fisica:</p>
+                      <p id="sport_frequency">{{ persona.sport_frequency }}</p>
+                    </div>
+                    {% else %}
+                    <div class="field">
+                        <p>Sedentarietà:</p>
+                        <p id="livello_sedentarieta">{{ persona.livello_sedentarieta }}</p>
+                    </div>
+                    {% endif %}
       
                     <div class="field">
                       <p>Genere:</p>
                       <p>{{ persona.gender }}</p>
                     </div>
-      
+
+                    <div class="field">
+                      <p>Grasso Corporeo:</p>
+                      <p id="grasso">{{ persona.grasso|default:"Inserisci valore" }}</p>
+                    </div>
+
+                    <div class="field">
+                      <p>Acqua Corporea:</p>
+                      <p id="acqua">{{ persona.acqua|default:"Inserisci valore" }}</p>
+                    </div>
+
+                    <div class="field">
+                      <p>Massa Ossea:</p>
+                      <p id="massa_ossea">{{ persona.massa_ossea|default:"Inserisci valore" }}</p>
+                    </div>
+
+                    <div class="field">
+                      <p>Massa Muscolare:</p>
+                      <p id="massa_muscolare">{{ persona.massa_muscolare|default:"Inserisci valore" }}</p>
+                    </div>
+
+                    <div class="field">
+                      <p>Bmr:</p>
+                      <p id="bmr">{{ persona.bmr|default:"Inserisci valore" }}</p>
+                    </div>
+
+                    <div class="field">
+                      <p>Età Metabolica:</p>
+                      <p id="eta_metabolica">{{ persona.eta_metabolica|default:"Inserisci valore" }}</p>
+                    </div>
+
+                    <div class="field">
+                      <p>Grasso Viscerale:</p>
+                      <p id="grasso_viscerale">{{ persona.grasso_viscerale|default:"Inserisci valore" }}</p>
+                    </div>
+
+                    <div class="field">
+                      <p>WHR:</p>
+                      <p id="whr">{{ persona.whr|default:"Inserisci valore" }}</p>
+                    </div>
+
+                    <div class="field">
+                      <p>WHTR:</p>
+                      <p id="whtr">{{ persona.whtr|default:"Inserisci valore" }}</p>
+                    </div>
                 </div>
             </div>
         </div>  
@@ -202,6 +287,9 @@
     <!-- Import Js -->
 
     <script>
+
+        const updatePersonaComposizioneUrl = "{% url 'update_persona_composizione' persona.id %}";
+
         /*  -----------------------------------------------------------------------------------------------
         function to transform the first letter of a string to uppercase
         --------------------------------------------------------------------------------------------------- */

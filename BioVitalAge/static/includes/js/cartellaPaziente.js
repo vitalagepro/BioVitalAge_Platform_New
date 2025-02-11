@@ -415,6 +415,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+/*  -----------------------------------------------------------------------------------------------
+    CLOCK
+--------------------------------------------------------------------------------------------------- */
 // Access to :root style css
 const rootStyles = getComputedStyle(document.documentElement);
 
@@ -562,6 +565,61 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+/*  -----------------------------------------------------------------------------------------------
+    Mostra di più
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  const toggleButton = document.querySelector(".button");
+  
+  if (!toggleButton) return;
+  
+  const infoContainer = document.querySelector(".info_container");
+  const contactContainer = document.querySelector(".Contact-Container");
+  const hiddenFields = infoContainer.querySelectorAll(".field:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(4)):not(:nth-child(5))");
+  const subCardsContainer = document.querySelector(".subCard-container");
+  
+  hiddenFields.forEach(field => {
+      gsap.set(field, { opacity: 0, display: "none" });
+      infoContainer.classList.add("hidden-row-grid");
+      contactContainer.classList.add("flex-hidden-grid");
+  });
+  
+  gsap.set(subCardsContainer, { opacity: 0, display: "none" });
+  
+  toggleButton.addEventListener("click", function () {
+      const isHidden = hiddenFields[0].style.display === "none";
+      
+      hiddenFields.forEach(field => {
+          if (isHidden) {
+              gsap.to(field, { opacity: 1, display: "flex", duration: 0.5 });
+              infoContainer.classList.remove("hidden-row-grid");
+          } else {
+              gsap.to(field, { opacity: 0, display: "none", duration: 0.5 });
+          }
+      });
+      
+      if (isHidden) {
+          gsap.to(subCardsContainer, { opacity: 1, display: "flex", duration: 0.5 });
+          infoContainer.classList.remove("hidden-row-grid");
+      } else {
+          gsap.to(subCardsContainer, { opacity: 0, display: "none", duration: 0.5 });
+          infoContainer.classList.add("hidden-row-grid");
+      }
+      
+      toggleButton.innerHTML = `
+      <span class="button__icon-wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg button__icon-svg--copy">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </span>
+      ${isHidden ? "Mostra di meno" : "Mostra di più"}
+      `;
+  });
+});
 
 /* FUNZIONE SCARICA PDF PRESCRIZIONE */
 /* document.addEventListener("DOMContentLoaded", function () {
