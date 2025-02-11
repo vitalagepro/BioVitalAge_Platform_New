@@ -25,6 +25,7 @@ urlpatterns = [
     path("api/update_blood_data/<int:id>/", UpdateBloodDataView.as_view(), name="update_blood_data"),
     path("CartellaPaziente/Update/<int:persona_id>/<int:visite_id>/", DettagliPrescrizioni.as_view(), name="dettagli_prescrizioni"),
     path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
+    path('update-persona-composizione/<int:id>/', views.update_persona_composizione, name='update_persona_composizione'),
 ]
 
 
