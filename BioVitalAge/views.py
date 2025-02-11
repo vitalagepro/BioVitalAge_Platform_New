@@ -126,8 +126,6 @@ class AcceptDisclaimerView(View):
 
 
 
-
-
 class StatisticheView(View):
     def get(self, request):
 
@@ -1581,7 +1579,7 @@ def dettaglio_paziente(request, id):
     return render(request, 'nome_del_tuo_template.html', context)
 
 
-# Funzione per aggiornare i dati di una persona in cartella paziente
+
 @csrf_exempt  # Rimuovilo in produzione se non necessario
 def update_persona_contact(request, id):
     if request.method == "POST":
@@ -1620,7 +1618,7 @@ def update_persona_contact(request, id):
 
 
 # Funzione per aggiornare i dati di una persona in composizione corpo
-@csrf_exempt  # Rimuovilo in produzione se non necessario
+@csrf_exempt 
 def update_persona_composizione(request, id):
     if request.method == "POST":
         try:
@@ -1701,6 +1699,7 @@ def update_persona_composizione(request, id):
             return JsonResponse({"success": False, "error": str(e)})
     else:
         return JsonResponse({"success": False, "error": "Metodo non valido"})
+
 
 class EtaVitaleView(View):
 
@@ -1902,7 +1901,6 @@ def referti_view(request, referto_id):
 
 
 
-
 #PRESCRIZIONI VIEW
 class PrescrizioniView(View):
 
@@ -1941,15 +1939,5 @@ class PrescrizioniView(View):
 
         return redirect('cartella_paziente', persona_id)
  
-
-
-
-
-
-
-
-
-
-
 
 
