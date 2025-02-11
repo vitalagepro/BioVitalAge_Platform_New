@@ -479,109 +479,146 @@
         {% if pdf_url %}
 
         <script>    
-            async function generatePDFandDOCX(pdfUrl, logoUrl, logo2Url, name, surname, dob, pob,  fileName, wordFileName) {
+            async function generatePDFandDOCX(pdfUrl, logoUrl, logo2Url, name, surname, dob, pob, fileName, wordFileName) {
 
-                if (!pdfUrl) {
-                    console.error("Errore: Nessun URL PDF specificato!");
-                    return;
-                }
-
-                try {
-                    // Carica il PDF esistente
-                    const existingPdfBytes = await fetch(pdfUrl).then((res) => res.arrayBuffer());
-                    const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
-                    const firstPage = pdfDoc.getPages()[0];
-
-                    // Carica le immagini
-                    const logoImageBytes = await fetch(logoUrl).then(res => res.arrayBuffer());
-                    const logo2ImageBytes = await fetch(logo2Url).then(res => res.arrayBuffer());
-
-                    // Incorpora le immagini nel PDF
-                    const logoImage = await pdfDoc.embedPng(logoImageBytes);
-                    const logo2Image = await pdfDoc.embedPng(logo2ImageBytes);
-
-                    // Posiziona le immagini
-                    firstPage.drawImage(logoImage, { x: 180, y: 20, width: 250, height: 100 });
-                    firstPage.drawImage(logo2Image, { x: 190, y: 730, width: 200, height: 100 });
-
-                    // Imposta font e testo
-                    const pageWidth = firstPage.getWidth();
-                    const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
-                    const fontSize = 12;
-
-                    const alignRight = (text, y) => {
-                        const textWidth = font.widthOfTextAtSize(text, fontSize);
-                        const xPosition = pageWidth - textWidth - 50;
-                        firstPage.drawText(text, { x: xPosition, y: y, size: fontSize, font: font });
-                    };
-
-                    // Inserisce i dati del paziente
-                    alignRight(`Sig.ra/Sig. ${name} ${surname}`, 640);
-                    alignRight(`Città di nascita: ${pob}`, 615);
-                    alignRight(`Data di nascita: ${dob}`, 590);
-
-                    // Testo fisso
-                    firstPage.drawText("Si prescrivono i seguenti esami:", { x: 50, y: 560, size: fontSize, font: font });
-
-        
-                    const listaEsamiElements = document.querySelectorAll("input.esame_nascosto");
-                    const esamiRaw = Array.from(listaEsamiElements).map(input => input.value.trim());
-
-                    let esami = esamiRaw.join(",").split(",").map(e => e.trim());
-
-                    esami = [...new Set(esami)];
-
-                    let yPosition = 530;
-                    for (const esame of esami) {
-                        firstPage.drawText(`- ${esame}`, { x: 60, y: yPosition, size: fontSize, font: font });
-                        yPosition -= 20;
-                    }
-
-                    // Diagnosi e data
-                    firstPage.drawText("Diagnosi:", { x: 50, y: 300, size: fontSize, font: font });
-
-                    const today = new Date();
-                    const formattedDate = today.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-                    firstPage.drawText(`Bari, ${formattedDate}`, { x: 50, y: 200, size: fontSize, font: font });
-
-                    const text = "Dott. Luigi Aprile:";
-                    const textWidth = font.widthOfTextAtSize(text, fontSize);
-                    const xPosition = pageWidth - textWidth - 50;
-                    firstPage.drawText(text, { x: xPosition, y: 150, size: fontSize, font: font });
-
-                    // Salva il nuovo PDF
-                    const modifiedPdfBytes = await pdfDoc.save();
-                    const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
-
-                    // Scarica il PDF automaticamente
-                    const link = document.createElement("a");
-                    link.href = URL.createObjectURL(blob);
-                    link.download = fileName;
-                    link.click();
-
-                    // Genera il file DOCX
-                    generateDOCX(name, surname, dob, pob, esami, wordFileName);
-
-                } catch (error) {
-                    console.error("Errore nella generazione del PDF:", error);
-                }
+            if (!pdfUrl) {
+                console.error("Errore: Nessun URL PDF specificato!");
+                return;
             }
 
-            // 🔹 Funzione per generare il file DOCX
-            function generateDOCX(name, surname, dob, pob, esami, fileName) {
+            try {
+                // Carica il PDF esistente
+                const existingPdfBytes = await fetch(pdfUrl).then((res) => res.arrayBuffer());
+                const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+                const firstPage = pdfDoc.getPages()[0];
+
+                // Carica le immagini
+                const logoImageBytes = await fetch(logoUrl).then(res => res.arrayBuffer());
+                const logo2ImageBytes = await fetch(logo2Url).then(res => res.arrayBuffer());
+
+                // Incorpora le immagini nel PDF
+                const logoImage = await pdfDoc.embedPng(logoImageBytes);
+                const logo2Image = await pdfDoc.embedPng(logo2ImageBytes);
+
+                // Posiziona le immagini
+                firstPage.drawImage(logoImage, { x: 180, y: 20, width: 250, height: 100 });
+                firstPage.drawImage(logo2Image, { x: 190, y: 730, width: 200, height: 100 });
+
+                // Imposta font e testo
+                const pageWidth = firstPage.getWidth();
+                const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+                const fontSize = 12;
+
+                const alignRight = (text, y) => {
+                    const textWidth = font.widthOfTextAtSize(text, fontSize);
+                    const xPosition = pageWidth - textWidth - 50;
+                    firstPage.drawText(text, { x: xPosition, y: y, size: fontSize, font: font });
+                };
+
+                // Inserisce i dati del paziente
+                alignRight(`Sig.ra/Sig. ${name} ${surname}`, 640);
+                alignRight(`Città di nascita: ${pob}`, 615);
+                alignRight(`Data di nascita: ${dob}`, 590);
+
+                // Testo fisso
+                firstPage.drawText("Si prescrivono i seguenti esami:", { x: 50, y: 560, size: fontSize, font: font });
+
+                // Estrai gli esami dagli input nascosti
+                const listaEsamiElements = document.querySelectorAll("input.esame_nascosto");
+                const esamiRaw = Array.from(listaEsamiElements).map(input => input.value.trim());
+
+                let esami = esamiRaw.join(",").split(",").map(e => e.trim());
+
+                // Rimuove i duplicati
+                esami = [...new Set(esami)];
+
+                // Scrive gli esami nel PDF
+                let yPosition = 530;
+                for (const esame of esami) {
+                    firstPage.drawText(`- ${esame}`, { x: 60, y: yPosition, size: fontSize, font: font });
+                    yPosition -= 20;
+                }
+
+                // Diagnosi e data
+                firstPage.drawText("Diagnosi:", { x: 50, y: 300, size: fontSize, font: font });
+
+                const today = new Date();
+                const formattedDate = today.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+                firstPage.drawText(`Bari, ${formattedDate}`, { x: 50, y: 200, size: fontSize, font: font });
+
+                const text = "Dott. Luigi Aprile:";
+                const textWidth = font.widthOfTextAtSize(text, fontSize);
+                const xPosition = pageWidth - textWidth - 50;
+                firstPage.drawText(text, { x: xPosition, y: 150, size: fontSize, font: font });
+
+                // Salva il nuovo PDF
+                const modifiedPdfBytes = await pdfDoc.save();
+                const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
+
+                // Scarica il PDF automaticamente
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                link.click();
+
+                // Genera il file DOCX
+                generateDOCX(name, surname, dob, pob, esami, wordFileName, formattedDate);
+
+            } catch (error) {
+                console.error("Errore nella generazione del PDF:", error);
+            }
+            }
+
+            // 🔹 Funzione per generare il file DOCX con la stessa struttura del PDF
+            function generateDOCX(name, surname, dob, pob, esami, fileName, formattedDate) {
                 const doc = new docx.Document({
                     sections: [{
                         properties: {},
                         children: [
+                            // Logo e intestazione
+                            new docx.Paragraph({
+                                alignment: docx.AlignmentType.CENTER,
+                                children: [
+                                    new docx.TextRun({
+                                        text: "LABORATORIO ANALISI",
+                                        bold: true,
+                                        size: 28,
+                                    }),
+                                ],
+                            }),
+                            new docx.Paragraph({ text: "", spacing: { after: 300 } }), // Spazio
+
+                            // Dati paziente
                             new docx.Paragraph({ text: `Sig.ra/Sig. ${name} ${surname}`, bold: true }),
                             new docx.Paragraph(`Città di nascita: ${pob}`),
                             new docx.Paragraph(`Data di nascita: ${dob}`),
-                            new docx.Paragraph(""),
-                            new docx.Paragraph({ text: "Si prescrivono i seguenti esami:", bold: true }),
-                            ...esami.map(esame => new docx.Paragraph(`- ${esame}`)),
-                            new docx.Paragraph(""),
-                            new docx.Paragraph({ text: "Dott. Luigi Aprile", alignment: docx.AlignmentType.RIGHT }),
+                            new docx.Paragraph({ text: "", spacing: { after: 300 } }), // Spazio
+
+                            // Titolo elenco esami
+                            new docx.Paragraph({
+                                text: "Si prescrivono i seguenti esami:",
+                                bold: true,
+                                spacing: { after: 200 },
+                            }),
+
+                            // Lista degli esami
+                            ...esami.map(esame => new docx.Paragraph({ text: `- ${esame}` })),
+
+                            new docx.Paragraph({ text: "", spacing: { after: 300 } }), // Spazio
+
+                            // Diagnosi e data
+                            new docx.Paragraph({ text: "Diagnosi:", bold: true, spacing: { after: 200 } }),
+                            new docx.Paragraph(`Bari, ${formattedDate}`),
+
+                            new docx.Paragraph({ text: "", spacing: { after: 300 } }), // Spazio
+
+                            // Firma del medico
+                            new docx.Paragraph({
+                                text: "Dott. Luigi Aprile",
+                                alignment: docx.AlignmentType.RIGHT,
+                                spacing: { before: 300 },
+                            }),
                         ],
                     }],
                 });
@@ -596,21 +633,18 @@
                 });
             }
 
-
+            // Chiamata alla funzione per generare PDF e DOCX
             generatePDFandDOCX(
-                "/static/includes/pdfTemplates/prescrizioneTemplate.pdf",
-                "/static/includes/pdfTemplates/logo.png",
-                "/static/includes/pdfTemplates/logo2.png",
-                "{{ persona.name }}",
-                "{{ persona.surname }}",
-                "{{ persona.dob }}",
-                "{{ persona.pob }}",
-                "{{ persona.name}}_{{ persona.surname }}.pdf",
-                "{{ persona.name}}_{{ persona.surname }}.docx"
+            "/static/includes/pdfTemplates/prescrizioneTemplate.pdf",
+            "/static/includes/pdfTemplates/logo.png",
+            "/static/includes/pdfTemplates/logo2.png",
+            "{{ persona.name }}",
+            "{{ persona.surname }}",
+            "{{ persona.dob }}",
+            "{{ persona.pob }}",
+            "{{ persona.name}}_{{ persona.surname }}.pdf",
+            "{{ persona.name}}_{{ persona.surname }}.docx"
             );
-
-
-                
 
         </script>
 
