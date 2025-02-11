@@ -1,4 +1,5 @@
 from datetime import date
+from xml.etree.ElementInclude import include
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
@@ -1177,6 +1178,9 @@ class ScaricaReferto(View):
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
         visite = ElencoVisitePaziente.objects.all()
 
+        # Logica per generare il PDF
+        pdf_url = f"/media/pdf/{persona.surname}_{persona.name}_Prescrizione.pdf"
+
         #DATI REFERTI ETA' BIOLOGICA
         referti_recenti = persona.referti.all().order_by('-data_referto')
         dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
@@ -1223,7 +1227,8 @@ class ScaricaReferto(View):
             'dottore' : dottore,
             'visite': visite,
             'visita': visita,
-            'lista_nomi_esami': lista_nomi_esami
+            'lista_nomi_esami': lista_nomi_esami,
+            'pdf_url': pdf_url
         }
 
         return render(request, "includes/cartellaPaziente.html", context)

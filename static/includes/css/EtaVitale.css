@@ -89,6 +89,13 @@
     margin-bottom: 20px;
 }
 
+.container-button-submit{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 20px;
+    margin: 20px 0px;
+}
 
 
 /* TABELLA REFERTI VITALE */
@@ -116,11 +123,29 @@
     padding: 20px;
 }
 
+.table-content{
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+
 .TabellaVitale-header h3 {
     color: var(--contrast-color);
     font-weight: bold;
     font-size: 25px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* ! FILTRI */
 .filtri-button {
@@ -165,7 +190,7 @@
 
 .backdropModale{
     background-color: rgba(0,0,0,0.5);
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     z-index: 11;
@@ -190,6 +215,9 @@
     background-color: var(--contrast-color-shadow);
     width: 50px;
     padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 8px;
 }
 .modaleRisultato h3{

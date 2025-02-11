@@ -1,4 +1,184 @@
 /*  -----------------------------------------------------------------------------------------------
+  function to transform the first letter of a string to uppercase
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  // Seleziona tutti gli elementi con la classe 'field'
+  let fields = document.querySelectorAll(".info_container .field");
+
+  fields.forEach((field) => {
+    let label = field.querySelector("p:first-of-type"); // Prende il primo <p> (etichetta)
+    let valueP = field.querySelector("p:nth-of-type(2)"); // Prende il secondo <p> (valore)
+
+    if (label && valueP) {
+      let labelText = label.innerText.trim();
+
+      // Controlla se il campo è "Nome:" o "Cognome:"
+      if (labelText === "Nome:" || labelText === "Cognome:") {
+        let text = valueP.innerText.trim();
+        if (text.length > 0) {
+          // Converte la prima lettera in maiuscolo di ogni parola se la parola è tutta in minuscolo
+          let formattedText = text
+            .split(" ") // Divide il testo in parole
+            .map((word) =>
+              word === word.toLowerCase()
+                ? word.charAt(0).toUpperCase() + word.slice(1)
+                : word
+            ) // Se è minuscola, la corregge
+            .join(" "); // Ricompone la stringa
+
+          valueP.innerText = formattedText;
+        }
+      }
+    }
+  });
+});
+
+/*  -----------------------------------------------------------------------------------------------
+  Funzione di paginazione con controllo di tabelle con la stessa classe
+  --------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  const tables = document.querySelectorAll(".table-content");
+
+
+  tables.forEach((table) => {
+    const rows = table.querySelectorAll(".riga-container");
+    const rowsPerPage = 5;
+    let currentPage = 1;
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+    function showPage(page, filteredRows = rows) {
+      rows.forEach((row) =>
+        gsap.to(row, {
+          opacity: 0,
+          height: 0,
+          duration: 0.3,
+          onComplete: () => (row.style.display = "none"),
+        })
+      );
+
+      filteredRows.forEach((row, index) => {
+        if (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) {
+          gsap.to(row, {
+            opacity: 1,
+            height: "5rem",
+            duration: 0.3,
+            display: "flex",
+            onStart: () => (row.style.display = "flex"),
+          });
+        }
+      });
+    }
+
+    function updatePaginationControls() {
+      let existingControls = table.querySelector(".pagination-controls");
+
+ 
+      if (existingControls) existingControls.remove();
+
+
+      if (rows.length > rowsPerPage) {
+        const controls = document.createElement("div");
+        controls.classList.add("pagination-controls");
+
+        const range = 10;
+        let startPage = Math.max(1, currentPage - Math.floor(range / 2));
+        let endPage = Math.min(totalPages, startPage + range - 1);
+
+
+        if (endPage - startPage < range - 1) {
+          startPage = Math.max(1, endPage - range + 1);
+        }
+
+        if (startPage > 1) {
+          const firstPageBtn = document.createElement("button");
+          firstPageBtn.classList.add("button-style-pagination");
+          firstPageBtn.textContent = "1";
+          firstPageBtn.addEventListener("click", () => {
+            currentPage = 1;
+            showPage(currentPage);
+            updatePaginationControls();
+          });
+          controls.appendChild(firstPageBtn);
+
+          // Aggiungi i dots
+          const dots = document.createElement("span");
+          dots.textContent = "...";
+          controls.appendChild(dots);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+          const btn = document.createElement("button");
+          btn.classList.add("button-style-pagination");
+          btn.textContent = i;
+          if (i === currentPage) {
+            btn.classList.add("active");
+          }
+          btn.addEventListener("click", () => {
+            currentPage = i;
+            showPage(currentPage);
+            updatePaginationControls();
+          });
+          controls.appendChild(btn);
+        }
+
+        if (endPage < totalPages) {
+          const dots = document.createElement("span");
+          dots.textContent = "...";
+          controls.appendChild(dots);
+
+          const lastPageBtn = document.createElement("button");
+          lastPageBtn.classList.add("button-style-pagination");
+          lastPageBtn.textContent = totalPages;
+          lastPageBtn.addEventListener("click", () => {
+            currentPage = totalPages;
+            showPage(currentPage);
+            updatePaginationControls();
+          });
+          controls.appendChild(lastPageBtn);
+        }
+
+        tables.appendChild(controls);
+      }
+    }
+
+    showPage(currentPage);
+    updatePaginationControls();
+  });
+});
+
+/*  -----------------------------------------------------------------------------------------------
+  Funzione di formattazione del telefono
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  function formatItalianPhoneNumber(phoneNumber) {
+    const digits = phoneNumber.replace(/\D/g, ""); // Rimuove caratteri non numerici
+
+    if (digits.length < 10) {
+      return phoneNumber; // Restituisce il numero originale se non è valido
+    }
+
+    // Se il numero inizia con 39 (senza il "+"), assume che abbia già il prefisso internazionale
+    if (digits.startsWith("39") && digits.length > 10) {
+      return `+${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(
+        5,
+        8
+      )} ${digits.slice(8)}`;
+    }
+
+    // Se il numero è lungo 10 cifre (formato italiano senza prefisso), aggiunge +39
+    return `+39 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
+  }
+
+  let phoneElement = document.getElementById("phone");
+  if (phoneElement) {
+    let formattedPhone = formatItalianPhoneNumber(
+      phoneElement.innerText.trim()
+    );
+    phoneElement.innerText = formattedPhone;
+  }
+});
+
+/*  -----------------------------------------------------------------------------------------------
   Funzione di modifica dati
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
@@ -123,7 +303,7 @@ document.addEventListener("DOMContentLoaded", function () {
       bloodGroupSpan.appendChild(bloodGroupInput);
 
       editButton.innerHTML = `
-        Save 
+        Salva 
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -193,7 +373,7 @@ document.addEventListener("DOMContentLoaded", function () {
             upcomingVisitSpan.textContent = updatedUpcomingVisit;
             bloodGroupSpan.textContent = updatedBloodGroup;
 
-            editButton.innerHTML = `Edit
+            editButton.innerHTML = `Edita
                   <svg class="svg" viewBox="0 0 512 512">
                     <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path>
                   </svg>`;
@@ -236,16 +416,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /*  -----------------------------------------------------------------------------------------------
-  Funzione di loader
+    CLOCK
 --------------------------------------------------------------------------------------------------- */
-// Funzione che imposta "opacity: 0" e "z-index: -1" dopo 3 secondi
-document.addEventListener("DOMContentLoaded", function () {
-  setTimeout(() => {
-    document.getElementById("loading-wrapper").style.opacity = "0";
-    document.getElementById("loading-wrapper").style.zIndex = "-1";
-  }, 500);
-});
-
 // Access to :root style css
 const rootStyles = getComputedStyle(document.documentElement);
 
@@ -310,7 +482,7 @@ function generateChart(ctx, data, label) {
   new Chart(ctx, {
     type: "line",
     data: {
-      labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5"],
+      labels: ["Giorno 1", "Giorno 2", "Giorno 3", "Giorno 4", "Giorno 5"],
       datasets: [
         {
           label: label,
@@ -341,122 +513,146 @@ document.addEventListener("DOMContentLoaded", () => {
   generateChart(
     document.getElementById("chart1").getContext("2d"),
     [140, 190, 230, 210, 180],
-    "BP Levels"
+    "Livello BP"
   );
   generateChart(
     document.getElementById("chart2").getContext("2d"),
     [90, 100, 110, 120, 130],
-    "Sugar Levels"
+    "Livello di zuccheri"
   );
   generateChart(
     document.getElementById("chart3").getContext("2d"),
     [80, 85, 90, 95, 100],
-    "Heart Rate"
+    "Frequenza Cardiaca"
   );
   generateChart(
     document.getElementById("chart4").getContext("2d"),
     [180, 220, 240, 200, 210],
-    "Cholesterol"
+    "Colesterolo"
   );
 });
 
-const ctx1 = document.getElementById("chartDash2_1").getContext("2d");
-new Chart(ctx1, {
-  type: "bar",
-  data: {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
-    datasets: [
-      {
-        label: "Claims",
-        data: [5, 10, 15, 7, 8, 5, 12, 10, 6, 8, 9, 15],
-        backgroundColor: "rgba(58, 37, 93, 0.8)",
-        borderColor: "rgba(58, 37, 93, 1)",
-        borderWidth: 1,
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-    },
-    scales: {
-      x: {
-        grid: { display: false },
-        ticks: { color: "#666" },
-      },
-      y: {
-        grid: { color: "#ddd" },
-        ticks: { color: "#666" },
-      },
-    },
-  },
+
+
+
+
+/* FILTRI TABELLA PRESCRIZIONE */
+document.addEventListener("DOMContentLoaded", function () {
+  const filterSelect = document.getElementById("filter");
+  const tableContent = document.querySelector(".table-content.prescriptions");
+
+  filterSelect.addEventListener("change", function () {
+      let selectedFilter = filterSelect.value;
+      let rows = Array.from(tableContent.getElementsByClassName("riga-container"));
+
+      if (selectedFilter === "Tutti") {
+          rows.forEach(row => row.style.display = "flex");
+          return;
+      }
+
+      let columnIndex = parseInt(selectedFilter, 10);
+      let isAscending = columnIndex === 0;
+
+      rows.sort((a, b) => {
+          let textA = a.getElementsByTagName("p")[columnIndex].innerText.trim().toLowerCase();
+          let textB = b.getElementsByTagName("p")[columnIndex].innerText.trim().toLowerCase();
+
+          return isAscending ? textA.localeCompare(textB) : textB.localeCompare(textA);
+      });
+
+      rows.forEach(row => tableContent.appendChild(row));
+  });
 });
 
-const ctx2 = document.getElementById("chartDash_2").getContext("2d");
-new Chart(ctx2, {
-  type: "line",
-  data: {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Expenses",
-        data: [200, 400, 600, 500, 700, 300],
-        borderColor: "rgba(58, 37, 93, 0.5)",
-        backgroundColor: "rgba(58, 37, 93, 1)",
-        fill: true,
-        tension: 0.3,
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-    },
-    scales: {
-      x: {
-        grid: { display: false },
-        ticks: { color: "#666" },
-      },
-      y: {
-        grid: { color: "#ddd" },
-        ticks: { color: "#666" },
-      },
-    },
-  },
-});
 
 /*  -----------------------------------------------------------------------------------------------
-  User Modal log out
+    Mostra di più
 --------------------------------------------------------------------------------------------------- */
-const userImg = document.getElementById("userImg");
-const userModal = document.getElementById("userModal");
-const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
+document.addEventListener("DOMContentLoaded", function () {
+  const toggleButton = document.querySelector(".button");
+  
+  if (!toggleButton) return;
+  
+  const infoContainer = document.querySelector(".info_container");
+  const contactContainer = document.querySelector(".Contact-Container");
+  const hiddenFields = infoContainer.querySelectorAll(".field:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(4)):not(:nth-child(5))");
+  const subCardsContainer = document.querySelector(".subCard-container");
+  
+  hiddenFields.forEach(field => {
+      gsap.set(field, { opacity: 0, display: "none" });
+      infoContainer.classList.add("hidden-row-grid");
+      contactContainer.classList.add("flex-hidden-grid");
+  });
+  
+  gsap.set(subCardsContainer, { opacity: 0, display: "none" });
+  
+  toggleButton.addEventListener("click", function () {
+      const isHidden = hiddenFields[0].style.display === "none";
+      
+      hiddenFields.forEach(field => {
+          if (isHidden) {
+              gsap.to(field, { opacity: 1, display: "flex", duration: 0.5 });
+              infoContainer.classList.remove("hidden-row-grid");
+          } else {
+              gsap.to(field, { opacity: 0, display: "none", duration: 0.5 });
+          }
+      });
+      
+      if (isHidden) {
+          gsap.to(subCardsContainer, { opacity: 1, display: "flex", duration: 0.5 });
+          infoContainer.classList.remove("hidden-row-grid");
+      } else {
+          gsap.to(subCardsContainer, { opacity: 0, display: "none", duration: 0.5 });
+          infoContainer.classList.add("hidden-row-grid");
+      }
+      
+      toggleButton.innerHTML = `
+      <span class="button__icon-wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
 
-function showModal() {
-  userModal.classList.add("show");
-}
-
-userImg.addEventListener("mouseover", showModal);
-
-userModal.addEventListener("mouseout", () => {
-  userModal.classList.remove("show");
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg button__icon-svg--copy">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </span>
+      ${isHidden ? "Mostra di meno" : "Mostra di più"}
+      `;
+  });
 });
 
-userModalBtn.addEventListener("mouseover", showModal);
+/* FUNZIONE SCARICA PDF PRESCRIZIONE */
+/* document.addEventListener("DOMContentLoaded", function () {
+  const pdfButtons = document.querySelectorAll(".generatePDFButton");
+  const modal = document.getElementById("pdfDisclaimerModal");
+  const closeBtn = document.getElementById("closeDisclaimerBtn");
+
+  pdfButtons.forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      event.preventDefault();
+      
+      const pdfUrl = button.getAttribute("data-pdf-url");
+      const name = button.getAttribute("data-name") || "N/A";
+      const surname = button.getAttribute("data-surname") || "N/A";
+      const dob = button.getAttribute("data-dob") || "N/A";
+      const cf = button.getAttribute("data-cf") || "N/A";
+
+      if (!pdfUrl) {
+        console.error("Errore: URL PDF non trovato!");
+        return;
+      }
+
+      // Mostra il disclaimer modal
+      modal.classList.remove("hidden");
+
+      // Dopo che il disclaimer viene accettato, genera il PDF
+      closeBtn.addEventListener("click", async () => {
+        modal.classList.add("hidden");
+        await generatePDF(pdfUrl, name, surname, dob, cf);
+      }, { once: true }); // `{ once: true }` evita multiple generazioni
+    });
+  });
+});
+ */
+
+
