@@ -1321,7 +1321,32 @@ class CartellaPazienteView(View):
 
         return render(request, "includes/cartellaPaziente.html", context)
 
+class ElencoRefertiView(View):
+    def get(self, request, id):
+        
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        
+        #DATI REFERTI ETA' BIOLOGICA
+        referti_recenti = persona.referti.all().order_by('-data_referto')
+        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+        
+        dati_estesi_ultimo_referto = None
 
+        visite = ElencoVisitePaziente.objects.all()
+
+        context = {
+            'persona': persona,
+            'referti_recenti': referti_recenti,
+            'dati_estesi': dati_estesi,
+            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
+            'dottore' : dottore,
+            'visite': visite,
+            #'elencoPrescrizioni': elencoPrescrizioni,
+        }
+
+        return render(request, "includes/elencoReferti.html", context)
 
 
 class DatiBaseView(View):

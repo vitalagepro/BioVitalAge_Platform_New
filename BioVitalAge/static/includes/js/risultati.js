@@ -140,6 +140,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const searchForm = document.querySelector(".barra-ricerca form");
   const searchInput = document.getElementById("Email");
   const filterSelect = document.getElementById("filter");
+  const tableContainer = document.querySelector(".table-container");
+
+  // Nasconde la tabella all'avvio
+  gsap.to(".table-container", {
+    opacity: 0,
+    duration: 0.5,
+    onComplete: function () {
+      document.querySelector(".table-container").style.display =
+        "none";
+    },
+  });
 
   function filterRows() {
     const filterValue = searchInput.value.toLowerCase().trim();
@@ -170,7 +181,22 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // Nascondi tutte le righe e mostra solo quelle filtrate
+    // Mostra la tabella solo se ci sono risultati
+    if (matchFound) {
+      tableContainer.style.display = "block";
+      gsap.to(tableContainer, { opacity: 1, duration: 0.5 });
+    } else {
+      gsap.to(".table-container", {
+        opacity: 0,
+        duration: 0.5,
+        onComplete: function () {
+          document.querySelector(".table-container").style.display =
+            "none";
+        },
+      });    
+    }
+
+    // Nasconde tutte le righe e mostra solo quelle filtrate
     gsap.to(rows, {
       opacity: 0,
       height: 0,
@@ -220,6 +246,7 @@ document.addEventListener("DOMContentLoaded", function () {
       currentPage = 1;
       showPage(currentPage);
       updatePaginationControls();
+      tableContainer.style.display = "none"; // Nasconde la tabella se il campo di ricerca è vuoto
 
       const noResultsMsg = document.querySelector(".no-results-message");
       if (noResultsMsg) {
