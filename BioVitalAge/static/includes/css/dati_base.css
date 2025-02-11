@@ -127,13 +127,41 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
 }
 .container-blood-input {
   display: flex;
   justify-content: space-between; /* Spaziatura tra le colonne */
   gap: 15px; /* Distanza tra le colonne */
   width: 67%; /* Puoi regolare la larghezza del container */
+}
+
+.container-blood-input input{
+  outline: none;
+  cursor: not-allowed;
+}
+
+.container-pressure{
+  margin-top: -0.7rem;
+}
+
+#pressure_min{
+  border-radius: 0px 0px 0px 8px;
+}
+
+.val-min span{
+  font-weight: bold;
+  margin-left: 15px;
+}
+
+#pressure_max{
+  border-radius: 0px 0px 8px 0px;
+  border-left: none;
+}
+
+.val-max span{
+  font-weight: bold;
+  margin-left: 15px;
 }
 
 .column {

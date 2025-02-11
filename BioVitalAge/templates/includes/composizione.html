@@ -43,7 +43,14 @@
         <div class="main-title-nav">
             <div class="back-tittle">
                 <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt=""></a>
-                <h2 class="main-welcome-title">{{ persona.name }} {{ persona.surname }} - {{ persona.dob }} - {{ persona.chronological_age }} - {{ persona.codice_fiscale }} - {{ persona.phone }} - {{ persona.email }}</h2>
+                <h2 class="main-welcome-title">
+                    {{ persona.name }} - 
+                    {{ persona.surname }} - 
+                    {{ persona.chronological_age }} 
+                    {% if persona.phone and persona.email %}
+                      - {{ persona.phone }} - {{ persona.email }}
+                    {% endif %}
+                </h2>
             </div>
            
             <div class="main-menu-trace">
@@ -109,49 +116,57 @@
 
                     <div class="field">
                         <p>Altezza:</p>
-                        <p id="altezza">{{ persona.height }}</p>
+                        <p id="altezza">{{ persona.height|default:"Inserisci valore" }}</p>
                       </div>
         
       
                     <div class="field">
                       <p>Peso corporeo:</p>
-                      <p id="peso">{{ persona.weight }}</p>
+                      <p id="peso">{{ persona.weight|default:"Inserisci valore" }}</p>
                     </div>
 
                     <div class="field">
-                      <p>BMI:</p>
-                      <p id="bmi">{{ persona.bmi }}</p>
+                        <p>BMI:</p>
+                        <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
+                            {{ persona.bmi|default:"Inserisci valore" }}
+                        </p>
                     </div>
 
                     <div class="field">
-                      <p>Data di rilevamento del BMI:</p>
-                      <p id="bmi_detection_date">{{ persona.bmi_detection_date }}</p>
+                        <p>Data di rilevamento del BMI:</p>
+                        <p id="bmi_detection_date" data-value="{{ persona.bmi_detection_date|default:'' }}">
+                            {{ persona.bmi_detection_date|default:"Inserisci valore" }}
+                        </p>
                     </div>
 
                     <div class="field">
-                      <p>Circonferenza Addominale:</p>
-                      <p id="girth_value">{{ persona.girth_value }}</p>
+                        <p>Circonferenza Addominale:</p>
+                        <p id="girth_value">{{ persona.girth_value|default:"Inserisci valore" }}</p>
                     </div>
-
+                    
                     <div class="field">
-                      <p>Data di misurazione Addominale:</p>
-                      <p id="girth_date">{{ persona.girth_date }}</p>
+                        <p>Data di misurazione Addominale:</p>
+                        <p id="girth_date" data-value="{{ persona.girth_date|default:'' }}">
+                            {{ persona.girth_date|default:"Inserisci valore" }}
+                        </p>
                     </div>
-
+                    
                     <div class="field">
-                      <p>Note sull'addome:</p>
-                      <p id="girth_notes">{{ persona.girth_notes }}</p>
+                        <p>Note sull'addome:</p>
+                        <p id="girth_notes">{{ persona.girth_notes|default:"Inserisci valore" }}</p>
                     </div>
 
                     {% if persona.sport_frequency %}
                     <div class="field">
                       <p>Frequenza Attività fisica:</p>
-                      <p id="sport_frequency">{{ persona.sport_frequency }}</p>
+                      <p id="sport_frequency">{{ persona.sport_frequency|default:"Inserisci valore" }}</p>
                     </div>
-                    {% else %}
+                    {% endif %}
+
+                    {% if persona.livello_sedentarieta %}
                     <div class="field">
                         <p>Sedentarietà:</p>
-                        <p id="livello_sedentarieta">{{ persona.livello_sedentarieta }}</p>
+                        <p id="livello_sedentarieta">{{ persona.livello_sedentarieta|default:"Inserisci valore" }}</p>
                     </div>
                     {% endif %}
       

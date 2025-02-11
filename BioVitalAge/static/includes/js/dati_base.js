@@ -371,7 +371,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let modificationsExist = false;
 
   const btn = document.getElementById("btn_blood_group");
-  const pressureInput = document.getElementById("pressure")
+  const pressureMinInput = document.getElementById("pressure_min")
+  const pressureMaxInput = document.getElementById("pressure_max")
   const heartRateInput = document.getElementById("heart_rate")
   const bloodGroupInput = document.getElementById("blood_group");
   const rhInput = document.getElementById("rh");
@@ -383,9 +384,15 @@ document.addEventListener("DOMContentLoaded", () => {
   btn.addEventListener("click", function () {
     if (!isEditing) {
       bloodGroupInput.removeAttribute("readonly");
+      bloodGroupInput.style.cursor = "inherit";
       rhInput.removeAttribute("readonly");
-      pressureInput.removeAttribute("readonly");
+      rhInput.style.cursor = "inherit";
+      pressureMinInput.removeAttribute("readonly");
+      pressureMinInput.style.cursor = "inherit";
+      pressureMaxInput.removeAttribute("readonly");
+      pressureMaxInput.style.cursor = "inherit";
       heartRateInput.removeAttribute("readonly");
+      heartRateInput.style.cursor = "inherit";
 
       bloodDataSection.classList.add("editing");
 
@@ -451,28 +458,31 @@ document.addEventListener("DOMContentLoaded", () => {
             />
           </svg>
         </span>
-        Save
+        Salva
         `;
       isEditing = true;
     } else {
       // Disabilita i campi dopo la modifica
       bloodGroupInput.setAttribute("readonly", true);
       rhInput.setAttribute("readonly", true);
-      pressureInput.setAttribute("readonly", true);
+      pressureMinInput.setAttribute("readonly", true);
+      pressureMaxInput.setAttribute("readonly", true);
       heartRateInput.setAttribute("readonly", true);
 
       bloodDataSection.classList.remove("editing");
 
       const newBloodGroup = bloodGroupInput.value.trim();
       const newRh = rhInput.value.trim();
-      const newPressureInput = pressureInput.value.trim();
+      const newPressureInputMin = pressureMinInput.value.trim();
+      const newPressureInputMax = pressureMaxInput.value.trim();
       const newHeartRateInput = heartRateInput.value.trim();
 
       // Solo se ci sono modifiche
       if (
         newBloodGroup !== bloodGroupInput.dataset.originalValue ||
         newRh !== rhInput.dataset.originalValue ||
-        newPressureInput !== pressureInput.dataset.originalValue ||
+        newPressureInputMin !== pressureMinInput.dataset.originalValue ||
+        newPressureInputMax !== pressureMaxInput.dataset.originalValue ||
         newHeartRateInput !== heartRateInput.dataset.originalValue
       ) {
         modificationsExist = true;
@@ -492,7 +502,8 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify({
             blood_group: newBloodGroup,
             rh_factor: newRh,
-            pressure: newPressureInput,
+            pressure_min: newPressureInputMin,
+            pressure_max: newPressureInputMax,
             heart_rate: newHeartRateInput
           }),
         })
@@ -548,7 +559,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 />
               </svg>
           </span>
-          Update
+          Aggiorna
         `;
       isEditing = false;
     }

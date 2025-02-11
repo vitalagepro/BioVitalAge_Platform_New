@@ -9,7 +9,7 @@
     <!-- Favicon -->
     <link rel="sortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
 
-    <title>Cartella Paziente, {{ persona.name }}</title>
+    <title>Inserisci Prescrizioni</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}">
@@ -56,7 +56,14 @@
             <div class="back-tittle">
                 <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}"
                         alt=""></a>
-                <h2 class="main-welcome-title">Inserisci Prescrizioni , {{ persona.name }} {{ persona.surname }}</h2>
+                        <h2 class="main-welcome-title">
+                          {{ persona.name }} - 
+                          {{ persona.surname }} - 
+                          {{ persona.chronological_age }} 
+                          {% if persona.phone and persona.email %}
+                            - {{ persona.phone }} - {{ persona.email }}
+                          {% endif %}
+                      </h2>            
             </div>
 
             <div class="main-menu-trace">

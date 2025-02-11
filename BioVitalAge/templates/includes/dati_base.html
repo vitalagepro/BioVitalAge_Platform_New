@@ -41,7 +41,14 @@
       <div class="main-title-nav">
         <div class="back-tittle">
           <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to folder"></a>
-          <h2 class="main-welcome-title">{{ persona.name }} {{ persona.surname }} - {{ persona.dob }} - {{ persona.chronological_age }} - {{ persona.codice_fiscale }} - {{ persona.phone }} - {{ persona.email }}</h2>
+          <h2 class="main-welcome-title">
+            {{ persona.name }} - 
+            {{ persona.surname }} - 
+            {{ persona.chronological_age }} 
+            {% if persona.phone and persona.email %}
+              - {{ persona.phone }} - {{ persona.email }}
+            {% endif %}
+          </h2>
         </div>
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
@@ -58,7 +65,7 @@
         <form id="datiBaseForm2" method="POST">
           {% csrf_token %} 
             <div class="table-title-tools">
-              <p class="table-title">Alcohol</p>
+              <p class="table-title">Alcol</p>
               <div class="container-menu">
                 <div class="tools-menu-button" id="menu-3">
                   <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-3')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
@@ -197,8 +204,16 @@
           <div class="column">
             <div class="container mb-4">
               <h3>Pressione Arteriosa</h3>
-              <input type="text" placeholder="Inserisci valori" readonly id="pressure" value="{{ persona.pressure|default:'' }}"
-                data-patient-id="{{ persona.id }}" />
+              <div class="container-pressure d-flex">
+                <div class="val-min">
+                  <span>Valore Minimo</span>
+                  <input class="w-100" type="text" placeholder="Inserisci valori minimi" readonly id="pressure_min" value="{{ persona.pressure_min|default:'' }}" data-patient-id="{{ persona.id }}" />
+                </div>
+                <div class="val-max">
+                  <span>Valore Massimo</span>
+                  <input type="text" class="w-100" placeholder="Inserisci valori massimi" readonly id="pressure_max" value="{{ persona.pressure_max|default:'' }}" data-patient-id="{{ persona.id }}" />  
+                </div>
+              </div>
             </div>
           
             <div class="container">
@@ -255,7 +270,7 @@
             />
           </svg>
           </span>
-          Update
+          Aggiorna
         </button>
       </section>
     </main>

@@ -7,7 +7,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
 
-    <title>BioVitalAge - Referto</title>
+    <title>BioVitalAge - Referto Capacità Vitale</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/Referto.css' %}">
@@ -56,7 +56,14 @@
             <div class="back-tittle">
                 <a id="back" href="{% url 'etaVitale' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}"
                         alt="back_ico" title="Back to Results"></a>
-                <h2 class="main-welcome-title">Referto Capacità Vitale, {{ persona.name }} {{ persona.surname }}</h2>
+                        <h2 class="main-welcome-title">
+                            {{ persona.name }} - 
+                            {{ persona.surname }} - 
+                            {{ persona.chronological_age }} 
+                            {% if persona.phone and persona.email %}
+                              - {{ persona.phone }} - {{ persona.email }}
+                            {% endif %}
+                        </h2>            
             </div>
     
             <div class="main-menu-trace">

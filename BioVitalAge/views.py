@@ -1416,7 +1416,8 @@ class UpdateBloodDataView(View):
             data = json.loads(request.body)
             blood_group = data.get("blood_group", "N/A")
             rh_factor = data.get("rh_factor", "N/A")
-            pressure = data.get("pressure", "Inserisci i valori")
+            pressure_min = data.get("pressure_min", "Inserisci i valori")
+            pressure_max = data.get("pressure_max", "Inserisci i valori")
             heart_rate = data.get("heart_rate", "Inserisci i valori")
 
             # Recupera il paziente corrispondente
@@ -1425,7 +1426,8 @@ class UpdateBloodDataView(View):
             # Aggiorna i dati
             persona.blood_group = blood_group
             persona.rh_factor = rh_factor
-            persona.pressure = pressure
+            persona.pressure_min = pressure_min
+            persona.pressure_max = pressure_max
             persona.heart_rate = heart_rate
             persona.save()
 

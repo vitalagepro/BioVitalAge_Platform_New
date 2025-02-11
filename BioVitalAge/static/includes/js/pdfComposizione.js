@@ -117,461 +117,235 @@ document.addEventListener("DOMContentLoaded", function () {
 /*  -----------------------------------------------------------------------------------------------
     FUNZIONE MODIFICA DATI
 --------------------------------------------------------------------------------------------------- */
-function formatDateForInput(dateString) {
-  if (!dateString || dateString.trim() === "") return null; // Restituisci null invece di ""
-
-  // Controlla se è già in formato YYYY-MM-DD
-  if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-    return dateString;
-  }
-
-  // Converti la data se è in un altro formato
-  const parsedDate = new Date(dateString);
-  if (!isNaN(parsedDate.getTime())) {
-    parsedDate.setMinutes(
-      parsedDate.getMinutes() - parsedDate.getTimezoneOffset()
-    );
-    return parsedDate.toISOString().split("T")[0];
-  }
-
-  return null; // Se la conversione fallisce, restituisci null
-}
-
 document.addEventListener("DOMContentLoaded", function () {
-  const csrfToken = document
-    .querySelector('meta[name="csrf-token"]')
-    .getAttribute("content");
-
   const editButton = document.querySelector('a[title="Modifica"]');
   if (!editButton) {
     console.error('Il pulsante "Modifica" non è stato trovato.');
     return;
   }
 
-  const peso = document.getElementById("peso");
-  const bmi = document.getElementById("bmi");
-  const bmi_detection_date = document.getElementById("bmi_detection_date");
-  const girth_value = document.getElementById("girth_value");
-  const girth_date = document.getElementById("girth_date");
-  const girth_notes = document.getElementById("girth_notes");
-  const sport_frequency = document.getElementById("sport_frequency");
-  const livello_sedentarieta = document.getElementById("livello_sedentarieta");
-  const grasso = document.getElementById("grasso");
-  const acqua = document.getElementById("acqua");
-  const massaOssea = document.getElementById("massa_ossea");
-  const massaMuscolare = document.getElementById("massa_muscolare");
-  const bmr = document.getElementById("bmr");
-  const etaMetabolica = document.getElementById("eta_metabolica");
-  const grassoViscerale = document.getElementById("grasso_viscerale");
-  const whr = document.getElementById("whr");
-  const whtr = document.getElementById("whtr");
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
-  let isEditing = false; // Stato per determinare se siamo in modalità modifica
+  const fields = {
+    height: "altezza",
+    weight: "peso",
+    bmi: "bmi",
+    bmi_detection_date: "bmi_detection_date",
+    girth_value: "girth_value",
+    girth_date: "girth_date",
+    girth_notes: "girth_notes",
+    sport_frequency: "sport_frequency",
+    livello_sedentarieta: "livello_sedentarieta",
+    grasso: "grasso",
+    acqua: "acqua",
+    massa_ossea: "massa_ossea",
+    massa_muscolare: "massa_muscolare",
+    bmr: "bmr",
+    eta_metabolica: "eta_metabolica",
+    grasso_viscerale: "grasso_viscerale",
+    whr: "whr",
+    whtr: "whtr",
+  };
 
-  // Funzione per mostrare una notifica
-  function showAlert(alertElement, message) {
-    const messageElement = alertElement.querySelector("span");
-    messageElement.textContent = message;
-    alertElement.style.display = "block";
-    alertElement.classList.add("show");
-
-    // Nascondi la notifica dopo 3 secondi
-    setTimeout(() => {
-      alertElement.classList.remove("show");
-      setTimeout(() => (alertElement.style.display = "none"), 500);
-    }, 3000);
-  }
+  let originalValues = {};
+  let isEditing = false;
 
   editButton.addEventListener("click", function (event) {
     event.preventDefault();
 
     if (!isEditing) {
-      // Modalità modifica
+      // ---- ENTRA IN MODIFICA ----
       isEditing = true;
 
-      // Crea i campi di input
-      const pesoInput = document.createElement("input");
-      pesoInput.type = "text";
-      pesoInput.value = peso.textContent.trim();
-      pesoInput.id = "pesoInput";
+      Object.keys(fields).forEach((key) => {
+        const fieldElement = document.getElementById(fields[key]);
+        if (fieldElement) {
+          const originalValue = fieldElement.dataset.value?.trim() || fieldElement.textContent.trim() || "";
+          originalValues[key] = originalValue;
 
-      const bmiInput = document.createElement("input");
-      bmiInput.type = "text";
-      bmiInput.value = bmi.textContent.trim();
-      bmiInput.id = "bmiInput";
+          const input = document.createElement("input");
+          input.type = fieldElement.id.includes("date") ? "date" : "text";
 
-      const bmiDetectionDateInput = document.createElement("input");
-      bmiDetectionDateInput.type = "date";
-      bmiDetectionDateInput.value = formatDateForInput(
-        bmi_detection_date.textContent.trim()
-      );
-      bmiDetectionDateInput.id = "bmiDetectionDateInput";
+          // Se è una data, la convertiamo, altrimenti lasciamo il valore originale
+          input.value = fieldElement.id.includes("date")
+            ? formatDateForInput(originalValue)
+            : originalValue;
 
-      const girthValueInput = document.createElement("input");
-      girthValueInput.type = "text";
-      girthValueInput.value = girth_value.textContent.trim();
-      girthValueInput.id = "girthValueInput";
+          input.id = `${key}Input`;
+          input.dataset.originalValue = originalValue;
 
-      const girthDateInput = document.createElement("input");
-      girthDateInput.type = "date";
-      girthDateInput.value = formatDateForInput(girth_date.textContent.trim());
-      girthDateInput.id = "girthDateInput";
+          fieldElement.textContent = "";
+          fieldElement.appendChild(input);
+        }
+      });
 
-      const girthNotesInput = document.createElement("input");
-      girthNotesInput.type = "text";
-      girthNotesInput.value = girth_notes.textContent.trim();
-      girthNotesInput.id = "girthNotesInput";
-
-      const sportFrequencyInput = document.createElement("input");
-      if (document.getElementById("sport_frequency")) {
-        sportFrequencyInput.type = "text";
-        sportFrequencyInput.placeholder = "Inserisci valore";
-        sportFrequencyInput.value = sport_frequency.textContent.trim();
-        sportFrequencyInput.id = "sportFrequencyInput";
-      }
-
-      const livelloSedentarietaInput = document.createElement("input");
-      if (document.getElementById("livello_sedentarieta")) {
-        livelloSedentarietaInput.type = "text";
-        livelloSedentarietaInput.placeholder = "Inserisci valore";
-        livelloSedentarietaInput.value =
-          livello_sedentarieta.textContent.trim();
-        livelloSedentarietaInput.id = "livelloSedentarietaInput";
-      }
-
-      const grassoInput = document.createElement("input");
-      grassoInput.type = "text";
-      grassoInput.value = grasso.textContent.trim();
-      grassoInput.id = "grassoInput";
-
-      const acquaInput = document.createElement("input");
-      acquaInput.type = "text";
-      acquaInput.value = acqua.textContent.trim();
-      acquaInput.id = "acquaInput";
-
-      const massaOsseaInput = document.createElement("input");
-      massaOsseaInput.type = "text";
-      massaOsseaInput.value = massaOssea.textContent.trim();
-      massaOsseaInput.id = "massaOsseaInput";
-
-      const massaMuscolareInput = document.createElement("input");
-      massaMuscolareInput.type = "text";
-      massaMuscolareInput.value = massaMuscolare.textContent.trim();
-      massaMuscolareInput.id = "massaMuscolareInput";
-
-      const bmrInput = document.createElement("input");
-      bmrInput.type = "text";
-      bmrInput.value = bmr.textContent.trim();
-      bmrInput.id = "bmrInput";
-
-      const etaMetabolicaInput = document.createElement("input");
-      etaMetabolicaInput.type = "text";
-      etaMetabolicaInput.value = etaMetabolica.textContent.trim();
-      etaMetabolicaInput.id = "etaMetabolicaInput";
-
-      const grassoVisceraleInput = document.createElement("input");
-      grassoVisceraleInput.type = "text";
-      grassoVisceraleInput.value = grassoViscerale.textContent.trim();
-      grassoVisceraleInput.id = "grassoVisceraleInput";
-
-      const whrInput = document.createElement("input");
-      whrInput.type = "text";
-      whrInput.value = whr.textContent.trim();
-      whrInput.id = "whrInput";
-
-      const whtrInput = document.createElement("input");
-      whtrInput.type = "text";
-      whtrInput.value = whtr.textContent.trim();
-      whtrInput.id = "whtrInput";
-
-      peso.textContent = "";
-      peso.appendChild(pesoInput);
-
-      bmi.textContent = "";
-      bmi.appendChild(bmiInput);
-
-      bmi_detection_date.textContent = "";
-      bmi_detection_date.appendChild(bmiDetectionDateInput);
-
-      girth_value.textContent = "";
-      girth_value.appendChild(girthValueInput);
-
-      girth_date.textContent = "";
-      girth_date.appendChild(girthDateInput);
-
-      girth_notes.textContent = "";
-      girth_notes.appendChild(girthNotesInput);
-
-      sport_frequency.textContent = "";
-      sport_frequency.appendChild(sportFrequencyInput);
-
-      if (document.getElementById("livello_sedentarieta")) {
-        livello_sedentarieta.textContent = "";
-        livello_sedentarieta.appendChild(livelloSedentarietaInput);
-      }
-
-      grasso.textContent = "";
-      grasso.appendChild(grassoInput);
-
-      acqua.textContent = "";
-      acqua.appendChild(acquaInput);
-
-      massaOssea.textContent = "";
-      massaOssea.appendChild(massaOsseaInput);
-
-      massaMuscolare.textContent = "";
-      massaMuscolare.appendChild(massaMuscolareInput);
-
-      bmr.textContent = "";
-      bmr.appendChild(bmrInput);
-
-      etaMetabolica.textContent = "";
-      etaMetabolica.appendChild(etaMetabolicaInput);
-
-      grassoViscerale.textContent = "";
-      grassoViscerale.appendChild(grassoVisceraleInput);
-
-      whr.textContent = "";
-      whr.appendChild(whrInput);
-
-      whtr.textContent = "";
-      whtr.appendChild(whtrInput);
+      // Attiva il calcolo automatico del BMI (altezza x peso)
+      setupBMICalculation();
 
       editButton.innerHTML = `
-          Salva 
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="30"
-                height="30"
-                class="svg save-icon"
-              >
-                <path
-                  d="M22,15.04C22,17.23 20.24,19 18.07,19H5.93C3.76,19 2,17.23 2,15.04C2,13.07 3.43,11.44 5.31,11.14C5.28,11 5.27,10.86 5.27,10.71C5.27,9.33 6.38,8.2 7.76,8.2C8.37,8.2 8.94,8.43 9.37,8.8C10.14,7.05 11.13,5.44 13.91,5.44C17.28,5.44 18.87,8.06 18.87,10.83C18.87,10.94 18.87,11.06 18.86,11.17C20.65,11.54 22,13.13 22,15.04Z"
-                ></path>
-              </svg>
-          `;
-      editButton.title = "Save";
+        Salva 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="30"
+              height="30"
+              class="svg save-icon"
+            >
+              <path
+                d="M22,15.04C22,17.23 20.24,19 18.07,19H5.93C3.76,19 2,17.23 2,15.04C2,13.07 3.43,11.44 5.31,11.14C5.28,11 5.27,10.86 5.27,10.71C5.27,9.33 6.38,8.2 7.76,8.2C8.37,8.2 8.94,8.43 9.37,8.8C10.14,7.05 11.13,5.44 13.91,5.44C17.28,5.44 18.87,8.06 18.87,10.83C18.87,10.94 18.87,11.06 18.86,11.17C20.65,11.54 22,13.13 22,15.04Z"
+              ></path>
+            </svg>
+        `;
+      editButton.title = "Salva";
     } else {
-      const pesoInput = document.getElementById("pesoInput");
-      const bmiInput = document.getElementById("bmiInput");
-      const bmiDetectionDateInput = document.getElementById(
-        "bmiDetectionDateInput"
-      );
-      const girthValueInput = document.getElementById("girthValueInput");
-      const girthDateInput = document.getElementById("girthDateInput");
-      const girthNotesInput = document.getElementById("girthNotesInput");
-      const sportFrequencyInput = document.getElementById(
-        "sportFrequencyInput"
-      );
-      const livelloSedentarietaInput = document.getElementById(
-        "livelloSedentarietaInput"
-      );
-      const grassoInput = document.getElementById("grassoInput");
-      const acquaInput = document.getElementById("acquaInput");
-      const massaOsseaInput = document.getElementById("massaOsseaInput");
-      const massaMuscolareInput = document.getElementById(
-        "massaMuscolareInput"
-      );
-      const bmrInput = document.getElementById("bmrInput");
-      const etaMetabolicaInput = document.getElementById("etaMetabolicaInput");
-      const grassoVisceraleInput = document.getElementById(
-        "grassoVisceraleInput"
-      );
-      const whrInput = document.getElementById("whrInput");
-      const whtrInput = document.getElementById("whtrInput");
+      // ---- SALVA MODIFICHE ----
+      let updatedValues = {};
+      let finalPayload = {};
 
-      const updatedPeso = pesoInput.value;
-      const updatedBmi = bmiInput.value;
-      const updatedBmiDetectionDate = bmiDetectionDateInput.value
-        ? bmiDetectionDateInput.value
-        : null;
-      const updatedGirthValue = girthValueInput.value;
-      const updatedGirthDate = girthDateInput.value
-        ? girthDateInput.value
-        : null;
-      const updatedGirthNotes = girthNotesInput.value;
-      const updatedSportFrequency = sportFrequencyInput.value;
-      const updatedLivelloSedentarieta = livello_sedentarieta
-        ? livelloSedentarietaInput.value
-        : null;
-      const updatedGrasso = grassoInput.value;
-      const updatedAcqua = acquaInput.value;
-      const updatedMassaOssea = massaOsseaInput.value;
-      const updatedMassaMuscolare = massaMuscolareInput.value;
-      const updatedbmr = bmrInput.value;
-      const updatedEtaMetabolica = etaMetabolicaInput.value;
-      const updatedGrassoViscerale = grassoVisceraleInput.value;
-      const updatedWHR = whrInput.value;
-      const updatedWHTR = whtrInput.value;
+      Object.keys(fields).forEach((key) => {
+        const input = document.getElementById(`${key}Input`);
+        if (input) {
+          let newValue = input.value.trim();
+          let oldValue = input.dataset.originalValue.trim();
 
-      if (sport_frequency) {
-        fetch(updatePersonaComposizioneUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
-          },
-          body: JSON.stringify({
-            weight: updatedPeso,
-            bmi: updatedBmi,
-            bmi_detection_date: updatedBmiDetectionDate,
-            girth_value: updatedGirthValue,
-            girth_date: updatedGirthDate,
-            girth_notes: updatedGirthNotes,
-            sport_frequency: updatedSportFrequency,
-            grasso: updatedGrasso,
-            acqua: updatedAcqua,
-            massa_muscolare: updatedMassaMuscolare,
-            massa_ossea: updatedMassaOssea,
-            bmr: updatedbmr,
-            eta_metabolica: updatedEtaMetabolica,
-            grasso_viscerale: updatedGrassoViscerale,
-            whr: updatedWHR,
-            whtr: updatedWHTR,
-          }),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(
-                `HTTP Error ${response.status}: ${response.statusText}`
-              );
-            }
-            return response.json();
-          })
-          .then((data) => {
-            if (data.success) {
-              console.log("Dati aggiornati con successo.");
-
-              peso.textContent = updatedPeso;
-              bmi.textContent = updatedBmi;
-              bmi_detection_date.textContent = updatedBmiDetectionDate
-                ? updatedBmiDetectionDate
-                : "Nessuna data";
-              girth_value.textContent = updatedGirthValue;
-              girth_date.textContent = updatedGirthDate
-                ? updatedGirthDate
-                : "Nessuna data";
-              girth_notes.textContent = updatedGirthNotes;
-              sport_frequency.textContent = updatedSportFrequency;
-              grasso.textContent = updatedGrasso;
-              acqua.textContent = updatedAcqua;
-              massaMuscolare.textContent = updatedMassaMuscolare;
-              massaOssea.textContent = updatedMassaOssea;
-              bmr.textContent = updatedbmr;
-              etaMetabolica.textContent = updatedEtaMetabolica;
-              grassoViscerale.textContent = updatedGrassoViscerale;
-              whr.textContent = updatedWHR;
-              whtr.textContent = updatedWHTR;
-
-              editButton.innerHTML = `Edita
-                    <svg class="svg" viewBox="0 0 512 512">
-                      <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path>
-                    </svg>`;
-              editButton.title = "Modifica";
-
-              isEditing = false;
-
-              // Mostra il messaggio di successo
-              showAlert(successAlert, "Modifiche effettuate con successo!");
+          // Se è un campo data, lo converto in formato yyyy-mm-dd (o vuoto)
+          if (input.type === "date") {
+            newValue = formatDateForInput(newValue);
+          } else {
+            // Altri campi → se vuoto o 'inserisci valore', metto null
+            // se è un numero valido, parseFloat,
+            // altrimenti ripristino oldValue (non vogliamo un testo non numerico per i campi che devono essere numerici)
+            if (newValue.toLowerCase() === "inserisci valore" || newValue === "") {
+              newValue = null;
+            } else if (!isNaN(newValue)) {
+              newValue = parseFloat(newValue);
             } else {
-              console.error("Errore dal server:", data.error);
-
-              // Mostra il messaggio di errore
-              showAlert(errorAlert, `Errore dal server: ${data.error}`);
+              // Se non è un numero valido, manteniamo il vecchio valore (qualunque esso fosse)
+              newValue = oldValue;
             }
-          })
-          .catch((error) => {
-            console.error("Errore nella richiesta:", error);
+          }
 
-            // Mostra il messaggio di errore
-            showAlert(errorAlert, `Errore nella richiesta: ${error.message}`);
-          });
-      } else if (livello_sedentarieta) {
-        fetch(updatePersonaComposizioneUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
-          },
-          body: JSON.stringify({
-            peso: updatedPeso,
-            bmi: updatedBmi,
-            bmi_detection_date: updatedBmiDetectionDate,
-            girth_value: updatedGirthValue,
-            girth_date: updatedGirthDate,
-            girth_notes: updatedGirthNotes,
-            livello_sedentarieta: updatedLivelloSedentarieta,
-            grasso: updatedGrasso,
-            acqua: updatedAcqua,
-            massa_muscolare: updatedMassaMuscolare,
-            massa_ossea: updatedMassaOssea,
-            bmr: updatedbmr,
-            eta_metabolica: updatedEtaMetabolica,
-            grasso_viscerale: updatedGrassoViscerale,
-            whr: updatedWHR,
-            whtr: updatedWHTR,
-          }),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(
-                `HTTP Error ${response.status}: ${response.statusText}`
-              );
-            }
-            return response.json();
-          })
-          .then((data) => {
-            if (data.success) {
-              console.log("Dati aggiornati con successo.");
+          // Se il valore è stato modificato davvero, lo includiamo in finalPayload
+          if (String(newValue) !== String(oldValue)) {
+            // Aggiorno la lista di campi modificati
+            updatedValues[key] = newValue;
+            finalPayload[key] = newValue;
+          }
+        }
+      });
 
-              peso.textContent = updatedPeso;
-              bmi.textContent = updatedBmi;
-              bmi_detection_date.textContent = updatedBmiDetectionDate
-                ? updatedBmiDetectionDate
-                : "Nessuna data";
-              girth_value.textContent = updatedGirthValue;
-              girth_date.textContent = updatedGirthDate
-                ? updatedGirthDate
-                : "Nessuna data";
-              girth_notes.textContent = updatedGirthNotes;
-              livello_sedentarieta.textContent = updatedLivelloSedentarieta;
-              grasso.textContent = updatedGrasso;
-              acqua.textContent = updatedAcqua;
-              massaMuscolare.textContent = updatedMassaMuscolare;
-              massaOssea.textContent = updatedMassaOssea;
-              bmr.textContent = updatedbmr;
-              etaMetabolica.textContent = updatedEtaMetabolica;
-              grassoViscerale.textContent = updatedGrassoViscerale;
-              whr.textContent = updatedWHR;
-              whtr.textContent = updatedWHTR;
-
-              editButton.innerHTML = `Edita
-                    <svg class="svg" viewBox="0 0 512 512">
-                      <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path>
-                    </svg>`;
-              editButton.title = "Modifica";
-
-              isEditing = false;
-
-              // Mostra il messaggio di successo
-              showAlert(successAlert, "Modifiche effettuate con successo!");
-            } else {
-              console.error("Errore dal server:", data.error);
-
-              // Mostra il messaggio di errore
-              showAlert(errorAlert, `Errore dal server: ${data.error}`);
-            }
-          })
-          .catch((error) => {
-            console.error("Errore nella richiesta:", error);
-
-            // Mostra il messaggio di errore
-            showAlert(errorAlert, `Errore nella richiesta: ${error.message}`);
-          });
+      // Se non ci sono effettive modifiche, non invio nulla
+      if (Object.keys(updatedValues).length === 0) {
+        console.log("Nessuna modifica rilevata. Nessuna richiesta inviata.");
+        resetEditingState();
+        return;
       }
+
+      // Invia i dati al server
+      fetch(updatePersonaComposizioneUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify(finalPayload),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data.success) {
+            console.log("Dati aggiornati con successo.");
+
+            // Aggiorna la vista con i nuovi valori
+            Object.keys(finalPayload).forEach((key) => {
+              const fieldElement = document.getElementById(fields[key]);
+              if (fieldElement) {
+                fieldElement.textContent = finalPayload[key] !== null ? finalPayload[key] : "Inserisci valore";
+              }
+            });
+
+            resetEditingState();
+          } else {
+            console.error("Errore dal server:", data.error);
+          }
+        })
+        .catch((error) => {
+          console.error("Errore nella richiesta:", error);
+        });
     }
   });
+
+  // Calcolo automatico del BMI mentre si scrive (altezza e peso)
+  function setupBMICalculation() {
+    const altezzaInput = document.getElementById("altezzaInput");
+    const pesoInput = document.getElementById("pesoInput");
+    const bmiInput = document.getElementById("bmiInput");
+
+    if (altezzaInput && pesoInput && bmiInput) {
+      // Se il BMI ha già un valore valido, non lo ricalcoliamo
+      if (bmiInput.value.trim() !== "" && !isNaN(parseFloat(bmiInput.value))) {
+        return;
+      }
+
+      const calculateBMI = () => {
+        const altezza = parseFloat(altezzaInput.value) / 100; // da cm a metri
+        const peso = parseFloat(pesoInput.value);
+
+        if (!isNaN(altezza) && altezza > 0 && !isNaN(peso) && peso > 0) {
+          const bmi = (peso / (altezza * altezza)).toFixed(2);
+          bmiInput.value = bmi;
+        }
+      };
+
+      altezzaInput.addEventListener("input", calculateBMI);
+      pesoInput.addEventListener("input", calculateBMI);
+    }
+  }
+
+  // Formatta data in YYYY-MM-DD (accettabile per <input type="date">)
+  function formatDateForInput(dateString) {
+    if (!dateString || dateString.trim() === "" || dateString.toLowerCase() === "inserisci valore") {
+      return ""; // se vuoto o placeholder, restituisco stringa vuota
+    }
+
+    // Se è già YYYY-MM-DD, lo lascio così
+    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      return dateString;
+    }
+
+    // Altrimenti provo a fare il parsing come data generica
+    const parsedDate = new Date(dateString);
+    if (!isNaN(parsedDate.getTime())) {
+      // Aggiusto il fuso orario
+      parsedDate.setMinutes(parsedDate.getMinutes() - parsedDate.getTimezoneOffset());
+      return parsedDate.toISOString().split("T")[0];
+    }
+
+    // Se niente funziona, restituisco stringa vuota
+    return "";
+  }
+
+  // Torna alla visualizzazione "normale" (senza input)
+  function resetEditingState() {
+    Object.keys(fields).forEach((key) => {
+      const fieldElement = document.getElementById(fields[key]);
+      const input = document.getElementById(`${key}Input`);
+      if (fieldElement && input) {
+        fieldElement.textContent = input.value.trim() || "Inserisci valore";
+      }
+    });
+
+    editButton.innerHTML = `Edita
+                  <svg class="svg" viewBox="0 0 512 512">
+                    <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path>
+                  </svg>`;
+    editButton.title = "Modifica";
+    isEditing = false;
+  }
 });
 
 /*  -----------------------------------------------------------------------------------------------
