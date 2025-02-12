@@ -171,7 +171,9 @@
             
                     <div class="field">
                         <p>Note sull'addome:</p>
-                        <p id="girth_notes">{{ persona.girth_notes|default:"Inserisci valore" }}</p>
+                        <p id="girth_notes" data-value="{{ persona.girth_notes|default_if_none:'Inserisci valore' }}">
+                            {{ persona.girth_notes|default_if_none:'Inserisci valore' }}
+                        </p>
                     </div>
             
                     {% if persona.sport_frequency %}

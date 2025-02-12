@@ -10,18 +10,6 @@ const colors = {
 };
 
 document.addEventListener("DOMContentLoaded", async function () {
-  function getBmiDistribution(bmi) {
-    if (bmi < 18.5) {
-      return [100, 0, 0, 0]; // Tutto in "Insufficientemente grasso"
-    } else if (bmi >= 18.5 && bmi < 25) {
-      return [0, 100, 0, 0]; // Tutto in "Sano"
-    } else if (bmi >= 25 && bmi < 30) {
-      return [0, 0, 100, 0]; // Tutto in "Eccessivamente grasso"
-    } else {
-      return [0, 0, 0, 100]; // Tutto in "Obeso"
-    }
-  }
-
   try {
     // ✅ Recupera i dati dal backend
     const response = await fetch(updatePersonaComposizioneUrl);
@@ -41,14 +29,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     const gender = personaDataDiv.getAttribute("data-gender");
-    const acquaAttuale =
-      parseFloat(personaDataDiv.getAttribute("data-acqua")) || 0;
+    const acquaAttuale = parseFloat(data.personaComposizione.acqua) || 0;
     const massaMuscolare =
-      parseFloat(personaDataDiv.getAttribute("data-massa-muscolare")) || 0;
-    const massaOssea =
-      parseFloat(personaDataDiv.getAttribute("data-massa-ossea")) || 0;
-    const grasso = parseFloat(personaDataDiv.getAttribute("data-grasso")) || 0;
-    const bmi = parseFloat(data.personaComposizione.bmi) || 0;
+      parseFloat(data.personaComposizione.massa_muscolare) || 0;
+    const massaOssea = parseFloat(data.personaComposizione.massa_ossea) || 0;
+    const grasso = parseFloat(data.personaComposizione.grasso) || 0;
+    const grassoViscerale =
+      parseFloat(data.personaComposizione.grasso_viscerale) || 0;
     let punteggioAttuale =
       parseFloat(data.personaComposizione.punteggio_fisico) || 1;
 
@@ -61,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       massaMuscolare,
       massaOssea,
       grasso,
-      bmi,
+      grassoViscerale,
       punteggioAttuale,
     });
 
@@ -70,7 +57,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // ✅ Recupera lo storico dal backend
     let storicoPunteggi = data.personaComposizione.storico_punteggi || [];
-
     if (storicoPunteggi.length === 0) {
       storicoPunteggi.push({
         punteggio: punteggioAttuale,
@@ -84,7 +70,25 @@ document.addEventListener("DOMContentLoaded", async function () {
     );
     const datiStorico = storicoPunteggi.map((entry) => entry.punteggio);
 
-    // ✅ Creazione di tutti i grafici
+    // ✅ Funzione per calcolare la distribuzione del BMI Chart
+    function getBmiDistribution(
+      massaGrassa,
+      massaMuscolare,
+      massaOssea,
+      grassoViscerale
+    ) {
+      let insufficientementeGrasso = Math.max(
+        0,
+        100 - (massaGrassa + massaMuscolare + massaOssea + grassoViscerale)
+      );
+      let sano = Math.min(100, massaMuscolare);
+      let eccessivamenteGrasso = Math.min(100, massaGrassa);
+      let obeso = Math.min(100, grassoViscerale);
+
+      return [insufficientementeGrasso, sano, eccessivamenteGrasso, obeso];
+    }
+
+    // ✅ Creazione dei grafici
     const chartsData = [
       {
         elementId: "bmiChart",
@@ -95,7 +99,12 @@ document.addEventListener("DOMContentLoaded", async function () {
           "Eccessivamente grasso",
           "Obeso",
         ],
-        data: getBmiDistribution(bmi),
+        data: getBmiDistribution(
+          grasso,
+          massaMuscolare,
+          massaOssea,
+          grassoViscerale
+        ),
         backgroundColor: [
           colors.contrastColor,
           colors.positiveColor,
@@ -124,10 +133,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            y: {
-              beginAtZero: true,
-              suggestedMax: 100,
-            },
+            y: { beginAtZero: true, suggestedMax: 100 },
           },
         },
       },
@@ -195,13 +201,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            y: {
-              suggestedMin: 1,
-              suggestedMax: 9,
-              ticks: {
-                stepSize: 1,
-              },
-            },
+            y: { suggestedMin: 1, suggestedMax: 9, ticks: { stepSize: 1 } },
           },
         },
       });
