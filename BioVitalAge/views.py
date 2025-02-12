@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from xml.etree.ElementInclude import include
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -1638,7 +1638,6 @@ def update_persona_contact(request, id):
 
 
 # Funzione per aggiornare i dati di una persona in composizione corpo
-from datetime import datetime
 @csrf_exempt
 def update_persona_composizione(request, id):
     try:

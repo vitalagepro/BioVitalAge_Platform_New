@@ -265,8 +265,6 @@ document.addEventListener("DOMContentLoaded", function () {
         lastVisitSpan.textContent.trim()
       );
       lastVisitInput.id = "lastVisitInput";
-      console.log(lastVisitSpan.textContent.trim());
-      console.log(upcomingVisitSpan.textContent.trim());
 
       const upcomingVisitInput = document.createElement("input");
       upcomingVisitInput.type = "date";

@@ -153,7 +153,7 @@
                     <div class="field">
                         <p>Data di rilevamento del BMI:</p>
                         <p id="bmi_detection_date" data-value="{{ persona.bmi_detection_date|default:'' }}">
-                            {{ persona.bmi_detection_date|default:"Inserisci valore" }}
+                            {{ persona.bmi_detection_date|default:"Inserisci valore"|date:"d/m/Y" }}
                         </p>
                     </div>
             
@@ -165,7 +165,7 @@
                     <div class="field">
                         <p>Data di misurazione Addominale:</p>
                         <p id="girth_date" data-value="{{ persona.girth_date|default:'' }}">
-                            {{ persona.girth_date|default:"Inserisci valore" }}
+                            {{ persona.girth_date|default:"Inserisci valore"|date:"d/m/Y" }}
                         </p>
                     </div>
             

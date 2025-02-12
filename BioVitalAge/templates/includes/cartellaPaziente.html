@@ -118,7 +118,7 @@
 
                     <div class="field">
                         <p>Data di Nascita:</p>
-                        <p>{{ persona.dob }}</p>
+                        <p>{{ persona.dob|date:"d/m/Y" }}</p>
                     </div>
 
                     <div class="field">
@@ -163,7 +163,7 @@
                                 <img src="{% static 'includes/icone/ospedale.png' %}" alt="">
                             </div>
 
-                            <p>Visita Recente<span id="lastVisit">{{ persona.lastVisit|default:"dd/mm/yyyy"}}</span></p>
+                            <p>Visita Recente<span id="lastVisit">{{ persona.lastVisit|date:"d/m/Y"}}</span></p>
                         </div>
 
                         <div class="card-subcard">
@@ -171,7 +171,7 @@
                                 <img src="{% static 'includes/icone/calendario.png' %}" alt="">
                             </div>
 
-                            <p>Prossima Visita<span id="upcomingVisit">{{persona.upcomingVisit|default:"dd/mm/yyyy"}}</span></p>
+                            <p>Prossima Visita<span id="upcomingVisit">{{ persona.upcomingVisit|date:"d/m/Y" }}</span></p>
                         </div>
 
                         <div class="card-subcard">
