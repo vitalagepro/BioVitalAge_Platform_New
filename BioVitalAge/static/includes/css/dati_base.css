@@ -141,17 +141,8 @@
   cursor: not-allowed;
 }
 
-.container-pressure{
-  margin-top: -0.7rem;
-}
-
 #pressure_min{
   border-radius: 0px 0px 0px 8px;
-}
-
-.val-min span{
-  font-weight: bold;
-  margin-left: 15px;
 }
 
 #pressure_max{
@@ -159,10 +150,24 @@
   border-left: none;
 }
 
-.val-max span{
-  font-weight: bold;
-  margin-left: 15px;
+.val-min, .val-max{
+  width: 100%;
+  position: relative;
 }
+
+.val-min span,
+.val-max span{
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--card-color);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
 
 .column {
   flex: 1; /* Occupa lo spazio in modo equo */

@@ -65,15 +65,43 @@ function chiudiVignetta() {
 /*  -----------------------------------------------------------------------------------------------
     Funzione per la selezione del punteggio fisico
 --------------------------------------------------------------------------------------------------- */
+
+function showConfirmModal(callback) {
+  const modal = document.getElementById("confirm-reset-modal");
+  const confirmButton = document.getElementById("confirm-reset-btn");
+  const cancelButton = document.getElementById("cancel-reset-btn");
+
+  modal.classList.remove("hidden-modal-custom");
+
+  confirmButton.onclick = function () {
+    modal.classList.add("hidden-modal-custom");
+    callback(true); // Confermato
+  };
+
+  cancelButton.onclick = function () {
+    modal.classList.add("hidden-modal-custom");
+    callback(false); // Annullato
+  };
+
+  // Chiudi la modale cliccando fuori
+  modal.onclick = function (event) {
+    if (event.target === modal) {
+      modal.classList.add("hidden-modal-custom");
+      callback(false); // Annullato
+    }
+  };
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const csrfToken = document
     .querySelector('meta[name="csrf-token"]')
     .getAttribute("content");
 
   const punteggioFisicoSelect = document.getElementById("punteggio_fisico");
+  const resetButton = document.getElementById("reset-score");
 
   if (punteggioFisicoSelect) {
-    // Evento per il salvataggio automatico ogni volta che cambia la selezione
+    // ✅ Evento per il salvataggio automatico del punteggio fisico
     punteggioFisicoSelect.addEventListener("change", function () {
       const selectedValue = punteggioFisicoSelect.value;
 
@@ -88,28 +116,53 @@ document.addEventListener("DOMContentLoaded", function () {
             punteggio_fisico: selectedValue,
           }),
         })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(
-                `HTTP Error ${response.status}: ${response.statusText}`
-              );
-            }
-            return response.json();
-          })
+          .then((response) => response.json())
           .then((data) => {
             if (data.success) {
               console.log("Punteggio Fisico aggiornato con successo.");
-              showAlert(successAlert, "Punteggio fisico salvato con successo!");
             } else {
               console.error("Errore dal server:", data.error);
-              showAlert(errorAlert, `Errore dal server: ${data.error}`);
             }
           })
           .catch((error) => {
             console.error("Errore nella richiesta:", error);
-            showAlert(errorAlert, `Errore nella richiesta: ${error.message}`);
           });
       }
+    });
+  }
+
+  // ✅ Evento per il reset dello storico dei punteggi
+  if (resetButton) {
+    resetButton.addEventListener("click", function () {
+      showConfirmModal(function (confirmed) {
+        if (!confirmed) return; // Se annulla, esce dalla funzione
+
+        fetch(updatePersonaComposizioneUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+          },
+          body: JSON.stringify({ reset_storico_punteggi: true }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              console.log("Storico punteggi resettato con successo.");
+
+              // ✅ Resetta il select a "-- Seleziona il punteggio --"
+              punteggioFisicoSelect.selectedIndex = 0;
+
+              // ✅ Ricarica la pagina per riflettere il reset
+              location.reload();
+            } else {
+              console.error("Errore dal server:", data.error);
+            }
+          })
+          .catch((error) => {
+            console.error("Errore nella richiesta:", error);
+          });
+      });
     });
   }
 });
@@ -442,8 +495,8 @@ async function generatePDF() {
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${bmi}`, {
-      x: 270,
-      y: 105,
+      x: 170,
+      y: 130,
       size: 12,
       color: rgb(0, 0, 0),
     });

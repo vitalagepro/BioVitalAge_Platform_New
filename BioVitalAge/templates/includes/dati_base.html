@@ -206,11 +206,11 @@
               <h3>Pressione Arteriosa</h3>
               <div class="container-pressure d-flex">
                 <div class="val-min">
-                  <span>Valore Minimo</span>
+                  <span>min</span>
                   <input class="w-100" type="text" placeholder="Inserisci valori minimi" readonly id="pressure_min" value="{{ persona.pressure_min|default:'' }}" data-patient-id="{{ persona.id }}" />
                 </div>
                 <div class="val-max">
-                  <span>Valore Massimo</span>
+                  <span>max</span>
                   <input type="text" class="w-100" placeholder="Inserisci valori massimi" readonly id="pressure_max" value="{{ persona.pressure_max|default:'' }}" data-patient-id="{{ persona.id }}" />  
                 </div>
               </div>
