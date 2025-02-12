@@ -1650,6 +1650,9 @@ def update_persona_composizione(request, id):
             # Aggiorna solo i campi che sono stati inviati nella richiesta
             campi_da_aggiornare = []
 
+            if "height" in data:
+                persona.height = data["height"]
+                campi_da_aggiornare.append("height")
             if "weight" in data:
                 persona.weight = data["weight"]
                 campi_da_aggiornare.append("weight")
