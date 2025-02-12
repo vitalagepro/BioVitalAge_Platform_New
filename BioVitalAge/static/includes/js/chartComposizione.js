@@ -1,4 +1,4 @@
-// ✅ Definiamo colors PRIMA di usarlo
+// ✅ Definizione colori
 const colors = {
   dark1: "#0c042c",
   dark2: "#0c214b",
@@ -24,38 +24,32 @@ document.addEventListener("DOMContentLoaded", async function () {
     // ✅ Recupera i dati dal backend e dal div nascosto
     const personaDataDiv = document.getElementById("userData");
     if (!personaDataDiv) {
-      console.error("Errore: #personaData non trovato");
+      console.error("Errore: #userData non trovato");
       return;
     }
 
     const gender = personaDataDiv.getAttribute("data-gender");
     const acquaAttuale = parseFloat(data.personaComposizione.acqua) || 0;
-    const massaMuscolare =
-      parseFloat(data.personaComposizione.massa_muscolare) || 0;
+    const massaMuscolare = parseFloat(data.personaComposizione.massa_muscolare) || 0;
     const massaOssea = parseFloat(data.personaComposizione.massa_ossea) || 0;
     const grasso = parseFloat(data.personaComposizione.grasso) || 0;
-    const grassoViscerale =
-      parseFloat(data.personaComposizione.grasso_viscerale) || 0;
-    let punteggioAttuale =
-      parseFloat(data.personaComposizione.punteggio_fisico) || 1;
+    const grassoViscerale = parseFloat(data.personaComposizione.grasso_viscerale) || 0;
+    let bmiAttuale = parseFloat(data.personaComposizione.bmi) || 0;
+    let punteggioAttuale = parseFloat(data.personaComposizione.punteggio_fisico) || 1;
+
+    // ✅ Se il BMI supera 50, attiva sempre "Obesità III"
+    if (bmiAttuale > 50) {
+      bmiAttuale = 50;
+    }
 
     // ✅ Forza il punteggio fisico a stare tra 1 e 9
     punteggioAttuale = Math.max(1, Math.min(9, punteggioAttuale));
 
-    console.log("Dati persona:", {
-      gender,
-      acquaAttuale,
-      massaMuscolare,
-      massaOssea,
-      grasso,
-      grassoViscerale,
-      punteggioAttuale,
-    });
+    console.log("Dati persona:", { gender, acquaAttuale, massaMuscolare, massaOssea, grasso, grassoViscerale, bmiAttuale, punteggioAttuale });
 
-    // ✅ Imposta il valore normale dell'acqua in base al genere
     const acquaNormale = gender === "M" ? 60 : 55;
 
-    // ✅ Recupera lo storico dal backend
+    // ✅ Recupera lo storico del punteggio fisico
     let storicoPunteggi = data.personaComposizione.storico_punteggi || [];
     if (storicoPunteggi.length === 0) {
       storicoPunteggi.push({
@@ -70,47 +64,33 @@ document.addEventListener("DOMContentLoaded", async function () {
     );
     const datiStorico = storicoPunteggi.map((entry) => entry.punteggio);
 
-    // ✅ Funzione per calcolare la distribuzione del BMI Chart
-    function getBmiDistribution(
-      massaGrassa,
-      massaMuscolare,
-      massaOssea,
-      grassoViscerale
-    ) {
-      let insufficientementeGrasso = Math.max(
-        0,
-        100 - (massaGrassa + massaMuscolare + massaOssea + grassoViscerale)
-      );
-      let sano = Math.min(100, massaMuscolare);
-      let eccessivamenteGrasso = Math.min(100, massaGrassa);
-      let obeso = Math.min(100, grassoViscerale);
+    // ✅ Definizione dei range BMI con colori
+    const bmiRanges = [
+      { label: "Sottopeso", min: 0, max: 18.5, color: colors.positiveColor },
+      { label: "Normopeso", min: 18.6, max: 24.9, color: colors.contrastColor },
+      { label: "Sovrappeso", min: 25, max: 29.9, color: colors.contrastColor2 },
+      { label: "Obesità I", min: 30, max: 34.9, color: colors.dark2 },
+      { label: "Obesità II", min: 35, max: 39.9, color: colors.neutralGray },
+      { label: "Obesità III", min: 40, max: 50, color: colors.dark1 }
+    ];
 
-      return [insufficientementeGrasso, sano, eccessivamenteGrasso, obeso];
-    }
+    // ✅ Genera i dati per il grafico BMI
+    const bmiLabels = bmiRanges.map(range => range.label);
+    const bmiData = bmiRanges.map(range => range.max);
+
+    // ✅ Determina il colore delle barre: solo quella corrispondente al BMI attuale sarà colorata
+    const bmiBackgroundColors = bmiRanges.map(range =>
+      bmiAttuale >= range.min && bmiAttuale <= range.max ? range.color : colors.light1
+    );
 
     // ✅ Creazione dei grafici
     const chartsData = [
       {
-        elementId: "bmiChart",
+        elementId: "composizioneChart",
         type: "doughnut",
-        labels: [
-          "Insufficientemente grasso",
-          "Sano",
-          "Eccessivamente grasso",
-          "Obeso",
-        ],
-        data: getBmiDistribution(
-          grasso,
-          massaMuscolare,
-          massaOssea,
-          grassoViscerale
-        ),
-        backgroundColor: [
-          colors.contrastColor,
-          colors.positiveColor,
-          colors.contrastColor2,
-          colors.dark2,
-        ],
+        labels: ["Massa Ossea", "Massa Muscolare", "Grasso Corporeo", "Grasso Viscerale"],
+        data: [massaOssea, massaMuscolare, grasso, grassoViscerale],
+        backgroundColor: [colors.contrastColor, colors.positiveColor, colors.contrastColor2, colors.dark2],
       },
       {
         elementId: "acquaChart",
@@ -120,26 +100,25 @@ document.addEventListener("DOMContentLoaded", async function () {
         backgroundColor: [colors.positiveColor, colors.contrastColor2],
       },
       {
-        elementId: "massaChart",
+        elementId: "bmiChart",
         type: "bar",
-        labels: ["Massa Muscolare", "Massa Grassa", "Massa Ossea"],
-        data: [massaMuscolare, grasso, massaOssea],
-        backgroundColor: [
-          colors.positiveColor,
-          colors.contrastColor,
-          colors.contrastColor2,
-        ],
+        labels: bmiLabels,
+        data: bmiData,
+        backgroundColor: bmiBackgroundColors,
         options: {
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            y: { beginAtZero: true, suggestedMax: 100 },
+            y: { beginAtZero: true, suggestedMax: 50, ticks: { stepSize: 10 } },
+          },
+          plugins: {
+            legend: { display: false },
           },
         },
       },
     ];
 
-    // ✅ Creazione dei grafici statici
+    // ✅ Creazione dei grafici
     chartsData.forEach((chart) => {
       const ctx = document.getElementById(chart.elementId)?.getContext("2d");
       if (!ctx) {
@@ -151,34 +130,20 @@ document.addEventListener("DOMContentLoaded", async function () {
         type: chart.type,
         data: {
           labels: chart.labels,
-          datasets: [
-            {
-              label: chart.elementId,
-              data: chart.data,
-              backgroundColor: chart.backgroundColor,
-            },
-          ],
+          datasets: [{ label: chart.elementId, data: chart.data, backgroundColor: chart.backgroundColor }],
         },
         options: chart.options || {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              position: "bottom",
-              labels: {
-                font: { size: 14, weight: "bold" },
-                color: colors.dark1,
-              },
-            },
+            legend: { position: "bottom", labels: { font: { size: 14, weight: "bold" }, color: colors.dark1 } },
           },
         },
       });
     });
 
     // ✅ Creazione del grafico dell’andamento del punteggio fisico
-    const ctxPunteggio = document
-      .getElementById("GraficoPunteggio")
-      ?.getContext("2d");
+    const ctxPunteggio = document.getElementById("GraficoPunteggio")?.getContext("2d");
     let punteggioChart;
 
     if (ctxPunteggio) {
@@ -207,45 +172,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
     }
 
-    // ✅ Rileva cambiamenti del punteggio fisico e aggiorna il grafico
-    const punteggioSelect = document.getElementById("punteggio_fisico");
-    if (punteggioSelect) {
-      punteggioSelect.addEventListener("change", async function () {
-        let nuovoPunteggio = parseInt(this.value);
-        if (isNaN(nuovoPunteggio) || nuovoPunteggio < 1 || nuovoPunteggio > 9)
-          return;
-
-        // ✅ Invia il nuovo punteggio al backend
-        const postResponse = await fetch(updatePersonaComposizioneUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ punteggio_fisico: nuovoPunteggio }),
-        });
-
-        const postData = await postResponse.json();
-        if (!postData.success) {
-          console.error("Errore nel salvataggio:", postData.error);
-          return;
-        }
-
-        // ✅ Recupera di nuovo i dati aggiornati
-        const updatedResponse = await fetch(updatePersonaComposizioneUrl);
-        const updatedData = await updatedResponse.json();
-        let updatedStorico =
-          updatedData.personaComposizione.storico_punteggi || [];
-
-        // ✅ Aggiorna i dati del grafico
-        punteggioChart.data.labels = updatedStorico.map((entry) =>
-          new Date(entry.data).toLocaleDateString()
-        );
-        punteggioChart.data.datasets[0].data = updatedStorico.map(
-          (entry) => entry.punteggio
-        );
-        punteggioChart.update();
-
-        console.log("Punteggio fisico aggiornato:", updatedStorico);
-      });
-    }
   } catch (error) {
     console.error("Errore nel caricamento dei dati:", error);
   }
