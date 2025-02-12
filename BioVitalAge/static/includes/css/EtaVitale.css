@@ -20,10 +20,10 @@
 .contenitoreTest {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: flex-start;
     padding: 30px;
-    gap: 10px;
+    gap: 20px;
     height: 100%;
     width: 50%;
     position: relative;
@@ -43,14 +43,16 @@
 .contenitoreTitolo img {
     border-radius: 50px;
 }
-
 .contenitoreTest-Header {
     display: flex;
     justify-content: flex-start;
     align-items: center;
     gap: 25px;
 }
-
+.contentTest{
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}
 .contentTest p {
     max-width: 90%;
     line-height: 1.8rem;

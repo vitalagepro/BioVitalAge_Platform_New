@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import *
-from .utils import calculate_biological_age, calcola_punteggio_finale
+from .utils import calculate_biological_age, CalcoloPunteggioCapacitaVitale
 import json
 from django.db.models import OuterRef, Subquery
 from django.views.decorators.csrf import csrf_exempt
@@ -1770,21 +1770,84 @@ class TestEtaVitaleView(View):
         return render(request, "includes/testVitale.html", context)
  
     def post(self, request, id):
+
+        print(request.POST)
+
         persona = get_object_or_404(TabellaPazienti, id=id)
         data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
         referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
 
-        SiIm_Somma = (
-            int(data.get('SiIm_1', 0)) +
-            int(data.get('SiIm_2', 0)) +
-            int(data.get('SiIm_3', 0)) +
-            int(data.get('SiIm_4', 0)) +
-            int(data.get('SiIm_5', 0)) +
-            int(data.get('SiIm_6', 0)) +
-            int(data.get('SiIm_7', 0))
+        Somma_MMSE = (
+            int(data.get('doc_1', 0)) +
+            int(data.get('doc_2', 0)) +
+            int(data.get('doc_3', 0)) +
+            int(data.get('doc_4', 0)) +
+            int(data.get('doc_5', 0)) +
+            int(data.get('doc_6', 0)) +
+            int(data.get('doc_7', 0)) +
+            int(data.get('doc_8', 0)) +
+            int(data.get('doc_9', 0)) +
+            int(data.get('doc_10', 0)) +
+            int(data.get('doc_11', 0)) 
         )
 
+        Somma_GDS = (
+            int(data.get('dop_1', 0)) +
+            int(data.get('dop_2', 0)) +
+            int(data.get('dop_3', 0)) +
+            int(data.get('dop_4', 0)) +
+            int(data.get('dop_5', 0)) +
+            int(data.get('dop_6', 0)) +
+            int(data.get('dop_7', 0)) +
+            int(data.get('dop_8', 0)) +
+            int(data.get('dop_9', 0)) +
+            int(data.get('dop_10', 0)) +
+            int(data.get('dop_11', 0)) +
+            int(data.get('dop_12', 0)) +
+            int(data.get('dop_13', 0)) +
+            int(data.get('dop_14', 0)) +
+            int(data.get('dop_15', 0)) 
+        )
+
+        Somma_LOC = (
+            int(data.get('loc_1', 0)) +
+            int(data.get('loc_2', 0)) +
+            int(data.get('loc_3', 0)) +
+            int(data.get('loc_4', 0)) +
+            int(data.get('loc_5', 0)) +
+            int(data.get('loc_6', 0)) +
+            int(data.get('loc_7', 0)) +
+            int(data.get('loc_8', 0)) 
+        )
+
+        Somma_Vista = (
+            int(data.get('dos_1', 0)) +
+            int(data.get('dos_2', 0))
+        )
+
+        Somma_Udito =  int(data.get('dos_3', 0)) 
+
+
+        Somma_HGS =  (
+            int(data.get('dodv_1', 0)) +
+            int(data.get('dodv_2', 0)) +
+            int(data.get('dodv_3', 0)) +
+            int(data.get('dodv_4', 0)) +
+            int(data.get('dodv_5', 0)) +
+            int(data.get('dodv_6', 0)) +
+            int(data.get('dodv_7', 0)) +
+            int(data.get('dodv_8', 0)) +
+            int(data.get('dodv_9', 0)) +
+            int(data.get('dodv_10', 0)) +
+            int(data.get('dodv_11', 0)) +
+            int(data.get('dodv_12', 0)) +
+            int(data.get('dodv_13', 0)) +
+            int(data.get('dodv_14', 0)) +
+            int(data.get('dodv_15', 0)) +
+            int(data.get('dodv_16', 0)) 
+        )
+    
         Fss_Somma = (
             int(data.get('fss_1', 0)) +
             int(data.get('fss_2', 0)) +
@@ -1804,6 +1867,23 @@ class TestEtaVitaleView(View):
             int(data.get('Sarc_f_5', 0)) 
         )
 
+        PFT = int(data.get('pft-1', 0))
+             
+        ISQ = (
+            int(data.get('SiIm_1', 0)) +
+            int(data.get('SiIm_2', 0)) +
+            int(data.get('SiIm_3', 0)) +
+            int(data.get('SiIm_4', 0)) +
+            int(data.get('SiIm_5', 0)) +
+            int(data.get('SiIm_6', 0)) +
+            int(data.get('SiIm_7', 0))
+        )
+
+        BMI = int(data.get('bmi-1'))
+
+
+
+
         biomarcatori = {
             "lymph": safe_float(data, 'Lymph'), 
             "wbc": safe_float(data, 'wbc'),
@@ -1819,67 +1899,70 @@ class TestEtaVitaleView(View):
 
         performance_fisica = int(data.get('SPPB', 0))
 
-        punteggioFinale = calcola_punteggio_finale(SiIm_Somma, Fss_Somma,Sarc_f_Somma, biomarcatori, antropometria, performance_fisica )
+        #punteggioFinale = calcola_punteggio_finale(SiIm_Somma, Fss_Somma,Sarc_f_Somma, biomarcatori, antropometria, performance_fisica )
 
-        print(punteggioFinale)
+        #print(punteggioFinale)
 
-        referto = ArchivioRefertiTest(
-            paziente = persona,
-            punteggio = punteggioFinale,
+        #referto = ArchivioRefertiTest(
+            #paziente = persona,
+            #punteggio = punteggioFinale,
             #documento = request.FILES.get('documento')
-        )
-        referto.save()
+        #)
+        #referto.save()
 
 
-        datiEstesi = DatiEstesiRefertiTest(
-            referto = referto,
+        #datiEstesi = DatiEstesiRefertiTest(
+           #referto = referto,
 
-            SiIm = SiIm_Somma,
-            Lymph = safe_float(data, 'Lymph'),
-            Lymph_el = safe_float(data, 'Lymph_el'),
-            wbc = safe_float(data, 'wbc'),
-            Proteins_c = safe_float(data, 'Proteins_c'),
+
+            
+
+
+
+           # SiIm = SiIm_Somma,
+            #Lymph = safe_float(data, 'Lymph'),
+            #Lymph_el = safe_float(data, 'Lymph_el'),
+            #wbc = safe_float(data, 'wbc'),
+           # Proteins_c = safe_float(data, 'Proteins_c'),
 
             #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
-            Inter_6 = safe_float(data, 'Inter_6'),
-            Tnf = safe_float(data, 'Tnf'),
-            Mono = safe_float(data, 'Mono'),
-            Mono_el = safe_float(data, 'Mono_el'),
+            #Inter_6 = safe_float(data, 'Inter_6'),
+            #Tnf = safe_float(data, 'Tnf'),
+            #Mono = safe_float(data, 'Mono'),
+            #Mono_el = safe_float(data, 'Mono_el'),
 
             #ENERGIA E MTABOLISMO
-            Fss = Fss_Somma,
-            CirPolp = safe_float(data, 'CirPolp'),
-            WHip_ratio = safe_float(data, 'WHip_ratio'),
-            WH_ratio = safe_float(data, 'WH_ratio'),
+           # Fss = Fss_Somma,
+            #CirPolp = safe_float(data, 'CirPolp'),
+            #WHip_ratio = safe_float(data, 'WHip_ratio'),
+            #WH_ratio = safe_float(data, 'WH_ratio'),
 
             #BIOMARCATORI CIRCOLANTI DEL METABOLISMO
-            Glic = safe_float(data, 'Glic'),
-            Emog = safe_float(data, 'Emog'),
-            Insu = safe_float(data, 'Insu'),
-            Pept_c = safe_float(data, 'Pept_c'),
-            Col_tot = safe_float(data, 'Col_tot'),
-            Col_ldl = safe_float(data, 'Col_ldl'),
-            Col_hdl = safe_float(data, 'Col_hdl'),
-            Trigl = safe_float(data, 'Trigl'),
-            albumina = safe_float(data, 'albumina'),
-            clearance_urea = safe_float(data, 'clearance_urea'),
-            igf_1 = safe_float(data, 'ifg_1'),
+            #Glic = safe_float(data, 'Glic'),
+            #Emog = safe_float(data, 'Emog'),
+            #Insu = safe_float(data, 'Insu'),
+            #Pept_c = safe_float(data, 'Pept_c'),
+            #Col_tot = safe_float(data, 'Col_tot'),
+            #Col_ldl = safe_float(data, 'Col_ldl'),
+            #Col_hdl = safe_float(data, 'Col_hdl'),
+            #Trigl = safe_float(data, 'Trigl'),
+            #albumina = safe_float(data, 'albumina'),
+            #clearance_urea = safe_float(data, 'clearance_urea'),
+            #igf_1 = safe_float(data, 'ifg_1'),
             
             # Funzione Neuromuscolare
-            sarc_f = Sarc_f_Somma,
-            hgs_test = data.get('HGS_test'),
+            #sarc_f = Sarc_f_Somma,
+            #hgs_test = data.get('HGS_test'),
             
             # Performance Fisica
-            sppb = data.get('SPPB')
-        )
-        datiEstesi.save()
-
-
+            #sppb = data.get('SPPB')
+        #)
+        #datiEstesi.save()
 
         context = {
             'persona': persona,
             'modal' : True,
-            'Referto': referto,
+            #'Referto': referto,
             'referti_test_recenti': referti_test_recenti,
             'dottore': dottore
         }
