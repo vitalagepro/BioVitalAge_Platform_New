@@ -23,11 +23,11 @@ class TabellaPazienti(models.Model):
     cap = models.CharField(max_length=5, null=True, blank=True)
     province = models.CharField(max_length=100, null=True, blank=True)
     place_of_birth = models.CharField(max_length=100, null=True, blank=True)
-    codice_fiscale = models.CharField(max_length=16, null=True, blank=True, unique=True)
+    codice_fiscale = models.CharField(max_length=16, null=True, blank=True)
     chronological_age = models.IntegerField(null=True, blank=True)
     
     #Dati Calcolatore
-    
+
     # Oxidative Stress
     d_roms = models.FloatField(null=True, blank=True)
     osi = models.FloatField(null=True, blank=True)
