@@ -18,8 +18,6 @@ from django.shortcuts import redirect
 from django.http import FileResponse
 
 # Create your views here.
-
-
 class LoginRenderingPage(View):
     def get(self, request):
         response = render(request, 'includes/login.html')
@@ -1881,9 +1879,13 @@ class TestEtaVitaleView(View):
 
         BMI = int(data.get('bmi-1'))
 
-
-
-
+        CDP = int(data.get('Cir_Pol'))
+        WHR = int(data.get('WHip'))
+        WHR_Ratio = int(data.get('Whei'))
+        CST = int(data.get('numero_rip')) / int(data.get('tot_secondi'))
+        GS = int(data.get('distanza')) / int(data.get('tempo_s'))
+        PPT = int(data.get('tempo_s_pick'))
+        
         biomarcatori = {
             "lymph": safe_float(data, 'Lymph'), 
             "wbc": safe_float(data, 'wbc'),
@@ -1899,65 +1901,106 @@ class TestEtaVitaleView(View):
 
         performance_fisica = int(data.get('SPPB', 0))
 
-        #punteggioFinale = calcola_punteggio_finale(SiIm_Somma, Fss_Somma,Sarc_f_Somma, biomarcatori, antropometria, performance_fisica )
+        punteggioFinale = CalcoloPunteggioCapacitaVitale(
+                            Somma_MMSE, Somma_GDS, Somma_LOC,
+                            Somma_Vista, Somma_Udito, Somma_HGS, PFT,
+                            ISQ, BMI, CDP, WHR, WHR_Ratio, CST, 
+                            GS, PPT, Sarc_f_Somma, persona.gender )
 
-        #print(punteggioFinale)
 
-        #referto = ArchivioRefertiTest(
-            #paziente = persona,
-            #punteggio = punteggioFinale,
+        referto = ArchivioRefertiTest(
+            paziente = persona,
+            punteggio = punteggioFinale,
             #documento = request.FILES.get('documento')
-        #)
-        #referto.save()
+        )
+        referto.save()
 
 
-        #datiEstesi = DatiEstesiRefertiTest(
-           #referto = referto,
+        datiEstesi = DatiEstesiRefertiTest(
+           referto = referto,
+
+            #DOMINIO COGNITIVO 
+            MMSE = Somma_MMSE,
+
+            #DOMINIO PSICOLOGICO
+            GDS = Somma_GDS,
+            LOC = Somma_LOC,
+
+            #DOMINIO SENSORIALE
+            Vista = Somma_Vista,
+            Udito = Somma_Udito,
 
 
-            
+            #DOMINIO DELLA VITALITA'
+            HGS = Somma_HGS,
+            PFT = PFT,
+
+
+            #SISTEMA IMMUNITARIO
+            ISQ = ISQ,
+            BMI = BMI,
+            CDP = CDP,
+            WHR = WHR,
 
 
 
-           # SiIm = SiIm_Somma,
-            #Lymph = safe_float(data, 'Lymph'),
-            #Lymph_el = safe_float(data, 'Lymph_el'),
-            #wbc = safe_float(data, 'wbc'),
-           # Proteins_c = safe_float(data, 'Proteins_c'),
+
+
+
+
+
+            SiIm = ISQ,
+            Lymph = safe_float(data, 'Lymph'),
+            Lymph_el = safe_float(data, 'Lymph_el'),
+            wbc = safe_float(data, 'wbc'),
+            Proteins_c = safe_float(data, 'Proteins_c'),
 
             #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
-            #Inter_6 = safe_float(data, 'Inter_6'),
-            #Tnf = safe_float(data, 'Tnf'),
-            #Mono = safe_float(data, 'Mono'),
-            #Mono_el = safe_float(data, 'Mono_el'),
+            Inter_6 = safe_float(data, 'Inter_6'),
+            Tnf = safe_float(data, 'Tnf'),
+            Mono = safe_float(data, 'Mono'),
+            Mono_el = safe_float(data, 'Mono_el'),
 
             #ENERGIA E MTABOLISMO
-           # Fss = Fss_Somma,
-            #CirPolp = safe_float(data, 'CirPolp'),
-            #WHip_ratio = safe_float(data, 'WHip_ratio'),
-            #WH_ratio = safe_float(data, 'WH_ratio'),
+            Fss = Fss_Somma,
+            CirPolp = safe_float(data, 'CirPolp'),
+            WHip_ratio = safe_float(data, 'WHip_ratio'),
+            WH_ratio = safe_float(data, 'WH_ratio'),
 
             #BIOMARCATORI CIRCOLANTI DEL METABOLISMO
-            #Glic = safe_float(data, 'Glic'),
-            #Emog = safe_float(data, 'Emog'),
-            #Insu = safe_float(data, 'Insu'),
-            #Pept_c = safe_float(data, 'Pept_c'),
-            #Col_tot = safe_float(data, 'Col_tot'),
-            #Col_ldl = safe_float(data, 'Col_ldl'),
-            #Col_hdl = safe_float(data, 'Col_hdl'),
-            #Trigl = safe_float(data, 'Trigl'),
-            #albumina = safe_float(data, 'albumina'),
-            #clearance_urea = safe_float(data, 'clearance_urea'),
-            #igf_1 = safe_float(data, 'ifg_1'),
+            Glic = safe_float(data, 'Glic'),
+            Emog = safe_float(data, 'Emog'),
+            Insu = safe_float(data, 'Insu'),
+            Pept_c = safe_float(data, 'Pept_c'),
+            Col_tot = safe_float(data, 'Col_tot'),
+            Col_ldl = safe_float(data, 'Col_ldl'),
+            Col_hdl = safe_float(data, 'Col_hdl'),
+            Trigl = safe_float(data, 'Trigl'),
+            albumina = safe_float(data, 'albumina'),
+            clearance_urea = safe_float(data, 'clearance_urea'),
+            igf_1 = safe_float(data, 'ifg_1'),
             
             # Funzione Neuromuscolare
-            #sarc_f = Sarc_f_Somma,
-            #hgs_test = data.get('HGS_test'),
+            sarc_f = Sarc_f_Somma,
+            hgs_test = data.get('HGS_test'),
             
             # Performance Fisica
-            #sppb = data.get('SPPB')
-        #)
-        #datiEstesi.save()
+            sppb = data.get('SPPB')
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+        datiEstesi.save()
 
         context = {
             'persona': persona,
