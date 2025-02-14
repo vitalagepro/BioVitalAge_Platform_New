@@ -462,55 +462,55 @@ async function generatePDF() {
     personalInformationPages.drawText(`${name}`, {
       x: 380,
       y: 644,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${surname}`, {
       x: 455,
       y: 644,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${dob}`, {
       x: 340,
       y: 632,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${cf}`, {
       x: 295,
       y: 618,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${place_birth}`, {
       x: 280,
       y: 632,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${chronological_age}`, {
       x: 480,
       y: 632,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${altezza}`, {
       x: 314,
       y: 488,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${peso}`, {
       x: 314,
       y: 430,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${bmi}`, {
       x: 170,
       y: 130,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
 
@@ -519,7 +519,7 @@ async function generatePDF() {
     grassoPages.drawText(`${grasso}`, {
       x: 270,
       y: 512,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
 
@@ -528,13 +528,13 @@ async function generatePDF() {
     acquaPages.drawText(`${acqua}`, {
       x: 270,
       y: 700,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     acquaPages.drawText(`${massaMuscolare}`, {
       x: 330,
       y: 189,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
 
@@ -543,13 +543,13 @@ async function generatePDF() {
     punteggioFisicoPages.drawText(`${punteggioFisico}`, {
       x: 370,
       y: 598,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     punteggioFisicoPages.drawText(`${punteggioFisicoDescrizione}`, {
-      x: 270,
+      x: 220,
       y: 598,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
 
@@ -558,7 +558,7 @@ async function generatePDF() {
     massaOsseaPages.drawText(`${massaOssea}`, {
       x: 212,
       y: 412,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
 
@@ -567,19 +567,19 @@ async function generatePDF() {
     eteMetabolicaPages.drawText(`${bmr}`, {
       x: 315,
       y: 705,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     eteMetabolicaPages.drawText(`${etaMetabolica}`, {
       x: 315,
       y: 523,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     eteMetabolicaPages.drawText(`${grassoViscerale}`, {
       x: 300,
       y: 355,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
 

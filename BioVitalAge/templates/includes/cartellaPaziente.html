@@ -46,11 +46,19 @@
             <div class="back-tittle">
                 <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" ></a>
                 <h2 class="main-welcome-title">
-                    {{ persona.name }} - 
-                    {{ persona.surname }} - 
-                    {{ persona.chronological_age }} 
+                    <span>{{ persona.surname|title }}</span>
+                    <span>{{ persona.name|title }}</span> |
+                    <span>Età: {{ persona.chronological_age }}</span>
                     {% if persona.phone and persona.email %}
-                      - {{ persona.phone }} - {{ persona.email }}
+                    |
+                      <span class="phone_span">
+                        <img src="{% static 'includes/icone/phone.png' %}" width="20px" height="20px">
+                        Telefono: {{ persona.phone }}
+                      </span> | 
+                      <span class="email_span">
+                        <img src="{% static 'includes/icone/emailNew.png' %}" width="20px" height="20px">
+                        Email: {{ persona.email }}
+                      </span>
                     {% endif %}
                 </h2>
             </div>
@@ -123,12 +131,12 @@
 
                     <div class="field">
                         <p>Città di nascita:</p>
-                        <p>{{ persona.place_of_birth }}</p>
+                        <p>{{ persona.place_of_birth|title }}</p>
                     </div>
 
                     <div class="field">
                         <p>Città di residenza:</p>
-                        <p>{{ persona.place_of_birth }}</p>
+                        <p>{{ persona.place_of_birth|title }}</p>
                     </div>
 
                     <div class="field">
@@ -284,7 +292,7 @@
                 <div class="card-content">
                     <img src="{% static 'includes/icone/analisi.png' %}" alt="">
                     <p style="top: 4rem;">Referti Età Biologica</p>
-                    <p style="top: 6rem;"><strong>Ultimo Calcolo:</strong> &nbsp; {{ ultimo_referto.data_referto }} </p>
+                    <p style="top: 6rem;"><strong>Ultimo Calcolo:</strong> &nbsp; {{ ultimo_referto.data_referto|date:"d/m/Y" }} </p>
                     <a href="{% url 'elenco_referti' persona.id %}" style="top: 10rem;" id="adjust">Vai ai referti</a>
                     <a href="{% url 'Calcolatore' %}?parametro={{ persona.codice_fiscale|urlencode }}">Calcola Età Biologica</a>
                 </div>
@@ -436,7 +444,7 @@
                         {% for visite in visite %}
                             <div class="riga-container">
                                 <p>{{ visite.id }}</p>
-                                <p>{{ visite.data_visita }}</p>
+                                <p>{{ visite.data_visita|date:"d/m/Y" }}</p>
                             
                                 <p>
                                     <a href="{% url 'dettagli_prescrizioni' persona.id visite.id %}">

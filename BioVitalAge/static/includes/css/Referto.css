@@ -28,6 +28,15 @@
 }
 
 /* ! MODAL */
+.main-welcome-title span{
+  color: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  padding: inherit;
+}
+
+
+
 .modal-pdf-container {
   position: fixed;
   top: 0;

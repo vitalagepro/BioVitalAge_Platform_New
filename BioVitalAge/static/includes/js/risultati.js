@@ -1,27 +1,6 @@
 /*  -----------------------------------------------------------------------------------------------
-  Funzione per lettere iniziali nome e cognome maiuscole
---------------------------------------------------------------------------------------------------- */
-document.addEventListener("DOMContentLoaded", function () {
-  let paragraphs = document.querySelectorAll(
-    ".table-content .riga-container p"
-  );
-
-  paragraphs.forEach((p) => {
-    let text = p.innerText.trim();
-
-    // Controlla se il testo contiene solo lettere e spazi (esclude numeri o simboli strani)
-    if (text.match(/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/)) {
-      // Converte la prima lettera di ogni parola in maiuscolo
-      p.innerText = text
-        .toLowerCase()
-        .replace(/\b\w/g, (char) => char.toUpperCase());
-    }
-  });
-});
-
-/*  -----------------------------------------------------------------------------------------------
       Animate Button
-      --------------------------------------------------------------------------------------------------- */
+--------------------------------------------------------------------------------------------------- */
 function animateButton() {
   gsap.to(".add-patient-btn", {
     scale: 1.1,

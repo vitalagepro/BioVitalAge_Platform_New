@@ -1,9 +1,12 @@
+.main-menu-trace {
+  width: 50%;
+}
+
 .main-title-nav a {
   color: var(--light1) !important;
   text-decoration: none !important;
   margin: 0 !important;
 }
-
 
 /* PERSONAL INFORMATION CARD STYLE*/
 .container-datiPersonali {

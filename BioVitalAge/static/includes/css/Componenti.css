@@ -692,6 +692,14 @@ main {
   gap: 15px;
 }
 
+.phone_span img{
+  margin-bottom: 5px;
+}
+
+.email_span img{
+  margin-bottom: 5px;
+}
+
 .main-menu-trace img {
   opacity: 0.8;
   transition: all 0.2s ease-in-out;

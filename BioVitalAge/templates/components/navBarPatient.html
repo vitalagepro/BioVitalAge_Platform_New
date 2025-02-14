@@ -1,4 +1,4 @@
-<!-- templates/components/navBar.html -->
+<!-- templates/components/navBarPatient.html -->
 {% load static %}
 <header>
     <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar">
@@ -11,13 +11,21 @@
 
         <!-- Links Section -->
         <div class="col-md-8 nav-bar-linkage">
-            <a href="{% url 'Risultati' %}"
+            <a href="{% url 'dati_base' persona.id %}"
                 class="{% if request.resolver_match.url_name == 'Risultati' %}active-link{% endif %}">
-                Pazienti
+                Dati Base - Stile di Vita
             </a>
-            <a href="{% url 'Calcolatore' %}"
+            <a href="{% url 'composizione' persona.id %}"
                 class="{% if request.resolver_match.url_name == 'Calcolatore' %}active-link{% endif %}">
-                Calcolatore BioVitalAge
+                Composizione Corporea
+            </a>
+            <a href="{% url 'etaVitale' persona.id %}"
+                class="{% if request.resolver_match.url_name == 'Calcolatore' %}active-link{% endif %}">
+                Capacità Vitale
+            </a>
+            <a href="{% url 'prescrizioni' persona.id %}"
+                class="{% if request.resolver_match.url_name == 'Calcolatore' %}active-link{% endif %}">
+                Aggiungi Prescrizioni
             </a>
         </div>
 
