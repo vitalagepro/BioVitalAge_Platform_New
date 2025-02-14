@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
           (filterType === "name" && index === 0) ||
           (filterType === "surname" && index === 1) ||
           (filterType === "fisc_code" && index === 3) ||
-          (filterType === "personal_association" && index === 8)
+          (filterType === "personal_association" && index === 7)
         ) {
           if (cell.textContent.toLowerCase().includes(filterValue)) {
             rowMatch = true;
