@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     console.log("Dati persona:", { gender, acquaAttuale, massaMuscolare, massaOssea, grasso, grassoViscerale, bmiAttuale, punteggioAttuale });
 
-    const acquaNormale = gender === "M" ? 60 : 55;
+    const acquaNormale = gender === "M" ? 65 : 60;
 
     // ✅ Recupera lo storico del punteggio fisico
     let storicoPunteggi = data.personaComposizione.storico_punteggi || [];
