@@ -323,27 +323,34 @@ class DatiEstesiRefertiTest(models.Model):
         related_name='dati_estesi_test'
     )
 
+    #DOMINIO COGNITIVO
+    MMSE = models.IntegerField(null=True, blank=True)
 
+    #DOMINIO PSICOLOGICO
+    MMSE = models.IntegerField(null=True, blank=True)
+    MMSE = models.IntegerField(null=True, blank=True)
 
+    #DOMINIO SENSORIALE
+    MMSE = models.IntegerField(null=True, blank=True)
+    MMSE = models.IntegerField(null=True, blank=True)
 
+    #DOMINIO DELLA VITALITA'
+    MMSE = models.IntegerField(null=True, blank=True)
+    MMSE = models.IntegerField(null=True, blank=True)
 
-    SiIm = models.IntegerField(null=True, blank=True)
-    Lymph = models.FloatField(null=True, blank=True)
-    Lymph_el = models.FloatField(null=True, blank=True)
-    wbc = models.FloatField(null=True, blank=True)
-    Proteins_c = models.FloatField(null=True, blank=True)
+    #SISTEMA IMMUNITARIO
+    MMSE = models.IntegerField(null=True, blank=True)
+    MMSE = models.IntegerField(null=True, blank=True)
+    MMSE = models.IntegerField(null=True, blank=True)
+    MMSE = models.IntegerField(null=True, blank=True)
+    MMSE = models.IntegerField(null=True, blank=True)
 
-    #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
-    Inter_6 = models.FloatField(null=True, blank=True)
-    Tnf = models.FloatField(null=True, blank=True)
-    Mono = models.FloatField(null=True, blank=True)
-    Mono_el = models.FloatField(null=True, blank=True)
-
-    #ENERGIA E MTABOLISMO
-    Fss = models.FloatField(null=True, blank=True)
-    CirPolp = models.FloatField(null=True, blank=True)
-    WHip_ratio = models.FloatField(null=True, blank=True)
-    WH_ratio = models.FloatField(null=True, blank=True)
+    #DOMINIO DELLA LOCOMOZIONE
+    MMSE = models.IntegerField(null=True, blank=True)
+    MMSE = models.IntegerField(null=True, blank=True)
+    MMSE = models.IntegerField(null=True, blank=True)
+    MMSE = models.IntegerField(null=True, blank=True)
+    MMSE = models.IntegerField(null=True, blank=True)
 
     #BIOMARCATORI CIRCOLANTI DEL METABOLISMO
     Glic = models.FloatField(null=True, blank=True)
@@ -356,15 +363,19 @@ class DatiEstesiRefertiTest(models.Model):
     Trigl = models.FloatField(null=True, blank=True)
     albumina = models.FloatField(null=True, blank=True)
     clearance_urea = models.FloatField(null=True, blank=True)
-    igf_1 = models.FloatField(null=True, blank=True)
-    
-    # Funzione Neuromuscolare
-    sarc_f = models.IntegerField(null=True, blank=True)
-    hgs_test = models.IntegerField(null=True, blank=True)
-    
-    # Performance Fisica
-    sppb = models.IntegerField(null=True, blank=True)
-    
+    igf_1 = models.FloatField(null=True, blank=True)    
+
+
+    #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
+    Inter_6 = models.FloatField(null=True, blank=True)
+    Tnf = models.FloatField(null=True, blank=True)
+    Mono = models.FloatField(null=True, blank=True)
+    Mono_el = models.FloatField(null=True, blank=True)
+    Proteins_c = models.FloatField(null=True, blank=True)
+    wbc = models.FloatField(null=True, blank=True)
+    Lymph = models.FloatField(null=True, blank=True)
+    Lymph_el = models.FloatField(null=True, blank=True)
+      
     def __str__(self):
         return f"Dati Estesi Referto ID: {self.referto.id}"
     

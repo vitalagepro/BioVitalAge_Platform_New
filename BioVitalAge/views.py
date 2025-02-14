@@ -24,7 +24,6 @@ class LoginRenderingPage(View):
         response.delete_cookie('disclaimer_accepted', path='/')
         return response
 
-
 class LogOutRender(View):
     def get(self, request):
 
@@ -34,8 +33,6 @@ class LogOutRender(View):
             request.session.flush()
 
         return render(request, 'includes/login.html')
-
-
 
 # View per la homepage
 class HomePageRender(View):
@@ -123,8 +120,6 @@ class AcceptDisclaimerView(View):
         response.set_cookie('disclaimer_accepted', 'true', max_age=365*24*60*60)  # 1 anno
         return response
 
-
-
 class StatisticheView(View):
     def get(self, request):
 
@@ -137,17 +132,11 @@ class StatisticheView(View):
 
         return render(request, "includes/statistiche.html", context)
     
-
-
-
 def safe_float(data, key, default=0.0):
     try:
         return float(data.get(key, default))
     except (ValueError, TypeError):
         return default
-
-
-
 
 class CalcolatoreRender(View):
     
@@ -858,7 +847,6 @@ class CalcolatoreRender(View):
 
                     telotest = safe_float(data, 'telotest')
 
-
                     exams = []
 
                     if paziente.gender == 'M':
@@ -915,7 +903,6 @@ class CalcolatoreRender(View):
                             {'shbg_w': shbg_w}, {'nt_pro': nt_pro}, {'v_b12': v_b12}, {'v_d': v_d}, {'ves2': ves2}, {'telotest': telotest}
                         ]
 
-  
                     # Calcolo dell'età biologica
                     biological_age = calculate_biological_age(
                         chronological_age, d_roms = d_roms, osi = osi, pat = pat, wbc = wbc, basophils = baso_ul,
@@ -1109,9 +1096,6 @@ class CalcolatoreRender(View):
             }
             return render(request, "includes/calcolatore.html", context)
 
-
-
-
 class RisultatiRender(View):
     def get(self, request):
         persone = TabellaPazienti.objects.all()
@@ -1132,9 +1116,6 @@ class RisultatiRender(View):
         }
 
         return render(request, "includes/risultati.html", context)
-
-
-
 
 class PersonaDetailView(View):
     def get(self, request, id):
@@ -1165,8 +1146,6 @@ class PersonaDetailView(View):
             'dottore': dottore,
         }
         return render(request, "includes/Referto.html", context)
-
-
 
 class ScaricaReferto(View):
     def get(self, request, persona_id, visite_id):
@@ -1231,8 +1210,6 @@ class ScaricaReferto(View):
 
         return render(request, "includes/cartellaPaziente.html", context)
 
-
-
 class DettagliPrescrizioni(View):
     def get(self, request, persona_id, visite_id):
 
@@ -1288,7 +1265,6 @@ class DettagliPrescrizioni(View):
         }
 
         return render(request, "includes/cartellaPaziente.html", context)
-
 
 class CartellaPazienteView(View):
 
@@ -1351,7 +1327,6 @@ class ElencoRefertiView(View):
 
         return render(request, "includes/elencoReferti.html", context)
 
-
 class DatiBaseView(View):
 
     def get(self, request, id):
@@ -1402,7 +1377,6 @@ class DatiBaseView(View):
                 print("Errore: form_id non ricevuto o non valido")
 
             return redirect('dati_base', id=persona.id)
-
 
 # Blood Group view
 @method_decorator(csrf_exempt, name='dispatch')
@@ -1561,7 +1535,6 @@ class InserisciPazienteView(View):
             context["errore"] = f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova."
             return render(request, "includes/InserisciPaziente.html", context)
 
-
 class ComposizioneView(View):
 
     def get(self, request, id):
@@ -1577,7 +1550,6 @@ class ComposizioneView(View):
         }
 
         return render(request, "includes/composizione.html", context)
-
 
 def dettaglio_paziente(request, id):
     try:
@@ -1596,9 +1568,7 @@ def dettaglio_paziente(request, id):
     }
     return render(request, 'nome_del_tuo_template.html', context)
 
-
-
-@csrf_exempt  # Rimuovilo in produzione se non necessario
+@csrf_exempt  
 def update_persona_contact(request, id):
     if request.method == "POST":
         try:
@@ -1634,8 +1604,6 @@ def update_persona_contact(request, id):
     else:
         return JsonResponse({"success": False, "error": "Metodo non valido"})
 
-
-# Funzione per aggiornare i dati di una persona in composizione corpo
 @csrf_exempt 
 def update_persona_composizione(request, id):
     if request.method == "POST":
@@ -1718,7 +1686,6 @@ def update_persona_composizione(request, id):
     else:
         return JsonResponse({"success": False, "error": "Metodo non valido"})
 
-
 class EtaVitaleView(View):
 
     def get(self, request, id):
@@ -1742,8 +1709,6 @@ class EtaVitaleView(View):
     def post(self):
         return
     
-
-
 class TestEtaVitaleView(View):
 
     def get(self,request, id):
@@ -1827,24 +1792,7 @@ class TestEtaVitaleView(View):
         Somma_Udito =  int(data.get('dos_3', 0)) 
 
 
-        Somma_HGS =  (
-            int(data.get('dodv_1', 0)) +
-            int(data.get('dodv_2', 0)) +
-            int(data.get('dodv_3', 0)) +
-            int(data.get('dodv_4', 0)) +
-            int(data.get('dodv_5', 0)) +
-            int(data.get('dodv_6', 0)) +
-            int(data.get('dodv_7', 0)) +
-            int(data.get('dodv_8', 0)) +
-            int(data.get('dodv_9', 0)) +
-            int(data.get('dodv_10', 0)) +
-            int(data.get('dodv_11', 0)) +
-            int(data.get('dodv_12', 0)) +
-            int(data.get('dodv_13', 0)) +
-            int(data.get('dodv_14', 0)) +
-            int(data.get('dodv_15', 0)) +
-            int(data.get('dodv_16', 0)) 
-        )
+        Somma_HGS = int(data.get('dodv', 0))
     
         Fss_Somma = (
             int(data.get('fss_1', 0)) +
@@ -1886,21 +1834,6 @@ class TestEtaVitaleView(View):
         GS = int(data.get('distanza')) / int(data.get('tempo_s'))
         PPT = int(data.get('tempo_s_pick'))
         
-        biomarcatori = {
-            "lymph": safe_float(data, 'Lymph'), 
-            "wbc": safe_float(data, 'wbc'),
-            "pcr": safe_float(data, 'Proteins_c'),
-            "il6": safe_float(data, 'Inter_6'),
-            "tnf": safe_float(data, 'Tnf')
-        }
-
-        antropometria = {
-            "polpaccio": safe_float(data, 'CirPolp'),
-            "waist_hip_ratio": safe_float(data, 'WHip_ratio')
-        }
-
-        performance_fisica = int(data.get('SPPB', 0))
-
         punteggioFinale = CalcoloPunteggioCapacitaVitale(
                             Somma_MMSE, Somma_GDS, Somma_LOC,
                             Somma_Vista, Somma_Udito, Somma_HGS, PFT,
@@ -1917,7 +1850,7 @@ class TestEtaVitaleView(View):
 
 
         datiEstesi = DatiEstesiRefertiTest(
-           referto = referto,
+            referto = referto,
 
             #DOMINIO COGNITIVO 
             MMSE = Somma_MMSE,
@@ -1930,42 +1863,23 @@ class TestEtaVitaleView(View):
             Vista = Somma_Vista,
             Udito = Somma_Udito,
 
-
             #DOMINIO DELLA VITALITA'
             HGS = Somma_HGS,
             PFT = PFT,
-
 
             #SISTEMA IMMUNITARIO
             ISQ = ISQ,
             BMI = BMI,
             CDP = CDP,
             WHR = WHR,
+            WHR_Ratio = WHR_Ratio,
 
-
-
-
-
-
-
-
-            SiIm = ISQ,
-            Lymph = safe_float(data, 'Lymph'),
-            Lymph_el = safe_float(data, 'Lymph_el'),
-            wbc = safe_float(data, 'wbc'),
-            Proteins_c = safe_float(data, 'Proteins_c'),
-
-            #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
-            Inter_6 = safe_float(data, 'Inter_6'),
-            Tnf = safe_float(data, 'Tnf'),
-            Mono = safe_float(data, 'Mono'),
-            Mono_el = safe_float(data, 'Mono_el'),
-
-            #ENERGIA E MTABOLISMO
-            Fss = Fss_Somma,
-            CirPolp = safe_float(data, 'CirPolp'),
-            WHip_ratio = safe_float(data, 'WHip_ratio'),
-            WH_ratio = safe_float(data, 'WH_ratio'),
+            #DOMINIO DELLA LOCOMOZIONE
+            CST = CST,
+            GS = GS,
+            PPT = PPT,
+            SARC_F = Sarc_f_Somma,
+            FSS = Fss_Somma,
 
             #BIOMARCATORI CIRCOLANTI DEL METABOLISMO
             Glic = safe_float(data, 'Glic'),
@@ -1979,38 +1893,32 @@ class TestEtaVitaleView(View):
             albumina = safe_float(data, 'albumina'),
             clearance_urea = safe_float(data, 'clearance_urea'),
             igf_1 = safe_float(data, 'ifg_1'),
-            
-            # Funzione Neuromuscolare
-            sarc_f = Sarc_f_Somma,
-            hgs_test = data.get('HGS_test'),
-            
-            # Performance Fisica
-            sppb = data.get('SPPB')
+
+
+            #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
+            Lymph = safe_float(data, 'Lymph'),
+            Lymph_el = safe_float(data, 'Lymph_el'),
+            wbc = safe_float(data, 'wbc'),
+            Proteins_c = safe_float(data, 'Proteins_c'),
+            Inter_6 = safe_float(data, 'Inter_6'),
+            Tnf = safe_float(data, 'Tnf'),
+            Mono = safe_float(data, 'Mono'),
+            Mono_el = safe_float(data, 'Mono_el'),    
         )
-
-
-
-
-
-
-
-
-
-
-
-
 
         datiEstesi.save()
 
         context = {
             'persona': persona,
             'modal' : True,
-            #'Referto': referto,
+            'Referto': referto,
             'referti_test_recenti': referti_test_recenti,
             'dottore': dottore
         }
 
         return render(request, "includes/EtaVitale.html", context)
+
+
 
 
 class RefertoQuizView(View):
@@ -2039,13 +1947,10 @@ class RefertoQuizView(View):
 
         return render(request, "includes/RefertoQuiz.html", context)
 
-
 # Referto View
 def referti_view(request, referto_id):
     referto = ArchivioReferti.objects.get(id=referto_id)
     return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
-
-
 
 #PRESCRIZIONI VIEW
 class PrescrizioniView(View):
