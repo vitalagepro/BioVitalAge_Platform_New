@@ -445,7 +445,6 @@
                             <div class="riga-container">
                                 <p>{{ visite.id }}</p>
                                 <p>{{ visite.data_visita|date:"d/m/Y" }}</p>
-                            
                                 <p>
                                     <a href="{% url 'dettagli_prescrizioni' persona.id visite.id %}">
                                         <img src="{% static 'includes/icone/referto.png' %}" alt="" />

@@ -73,7 +73,7 @@
 }
 
 .subCard-container {
-  width: 45%;
+  width: 100%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -384,7 +384,7 @@
 .score-clock-graph {
   border: 1px solid #ddd;
   border-radius: 8px;
-  width: 98%;
+  width: 95%;
   height: 21rem;
   display: flex;
   justify-content: space-between;
