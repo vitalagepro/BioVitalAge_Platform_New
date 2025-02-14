@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import *
-from .utils import calculate_biological_age, calcola_punteggio_finale
+from .utils import calculate_biological_age, CalcoloPunteggioCapacitaVitale
 import json
 from django.db.models import OuterRef, Subquery
 from django.views.decorators.csrf import csrf_exempt
@@ -18,8 +18,6 @@ from django.shortcuts import redirect
 from django.http import FileResponse
 
 # Create your views here.
-
-
 class LoginRenderingPage(View):
     def get(self, request):
         response = render(request, 'includes/login.html')
@@ -1790,21 +1788,84 @@ class TestEtaVitaleView(View):
         return render(request, "includes/testVitale.html", context)
  
     def post(self, request, id):
+
+        print(request.POST)
+
         persona = get_object_or_404(TabellaPazienti, id=id)
         data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
         referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
 
-        SiIm_Somma = (
-            int(data.get('SiIm_1', 0)) +
-            int(data.get('SiIm_2', 0)) +
-            int(data.get('SiIm_3', 0)) +
-            int(data.get('SiIm_4', 0)) +
-            int(data.get('SiIm_5', 0)) +
-            int(data.get('SiIm_6', 0)) +
-            int(data.get('SiIm_7', 0))
+        Somma_MMSE = (
+            int(data.get('doc_1', 0)) +
+            int(data.get('doc_2', 0)) +
+            int(data.get('doc_3', 0)) +
+            int(data.get('doc_4', 0)) +
+            int(data.get('doc_5', 0)) +
+            int(data.get('doc_6', 0)) +
+            int(data.get('doc_7', 0)) +
+            int(data.get('doc_8', 0)) +
+            int(data.get('doc_9', 0)) +
+            int(data.get('doc_10', 0)) +
+            int(data.get('doc_11', 0)) 
         )
 
+        Somma_GDS = (
+            int(data.get('dop_1', 0)) +
+            int(data.get('dop_2', 0)) +
+            int(data.get('dop_3', 0)) +
+            int(data.get('dop_4', 0)) +
+            int(data.get('dop_5', 0)) +
+            int(data.get('dop_6', 0)) +
+            int(data.get('dop_7', 0)) +
+            int(data.get('dop_8', 0)) +
+            int(data.get('dop_9', 0)) +
+            int(data.get('dop_10', 0)) +
+            int(data.get('dop_11', 0)) +
+            int(data.get('dop_12', 0)) +
+            int(data.get('dop_13', 0)) +
+            int(data.get('dop_14', 0)) +
+            int(data.get('dop_15', 0)) 
+        )
+
+        Somma_LOC = (
+            int(data.get('loc_1', 0)) +
+            int(data.get('loc_2', 0)) +
+            int(data.get('loc_3', 0)) +
+            int(data.get('loc_4', 0)) +
+            int(data.get('loc_5', 0)) +
+            int(data.get('loc_6', 0)) +
+            int(data.get('loc_7', 0)) +
+            int(data.get('loc_8', 0)) 
+        )
+
+        Somma_Vista = (
+            int(data.get('dos_1', 0)) +
+            int(data.get('dos_2', 0))
+        )
+
+        Somma_Udito =  int(data.get('dos_3', 0)) 
+
+
+        Somma_HGS =  (
+            int(data.get('dodv_1', 0)) +
+            int(data.get('dodv_2', 0)) +
+            int(data.get('dodv_3', 0)) +
+            int(data.get('dodv_4', 0)) +
+            int(data.get('dodv_5', 0)) +
+            int(data.get('dodv_6', 0)) +
+            int(data.get('dodv_7', 0)) +
+            int(data.get('dodv_8', 0)) +
+            int(data.get('dodv_9', 0)) +
+            int(data.get('dodv_10', 0)) +
+            int(data.get('dodv_11', 0)) +
+            int(data.get('dodv_12', 0)) +
+            int(data.get('dodv_13', 0)) +
+            int(data.get('dodv_14', 0)) +
+            int(data.get('dodv_15', 0)) +
+            int(data.get('dodv_16', 0)) 
+        )
+    
         Fss_Somma = (
             int(data.get('fss_1', 0)) +
             int(data.get('fss_2', 0)) +
@@ -1824,6 +1885,27 @@ class TestEtaVitaleView(View):
             int(data.get('Sarc_f_5', 0)) 
         )
 
+        PFT = int(data.get('pft-1', 0))
+             
+        ISQ = (
+            int(data.get('SiIm_1', 0)) +
+            int(data.get('SiIm_2', 0)) +
+            int(data.get('SiIm_3', 0)) +
+            int(data.get('SiIm_4', 0)) +
+            int(data.get('SiIm_5', 0)) +
+            int(data.get('SiIm_6', 0)) +
+            int(data.get('SiIm_7', 0))
+        )
+
+        BMI = int(data.get('bmi-1'))
+
+        CDP = int(data.get('Cir_Pol'))
+        WHR = int(data.get('WHip'))
+        WHR_Ratio = int(data.get('Whei'))
+        CST = int(data.get('numero_rip')) / int(data.get('tot_secondi'))
+        GS = int(data.get('distanza')) / int(data.get('tempo_s'))
+        PPT = int(data.get('tempo_s_pick'))
+        
         biomarcatori = {
             "lymph": safe_float(data, 'Lymph'), 
             "wbc": safe_float(data, 'wbc'),
@@ -1839,9 +1921,12 @@ class TestEtaVitaleView(View):
 
         performance_fisica = int(data.get('SPPB', 0))
 
-        punteggioFinale = calcola_punteggio_finale(SiIm_Somma, Fss_Somma,Sarc_f_Somma, biomarcatori, antropometria, performance_fisica )
+        punteggioFinale = CalcoloPunteggioCapacitaVitale(
+                            Somma_MMSE, Somma_GDS, Somma_LOC,
+                            Somma_Vista, Somma_Udito, Somma_HGS, PFT,
+                            ISQ, BMI, CDP, WHR, WHR_Ratio, CST, 
+                            GS, PPT, Sarc_f_Somma, persona.gender )
 
-        print(punteggioFinale)
 
         referto = ArchivioRefertiTest(
             paziente = persona,
@@ -1852,9 +1937,39 @@ class TestEtaVitaleView(View):
 
 
         datiEstesi = DatiEstesiRefertiTest(
-            referto = referto,
+           referto = referto,
 
-            SiIm = SiIm_Somma,
+            #DOMINIO COGNITIVO 
+            MMSE = Somma_MMSE,
+
+            #DOMINIO PSICOLOGICO
+            GDS = Somma_GDS,
+            LOC = Somma_LOC,
+
+            #DOMINIO SENSORIALE
+            Vista = Somma_Vista,
+            Udito = Somma_Udito,
+
+
+            #DOMINIO DELLA VITALITA'
+            HGS = Somma_HGS,
+            PFT = PFT,
+
+
+            #SISTEMA IMMUNITARIO
+            ISQ = ISQ,
+            BMI = BMI,
+            CDP = CDP,
+            WHR = WHR,
+
+
+
+
+
+
+
+
+            SiIm = ISQ,
             Lymph = safe_float(data, 'Lymph'),
             Lymph_el = safe_float(data, 'Lymph_el'),
             wbc = safe_float(data, 'wbc'),
@@ -1892,14 +2007,25 @@ class TestEtaVitaleView(View):
             # Performance Fisica
             sppb = data.get('SPPB')
         )
+
+
+
+
+
+
+
+
+
+
+
+
+
         datiEstesi.save()
-
-
 
         context = {
             'persona': persona,
             'modal' : True,
-            'Referto': referto,
+            #'Referto': referto,
             'referti_test_recenti': referti_test_recenti,
             'dottore': dottore
         }

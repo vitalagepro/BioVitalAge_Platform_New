@@ -7,7 +7,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
 
-    <title>VitalAge - Login</title>
+    <title>VitalAge - Calcolatore Login</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/login.css' %}">
@@ -30,7 +30,7 @@
                 <div class="col-md-12 img-container-logo">
                     <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®">
                 </div>
-                <h3>Login</h3>  
+                <h3>Calcolatore Login</h3>  
 
                 {% if error %}
                 <div class="alert alert-danger text-center" role="alert">
@@ -38,7 +38,7 @@
                 </div>
                 {% endif %}
 
-                <form method="post" action="{% url 'HomePage' %}"> 
+                <form method="post" action="{% url 'loginPageCalcolatore' %}"> 
                     {% csrf_token %} 
                     <div class="col-md-12 d-flex-column justify-content-center align-items-center user-container">
                         <p>Email</p>
@@ -58,15 +58,15 @@
                 
                     <a class="forgot-password" href="">Forgot password?</a>
                 
-                    
-
-                    <div class="col-md-12 d-flex justify-content-center align-items-center button-container"  style="margin-top: 2rem;">
-                        <button type="submit" class="button-login">Login Piattaforma</button>
+                    <div class="col-md-12 d-flex justify-content-center align-items-center button-container" style="margin-top: 4rem; margin-bottom: 1rem;">
+                        <button onclick="window.location.href='#'" class="button-login" >Accedi direttamente al Calcolatore</button>
                     </div>
-                </form>
 
-                <div class="col-md-12 d-flex justify-content-center align-items-center button-container" style="margin-top: 1.5rem;">
-                    <button onclick="window.location.href='{% url 'loginPageCalcolatore' %}'" class="button-login" style=" background-color: #0c214b; border: 1px solid #6a2dcc;">Accedi direttamente al Calcolatore</button>
+                    
+                </form>
+                
+                <div class="col-md-12 d-flex justify-content-center align-items-center button-container">
+                    <button type="submit" onclick="window.location.href='{% url 'loginPage' %}'" class="button-login" style=" background-color: #0c214b; border: 1px solid #6a2dcc;">Login Piattaforma</button>
                 </div>
             </div>
         </div>
