@@ -58,11 +58,12 @@ class HomePageRender(View):
 
         emailInput = request.POST['email']
         passwordInput = request.POST['password']
-       
-        Query = UtentiRegistratiCredenziali.objects.all().values()
 
+        Query = UtentiRegistratiCredenziali.objects.all().values()
+        
         for record in Query:  
             for key, value in record.items():
+                print(key, value)
                 if key == 'email':
                     if value == emailInput: 
                         if record['password'] == passwordInput:
@@ -107,9 +108,10 @@ class HomePageRender(View):
 
                         else:
                             return render(request, 'includes/login.html', {'error': 'Password errata'})
-                        
-                    else:
-                        return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
+                else:
+                    continue    
+
+        return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
 
 # View per accettare il disclaimer
 class AcceptDisclaimerView(View):
