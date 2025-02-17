@@ -36,8 +36,8 @@
     <!-- NAVBAR -->
     {% include 'components/navBarPatient.html' %}
 
-    <main>
 
+    <main>
         <!-- MENU TRACE -->
         <div class="main-title-nav">
 
@@ -80,6 +80,41 @@
             </div>
 
         </div>
+
+        <!-- MESSAGGIO ERRORE -->
+        {% if errore %}  
+                
+        <div class="errorSystemContainer" id="error">
+            <p>{{ errore }}</p>
+            <div class="progressBarContainer">
+                <div class="progressBar" id="progress"></div>
+            </div>
+        </div>
+
+        <script>
+            const messaggio = document.getElementById('error');
+            const progressBar = document.getElementById('progress');
+            const durationError = 6000; 
+            const intervalError = 50;
+
+            if (messaggio) {
+            let elapsedTimeError = 0; 
+
+            const timerError = setInterval(() => {
+                elapsedTimeError += intervalError;
+                const percentage = ((durationError - elapsedTimeError) / durationError) * 100;
+                progressBar.style.width = `${percentage}%`;
+
+                if (elapsedTimeError >= durationError) {
+                clearInterval(timerError); 
+                messaggio.style.display = 'none'; 
+                }
+            }, intervalError);
+            }
+        </script>
+
+        {% endif %}
+
 
         <!-- CARD QUIZ -->
          <div class="card-container">
@@ -518,27 +553,28 @@
                                 {% endif %}
                             </div>
 
-                            <div class="tableAnswer-container" id="secondTypeTable">
+                            <div class="tableAnswer-container hgs_script" id="secondTypeTable">
+
                                 <div class="tableRow disabledInput">
                                     <p>10 - 11</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv"  required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv"  required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <12.6 </span>
+                                        <span>Weak: < 12.6 </span>
                                         <span>Normal: 12.6-22.4 </span>
                                         <span>Strong: >22.4 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <11.8 </span>
+                                        <span>Weak: < 11.8 </span>
                                         <span>Normal: 11.8-21.6 </span>
                                         <span>Strong: >21.6 </span>
                                     </p>
@@ -549,23 +585,23 @@
                                     <p>12 - 13</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" " required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" " required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
 
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <19.4 </span>
+                                        <span>Weak: < 19.4 </span>
                                         <span>Normal: 19.4-31.2 </span>
                                         <span>Strong: >31.2 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <14.6 </span>
+                                        <span>Weak: < 14.6 </span>
                                         <span>Normal: 14.6-24.4 </span>
                                         <span>Strong: >24.4 </span>
                                     </p>
@@ -576,23 +612,23 @@
                                     <p>14 - 15</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" " required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" " required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
 
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <28.5 </span>
+                                        <span>Weak: < 28.5 </span>
                                         <span>Normal: 28.5-44.3 </span>
                                         <span>Strong: >44.3 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <15.5 </span>
+                                        <span>Weak: < 15.5 </span>
                                         <span>Normal: 15.5-27.3 </span>
                                         <span>Strong: >27.3 </span>
                                     </p>
@@ -603,11 +639,11 @@
                                     <p>16 - 17</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" " required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" " required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
 
@@ -619,7 +655,7 @@
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <17.2 </span>
+                                        <span>Weak: < 17.2 </span>
                                         <span>Normal: 17.2-29.0 </span>
                                         <span>Strong: >29.0 </span>
                                     </p>
@@ -630,23 +666,23 @@
                                     <p>18 - 19</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" " required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" " required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
 
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <35.7 </span>
+                                        <span>Weak: < 35.7 </span>
                                         <span>Normal: 35.7-55.5 </span>
                                         <span>Strong: >55.5 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <19.2 </span>
+                                        <span>Weak: < 19.2 </span>
                                         <span>Normal: 19.2-31.0 </span>
                                         <span>Strong: >31.0 </span>
                                     </p>
@@ -657,23 +693,23 @@
                                     <p>20 - 24</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" " required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" " required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
 
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <36.8 </span>
+                                        <span>Weak: < 36.8 </span>
                                         <span>Normal: 36.8-56.6 </span>
                                         <span>Strong: >56.6 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <21.5 </span>
+                                        <span>Weak: < 21.5 </span>
                                         <span>Normal: 21.5-35.3 </span>
                                         <span>Strong: >35.3 </span>
                                     </p>
@@ -684,23 +720,23 @@
                                     <p>25 - 29</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
 
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <37.7 </span>
+                                        <span>Weak: < 37.7 </span>
                                         <span>Normal: 37.7-57.5 </span>
                                         <span>Strong: >57.5 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <25.6 </span>
+                                        <span>Weak: < 25.6 </span>
                                         <span>Normal: 25.6-41.4 </span>
                                         <span>Strong: >41.4 </span>
                                     </p>
@@ -711,23 +747,23 @@
                                     <p>30 - 34</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" " required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" " required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
 
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <36.0 </span>
+                                        <span>Weak: < 36.0 </span>
                                         <span>Normal: 36.0-55.8 </span>
                                         <span>Strong: >55.8 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <21.5 </span>
+                                        <span>Weak: < 21.5 </span>
                                         <span>Normal: 21.5-35.3 </span>
                                         <span>Strong: >35.3 </span>
                                     </p>
@@ -738,23 +774,23 @@
                                     <p>35 - 39</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" " required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" " required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" " required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
 
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <35.8 </span>
+                                        <span>Weak: < 35.8 </span>
                                         <span>Normal: 35.8-55.6 </span>
                                         <span>Strong: >55.6 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <20.3 </span>
+                                        <span>Weak: < 20.3 </span>
                                         <span>Normal: 20.3-34.1 </span>
                                         <span>Strong: >34.1 </span>
                                     </p>
@@ -765,23 +801,23 @@
                                     <p>40 - 44</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" 0" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" 0" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" 0" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" 0" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
 
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <35.5 </span>
+                                        <span>Weak: < 35.5 </span>
                                         <span>Normal: 35.5-55.3 </span>
                                         <span>Strong: >55.3 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <18.9 </span>
+                                        <span>Weak: < 18.9 </span>
                                         <span>Normal: 18.9-32.7 </span>
                                         <span>Strong: >32.7 </span>
                                     </p>
@@ -792,23 +828,23 @@
                                     <p>45 - 49</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" 1" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" 1" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" 1" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" 1" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
 
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <34.7 </span>
+                                        <span>Weak: < 34.7 </span>
                                         <span>Normal: 34.7-54.5 </span>
                                         <span>Strong: >54.5 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <18.6 </span>
+                                        <span>Weak: < 18.6 </span>
                                         <span>Normal: 18.6-32.4 </span>
                                         <span>Strong: >32.4 </span>
                                     </p>
@@ -819,23 +855,23 @@
                                     <p>50 - 54</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" 2" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" 2" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" 2" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" 2" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
 
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <32.9 </span>
+                                        <span>Weak: < 32.9 </span>
                                         <span>Normal: 32.9-54.5 </span>
                                         <span>Strong: >54.5 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <18.6 </span>
+                                        <span>Weak: < 18.6 </span>
                                         <span>Normal: 18.6-50.7 </span>
                                         <span>Strong: >50.7 </span>
                                     </p>
@@ -846,23 +882,23 @@
                                     <p>55 - 59</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" 3" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" 3" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" 3" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" 3" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
 
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <30.7 </span>
+                                        <span>Weak: < 30.7 </span>
                                         <span>Normal: 30.7-48.5 </span>
                                         <span>Strong: >48.5 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <17.7 </span>
+                                        <span>Weak: < 17.7 </span>
                                         <span>Normal: 17.7-31.5 </span>
                                         <span>Strong: >31.5 </span>
                                     </p>
@@ -873,23 +909,23 @@
                                     <p>60 - 64</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" 4" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" 4" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" 4" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" 4" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
 
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <30.2 </span>
+                                        <span>Weak: < 30.2 </span>
                                         <span>Normal: 30.2-48.0 </span>
                                         <span>Strong: >48.0 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <17.2 </span>
+                                        <span>Weak: < 17.2 </span>
                                         <span>Normal: 17.2-31.0 </span>
                                         <span>Strong: >31.0 </span>
                                     </p>
@@ -900,23 +936,23 @@
                                     <p>65 - 69</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" 5" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" 5" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
-                                        <input type="text" name="dodv" 5" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" 5" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% endif %}
 
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <28.2 </span>
+                                        <span>Weak: < 28.2 </span>
                                         <span>Normal: 28.2-44.0 </span>
                                         <span>Strong: >44.0 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <15.4 </span>
+                                        <span>Weak: < 15.4 </span>
                                         <span>Normal: 15.4-27.2 </span>
                                         <span>Strong: >27.2 </span>
                                     </p>
@@ -927,7 +963,7 @@
                                     <p>70 - 99</p>
                                     {% if persona.gender == "M" %}
                                     <p>
-                                        <input type="text" name="dodv" 6" required placeholder="Inserisci il valore">
+                                        <input type="text" name="dodv" 6" required placeholder="Inserisci 'Weak', 'Normal' o 'Strong' ">
                                     </p>
                                     {% else %}
                                     <p>
@@ -937,13 +973,13 @@
 
                                     {% if persona.gender == "M" %}
                                     <p id="long-p">
-                                        <span>Weak: <21.3 </span>
+                                        <span>Weak: < 21.3 </span>
                                         <span>Normal: 21.3-35.1 </span>
                                         <span>Strong: >35.1 </span>
                                     </p>
                                     {% else %}
                                     <p id="long-p">
-                                        <span>Weak: <14.7 </span>
+                                        <span>Weak: < 14.7 </span>
                                         <span>Normal: 14.7-24.5 </span>
                                         <span>Strong: >24.5 </span>
                                     </p>
@@ -951,30 +987,37 @@
                                 </div>
                             </div>
                             
-                            <!-- FUNZIONE JS PER GLI INPUT -->
                             <script>
-                                document.addEventListener("DOMContentLoaded", function () {
-                                    const inputs = document.querySelectorAll('.disabledInput input');
+                                    document.addEventListener("DOMContentLoaded", function () {
+                                    const inputs = document.querySelectorAll('.hgs_script input[type="text"]');
 
                                     inputs.forEach(input => {
-                                        input.addEventListener('input', function () {
-                                            if (this.value.trim() !== '') {
-                                                inputs.forEach(otherInput => {
-                                                    if (otherInput !== this) {
-                                                        otherInput.value = 'N/A';
-                                                        otherInput.setAttribute('disabled', 'true');
-                                                    }
-                                                });
+                                        input.addEventListener("input", function () {
+                                            if (this.value.trim() !== "") {
+                                                disableOtherInputs(this);
                                             } else {
-                                                inputs.forEach(otherInput => {
-                                                    otherInput.value = '';
-                                                    otherInput.removeAttribute('disabled');
-                                                });
+                                                enableAllInputs();
                                             }
                                         });
                                     });
+
+                                    function disableOtherInputs(activeInput) {
+                                        inputs.forEach(input => {
+                                            if (input !== activeInput) {
+                                                input.disabled = true;
+                                                input.placeholder = "Disabilitato fino alla cancellazione";
+                                            }
+                                        });
+                                    }
+
+                                    function enableAllInputs() {
+                                        inputs.forEach(input => {
+                                            input.disabled = false;
+                                            input.placeholder = "Inserisci il valore";
+                                        });
+                                    }
                                 });
-                            </script>
+                            </script>                        
                         </div>
 
                         

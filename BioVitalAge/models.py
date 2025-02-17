@@ -334,30 +334,30 @@ class DatiEstesiRefertiTest(models.Model):
     MMSE = models.IntegerField(null=True, blank=True)
 
     #DOMINIO PSICOLOGICO
-    MMSE = models.IntegerField(null=True, blank=True)
-    MMSE = models.IntegerField(null=True, blank=True)
+    GDS = models.IntegerField(null=True, blank=True)
+    LOC = models.IntegerField(null=True, blank=True)
 
     #DOMINIO SENSORIALE
-    MMSE = models.IntegerField(null=True, blank=True)
-    MMSE = models.IntegerField(null=True, blank=True)
+    Vista = models.IntegerField(null=True, blank=True)
+    Udito = models.IntegerField(null=True, blank=True)
 
     #DOMINIO DELLA VITALITA'
-    MMSE = models.IntegerField(null=True, blank=True)
-    MMSE = models.IntegerField(null=True, blank=True)
+    HGS = models.TextField(null=True, blank=True)
+    PFT = models.IntegerField(null=True, blank=True)
 
     #SISTEMA IMMUNITARIO
-    MMSE = models.IntegerField(null=True, blank=True)
-    MMSE = models.IntegerField(null=True, blank=True)
-    MMSE = models.IntegerField(null=True, blank=True)
-    MMSE = models.IntegerField(null=True, blank=True)
-    MMSE = models.IntegerField(null=True, blank=True)
+    ISQ = models.IntegerField(null=True, blank=True)
+    BMI = models.FloatField(null=True, blank=True)
+    CDP = models.FloatField(null=True, blank=True)
+    WHR = models.FloatField(null=True, blank=True)
+    WHR_Ratio = models.TextField(null=True, blank=True)
 
     #DOMINIO DELLA LOCOMOZIONE
-    MMSE = models.IntegerField(null=True, blank=True)
-    MMSE = models.IntegerField(null=True, blank=True)
-    MMSE = models.IntegerField(null=True, blank=True)
-    MMSE = models.IntegerField(null=True, blank=True)
-    MMSE = models.IntegerField(null=True, blank=True)
+    CST = models.FloatField(null=True, blank=True)
+    GS = models.FloatField(null=True, blank=True)
+    PPT = models.IntegerField(null=True, blank=True)
+    SARC_F = models.IntegerField(null=True, blank=True)
+    FSS = models.IntegerField(null=True, blank=True)
 
     #BIOMARCATORI CIRCOLANTI DEL METABOLISMO
     Glic = models.FloatField(null=True, blank=True)
@@ -371,7 +371,6 @@ class DatiEstesiRefertiTest(models.Model):
     albumina = models.FloatField(null=True, blank=True)
     clearance_urea = models.FloatField(null=True, blank=True)
     igf_1 = models.FloatField(null=True, blank=True)    
-
 
     #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
     Inter_6 = models.FloatField(null=True, blank=True)

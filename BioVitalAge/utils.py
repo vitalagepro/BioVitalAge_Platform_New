@@ -737,7 +737,6 @@ def Calcolo_BMI(BMI):
         return 1
     
 def Calcolo_Circoferenza_del_polpaccio_W(CDP):
-
     if int(CDP) > 33:
         return 0
     
@@ -748,11 +747,10 @@ def Calcolo_Circoferenza_del_polpaccio_W(CDP):
         return 1
 
 def Calcolo_Circoferenza_del_polpaccio_M(CDP):
-
     if int(CDP) > 35:
         return 0
     
-    elif int(CDP) >= 30 and int(CDP) >= 35:
+    elif int(CDP) >= 30 and int(CDP) <= 35:
         return 0.5
     
     elif int(CDP) < 30 and int(CDP) < 28:
@@ -786,7 +784,7 @@ def Calcolo_Weist_Height_Ratio(WHR_Ratio):
 def Calcolo_CST(CST):
     if float(CST) > 0.50:
         return 0
-    elif float(CST) <= 0.35 and float(CST) >= 0.50:
+    elif float(CST) >= 0.35 and float(CST) <= 0.50:
         return 0.5
     elif float(CST) < 0.35:
         return 1
@@ -794,13 +792,13 @@ def Calcolo_CST(CST):
 def Calcolo_GS(GS):
     if float(GS) > 1.0:   
         return 0
-    elif float(GS) <= 0.6 and float(GS) >= 1.0:
+    elif float(GS) >= 0.6 and float(GS) <= 1.0:
         return 0.5
-    elif float(GS) < 0.6 and float(GS) > 1.0:
+    elif float(GS) < 0.6 or float(GS) > 1.0:
         return 1
     
 def Calcolo_PPT(PPT):
-    if float(PPT) >= 50:
+    if float(PPT) >= 0.50:
         return 0
     elif float(PPT) <= 0.34 and float(PPT) >= 0.49:
         return 0.5
@@ -856,7 +854,9 @@ def CalcoloPunteggioCapacitaVitale(
     calcoloCapacitaVitale += Calcolo_PPT(PPT) * 0.5
     calcoloCapacitaVitale += Calcolo_Sarc_F(SARC_F) * 0.5
 
-    return calcoloCapacitaVitale
+    return round(calcoloCapacitaVitale, 2)
+
+
 
 
 #result = CalcoloPunteggioCapacitaVitale(26,1,1,7,7,'Strong',95,1,19,36,0.80,'Verde',0.60,1.2,60,4,gender = 'M')

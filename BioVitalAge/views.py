@@ -63,7 +63,6 @@ class HomePageRender(View):
         
         for record in Query:  
             for key, value in record.items():
-                print(key, value)
                 if key == 'email':
                     if value == emailInput: 
                         if record['password'] == passwordInput:
@@ -1736,190 +1735,204 @@ class TestEtaVitaleView(View):
  
     def post(self, request, id):
 
-        print(request.POST)
+        try:
+            persona = get_object_or_404(TabellaPazienti, id=id)
+            data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
+            referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
 
-        persona = get_object_or_404(TabellaPazienti, id=id)
-        data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
-        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+            Somma_MMSE = (
+                int(data.get('doc_1', 0)) +
+                int(data.get('doc_2', 0)) +
+                int(data.get('doc_3', 0)) +
+                int(data.get('doc_4', 0)) +
+                int(data.get('doc_5', 0)) +
+                int(data.get('doc_6', 0)) +
+                int(data.get('doc_7', 0)) +
+                int(data.get('doc_8', 0)) +
+                int(data.get('doc_9', 0)) +
+                int(data.get('doc_10', 0)) +
+                int(data.get('doc_11', 0)) 
+            )
 
-        Somma_MMSE = (
-            int(data.get('doc_1', 0)) +
-            int(data.get('doc_2', 0)) +
-            int(data.get('doc_3', 0)) +
-            int(data.get('doc_4', 0)) +
-            int(data.get('doc_5', 0)) +
-            int(data.get('doc_6', 0)) +
-            int(data.get('doc_7', 0)) +
-            int(data.get('doc_8', 0)) +
-            int(data.get('doc_9', 0)) +
-            int(data.get('doc_10', 0)) +
-            int(data.get('doc_11', 0)) 
-        )
+            Somma_GDS = (
+                int(data.get('dop_1', 0)) +
+                int(data.get('dop_2', 0)) +
+                int(data.get('dop_3', 0)) +
+                int(data.get('dop_4', 0)) +
+                int(data.get('dop_5', 0)) +
+                int(data.get('dop_6', 0)) +
+                int(data.get('dop_7', 0)) +
+                int(data.get('dop_8', 0)) +
+                int(data.get('dop_9', 0)) +
+                int(data.get('dop_10', 0)) +
+                int(data.get('dop_11', 0)) +
+                int(data.get('dop_12', 0)) +
+                int(data.get('dop_13', 0)) +
+                int(data.get('dop_14', 0)) +
+                int(data.get('dop_15', 0)) 
+            )
 
-        Somma_GDS = (
-            int(data.get('dop_1', 0)) +
-            int(data.get('dop_2', 0)) +
-            int(data.get('dop_3', 0)) +
-            int(data.get('dop_4', 0)) +
-            int(data.get('dop_5', 0)) +
-            int(data.get('dop_6', 0)) +
-            int(data.get('dop_7', 0)) +
-            int(data.get('dop_8', 0)) +
-            int(data.get('dop_9', 0)) +
-            int(data.get('dop_10', 0)) +
-            int(data.get('dop_11', 0)) +
-            int(data.get('dop_12', 0)) +
-            int(data.get('dop_13', 0)) +
-            int(data.get('dop_14', 0)) +
-            int(data.get('dop_15', 0)) 
-        )
+            Somma_LOC = (
+                int(data.get('loc_1', 0)) +
+                int(data.get('loc_2', 0)) +
+                int(data.get('loc_3', 0)) +
+                int(data.get('loc_4', 0)) +
+                int(data.get('loc_5', 0)) +
+                int(data.get('loc_6', 0)) +
+                int(data.get('loc_7', 0)) +
+                int(data.get('loc_8', 0)) 
+            )
 
-        Somma_LOC = (
-            int(data.get('loc_1', 0)) +
-            int(data.get('loc_2', 0)) +
-            int(data.get('loc_3', 0)) +
-            int(data.get('loc_4', 0)) +
-            int(data.get('loc_5', 0)) +
-            int(data.get('loc_6', 0)) +
-            int(data.get('loc_7', 0)) +
-            int(data.get('loc_8', 0)) 
-        )
+            Somma_Vista = (
+                int(data.get('dos_1', 0)) +
+                int(data.get('dos_2', 0))
+            )
 
-        Somma_Vista = (
-            int(data.get('dos_1', 0)) +
-            int(data.get('dos_2', 0))
-        )
-
-        Somma_Udito =  int(data.get('dos_3', 0)) 
-
-
-        Somma_HGS = int(data.get('dodv', 0))
-    
-        Fss_Somma = (
-            int(data.get('fss_1', 0)) +
-            int(data.get('fss_2', 0)) +
-            int(data.get('fss_3', 0)) +
-            int(data.get('fss_4', 0)) +
-            int(data.get('fss_5', 0)) +
-            int(data.get('fss_6', 0)) +
-            int(data.get('fss_7', 0)) +
-            int(data.get('fss_8', 0))
-        )
-          
-        Sarc_f_Somma = (
-            int(data.get('Sarc_f_1', 0)) +
-            int(data.get('Sarc_f_2', 0)) +
-            int(data.get('Sarc_f_3', 0)) +
-            int(data.get('Sarc_f_4', 0)) +
-            int(data.get('Sarc_f_5', 0)) 
-        )
-
-        PFT = int(data.get('pft-1', 0))
-             
-        ISQ = (
-            int(data.get('SiIm_1', 0)) +
-            int(data.get('SiIm_2', 0)) +
-            int(data.get('SiIm_3', 0)) +
-            int(data.get('SiIm_4', 0)) +
-            int(data.get('SiIm_5', 0)) +
-            int(data.get('SiIm_6', 0)) +
-            int(data.get('SiIm_7', 0))
-        )
-
-        BMI = int(data.get('bmi-1'))
-
-        CDP = int(data.get('Cir_Pol'))
-        WHR = int(data.get('WHip'))
-        WHR_Ratio = int(data.get('Whei'))
-        CST = int(data.get('numero_rip')) / int(data.get('tot_secondi'))
-        GS = int(data.get('distanza')) / int(data.get('tempo_s'))
-        PPT = int(data.get('tempo_s_pick'))
+            Somma_Udito =  int(data.get('dos_3', 0)) 
         
-        punteggioFinale = CalcoloPunteggioCapacitaVitale(
-                            Somma_MMSE, Somma_GDS, Somma_LOC,
-                            Somma_Vista, Somma_Udito, Somma_HGS, PFT,
-                            ISQ, BMI, CDP, WHR, WHR_Ratio, CST, 
-                            GS, PPT, Sarc_f_Somma, persona.gender )
+            Somma_HGS = str(data.get('dodv'))
+    
+            Fss_Somma = (
+                int(data.get('fss_1', 0)) +
+                int(data.get('fss_2', 0)) +
+                int(data.get('fss_3', 0)) +
+                int(data.get('fss_4', 0)) +
+                int(data.get('fss_5', 0)) +
+                int(data.get('fss_6', 0)) +
+                int(data.get('fss_7', 0)) +
+                int(data.get('fss_8', 0))
+            )
+            
+            Sarc_f_Somma = (
+                int(data.get('Sarc_f_1', 0)) +
+                int(data.get('Sarc_f_2', 0)) +
+                int(data.get('Sarc_f_3', 0)) +
+                int(data.get('Sarc_f_4', 0)) +
+                int(data.get('Sarc_f_5', 0)) 
+            )
+
+            PFT = int(data.get('pft-1', 0))
+                
+            ISQ = (
+                int(data.get('SiIm_1', 0)) +
+                int(data.get('SiIm_2', 0)) +
+                int(data.get('SiIm_3', 0)) +
+                int(data.get('SiIm_4', 0)) +
+                int(data.get('SiIm_5', 0)) +
+                int(data.get('SiIm_6', 0)) +
+                int(data.get('SiIm_7', 0))
+            )
+
+            BMI = float(data.get('bmi-1'))
+
+            CDP = float(data.get('Cir_Pol'))
+            WHR = float(data.get('WHip'))
+            WHR_Ratio = str(data.get('Whei'))
+            CST = int(data.get('numero_rip')) / int(data.get('tot_secondi'))
+            GS = int(data.get('distanza')) / int(data.get('tempo_s'))
+            PPT = int(data.get('tempo_s_pick'))
+
+            punteggioFinale = CalcoloPunteggioCapacitaVitale(
+                                Somma_MMSE, Somma_GDS, Somma_LOC,
+                                Somma_Vista, Somma_Udito, Somma_HGS, PFT,
+                                ISQ, BMI, CDP, WHR, WHR_Ratio, CST, 
+                                GS, PPT, Sarc_f_Somma, persona.gender )
 
 
-        referto = ArchivioRefertiTest(
-            paziente = persona,
-            punteggio = punteggioFinale,
-            #documento = request.FILES.get('documento')
-        )
-        referto.save()
+            referto = ArchivioRefertiTest(
+                paziente = persona,
+                punteggio = punteggioFinale,
+                #documento = request.FILES.get('documento')
+            )
+            referto.save()
 
 
-        datiEstesi = DatiEstesiRefertiTest(
-            referto = referto,
+            datiEstesi = DatiEstesiRefertiTest(
+                referto = referto,
 
-            #DOMINIO COGNITIVO 
-            MMSE = Somma_MMSE,
+                #DOMINIO COGNITIVO 
+                MMSE = Somma_MMSE,
 
-            #DOMINIO PSICOLOGICO
-            GDS = Somma_GDS,
-            LOC = Somma_LOC,
+                #DOMINIO PSICOLOGICO
+                GDS = Somma_GDS,
+                LOC = Somma_LOC,
 
-            #DOMINIO SENSORIALE
-            Vista = Somma_Vista,
-            Udito = Somma_Udito,
+                #DOMINIO SENSORIALE
+                Vista = Somma_Vista,
+                Udito = Somma_Udito,
 
-            #DOMINIO DELLA VITALITA'
-            HGS = Somma_HGS,
-            PFT = PFT,
+                #DOMINIO DELLA VITALITA'
+                HGS = Somma_HGS,
+                PFT = PFT,
 
-            #SISTEMA IMMUNITARIO
-            ISQ = ISQ,
-            BMI = BMI,
-            CDP = CDP,
-            WHR = WHR,
-            WHR_Ratio = WHR_Ratio,
+                #SISTEMA IMMUNITARIO
+                ISQ = ISQ,
+                BMI = BMI,
+                CDP = CDP,
+                WHR = WHR,
+                WHR_Ratio = WHR_Ratio,
 
-            #DOMINIO DELLA LOCOMOZIONE
-            CST = CST,
-            GS = GS,
-            PPT = PPT,
-            SARC_F = Sarc_f_Somma,
-            FSS = Fss_Somma,
+                #DOMINIO DELLA LOCOMOZIONE
+                CST = CST,
+                GS = GS,
+                PPT = PPT,
+                SARC_F = Sarc_f_Somma,
+                FSS = Fss_Somma,
 
-            #BIOMARCATORI CIRCOLANTI DEL METABOLISMO
-            Glic = safe_float(data, 'Glic'),
-            Emog = safe_float(data, 'Emog'),
-            Insu = safe_float(data, 'Insu'),
-            Pept_c = safe_float(data, 'Pept_c'),
-            Col_tot = safe_float(data, 'Col_tot'),
-            Col_ldl = safe_float(data, 'Col_ldl'),
-            Col_hdl = safe_float(data, 'Col_hdl'),
-            Trigl = safe_float(data, 'Trigl'),
-            albumina = safe_float(data, 'albumina'),
-            clearance_urea = safe_float(data, 'clearance_urea'),
-            igf_1 = safe_float(data, 'ifg_1'),
+                #BIOMARCATORI CIRCOLANTI DEL METABOLISMO
+                Glic = safe_float(data, 'Glic'),
+                Emog = safe_float(data, 'Emog'),
+                Insu = safe_float(data, 'Insu'),
+                Pept_c = safe_float(data, 'Pept_c'),
+                Col_tot = safe_float(data, 'Col_tot'),
+                Col_ldl = safe_float(data, 'Col_ldl'),
+                Col_hdl = safe_float(data, 'Col_hdl'),
+                Trigl = safe_float(data, 'Trigl'),
+                albumina = safe_float(data, 'albumina'),
+                clearance_urea = safe_float(data, 'clearance_urea'),
+                igf_1 = safe_float(data, 'ifg_1'),
 
 
-            #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
-            Lymph = safe_float(data, 'Lymph'),
-            Lymph_el = safe_float(data, 'Lymph_el'),
-            wbc = safe_float(data, 'wbc'),
-            Proteins_c = safe_float(data, 'Proteins_c'),
-            Inter_6 = safe_float(data, 'Inter_6'),
-            Tnf = safe_float(data, 'Tnf'),
-            Mono = safe_float(data, 'Mono'),
-            Mono_el = safe_float(data, 'Mono_el'),    
-        )
+                #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
+                Lymph = safe_float(data, 'Lymph'),
+                Lymph_el = safe_float(data, 'Lymph_el'),
+                wbc = safe_float(data, 'wbc'),
+                Proteins_c = safe_float(data, 'Proteins_c'),
+                Inter_6 = safe_float(data, 'Inter_6'),
+                Tnf = safe_float(data, 'Tnf'),
+                Mono = safe_float(data, 'Mono'),
+                Mono_el = safe_float(data, 'Mono_el'),    
+            )
 
-        datiEstesi.save()
+            datiEstesi.save()
 
-        context = {
+            context = {
             'persona': persona,
             'modal' : True,
             'Referto': referto,
             'referti_test_recenti': referti_test_recenti,
             'dottore': dottore
-        }
+            }
 
-        return render(request, "includes/EtaVitale.html", context)
+            return render(request, "includes/EtaVitale.html", context)
 
+
+        except Exception as e:
+            context = {
+                'persona': persona,
+                'modal': False,
+                'errore': "Qualcosa è andato storto, controlla di inserire i valori corretti e riprova",
+                'referti_test_recenti': referti_test_recenti,
+                'dottore': dottore
+            }    
+
+            return render(request, "includes/testVitale.html", context)
+
+
+        
+
+        
 
 
 
@@ -1939,12 +1952,58 @@ class RefertoQuizView(View):
         if referto:
             datiEstesi = DatiEstesiRefertiTest.objects.filter(referto=referto).first()
 
+        testo_risultato = ''
+
+        if float(referto.punteggio) >= 0 and float(referto.punteggio) <= 2.59:
+            testo_risultato = """
+                                Ottima capacità vitale: Stato di salute eccellente sia a livello
+                                fisico che mentale. La forza muscolare, la funzionalità
+                                respiratoria e la mobilità sono ottimali. Il soggetto mostra
+                                un’ottima capacità cognitiva, un buon benessere psicologico e
+                                una bassa vulnerabilità allo stress. Il rischio di declino
+                                funzionale e mentale è minimo.
+                            """
+
+        elif float(referto.punteggio) >= 2.60 and float(referto.punteggio) <= 5.09:
+            testo_risultato = """
+                                Buona capacità vitale: Buono stato di salute con lievi segni di
+                                riduzione della forza muscolare o della resistenza fisica.
+                                Possibile lieve declino cognitivo o stati emotivi fluttuanti, come
+                                stress occasionale o lieve ansia. Il soggetto è autonomo, ma
+                                potrebbe beneficiare di interventi per mantenere le capacità
+                                motorie e il benessere mentale.
+                            """
+
+        elif float(referto.punteggio) >= 5.10 and float(referto.punteggio) <= 7.59:
+            testo_risultato ="""
+                                Capacità vitale compromessa: Si evidenziano difficoltà motorie
+                                moderate, minore forza muscolare e resistenza. Potrebbero
+                                esserci segni di declino cognitivo o un aumento di ansia e
+                                stress, con possibili difficoltà nella gestione emotiva. Il rischio
+                                di cadute, affaticamento mentale e riduzione dell’autonomia
+                                cresce. È consigliato un supporto medico e strategie di
+                                miglioramento.
+                            """
+
+        elif float(referto.punteggio) >= 7.60 and float(referto.punteggio) <= 10:
+            testo_risultato ="""
+                                Capacità vitale gravemente compromessa: Mobilità e
+                                resistenza fisica sono compromesse, con elevato rischio di
+                                fragilità e perdita di autonomia. Il declino cognitivo può
+                                manifestarsi con difficoltà di concentrazione, memoria e
+                                orientamento. Sul piano psicologico, possono essere presenti
+                                ansia significativa, depressione o distress emotivo. È necessario
+                                un intervento mirato per migliorare la qualità della vita.
+                            """
+
+
         context = {
             'persona': persona,
-            'ultimo_referto': referto,
+            'ultimo_referto': ultimo_referto,
             'datiEstesi': datiEstesi,
             'dottore' : dottore,
-            'referto' : ultimo_referto
+            'referto' : referto,
+            'testo_risultato': testo_risultato,
         }
 
         return render(request, "includes/RefertoQuiz.html", context)

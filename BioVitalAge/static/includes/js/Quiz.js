@@ -35,18 +35,18 @@ function updatePagination() {
 
 // Funzione per generare i pulsanti della paginazione
 function createPagination() {
-  // Rimuovi i pulsanti esistenti
   pagination.innerHTML = "";
 
-  // Genera nuovi pulsanti
   questions.forEach((_, index) => {
     const button = document.createElement("button");
     button.classList.add("pagination-btn");
     button.textContent = index + 1;
+    button.type = "button"; // Aggiunto per evitare l'invio del form
     button.addEventListener("click", () => updateQuestion(index));
     pagination.appendChild(button);
   });
 }
+
 
 // Gestori per i pulsanti successivo e precedente
 function nextAnswer() {
@@ -71,10 +71,18 @@ updatePagination();
 const submitBtn = document.getElementById("submit-btn");
 
 function checkLastQuestion() {
+  // Controlla se siamo sull'ultima domanda
   if (currentQuestionIndex === questions.length - 1) {
-    const radios = questions[currentQuestionIndex].querySelectorAll(".answer");
-    const oneSelected = Array.from(radios).some((radio) => radio.checked);
-    submitBtn.disabled = !oneSelected;
+    const inputs = questions[currentQuestionIndex].querySelectorAll("input[type='radio'], input[type='text']");
+    const allFilled = Array.from(inputs).every((input) => {
+      if (input.type === "radio") {
+        return questions[currentQuestionIndex].querySelector("input[type='radio']:checked") !== null;
+      } else {
+        return input.value.trim() !== "";
+      }
+    });
+
+    submitBtn.disabled = !allFilled;
   }
 }
 
@@ -117,3 +125,8 @@ function nextAnswer() {
 createPagination();
 updatePagination();
 handleCheckboxSelection();
+
+
+document.querySelectorAll("input[type='radio'], input[type='text']").forEach((input) => {
+  input.addEventListener("input", checkLastQuestion);
+});
