@@ -4,6 +4,7 @@ from .views import *
 
 urlpatterns = [
     path("", views.LoginRenderingPage.as_view(), name='loginPage'),
+    path("PrivacyPolicy/<int:id>/", views.PrivacyPolicyRenderingPage.as_view(), name='PrivacyPolicy'),
     path("Home_Page", HomePageRender.as_view(), name='HomePage'),
     path("Login",LogOutRender.as_view(), name="logout"),
     path('accept-disclaimer/', AcceptDisclaimerView.as_view(), name='accept_disclaimer'),

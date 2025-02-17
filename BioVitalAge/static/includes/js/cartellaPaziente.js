@@ -188,6 +188,8 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  const capSpan = document.getElementById("cap");
+  const provinceSpan = document.getElementById("province");
   const emailSpan = document.getElementById("email");
   const phoneSpan = document.getElementById("phone");
   const associateStaffSpan = document.getElementById("associate_staff");
@@ -195,9 +197,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const upcomingVisitSpan = document.getElementById("upcomingVisit");
   const bloodGroupSpan = document.getElementById("blood_group");
   const successAlert = document.getElementById("successAlert");
-  const successMessage = document.getElementById("successMessage");
   const errorAlert = document.getElementById("errorAlert");
-  const errorMessage = document.getElementById("errorMessage");
 
   let isEditing = false; // Stato per determinare se siamo in modalità modifica
 
@@ -247,6 +247,16 @@ document.addEventListener("DOMContentLoaded", function () {
       // Modalità modifica
       isEditing = true;
 
+      const capInput = document.createElement("input");
+      capInput.type = "text";
+      capInput.value = capSpan.textContent.trim();
+      capInput.id = "capInput";
+
+      const provinceInput = document.createElement("input");
+      provinceInput.type = "text";
+      provinceInput.value = provinceSpan.textContent.trim();
+      provinceInput.id = "provinceInput";
+
       const emailInput = document.createElement("input");
       emailInput.type = "text";
       emailInput.value = emailSpan.textContent.trim();
@@ -280,6 +290,12 @@ document.addEventListener("DOMContentLoaded", function () {
       bloodGroupInput.type = "text";
       bloodGroupInput.value = bloodGroupSpan.textContent.trim();
       bloodGroupInput.id = "bloodGroupInput";
+
+      capSpan.textContent = "";
+      capSpan.appendChild(capInput);
+
+      provinceSpan.textContent = "";
+      provinceSpan.appendChild(provinceInput);
 
       emailSpan.textContent = "";
       emailSpan.appendChild(emailInput);
@@ -315,6 +331,9 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
       editButton.title = "Save";
     } else {
+      // Modalità visualizzazione
+      const capInput = document.getElementById("capInput");
+      const provinceInput = document.getElementById("provinceInput");
       const emailInput = document.getElementById("emailInput");
       const phoneInput = document.getElementById("phoneInput");
       const associateStaffInput = document.getElementById(
@@ -324,6 +343,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const upcomingVisitInput = document.getElementById("upcomingVisitInput");
       const bloodGroupInput = document.getElementById("bloodGroupInput");
 
+      const updatedCap = capInput.value;
+      const updatedProvince = provinceInput.value;
       const updatedEmail = emailInput.value;
       const updatedPhone = phoneInput.value;
       const updatedAssociateStaff = associateStaffInput.value;
@@ -344,6 +365,8 @@ document.addEventListener("DOMContentLoaded", function () {
           "X-CSRFToken": csrfToken,
         },
         body: JSON.stringify({
+          cap: updatedCap,
+          province: updatedProvince,
           email: updatedEmail,
           phone: formattedPhone,
           associate_staff: updatedAssociateStaff,
@@ -363,6 +386,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((data) => {
           if (data.success) {
             console.log("Dati aggiornati con successo.");
+            capSpan.textContent = updatedCap;
+            provinceSpan.textContent = updatedProvince;
             emailSpan.textContent = updatedEmail;
             phoneSpan.textContent = formattedPhone;
             associateStaffSpan.textContent = updatedAssociateStaff;

@@ -24,6 +24,18 @@ class LoginRenderingPage(View):
         response.delete_cookie('disclaimer_accepted', path='/')
         return response
 
+class PrivacyPolicyRenderingPage(View):
+    def get(self, request, id):
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        context = {
+            'persona' : persona,
+            'dottore' : dottore
+        }
+
+        return render(request, 'includes/privacyPolicy.html', context)
 
 class LogOutRender(View):
     def get(self, request):
@@ -1346,7 +1358,6 @@ class ElencoRefertiView(View):
             'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
             'dottore' : dottore,
             'visite': visite,
-            #'elencoPrescrizioni': elencoPrescrizioni,
         }
 
         return render(request, "includes/elencoReferti.html", context)
@@ -1604,6 +1615,8 @@ def update_persona_contact(request, id):
         try:
             # Estrai il corpo della richiesta
             data = json.loads(request.body)
+            cap = data.get("cap")
+            province = data.get("province")
             email = data.get("email")
             phone = data.get("phone")
             associate_staff = data.get("associate_staff")
@@ -1614,6 +1627,8 @@ def update_persona_contact(request, id):
             # Recupera il modello e aggiorna i dati
             from .models import TabellaPazienti  # Sostituisci con il tuo modello
             persona = TabellaPazienti.objects.get(id=id)
+            persona.cap = cap
+            persona.province = province
             persona.email = email
             persona.phone = phone
             persona.associate_staff = associate_staff

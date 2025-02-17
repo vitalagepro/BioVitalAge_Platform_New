@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy - BioVitalAge</title>
+    <!-- Favicon -->
+    <link
+      rel="sortcut icon"
+      href='{% static "includes/icone/favicon.png" %}'
+      type="image/x-icon"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'includes/css/privacyPolicy.css' %}"
+    />
+    <!-- Import Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Font Import  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- JS IMPORT -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  </head>
+  <body>
+    <!-- Loader -->
+    {% include 'components/loader.html' %}
+
+    <!-- Navbar -->
+    {% include 'components/navBar.html' %}
+
+    <main>
+      <!-- MENU TRACE -->
+      <div class="main-title-nav">
+        <div class="back-tittle">
+          <a id="back" href="{% url 'cartella_paziente' persona.id %}">
+            <img src="{% static 'includes/icone/arrowBack.png' %}" />
+          </a>
+        </div>
+
+        <div class="main-menu-trace">
+          <a href="{% url 'HomePage' %}">
+            <img
+              src="{% static 'includes/icone/homePage.png' %}"
+              alt="Home Page"
+              title="Home Page"
+            />
+          </a>
+          <p>»</p>
+          <p>
+            <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
+          </p>
+          <p>»</p>
+          <p>Privacy Policy</p>
+        </div>
+      </div>
+      <div class="container-privacy-policy">
+        <h1>Privacy Policy</h1>
+        <h2>BioVitalAge</h2>
+        <p>Ultimo aggiornamento: Febbraio 2025</p>
+
+        <p>
+          La piattaforma <strong>BioVitalAge</strong> rispetta la tua privacy e
+          si impegna a proteggere i tuoi dati personali. Questa informativa
+          descrive come raccogliamo, utilizziamo e proteggiamo le informazioni
+          fornite dagli utenti.
+        </p>
+
+        <h2>1. Dati raccolti</h2>
+        <p>
+          Raccogliamo dati personali come nome, cognome, email, numero di
+          telefono e dati sanitari necessari per fornire i servizi della
+          piattaforma.
+        </p>
+
+        <h2>2. Uso dei dati</h2>
+        <p>I dati raccolti vengono utilizzati per:</p>
+        <ul>
+          <li>Fornire servizi medici personalizzati;</li>
+          <li>Migliorare l'esperienza utente;</li>
+          <li>Adempiere agli obblighi legali e normativi.</li>
+        </ul>
+
+        <h2>3. Condivisione dei dati</h2>
+        <p>
+          I dati non verranno venduti a terzi. Potrebbero essere condivisi con
+          strutture sanitarie o partner in conformità con la normativa vigente.
+        </p>
+
+        <h2>4. Sicurezza</h2>
+        <p>
+          Adottiamo misure di sicurezza avanzate per proteggere i tuoi dati da
+          accessi non autorizzati o divulgazioni indebite.
+        </p>
+
+        <h2>5. Diritti dell'utente</h2>
+        <p>
+          Puoi richiedere l'accesso, la modifica o la cancellazione dei tuoi
+          dati scrivendoci a
+          <a href="mailto:dottoreaprile@gmail.com">dottoreaprile@gmail.com</a>.
+        </p>
+
+        <h2>6. Modifiche alla policy</h2>
+        <p>
+          Ci riserviamo il diritto di aggiornare questa informativa
+          periodicamente. Le modifiche saranno comunicate attraverso la
+          piattaforma.
+        </p>
+
+        <p>
+          Per ulteriori informazioni, contattaci all'indirizzo email sopra
+          indicato.
+        </p>
+      </div>
+    </main>
+  </body>
+</html>
