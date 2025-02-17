@@ -37,7 +37,7 @@
     {% include 'components/loader.html' %}
 
     <!-- NAVBAR -->
-    {% include 'components/navBar.html' %}
+    {% include 'components/navBarPatient.html' %}
 
     <!-- Disclaimer Modal -->
     <div id="pdfDisclaimerModal" class="modal-pdf-container hidden">
@@ -56,13 +56,25 @@
                 <div class="back-tittle">
                     <a id="back" href="{% url 'elenco_referti' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to Results"></a>
                     <h2 class="main-welcome-title">
-                        {{ persona.name }} - 
-                        {{ persona.surname }} - 
-                        {{ persona.chronological_age }} 
-                        {% if persona.phone and persona.email %}
-                          - {{ persona.phone }} - {{ persona.email }}
+                        <span>{{ persona.surname|title }}</span>
+                        <span>{{ persona.name|title }}</span> |
+                        <span>Età: {{ persona.chronological_age }}</span> |
+                        {% if datiEstesi.biological_age %}
+                        <span>
+                             Età Biologica: {{ datiEstesi.biological_age }}
+                        </span>
                         {% endif %}
-                    </h2>                
+                        {% if persona.phone and persona.email %}
+                          <span class="phone_span">
+                            <img src="{% static 'includes/icone/phone.png' %}" width="20px" height="20px">
+                            Telefono: {{ persona.phone }}
+                          </span>
+                          <span class="email_span">
+                            <img src="{% static 'includes/icone/emailNew.png' %}" width="20px" height="20px">
+                            Email: {{ persona.email }}
+                          </span>
+                        {% endif %}
+                    </h2>
                 </div>
             
                 <div class="main-menu-trace">

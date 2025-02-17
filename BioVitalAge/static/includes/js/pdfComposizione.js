@@ -65,15 +65,43 @@ function chiudiVignetta() {
 /*  -----------------------------------------------------------------------------------------------
     Funzione per la selezione del punteggio fisico
 --------------------------------------------------------------------------------------------------- */
+
+function showConfirmModal(callback) {
+  const modal = document.getElementById("confirm-reset-modal");
+  const confirmButton = document.getElementById("confirm-reset-btn");
+  const cancelButton = document.getElementById("cancel-reset-btn");
+
+  modal.classList.remove("hidden-modal-custom");
+
+  confirmButton.onclick = function () {
+    modal.classList.add("hidden-modal-custom");
+    callback(true); // Confermato
+  };
+
+  cancelButton.onclick = function () {
+    modal.classList.add("hidden-modal-custom");
+    callback(false); // Annullato
+  };
+
+  // Chiudi la modale cliccando fuori
+  modal.onclick = function (event) {
+    if (event.target === modal) {
+      modal.classList.add("hidden-modal-custom");
+      callback(false); // Annullato
+    }
+  };
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const csrfToken = document
     .querySelector('meta[name="csrf-token"]')
     .getAttribute("content");
 
   const punteggioFisicoSelect = document.getElementById("punteggio_fisico");
+  const resetButton = document.getElementById("reset-score");
 
   if (punteggioFisicoSelect) {
-    // Evento per il salvataggio automatico ogni volta che cambia la selezione
+    // ✅ Evento per il salvataggio automatico del punteggio fisico
     punteggioFisicoSelect.addEventListener("change", function () {
       const selectedValue = punteggioFisicoSelect.value;
 
@@ -88,28 +116,53 @@ document.addEventListener("DOMContentLoaded", function () {
             punteggio_fisico: selectedValue,
           }),
         })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(
-                `HTTP Error ${response.status}: ${response.statusText}`
-              );
-            }
-            return response.json();
-          })
+          .then((response) => response.json())
           .then((data) => {
             if (data.success) {
               console.log("Punteggio Fisico aggiornato con successo.");
-              showAlert(successAlert, "Punteggio fisico salvato con successo!");
             } else {
               console.error("Errore dal server:", data.error);
-              showAlert(errorAlert, `Errore dal server: ${data.error}`);
             }
           })
           .catch((error) => {
             console.error("Errore nella richiesta:", error);
-            showAlert(errorAlert, `Errore nella richiesta: ${error.message}`);
           });
       }
+    });
+  }
+
+  // ✅ Evento per il reset dello storico dei punteggi
+  if (resetButton) {
+    resetButton.addEventListener("click", function () {
+      showConfirmModal(function (confirmed) {
+        if (!confirmed) return; // Se annulla, esce dalla funzione
+
+        fetch(updatePersonaComposizioneUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+          },
+          body: JSON.stringify({ reset_storico_punteggi: true }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              console.log("Storico punteggi resettato con successo.");
+
+              // ✅ Resetta il select a "-- Seleziona il punteggio --"
+              punteggioFisicoSelect.selectedIndex = 0;
+
+              // ✅ Ricarica la pagina per riflettere il reset
+              location.reload();
+            } else {
+              console.error("Errore dal server:", data.error);
+            }
+          })
+          .catch((error) => {
+            console.error("Errore nella richiesta:", error);
+          });
+      });
     });
   }
 });
@@ -118,13 +171,15 @@ document.addEventListener("DOMContentLoaded", function () {
     FUNZIONE MODIFICA DATI
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
+  // Trova il pulsante/link con title="Modifica"
   const editButton = document.querySelector('a[title="Modifica"]');
   if (!editButton) {
     console.error('Il pulsante "Modifica" non è stato trovato.');
     return;
   }
 
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+  // Leggiamo il token CSRF (presente nel meta)
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "";
 
   const fields = {
     height: "altezza",
@@ -147,7 +202,6 @@ document.addEventListener("DOMContentLoaded", function () {
     whtr: "whtr",
   };
 
-  let originalValues = {};
   let isEditing = false;
 
   editButton.addEventListener("click", function (event) {
@@ -157,31 +211,39 @@ document.addEventListener("DOMContentLoaded", function () {
       // ---- ENTRA IN MODIFICA ----
       isEditing = true;
 
+      // Per ogni campo definito in 'fields', creiamo un <input>
       Object.keys(fields).forEach((key) => {
         const fieldElement = document.getElementById(fields[key]);
         if (fieldElement) {
           const originalValue = fieldElement.dataset.value?.trim() || fieldElement.textContent.trim() || "";
-          originalValues[key] = originalValue;
 
+          // Crea un input
           const input = document.createElement("input");
+          // Se l'ID contiene "date", lo mettiamo come type="date"
           input.type = fieldElement.id.includes("date") ? "date" : "text";
 
-          // Se è una data, la convertiamo, altrimenti lasciamo il valore originale
-          input.value = fieldElement.id.includes("date")
-            ? formatDateForInput(originalValue)
-            : originalValue;
+          // Se è un campo date, formatta
+          if (input.type === "date") {
+            input.value = formatDateForInput(originalValue);
+          } else {
+            input.value = originalValue;
+          }
 
+          // Un ID unico per l'input
           input.id = `${key}Input`;
+          // Salviamo il valore originale
           input.dataset.originalValue = originalValue;
 
+          // Svuota il testo del <p> e ci infiliamo l'input
           fieldElement.textContent = "";
           fieldElement.appendChild(input);
         }
       });
 
-      // Attiva il calcolo automatico del BMI (altezza x peso)
+      // Avvia il calcolo BMI automatico (se serve)
       setupBMICalculation();
 
+      // Cambia il pulsante in "Salva"
       editButton.innerHTML = `
         Salva 
             <svg
@@ -197,51 +259,47 @@ document.addEventListener("DOMContentLoaded", function () {
             </svg>
         `;
       editButton.title = "Salva";
+
     } else {
       // ---- SALVA MODIFICHE ----
-      let updatedValues = {};
       let finalPayload = {};
 
       Object.keys(fields).forEach((key) => {
         const input = document.getElementById(`${key}Input`);
-        if (input) {
-          let newValue = input.value.trim();
-          let oldValue = input.dataset.originalValue.trim();
+        if (!input) return;
 
-          // Se è un campo data, lo converto in formato yyyy-mm-dd (o vuoto)
-          if (input.type === "date") {
-            newValue = formatDateForInput(newValue);
-          } else {
-            // Altri campi → se vuoto o 'inserisci valore', metto null
-            // se è un numero valido, parseFloat,
-            // altrimenti ripristino oldValue (non vogliamo un testo non numerico per i campi che devono essere numerici)
-            if (newValue.toLowerCase() === "inserisci valore" || newValue === "") {
-              newValue = null;
-            } else if (!isNaN(newValue)) {
-              newValue = parseFloat(newValue);
-            } else {
-              // Se non è un numero valido, manteniamo il vecchio valore (qualunque esso fosse)
-              newValue = oldValue;
-            }
-          }
+        let newValue = input.value.trim();
+        const oldValue = input.dataset.originalValue.trim();
 
-          // Se il valore è stato modificato davvero, lo includiamo in finalPayload
-          if (String(newValue) !== String(oldValue)) {
-            // Aggiorno la lista di campi modificati
-            updatedValues[key] = newValue;
-            finalPayload[key] = newValue;
-          }
+        if (input.type === "date") {
+          // Se è <input type="date">, formattiamo in yyyy-mm-dd
+          newValue = formatDateForInput(newValue);
+        } else {
+          // Se è un campo testo/numerico
+          if (newValue.toLowerCase() === "inserisci valore" || newValue === "") {
+            newValue = null;
+          } else if (!isNaN(newValue)) {
+            newValue = parseFloat(newValue);
+          } 
+          // altrimenti rimane la stringa così com'è
+        }
+
+        // Se il valore è cambiato, lo mettiamo nel payload
+        if (String(newValue) !== String(oldValue)) {
+          finalPayload[key] = newValue;
         }
       });
 
-      // Se non ci sono effettive modifiche, non invio nulla
-      if (Object.keys(updatedValues).length === 0) {
+      console.log("Final Payload:", finalPayload);
+
+      // Se non è cambiato nulla, non facciamo la fetch
+      if (Object.keys(finalPayload).length === 0) {
         console.log("Nessuna modifica rilevata. Nessuna richiesta inviata.");
         resetEditingState();
         return;
       }
 
-      // Invia i dati al server
+      // Manda la fetch al server
       fetch(updatePersonaComposizioneUrl, {
         method: "POST",
         headers: {
@@ -260,11 +318,13 @@ document.addEventListener("DOMContentLoaded", function () {
           if (data.success) {
             console.log("Dati aggiornati con successo.");
 
-            // Aggiorna la vista con i nuovi valori
+            // Aggiorna il testo di ogni campo con i nuovi valori
             Object.keys(finalPayload).forEach((key) => {
               const fieldElement = document.getElementById(fields[key]);
               if (fieldElement) {
-                fieldElement.textContent = finalPayload[key] !== null ? finalPayload[key] : "Inserisci valore";
+                const val = finalPayload[key];
+                fieldElement.textContent = val !== null ? String(val) : "Inserisci valore";
+                fieldElement.dataset.value = val !== null ? String(val) : "Inserisci valore";
               }
             });
 
@@ -279,63 +339,69 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Calcolo automatico del BMI mentre si scrive (altezza e peso)
+  // Funzione per il calcolo automatico del BMI (se serve)
   function setupBMICalculation() {
-    const altezzaInput = document.getElementById("altezzaInput");
-    const pesoInput = document.getElementById("pesoInput");
-    const bmiInput = document.getElementById("bmiInput");
+    const targetNode = document.body; // Osserviamo il documento
 
-    if (altezzaInput && pesoInput && bmiInput) {
-      // Se il BMI ha già un valore valido, non lo ricalcoliamo
-      if (bmiInput.value.trim() !== "" && !isNaN(parseFloat(bmiInput.value))) {
-        return;
+    const observer = new MutationObserver(() => {
+      const altezzaInput = document.getElementById("heightInput");
+      const pesoInput = document.getElementById("weightInput");
+      const bmiInput = document.getElementById("bmiInput");
+
+      if (altezzaInput && pesoInput && bmiInput) {
+        observer.disconnect(); // Smetti di osservare
+        const calculateBMI = () => {
+          let altezza = parseFloat(altezzaInput.value);
+          let peso = parseFloat(pesoInput.value);
+
+          // Se > 10, supponiamo che sia in cm e convertiamo in metri
+          if (!isNaN(altezza) && altezza > 10) {
+            altezza = altezza / 100; 
+          }
+
+          if (!isNaN(altezza) && altezza > 0 && !isNaN(peso) && peso > 0) {
+            const bmi = (peso / (altezza * altezza)).toFixed(2);
+            bmiInput.value = bmi;
+          } else {
+            bmiInput.value = "";
+          }
+        };
+
+        altezzaInput.addEventListener("input", calculateBMI);
+        pesoInput.addEventListener("input", calculateBMI);
       }
+    });
 
-      const calculateBMI = () => {
-        const altezza = parseFloat(altezzaInput.value) / 100; // da cm a metri
-        const peso = parseFloat(pesoInput.value);
-
-        if (!isNaN(altezza) && altezza > 0 && !isNaN(peso) && peso > 0) {
-          const bmi = (peso / (altezza * altezza)).toFixed(2);
-          bmiInput.value = bmi;
-        }
-      };
-
-      altezzaInput.addEventListener("input", calculateBMI);
-      pesoInput.addEventListener("input", calculateBMI);
-    }
+    observer.observe(targetNode, { childList: true, subtree: true });
   }
 
-  // Formatta data in YYYY-MM-DD (accettabile per <input type="date">)
+  // Formatta la data in YYYY-MM-DD per <input type="date">
   function formatDateForInput(dateString) {
-    if (!dateString || dateString.trim() === "" || dateString.toLowerCase() === "inserisci valore") {
-      return ""; // se vuoto o placeholder, restituisco stringa vuota
+    if (!dateString || dateString.toLowerCase() === "inserisci valore") {
+      return "";
     }
-
-    // Se è già YYYY-MM-DD, lo lascio così
+    // Se già in formato YYYY-MM-DD, la lasciamo così
     if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
       return dateString;
     }
-
-    // Altrimenti provo a fare il parsing come data generica
-    const parsedDate = new Date(dateString);
-    if (!isNaN(parsedDate.getTime())) {
-      // Aggiusto il fuso orario
-      parsedDate.setMinutes(parsedDate.getMinutes() - parsedDate.getTimezoneOffset());
-      return parsedDate.toISOString().split("T")[0];
+    // Altrimenti proviamo a fare il parsing
+    const parsed = new Date(dateString);
+    if (!isNaN(parsed.getTime())) {
+      parsed.setMinutes(parsed.getMinutes() - parsed.getTimezoneOffset());
+      return parsed.toISOString().split("T")[0];
     }
-
-    // Se niente funziona, restituisco stringa vuota
     return "";
   }
 
-  // Torna alla visualizzazione "normale" (senza input)
+  // Torna alla visualizzazione "normale"
   function resetEditingState() {
     Object.keys(fields).forEach((key) => {
       const fieldElement = document.getElementById(fields[key]);
       const input = document.getElementById(`${key}Input`);
       if (fieldElement && input) {
+        // Mostra il valore finale (se l'utente aveva scritto qualcosa)
         fieldElement.textContent = input.value.trim() || "Inserisci valore";
+        fieldElement.dataset.value = input.value.trim() || "Inserisci valore";
       }
     });
 
@@ -396,55 +462,55 @@ async function generatePDF() {
     personalInformationPages.drawText(`${name}`, {
       x: 380,
       y: 644,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${surname}`, {
       x: 455,
       y: 644,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${dob}`, {
       x: 340,
       y: 632,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${cf}`, {
       x: 295,
       y: 618,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${place_birth}`, {
       x: 280,
       y: 632,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${chronological_age}`, {
       x: 480,
       y: 632,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${altezza}`, {
       x: 314,
       y: 488,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${peso}`, {
       x: 314,
       y: 430,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     personalInformationPages.drawText(`${bmi}`, {
-      x: 270,
-      y: 105,
-      size: 12,
+      x: 170,
+      y: 130,
+      size: 10,
       color: rgb(0, 0, 0),
     });
 
@@ -453,7 +519,7 @@ async function generatePDF() {
     grassoPages.drawText(`${grasso}`, {
       x: 270,
       y: 512,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
 
@@ -462,13 +528,13 @@ async function generatePDF() {
     acquaPages.drawText(`${acqua}`, {
       x: 270,
       y: 700,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     acquaPages.drawText(`${massaMuscolare}`, {
       x: 330,
       y: 189,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
 
@@ -477,13 +543,13 @@ async function generatePDF() {
     punteggioFisicoPages.drawText(`${punteggioFisico}`, {
       x: 370,
       y: 598,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     punteggioFisicoPages.drawText(`${punteggioFisicoDescrizione}`, {
-      x: 270,
+      x: 220,
       y: 598,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
 
@@ -492,7 +558,7 @@ async function generatePDF() {
     massaOsseaPages.drawText(`${massaOssea}`, {
       x: 212,
       y: 412,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
 
@@ -501,19 +567,19 @@ async function generatePDF() {
     eteMetabolicaPages.drawText(`${bmr}`, {
       x: 315,
       y: 705,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     eteMetabolicaPages.drawText(`${etaMetabolica}`, {
       x: 315,
       y: 523,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
     eteMetabolicaPages.drawText(`${grassoViscerale}`, {
       x: 300,
       y: 355,
-      size: 12,
+      size: 10,
       color: rgb(0, 0, 0),
     });
 

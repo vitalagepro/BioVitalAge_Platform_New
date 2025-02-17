@@ -217,24 +217,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Funzione per convertire la data da "DD/MM/YYYY" a "YYYY-MM-DD" per input[type="date"]
   function formatDateForInput(dateString) {
-    if (!dateString) return ""; // Se è vuoto, restituisci stringa vuota
-
-    // Controlla se è già in formato YYYY-MM-DD
-    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    if (!dateString) return ""; // Se la stringa è vuota, restituisci una stringa vuota
+  
+    // Controlla se è già nel formato YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
       return dateString;
     }
-
-    // Prova a convertire una data in formato testuale ("June 25, 2024", "Jan. 31, 2025")
+  
+    // Controlla se la data è in formato DD/MM/YYYY
+    const dateParts = dateString.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (dateParts) {
+      return `${dateParts[3]}-${dateParts[2]}-${dateParts[1]}`; // YYYY-MM-DD
+    }
+  
+    // Prova a convertire una data in formato testuale
     const parsedDate = new Date(dateString);
     if (!isNaN(parsedDate.getTime())) {
-      // Aggiunge l'offset del fuso orario locale per evitare lo shift di un giorno
-      parsedDate.setMinutes(
-        parsedDate.getMinutes() - parsedDate.getTimezoneOffset()
-      );
-      return parsedDate.toISOString().split("T")[0]; // Ora mantiene il giorno corretto!
+      parsedDate.setMinutes(parsedDate.getMinutes() - parsedDate.getTimezoneOffset());
+      return parsedDate.toISOString().split("T")[0]; // YYYY-MM-DD
     }
-
-    return ""; // Se la conversione fallisce, restituisce stringa vuota
+  
+    return ""; // Se il formato non è riconosciuto, restituisci stringa vuota
   }
 
   editButton.addEventListener("click", function (event) {
@@ -265,8 +268,6 @@ document.addEventListener("DOMContentLoaded", function () {
         lastVisitSpan.textContent.trim()
       );
       lastVisitInput.id = "lastVisitInput";
-      console.log(lastVisitSpan.textContent.trim());
-      console.log(upcomingVisitSpan.textContent.trim());
 
       const upcomingVisitInput = document.createElement("input");
       upcomingVisitInput.type = "date";

@@ -28,6 +28,8 @@ class CalcolatoreLogin(View):
                         
                     else:
                         return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
+        
+        return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
 
 
 

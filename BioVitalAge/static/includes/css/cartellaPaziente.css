@@ -1,9 +1,12 @@
+.main-menu-trace {
+  width: 50%;
+}
+
 .main-title-nav a {
   color: var(--light1) !important;
   text-decoration: none !important;
   margin: 0 !important;
 }
-
 
 /* PERSONAL INFORMATION CARD STYLE*/
 .container-datiPersonali {
@@ -70,7 +73,7 @@
 }
 
 .subCard-container {
-  width: 45%;
+  width: 100%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -381,7 +384,7 @@
 .score-clock-graph {
   border: 1px solid #ddd;
   border-radius: 8px;
-  width: 98%;
+  width: 95%;
   height: 21rem;
   display: flex;
   justify-content: space-between;
@@ -912,14 +915,13 @@ strong {
   width: 8px; 
 }
 ::-webkit-scrollbar-track {
-  background: #3b255d2c; 
-  border-radius: 8px; 
+  background: var(--dark2); 
 }
 ::-webkit-scrollbar-thumb  {
-  background: rgba(0, 0, 0, 0.3); 
+  background: var(--contrast-color); 
   border-radius: 8px; 
   transition: background 0.3s;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3); 
+  background: var(--contrast-color2); 
 }

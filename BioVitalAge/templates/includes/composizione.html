@@ -35,20 +35,28 @@
     {% include 'components/loader.html' %}
 
     <!-- NAVBAR -->
-    {% include 'components/navBar.html' %}
+    {% include 'components/navBarPatient.html' %}
 
     <main>
 
         <!-- MAIN MENU TRACE -->
         <div class="main-title-nav">
             <div class="back-tittle">
-                <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt=""></a>
+                <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}"></a>
                 <h2 class="main-welcome-title">
-                    {{ persona.name }} - 
-                    {{ persona.surname }} - 
-                    {{ persona.chronological_age }} 
+                    <span>{{ persona.surname|title }}</span>
+                    <span>{{ persona.name|title }}</span> |
+                    <span>Età: {{ persona.chronological_age }}</span>
                     {% if persona.phone and persona.email %}
-                      - {{ persona.phone }} - {{ persona.email }}
+                    |
+                      <span class="phone_span">
+                        <img src="{% static 'includes/icone/phone.png' %}" width="20px" height="20px">
+                        Telefono: {{ persona.phone }}
+                      </span> |
+                      <span class="email_span">
+                        <img src="{% static 'includes/icone/emailNew.png' %}" width="20px" height="20px">
+                        Email: {{ persona.email }}
+                      </span>
                     {% endif %}
                 </h2>
             </div>
@@ -84,140 +92,160 @@
             </div>
             <div class="container_box">
                 <div class="info_container">
-                    <div id="userData" data-name="{{ persona.name }}" data-surname="{{ persona.surname }}"
-                        data-dob="{{ persona.dob }}" data-cf="{{ persona.codice_fiscale }}" data-place_birth="{{ persona.place_birth }}"
-                        data-chronological_age="{{ persona.chronological_age }}" hidden>
+                    <div id="userData" data-gender="{{ persona.gender }}" data-name="{{ persona.name }}" data-surname="{{ persona.surname }}"
+                        data-dob="{{ persona.dob }}" data-cf="{{ persona.codice_fiscale }}"
+                        data-place_birth="{{ persona.place_birth }}" data-chronological_age="{{ persona.chronological_age }}" data-acqua="{{ persona.acqua }}"
+                        data-massa-muscolare="{{ persona.massa_muscolare }}" data-massa-ossea="{{ persona.massa_ossea }}"
+                        data-grasso="{{ persona.grasso }}" data-punteggio-fisico="{{ persona.punteggio_fisico }}"
+                        hidden>
                     </div>
-
+            
                     <div class="field">
                         <p>Punteggio Fisico</p>
+                        <!-- Modale di Conferma -->
+                        <div id="confirm-reset-modal" class="custom-modal-overlay hidden-modal-custom">
+                            <div class="custom-modal-content">
+                                <p id="confirm-modal-message">Sei sicuro di voler resettare lo storico dei punteggi?</p>
+                                <button id="confirm-reset-btn" class="custom-button">Conferma</button>
+                                <button id="cancel-reset-btn" class="custom-button cancel-btn">Annulla</button>
+                            </div>
+                        </div>
+                        
+                    
                         <p id="punteggio_fisico_container">
                             <select id="punteggio_fisico" name="punteggio_fisico" required>
                                 <option value="">-- Seleziona Punteggio --</option>
                                 <option value="1" {% if persona.punteggio_fisico == "1" %}selected{% endif %}>Obeso Latente</option>
                                 <option value="2" {% if persona.punteggio_fisico == "2" %}selected{% endif %}>Obeso</option>
-                                <option value="3" {% if persona.punteggio_fisico == "3" %}selected{% endif %}>Struttura robusta</option>
-                                <option value="4" {% if persona.punteggio_fisico == "4" %}selected{% endif %}>Insufficientemente allenati</option>
+                                <option value="3" {% if persona.punteggio_fisico == "3" %}selected{% endif %}>Struttura robusta
+                                </option>
+                                <option value="4" {% if persona.punteggio_fisico == "4" %}selected{% endif %}>Insufficientemente
+                                    allenati</option>
                                 <option value="5" {% if persona.punteggio_fisico == "5" %}selected{% endif %}>Regolare</option>
-                                <option value="6" {% if persona.punteggio_fisico == "6" %}selected{% endif %}>Regolare e muscoloso</option>
+                                <option value="6" {% if persona.punteggio_fisico == "6" %}selected{% endif %}>Regolare e muscoloso
+                                </option>
                                 <option value="7" {% if persona.punteggio_fisico == "7" %}selected{% endif %}>Magro</option>
-                                <option value="8" {% if persona.punteggio_fisico == "8" %}selected{% endif %}>Magro e muscoloso</option>
+                                <option value="8" {% if persona.punteggio_fisico == "8" %}selected{% endif %}>Magro e muscoloso
+                                </option>
                                 <option value="9" {% if persona.punteggio_fisico == "9" %}selected{% endif %}>Molto muscoloso</option>
-                            </select>                            
+                            </select>
+                            <button class="button" id="reset-score">Reset</button>
                         </p>
                     </div>
-
+            
                     <div class="vignetta-container" id="vignetta-container" style="display: none;">
                         <div class="vignetta" id="vignetta">
                             <span class="close-btn" onclick="chiudiVignetta()">&times;</span>
                             <span id="vignetta-content"></span>
                         </div>
                     </div>
-
+            
                     <div class="field">
                         <p>Altezza:</p>
                         <p id="altezza">{{ persona.height|default:"Inserisci valore" }}</p>
-                      </div>
-        
-      
-                    <div class="field">
-                      <p>Peso corporeo:</p>
-                      <p id="peso">{{ persona.weight|default:"Inserisci valore" }}</p>
                     </div>
-
+            
+            
+                    <div class="field">
+                        <p>Peso corporeo:</p>
+                        <p id="peso">{{ persona.weight|default:"Inserisci valore" }}</p>
+                    </div>
+            
                     <div class="field">
                         <p>BMI:</p>
                         <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
                             {{ persona.bmi|default:"Inserisci valore" }}
                         </p>
                     </div>
-
+            
                     <div class="field">
                         <p>Data di rilevamento del BMI:</p>
                         <p id="bmi_detection_date" data-value="{{ persona.bmi_detection_date|default:'' }}">
-                            {{ persona.bmi_detection_date|default:"Inserisci valore" }}
+                            {{ persona.bmi_detection_date|default:"Inserisci valore"|date:"d/m/Y" }}
                         </p>
                     </div>
-
+            
                     <div class="field">
                         <p>Circonferenza Addominale:</p>
                         <p id="girth_value">{{ persona.girth_value|default:"Inserisci valore" }}</p>
                     </div>
-                    
+            
                     <div class="field">
                         <p>Data di misurazione Addominale:</p>
                         <p id="girth_date" data-value="{{ persona.girth_date|default:'' }}">
-                            {{ persona.girth_date|default:"Inserisci valore" }}
+                            {{ persona.girth_date|default:"Inserisci valore"|date:"d/m/Y" }}
                         </p>
                     </div>
-                    
+            
                     <div class="field">
                         <p>Note sull'addome:</p>
-                        <p id="girth_notes">{{ persona.girth_notes|default:"Inserisci valore" }}</p>
+                        <p id="girth_notes" data-value="{{ persona.girth_notes|default_if_none:'Inserisci valore' }}">
+                            {{ persona.girth_notes|default_if_none:'Inserisci valore' }}
+                        </p>
                     </div>
-
+            
                     {% if persona.sport_frequency %}
                     <div class="field">
-                      <p>Frequenza Attività fisica:</p>
-                      <p id="sport_frequency">{{ persona.sport_frequency|default:"Inserisci valore" }}</p>
+                        <p>Frequenza Attività fisica:</p>
+                        <p id="sport_frequency">{{ persona.sport_frequency|default:"Inserisci valore" }}</p>
                     </div>
                     {% endif %}
-
+            
                     {% if persona.livello_sedentarieta %}
                     <div class="field">
                         <p>Sedentarietà:</p>
                         <p id="livello_sedentarieta">{{ persona.livello_sedentarieta|default:"Inserisci valore" }}</p>
                     </div>
                     {% endif %}
-      
+            
                     <div class="field">
-                      <p>Genere:</p>
-                      <p>{{ persona.gender }}</p>
+                        <p>Genere:</p>
+                        <p>{{ persona.gender }}</p>
                     </div>
-
+            
                     <div class="field">
-                      <p>Grasso Corporeo:</p>
-                      <p id="grasso">{{ persona.grasso|default:"Inserisci valore" }}</p>
+                        <p>Grasso Corporeo:</p>
+                        <p id="grasso">{{ persona.grasso|default:"Inserisci valore" }}</p>
                     </div>
-
+            
                     <div class="field">
-                      <p>Acqua Corporea:</p>
-                      <p id="acqua">{{ persona.acqua|default:"Inserisci valore" }}</p>
+                        <p>Acqua Corporea:</p>
+                        <p id="acqua">{{ persona.acqua|default:"Inserisci valore" }}</p>
                     </div>
-
+            
                     <div class="field">
-                      <p>Massa Ossea:</p>
-                      <p id="massa_ossea">{{ persona.massa_ossea|default:"Inserisci valore" }}</p>
+                        <p>Massa Ossea:</p>
+                        <p id="massa_ossea">{{ persona.massa_ossea|default:"Inserisci valore" }}</p>
                     </div>
-
+            
                     <div class="field">
-                      <p>Massa Muscolare:</p>
-                      <p id="massa_muscolare">{{ persona.massa_muscolare|default:"Inserisci valore" }}</p>
+                        <p>Massa Muscolare:</p>
+                        <p id="massa_muscolare">{{ persona.massa_muscolare|default:"Inserisci valore" }}</p>
                     </div>
-
+            
                     <div class="field">
-                      <p>Bmr:</p>
-                      <p id="bmr">{{ persona.bmr|default:"Inserisci valore" }}</p>
+                        <p>Bmr:</p>
+                        <p id="bmr">{{ persona.bmr|default:"Inserisci valore" }}</p>
                     </div>
-
+            
                     <div class="field">
-                      <p>Età Metabolica:</p>
-                      <p id="eta_metabolica">{{ persona.eta_metabolica|default:"Inserisci valore" }}</p>
+                        <p>Età Metabolica:</p>
+                        <p id="eta_metabolica">{{ persona.eta_metabolica|default:"Inserisci valore" }}</p>
                     </div>
-
+            
                     <div class="field">
-                      <p>Grasso Viscerale:</p>
-                      <p id="grasso_viscerale">{{ persona.grasso_viscerale|default:"Inserisci valore" }}</p>
+                        <p>Grasso Viscerale:</p>
+                        <p id="grasso_viscerale">{{ persona.grasso_viscerale|default:"Inserisci valore" }}</p>
                     </div>
-
+            
                     <div class="field">
-                      <p>WHR:</p>
-                      <p id="whr">{{ persona.whr|default:"Inserisci valore" }}</p>
+                        <p>WHR:</p>
+                        <p id="whr">{{ persona.whr|default:"Inserisci valore" }}</p>
                     </div>
-
+            
                     <div class="field">
-                      <p>WHTR:</p>
-                      <p id="whtr">{{ persona.whtr|default:"Inserisci valore" }}</p>
+                        <p>WHTR:</p>
+                        <p id="whtr">{{ persona.whtr|default:"Inserisci valore" }}</p>
                     </div>
                 </div>
             </div>
@@ -228,20 +256,20 @@
         <!-- CONTAINER GRAFICI MASSA CORPOREA -->
         <div class="container-grafici">
             <div class="card-grafico">
-                <h3>Grasso Corporeo</h3>
-                <canvas id="bmiChart"></canvas>
+                <h3>Punteggio Fisico</h3>
+                <canvas id="GraficoPunteggio"></canvas>
             </div>
             <div class="card-grafico">
-                <h3>BMI</h3>
-                <canvas id="grassoChart"></canvas>
+                <h3>Composizione Corporea</h3>
+                <canvas id="composizioneChart"></canvas>
             </div>
             <div class="card-grafico">
                 <h3>Acqua Corporea</h3>
                 <canvas id="acquaChart"></canvas>
             </div>
             <div class="card-grafico">
-                <h3>Massa Muscolare</h3>
-                <canvas id="massaChart"></canvas>
+                <h3>BMI</h3>
+                <canvas id="bmiChart"></canvas>
             </div>
         </div>
 

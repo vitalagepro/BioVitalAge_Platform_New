@@ -299,7 +299,7 @@ body {
 
 /* SCROLLBAR */
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -670,7 +670,7 @@ main {
 }
 
 .main-menu-trace {
-  width: 100%;
+  width: 50%;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -690,6 +690,14 @@ main {
   justify-content: flex-start;
   align-items: center;
   gap: 15px;
+}
+
+.phone_span img{
+  margin-bottom: 5px;
+}
+
+.email_span img{
+  margin-bottom: 5px;
 }
 
 .main-menu-trace img {

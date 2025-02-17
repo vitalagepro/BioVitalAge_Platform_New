@@ -175,13 +175,17 @@
           <div class="table-content">
             {% for persona in persone %}
               <div class="riga-container">
-                  <p>{{ persona.name }}</p>
-                  <p>{{ persona.surname }}</p>
+                  <p>{{ persona.name|title }}</p>
+                  <p>{{ persona.surname|title }}</p>
                   <p>{{ persona.dob|date:"d/m/Y" }}</p>
                   <p>{{ persona.codice_fiscale }}</p>
-                  <p>{{ persona.place_of_birth }}</p>
+                  <p>{{ persona.place_of_birth|title }}</p>
                   <p>{{ persona.chronological_age }}</p>
-                  <p>{{ persona.associate_staff|default:'Nessun Dottore Associato' }}</p>
+                  {% if persona.associate_staff %}
+                  <p>{{ persona.associate_staff|title }}</p>
+                  {% else %}
+                  <p>Dottore non associato.</p>
+                  {% endif %}
 
                   <p>
                       <a href="{% url 'persona_detail' persona.id %}">

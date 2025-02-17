@@ -30,25 +30,32 @@
 
   </head>
   <body>
-
     <!-- Loader -->
     {% include 'components/loader.html' %}
 
     <!-- NAVBAR -->
-    {% include 'components/navBar.html' %}
+    {% include 'components/navBarPatient.html' %}
 
     <main>
       <div class="main-title-nav">
         <div class="back-tittle">
           <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to folder"></a>
           <h2 class="main-welcome-title">
-            {{ persona.name }} - 
-            {{ persona.surname }} - 
-            {{ persona.chronological_age }} 
+            <span>{{ persona.surname|title }}</span>
+            <span>{{ persona.name|title }}</span> |
+            <span>Età: {{ persona.chronological_age }}</span>
             {% if persona.phone and persona.email %}
-              - {{ persona.phone }} - {{ persona.email }}
+            |
+              <span class="phone_span">
+                <img src="{% static 'includes/icone/phone.png' %}" width="20px" height="20px">
+                Telefono: {{ persona.phone }}
+              </span> |
+              <span class="email_span">
+                <img src="{% static 'includes/icone/emailNew.png' %}" width="20px" height="20px">
+                Email: {{ persona.email }}
+              </span>
             {% endif %}
-          </h2>
+        </h2>
         </div>
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
@@ -206,11 +213,11 @@
               <h3>Pressione Arteriosa</h3>
               <div class="container-pressure d-flex">
                 <div class="val-min">
-                  <span>Valore Minimo</span>
+                  <span>min</span>
                   <input class="w-100" type="text" placeholder="Inserisci valori minimi" readonly id="pressure_min" value="{{ persona.pressure_min|default:'' }}" data-patient-id="{{ persona.id }}" />
                 </div>
                 <div class="val-max">
-                  <span>Valore Massimo</span>
+                  <span>max</span>
                   <input type="text" class="w-100" placeholder="Inserisci valori massimi" readonly id="pressure_max" value="{{ persona.pressure_max|default:'' }}" data-patient-id="{{ persona.id }}" />  
                 </div>
               </div>

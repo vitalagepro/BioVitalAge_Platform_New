@@ -51,6 +51,13 @@ class TabellaPazienti(models.Model):
     whr = models.CharField(max_length=100, null=True, blank=True)
     whtr = models.CharField(max_length=100, null=True, blank=True)
     punteggio_fisico = models.CharField(max_length=100, null=True, blank=True)
+    storico_punteggi = models.JSONField(default=list)
+
+    def aggiungi_punteggio(self, nuovo_punteggio):
+        """Aggiunge un nuovo punteggio allo storico e aggiorna il punteggio attuale."""
+        self.storico_punteggi.append({"punteggio": nuovo_punteggio, "data": str(models.DateTimeField(auto_now_add=True))})
+        self.punteggio_fisico = nuovo_punteggio
+        self.save(update_fields=["punteggio_fisico", "storico_punteggi"])
 
     # Dati antropometrici
     height = models.FloatField(help_text="Height in cm", null=True) 
