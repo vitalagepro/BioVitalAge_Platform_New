@@ -1504,8 +1504,8 @@ class InserisciPazienteView(View):
                             dottore=dottore,
                             name=request.POST.get('name'),
                             surname=request.POST.get('surname'),
-                            email=request.POST.get('email'),
-                            phone=request.POST.get('phone'),
+                            email=request.POST.get('email') or None,
+                            phone=request.POST.get('phone') or None,
                             dob=parse_date(request.POST.get('dob')),
                             gender=request.POST.get('gender'),
                             cap=request.POST.get('cap'),
@@ -1513,33 +1513,32 @@ class InserisciPazienteView(View):
                             place_of_birth=request.POST.get('place_of_birth'),
                             codice_fiscale=codice_fiscale,
                             chronological_age=request.POST.get('chronological_age'),
-                            blood_group=request.POST.get('blood_group'),
-                            associate_staff=request.POST.get('associate_staff'),
-                            height=request.POST.get('height'),
-                            weight=request.POST.get('weight'),
-                            bmi=request.POST.get('bmi'),
-                            bmi_detection_date=parse_date(request.POST.get('bmi_detection_date')),
-                            girth_value=request.POST.get('girth_value'),
-                            girth_notes=request.POST.get('girth_notes'),
-                            girth_date=parse_date(request.POST.get('girth_date')),
-                            alcol=request.POST.get('alcol') == 'on',
-                            alcol_type=request.POST.get('alcol_type'),
-                            data_alcol=parse_date(request.POST.get('data_alcol')),
-                            alcol_frequency=request.POST.get('alcol_frequency'),
-                            smoke=request.POST.get('smoke') == 'on',
-                            smoke_frequency=request.POST.get('smoke_frequency'),
-                            reduced_intake=request.POST.get('reduced_intake'),
-                            sport=request.POST.get('sport') == 'on',
-                            sport_livello=request.POST.get('sport_livello'),
-                            sport_frequency=request.POST.get('sport_frequency'),
-                            attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on',
-                            livello_sedentarieta=request.POST.get('livello_sedentarieta'),
-                            sedentarieta_nota=request.POST.get('sedentarieta_nota'),
+                            blood_group=request.POST.get('blood_group') or None,
+                            associate_staff=request.POST.get('associate_staff') or None,
+                            height=request.POST.get('height') or None,
+                            weight=request.POST.get('weight') or None,
+                            bmi=request.POST.get('bmi') or None,
+                            bmi_detection_date=parse_date(request.POST.get('bmi_detection_date')) or None,
+                            girth_value=request.POST.get('girth_value') or None,
+                            girth_notes=request.POST.get('girth_notes') or None,
+                            girth_date=parse_date(request.POST.get('girth_date')) or None,
+                            alcol=request.POST.get('alcol') == 'on' or None,
+                            alcol_type=request.POST.get('alcol_type') or None,
+                            data_alcol=parse_date(request.POST.get('data_alcol')) or None,
+                            alcol_frequency=request.POST.get('alcol_frequency') or None,
+                            smoke=request.POST.get('smoke') == 'on' or None,
+                            smoke_frequency=request.POST.get('smoke_frequency') or None,
+                            reduced_intake=request.POST.get('reduced_intake') or None,
+                            sport=request.POST.get('sport') == 'on' or None,
+                            sport_livello=request.POST.get('sport_livello') or None,
+                            sport_frequency=request.POST.get('sport_frequency') or None,
+                            attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on' or None,
+                            livello_sedentarieta=request.POST.get('livello_sedentarieta') or None,
+                            sedentarieta_nota=request.POST.get('sedentarieta_nota') or None,
                         )
                         success = "Nuovo paziente salvato con successo!"
 
                 else:
-
                         TabellaPazienti.objects.create(
                             dottore=dottore,
                             name=request.POST.get('name'),
@@ -1729,8 +1728,6 @@ class EtaVitaleView(View):
   
         referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
 
-        print('Referto recente: ', referti_test_recenti)
-      
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
 
         context = {
