@@ -16,7 +16,7 @@
     <!-- Js Import  -->
     <script src="{% static 'includes/js/indicatorNew.js' %}" defer></script>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-    <script src="{% static 'includes/js/GeneratorePDF.js' %}" defer></script>
+    <script src="{% static 'includes/js/generatePDFCapacitaVitale.js' %}" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <!-- Bootstrap import -->
@@ -138,7 +138,7 @@
                 <div class="score-box" style="width: 100%;">
                     <div class="score-label">Capacità Vitale</div>
                     <div class="track">
-                        <div class="bar" id="stress"></div>
+                        <div class="bar" id="risultato"></div>
                     </div>
                     <div class="indicators">
                         <span>0</span><span>5</span><span>10</span>
@@ -158,7 +158,7 @@
                 <div class="score-box" style="width: 100%;">
                     <div class="score-label">Test MMSE</div>
                     <div class="track">
-                        <div class="bar" id="stress"></div>
+                        <div class="bar" id="mmse"></div>
                     </div>
                     <div class="indicators">
                         <span>0</span><span>1</span><span>2</span>
@@ -178,7 +178,7 @@
                 <div class="score-box" style="width: 50%;">
                     <div class="score-label">GDS</div>
                     <div class="track">
-                        <div class="bar" id="stress"></div>
+                        <div class="bar" id="gds"></div>
                     </div>
                     <div class="indicators">
                         <span>0</span><span>0.5</span><span>1</span>
@@ -188,7 +188,7 @@
                 <div class="score-box" style="width: 50%;">
                     <div class="score-label">Locus of Control</div>
                     <div class="track">
-                        <div class="bar" id="disbiosi"></div>
+                        <div class="bar" id="loc"></div>
                     </div>
                     <div class="indicators">
                         <span>0</span><span>0.5</span><span>1</span>
@@ -208,7 +208,7 @@
                 <div class="score-box" style="width: 50%;">
                     <div class="score-label">Vista</div>
                     <div class="track">
-                        <div class="bar" id="stress"></div>
+                        <div class="bar" id="Vista"></div>
                     </div>
                     <div class="indicators">
                         <span>0</span><span>0.5</span><span>1</span>
@@ -218,7 +218,7 @@
                 <div class="score-box" style="width: 50%;">
                     <div class="score-label">Udito</div>
                     <div class="track">
-                        <div class="bar" id="disbiosi"></div>
+                        <div class="bar" id="Udito"></div>
                     </div>
                     <div class="indicators">
                         <span>0</span><span>0.5</span><span>1</span>
@@ -236,19 +236,19 @@
             </div>
             <div class="container-score">
                 <div class="score-box" style="width: 50%;">
-                    <div class="score-label">Vista</div>
+                    <div class="score-label">HGS test</div>
                     <div class="track">
-                        <div class="bar" id="stress"></div>
+                        <div class="bar" id="hgs"></div>
                     </div>
                     <div class="indicators">
-                        <span>0</span><span>0.5</span><span>1</span>
+                        <span>Weak</span><span>Normal</span><span>Strong</span>
                     </div>
                 </div>
     
                 <div class="score-box" style="width: 50%;">
-                    <div class="score-label">Udito</div>
+                    <div class="score-label">Peak flow test</div>
                     <div class="track">
-                        <div class="bar" id="disbiosi"></div>
+                        <div class="bar" id="pft"></div>
                     </div>
                     <div class="indicators">
                         <span>0</span><span>0.5</span><span>1</span>
@@ -314,7 +314,7 @@
             <div class="container-score" style="margin-top: 1rem;">
                 <div class="secondType-scoreBox" style="width: 50%;">
                     <p>Questionario sarc_f</p>
-                    <p class="value">{{ datiEstesi.Col_tot }}</p>
+                    <p class="value">{{ datiEstesi.SARC_F }}</p>
                 </div>
 
                 <div class="secondType-scoreBox" style="width: 50%;">
@@ -354,23 +354,23 @@
 
                 <div class="secondType-scoreBox">
                     <p>Interleuchina 6</p>
-                    <p class="value">{{ datiEstesi.Col_tot }}</p>
+                    <p class="value">{{ datiEstesi.Inter_6 }}</p>
                 </div>
 
                 <div class="secondType-scoreBox">
                     <p>TNF (Tumor Necrosis 
                         Factor) alfa </p>
-                    <p class="value">{{ datiEstesi.Col_ldl }}</p>
+                    <p class="value">{{ datiEstesi.Tnf }}</p>
                 </div>
 
                 <div class="secondType-scoreBox">
                     <p>Mono %</p>
-                    <p class="value">{{ datiEstesi.Col_hdl }}</p>
+                    <p class="value">{{ datiEstesi.Mono }}</p>
                 </div>
 
                 <div class="secondType-scoreBox">
                     <p>Mono </p>
-                    <p class="value">{{ datiEstesi.rigl }}</p>
+                    <p class="value">{{ datiEstesi.Mono_el }}</p>
                 </div>
             </div>
 
@@ -442,13 +442,34 @@
         </div>
 
 
-
-
-
-
-
         <!-- GENERA PDF COMPLETO -->
-        <button class="generatePDFButton button" id="screenshotBtn">
+        <button class="generatePDFButton button" id="pdfCapacitaVitale" 
+            data-name = "{{ persona.name }}"
+            data-surname = "{{ persona.surname }}"
+            data-dob = "{{ persona.dob }}"
+            data-cf = "{{ persona.codice_fiscale }}"
+            data-place_birth = "{{ persona.place_of_birth }}"
+            data-chronological_age = "{{ persona.chronological_age }}"
+            data-risultato_capacita = "{{ referto.punteggio }}"
+            data-risultato_mmse = "{{ datiEstesi.MMSE }}"
+            data-risultato_gds = "{{ datiEstesi.GDS }}"
+            data-risultato_loc = "{{ datiEstesi.LOC }}"
+            data-risultato_vista = "{{ datiEstesi.Vista }}"
+            data-risultato_udito = "{{ datiEstesi.Udito }}"
+            data-risultato_hgs = "{{ datiEstesi.HGS }}"
+            data-risultato_pft = "{{ datiEstesi.PFT }}"
+            data-risultato_isq = "{{ datiEstesi.ISQ }}"
+            data-risultato_bmi = "{{ datiEstesi.BMI }}"
+            data-risultato_cdp = "{{ datiEstesi.CDP }}"
+            data-risultato_whr = "{{ datiEstesi.WHR }}"
+            data-risultato_whr_ratio = "{{ datiEstesi.WHR_Ratio }}"
+            data-risultato_cst = "{{ datiEstesi.CST }}"
+            data-risultato_gs = "{{ datiEstesi.GS }}"
+
+            data-risultato_ppt = "{{ datiEstesi.PPT }}"
+            data-risultato_sarc_f = "{{ datiEstesi.SARC_F }}"
+        >
+
             <span class="button__icon-wrapper">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
                     <path d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
@@ -536,67 +557,28 @@
                 });
             }
 
-            setScore("stress", 2.5);
-            setScore("disbiosi", 1.8);
-            setScore("immunitary_sistem", 2.9);
+            setScore("risultato",{{ referto.punteggio }});
+            setScore("mmse",{{ datiEstesi.MMSE }});
+            setScore("gds",{{ datiEstesi.GDS }});
+            setScore("loc",{{ datiEstesi.LOC }});
+            setScore("Vista",{{ datiEstesi.Vista }});
+            setScore("Udito",{{ datiEstesi.Udito }});
+            
 
+            let hgsValue = "{{ datiEstesi.HGS }}";
 
-            /*  -----------------------------------------------------------------------------------------------
-              GENERA PDF COMPLETO
-            --------------------------------------------------------------------------------------------------- */
-            window.onload = function () {
-                document.getElementById('screenshotBtn').addEventListener('click', function () {
-                    const cards = document.querySelectorAll('.stampa');
-                    const { jsPDF } = window.jspdf;
-                    const doc = new jsPDF();
+            let score;
+            if (hgsValue === "Weak") {
+                score = 0.1;
+            } else if (hgsValue === "Normal") {
+                score = 1.5;
+            } else {
+                score = 3;
+            }
+            setScore("hgs", score);
+            setScore("pft",{{ datiEstesi.PFT }});
+    
 
-
-                    document.getElementById('snipperStampa').style.display = 'block';
-                    document.getElementById('spinnerBackdrop').style.display = 'block';
-                    document.body.style.overflow = 'hidden';
-
-                    let yOffset = 10;
-
-                    function captureCard(index) {
-                        if (index >= cards.length) {
-
-                            document.getElementById('snipperStampa').style.display = 'none';
-                            document.getElementById('spinnerBackdrop').style.display = 'none';
-                            document.body.style.overflow = 'auto';
-                            doc.save('FULL-REPORT.pdf');
-                            return;
-                        }
-
-
-                        html2canvas(cards[index]).then(function (canvas) {
-                            var img = canvas.toDataURL('image/png');
-                            var pageWidth = doc.internal.pageSize.width;
-                            var pageHeight = doc.internal.pageSize.height;
-
-
-                            var imgWidth = pageWidth - 20;
-                            var imgHeight = canvas.height * imgWidth / canvas.width;
-
-
-                            if (yOffset + imgHeight > pageHeight) {
-                                doc.addPage();
-                                yOffset = 10;
-                            }
-
-
-                            doc.addImage(img, 'PNG', 10, yOffset, imgWidth, imgHeight);
-
-                            yOffset += imgHeight + 10;
-
-                            captureCard(index + 1);
-                        }).catch(function (error) {
-                            console.error('Errore nella creazione dello screenshot:', error);
-                        });
-                    }
-
-                    captureCard(0);
-                });
-            };
         </script>
         </div>
     </main>

@@ -27,6 +27,7 @@ urlpatterns = [
     path("CartellaPaziente/Update/<int:persona_id>/<int:visite_id>/", DettagliPrescrizioni.as_view(), name="dettagli_prescrizioni"),
     path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
     path('update-persona-composizione/<int:id>/', views.update_persona_composizione, name='update_persona_composizione'),
+    path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>', views.StampaRefertoView.as_view(), name='download_pdf_vitale'),
 ]
 
 

@@ -71,20 +71,18 @@ updatePagination();
 const submitBtn = document.getElementById("submit-btn");
 
 function checkLastQuestion() {
-  // Controlla se siamo sull'ultima domanda
-  if (currentQuestionIndex === questions.length - 1) {
-    const inputs = questions[currentQuestionIndex].querySelectorAll("input[type='radio'], input[type='text']");
-    const allFilled = Array.from(inputs).every((input) => {
-      if (input.type === "radio") {
-        return questions[currentQuestionIndex].querySelector("input[type='radio']:checked") !== null;
-      } else {
-        return input.value.trim() !== "";
-      }
-    });
+  const lastQuestion = document.querySelector(".tableRow"); 
+  const inputs = lastQuestion.querySelectorAll("input[type='radio'], input[type='text']");
+  
+  const allFilled = Array.from(inputs).some((input) => input.checked); 
 
-    submitBtn.disabled = !allFilled;
-  }
+  submitBtn.disabled = !allFilled;
 }
+
+document.querySelectorAll("input[name='Sarc_5']").forEach(input => {
+  input.addEventListener("change", checkLastQuestion);
+});
+
 
 function handleCheckboxSelection() {
   const checkboxes =
@@ -130,3 +128,8 @@ handleCheckboxSelection();
 document.querySelectorAll("input[type='radio'], input[type='text']").forEach((input) => {
   input.addEventListener("input", checkLastQuestion);
 });
+
+
+
+
+

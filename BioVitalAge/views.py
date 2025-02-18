@@ -1286,7 +1286,7 @@ class CartellaPazienteView(View):
             dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
 
 
-        visite = ElencoVisitePaziente.objects.all()
+        visite = ElencoVisitePaziente.objects.filter(paziente_id=id)
 
         context = {
             'persona': persona,
@@ -2033,6 +2033,68 @@ class RefertoQuizView(View):
         return render(request, "includes/RefertoQuiz.html", context)
 
 
+
+class StampaRefertoView(View):
+    def get(self, request, persona_id, referto_id):
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        referto = get_object_or_404(ArchivioRefertiTest, id=referto_id)
+        datiEstesi = DatiEstesiRefertiTest.objects.filter(referto=referto).first()
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+
+        # Determina il testo risultato in base al punteggio
+        testo_risultato = ""
+        punteggio = float(referto.punteggio)
+
+        if 0 <= punteggio <= 2.59:
+            testo_risultato = "Ottima capacità vitale..."
+        elif 2.60 <= punteggio <= 5.09:
+            testo_risultato = "Buona capacità vitale..."
+        elif 5.10 <= punteggio <= 7.59:
+            testo_risultato = "Capacità vitale compromessa..."
+        elif 7.60 <= punteggio <= 10:
+            testo_risultato = "Capacità vitale gravemente compromessa..."
+
+        # Se la richiesta è AJAX, restituisci i dati in formato JSON
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                "name": persona.name,
+                "surname": persona.surname,
+                "dob": str(persona.dob),
+                "codice_fiscale": persona.codice_fiscale,
+                "place_of_birth": persona.place_of_birth,
+                "chronological_age": persona.chronological_age,
+                "risultato_capacita": referto.punteggio,
+                "risultato_mmse": datiEstesi.MMSE if datiEstesi else "",
+                "risultato_gds": datiEstesi.GDS if datiEstesi else "",
+                "risultato_loc": datiEstesi.LOC if datiEstesi else "",
+                "risultato_vista": datiEstesi.Vista if datiEstesi else "",
+                "risultato_udito": datiEstesi.Udito if datiEstesi else "",
+                "risultato_hgs": datiEstesi.HGS if datiEstesi else "",
+                "risultato_pft": datiEstesi.PFT if datiEstesi else "",
+                "risultato_isq": datiEstesi.ISQ if datiEstesi else "",
+                "risultato_bmi": datiEstesi.BMI if datiEstesi else "",
+                "risultato_cdp": datiEstesi.CDP if datiEstesi else "",
+                "risultato_whr": datiEstesi.WHR if datiEstesi else "",
+                "risultato_whr_ratio": datiEstesi.WHR_Ratio if datiEstesi else "",
+                "risultato_cst": datiEstesi.CST if datiEstesi else "",
+                "risultato_gs": datiEstesi.GS if datiEstesi else "",
+                "risultato_ppt": datiEstesi.PPT if datiEstesi else "",
+                "risultato_sarc_f": datiEstesi.SARC_F if datiEstesi else "",
+            })
+        
+        # Se non è una richiesta AJAX, renderizza normalmente la pagina
+        context = {
+            "scarica": True,
+            "persona": persona,
+            "dottore": dottore,
+            "referto": referto,
+            'referti_test_recenti': referti_test_recenti,
+            "datiEstesi": datiEstesi,
+            "testo_risultato": testo_risultato
+        }
+        return render(request, "includes/EtaVitale.html", context)
 
 
 # Referto View
