@@ -1412,6 +1412,8 @@ class UpdateBloodDataView(View):
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
+
+
 class InserisciPazienteView(View):
 
     def get(self, request):
@@ -1428,7 +1430,7 @@ class InserisciPazienteView(View):
 
     def post(self, request):
         try:
-            success = None  # ✅ Inizializziamo success per evitare l'errore
+            success = None 
             dottore = request.user.utentiregistraticredenziali if hasattr(request.user, 'utentiregistraticredenziali') else None
             codice_fiscale = request.POST.get('codice_fiscale')
 
@@ -1487,46 +1489,73 @@ class InserisciPazienteView(View):
                     context['errore'] = errore
             
             else:
-                # ✅ Creazione nuovo paziente
-                TabellaPazienti.objects.create(
-                    dottore=dottore,
-                    name=request.POST.get('name'),
-                    surname=request.POST.get('surname'),
-                    email=request.POST.get('email'),
-                    phone=request.POST.get('phone'),
-                    dob=parse_date(request.POST.get('dob')),
-                    gender=request.POST.get('gender'),
-                    cap=request.POST.get('cap'),
-                    province=request.POST.get('province'),
-                    place_of_birth=request.POST.get('place_of_birth'),
-                    codice_fiscale=codice_fiscale,
-                    chronological_age=request.POST.get('chronological_age'),
-                    blood_group=request.POST.get('blood_group'),
-                    associate_staff=request.POST.get('associate_staff'),
-                    height=request.POST.get('height'),
-                    weight=request.POST.get('weight'),
-                    bmi=request.POST.get('bmi'),
-                    bmi_detection_date=parse_date(request.POST.get('bmi_detection_date')),
-                    girth_value=request.POST.get('girth_value'),
-                    girth_notes=request.POST.get('girth_notes'),
-                    girth_date=parse_date(request.POST.get('girth_date')),
-                    alcol=request.POST.get('alcol') == 'on',
-                    alcol_type=request.POST.get('alcol_type'),
-                    data_alcol=parse_date(request.POST.get('data_alcol')),
-                    alcol_frequency=request.POST.get('alcol_frequency'),
-                    smoke=request.POST.get('smoke') == 'on',
-                    smoke_frequency=request.POST.get('smoke_frequency'),
-                    reduced_intake=request.POST.get('reduced_intake'),
-                    sport=request.POST.get('sport') == 'on',
-                    sport_livello=request.POST.get('sport_livello'),
-                    sport_frequency=request.POST.get('sport_frequency'),
-                    attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on',
-                    livello_sedentarieta=request.POST.get('livello_sedentarieta'),
-                    sedentarieta_nota=request.POST.get('sedentarieta_nota'),
-                )
-                success = "Nuovo paziente salvato con successo!"
+                campi_opzionali = [
+                    'email', 'password', 'blood_group', 'associate_staff', 'height',
+                    'weight', 'bmi','bmi_detection_date', 'girth_value', 'girth_notes',
+                    'girth_notes','girth_date', 'alcol',  'alcol_type', 'data_alcol',
+                    'alcol_frequency','smoke', 'smoke_frequency', 'reduced_intake',
+                    'sport', 'sport_livello', 'sport_frequency', 'attivita_sedentaria',
+                    'livello_sedentarieta', 'sedentarieta_nota'
+                ]
 
-            # ✅ Aggiorna il contesto con success solo se ha un valore
+                if any(request.POST.get(campo) for campo in campi_opzionali):
+
+                        TabellaPazienti.objects.create(
+                            dottore=dottore,
+                            name=request.POST.get('name'),
+                            surname=request.POST.get('surname'),
+                            email=request.POST.get('email'),
+                            phone=request.POST.get('phone'),
+                            dob=parse_date(request.POST.get('dob')),
+                            gender=request.POST.get('gender'),
+                            cap=request.POST.get('cap'),
+                            province=request.POST.get('province'),
+                            place_of_birth=request.POST.get('place_of_birth'),
+                            codice_fiscale=codice_fiscale,
+                            chronological_age=request.POST.get('chronological_age'),
+                            blood_group=request.POST.get('blood_group'),
+                            associate_staff=request.POST.get('associate_staff'),
+                            height=request.POST.get('height'),
+                            weight=request.POST.get('weight'),
+                            bmi=request.POST.get('bmi'),
+                            bmi_detection_date=parse_date(request.POST.get('bmi_detection_date')),
+                            girth_value=request.POST.get('girth_value'),
+                            girth_notes=request.POST.get('girth_notes'),
+                            girth_date=parse_date(request.POST.get('girth_date')),
+                            alcol=request.POST.get('alcol') == 'on',
+                            alcol_type=request.POST.get('alcol_type'),
+                            data_alcol=parse_date(request.POST.get('data_alcol')),
+                            alcol_frequency=request.POST.get('alcol_frequency'),
+                            smoke=request.POST.get('smoke') == 'on',
+                            smoke_frequency=request.POST.get('smoke_frequency'),
+                            reduced_intake=request.POST.get('reduced_intake'),
+                            sport=request.POST.get('sport') == 'on',
+                            sport_livello=request.POST.get('sport_livello'),
+                            sport_frequency=request.POST.get('sport_frequency'),
+                            attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on',
+                            livello_sedentarieta=request.POST.get('livello_sedentarieta'),
+                            sedentarieta_nota=request.POST.get('sedentarieta_nota'),
+                        )
+                        success = "Nuovo paziente salvato con successo!"
+
+                else:
+
+                        TabellaPazienti.objects.create(
+                            dottore=dottore,
+                            name=request.POST.get('name'),
+                            surname=request.POST.get('surname'),
+                            dob=parse_date(request.POST.get('dob')),
+                            gender=request.POST.get('gender'),
+                            cap=request.POST.get('cap'),
+                            province=request.POST.get('province'),
+                            place_of_birth=request.POST.get('place_of_birth'),
+                            codice_fiscale=codice_fiscale,
+                            chronological_age=request.POST.get('chronological_age'),
+                            
+                        )
+                        success = "Nuovo paziente salvato con successo!"
+
+
             if success:
                 context["success"] = success
 
@@ -1535,6 +1564,8 @@ class InserisciPazienteView(View):
         except Exception as e:
             context["errore"] = f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova."
             return render(request, "includes/InserisciPaziente.html", context)
+
+
 
 class ComposizioneView(View):
 
@@ -1687,6 +1718,9 @@ def update_persona_composizione(request, id):
     else:
         return JsonResponse({"success": False, "error": "Metodo non valido"})
 
+
+
+# VIEWS PER CALCOLO CAPACITA', SEZIONE CAPACITA' VITALE
 class EtaVitaleView(View):
 
     def get(self, request, id):
@@ -1928,14 +1962,7 @@ class TestEtaVitaleView(View):
             }    
 
             return render(request, "includes/testVitale.html", context)
-
-
-        
-
-        
-
-
-
+      
 class RefertoQuizView(View):
     def get(self, request, persona_id, referto_id):
 
@@ -2007,6 +2034,9 @@ class RefertoQuizView(View):
         }
 
         return render(request, "includes/RefertoQuiz.html", context)
+
+
+
 
 # Referto View
 def referti_view(request, referto_id):
