@@ -1950,6 +1950,8 @@ class TestEtaVitaleView(View):
 
 
         except Exception as e:
+            print(e)
+
             context = {
                 'persona': persona,
                 'modal': False,
