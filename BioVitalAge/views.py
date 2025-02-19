@@ -17,7 +17,8 @@ import traceback
 from django.shortcuts import redirect
 from django.http import FileResponse
 
-# Create your views here.
+
+# VIEW PER GESTIONE LOGIN PIATTAFORMA E IL RENDERING DELLA HOME PAGE
 class LoginRenderingPage(View):
     def get(self, request):
         response = render(request, 'includes/login.html')
@@ -34,13 +35,12 @@ class LogOutRender(View):
 
         return render(request, 'includes/login.html')
 
-# View per la homepage
 class HomePageRender(View):
 
     def get(self, request):
-        persone = TabellaPazienti.objects.all().order_by('-id')[:5]
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
 
         # Calcolo di show_disclaimer
         show_disclaimer = not request.COOKIES.get('disclaimer_accepted', False)
@@ -48,7 +48,7 @@ class HomePageRender(View):
         context = {
             'persone': persone,
             'dottore': dottore,
-            'show_disclaimer': show_disclaimer  # Passa lo stato del disclaimer
+            'show_disclaimer': show_disclaimer
         }
 
         return render(request, "includes/homePage.html", context)
@@ -71,8 +71,9 @@ class HomePageRender(View):
                             request.session['dottore_id'] = dottore.id
 
                             # Ottieni i 5 pazienti più recenti
-                            persone = TabellaPazienti.objects.all().order_by('-id')[:5]
-            
+                            persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
+                            pazienti = TabellaPazienti.objects.filter(dottore=dottore)
+                            
                             # Ottieni il referto più recente per ogni paziente
                             ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
 
@@ -93,7 +94,7 @@ class HomePageRender(View):
                             context = {
                                 'persone': make_json_serializable(list(persone.values())),
                                 'datiEstesi': make_json_serializable(list(datiEstesi.values())),
-                                'dottore': dottore.id  # Questo è un intero, già JSON-serializzabile
+                                'dottore': dottore.id  
                             }
                             
                             request.session['home_context'] = context
@@ -112,7 +113,9 @@ class HomePageRender(View):
 
         return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
 
-# View per accettare il disclaimer
+
+
+# VIEW PER ACCETTARE IL DISCLAIMER
 class AcceptDisclaimerView(View):
     def post(self, request):
         # Restituisce una risposta JSON
@@ -121,6 +124,8 @@ class AcceptDisclaimerView(View):
         response.set_cookie('disclaimer_accepted', 'true', max_age=365*24*60*60)  # 1 anno
         return response
 
+
+# VIEW PER LA SEZIONE STATISTICHE
 class StatisticheView(View):
     def get(self, request):
 
@@ -133,6 +138,9 @@ class StatisticheView(View):
 
         return render(request, "includes/statistiche.html", context)
     
+
+
+# VIEW PER IL CALCOLO DELL'ETA' BIOLOGICA
 def safe_float(data, key, default=0.0):
     try:
         return float(data.get(key, default))
@@ -1097,12 +1105,15 @@ class CalcolatoreRender(View):
             }
             return render(request, "includes/calcolatore.html", context)
 
+
+
+# VIEW PER SEZIONE RICERCA PAZIENTI
 class RisultatiRender(View):
     def get(self, request):
-        persone = TabellaPazienti.objects.all()
-        
+          
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persone = TabellaPazienti.objects.filter(dottore=dottore)
  
         # Ottieni il referto più recente per ogni paziente
         ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
@@ -1118,19 +1129,20 @@ class RisultatiRender(View):
 
         return render(request, "includes/risultati.html", context)
 
+#VIEW PER ULTIMO REFERTO ETA' VITALE
 class PersonaDetailView(View):
     def get(self, request, id):
-        # Ottieni il paziente con l'ID specificato
-        persona = get_object_or_404(TabellaPazienti, id=id)
+        
+        persone = TabellaPazienti.objects.filter(dottore=dottore)
 
         # Recupera l'ID del referto dalla query string
         referto_id = request.GET.get('referto_id')
 
         # Recupera il referto specifico se l'ID è passato, altrimenti l'ultimo referto
         if referto_id:
-            referto = get_object_or_404(ArchivioReferti, id=referto_id, paziente=persona)
+            referto = get_object_or_404(ArchivioReferti, id=referto_id, paziente=persone)
         else:
-            referto = ArchivioReferti.objects.filter(paziente=persona).order_by("-data_ora_creazione").first()
+            referto = ArchivioReferti.objects.filter(paziente=persone).order_by("-data_ora_creazione").first()
 
         # Ottieni i dati estesi associati al referto selezionato
         dati_estesi = DatiEstesiReferti.objects.filter(referto=referto).first() if referto else None
@@ -1141,12 +1153,17 @@ class PersonaDetailView(View):
 
         # Preparazione del contesto per il template
         context = {
-            'persona': persona,
+            'persona': persone,
             'referto': referto,
             'datiEstesi': dati_estesi,
             'dottore': dottore,
         }
         return render(request, "includes/Referto.html", context)
+
+
+
+
+
 
 class ScaricaReferto(View):
     def get(self, request, persona_id, visite_id):
