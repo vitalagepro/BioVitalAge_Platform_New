@@ -1453,9 +1453,9 @@ class InserisciPazienteView(View):
 
             dottore_id = request.session.get('dottore_id')
             dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-            paziente_esistente = TabellaPazienti.objects.filter(codice_fiscale=codice_fiscale).first()
-
+           
+            paziente_esistente = TabellaPazienti.objects.filter(dottore=dottore, codice_fiscale=codice_fiscale).first()
+          
             def parse_date(date_str):
                 return date_str if date_str else None
 
