@@ -28,6 +28,11 @@ urlpatterns = [
     path("CartellaPaziente/Update/<int:persona_id>/<int:visite_id>/", DettagliPrescrizioni.as_view(), name="dettagli_prescrizioni"),
     path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
     path('update-persona-composizione/<int:id>/', views.update_persona_composizione, name='update_persona_composizione'),
+    path('appointments_page/', views.AppointmentView.as_view(), name='appointments_page'),
+    path('api/appointments/', views.appointment_view, name='appointment_api'),
+    path('appointments/', views.appointments_list, name='appointments_list'),  # ✅ Aggiunto il percorso per la tabella
+    path("api/appointments/<int:appointment_id>/approve/", views.approve_appointment, name="approve_appointment"),
+    path("api/appointments/<int:appointment_id>/delete/", views.delete_appointment, name="delete_appointment"),
 ]
 
 

@@ -279,3 +279,65 @@ const features = [
 function removeNotification(notification) {
   gsap.to(notification, { opacity: 0, y: -20, duration: 0.5, ease: "power2.in", onComplete: () => notification.remove() });
 }
+
+
+/*  -----------------------------------------------------------------------------------------------
+  Actions on appointments
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".action-btn").forEach((button) => {
+    button.addEventListener("click", function () {
+      const row = this.closest("tr"); // Trova la riga
+      const appointmentId = row.getAttribute("data-id"); // Ottiene l'ID dall'attributo data-id
+      const action = this.classList.contains("approve") ? "approve" : "delete";
+
+      if (action === "approve") {
+        fetch(`/api/appointments/${appointmentId}/approve/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken(),
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              row.style.backgroundColor = "#d4edda"; // Verde per indicare confermato
+              alert("Appuntamento confermato!");
+            } else {
+              alert("Errore: " + data.error);
+            }
+          });
+      } else if (action === "delete") {
+        if (!confirm("Sei sicuro di voler eliminare questo appuntamento?"))
+          return;
+
+        fetch(`/api/appointments/${appointmentId}/delete/`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken(),
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              row.remove(); // Rimuove la riga dalla tabella
+              alert("Appuntamento eliminato!");
+            } else {
+              alert("Errore: " + data.error);
+            }
+          });
+      }
+    });
+  });
+
+  function getCSRFToken() {
+    let csrfToken = null;
+    document.cookie.split(";").forEach((cookie) => {
+      let [name, value] = cookie.trim().split("=");
+      if (name === "csrftoken") csrfToken = value;
+    });
+    return csrfToken;
+  }
+});

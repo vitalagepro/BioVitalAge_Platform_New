@@ -1,0 +1,140 @@
+/* APPUNTAMENTI CARD */
+.cardAppuntamenti {
+    background-color: var(--card-color);
+    margin: 25px;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cardAppuntamenti h3 {
+    color: var(--contrast-color);
+}
+
+.cardAppuntamenti .button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+
+#patients-surnames,
+#patients-names {
+    display: flex;
+    flex-direction: column;
+    border: none;
+    border-radius: 7px;
+    padding: 5px;
+    border: 1px solid var(--contrast-color-shadow);
+    align-items: flex-start;
+}
+
+/* ! TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+}
+
+th,
+td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+}
+
+thead th {
+    background-color: var(--contrast-color);
+    color: #fff;
+}
+
+tbody tr {
+    border: 1px solid #ddd;
+    background-color: white;
+}
+
+tbody tr:hover {
+    background-color: var(--contrast-color-shadow);
+}
+
+.avatar {
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #fff;
+}
+
+.badge.general {
+    background-color: var(--neutral-range-color);
+}
+
+.badge.consulting {
+    background-color: var(--contrast-color-shadow);
+    color: var(--dark2);
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 4px;
+}
+
+.action-btn.approve {
+    color: var(--contrast-color2);
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.action-btn.approve:hover {
+    background-color: var(--contrast-color2);
+    color: var(--tittle1);
+}
+
+.action-btn.delete {
+    color: var(--negative-color-right);
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.action-btn.delete:hover {
+    background-color: var(--negative-color-right);
+    color: var(--tittle1);
+}
+
+.card-appointments {
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px var(--contrast-color-shadow);
+}
+
+.btn-primary {
+    background-color: transparent !important;
+    border: 1px solid var(--contrast-color2) !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--contrast-color2) !important;
+}
+
+.container {
+    max-width: 800px !important;
+    margin-top: 20px !important;
+    margin-bottom: 50px !important;
+}

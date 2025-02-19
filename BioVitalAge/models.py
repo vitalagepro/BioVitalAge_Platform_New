@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 # Tabella dottori con credenziali
 class UtentiRegistratiCredenziali(models.Model):
@@ -376,9 +378,6 @@ class DatiEstesiRefertiTest(models.Model):
         return f"Dati Estesi Referto ID: {self.referto.id}"
     
 
-
-
-
 # ELENCO VISITE
 class ElencoVisitePaziente(models.Model):
     paziente = models.ForeignKey(
@@ -393,7 +392,7 @@ class ElencoVisitePaziente(models.Model):
     def __str__(self):
         return f"Visita di - {self.data_visita}"
 
-
+# ELENCO ESAMI
 class EsameVisita(models.Model):
     visita = models.ForeignKey(
         ElencoVisitePaziente, 
@@ -407,3 +406,18 @@ class EsameVisita(models.Model):
 
     def __str__(self):
         return f" Visita {self.visita.id}"
+
+# TABELLA APPUNTAMENTI
+class Appointment(models.Model):
+    cognome_paziente = models.CharField(max_length=255, blank=True, null=True)
+    nome_paziente = models.CharField(max_length=255, blank=True, null=True)
+    eta = models.IntegerField(blank=True, null=True)
+    tipologia_visita = models.CharField(max_length=100, choices=[('Generale', 'Generale'), ('Specialistica', 'Specialistica')], blank=True, null=True)
+    diagnosi = models.TextField(blank=True, null=True)
+    orario = models.TimeField()
+    numero_stanza = models.IntegerField(blank=True, null=True)
+    dottore = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    confermato = models.BooleanField(default=False)  # Campo per segnare la conferma
+    
+    def __str__(self):
+        return f"{self.nome_paziente} - {self.orario}"

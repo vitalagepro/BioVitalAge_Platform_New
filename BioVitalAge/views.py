@@ -15,7 +15,7 @@ from django.conf import settings
 from django.utils.decorators import method_decorator
 import traceback
 from django.shortcuts import redirect
-from django.http import FileResponse
+from django.contrib.auth import get_user
 
 # Create your views here.
 class LoginRenderingPage(View):
@@ -54,6 +54,7 @@ class HomePageRender(View):
 
     def get(self, request):
         persone = TabellaPazienti.objects.all().order_by('-id')[:5]
+        appuntamenti = Appointment.objects.all().order_by('-id')[:4]
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
@@ -62,6 +63,7 @@ class HomePageRender(View):
 
         context = {
             'persone': persone,
+            'appuntamenti': appuntamenti,
             'dottore': dottore,
             'show_disclaimer': show_disclaimer  # Passa lo stato del disclaimer
         }
@@ -2121,4 +2123,95 @@ class PrescrizioniView(View):
         return redirect('cartella_paziente', persona_id)
  
 
+#APPUNTAMENTI
+class AppointmentView(View):
+    def get(self, request):
+        appointments = Appointment.objects.all()
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persone = TabellaPazienti.objects.all()
 
+        context = {
+            'persone': persone,
+            'dottore': dottore,
+            'appointments': appointments
+            }
+        return render(request, 'includes/appointments.html', context)
+
+@csrf_exempt
+def appointment_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            print("Dati ricevuti:", data)  # Debug log
+            
+            # Verifica il tipo di dati ricevuti
+            for key, value in data.items():
+                print(f"{key}: {value} (type: {type(value)})")
+            
+            # Recupera l'utente autenticato
+            user = get_user(request)
+            
+            # Conversione dei dati con gestione degli errori
+            try:
+                eta = int(data['eta']) if isinstance(data['eta'], str) else data['eta']
+                numero_stanza = int(data['numero_stanza']) if isinstance(data['numero_stanza'], str) else data['numero_stanza']
+                orario = datetime.strptime(data['orario'], "%H:%M").time()
+                print(f"Dati convertiti - Eta: {eta}, Numero Stanza: {numero_stanza}, Orario: {orario}")
+            except ValueError as ve:
+                print(f"Errore di conversione: {ve}")
+                return JsonResponse({'error': f'Errore di conversione dei dati: {str(ve)}'}, status=400)
+            
+            appointment = Appointment.objects.create(
+                cognome_paziente=data['cognome_paziente'],
+                nome_paziente=data['nome_paziente'],
+                eta=eta,
+                tipologia_visita=data['tipologia_visita'],
+                diagnosi=data.get('diagnosi', ''),
+                orario=orario,
+                numero_stanza=numero_stanza,
+                dottore=user if user.is_authenticated else None
+            )
+            return JsonResponse({'message': 'Appuntamento creato con successo!', 'id': appointment.id}, status=201)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Formato JSON non valido'}, status=400)
+        except KeyError as ke:
+            return JsonResponse({'error': f'Manca il campo richiesto: {str(ke)}'}, status=400)
+        except Exception as e:
+            print(f"Errore generico: {e}")
+            return JsonResponse({'error': f'Errore generico: {str(e)}'}, status=400)
+    elif request.method == 'GET':
+        appointments = list(Appointment.objects.values())
+        return JsonResponse(appointments, safe=False)
+    else:
+        return JsonResponse({'error': 'Metodo non supportato'}, status=405)
+
+@csrf_exempt
+def approve_appointment(request, appointment_id):
+    if request.method == "POST":
+        appointment = get_object_or_404(Appointment, id=appointment_id)
+        appointment.confermato = True  # Segna l'appuntamento come confermato
+        appointment.save()
+        return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
+    return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
+
+def appointments_list(request):
+    appointments = Appointment.objects.all()
+    return render(request, "includes/appointments.html", {"appointments": appointments})
+
+
+@csrf_exempt
+def approve_appointment(request, appointment_id):
+    if request.method == "POST":
+        appointment = get_object_or_404(Appointment, id=appointment_id)
+        # Se vuoi, puoi aggiungere un campo "confermato = True" nel modello e aggiornarlo qui.
+        return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
+    return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
+
+@csrf_exempt
+def delete_appointment(request, appointment_id):
+    if request.method == "DELETE":
+        appointment = get_object_or_404(Appointment, id=appointment_id)
+        appointment.delete()
+        return JsonResponse({"success": True, "message": "Appuntamento eliminato!"})
+    return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
