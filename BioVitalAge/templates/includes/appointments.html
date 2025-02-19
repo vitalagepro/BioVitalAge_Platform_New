@@ -1,13 +1,14 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'includes/icone/favicon.png' %}" type="image/x-icon" />
-    
+
     <title>BioVitalAge - Appuntamenti</title>
 
     <!-- Css Import -->
@@ -15,23 +16,58 @@
     <link rel="stylesheet" href="{% static 'includes/css/appointments.css' %}">
 
     <!-- Bootstrap import -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Font Import  -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
 
     <!-- JS import -->
     <script src="{% static 'includes/js/appointments.js' %}" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  </head>
-  <body>
+</head>
+
+<body>
+    <!-- Modale di Successo -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="successModalLabel">Successo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    L'appuntamento è stato prenotato con successo!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale di Errore -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="errorModalLabel">Errore</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Si è verificato un errore durante la prenotazione. Riprova.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Loader -->
     {% include 'components/loader.html' %}
 
@@ -45,7 +81,7 @@
             <div class="back-tittle">
                 <a id="back" href="{% url 'HomePage' %}"><img src="{% static 'includes/icone/arrowBack.png' %}"></a>
             </div>
-        
+
             <div class="main-menu-trace">
                 <a href="{% url 'HomePage' %}">
                     <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
@@ -53,9 +89,9 @@
                 <p>»</p>
                 <p>Appuntamenti</p>
             </div>
-        
+
         </div>
-    
+
         <!-- Appointments -->
         <div class="container">
             <div class="card-appointments">
@@ -69,15 +105,13 @@
                         <select name="cognome" class="mt-2 form-control" id="patients-select">
                             <option value="default" data-eta="">-- Seleziona un paziente esistente --</option>
                             {% for paziente in persone %}
-                                <option value="{{ paziente.id }}"
-                                    data-nome="{{ paziente.name }}"
-                                    data-cognome="{{ paziente.surname }}"
-                                    data-eta="{{ paziente.chronological_age }}">
-                                    {{ paziente.surname }}
-                                </option>
+                            <option value="{{ paziente.id }}" data-nome="{{ paziente.name }}"
+                                data-cognome="{{ paziente.surname }}" data-eta="{{ paziente.chronological_age }}">
+                                {{ paziente.surname }}
+                            </option>
                             {% endfor %}
                         </select>
-                    </div>            
+                    </div>
                     <div class="mb-3">
                         <label for="nome" class="form-label">
                             Nome
@@ -86,16 +120,14 @@
                         <select name="nome_paziente" class="mt-2 form-control" id="patients-select">
                             <option value="default" data-eta="">-- Seleziona un paziente esistente --</option>
                             {% for paziente in persone %}
-                                <option value="{{ paziente.id }}"
-                                    data-nome="{{ paziente.name }}"
-                                    data-cognome="{{ paziente.surname }}"
-                                    data-eta="{{ paziente.chronological_age }}">
-                                    {{ paziente.name }}
-                                </option>
+                            <option value="{{ paziente.id }}" data-nome="{{ paziente.name }}"
+                                data-cognome="{{ paziente.surname }}" data-eta="{{ paziente.chronological_age }}">
+                                {{ paziente.name }}
+                            </option>
                             {% endfor %}
                         </select>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label class="form-label">Età</label>
                         <input type="number" class="form-control" id="eta" required>
@@ -124,7 +156,7 @@
                 </form>
             </div>
         </div>
-        
+
         <!-- CARD APPUNTAMENTI -->
         <div class="cardAppuntamenti">
             <div class="button-container">
@@ -145,32 +177,37 @@
                 </thead>
                 <tbody>
                     {% if appointments %}
-                        {% for appointment in appointments %}
-                        <tr data-id="{{ appointment.id }}">
-                            <td>{{ appointment.id }}</td>
-                            <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> {{ appointment.nome_paziente }}</td>
-                            <td>{{ appointment.eta }}</td>
-                            <td>{{ appointment.orario|time:"H:i" }}</td>
-                            <td>{{ appointment.diagnosi }}</td>
-                            <td>{{ appointment.numero_stanza }}</td>
-                            <td>
-                                <span class="badge {% if appointment.tipologia_visita == 'Generale' %}general{% else %}consulting{% endif %}">
-                                    {{ appointment.tipologia_visita }}
-                                </span>
-                            </td>
-                            <td>
-                                <button class="action-btn approve">✔</button>
-                                <button class="action-btn delete">✖</button>
-                            </td>
-                        </tr>
-                        {% endfor %}
+                    {% for appointment in appointments %}
+                    <tr data-id="{{ appointment.id }}">
+                        <td>{{ appointment.id }}</td>
+                        <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> {{ appointment.nome_paziente }}</td>
+                        <td>{{ appointment.eta }}</td>
+                        <td>{{ appointment.orario|time:"H:i" }}</td>
+                        <td>{{ appointment.diagnosi }}</td>
+                        <td>{{ appointment.numero_stanza }}</td>
+                        <td>
+                            <span
+                                class="badge {% if appointment.tipologia_visita == 'Generale' %}general{% else %}consulting{% endif %}">
+                                {{ appointment.tipologia_visita }}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="action-btn approve">✔</button>
+                            <button class="action-btn delete">✖</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
                     {% else %}
-                        <tr>
-                            <td colspan="7" class="text-center">Nessun appuntamento disponibile</td>
-                        </tr>
+                    <tr>
+                        <td colspan="7" class="text-center">Nessun appuntamento disponibile</td>
+                    </tr>
                     {% endif %}
-                </tbody>        
+                </tbody>
             </table>
+            <div id="pagination" class="pagination-container"></div>
         </div>
     </main>
-  </body>
+
+    <!-- JS Import -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>

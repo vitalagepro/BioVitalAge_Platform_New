@@ -55,6 +55,7 @@ class HomePageRender(View):
     def get(self, request):
         persone = TabellaPazienti.objects.all().order_by('-id')[:5]
         appuntamenti = Appointment.objects.all().order_by('-id')[:4]
+        total_pazienti = TabellaPazienti.objects.count()  # Conta tutti i pazienti
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
@@ -63,6 +64,7 @@ class HomePageRender(View):
 
         context = {
             'persone': persone,
+            'total_pazienti': total_pazienti,
             'appuntamenti': appuntamenti,
             'dottore': dottore,
             'show_disclaimer': show_disclaimer  # Passa lo stato del disclaimer

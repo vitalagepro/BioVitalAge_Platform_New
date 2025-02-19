@@ -24,12 +24,12 @@ $(document).ready(function () {
       url: "/api/appointments/",
       contentType: "application/json",
       data: JSON.stringify(appointmentData),
-      success: function (response) {
-        alert("Appuntamento prenotato con successo!");
+      success: function () {
+        $("#successModal").modal("show");
         $("#appointmentForm")[0].reset();
       },
-      error: function (error) {
-        alert("Errore nella prenotazione. Riprova.");
+      error: function () {
+        $("#errorModal").modal("show");
       },
     });
   });
@@ -40,26 +40,24 @@ $(document).ready(function () {
   $("#patients-select").change(function () {
     let selectedOption = $(this).find(":selected");
 
-    // Riempire i campi con i dati del paziente selezionato
     $("#cognome").val(selectedOption.data("cognome"));
     $("#nome_paziente").val(selectedOption.data("nome"));
     $("#eta").val(selectedOption.data("eta"));
 
-    // Dopo un breve ritardo, resettare solo il select allo stato originale senza toccare gli altri campi
     setTimeout(() => {
       $(this).val("default");
-    }, 100); // Tempo di attesa prima di resettare il select
+    }, 100);
   });
 });
 
 /*  -----------------------------------------------------------------------------------------------
-  Actions on appointments
---------------------------------------------------------------------------------------------------- */
+    Actions on appointments
+  --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".action-btn").forEach((button) => {
     button.addEventListener("click", function () {
-      const row = this.closest("tr"); // Trova la riga
-      const appointmentId = row.getAttribute("data-id"); // Ottiene l'ID dall'attributo data-id
+      const row = this.closest("tr");
+      const appointmentId = row.getAttribute("data-id");
       const action = this.classList.contains("approve") ? "approve" : "delete";
 
       if (action === "approve") {
@@ -73,10 +71,12 @@ document.addEventListener("DOMContentLoaded", function () {
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-              row.style.backgroundColor = "#d4edda"; // Verde per indicare confermato
-              alert("Appuntamento confermato!");
+              row.style.backgroundColor = "#d4edda";
+              $("#successModal .modal-body").text("Appuntamento confermato!");
+              $("#successModal").modal("show");
             } else {
-              alert("Errore: " + data.error);
+              $("#errorModal .modal-body").text("Errore: " + data.error);
+              $("#errorModal").modal("show");
             }
           });
       } else if (action === "delete") {
@@ -93,10 +93,12 @@ document.addEventListener("DOMContentLoaded", function () {
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-              row.remove(); // Rimuove la riga dalla tabella
-              alert("Appuntamento eliminato!");
+              row.remove();
+              $("#successModal .modal-body").text("Appuntamento eliminato!");
+              $("#successModal").modal("show");
             } else {
-              alert("Errore: " + data.error);
+              $("#errorModal .modal-body").text("Errore: " + data.error);
+              $("#errorModal").modal("show");
             }
           });
       }
@@ -111,4 +113,92 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     return csrfToken;
   }
+});
+
+/*  -----------------------------------------------------------------------------------------------
+  Pagination
+--------------------------------------------------------------------------------------------------- */
+$(document).ready(function () {
+  const rowsPerPage = 6; // Numero di righe per pagina
+  let rows = $(".cardAppuntamenti tbody tr"); // Seleziona le righe della tabella
+  let totalRows = rows.length;
+  let totalPages = Math.ceil(totalRows / rowsPerPage);
+  let currentPage = 1;
+
+  function showPage(page) {
+    let start = (page - 1) * rowsPerPage;
+    let end = start + rowsPerPage;
+
+    rows.hide().slice(start, end).fadeIn();
+
+    updatePagination(page);
+  }
+
+  function updatePagination(current) {
+    let pagination = $("#pagination");
+    pagination.empty();
+
+    if (totalPages <= 1) return; // Nasconde la paginazione se c'è solo una pagina
+
+    let pagesToShow = 10; // Numero massimo di pagine visibili prima dei puntini
+
+    let startPage = Math.max(1, current - 2); // Mostra sempre 2 pagine prima della corrente
+    let endPage = Math.min(totalPages, startPage + pagesToShow - 1); // Mostra massimo 10 pagine
+
+    if (endPage - startPage < pagesToShow - 1) {
+      startPage = Math.max(1, endPage - pagesToShow + 1);
+    }
+
+    // Aggiungi il pulsante "Precedente"
+    if (current > 1) {
+      pagination.append(
+        `<button class="page-btn" data-page="${current - 1}">&laquo;</button>`
+      );
+    }
+
+    // Mostra sempre la prima pagina
+    if (startPage > 1) {
+      pagination.append(`<button class="page-btn" data-page="1">1</button>`);
+      if (startPage > 2) {
+        pagination.append(`<span class="dots">...</span>`);
+      }
+    }
+
+    // Mostra i numeri di pagina dinamici
+    for (let i = startPage; i <= endPage; i++) {
+      if (i === current) {
+        pagination.append(
+          `<button class="page-btn active" data-page="${i}">${i}</button>`
+        );
+      } else {
+        pagination.append(
+          `<button class="page-btn" data-page="${i}">${i}</button>`
+        );
+      }
+    }
+
+    // Aggiungi puntini e ultima pagina
+    if (endPage < totalPages - 1) {
+      pagination.append(`<span class="dots">...</span>`);
+    }
+    if (endPage < totalPages) {
+      pagination.append(
+        `<button class="page-btn" data-page="${totalPages}">${totalPages}</button>`
+      );
+    }
+
+    // Aggiungi il pulsante "Successivo"
+    if (current < totalPages) {
+      pagination.append(
+        `<button class="page-btn" data-page="${current + 1}">&raquo;</button>`
+      );
+    }
+
+    $(".page-btn").click(function () {
+      let newPage = parseInt($(this).attr("data-page"));
+      showPage(newPage);
+    });
+  }
+
+  showPage(1);
 });

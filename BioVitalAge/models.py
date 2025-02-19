@@ -95,9 +95,7 @@ class TabellaPazienti(models.Model):
 
 
     def __str__(self):
-        return f"Paziente: {self.name} {self.surname}"  
-
-
+        return f"Paziente: {self.name} {self.surname}"
 
 # Tabella archivio referti associata ai pazienti
 class ArchivioReferti(models.Model):
