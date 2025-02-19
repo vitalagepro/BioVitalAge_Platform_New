@@ -2058,65 +2058,75 @@ class RefertoQuizView(View):
 
 class StampaRefertoView(View):
     def get(self, request, persona_id, referto_id):
-        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
         referto = get_object_or_404(ArchivioRefertiTest, id=referto_id)
-        datiEstesi = DatiEstesiRefertiTest.objects.filter(referto=referto).first()
         referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
-
-        # Determina il testo risultato in base al punteggio
-        testo_risultato = ""
-        punteggio = float(referto.punteggio)
-
-        if 0 <= punteggio <= 2.59:
-            testo_risultato = "Ottima capacità vitale..."
-        elif 2.60 <= punteggio <= 5.09:
-            testo_risultato = "Buona capacità vitale..."
-        elif 5.10 <= punteggio <= 7.59:
-            testo_risultato = "Capacità vitale compromessa..."
-        elif 7.60 <= punteggio <= 10:
-            testo_risultato = "Capacità vitale gravemente compromessa..."
-
-        # Se la richiesta è AJAX, restituisci i dati in formato JSON
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({
-                "name": persona.name,
-                "surname": persona.surname,
-                "dob": str(persona.dob),
-                "codice_fiscale": persona.codice_fiscale,
-                "place_of_birth": persona.place_of_birth,
-                "chronological_age": persona.chronological_age,
-                "risultato_capacita": referto.punteggio,
-                "risultato_mmse": datiEstesi.MMSE if datiEstesi else "",
-                "risultato_gds": datiEstesi.GDS if datiEstesi else "",
-                "risultato_loc": datiEstesi.LOC if datiEstesi else "",
-                "risultato_vista": datiEstesi.Vista if datiEstesi else "",
-                "risultato_udito": datiEstesi.Udito if datiEstesi else "",
-                "risultato_hgs": datiEstesi.HGS if datiEstesi else "",
-                "risultato_pft": datiEstesi.PFT if datiEstesi else "",
-                "risultato_isq": datiEstesi.ISQ if datiEstesi else "",
-                "risultato_bmi": datiEstesi.BMI if datiEstesi else "",
-                "risultato_cdp": datiEstesi.CDP if datiEstesi else "",
-                "risultato_whr": datiEstesi.WHR if datiEstesi else "",
-                "risultato_whr_ratio": datiEstesi.WHR_Ratio if datiEstesi else "",
-                "risultato_cst": datiEstesi.CST if datiEstesi else "",
-                "risultato_gs": datiEstesi.GS if datiEstesi else "",
-                "risultato_ppt": datiEstesi.PPT if datiEstesi else "",
-                "risultato_sarc_f": datiEstesi.SARC_F if datiEstesi else "",
-            })
+        ultimo_referto = persona.referti.order_by('-data_referto')
         
-        # Se non è una richiesta AJAX, renderizza normalmente la pagina
+        datiEstesi = None
+        if referto:
+            datiEstesi = DatiEstesiRefertiTest.objects.filter(referto=referto).first()
+
+        testo_risultato = ''
+
+        if float(referto.punteggio) >= 0 and float(referto.punteggio) <= 2.59:
+            testo_risultato = """
+                                Ottima capacità vitale: Stato di salute eccellente sia a livello
+                                fisico che mentale. La forza muscolare, la funzionalità
+                                respiratoria e la mobilità sono ottimali. Il soggetto mostra
+                                un’ottima capacità cognitiva, un buon benessere psicologico e
+                                una bassa vulnerabilità allo stress. Il rischio di declino
+                                funzionale e mentale è minimo.
+                            """
+
+        elif float(referto.punteggio) >= 2.60 and float(referto.punteggio) <= 5.09:
+            testo_risultato = """
+                                Buona capacità vitale: Buono stato di salute con lievi segni di
+                                riduzione della forza muscolare o della resistenza fisica.
+                                Possibile lieve declino cognitivo o stati emotivi fluttuanti, come
+                                stress occasionale o lieve ansia. Il soggetto è autonomo, ma
+                                potrebbe beneficiare di interventi per mantenere le capacità
+                                motorie e il benessere mentale.
+                            """
+
+        elif float(referto.punteggio) >= 5.10 and float(referto.punteggio) <= 7.59:
+            testo_risultato ="""
+                                Capacità vitale compromessa: Si evidenziano difficoltà motorie
+                                moderate, minore forza muscolare e resistenza. Potrebbero
+                                esserci segni di declino cognitivo o un aumento di ansia e
+                                stress, con possibili difficoltà nella gestione emotiva. Il rischio
+                                di cadute, affaticamento mentale e riduzione dell’autonomia
+                                cresce. È consigliato un supporto medico e strategie di
+                                miglioramento.
+                            """
+
+        elif float(referto.punteggio) >= 7.60 and float(referto.punteggio) <= 10:
+            testo_risultato ="""
+                                Capacità vitale gravemente compromessa: Mobilità e
+                                resistenza fisica sono compromesse, con elevato rischio di
+                                fragilità e perdita di autonomia. Il declino cognitivo può
+                                manifestarsi con difficoltà di concentrazione, memoria e
+                                orientamento. Sul piano psicologico, possono essere presenti
+                                ansia significativa, depressione o distress emotivo. È necessario
+                                un intervento mirato per migliorare la qualità della vita.
+                            """
+
         context = {
-            "scarica": True,
-            "persona": persona,
-            "dottore": dottore,
-            "referto": referto,
+            'scarica' : True,
+            'persona': persona,
+            'ultimo_referto': ultimo_referto,
+            'datiEstesi': datiEstesi,
             'referti_test_recenti': referti_test_recenti,
-            "datiEstesi": datiEstesi,
-            "testo_risultato": testo_risultato
+            'dottore' : dottore,
+            'referto' : referto,
+            'testo_risultato': testo_risultato,
         }
+
         return render(request, "includes/EtaVitale.html", context)
+
 
 
 # Referto View
