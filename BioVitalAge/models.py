@@ -25,8 +25,8 @@ class TabellaPazienti(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['dottore', 'codice_fiscale'], name='unique_paziente_per_dottore')
-    
     ]
+        
     # Dati personali
     name = models.CharField(max_length=50, null=True, blank=True)
     surname = models.CharField(max_length=50, null=True, blank=True)

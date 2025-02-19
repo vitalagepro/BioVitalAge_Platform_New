@@ -3,18 +3,31 @@ from . import views
 from .views import *
 
 urlpatterns = [
+
+    # URL PER LOGIN
     path("", views.LoginRenderingPage.as_view(), name='loginPage'),
     path("Home_Page", HomePageRender.as_view(), name='HomePage'),
     path("Login",LogOutRender.as_view(), name="logout"),
     path('accept-disclaimer/', AcceptDisclaimerView.as_view(), name='accept_disclaimer'),
+    
+    # URL PER CALCOLATORE
     path("Calcolatore_Page", views.CalcolatoreRender.as_view(), name='Calcolatore'),
+
+    # URL PER LA RICECA
     path("Risultati_Page", views.RisultatiRender.as_view(), name='Risultati'),
-    path("persona/<int:id>/", views.PersonaDetailView.as_view(), name="persona_detail"),
-    path("persona/<int:id>/<int:referto_id>/", views.PersonaDetailView.as_view(), name="persona_detail"),
+
+    # URL INSERISCI PAZIENTE
+    path("AggiungiPaziente/", views.InserisciPazienteView.as_view(), name="inserisci_paziente"),
+
+    # URL PER VEDERE IL REFERTO DEL CALCOLO DELL'ETA' BIOLOGICA
+    path("persona/<int:persona_id>/", views.PersonaDetailView.as_view(), name="persona_detail"),
+    path("persona/<int:persona_id>/<int:referto_id>/", views.PersonaDetailView.as_view(), name="persona_detail"),
+
+    
     path("CartellaPaziente/<int:id>/", views.CartellaPazienteView.as_view(), name="cartella_paziente"),
     path("ElencoReferti/<int:id>/", views.ElencoRefertiView.as_view(), name="elenco_referti"),
     path("DatiBase/<int:id>/", views.DatiBaseView.as_view(), name="dati_base"),
-    path("AggiungiPaziente/", views.InserisciPazienteView.as_view(), name="inserisci_paziente"),
+    
     path("Home_Page/Statistiche", views.StatisticheView.as_view(), name="statistiche"),
     path("Patients/<int:id>/Composizione", views.ComposizioneView.as_view(), name="composizione"),
     path('update-persona/<int:id>/', views.update_persona_contact, name='update_persona_contact'),

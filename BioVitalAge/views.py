@@ -72,8 +72,7 @@ class HomePageRender(View):
 
                             # Ottieni i 5 pazienti più recenti
                             persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
-                            pazienti = TabellaPazienti.objects.filter(dottore=dottore)
-                            
+                        
                             # Ottieni il referto più recente per ogni paziente
                             ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
 
@@ -162,7 +161,7 @@ class CalcolatoreRender(View):
 
         if codice_fiscale:
             try:
-                paziente = TabellaPazienti.objects.get(codice_fiscale=codice_fiscale)
+                paziente = TabellaPazienti.objects.get(dottore=dottore, codice_fiscale=codice_fiscale)
                 context.update({
                     "paziente": paziente,
                     "id_persona": paziente.id
@@ -185,6 +184,7 @@ class CalcolatoreRender(View):
         try:
             # Controlla se esiste un paziente con lo stesso nome e cognome
             paziente = TabellaPazienti.objects.filter(
+                dottore=dottore,
                 codice_fiscale=data.get('codice_fiscale') 
             ).first()
 
@@ -643,7 +643,6 @@ class CalcolatoreRender(View):
                     'ph', 'proteins_ex', 'blood_ex', 'ketones', 'uro', 'bilirubin_ex', 'leuc', 'glucose', 'shbg_m', 'shbg_w', 'nt_pro', 'v_b12', 'v_d', 'ves2', 'telotest'
                 ]
                 
-
                 if all(not data.get(campo) for campo in campi_opzionali):
                     # Salva solo i dati personali e l'età cronologica
 
@@ -1129,31 +1128,35 @@ class RisultatiRender(View):
 
         return render(request, "includes/risultati.html", context)
 
+
+
+
 #VIEW PER ULTIMO REFERTO ETA' VITALE
 class PersonaDetailView(View):
-    def get(self, request, id):
-        
-        persone = TabellaPazienti.objects.filter(dottore=dottore)
+    def get(self, request, persona_id):
+
+        # RECUPERO DOTTORE
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        # RECUPERO PAZIENTE
+        persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
 
         # Recupera l'ID del referto dalla query string
         referto_id = request.GET.get('referto_id')
 
         # Recupera il referto specifico se l'ID è passato, altrimenti l'ultimo referto
         if referto_id:
-            referto = get_object_or_404(ArchivioReferti, id=referto_id, paziente=persone)
+            referto = get_object_or_404(ArchivioReferti, id=referto_id, paziente=persona)
         else:
-            referto = ArchivioReferti.objects.filter(paziente=persone).order_by("-data_ora_creazione").first()
+            referto = ArchivioReferti.objects.filter(paziente=persona).order_by("-data_ora_creazione").first()
 
         # Ottieni i dati estesi associati al referto selezionato
         dati_estesi = DatiEstesiReferti.objects.filter(referto=referto).first() if referto else None
 
-        # Recupera il dottore dalla sessione
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
         # Preparazione del contesto per il template
         context = {
-            'persona': persone,
+            'persona': persona,
             'referto': referto,
             'datiEstesi': dati_estesi,
             'dottore': dottore,
