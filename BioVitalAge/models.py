@@ -19,6 +19,14 @@ class TabellaPazienti(models.Model):
         related_name='pazienti',
         null=True
     )
+
+    codice_fiscale = models.CharField(max_length=16, null=True, blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['dottore', 'codice_fiscale'], name='unique_paziente_per_dottore')
+    ]
+        
     # Dati personali
     name = models.CharField(max_length=50, null=True, blank=True)
     surname = models.CharField(max_length=50, null=True, blank=True)
@@ -29,7 +37,6 @@ class TabellaPazienti(models.Model):
     cap = models.CharField(max_length=5, null=True, blank=True)
     province = models.CharField(max_length=100, null=True, blank=True)
     place_of_birth = models.CharField(max_length=100, null=True, blank=True)
-    codice_fiscale = models.CharField(max_length=16, null=True, blank=True, unique=True)
     chronological_age = models.IntegerField(null=True, blank=True)
     blood_group = models.CharField(max_length=3, null=True, blank=True)
     rh_factor = models.CharField(max_length=3, null=True, blank=True)

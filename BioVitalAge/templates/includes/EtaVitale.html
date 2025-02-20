@@ -26,7 +26,8 @@
 
     <!-- JS IMPORT -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://unpkg.com/pdf-lib"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
+
 </head>
 
 <body>
@@ -188,152 +189,170 @@
                                         id="pdfCapacitaVitale">
                                         <img src="{% static 'includes/icone/download.png' %}" alt="Scarica PDF">
                                     </a>
-
-
-                                    {% if scarica %}
-                                        <script>
-                                            document.addEventListener("DOMContentLoaded", function () {
-                                                const pdfVitale = document.getElementById("pdfCapacitaVitale");
-
-                                                pdfVitale.addEventListener("click", function (event) {
-                                                    event.preventDefault(); 
-                                                    
-                                                    const url = pdfVitale.getAttribute("href");
-
-                                                    fetch(url, {
-                                                        headers: { "X-Requested-With": "XMLHttpRequest" }
-                                                    })
-                                                    .then(response => response.json()) 
-                                                    .then(data => {
-
-                                                        Object.keys(data).forEach(key => {
-                                                            pdfVitale.setAttribute(`data-${key}`, data[key]);
-                                                        });
-     
-                                                        generatePDF();
-                                                    })
-                                                    .catch(error => console.error("Errore nella richiesta AJAX:", error));
-                                                });
-                                            });
-
-                                        
-                                        // FUNZIONE PER SCARICARE IL REFERTO DELLA CAPACITA' VITALE
-                                        document.addEventListener("DOMContentLoaded", function () {
-                                            const pdfVitale = document.getElementById("pdfCapacitaVitale");
-
-                                            async function generatePDF() {
-                                                try {
-                                                    const existingPdfBytes = await fetch("/static/includes/pdfTemplates/RefertoCapacitaVitale.pdf")
-                                                        .then(res => res.arrayBuffer());
-                                                    const pdfDoc = await PDFDocument.load(existingPdfBytes);
-                                                    const pages = pdfDoc.getPages();
-
-                                                    // Seleziona il primo foglio
-                                                    const firstPage = pages[0];
-
-                                                    // Recupera i dati dagli attributi del link
-                                                    const getData = (attr) => pdfVitale.getAttribute(`data-${attr}`) || "N/A";
-
-                                                    const name = getData("name");
-                                                    const surname = getData("surname");
-                                                    const dob = getData("dob");
-                                                    const cf = getData("codice_fiscale");
-                                                    const place_birth = getData("place_of_birth");
-                                                    const chronological_age = getData("chronological_age");
-                                                    const risultato_capacita = getData("risultato_capacita");
-                                                    const risultato_mmse = getData("risultato_mmse");
-                                                    const risultato_gds = getData("risultato_gds");
-                                                    const risultato_loc = getData("risultato_loc");
-                                                    const risultato_vista = getData("risultato_vista");
-                                                    const risultato_udito = getData("risultato_udito");
-                                                    const risultato_hgs = getData("risultato_hgs");
-                                                    const risultato_pft = getData("risultato_pft");
-                                                    const risultato_isq = getData("risultato_isq");
-                                                    const risultato_bmi = getData("risultato_bmi");
-                                                    const risultato_cdp = getData("risultato_cdp");
-                                                    const risultato_whr = getData("risultato_whr");
-                                                    const risultato_whr_ratio = getData("risultato_whr_ratio");
-                                                    const risultato_cst = getData("risultato_cst");
-                                                    const risultato_gs = getData("risultato_gs");
-                                                    const risultato_ppt = getData("risultato_ppt");
-                                                    const risultato_sarc_f = getData("risultato_sarc_f");
-
-                                                    // Scrive i dati sulla prima pagina
-                                                    firstPage.drawText(`${name}`, { x: 380, y: 654, size: 12, color: rgb(0, 0, 0) });
-                                                    firstPage.drawText(`${surname}`, { x: 455, y: 654, size: 12, color: rgb(0, 0, 0) });
-                                                    firstPage.drawText(`${dob}`, { x: 340, y: 638, size: 12, color: rgb(0, 0, 0) });
-                                                    firstPage.drawText(`${cf}`, { x: 295, y: 622, size: 12, color: rgb(0, 0, 0) });
-                                                    firstPage.drawText(`${place_birth}`, { x: 280, y: 638, size: 12, color: rgb(0, 0, 0) });
-                                                    firstPage.drawText(`${chronological_age}`, { x: 480, y: 638, size: 12, color: rgb(0, 0, 0) });
-                                                    firstPage.drawText(`${risultato_capacita}`, { x: 150, y: 530, size: 12, color: rgb(0, 0, 0) });
-
-                                                    // Seconda pagina
-                                                    const secondPage = pages[1];
-                                                    secondPage.drawText(`${risultato_mmse}`, { x: 200, y: 438, size: 12, color: rgb(0, 0, 0) });
-
-                                                    // Terza pagina
-                                                    const thirdPage = pages[2];
-                                                    thirdPage.drawText(`${risultato_gds}`, { x: 200, y: 684, size: 12, color: rgb(0, 0, 0) });
-                                                    thirdPage.drawText(`${risultato_loc}`, { x: 200, y: 253, size: 12, color: rgb(0, 0, 0) });
-
-                                                    // Quarta pagina
-                                                    const fourthPage = pages[3];
-                                                    fourthPage.drawText(`${risultato_vista}`, { x: 200, y: 596, size: 12, color: rgb(0, 0, 0) });
-                                                    fourthPage.drawText(`${risultato_udito}`, { x: 200, y: 237, size: 12, color: rgb(0, 0, 0) });
-
-                                                    // Quinta pagina
-                                                    const fifthPage = pages[4];
-                                                    fifthPage.drawText(`${risultato_hgs}`, { x: 200, y: 315, size: 12, color: rgb(0, 0, 0) });
-
-                                                    // Sesta pagina
-                                                    const sixthPage = pages[5];
-                                                    sixthPage.drawText(`${risultato_pft}`, { x: 200, y: 730, size: 12, color: rgb(0, 0, 0) });
-                                                    sixthPage.drawText(`${risultato_isq}`, { x: 200, y: 300, size: 12, color: rgb(0, 0, 0) });
-
-                                                    // Settima pagina
-                                                    const seventhPage = pages[6];
-                                                    seventhPage.drawText(`${risultato_bmi}`, { x: 200, y: 718, size: 12, color: rgb(0, 0, 0) });
-                                                    seventhPage.drawText(`${risultato_cdp}`, { x: 200, y: 122, size: 12, color: rgb(0, 0, 0) });
-
-                                                    // Ottava pagina
-                                                    const eighthPage = pages[7];
-                                                    eighthPage.drawText(`${risultato_whr}`, { x: 200, y: 176, size: 12, color: rgb(0, 0, 0) });
-
-                                                    // Nona pagina
-                                                    const tenthPage = pages[9];
-                                                    tenthPage.drawText(`${risultato_whr_ratio}`, { x: 200, y: 778, size: 12, color: rgb(0, 0, 0) });
-                                                    tenthPage.drawText(`${risultato_cst}`, { x: 200, y: 410, size: 12, color: rgb(0, 0, 0) });
-                                                    tenthPage.drawText(`${risultato_gs}`, { x: 200, y: 168, size: 12, color: rgb(0, 0, 0) });
-
-                                                    // Undicesima pagina
-                                                    const eleventhPage = pages[10];
-                                                    eleventhPage.drawText(`${risultato_ppt}`, { x: 200, y: 570, size: 12, color: rgb(0, 0, 0) });
-                                                    eleventhPage.drawText(`${risultato_sarc_f}`, { x: 200, y: 123, size: 12, color: rgb(0, 0, 0) });
-
-                                                    // Salvataggio e download del PDF
-                                                    const modifiedPdfBytes = await pdfDoc.save();
-                                                    const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
-                                                    const link = document.createElement("a");
-                                                    link.href = URL.createObjectURL(blob);
-                                                    link.download = `${name.toUpperCase()}-${surname.toUpperCase()}-CapacitaVitale.pdf`;
-                                                    link.click();
-                                                } catch (error) {
-                                                    console.error("Errore durante la generazione del PDF:", error);
-                                                }
-                                            }
-
-                                            pdfVitale.addEventListener("click", function (event) {
-                                                event.preventDefault();
-                                                generatePDF();
-                                            });
-                                        });
-                                        </script>
-                                    {% endif %}
                                 </p>
                             </div>
                             {% empty %}
                             <p class="text-center mt-2 mb-2">Nessun referto recente trovato.</p>
                             {% endfor %}
+
+
+
+                            <script>
+
+                                if (typeof PDFDocument === "undefined" && typeof PDFLib !== "undefined") {
+                                    var { PDFDocument, rgb, StandardFonts } = PDFLib;
+                                }
+
+                                async function generatePDF() {
+
+                                    const hiddenInput = document.getElementById("pdfCapacitaVitale");
+
+                                    try {
+                                        if (!hiddenInput) {
+                                            console.error("Errore: hiddenInput non è stato trovato.");
+                                            return;
+                                        }
+
+                                        const existingPdfBytes = await fetch(
+                                            "/static/includes/pdfTemplates/RefertoCapacitaVitale.pdf"
+                                        ).then((res) => res.arrayBuffer());
+
+                                        const pdfDoc = await PDFDocument.load(existingPdfBytes);
+                                        const pages = pdfDoc.getPages();
+
+                                        function getHiddenData(attr) {
+                                            if (!hiddenInput) return ""; 
+                                            return hiddenInput.getAttribute(attr) || ""; 
+                                        }
+
+                                        // Recupero dati dinamico
+                                        const name = getHiddenData("data-name");
+                                        const surname = getHiddenData("data-surname");
+                                        const dob = getHiddenData("data-dob");
+                                        const cf = getHiddenData("data-cf");
+                                        const place_birth = getHiddenData("data-place_birth");
+                                        const chronological_age = getHiddenData("data-chronological_age");
+
+                                        const risultato_capacita = getHiddenData("data-risultato_capacita");
+                                        const risultato_mmse = getHiddenData("data-risultato_mmse");
+                                        const risultato_gds = getHiddenData("data-risultato_gds");
+                                        const risultato_loc = getHiddenData("data-risultato_loc");
+                                        const risultato_vista = getHiddenData("data-risultato_vista");
+                                        const risultato_udito = getHiddenData("data-risultato_udito");
+                                        const risultato_hgs = getHiddenData("data-risultato_hgs");
+                                        const risultato_pft = getHiddenData("data-risultato_pft");
+                                        const risultato_isq = getHiddenData("data-risultato_isq");
+                                        const risultato_bmi = getHiddenData("data-risultato_bmi");
+                                        const risultato_cdp = getHiddenData("data-risultato_cdp");
+                                        const risultato_whr = getHiddenData("data-risultato_whr");
+                                        const risultato_whr_ratio = getHiddenData("data-risultato_whr_ratio");
+                                        const risultato_cst = getHiddenData("data-risultato_cst");
+                                        const risultato_gs = getHiddenData("data-risultato_gs");
+                                        const risultato_ppt = getHiddenData("data-risultato_ppt");
+                                        const risultato_sarc_f = getHiddenData("data-risultato_sarc_f");
+
+                                        // PAGINA 1 - Informazioni personali
+                                        const personalInformationPages = pages[0];
+
+                                        personalInformationPages.drawText(`${name}`, { x: 380, y: 654, size: 12, color: rgb(0, 0, 0) });
+                                        personalInformationPages.drawText(`${surname}`, { x: 455, y: 654, size: 12, color: rgb(0, 0, 0) });
+                                        personalInformationPages.drawText(`${dob}`, { x: 340, y: 638, size: 12, color: rgb(0, 0, 0) });
+                                        personalInformationPages.drawText(`${cf}`, { x: 295, y: 622, size: 12, color: rgb(0, 0, 0) });
+                                        personalInformationPages.drawText(`${place_birth}`, { x: 280, y: 638, size: 12, color: rgb(0, 0, 0) });
+                                        personalInformationPages.drawText(`${chronological_age}`, { x: 480, y: 638, size: 12, color: rgb(0, 0, 0) });
+                                        personalInformationPages.drawText(`${risultato_capacita}`, { x: 150, y: 530, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 2 - MMSE
+                                        const secondPage = pages[1];
+                                        secondPage.drawText(`${risultato_mmse}`, { x: 200, y: 438, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 3 - GDS e LOC
+                                        const thirdPage = pages[2];
+                                        thirdPage.drawText(`${risultato_gds}`, { x: 200, y: 684, size: 12, color: rgb(0, 0, 0) });
+                                        thirdPage.drawText(`${risultato_loc}`, { x: 200, y: 253, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 4 - Vista e Udito
+                                        const fourthPage = pages[3];
+                                        fourthPage.drawText(`${risultato_vista}`, { x: 200, y: 596, size: 12, color: rgb(0, 0, 0) });
+                                        fourthPage.drawText(`${risultato_udito}`, { x: 200, y: 237, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 5 - HGS
+                                        const fiftyPage = pages[4];
+                                        fiftyPage.drawText(`${risultato_hgs}`, { x: 200, y: 315, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 6 - PFT e ISQ
+                                        const sixPage = pages[5];
+                                        sixPage.drawText(`${risultato_pft}`, { x: 200, y: 730, size: 12, color: rgb(0, 0, 0) });
+                                        sixPage.drawText(`${risultato_isq}`, { x: 200, y: 300, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 7 - BMI e CDP
+                                        const sevenPage = pages[6];
+                                        sevenPage.drawText(`${risultato_bmi}`, { x: 200, y: 718, size: 12, color: rgb(0, 0, 0) });
+                                        sevenPage.drawText(`${risultato_cdp}`, { x: 200, y: 122, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 8 - WHR
+                                        const eightPage = pages[7];
+                                        eightPage.drawText(`${risultato_whr}`, { x: 200, y: 176, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 10 - WHR Ratio, CST, GS
+                                        const tenPage = pages[9];
+                                        tenPage.drawText(`${risultato_whr_ratio}`, { x: 200, y: 778, size: 12, color: rgb(0, 0, 0) });
+                                        tenPage.drawText(`${risultato_cst}`, { x: 200, y: 410, size: 12, color: rgb(0, 0, 0) });
+                                        tenPage.drawText(`${risultato_gs}`, { x: 200, y: 168, size: 12, color: rgb(0, 0, 0) });
+
+                                        // Salva Pdf e scarica
+                                        const modifiedPdfBytes = await pdfDoc.save();
+                                        const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
+                                        const link = document.createElement("a");
+                                        link.href = URL.createObjectURL(blob);
+                                        link.download = `${persona.name.toUpperCase()}-${persona.surname.toUpperCase()}-CapacitaVitale.pdf`;
+                                        link.click();
+                                    } catch (error) {
+                                        console.error("Errore durante la generazione del PDF:", error);
+                                    }
+                                }
+
+                            </script>
+
+                            
+                            {% if scarica %}
+                                            
+                                <input type="hidden" id="pdfCapacitaVitale" 
+                                    data-name = "{{ persona.name }}"
+                                    data-surname = "{{ persona.surname }}"
+                                    data-dob = "{{ persona.dob }}"
+                                    data-cf = "{{ persona.codice_fiscale }}"
+                                    data-place_birth = "{{ persona.place_of_birth }}"
+                                    data-chronological_age = "{{ persona.chronological_age }}"
+                                    data-risultato_capacita = "{{ referto.punteggio }}"
+                                    data-risultato_mmse = "{{ datiEstesi.MMSE }}"
+                                    data-risultato_gds = "{{ datiEstesi.GDS }}"
+                                    data-risultato_loc = "{{ datiEstesi.LOC }}"
+                                    data-risultato_vista = "{{ datiEstesi.Vista }}"
+                                    data-risultato_udito = "{{ datiEstesi.Udito }}"
+                                    data-risultato_hgs = "{{ datiEstesi.HGS }}"
+                                    data-risultato_pft = "{{ datiEstesi.PFT }}"
+                                    data-risultato_isq = "{{ datiEstesi.ISQ }}"
+                                    data-risultato_bmi = "{{ datiEstesi.BMI }}"
+                                    data-risultato_cdp = "{{ datiEstesi.CDP }}"
+                                    data-risultato_whr = "{{ datiEstesi.WHR }}"
+                                    data-risultato_whr_ratio = "{{ datiEstesi.WHR_Ratio }}"
+                                    data-risultato_cst = "{{ datiEstesi.CST }}"
+                                    data-risultato_gs = "{{ datiEstesi.GS }}"
+                                    data-risultato_ppt = "{{ datiEstesi.PPT }}"
+                                    data-risultato_sarc_f = "{{ datiEstesi.SARC_F }}">
+
+                                <script>
+                                    
+                                    
+                                    document.addEventListener("DOMContentLoaded", async function () {
+                                        await generatePDF()
+                                    });
+                                </script>
+
+                            {% endif %}
+
+                            
                         </div>
                 </div>
             </div>
@@ -364,6 +383,7 @@
             </button>
         </div>
     </main>
+
     <!-- JS Import -->
     <script>
         /*  -----------------------------------------------------------------------------------------------
