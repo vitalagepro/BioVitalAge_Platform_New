@@ -196,8 +196,61 @@
                             {% endfor %}
 
 
+                            <!-- <input type="hidden" id="pdfCapacitaVitale" 
+                                    data-name = "{{ persona.name }}"
+                                    data-surname = "{{ persona.surname }}"
+                                    data-dob = "{{ persona.dob }}"
+                                    data-cf = "{{ persona.codice_fiscale }}"
+                                    data-place_birth = "{{ persona.place_of_birth }}"
+                                    data-chronological_age = "{{ persona.chronological_age }}"
+                                    data-risultato_capacita = "{{ referto.punteggio }}"
+                                    data-risultato_mmse = "{{ datiEstesi.MMSE }}"
+                                    data-risultato_gds = "{{ datiEstesi.GDS }}"
+                                    data-risultato_loc = "{{ datiEstesi.LOC }}"
+                                    data-risultato_vista = "{{ datiEstesi.Vista }}"
+                                    data-risultato_udito = "{{ datiEstesi.Udito }}"
+                                    data-risultato_hgs = "{{ datiEstesi.HGS }}"
+                                    data-risultato_pft = "{{ datiEstesi.PFT }}"
+                                    data-risultato_isq = "{{ datiEstesi.ISQ }}"
+                                    data-risultato_bmi = "{{ datiEstesi.BMI }}"
+                                    data-risultato_cdp = "{{ datiEstesi.CDP }}"
+                                    data-risultato_whr = "{{ datiEstesi.WHR }}"
+                                    data-risultato_whr_ratio = "{{ datiEstesi.WHR_Ratio }}"
+                                    data-risultato_cst = "{{ datiEstesi.CST }}"
+                                    data-risultato_gs = "{{ datiEstesi.GS }}"
+                                    data-risultato_ppt = "{{ datiEstesi.PPT }}"
+                                    data-risultato_sarc_f = "{{ datiEstesi.SARC_F }}">
 
-                            <script>
+                             -->
+                           
+                           <script>
+                                
+                                var pdfData = {
+                                    name: "{{ persona.name }}",
+                                    surname: "{{ persona.surname }}",
+                                    dob: "{{ persona.dob }}",
+                                    cf: "{{ persona.codice_fiscale }}",
+                                    place_birth: "{{ persona.place_of_birth }}",
+                                    chronological_age: "{{ persona.chronological_age }}",
+                                    risultato_capacita: "{{ referto.punteggio }}",
+                                    risultato_mmse: "{{ datiEstesi.MMSE }}",
+                                    risultato_gds: "{{ datiEstesi.GDS }}",
+                                    risultato_loc: "{{ datiEstesi.LOC }}",
+                                    risultato_vista: "{{ datiEstesi.Vista }}",
+                                    risultato_udito: "{{ datiEstesi.Udito }}",
+                                    risultato_hgs: "{{ datiEstesi.HGS }}",
+                                    risultato_pft: "{{ datiEstesi.PFT }}",
+                                    risultato_isq: "{{ datiEstesi.ISQ }}",
+                                    risultato_bmi: "{{ datiEstesi.BMI }}",
+                                    risultato_cdp: "{{ datiEstesi.CDP }}",
+                                    risultato_whr: "{{ datiEstesi.WHR }}",
+                                    risultato_whr_ratio: "{{ datiEstesi.WHR_Ratio }}",
+                                    risultato_cst: "{{ datiEstesi.CST }}",
+                                    risultato_gs: "{{ datiEstesi.GS }}",
+                                    risultato_ppt: "{{ datiEstesi.PPT }}",
+                                    risultato_sarc_f: "{{ datiEstesi.SARC_F }}"
+                                };
+                            
 
                                 if (typeof PDFDocument === "undefined" && typeof PDFLib !== "undefined") {
                                     var { PDFDocument, rgb, StandardFonts } = PDFLib;
@@ -226,30 +279,31 @@
                                         }
 
                                         // Recupero dati dinamico
-                                        const name = getHiddenData("data-name");
-                                        const surname = getHiddenData("data-surname");
-                                        const dob = getHiddenData("data-dob");
-                                        const cf = getHiddenData("data-cf");
-                                        const place_birth = getHiddenData("data-place_birth");
-                                        const chronological_age = getHiddenData("data-chronological_age");
+                                        const name = pdfData['name'];
+                                        const surname = pdfData['surname'];
+                                        const dob = pdfData['dob'];
+                                        const cf = pdfData['cf'];
+                                        const place_birth = pdfData['place_birth'];
+                                        const chronological_age = pdfData['chronological_age'];
 
-                                        const risultato_capacita = getHiddenData("data-risultato_capacita");
-                                        const risultato_mmse = getHiddenData("data-risultato_mmse");
-                                        const risultato_gds = getHiddenData("data-risultato_gds");
-                                        const risultato_loc = getHiddenData("data-risultato_loc");
-                                        const risultato_vista = getHiddenData("data-risultato_vista");
-                                        const risultato_udito = getHiddenData("data-risultato_udito");
-                                        const risultato_hgs = getHiddenData("data-risultato_hgs");
-                                        const risultato_pft = getHiddenData("data-risultato_pft");
-                                        const risultato_isq = getHiddenData("data-risultato_isq");
-                                        const risultato_bmi = getHiddenData("data-risultato_bmi");
-                                        const risultato_cdp = getHiddenData("data-risultato_cdp");
-                                        const risultato_whr = getHiddenData("data-risultato_whr");
-                                        const risultato_whr_ratio = getHiddenData("data-risultato_whr_ratio");
-                                        const risultato_cst = getHiddenData("data-risultato_cst");
-                                        const risultato_gs = getHiddenData("data-risultato_gs");
-                                        const risultato_ppt = getHiddenData("data-risultato_ppt");
-                                        const risultato_sarc_f = getHiddenData("data-risultato_sarc_f");
+                                        const risultato_capacita = pdfData['risultato_capacita'];
+                                        const risultato_mmse = pdfData['risultato_mmse'];
+                                        const risultato_gds = pdfData['risultato_gds'];
+                                        const risultato_loc = pdfData['risultato_loc'];
+                                        const risultato_vista = pdfData['risultato_vista'];
+                                        const risultato_udito = pdfData['risultato_udito'];
+                                        const risultato_hgs = pdfData['risultato_hgs'];
+                                        const risultato_pft = pdfData['risultato_pft'];
+                                        const risultato_isq = pdfData['risultato_isq'];
+                                        const risultato_bmi = pdfData['risultato_bmi'];
+                                        const risultato_cdp = pdfData['risultato_cdp'];
+                                        const risultato_whr = pdfData['risultato_whr'];
+                                        const risultato_whr_ratio = pdfData['risultato_whr_ratio'];
+                                        const risultato_cst = pdfData['risultato_cst'];
+                                        const risultato_gs = pdfData['risultato_gs'];
+                                        const risultato_ppt = pdfData['risultato_ppt'];
+                                        const risultato_sarc_f = pdfData['risultato_sarc_f'];
+
 
                                         // PAGINA 1 - Informazioni personali
                                         const personalInformationPages = pages[0];
@@ -305,7 +359,7 @@
                                         const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
                                         const link = document.createElement("a");
                                         link.href = URL.createObjectURL(blob);
-                                        link.download = `${persona.name.toUpperCase()}-${persona.surname.toUpperCase()}-CapacitaVitale.pdf`;
+                                        link.download = `${name.toUpperCase()}-${surname.toUpperCase()}-CapacitaVitale.pdf`;
                                         link.click();
                                     } catch (error) {
                                         console.error("Errore durante la generazione del PDF:", error);
@@ -317,33 +371,7 @@
                             
                             {% if scarica %}
                                             
-                                <input type="hidden" id="pdfCapacitaVitale" 
-                                    data-name = "{{ persona.name }}"
-                                    data-surname = "{{ persona.surname }}"
-                                    data-dob = "{{ persona.dob }}"
-                                    data-cf = "{{ persona.codice_fiscale }}"
-                                    data-place_birth = "{{ persona.place_of_birth }}"
-                                    data-chronological_age = "{{ persona.chronological_age }}"
-                                    data-risultato_capacita = "{{ referto.punteggio }}"
-                                    data-risultato_mmse = "{{ datiEstesi.MMSE }}"
-                                    data-risultato_gds = "{{ datiEstesi.GDS }}"
-                                    data-risultato_loc = "{{ datiEstesi.LOC }}"
-                                    data-risultato_vista = "{{ datiEstesi.Vista }}"
-                                    data-risultato_udito = "{{ datiEstesi.Udito }}"
-                                    data-risultato_hgs = "{{ datiEstesi.HGS }}"
-                                    data-risultato_pft = "{{ datiEstesi.PFT }}"
-                                    data-risultato_isq = "{{ datiEstesi.ISQ }}"
-                                    data-risultato_bmi = "{{ datiEstesi.BMI }}"
-                                    data-risultato_cdp = "{{ datiEstesi.CDP }}"
-                                    data-risultato_whr = "{{ datiEstesi.WHR }}"
-                                    data-risultato_whr_ratio = "{{ datiEstesi.WHR_Ratio }}"
-                                    data-risultato_cst = "{{ datiEstesi.CST }}"
-                                    data-risultato_gs = "{{ datiEstesi.GS }}"
-                                    data-risultato_ppt = "{{ datiEstesi.PPT }}"
-                                    data-risultato_sarc_f = "{{ datiEstesi.SARC_F }}">
-
                                 <script>
-                                    
                                     
                                     document.addEventListener("DOMContentLoaded", async function () {
                                         await generatePDF()

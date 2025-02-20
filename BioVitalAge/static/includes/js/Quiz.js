@@ -70,18 +70,6 @@ updatePagination();
 
 const submitBtn = document.getElementById("submit-btn");
 
-function checkLastQuestion() {
-  const lastQuestion = document.querySelector(".tableRow"); 
-  const inputs = lastQuestion.querySelectorAll("input[type='radio'], input[type='text']");
-  
-  const allFilled = Array.from(inputs).some((input) => input.checked); 
-
-  submitBtn.disabled = !allFilled;
-}
-
-document.querySelectorAll("input[name='Sarc_5']").forEach(input => {
-  input.addEventListener("change", checkLastQuestion);
-});
 
 
 function handleCheckboxSelection() {
