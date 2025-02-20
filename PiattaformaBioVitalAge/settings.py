@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1-exzg2a%&(t%r6^7*u+732h)8^z96-72gr!fk@$-ev25-zx7)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # Recupera i valori delle variabili d'ambiente
 elastic_beanstalk_domain = os.getenv('ELASTIC_BEANSTALK_DOMAIN')
