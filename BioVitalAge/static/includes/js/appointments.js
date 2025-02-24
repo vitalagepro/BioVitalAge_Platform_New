@@ -12,11 +12,10 @@ $(document).ready(function () {
     const appointmentData = {
       cognome_paziente: $("#cognome").val(),
       nome_paziente: $("#nome_paziente").val(),
-      eta: $("#eta").val(),
       tipologia_visita: $("#tipologia_visita").val(),
-      diagnosi: $("#diagnosi").val(),
+      data: $("#date").val(),
       orario: $("#orario").val(),
-      numero_stanza: $("#numero_stanza").val(),
+      numero_studio: $("#numero_studio").val(),
     };
 
     $.ajax({
@@ -42,7 +41,6 @@ $(document).ready(function () {
 
     $("#cognome").val(selectedOption.data("cognome"));
     $("#nome_paziente").val(selectedOption.data("nome"));
-    $("#eta").val(selectedOption.data("eta"));
 
     setTimeout(() => {
       $(this).val("default");

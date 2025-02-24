@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -426,11 +427,10 @@ class EsameVisita(models.Model):
 class Appointment(models.Model):
     cognome_paziente = models.CharField(max_length=255, blank=True, null=True)
     nome_paziente = models.CharField(max_length=255, blank=True, null=True)
-    eta = models.IntegerField(blank=True, null=True)
-    tipologia_visita = models.CharField(max_length=100, choices=[('Generale', 'Generale'), ('Specialistica', 'Specialistica')], blank=True, null=True)
-    diagnosi = models.TextField(blank=True, null=True)
+    tipologia_visita = models.CharField(max_length=100, choices=[('Generale', 'Generale'), ('Specialistica', 'Specialistica')], blank=True, null=True)    
+    data = models.DateField(default=datetime.now)
     orario = models.TimeField()
-    numero_stanza = models.IntegerField(blank=True, null=True)
+    numero_studio = models.IntegerField(blank=True, null=True)
     dottore = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     confermato = models.BooleanField(default=False)  # Campo per segnare la conferma
     

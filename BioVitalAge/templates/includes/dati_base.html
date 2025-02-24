@@ -69,7 +69,7 @@
       </div>
       <section class="container_data table_data">
         <h3 style="margin-top: 20px; margin-bottom: -20px;">Stile di vita</h3>
-        <form id="datiBaseForm2" method="POST">
+        <form id="datiBaseForm1" method="POST">
           {% csrf_token %} 
             <div class="table-title-tools">
               <p class="table-title">Alcol</p>
@@ -97,15 +97,15 @@
                 <div class="riga-container">
                   <p> <input name="alcol" type="text" value="{{ persona.alcol|default:'N/A' }}" disabled> </p>
                   <p> <input name="alcol_type" type="text" value="{{ persona.alcol_type|default:'N/A' }}" disabled> </p>
-                  <p> <input name="data_alcol" type="date" value="{{ persona.data_alcol|date:'Y-m-d'|default:'N/A' }}" disabled> </p>
+                  <p> <input name="data_alcol" type="date" value="{{ persona.data_alcol|date:'Y-m-d' }}" disabled> </p>
                   <p> <input name="alcol_frequency" type="text" value="{{ persona.alcol_frequency|default:'N/A' }}" disabled> </p>
-                  <input type="hidden" name="form_id" value="datiBaseForm3">
+                  <input type="hidden" name="form_id" value="datiBaseForm1">
                 </div>
               </div>
             </div>
         </form>
    
-        <form id="datiBaseForm3" method="POST">
+        <form id="datiBaseForm2" method="POST">
           {% csrf_token %} 
             <div class="table-title-tools">
               <p class="table-title">Fumo</p>
@@ -132,13 +132,13 @@
                   <p> <input name="smoke" type="text" value="{{ persona.smoke|default:'N/A' }}" disabled> </p>
                   <p> <input name="smoke_frequency" type="text" value="{{ persona.smoke_frequency|default:'N/A' }}" disabled> </p>
                   <p> <input name="reduced_intake" type="text" value="{{ persona.reduced_intake|default:'N/A' }}" disabled> </p>
-                  <input type="hidden" name="form_id" value="datiBaseForm4">
+                  <input type="hidden" name="form_id" value="datiBaseForm2">
                 </div>
               </div>
             </div>
         </form>        
       
-        <form id="datiBaseForm4" method="POST">
+        <form id="datiBaseForm3" method="POST">
           {% csrf_token %}
             <div class="table-title-tools">
               <p class="table-title">Sport</p>
@@ -165,13 +165,13 @@
                   <p> <input name="sport" type="text" value="{{ persona.sport|default:'N/A' }}" disabled> </p>
                   <p> <input name="sport_livello" type="text" value="{{ persona.sport_livello|default:'N/A' }}" disabled> </p>
                   <p> <input name="sport_frequency" type="text" value="{{ persona.sport_frequency|default:'N/A' }}" disabled> </p>
-                  <input type="hidden" name="form_id" value="datiBaseForm5">
+                  <input type="hidden" name="form_id" value="datiBaseForm3">
                 </div>
               </div>
             </div>
         </form>
 
-        <form id="datiBaseForm5" method="POST">
+        <form id="datiBaseForm4" method="POST">
           {% csrf_token %}
             <div class="table-title-tools">
               <p class="table-title">Sedentarietà</p>
@@ -198,7 +198,7 @@
                   <p> <input name="attivita_sedentaria" type="text" value="{{ persona.attivita_sedentaria|default:'N/A' }}" disabled> </p>
                   <p> <input name="livello_sedentarieta" type="text" value="{{ persona.livello_sedentarieta|default:'N/A' }}" disabled> </p>
                   <p> <input name="sedentarieta_nota" type="text" value="{{ persona.sedentarieta_nota|default:'N/A' }}" disabled> </p>
-                  <input type="hidden" name="form_id" value="datiBaseForm6">
+                  <input type="hidden" name="form_id" value="datiBaseForm4">
                 </div>
               </div>
             </div>

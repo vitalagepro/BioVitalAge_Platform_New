@@ -1387,25 +1387,30 @@ class DatiBaseView(View):
             form_id = request.POST.get('form_id')
 
             # Gestione dei dati in base al form_id
-            if form_id == 'datiBaseForm3':
+            if form_id == 'datiBaseForm1':
                 # Aggiorna i dati relativi alla terza tabella
-                alcol_value = request.POST.get('alcol')
                 persona.alcol = request.POST.get('alcol')
                 persona.alcol_type = request.POST.get('alcol_type')
                 persona.data_alcol = request.POST.get('data_alcol') or None
                 persona.alcol_frequency = request.POST.get('alcol_frequency')
 
-            elif form_id == 'datiBaseForm4':
+            elif form_id == 'datiBaseForm2':
                 # Aggiorna i dati relativi alla quarta tabella
                 persona.smoke = request.POST.get('smoke')
                 persona.smoke_frequency = request.POST.get('smoke_frequency')
                 persona.reduced_intake = request.POST.get('reduced_intake')
 
-            elif form_id == 'datiBaseForm5':
+            elif form_id == 'datiBaseForm3':
                 # Aggiorna i dati relativi alla quinta tabella
                 persona.sport = request.POST.get('sport')
                 persona.sport_livello = request.POST.get('sport_livello')
                 persona.sport_frequency = request.POST.get('sport_frequency')
+
+            elif form_id == 'datiBaseForm4':
+                # Aggiorna i dati relativi alla quinta tabella
+                persona.attivita_sedentaria = request.POST.get('attivita_sedentaria')
+                persona.livello_sedentarieta = request.POST.get('livello_sedentarieta')
+                persona.sedentarieta_nota = request.POST.get('sedentarieta_nota')
 
             # Salva le modifiche solo se c'è un form valido
             if form_id:
@@ -2233,47 +2238,57 @@ class AppointmentView(View):
 def appointment_view(request):
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)
-            print("Dati ricevuti:", data)  # Debug log
-            
-            # Verifica il tipo di dati ricevuti
-            for key, value in data.items():
-                print(f"{key}: {value} (type: {type(value)})")
+            data_input = json.loads(request.body)
+            print("Dati ricevuti:", data_input)  # Debug log
             
             # Recupera l'utente autenticato
             user = get_user(request)
-            
+
+            # Debug: Stampiamo i tipi di dati per ogni campo
+            for key, value in data_input.items():
+                print(f"{key}: {value} (type: {type(value)})")
+
             # Conversione dei dati con gestione degli errori
             try:
-                eta = int(data['eta']) if isinstance(data['eta'], str) else data['eta']
-                numero_stanza = int(data['numero_stanza']) if isinstance(data['numero_stanza'], str) else data['numero_stanza']
-                orario = datetime.strptime(data['orario'], "%H:%M").time()
-                print(f"Dati convertiti - Eta: {eta}, Numero Stanza: {numero_stanza}, Orario: {orario}")
+                numero_studio = int(data_input['numero_studio']) if data_input['numero_studio'] else None
+                orario = datetime.strptime(data_input['orario'], "%H:%M").time()
+                data_appuntamento = datetime.strptime(data_input['data'], "%Y-%m-%d").date()
+
+                print(f"Conversione riuscita - Numero Stanza: {numero_studio}, Orario: {orario}, Data: {data_appuntamento}")
+
             except ValueError as ve:
                 print(f"Errore di conversione: {ve}")
                 return JsonResponse({'error': f'Errore di conversione dei dati: {str(ve)}'}, status=400)
-            
+
+            # Creazione dell'appuntamento
             appointment = Appointment.objects.create(
-                cognome_paziente=data['cognome_paziente'],
-                nome_paziente=data['nome_paziente'],
-                eta=eta,
-                tipologia_visita=data['tipologia_visita'],
-                diagnosi=data.get('diagnosi', ''),
+                cognome_paziente=data_input.get('cognome_paziente', ''),
+                nome_paziente=data_input.get('nome_paziente', ''),
+                tipologia_visita=data_input.get('tipologia_visita', ''),
+                data=data_appuntamento,
                 orario=orario,
-                numero_stanza=numero_stanza,
+                numero_studio=numero_studio,
                 dottore=user if user.is_authenticated else None
             )
+
+            print(f"Appuntamento creato con successo! ID: {appointment.id}")
+
             return JsonResponse({'message': 'Appuntamento creato con successo!', 'id': appointment.id}, status=201)
+
         except json.JSONDecodeError:
+            print("Errore: Formato JSON non valido")
             return JsonResponse({'error': 'Formato JSON non valido'}, status=400)
         except KeyError as ke:
+            print(f"Errore: Manca il campo richiesto: {ke}")
             return JsonResponse({'error': f'Manca il campo richiesto: {str(ke)}'}, status=400)
         except Exception as e:
             print(f"Errore generico: {e}")
             return JsonResponse({'error': f'Errore generico: {str(e)}'}, status=400)
+
     elif request.method == 'GET':
         appointments = list(Appointment.objects.values())
         return JsonResponse(appointments, safe=False)
+
     else:
         return JsonResponse({'error': 'Metodo non supportato'}, status=405)
 

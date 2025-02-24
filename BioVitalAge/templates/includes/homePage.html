@@ -297,10 +297,9 @@
           <tr>
             <th>#</th>
             <th>Nome Paziente</th>
-            <th>Età</th>
+            <th>Data</th>
             <th>Ora</th>
-            <th>Diagnosi</th>
-            <th>Stanza</th>
+            <th>Studio</th>
             <th>Tipologia</th>
             <th>Azione</th>
           </tr>
@@ -311,10 +310,9 @@
               <tr data-id="{{ appointment.id }}">
                   <td>{{ appointment.id }}</td>
                   <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> {{ appointment.nome_paziente|title }}</td>
-                  <td>{{ appointment.eta }}</td>
+                  <td>{{ appointment.data|date:"d/m/Y" }}</td>
                   <td>{{ appointment.orario|time:"H:i" }}</td>
-                  <td>{{ appointment.diagnosi }}</td>
-                  <td>{{ appointment.numero_stanza }}</td>
+                  <td>{{ appointment.numero_studio }}</td>
                   <td>
                       <span class="badge {% if appointment.tipologia_visita == 'Generale' %}general{% else %}consulting{% endif %}">
                           {{ appointment.tipologia_visita }}
