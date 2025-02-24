@@ -411,7 +411,7 @@
     <!-- TABELLA PAZIENTI RECENTI -->
     <div class="recent-patients">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="mb-0 text-center">Ultimi 5 Pazienti Visitati</h2>
+        <h2 class="mb-0 text-center">Ultimi 5 Pazienti Inseriti</h2>
         <a href="{% url 'inserisci_paziente' %}" title="Add Patient" class="button">
           <span class="button__icon-wrapper">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14"
@@ -438,7 +438,6 @@
           <p>Codice Fiscale</p>
           <p>Città di nascita</p>
           <p>Età cronologica</p>
-          <p>Ultimo Referto</p>
           <p>Cartella Paziente</p>
         </div>
 
@@ -451,12 +450,7 @@
             <p>{{ persona.codice_fiscale }}</p>
             <p>{{ persona.place_of_birth|title }}</p>
             <p>{{ persona.chronological_age }}</p>
-
-            <p>
-              <a href="{% url 'persona_detail' persona.id %}">
-                <img src="{% static 'includes/icone/referto.png' %}" alt="Referto" />
-              </a>
-            </p>
+ 
             <p>
               <a href="{% url 'cartella_paziente' persona.id %}">
                 <img src="{% static 'includes/icone/cartella.png' %}" alt="Cartella" />

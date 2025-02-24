@@ -39,7 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
   const tables = document.querySelectorAll(".table-content");
 
-
   tables.forEach((table) => {
     const rows = table.querySelectorAll(".riga-container");
     const rowsPerPage = 5;
@@ -72,9 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function updatePaginationControls() {
       let existingControls = table.querySelector(".pagination-controls");
 
- 
       if (existingControls) existingControls.remove();
-
 
       if (rows.length > rowsPerPage) {
         const controls = document.createElement("div");
@@ -83,7 +80,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const range = 10;
         let startPage = Math.max(1, currentPage - Math.floor(range / 2));
         let endPage = Math.min(totalPages, startPage + range - 1);
-
 
         if (endPage - startPage < range - 1) {
           startPage = Math.max(1, endPage - range + 1);
@@ -221,24 +217,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Funzione per convertire la data da "DD/MM/YYYY" a "YYYY-MM-DD" per input[type="date"]
   function formatDateForInput(dateString) {
-    if (!dateString) return ""; // Se è vuoto, restituisci stringa vuota
-
-    // Controlla se è già in formato YYYY-MM-DD
-    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    if (!dateString) return ""; // Se la stringa è vuota, restituisci una stringa vuota
+  
+    // Controlla se è già nel formato YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
       return dateString;
     }
-
-    // Prova a convertire una data in formato testuale ("June 25, 2024", "Jan. 31, 2025")
+  
+    // Controlla se la data è in formato DD/MM/YYYY
+    const dateParts = dateString.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (dateParts) {
+      return `${dateParts[3]}-${dateParts[2]}-${dateParts[1]}`; // YYYY-MM-DD
+    }
+  
+    // Prova a convertire una data in formato testuale
     const parsedDate = new Date(dateString);
     if (!isNaN(parsedDate.getTime())) {
-      // Aggiunge l'offset del fuso orario locale per evitare lo shift di un giorno
-      parsedDate.setMinutes(
-        parsedDate.getMinutes() - parsedDate.getTimezoneOffset()
-      );
-      return parsedDate.toISOString().split("T")[0]; // Ora mantiene il giorno corretto!
+      parsedDate.setMinutes(parsedDate.getMinutes() - parsedDate.getTimezoneOffset());
+      return parsedDate.toISOString().split("T")[0]; // YYYY-MM-DD
     }
-
-    return ""; // Se la conversione fallisce, restituisce stringa vuota
+  
+    return ""; // Se il formato non è riconosciuto, restituisci stringa vuota
   }
 
   editButton.addEventListener("click", function (event) {
@@ -269,8 +268,6 @@ document.addEventListener("DOMContentLoaded", function () {
         lastVisitSpan.textContent.trim()
       );
       lastVisitInput.id = "lastVisitInput";
-      console.log(lastVisitSpan.textContent.trim());
-      console.log(upcomingVisitSpan.textContent.trim());
 
       const upcomingVisitInput = document.createElement("input");
       upcomingVisitInput.type = "date";
@@ -532,81 +529,105 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 });
 
-
-
-
-
 /* FILTRI TABELLA PRESCRIZIONE */
 document.addEventListener("DOMContentLoaded", function () {
   const filterSelect = document.getElementById("filter");
   const tableContent = document.querySelector(".table-content.prescriptions");
 
   filterSelect.addEventListener("change", function () {
-      let selectedFilter = filterSelect.value;
-      let rows = Array.from(tableContent.getElementsByClassName("riga-container"));
+    let selectedFilter = filterSelect.value;
+    let rows = Array.from(
+      tableContent.getElementsByClassName("riga-container")
+    );
 
-      if (selectedFilter === "Tutti") {
-          rows.forEach(row => row.style.display = "flex");
-          return;
-      }
+    if (selectedFilter === "Tutti") {
+      rows.forEach((row) => (row.style.display = "flex"));
+      return;
+    }
 
-      let columnIndex = parseInt(selectedFilter, 10);
-      let isAscending = columnIndex === 0;
+    let columnIndex = parseInt(selectedFilter, 10);
+    let isAscending = columnIndex === 0;
 
-      rows.sort((a, b) => {
-          let textA = a.getElementsByTagName("p")[columnIndex].innerText.trim().toLowerCase();
-          let textB = b.getElementsByTagName("p")[columnIndex].innerText.trim().toLowerCase();
+    rows.sort((a, b) => {
+      let textA = a
+        .getElementsByTagName("p")
+        [columnIndex].innerText.trim()
+        .toLowerCase();
+      let textB = b
+        .getElementsByTagName("p")
+        [columnIndex].innerText.trim()
+        .toLowerCase();
 
-          return isAscending ? textA.localeCompare(textB) : textB.localeCompare(textA);
-      });
+      return isAscending
+        ? textA.localeCompare(textB)
+        : textB.localeCompare(textA);
+    });
 
-      rows.forEach(row => tableContent.appendChild(row));
+    rows.forEach((row) => tableContent.appendChild(row));
   });
 });
-
 
 /*  -----------------------------------------------------------------------------------------------
     Mostra di più
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
   const toggleButton = document.querySelector(".button");
-  
+
   if (!toggleButton) return;
-  
-  const infoContainer = document.querySelector(".info_container");
+
+  const infoContainer = document.querySelector(".container_box");
   const contactContainer = document.querySelector(".Contact-Container");
-  const hiddenFields = infoContainer.querySelectorAll(".field:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(4)):not(:nth-child(5))");
   const subCardsContainer = document.querySelector(".subCard-container");
-  
-  hiddenFields.forEach(field => {
-      gsap.set(field, { opacity: 0, display: "none" });
-      infoContainer.classList.add("hidden-row-grid");
-      contactContainer.classList.add("flex-hidden-grid");
+
+  // Seleziona tutti i campi, compresi email e telefono
+  const hiddenFields = infoContainer.querySelectorAll(
+    ".field, .email, .telefono"
+  );
+
+  // Nasconde tutti i campi all'inizio (compresi email e telefono)
+  hiddenFields.forEach((field) => {
+    gsap.set(field, { opacity: 0, display: "none" });
   });
-  
+
+  // Nasconde anche la sezione delle sub-card e il Contact-Container
   gsap.set(subCardsContainer, { opacity: 0, display: "none" });
-  
+  gsap.set(contactContainer, { opacity: 0, display: "none" });
+
+  // Nasconde il contenitore principale
+  infoContainer.classList.add("hidden-row-grid");
+
+  // Aggiunge il listener al pulsante
   toggleButton.addEventListener("click", function () {
-      const isHidden = hiddenFields[0].style.display === "none";
-      
-      hiddenFields.forEach(field => {
-          if (isHidden) {
-              gsap.to(field, { opacity: 1, display: "flex", duration: 0.5 });
-              infoContainer.classList.remove("hidden-row-grid");
-          } else {
-              gsap.to(field, { opacity: 0, display: "none", duration: 0.5 });
-          }
-      });
-      
+    const isHidden = hiddenFields[0].style.display === "none";
+
+    hiddenFields.forEach((field) => {
       if (isHidden) {
-          gsap.to(subCardsContainer, { opacity: 1, display: "flex", duration: 0.5 });
-          infoContainer.classList.remove("hidden-row-grid");
+        gsap.to(field, { opacity: 1, display: "flex", duration: 0.5 });
       } else {
-          gsap.to(subCardsContainer, { opacity: 0, display: "none", duration: 0.5 });
-          infoContainer.classList.add("hidden-row-grid");
+        gsap.to(field, { opacity: 0, display: "none", duration: 0.5 });
       }
-      
-      toggleButton.innerHTML = `
+    });
+
+    if (isHidden) {
+      gsap.to(subCardsContainer, {
+        opacity: 1,
+        display: "flex",
+        duration: 0.5,
+      });
+      gsap.to(contactContainer, { opacity: 1, display: "flex", duration: 0.5 });
+      infoContainer.classList.remove("hidden-row-grid");
+    } else {
+      gsap.to(subCardsContainer, {
+        opacity: 0,
+        display: "none",
+        duration: 0.5,
+      });
+      gsap.to(contactContainer, { opacity: 0, display: "none", duration: 0.5 });
+      infoContainer.classList.add("hidden-row-grid");
+    }
+
+    // Cambia il testo e l'icona del pulsante
+    toggleButton.innerHTML = `
       <span class="button__icon-wrapper">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
             <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -654,5 +675,3 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
  */
-
-

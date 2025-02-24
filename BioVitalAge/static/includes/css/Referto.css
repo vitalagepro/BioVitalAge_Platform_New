@@ -733,7 +733,17 @@ h2 {
 
 
 
-
+.tittle-container{
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+}
+.punteggio{
+  background-color: var(--contrast-color-shadow);
+  font-weight: bold;
+  padding: 6px 12px 6px 12px;
+  border-radius: 8px;
+}
 
 
 

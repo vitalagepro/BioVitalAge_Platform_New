@@ -1,77 +1,4 @@
 /*  -----------------------------------------------------------------------------------------------
-  function to transform the first letter of a string to uppercase
---------------------------------------------------------------------------------------------------- */
-document.addEventListener("DOMContentLoaded", function () {
-  // Seleziona tutti gli elementi con la classe 'field'
-  let fields = document.querySelectorAll(".info_container .field");
-
-  fields.forEach((field) => {
-    let label = field.querySelector("p:first-of-type"); // Prende il primo <p> (etichetta)
-    let valueP = field.querySelector("p:nth-of-type(2)"); // Prende il secondo <p> (valore)
-
-    if (label && valueP) {
-      let labelText = label.innerText.trim();
-
-      // Controlla se il campo è "Nome:" o "Cognome:"
-      if (labelText === "Nome:" || labelText === "Cognome:") {
-        let text = valueP.innerText.trim();
-        if (text.length > 0) {
-          // Converte la prima lettera in maiuscolo di ogni parola se la parola è tutta in minuscolo
-          let formattedText = text
-            .split(" ") // Divide il testo in parole
-            .map((word) =>
-              word === word.toLowerCase()
-                ? word.charAt(0).toUpperCase() + word.slice(1)
-                : word
-            ) // Se è minuscola, la corregge
-            .join(" "); // Ricompone la stringa
-
-          valueP.innerText = formattedText;
-        }
-      }
-    }
-  });
-});
-
-/*  -----------------------------------------------------------------------------------------------
-    Function to select man or woman in strong test
---------------------------------------------------------------------------------------------------- */
-document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll(".tableRow").forEach((row) => {
-    let inputs = row.querySelectorAll("input[type='text']");
-
-    if (inputs.length === 2) {
-      let maleInput = inputs[0];
-      let femaleInput = inputs[1];
-
-      maleInput.addEventListener("input", function () {
-        if (maleInput.value.trim() !== "") {
-          femaleInput.disabled = true;
-          femaleInput.removeAttribute("required");
-          femaleInput.setAttribute("placeholder", "N/A");
-        } else {
-          femaleInput.disabled = false;
-          femaleInput.setAttribute("required", "required");
-          femaleInput.setAttribute("placeholder", "Inserisci il valore");
-        }
-      });
-
-      femaleInput.addEventListener("input", function () {
-        if (femaleInput.value.trim() !== "") {
-          maleInput.disabled = true;
-          maleInput.removeAttribute("required");
-          maleInput.setAttribute("placeholder", "N/A");
-        } else {
-          maleInput.disabled = false;
-          maleInput.setAttribute("required", "required");
-          maleInputsetAttribute("placeholder", "Inserisci il valore");
-        }
-      });
-    }
-  });
-});
-
-/*  -----------------------------------------------------------------------------------------------
     Quiz
 --------------------------------------------------------------------------------------------------- */
 const questionsContainer = document.getElementById("quiz-container");
@@ -108,18 +35,18 @@ function updatePagination() {
 
 // Funzione per generare i pulsanti della paginazione
 function createPagination() {
-  // Rimuovi i pulsanti esistenti
   pagination.innerHTML = "";
 
-  // Genera nuovi pulsanti
   questions.forEach((_, index) => {
     const button = document.createElement("button");
     button.classList.add("pagination-btn");
     button.textContent = index + 1;
+    button.type = "button"; // Aggiunto per evitare l'invio del form
     button.addEventListener("click", () => updateQuestion(index));
     pagination.appendChild(button);
   });
 }
+
 
 // Gestori per i pulsanti successivo e precedente
 function nextAnswer() {
@@ -143,13 +70,7 @@ updatePagination();
 
 const submitBtn = document.getElementById("submit-btn");
 
-function checkLastQuestion() {
-  if (currentQuestionIndex === questions.length - 1) {
-    const radios = questions[currentQuestionIndex].querySelectorAll(".answer");
-    const oneSelected = Array.from(radios).some((radio) => radio.checked);
-    submitBtn.disabled = !oneSelected;
-  }
-}
+
 
 function handleCheckboxSelection() {
   const checkboxes =
@@ -190,3 +111,13 @@ function nextAnswer() {
 createPagination();
 updatePagination();
 handleCheckboxSelection();
+
+
+document.querySelectorAll("input[type='radio'], input[type='text']").forEach((input) => {
+  input.addEventListener("input", checkLastQuestion);
+});
+
+
+
+
+

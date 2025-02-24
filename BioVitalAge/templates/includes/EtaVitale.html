@@ -26,6 +26,8 @@
 
     <!-- JS IMPORT -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
+
 </head>
 
 <body>
@@ -182,18 +184,208 @@
                                     </a>
                                 </p>
                                 <p>
-                                    <a href="#">
-                                        <img src="{% static 'includes/icone/download.png' %}" alt="" />
+
+                                    <a href="{% url 'download_pdf_vitale' persona.id referto.id %}" 
+                                        id="pdfCapacitaVitale">
+                                        <img src="{% static 'includes/icone/download.png' %}" alt="Scarica PDF">
                                     </a>
                                 </p>
                             </div>
                             {% empty %}
                             <p class="text-center mt-2 mb-2">Nessun referto recente trovato.</p>
                             {% endfor %}
+
+
+                            <!-- <input type="hidden" id="pdfCapacitaVitale" 
+                                    data-name = "{{ persona.name }}"
+                                    data-surname = "{{ persona.surname }}"
+                                    data-dob = "{{ persona.dob }}"
+                                    data-cf = "{{ persona.codice_fiscale }}"
+                                    data-place_birth = "{{ persona.place_of_birth }}"
+                                    data-chronological_age = "{{ persona.chronological_age }}"
+                                    data-risultato_capacita = "{{ referto.punteggio }}"
+                                    data-risultato_mmse = "{{ datiEstesi.MMSE }}"
+                                    data-risultato_gds = "{{ datiEstesi.GDS }}"
+                                    data-risultato_loc = "{{ datiEstesi.LOC }}"
+                                    data-risultato_vista = "{{ datiEstesi.Vista }}"
+                                    data-risultato_udito = "{{ datiEstesi.Udito }}"
+                                    data-risultato_hgs = "{{ datiEstesi.HGS }}"
+                                    data-risultato_pft = "{{ datiEstesi.PFT }}"
+                                    data-risultato_isq = "{{ datiEstesi.ISQ }}"
+                                    data-risultato_bmi = "{{ datiEstesi.BMI }}"
+                                    data-risultato_cdp = "{{ datiEstesi.CDP }}"
+                                    data-risultato_whr = "{{ datiEstesi.WHR }}"
+                                    data-risultato_whr_ratio = "{{ datiEstesi.WHR_Ratio }}"
+                                    data-risultato_cst = "{{ datiEstesi.CST }}"
+                                    data-risultato_gs = "{{ datiEstesi.GS }}"
+                                    data-risultato_ppt = "{{ datiEstesi.PPT }}"
+                                    data-risultato_sarc_f = "{{ datiEstesi.SARC_F }}">
+
+                             -->
+                           
+                           <script>
+                                
+                                var pdfData = {
+                                    name: "{{ persona.name }}",
+                                    surname: "{{ persona.surname }}",
+                                    dob: "{{ persona.dob }}",
+                                    cf: "{{ persona.codice_fiscale }}",
+                                    place_birth: "{{ persona.place_of_birth }}",
+                                    chronological_age: "{{ persona.chronological_age }}",
+                                    risultato_capacita: "{{ referto.punteggio }}",
+                                    risultato_mmse: "{{ datiEstesi.MMSE }}",
+                                    risultato_gds: "{{ datiEstesi.GDS }}",
+                                    risultato_loc: "{{ datiEstesi.LOC }}",
+                                    risultato_vista: "{{ datiEstesi.Vista }}",
+                                    risultato_udito: "{{ datiEstesi.Udito }}",
+                                    risultato_hgs: "{{ datiEstesi.HGS }}",
+                                    risultato_pft: "{{ datiEstesi.PFT }}",
+                                    risultato_isq: "{{ datiEstesi.ISQ }}",
+                                    risultato_bmi: "{{ datiEstesi.BMI }}",
+                                    risultato_cdp: "{{ datiEstesi.CDP }}",
+                                    risultato_whr: "{{ datiEstesi.WHR }}",
+                                    risultato_whr_ratio: "{{ datiEstesi.WHR_Ratio }}",
+                                    risultato_cst: "{{ datiEstesi.CST }}",
+                                    risultato_gs: "{{ datiEstesi.GS }}",
+                                    risultato_ppt: "{{ datiEstesi.PPT }}",
+                                    risultato_sarc_f: "{{ datiEstesi.SARC_F }}"
+                                };
+                            
+
+                                if (typeof PDFDocument === "undefined" && typeof PDFLib !== "undefined") {
+                                    var { PDFDocument, rgb, StandardFonts } = PDFLib;
+                                }
+
+                                async function generatePDF() {
+
+                                    const hiddenInput = document.getElementById("pdfCapacitaVitale");
+
+                                    try {
+                                        if (!hiddenInput) {
+                                            console.error("Errore: hiddenInput non è stato trovato.");
+                                            return;
+                                        }
+
+                                        const existingPdfBytes = await fetch(
+                                            "/static/includes/pdfTemplates/RefertoCapacitaVitale.pdf"
+                                        ).then((res) => res.arrayBuffer());
+
+                                        const pdfDoc = await PDFDocument.load(existingPdfBytes);
+                                        const pages = pdfDoc.getPages();
+
+                                        function getHiddenData(attr) {
+                                            if (!hiddenInput) return ""; 
+                                            return hiddenInput.getAttribute(attr) || ""; 
+                                        }
+
+                                        // Recupero dati dinamico
+                                        const name = pdfData['name'];
+                                        const surname = pdfData['surname'];
+                                        const dob = pdfData['dob'];
+                                        const cf = pdfData['cf'];
+                                        const place_birth = pdfData['place_birth'];
+                                        const chronological_age = pdfData['chronological_age'];
+
+                                        const risultato_capacita = pdfData['risultato_capacita'];
+                                        const risultato_mmse = pdfData['risultato_mmse'];
+                                        const risultato_gds = pdfData['risultato_gds'];
+                                        const risultato_loc = pdfData['risultato_loc'];
+                                        const risultato_vista = pdfData['risultato_vista'];
+                                        const risultato_udito = pdfData['risultato_udito'];
+                                        const risultato_hgs = pdfData['risultato_hgs'];
+                                        const risultato_pft = pdfData['risultato_pft'];
+                                        const risultato_isq = pdfData['risultato_isq'];
+                                        const risultato_bmi = pdfData['risultato_bmi'];
+                                        const risultato_cdp = pdfData['risultato_cdp'];
+                                        const risultato_whr = pdfData['risultato_whr'];
+                                        const risultato_whr_ratio = pdfData['risultato_whr_ratio'];
+                                        const risultato_cst = pdfData['risultato_cst'];
+                                        const risultato_gs = pdfData['risultato_gs'];
+                                        const risultato_ppt = pdfData['risultato_ppt'];
+                                        const risultato_sarc_f = pdfData['risultato_sarc_f'];
+
+
+                                        // PAGINA 1 - Informazioni personali
+                                        const personalInformationPages = pages[0];
+
+                                        personalInformationPages.drawText(`${name}`, { x: 380, y: 654, size: 12, color: rgb(0, 0, 0) });
+                                        personalInformationPages.drawText(`${surname}`, { x: 455, y: 654, size: 12, color: rgb(0, 0, 0) });
+                                        personalInformationPages.drawText(`${dob}`, { x: 340, y: 638, size: 12, color: rgb(0, 0, 0) });
+                                        personalInformationPages.drawText(`${cf}`, { x: 295, y: 622, size: 12, color: rgb(0, 0, 0) });
+                                        personalInformationPages.drawText(`${place_birth}`, { x: 280, y: 638, size: 12, color: rgb(0, 0, 0) });
+                                        personalInformationPages.drawText(`${chronological_age}`, { x: 480, y: 638, size: 12, color: rgb(0, 0, 0) });
+                                        personalInformationPages.drawText(`${risultato_capacita}`, { x: 150, y: 530, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 2 - MMSE
+                                        const secondPage = pages[1];
+                                        secondPage.drawText(`${risultato_mmse}`, { x: 200, y: 438, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 3 - GDS e LOC
+                                        const thirdPage = pages[2];
+                                        thirdPage.drawText(`${risultato_gds}`, { x: 200, y: 684, size: 12, color: rgb(0, 0, 0) });
+                                        thirdPage.drawText(`${risultato_loc}`, { x: 200, y: 253, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 4 - Vista e Udito
+                                        const fourthPage = pages[3];
+                                        fourthPage.drawText(`${risultato_vista}`, { x: 200, y: 596, size: 12, color: rgb(0, 0, 0) });
+                                        fourthPage.drawText(`${risultato_udito}`, { x: 200, y: 237, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 5 - HGS
+                                        const fiftyPage = pages[4];
+                                        fiftyPage.drawText(`${risultato_hgs}`, { x: 200, y: 315, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 6 - PFT e ISQ
+                                        const sixPage = pages[5];
+                                        sixPage.drawText(`${risultato_pft}`, { x: 200, y: 730, size: 12, color: rgb(0, 0, 0) });
+                                        sixPage.drawText(`${risultato_isq}`, { x: 200, y: 300, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 7 - BMI e CDP
+                                        const sevenPage = pages[6];
+                                        sevenPage.drawText(`${risultato_bmi}`, { x: 200, y: 718, size: 12, color: rgb(0, 0, 0) });
+                                        sevenPage.drawText(`${risultato_cdp}`, { x: 200, y: 122, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 8 - WHR
+                                        const eightPage = pages[7];
+                                        eightPage.drawText(`${risultato_whr}`, { x: 200, y: 176, size: 12, color: rgb(0, 0, 0) });
+
+                                        // PAGINA 10 - WHR Ratio, CST, GS
+                                        const tenPage = pages[9];
+                                        tenPage.drawText(`${risultato_whr_ratio}`, { x: 200, y: 778, size: 12, color: rgb(0, 0, 0) });
+                                        tenPage.drawText(`${risultato_cst}`, { x: 200, y: 410, size: 12, color: rgb(0, 0, 0) });
+                                        tenPage.drawText(`${risultato_gs}`, { x: 200, y: 168, size: 12, color: rgb(0, 0, 0) });
+
+                                        // Salva Pdf e scarica
+                                        const modifiedPdfBytes = await pdfDoc.save();
+                                        const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
+                                        const link = document.createElement("a");
+                                        link.href = URL.createObjectURL(blob);
+                                        link.download = `${name.toUpperCase()}-${surname.toUpperCase()}-CapacitaVitale.pdf`;
+                                        link.click();
+                                    } catch (error) {
+                                        console.error("Errore durante la generazione del PDF:", error);
+                                    }
+                                }
+
+                            </script>
+
+                            
+                            {% if scarica %}
+                                            
+                                <script>
+                                    
+                                    document.addEventListener("DOMContentLoaded", async function () {
+                                        await generatePDF()
+                                    });
+                                </script>
+
+                            {% endif %}
+
+                            
                         </div>
                 </div>
             </div>
         </div>
+
         <div class="container-button-submit">
             <button class="button button--submit" onclick="window.location.href= `{% url 'TestetaVitale' persona.id %}`">
                 <span class="button__icon-wrapper">
@@ -219,6 +411,7 @@
             </button>
         </div>
     </main>
+
     <!-- JS Import -->
     <script>
         /*  -----------------------------------------------------------------------------------------------

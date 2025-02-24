@@ -17,7 +17,8 @@ import traceback
 from django.shortcuts import redirect
 from django.contrib.auth import get_user
 
-# Create your views here.
+
+# VIEW PER GESTIONE LOGIN PIATTAFORMA E IL RENDERING DELLA HOME PAGE
 class LoginRenderingPage(View):
     def get(self, request):
         response = render(request, 'includes/login.html')
@@ -47,9 +48,6 @@ class LogOutRender(View):
 
         return render(request, 'includes/login.html')
 
-
-
-# View per la homepage
 class HomePageRender(View):
 
     def get(self, request):
@@ -58,6 +56,7 @@ class HomePageRender(View):
         total_pazienti = TabellaPazienti.objects.count()  # Conta tutti i pazienti
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
 
         # Calcolo di show_disclaimer
         show_disclaimer = not request.COOKIES.get('disclaimer_accepted', False)
@@ -67,7 +66,7 @@ class HomePageRender(View):
             'total_pazienti': total_pazienti,
             'appuntamenti': appuntamenti,
             'dottore': dottore,
-            'show_disclaimer': show_disclaimer  # Passa lo stato del disclaimer
+            'show_disclaimer': show_disclaimer
         }
 
         return render(request, "includes/homePage.html", context)
@@ -77,9 +76,9 @@ class HomePageRender(View):
 
         emailInput = request.POST['email']
         passwordInput = request.POST['password']
-       
-        Query = UtentiRegistratiCredenziali.objects.all().values()
 
+        Query = UtentiRegistratiCredenziali.objects.all().values()
+        
         for record in Query:  
             for key, value in record.items():
                 if key == 'email':
@@ -90,8 +89,8 @@ class HomePageRender(View):
                             request.session['dottore_id'] = dottore.id
 
                             # Ottieni i 5 pazienti più recenti
-                            persone = TabellaPazienti.objects.all().order_by('-id')[:5]
-            
+                            persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
+                        
                             # Ottieni il referto più recente per ogni paziente
                             ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
 
@@ -112,7 +111,7 @@ class HomePageRender(View):
                             context = {
                                 'persone': make_json_serializable(list(persone.values())),
                                 'datiEstesi': make_json_serializable(list(datiEstesi.values())),
-                                'dottore': dottore.id  # Questo è un intero, già JSON-serializzabile
+                                'dottore': dottore.id  
                             }
                             
                             request.session['home_context'] = context
@@ -126,11 +125,14 @@ class HomePageRender(View):
 
                         else:
                             return render(request, 'includes/login.html', {'error': 'Password errata'})
-                        
-                    else:
-                        return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
+                else:
+                    continue    
 
-# View per accettare il disclaimer
+        return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
+
+
+
+# VIEW PER ACCETTARE IL DISCLAIMER
 class AcceptDisclaimerView(View):
     def post(self, request):
         # Restituisce una risposta JSON
@@ -140,7 +142,7 @@ class AcceptDisclaimerView(View):
         return response
 
 
-
+# VIEW PER LA SEZIONE STATISTICHE
 class StatisticheView(View):
     def get(self, request):
 
@@ -155,15 +157,12 @@ class StatisticheView(View):
     
 
 
-
+# VIEW PER IL CALCOLO DELL'ETA' BIOLOGICA
 def safe_float(data, key, default=0.0):
     try:
         return float(data.get(key, default))
     except (ValueError, TypeError):
         return default
-
-
-
 
 class CalcolatoreRender(View):
     
@@ -180,7 +179,7 @@ class CalcolatoreRender(View):
 
         if codice_fiscale:
             try:
-                paziente = TabellaPazienti.objects.get(codice_fiscale=codice_fiscale)
+                paziente = TabellaPazienti.objects.get(dottore=dottore, codice_fiscale=codice_fiscale)
                 context.update({
                     "paziente": paziente,
                     "id_persona": paziente.id
@@ -203,6 +202,7 @@ class CalcolatoreRender(View):
         try:
             # Controlla se esiste un paziente con lo stesso nome e cognome
             paziente = TabellaPazienti.objects.filter(
+                dottore=dottore,
                 codice_fiscale=data.get('codice_fiscale') 
             ).first()
 
@@ -661,7 +661,6 @@ class CalcolatoreRender(View):
                     'ph', 'proteins_ex', 'blood_ex', 'ketones', 'uro', 'bilirubin_ex', 'leuc', 'glucose', 'shbg_m', 'shbg_w', 'nt_pro', 'v_b12', 'v_d', 'ves2', 'telotest'
                 ]
                 
-
                 if all(not data.get(campo) for campo in campi_opzionali):
                     # Salva solo i dati personali e l'età cronologica
 
@@ -874,7 +873,6 @@ class CalcolatoreRender(View):
 
                     telotest = safe_float(data, 'telotest')
 
-
                     exams = []
 
                     if paziente.gender == 'M':
@@ -931,7 +929,6 @@ class CalcolatoreRender(View):
                             {'shbg_w': shbg_w}, {'nt_pro': nt_pro}, {'v_b12': v_b12}, {'v_d': v_d}, {'ves2': ves2}, {'telotest': telotest}
                         ]
 
-  
                     # Calcolo dell'età biologica
                     biological_age = calculate_biological_age(
                         chronological_age, d_roms = d_roms, osi = osi, pat = pat, wbc = wbc, basophils = baso_ul,
@@ -1127,13 +1124,13 @@ class CalcolatoreRender(View):
 
 
 
-
+# VIEW PER SEZIONE RICERCA PAZIENTI
 class RisultatiRender(View):
     def get(self, request):
-        persone = TabellaPazienti.objects.all()
-        
+          
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persone = TabellaPazienti.objects.filter(dottore=dottore)
  
         # Ottieni il referto più recente per ogni paziente
         ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
@@ -1152,10 +1149,16 @@ class RisultatiRender(View):
 
 
 
+#VIEW PER ULTIMO REFERTO ETA' VITALE
 class PersonaDetailView(View):
-    def get(self, request, id):
-        # Ottieni il paziente con l'ID specificato
-        persona = get_object_or_404(TabellaPazienti, id=id)
+    def get(self, request, persona_id):
+
+        # RECUPERO DOTTORE
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        # RECUPERO PAZIENTE
+        persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
 
         # Recupera l'ID del referto dalla query string
         referto_id = request.GET.get('referto_id')
@@ -1169,10 +1172,6 @@ class PersonaDetailView(View):
         # Ottieni i dati estesi associati al referto selezionato
         dati_estesi = DatiEstesiReferti.objects.filter(referto=referto).first() if referto else None
 
-        # Recupera il dottore dalla sessione
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
         # Preparazione del contesto per il template
         context = {
             'persona': persona,
@@ -1181,6 +1180,9 @@ class PersonaDetailView(View):
             'dottore': dottore,
         }
         return render(request, "includes/Referto.html", context)
+
+
+
 
 
 
@@ -1247,8 +1249,6 @@ class ScaricaReferto(View):
 
         return render(request, "includes/cartellaPaziente.html", context)
 
-
-
 class DettagliPrescrizioni(View):
     def get(self, request, persona_id, visite_id):
 
@@ -1305,7 +1305,6 @@ class DettagliPrescrizioni(View):
 
         return render(request, "includes/cartellaPaziente.html", context)
 
-
 class CartellaPazienteView(View):
 
     def get(self, request, id):
@@ -1325,7 +1324,7 @@ class CartellaPazienteView(View):
             dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
 
 
-        visite = ElencoVisitePaziente.objects.all()
+        visite = ElencoVisitePaziente.objects.filter(paziente_id=id)
 
         context = {
             'persona': persona,
@@ -1365,7 +1364,6 @@ class ElencoRefertiView(View):
         }
 
         return render(request, "includes/elencoReferti.html", context)
-
 
 class DatiBaseView(View):
 
@@ -1418,7 +1416,6 @@ class DatiBaseView(View):
 
             return redirect('dati_base', id=persona.id)
 
-
 # Blood Group view
 @method_decorator(csrf_exempt, name='dispatch')
 class UpdateBloodDataView(View):
@@ -1452,6 +1449,8 @@ class UpdateBloodDataView(View):
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
+
+
 class InserisciPazienteView(View):
 
     def get(self, request):
@@ -1468,15 +1467,15 @@ class InserisciPazienteView(View):
 
     def post(self, request):
         try:
-            success = None  # ✅ Inizializziamo success per evitare l'errore
+            success = None 
             dottore = request.user.utentiregistraticredenziali if hasattr(request.user, 'utentiregistraticredenziali') else None
             codice_fiscale = request.POST.get('codice_fiscale')
 
             dottore_id = request.session.get('dottore_id')
             dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-            paziente_esistente = TabellaPazienti.objects.filter(codice_fiscale=codice_fiscale).first()
-
+           
+            paziente_esistente = TabellaPazienti.objects.filter(dottore=dottore, codice_fiscale=codice_fiscale).first()
+          
             def parse_date(date_str):
                 return date_str if date_str else None
 
@@ -1527,46 +1526,72 @@ class InserisciPazienteView(View):
                     context['errore'] = errore
             
             else:
-                # ✅ Creazione nuovo paziente
-                TabellaPazienti.objects.create(
-                    dottore=dottore,
-                    name=request.POST.get('name'),
-                    surname=request.POST.get('surname'),
-                    email=request.POST.get('email'),
-                    phone=request.POST.get('phone'),
-                    dob=parse_date(request.POST.get('dob')),
-                    gender=request.POST.get('gender'),
-                    cap=request.POST.get('cap'),
-                    province=request.POST.get('province'),
-                    place_of_birth=request.POST.get('place_of_birth'),
-                    codice_fiscale=codice_fiscale,
-                    chronological_age=request.POST.get('chronological_age'),
-                    blood_group=request.POST.get('blood_group'),
-                    associate_staff=request.POST.get('associate_staff'),
-                    height=request.POST.get('height'),
-                    weight=request.POST.get('weight'),
-                    bmi=request.POST.get('bmi'),
-                    bmi_detection_date=parse_date(request.POST.get('bmi_detection_date')),
-                    girth_value=request.POST.get('girth_value'),
-                    girth_notes=request.POST.get('girth_notes'),
-                    girth_date=parse_date(request.POST.get('girth_date')),
-                    alcol=request.POST.get('alcol') == 'on',
-                    alcol_type=request.POST.get('alcol_type'),
-                    data_alcol=parse_date(request.POST.get('data_alcol')),
-                    alcol_frequency=request.POST.get('alcol_frequency'),
-                    smoke=request.POST.get('smoke') == 'on',
-                    smoke_frequency=request.POST.get('smoke_frequency'),
-                    reduced_intake=request.POST.get('reduced_intake'),
-                    sport=request.POST.get('sport') == 'on',
-                    sport_livello=request.POST.get('sport_livello'),
-                    sport_frequency=request.POST.get('sport_frequency'),
-                    attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on',
-                    livello_sedentarieta=request.POST.get('livello_sedentarieta'),
-                    sedentarieta_nota=request.POST.get('sedentarieta_nota'),
-                )
-                success = "Nuovo paziente salvato con successo!"
+                campi_opzionali = [
+                    'email', 'password', 'blood_group', 'associate_staff', 'height',
+                    'weight', 'bmi','bmi_detection_date', 'girth_value', 'girth_notes',
+                    'girth_notes','girth_date', 'alcol',  'alcol_type', 'data_alcol',
+                    'alcol_frequency','smoke', 'smoke_frequency', 'reduced_intake',
+                    'sport', 'sport_livello', 'sport_frequency', 'attivita_sedentaria',
+                    'livello_sedentarieta', 'sedentarieta_nota'
+                ]
 
-            # ✅ Aggiorna il contesto con success solo se ha un valore
+                if any(request.POST.get(campo) for campo in campi_opzionali):
+
+                        TabellaPazienti.objects.create(
+                            dottore=dottore,
+                            name=request.POST.get('name'),
+                            surname=request.POST.get('surname'),
+                            email=request.POST.get('email') or None,
+                            phone=request.POST.get('phone') or None,
+                            dob=parse_date(request.POST.get('dob')),
+                            gender=request.POST.get('gender'),
+                            cap=request.POST.get('cap'),
+                            province=request.POST.get('province'),
+                            place_of_birth=request.POST.get('place_of_birth'),
+                            codice_fiscale=codice_fiscale,
+                            chronological_age=request.POST.get('chronological_age'),
+                            blood_group=request.POST.get('blood_group') or None,
+                            associate_staff=request.POST.get('associate_staff') or None,
+                            height=request.POST.get('height') or None,
+                            weight=request.POST.get('weight') or None,
+                            bmi=request.POST.get('bmi') or None,
+                            bmi_detection_date=parse_date(request.POST.get('bmi_detection_date')) or None,
+                            girth_value=request.POST.get('girth_value') or None,
+                            girth_notes=request.POST.get('girth_notes') or None,
+                            girth_date=parse_date(request.POST.get('girth_date')) or None,
+                            alcol=request.POST.get('alcol') == 'on' or None,
+                            alcol_type=request.POST.get('alcol_type') or None,
+                            data_alcol=parse_date(request.POST.get('data_alcol')) or None,
+                            alcol_frequency=request.POST.get('alcol_frequency') or None,
+                            smoke=request.POST.get('smoke') == 'on' or None,
+                            smoke_frequency=request.POST.get('smoke_frequency') or None,
+                            reduced_intake=request.POST.get('reduced_intake') or None,
+                            sport=request.POST.get('sport') == 'on' or None,
+                            sport_livello=request.POST.get('sport_livello') or None,
+                            sport_frequency=request.POST.get('sport_frequency') or None,
+                            attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on' or None,
+                            livello_sedentarieta=request.POST.get('livello_sedentarieta') or None,
+                            sedentarieta_nota=request.POST.get('sedentarieta_nota') or None,
+                        )
+                        success = "Nuovo paziente salvato con successo!"
+
+                else:
+                        TabellaPazienti.objects.create(
+                            dottore=dottore,
+                            name=request.POST.get('name'),
+                            surname=request.POST.get('surname'),
+                            dob=parse_date(request.POST.get('dob')),
+                            gender=request.POST.get('gender'),
+                            cap=request.POST.get('cap'),
+                            province=request.POST.get('province'),
+                            place_of_birth=request.POST.get('place_of_birth'),
+                            codice_fiscale=codice_fiscale,
+                            chronological_age=request.POST.get('chronological_age'),
+                            
+                        )
+                        success = "Nuovo paziente salvato con successo!"
+
+
             if success:
                 context["success"] = success
 
@@ -1575,6 +1600,7 @@ class InserisciPazienteView(View):
         except Exception as e:
             context["errore"] = f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova."
             return render(request, "includes/InserisciPaziente.html", context)
+
 
 
 class ComposizioneView(View):
@@ -1593,7 +1619,6 @@ class ComposizioneView(View):
 
         return render(request, "includes/composizione.html", context)
 
-
 def dettaglio_paziente(request, id):
     try:
         paziente = TabellaPazienti.objects.get(id=id)
@@ -1611,9 +1636,7 @@ def dettaglio_paziente(request, id):
     }
     return render(request, 'nome_del_tuo_template.html', context)
 
-
-
-@csrf_exempt  # Rimuovilo in produzione se non necessario
+@csrf_exempt  
 def update_persona_contact(request, id):
     if request.method == "POST":
         try:
@@ -1653,111 +1676,91 @@ def update_persona_contact(request, id):
     else:
         return JsonResponse({"success": False, "error": "Metodo non valido"})
 
-
-# Funzione per aggiornare i dati di una persona in composizione corpo
-@csrf_exempt
+@csrf_exempt 
 def update_persona_composizione(request, id):
-    try:
-        persona = TabellaPazienti.objects.get(id=id)
-    except TabellaPazienti.DoesNotExist:
-        return JsonResponse({"success": False, "error": "Persona non trovata"}, status=404)
-
-    if request.method == "GET":
-        # ✅ Manteniamo tutti i dati della persona
-        data = {
-            "success": True,
-            "personaComposizione": {
-                "height": persona.height,
-                "weight": persona.weight,
-                "bmi": persona.bmi,
-                "bmi_detection_date": persona.bmi_detection_date,
-                "girth_value": persona.girth_value,
-                "girth_notes": persona.girth_notes,
-                "girth_date": persona.girth_date,
-                "sport_frequency": persona.sport_frequency,
-                "livello_sedentarieta": persona.livello_sedentarieta,
-                "grasso": persona.grasso,
-                "acqua": persona.acqua,
-                "massa_ossea": persona.massa_ossea,
-                "massa_muscolare": persona.massa_muscolare,
-                "bmr": persona.bmr,
-                "eta_metabolica": persona.eta_metabolica,
-                "grasso_viscerale": persona.grasso_viscerale,
-                "whr": persona.whr,
-                "whtr": persona.whtr,
-                "punteggio_fisico": persona.punteggio_fisico,
-                "storico_punteggi": persona.storico_punteggi or [],  # ✅ Restituiamo anche lo storico
-            },
-        }
-        return JsonResponse(data)
-
-    elif request.method == "POST":
+    if request.method == "POST":
         try:
             data = json.loads(request.body)
+
+            # Recupera la persona dal database
+            persona = TabellaPazienti.objects.get(id=id)
+
+            # Aggiorna solo i campi che sono stati inviati nella richiesta
             campi_da_aggiornare = []
 
-            # ✅ Controllo per il reset dello storico punteggi
-            if data.get("reset_storico_punteggi", False):
-                persona.storico_punteggi = []  # ✅ Resetta lo storico
-                persona.punteggio_fisico = None  # ✅ Reset del punteggio attuale
-                persona.save(update_fields=["storico_punteggi", "punteggio_fisico"])
-                return JsonResponse({"success": True})
-
-            # ✅ Aggiorna tutti gli altri campi se presenti
-            for field in [
-                "height", "weight", "bmi", "bmi_detection_date",
-                "girth_value", "girth_notes", "girth_date", "sport_frequency",
-                "livello_sedentarieta", "grasso", "acqua", "massa_ossea",
-                "massa_muscolare", "bmr", "eta_metabolica", "grasso_viscerale",
-                "whr", "whtr"
-            ]:
-                if field in data:
-                    setattr(persona, field, data[field])
-                    campi_da_aggiornare.append(field)
-
-            # ✅ Gestione del punteggio fisico
+            if "weight" in data:
+                persona.weight = data["weight"]
+                campi_da_aggiornare.append("weight")
+            if "bmi" in data:
+                persona.bmi = data["bmi"]
+                campi_da_aggiornare.append("bmi")
+            if "bmi_detection_date" in data:
+                persona.bmi_detection_date = data["bmi_detection_date"] or None
+                campi_da_aggiornare.append("bmi_detection_date")
+            if "girth_value" in data:
+                persona.girth_value = data["girth_value"]
+                campi_da_aggiornare.append("girth_value")
+            if "girth_notes" in data:
+                persona.girth_notes = data["girth_notes"]
+                campi_da_aggiornare.append("girth_notes")
+            if "girth_date" in data:
+                persona.girth_date = data["girth_date"] or None
+                campi_da_aggiornare.append("girth_date")
+            if "sport_frequency" in data:
+                persona.sport_frequency = data["sport_frequency"]
+                campi_da_aggiornare.append("sport_frequency")
+            if "livello_sedentarieta" in data:
+                persona.livello_sedentarieta = data["livello_sedentarieta"]
+                campi_da_aggiornare.append("livello_sedentarieta")
+            if "grasso" in data:
+                persona.grasso = data["grasso"]
+                campi_da_aggiornare.append("grasso")
+            if "acqua" in data:
+                persona.acqua = data["acqua"]
+                campi_da_aggiornare.append("acqua")
+            if "massa_ossea" in data:
+                persona.massa_ossea = data["massa_ossea"]
+                campi_da_aggiornare.append("massa_ossea")
+            if "massa_muscolare" in data:
+                persona.massa_muscolare = data["massa_muscolare"]
+                campi_da_aggiornare.append("massa_muscolare")
+            if "bmr" in data:
+                persona.bmr = data["bmr"]
+                campi_da_aggiornare.append("bmr")
+            if "eta_metabolica" in data:
+                persona.eta_metabolica = data["eta_metabolica"]
+                campi_da_aggiornare.append("eta_metabolica")
+            if "grasso_viscerale" in data:
+                persona.grasso_viscerale = data["grasso_viscerale"]
+                campi_da_aggiornare.append("grasso_viscerale")
+            if "whr" in data:
+                persona.whr = data["whr"]
+                campi_da_aggiornare.append("whr")
+            if "whtr" in data:
+                persona.whtr = data["whtr"]
+                campi_da_aggiornare.append("whtr")
             if "punteggio_fisico" in data:
-                try:
-                    nuovo_punteggio = int(data["punteggio_fisico"])  # ✅ Conversione a int
-                except ValueError:
-                    return JsonResponse({"success": False, "error": "Punteggio non valido"}, status=400)
+                persona.punteggio_fisico = data["punteggio_fisico"]
+                campi_da_aggiornare.append("punteggio_fisico")
 
-                if not (1 <= nuovo_punteggio <= 9):
-                    return JsonResponse({"success": False, "error": "Punteggio fuori range"}, status=400)
-
-                # ✅ Se il punteggio è cambiato, aggiorniamo lo storico
-                if persona.punteggio_fisico != nuovo_punteggio:
-                    if not isinstance(persona.storico_punteggi, list):
-                        persona.storico_punteggi = []  # ✅ Inizializza se non esiste
-
-                    # ✅ Aggiunge il nuovo punteggio con data
-                    persona.storico_punteggi.append({
-                        "punteggio": nuovo_punteggio,
-                        "data": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    })
-
-                    # ✅ Aggiorniamo il punteggio attuale
-                    persona.punteggio_fisico = nuovo_punteggio
-                    campi_da_aggiornare.append("punteggio_fisico")
-                    campi_da_aggiornare.append("storico_punteggi")
-
-            # ✅ Salva solo i campi aggiornati
+            # Salva solo i campi aggiornati
             if campi_da_aggiornare:
                 persona.save(update_fields=campi_da_aggiornare)
 
             return JsonResponse({"success": True})
-
+        
+        except TabellaPazienti.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Persona non trovata"})
         except json.JSONDecodeError:
-            return JsonResponse({"success": False, "error": "JSON non valido"}, status=400)
+            return JsonResponse({"success": False, "error": "JSON non valido"})
         except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-
+            return JsonResponse({"success": False, "error": str(e)})
     else:
-        return JsonResponse({"success": False, "error": "Metodo non valido"}, status=405)
+        return JsonResponse({"success": False, "error": "Metodo non valido"})
 
 
 
-
+# VIEWS PER CALCOLO CAPACITA', SEZIONE CAPACITA' VITALE
 class EtaVitaleView(View):
 
     def get(self, request, id):
@@ -1766,8 +1769,6 @@ class EtaVitaleView(View):
   
         referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
 
-        print('Referto recente: ', referti_test_recenti)
-      
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
 
         context = {
@@ -1781,8 +1782,6 @@ class EtaVitaleView(View):
     def post(self):
         return
     
-
-
 class TestEtaVitaleView(View):
 
     def get(self,request, id):
@@ -1808,250 +1807,202 @@ class TestEtaVitaleView(View):
  
     def post(self, request, id):
 
-        print(request.POST)
+        try:
+            persona = get_object_or_404(TabellaPazienti, id=id)
+            data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
+            referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
 
-        persona = get_object_or_404(TabellaPazienti, id=id)
-        data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
-        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+            Somma_MMSE = (
+                int(data.get('doc_1', 0)) +
+                int(data.get('doc_2', 0)) +
+                int(data.get('doc_3', 0)) +
+                int(data.get('doc_4', 0)) +
+                int(data.get('doc_5', 0)) +
+                int(data.get('doc_6', 0)) +
+                int(data.get('doc_7', 0)) +
+                int(data.get('doc_8', 0)) +
+                int(data.get('doc_9', 0)) +
+                int(data.get('doc_10', 0)) +
+                int(data.get('doc_11', 0)) 
+            )
 
-        Somma_MMSE = (
-            int(data.get('doc_1', 0)) +
-            int(data.get('doc_2', 0)) +
-            int(data.get('doc_3', 0)) +
-            int(data.get('doc_4', 0)) +
-            int(data.get('doc_5', 0)) +
-            int(data.get('doc_6', 0)) +
-            int(data.get('doc_7', 0)) +
-            int(data.get('doc_8', 0)) +
-            int(data.get('doc_9', 0)) +
-            int(data.get('doc_10', 0)) +
-            int(data.get('doc_11', 0)) 
-        )
+            Somma_GDS = (
+                int(data.get('dop_1', 0)) +
+                int(data.get('dop_2', 0)) +
+                int(data.get('dop_3', 0)) +
+                int(data.get('dop_4', 0)) +
+                int(data.get('dop_5', 0)) +
+                int(data.get('dop_6', 0)) +
+                int(data.get('dop_7', 0)) +
+                int(data.get('dop_8', 0)) +
+                int(data.get('dop_9', 0)) +
+                int(data.get('dop_10', 0)) +
+                int(data.get('dop_11', 0)) +
+                int(data.get('dop_12', 0)) +
+                int(data.get('dop_13', 0)) +
+                int(data.get('dop_14', 0)) +
+                int(data.get('dop_15', 0)) 
+            )
 
-        Somma_GDS = (
-            int(data.get('dop_1', 0)) +
-            int(data.get('dop_2', 0)) +
-            int(data.get('dop_3', 0)) +
-            int(data.get('dop_4', 0)) +
-            int(data.get('dop_5', 0)) +
-            int(data.get('dop_6', 0)) +
-            int(data.get('dop_7', 0)) +
-            int(data.get('dop_8', 0)) +
-            int(data.get('dop_9', 0)) +
-            int(data.get('dop_10', 0)) +
-            int(data.get('dop_11', 0)) +
-            int(data.get('dop_12', 0)) +
-            int(data.get('dop_13', 0)) +
-            int(data.get('dop_14', 0)) +
-            int(data.get('dop_15', 0)) 
-        )
+            Somma_LOC = (
+                int(data.get('loc_1', 0)) +
+                int(data.get('loc_2', 0)) +
+                int(data.get('loc_3', 0)) +
+                int(data.get('loc_4', 0)) +
+                int(data.get('loc_5', 0)) +
+                int(data.get('loc_6', 0)) +
+                int(data.get('loc_7', 0)) +
+                int(data.get('loc_8', 0)) 
+            )
 
-        Somma_LOC = (
-            int(data.get('loc_1', 0)) +
-            int(data.get('loc_2', 0)) +
-            int(data.get('loc_3', 0)) +
-            int(data.get('loc_4', 0)) +
-            int(data.get('loc_5', 0)) +
-            int(data.get('loc_6', 0)) +
-            int(data.get('loc_7', 0)) +
-            int(data.get('loc_8', 0)) 
-        )
+            Somma_Vista = (
+                int(data.get('dos_1', 0)) +
+                int(data.get('dos_2', 0))
+            )
 
-        Somma_Vista = (
-            int(data.get('dos_1', 0)) +
-            int(data.get('dos_2', 0))
-        )
-
-        Somma_Udito =  int(data.get('dos_3', 0)) 
-
-
-        Somma_HGS =  (
-            int(data.get('dodv_1', 0)) +
-            int(data.get('dodv_2', 0)) +
-            int(data.get('dodv_3', 0)) +
-            int(data.get('dodv_4', 0)) +
-            int(data.get('dodv_5', 0)) +
-            int(data.get('dodv_6', 0)) +
-            int(data.get('dodv_7', 0)) +
-            int(data.get('dodv_8', 0)) +
-            int(data.get('dodv_9', 0)) +
-            int(data.get('dodv_10', 0)) +
-            int(data.get('dodv_11', 0)) +
-            int(data.get('dodv_12', 0)) +
-            int(data.get('dodv_13', 0)) +
-            int(data.get('dodv_14', 0)) +
-            int(data.get('dodv_15', 0)) +
-            int(data.get('dodv_16', 0)) 
-        )
-    
-        Fss_Somma = (
-            int(data.get('fss_1', 0)) +
-            int(data.get('fss_2', 0)) +
-            int(data.get('fss_3', 0)) +
-            int(data.get('fss_4', 0)) +
-            int(data.get('fss_5', 0)) +
-            int(data.get('fss_6', 0)) +
-            int(data.get('fss_7', 0)) +
-            int(data.get('fss_8', 0))
-        )
-          
-        Sarc_f_Somma = (
-            int(data.get('Sarc_f_1', 0)) +
-            int(data.get('Sarc_f_2', 0)) +
-            int(data.get('Sarc_f_3', 0)) +
-            int(data.get('Sarc_f_4', 0)) +
-            int(data.get('Sarc_f_5', 0)) 
-        )
-
-        PFT = int(data.get('pft-1', 0))
-             
-        ISQ = (
-            int(data.get('SiIm_1', 0)) +
-            int(data.get('SiIm_2', 0)) +
-            int(data.get('SiIm_3', 0)) +
-            int(data.get('SiIm_4', 0)) +
-            int(data.get('SiIm_5', 0)) +
-            int(data.get('SiIm_6', 0)) +
-            int(data.get('SiIm_7', 0))
-        )
-
-        BMI = int(data.get('bmi-1'))
-
-        CDP = int(data.get('Cir_Pol'))
-        WHR = int(data.get('WHip'))
-        WHR_Ratio = int(data.get('Whei'))
-        CST = int(data.get('numero_rip')) / int(data.get('tot_secondi'))
-        GS = int(data.get('distanza')) / int(data.get('tempo_s'))
-        PPT = int(data.get('tempo_s_pick'))
+            Somma_Udito =  int(data.get('dos_3', 0)) 
         
-        biomarcatori = {
-            "lymph": safe_float(data, 'Lymph'), 
-            "wbc": safe_float(data, 'wbc'),
-            "pcr": safe_float(data, 'Proteins_c'),
-            "il6": safe_float(data, 'Inter_6'),
-            "tnf": safe_float(data, 'Tnf')
-        }
-
-        antropometria = {
-            "polpaccio": safe_float(data, 'CirPolp'),
-            "waist_hip_ratio": safe_float(data, 'WHip_ratio')
-        }
-
-        performance_fisica = int(data.get('SPPB', 0))
-
-        punteggioFinale = CalcoloPunteggioCapacitaVitale(
-                            Somma_MMSE, Somma_GDS, Somma_LOC,
-                            Somma_Vista, Somma_Udito, Somma_HGS, PFT,
-                            ISQ, BMI, CDP, WHR, WHR_Ratio, CST, 
-                            GS, PPT, Sarc_f_Somma, persona.gender )
-
-
-        referto = ArchivioRefertiTest(
-            paziente = persona,
-            punteggio = punteggioFinale,
-            #documento = request.FILES.get('documento')
-        )
-        referto.save()
-
-
-        datiEstesi = DatiEstesiRefertiTest(
-           referto = referto,
-
-            #DOMINIO COGNITIVO 
-            MMSE = Somma_MMSE,
-
-            #DOMINIO PSICOLOGICO
-            GDS = Somma_GDS,
-            LOC = Somma_LOC,
-
-            #DOMINIO SENSORIALE
-            Vista = Somma_Vista,
-            Udito = Somma_Udito,
-
-
-            #DOMINIO DELLA VITALITA'
-            HGS = Somma_HGS,
-            PFT = PFT,
-
-
-            #SISTEMA IMMUNITARIO
-            ISQ = ISQ,
-            BMI = BMI,
-            CDP = CDP,
-            WHR = WHR,
-
-
-
-
-
-
-
-
-            SiIm = ISQ,
-            Lymph = safe_float(data, 'Lymph'),
-            Lymph_el = safe_float(data, 'Lymph_el'),
-            wbc = safe_float(data, 'wbc'),
-            Proteins_c = safe_float(data, 'Proteins_c'),
-
-            #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
-            Inter_6 = safe_float(data, 'Inter_6'),
-            Tnf = safe_float(data, 'Tnf'),
-            Mono = safe_float(data, 'Mono'),
-            Mono_el = safe_float(data, 'Mono_el'),
-
-            #ENERGIA E MTABOLISMO
-            Fss = Fss_Somma,
-            CirPolp = safe_float(data, 'CirPolp'),
-            WHip_ratio = safe_float(data, 'WHip_ratio'),
-            WH_ratio = safe_float(data, 'WH_ratio'),
-
-            #BIOMARCATORI CIRCOLANTI DEL METABOLISMO
-            Glic = safe_float(data, 'Glic'),
-            Emog = safe_float(data, 'Emog'),
-            Insu = safe_float(data, 'Insu'),
-            Pept_c = safe_float(data, 'Pept_c'),
-            Col_tot = safe_float(data, 'Col_tot'),
-            Col_ldl = safe_float(data, 'Col_ldl'),
-            Col_hdl = safe_float(data, 'Col_hdl'),
-            Trigl = safe_float(data, 'Trigl'),
-            albumina = safe_float(data, 'albumina'),
-            clearance_urea = safe_float(data, 'clearance_urea'),
-            igf_1 = safe_float(data, 'ifg_1'),
+            Somma_HGS = str(data.get('dodv'))
+    
+            Fss_Somma = (
+                int(data.get('fss_1', 0)) +
+                int(data.get('fss_2', 0)) +
+                int(data.get('fss_3', 0)) +
+                int(data.get('fss_4', 0)) +
+                int(data.get('fss_5', 0)) +
+                int(data.get('fss_6', 0)) +
+                int(data.get('fss_7', 0)) +
+                int(data.get('fss_8', 0))
+            )
             
-            # Funzione Neuromuscolare
-            sarc_f = Sarc_f_Somma,
-            hgs_test = data.get('HGS_test'),
-            
-            # Performance Fisica
-            sppb = data.get('SPPB')
-        )
+            Sarc_f_Somma = (
+                int(data.get('Sarc_f_1', 0)) +
+                int(data.get('Sarc_f_2', 0)) +
+                int(data.get('Sarc_f_3', 0)) +
+                int(data.get('Sarc_f_4', 0)) +
+                int(data.get('Sarc_f_5', 0)) 
+            )
+
+            PFT = int(data.get('pft-1', 0))
+                
+            ISQ = (
+                int(data.get('SiIm_1', 0)) +
+                int(data.get('SiIm_2', 0)) +
+                int(data.get('SiIm_3', 0)) +
+                int(data.get('SiIm_4', 0)) +
+                int(data.get('SiIm_5', 0)) +
+                int(data.get('SiIm_6', 0)) +
+                int(data.get('SiIm_7', 0))
+            )
+
+            BMI = float(data.get('bmi-1'))
+
+            CDP = float(data.get('Cir_Pol'))
+            WHR = float(data.get('WHip'))
+            WHR_Ratio = str(data.get('Whei'))
+            CST = int(data.get('numero_rip')) / int(data.get('tot_secondi'))
+            GS = int(data.get('distanza')) / int(data.get('tempo_s'))
+            PPT = int(data.get('tempo_s_pick'))
+
+            punteggioFinale = CalcoloPunteggioCapacitaVitale(
+                                Somma_MMSE, Somma_GDS, Somma_LOC,
+                                Somma_Vista, Somma_Udito, Somma_HGS, PFT,
+                                ISQ, BMI, CDP, WHR, WHR_Ratio, CST, 
+                                GS, PPT, Sarc_f_Somma, persona.gender )
 
 
+            referto = ArchivioRefertiTest(
+                paziente = persona,
+                punteggio = punteggioFinale,
+                #documento = request.FILES.get('documento')
+            )
+            referto.save()
 
 
+            datiEstesi = DatiEstesiRefertiTest(
+                referto = referto,
+
+                #DOMINIO COGNITIVO 
+                MMSE = Somma_MMSE,
+
+                #DOMINIO PSICOLOGICO
+                GDS = Somma_GDS,
+                LOC = Somma_LOC,
+
+                #DOMINIO SENSORIALE
+                Vista = Somma_Vista,
+                Udito = Somma_Udito,
+
+                #DOMINIO DELLA VITALITA'
+                HGS = Somma_HGS,
+                PFT = PFT,
+
+                #SISTEMA IMMUNITARIO
+                ISQ = ISQ,
+                BMI = BMI,
+                CDP = CDP,
+                WHR = WHR,
+                WHR_Ratio = WHR_Ratio,
+
+                #DOMINIO DELLA LOCOMOZIONE
+                CST = CST,
+                GS = GS,
+                PPT = PPT,
+                SARC_F = Sarc_f_Somma,
+                FSS = Fss_Somma,
+
+                #BIOMARCATORI CIRCOLANTI DEL METABOLISMO
+                Glic = safe_float(data, 'Glic'),
+                Emog = safe_float(data, 'Emog'),
+                Insu = safe_float(data, 'Insu'),
+                Pept_c = safe_float(data, 'Pept_c'),
+                Col_tot = safe_float(data, 'Col_tot'),
+                Col_ldl = safe_float(data, 'Col_ldl'),
+                Col_hdl = safe_float(data, 'Col_hdl'),
+                Trigl = safe_float(data, 'Trigl'),
+                albumina = safe_float(data, 'albumina'),
+                clearance_urea = safe_float(data, 'clearance_urea'),
+                igf_1 = safe_float(data, 'ifg_1'),
 
 
+                #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
+                Lymph = safe_float(data, 'Lymph'),
+                Lymph_el = safe_float(data, 'Lymph_el'),
+                wbc = safe_float(data, 'wbc'),
+                Proteins_c = safe_float(data, 'Proteins_c'),
+                Inter_6 = safe_float(data, 'Inter_6'),
+                Tnf = safe_float(data, 'Tnf'),
+                Mono = safe_float(data, 'Mono'),
+                Mono_el = safe_float(data, 'Mono_el'),    
+            )
 
+            datiEstesi.save()
 
-
-
-
-
-
-        datiEstesi.save()
-
-        context = {
+            context = {
             'persona': persona,
             'modal' : True,
-            #'Referto': referto,
+            'Referto': referto,
             'referti_test_recenti': referti_test_recenti,
             'dottore': dottore
-        }
+            }
 
-        return render(request, "includes/EtaVitale.html", context)
+            return render(request, "includes/EtaVitale.html", context)
 
 
+        except Exception as e:
+            print(e)
+
+            context = {
+                'persona': persona,
+                'modal': False,
+                'errore': "Qualcosa è andato storto, controlla di inserire i valori corretti e riprova",
+                'referti_test_recenti': referti_test_recenti,
+                'dottore': dottore
+            }    
+
+            return render(request, "includes/testVitale.html", context)
+      
 class RefertoQuizView(View):
     def get(self, request, persona_id, referto_id):
 
@@ -2068,23 +2019,141 @@ class RefertoQuizView(View):
         if referto:
             datiEstesi = DatiEstesiRefertiTest.objects.filter(referto=referto).first()
 
+        testo_risultato = ''
+
+        if float(referto.punteggio) >= 0 and float(referto.punteggio) <= 2.59:
+            testo_risultato = """
+                                Ottima capacità vitale: Stato di salute eccellente sia a livello
+                                fisico che mentale. La forza muscolare, la funzionalità
+                                respiratoria e la mobilità sono ottimali. Il soggetto mostra
+                                un’ottima capacità cognitiva, un buon benessere psicologico e
+                                una bassa vulnerabilità allo stress. Il rischio di declino
+                                funzionale e mentale è minimo.
+                            """
+
+        elif float(referto.punteggio) >= 2.60 and float(referto.punteggio) <= 5.09:
+            testo_risultato = """
+                                Buona capacità vitale: Buono stato di salute con lievi segni di
+                                riduzione della forza muscolare o della resistenza fisica.
+                                Possibile lieve declino cognitivo o stati emotivi fluttuanti, come
+                                stress occasionale o lieve ansia. Il soggetto è autonomo, ma
+                                potrebbe beneficiare di interventi per mantenere le capacità
+                                motorie e il benessere mentale.
+                            """
+
+        elif float(referto.punteggio) >= 5.10 and float(referto.punteggio) <= 7.59:
+            testo_risultato ="""
+                                Capacità vitale compromessa: Si evidenziano difficoltà motorie
+                                moderate, minore forza muscolare e resistenza. Potrebbero
+                                esserci segni di declino cognitivo o un aumento di ansia e
+                                stress, con possibili difficoltà nella gestione emotiva. Il rischio
+                                di cadute, affaticamento mentale e riduzione dell’autonomia
+                                cresce. È consigliato un supporto medico e strategie di
+                                miglioramento.
+                            """
+
+        elif float(referto.punteggio) >= 7.60 and float(referto.punteggio) <= 10:
+            testo_risultato ="""
+                                Capacità vitale gravemente compromessa: Mobilità e
+                                resistenza fisica sono compromesse, con elevato rischio di
+                                fragilità e perdita di autonomia. Il declino cognitivo può
+                                manifestarsi con difficoltà di concentrazione, memoria e
+                                orientamento. Sul piano psicologico, possono essere presenti
+                                ansia significativa, depressione o distress emotivo. È necessario
+                                un intervento mirato per migliorare la qualità della vita.
+                            """
+
+
         context = {
             'persona': persona,
-            'ultimo_referto': referto,
+            'ultimo_referto': ultimo_referto,
             'datiEstesi': datiEstesi,
             'dottore' : dottore,
-            'referto' : ultimo_referto
+            'referto' : referto,
+            'testo_risultato': testo_risultato,
         }
 
         return render(request, "includes/RefertoQuiz.html", context)
+
+
+
+class StampaRefertoView(View):
+    def get(self, request, persona_id, referto_id):
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
+        referto = get_object_or_404(ArchivioRefertiTest, id=referto_id)
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+        ultimo_referto = persona.referti.order_by('-data_referto')
+        
+        datiEstesi = None
+        if referto:
+            datiEstesi = DatiEstesiRefertiTest.objects.filter(referto=referto).first()
+
+        testo_risultato = ''
+
+        if float(referto.punteggio) >= 0 and float(referto.punteggio) <= 2.59:
+            testo_risultato = """
+                                Ottima capacità vitale: Stato di salute eccellente sia a livello
+                                fisico che mentale. La forza muscolare, la funzionalità
+                                respiratoria e la mobilità sono ottimali. Il soggetto mostra
+                                un’ottima capacità cognitiva, un buon benessere psicologico e
+                                una bassa vulnerabilità allo stress. Il rischio di declino
+                                funzionale e mentale è minimo.
+                            """
+
+        elif float(referto.punteggio) >= 2.60 and float(referto.punteggio) <= 5.09:
+            testo_risultato = """
+                                Buona capacità vitale: Buono stato di salute con lievi segni di
+                                riduzione della forza muscolare o della resistenza fisica.
+                                Possibile lieve declino cognitivo o stati emotivi fluttuanti, come
+                                stress occasionale o lieve ansia. Il soggetto è autonomo, ma
+                                potrebbe beneficiare di interventi per mantenere le capacità
+                                motorie e il benessere mentale.
+                            """
+
+        elif float(referto.punteggio) >= 5.10 and float(referto.punteggio) <= 7.59:
+            testo_risultato ="""
+                                Capacità vitale compromessa: Si evidenziano difficoltà motorie
+                                moderate, minore forza muscolare e resistenza. Potrebbero
+                                esserci segni di declino cognitivo o un aumento di ansia e
+                                stress, con possibili difficoltà nella gestione emotiva. Il rischio
+                                di cadute, affaticamento mentale e riduzione dell’autonomia
+                                cresce. È consigliato un supporto medico e strategie di
+                                miglioramento.
+                            """
+
+        elif float(referto.punteggio) >= 7.60 and float(referto.punteggio) <= 10:
+            testo_risultato ="""
+                                Capacità vitale gravemente compromessa: Mobilità e
+                                resistenza fisica sono compromesse, con elevato rischio di
+                                fragilità e perdita di autonomia. Il declino cognitivo può
+                                manifestarsi con difficoltà di concentrazione, memoria e
+                                orientamento. Sul piano psicologico, possono essere presenti
+                                ansia significativa, depressione o distress emotivo. È necessario
+                                un intervento mirato per migliorare la qualità della vita.
+                            """
+
+        context = {
+            'scarica' : True,
+            'persona': persona,
+            'ultimo_referto': ultimo_referto,
+            'datiEstesi': datiEstesi,
+            'referti_test_recenti': referti_test_recenti,
+            'dottore' : dottore,
+            'referto' : referto,
+            'testo_risultato': testo_risultato,
+        }
+
+        return render(request, "includes/EtaVitale.html", context)
+
 
 
 # Referto View
 def referti_view(request, referto_id):
     referto = ArchivioReferti.objects.get(id=referto_id)
     return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
-
-
 
 #PRESCRIZIONI VIEW
 class PrescrizioniView(View):

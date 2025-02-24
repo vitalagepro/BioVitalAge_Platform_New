@@ -21,6 +21,14 @@ class TabellaPazienti(models.Model):
         related_name='pazienti',
         null=True
     )
+
+    codice_fiscale = models.CharField(max_length=16, null=True, blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['dottore', 'codice_fiscale'], name='unique_paziente_per_dottore')
+    ]
+        
     # Dati personali
     name = models.CharField(max_length=50, null=True, blank=True)
     surname = models.CharField(max_length=50, null=True, blank=True)
@@ -31,7 +39,6 @@ class TabellaPazienti(models.Model):
     cap = models.CharField(max_length=5, null=True, blank=True)
     province = models.CharField(max_length=100, null=True, blank=True)
     place_of_birth = models.CharField(max_length=100, null=True, blank=True)
-    codice_fiscale = models.CharField(max_length=16, null=True, blank=True, unique=True)
     chronological_age = models.IntegerField(null=True, blank=True)
     blood_group = models.CharField(max_length=3, null=True, blank=True)
     rh_factor = models.CharField(max_length=3, null=True, blank=True)
@@ -330,27 +337,34 @@ class DatiEstesiRefertiTest(models.Model):
         related_name='dati_estesi_test'
     )
 
+    #DOMINIO COGNITIVO
+    MMSE = models.IntegerField(null=True, blank=True)
 
+    #DOMINIO PSICOLOGICO
+    GDS = models.IntegerField(null=True, blank=True)
+    LOC = models.IntegerField(null=True, blank=True)
 
+    #DOMINIO SENSORIALE
+    Vista = models.IntegerField(null=True, blank=True)
+    Udito = models.IntegerField(null=True, blank=True)
 
+    #DOMINIO DELLA VITALITA'
+    HGS = models.TextField(null=True, blank=True)
+    PFT = models.IntegerField(null=True, blank=True)
 
-    SiIm = models.IntegerField(null=True, blank=True)
-    Lymph = models.FloatField(null=True, blank=True)
-    Lymph_el = models.FloatField(null=True, blank=True)
-    wbc = models.FloatField(null=True, blank=True)
-    Proteins_c = models.FloatField(null=True, blank=True)
+    #SISTEMA IMMUNITARIO
+    ISQ = models.IntegerField(null=True, blank=True)
+    BMI = models.FloatField(null=True, blank=True)
+    CDP = models.FloatField(null=True, blank=True)
+    WHR = models.FloatField(null=True, blank=True)
+    WHR_Ratio = models.TextField(null=True, blank=True)
 
-    #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
-    Inter_6 = models.FloatField(null=True, blank=True)
-    Tnf = models.FloatField(null=True, blank=True)
-    Mono = models.FloatField(null=True, blank=True)
-    Mono_el = models.FloatField(null=True, blank=True)
-
-    #ENERGIA E MTABOLISMO
-    Fss = models.FloatField(null=True, blank=True)
-    CirPolp = models.FloatField(null=True, blank=True)
-    WHip_ratio = models.FloatField(null=True, blank=True)
-    WH_ratio = models.FloatField(null=True, blank=True)
+    #DOMINIO DELLA LOCOMOZIONE
+    CST = models.FloatField(null=True, blank=True)
+    GS = models.FloatField(null=True, blank=True)
+    PPT = models.IntegerField(null=True, blank=True)
+    SARC_F = models.IntegerField(null=True, blank=True)
+    FSS = models.IntegerField(null=True, blank=True)
 
     #BIOMARCATORI CIRCOLANTI DEL METABOLISMO
     Glic = models.FloatField(null=True, blank=True)
@@ -363,15 +377,18 @@ class DatiEstesiRefertiTest(models.Model):
     Trigl = models.FloatField(null=True, blank=True)
     albumina = models.FloatField(null=True, blank=True)
     clearance_urea = models.FloatField(null=True, blank=True)
-    igf_1 = models.FloatField(null=True, blank=True)
-    
-    # Funzione Neuromuscolare
-    sarc_f = models.IntegerField(null=True, blank=True)
-    hgs_test = models.IntegerField(null=True, blank=True)
-    
-    # Performance Fisica
-    sppb = models.IntegerField(null=True, blank=True)
-    
+    igf_1 = models.FloatField(null=True, blank=True)    
+
+    #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
+    Inter_6 = models.FloatField(null=True, blank=True)
+    Tnf = models.FloatField(null=True, blank=True)
+    Mono = models.FloatField(null=True, blank=True)
+    Mono_el = models.FloatField(null=True, blank=True)
+    Proteins_c = models.FloatField(null=True, blank=True)
+    wbc = models.FloatField(null=True, blank=True)
+    Lymph = models.FloatField(null=True, blank=True)
+    Lymph_el = models.FloatField(null=True, blank=True)
+      
     def __str__(self):
         return f"Dati Estesi Referto ID: {self.referto.id}"
     
