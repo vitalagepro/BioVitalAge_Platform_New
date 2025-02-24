@@ -662,7 +662,7 @@ def calculate_biological_age(chronological_age, d_roms = 260, osi = 10, pat = 25
 
 #DOMINIO COGNITIVO 
 def Calcolo_Dominio_Cognitivo(Somma_MMSE):
-   
+    print('Somma_MMSE')
     if int(Somma_MMSE) >= 25:
         return 0
     elif int(Somma_MMSE) >= 18 and int(Somma_MMSE) <= 24:
@@ -672,7 +672,7 @@ def Calcolo_Dominio_Cognitivo(Somma_MMSE):
     
 #DOMINIO PSICOLOGICO
 def Calcolo_GDS(Somma_GDS):
- 
+    print('Somma_GDS')
     if int(Somma_GDS) >= 0 and int(Somma_GDS) <= 5:
         return 0
     elif int(Somma_GDS) >= 6 and int(Somma_GDS) <= 10:
@@ -681,7 +681,7 @@ def Calcolo_GDS(Somma_GDS):
         return 1
     
 def Calcolo_Locus_of_control(Somma_LOC):
-  
+    print('Somma_LOC')
     if int(Somma_LOC) >= 30 and int(Somma_LOC) <= 40:
         return 0
     elif int(Somma_LOC) >= 19 and int(Somma_LOC) <= 29:
@@ -691,7 +691,7 @@ def Calcolo_Locus_of_control(Somma_LOC):
 
 #DOMINIO SENSORIALE
 def Calcolo_Vista(Somma_Vista):
-
+    print('Somma_Vista')
     if int(Somma_Vista) >= 6:
         return 0
     elif int(Somma_Vista) >= 3 and int(Somma_Vista) <= 5:
@@ -700,7 +700,7 @@ def Calcolo_Vista(Somma_Vista):
         return 1
 
 def Calcolo_Udito(Somma_Udito):
-   
+    print('Somma_Udito')
     if int(Somma_Udito) >= 6:
         return 0
     elif int(Somma_Udito) >= 3 and int(Somma_Udito) <= 5:
@@ -710,7 +710,7 @@ def Calcolo_Udito(Somma_Udito):
     
 #DOMINIO DELLA VITALIA'
 def Calcolo_HGS(HGS):
-
+    print('HGS')
     if str(HGS) == 'Strong':
         return 0
     elif str(HGS) == 'Normal':
@@ -719,7 +719,7 @@ def Calcolo_HGS(HGS):
         return 1
 
 def Calcolo_Peak_Flow(PFT):
-   
+    print('PFT')
     if int(PFT) >= 90 and int(PFT) <= 100:
         return 0
     elif int(PFT) >= 50 and int(PFT) <= 80:
@@ -728,7 +728,7 @@ def Calcolo_Peak_Flow(PFT):
         return 1
     
 def Calcolo_ISQ(ISQ): 
-   
+    print('ISQ')
     if int(ISQ) >= 0 and int(ISQ) <= 8:
         return 0
     elif int(ISQ) >= 9 and int(ISQ) <= 18:
@@ -737,7 +737,7 @@ def Calcolo_ISQ(ISQ):
         return 1
     
 def Calcolo_BMI(BMI):
-  
+    print('BMI')
     if float(BMI) >= 18.5 and float(BMI) <= 24.9:
         return 0
     elif float(BMI) >= 16 and float(BMI) <= 18.4 or float(BMI) <= 25 and float(BMI) >= 29.9:
@@ -746,29 +746,29 @@ def Calcolo_BMI(BMI):
         return 1
     
 def Calcolo_Circoferenza_del_polpaccio_W(CDP):
-   
-    if int(CDP) > 33:
+    print('CDP')
+    if float(CDP) > 33:
         return 0
     
-    elif int(CDP) <= 28 and int(CDP) >= 33:
+    elif float(CDP) >= 28 and float(CDP) <= 33:
         return 0.5
     
-    elif int(CDP) < 28:
+    elif float(CDP) < 28:
         return 1
 
 def Calcolo_Circoferenza_del_polpaccio_M(CDP):
-    
+    print('CDP')
     if int(CDP) > 35:
         return 0
     
     elif int(CDP) >= 30 and int(CDP) <= 35:
         return 0.5
     
-    elif int(CDP) < 30 and int(CDP) < 28:
+    elif int(CDP) < 30 and int(CDP) > 28:
         return 1
 
 def Calcolo_WHR_M(WHR):
-    
+    print('WHR')
     if float(WHR) < 0.90:
         return 0
     elif float(WHR) >= 0.90 and float(WHR) <= 1.00:
@@ -777,7 +777,7 @@ def Calcolo_WHR_M(WHR):
         return 1 
 
 def Calcolo_WHR_W(WHR):
- 
+    print('WHR')
     if float(WHR) < 0.75:
         return 0
     elif float(WHR) >= 0.75 and float(WHR) <= 0.85:
@@ -786,7 +786,7 @@ def Calcolo_WHR_W(WHR):
         return 1 
 
 def Calcolo_Weist_Height_Ratio(WHR_Ratio):
-   
+    print('WHR_Ratio')
     if str(WHR_Ratio) == 'Verde':
         return 0 
     elif str(WHR_Ratio) == 'Giallo' or str(WHR_Ratio) == 'Marrone':
@@ -796,7 +796,7 @@ def Calcolo_Weist_Height_Ratio(WHR_Ratio):
     
 #DOMIONIO DELLA LOCOMOZIONE
 def Calcolo_CST(CST):
-
+    print('CST')
     if float(CST) > 0.50:
         return 0
     elif float(CST) >= 0.35 and float(CST) <= 0.50:
@@ -805,7 +805,7 @@ def Calcolo_CST(CST):
         return 1
     
 def Calcolo_GS(GS):
-   
+    print('GS')
     if float(GS) > 1.0:   
         return 0
     elif float(GS) >= 0.6 and float(GS) <= 1.0:
@@ -814,7 +814,7 @@ def Calcolo_GS(GS):
         return 1
     
 def Calcolo_PPT(PPT):
-   
+    print('PPT')
     if float(PPT) >= 0.50:
         return 0
     elif float(PPT) <= 0.34 and float(PPT) >= 0.49:
@@ -825,7 +825,7 @@ def Calcolo_PPT(PPT):
         return 1
     
 def Calcolo_Sarc_F(SARC_F):
- 
+    print('SARC_F')
     if float(SARC_F) >= 4:
         return 0
     if float(SARC_F) < 4:

@@ -80,7 +80,6 @@ function handleCheckboxSelection() {
       checkboxes.forEach((box) => {
         if (box !== checkbox) box.checked = false;
       });
-      checkLastQuestion();
     });
   });
 }
@@ -90,7 +89,6 @@ function updateQuestion(index) {
   currentQuestionIndex = index;
   questions[currentQuestionIndex].classList.add("active");
   updatePagination();
-  checkLastQuestion();
   if (currentQuestionIndex === questions.length - 1) {
     handleCheckboxSelection();
   }

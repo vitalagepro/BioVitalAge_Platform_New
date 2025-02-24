@@ -1676,87 +1676,107 @@ def update_persona_contact(request, id):
     else:
         return JsonResponse({"success": False, "error": "Metodo non valido"})
 
-@csrf_exempt 
+# Funzione per aggiornare i dati di una persona in composizione corpo
+@csrf_exempt
 def update_persona_composizione(request, id):
-    if request.method == "POST":
+    try:
+        persona = TabellaPazienti.objects.get(id=id)
+    except TabellaPazienti.DoesNotExist:
+        return JsonResponse({"success": False, "error": "Persona non trovata"}, status=404)
+
+    if request.method == "GET":
+        # ✅ Manteniamo tutti i dati della persona
+        data = {
+            "success": True,
+            "personaComposizione": {
+                "height": persona.height,
+                "weight": persona.weight,
+                "bmi": persona.bmi,
+                "bmi_detection_date": persona.bmi_detection_date,
+                "girth_value": persona.girth_value,
+                "girth_notes": persona.girth_notes,
+                "girth_date": persona.girth_date,
+                "sport_frequency": persona.sport_frequency,
+                "livello_sedentarieta": persona.livello_sedentarieta,
+                "grasso": persona.grasso,
+                "acqua": persona.acqua,
+                "massa_ossea": persona.massa_ossea,
+                "massa_muscolare": persona.massa_muscolare,
+                "bmr": persona.bmr,
+                "eta_metabolica": persona.eta_metabolica,
+                "grasso_viscerale": persona.grasso_viscerale,
+                "whr": persona.whr,
+                "whtr": persona.whtr,
+                "punteggio_fisico": persona.punteggio_fisico,
+                "storico_punteggi": persona.storico_punteggi or [],  # ✅ Restituiamo anche lo storico
+            },
+        }
+        return JsonResponse(data)
+
+    elif request.method == "POST":
         try:
             data = json.loads(request.body)
-
-            # Recupera la persona dal database
-            persona = TabellaPazienti.objects.get(id=id)
-
-            # Aggiorna solo i campi che sono stati inviati nella richiesta
             campi_da_aggiornare = []
 
-            if "weight" in data:
-                persona.weight = data["weight"]
-                campi_da_aggiornare.append("weight")
-            if "bmi" in data:
-                persona.bmi = data["bmi"]
-                campi_da_aggiornare.append("bmi")
-            if "bmi_detection_date" in data:
-                persona.bmi_detection_date = data["bmi_detection_date"] or None
-                campi_da_aggiornare.append("bmi_detection_date")
-            if "girth_value" in data:
-                persona.girth_value = data["girth_value"]
-                campi_da_aggiornare.append("girth_value")
-            if "girth_notes" in data:
-                persona.girth_notes = data["girth_notes"]
-                campi_da_aggiornare.append("girth_notes")
-            if "girth_date" in data:
-                persona.girth_date = data["girth_date"] or None
-                campi_da_aggiornare.append("girth_date")
-            if "sport_frequency" in data:
-                persona.sport_frequency = data["sport_frequency"]
-                campi_da_aggiornare.append("sport_frequency")
-            if "livello_sedentarieta" in data:
-                persona.livello_sedentarieta = data["livello_sedentarieta"]
-                campi_da_aggiornare.append("livello_sedentarieta")
-            if "grasso" in data:
-                persona.grasso = data["grasso"]
-                campi_da_aggiornare.append("grasso")
-            if "acqua" in data:
-                persona.acqua = data["acqua"]
-                campi_da_aggiornare.append("acqua")
-            if "massa_ossea" in data:
-                persona.massa_ossea = data["massa_ossea"]
-                campi_da_aggiornare.append("massa_ossea")
-            if "massa_muscolare" in data:
-                persona.massa_muscolare = data["massa_muscolare"]
-                campi_da_aggiornare.append("massa_muscolare")
-            if "bmr" in data:
-                persona.bmr = data["bmr"]
-                campi_da_aggiornare.append("bmr")
-            if "eta_metabolica" in data:
-                persona.eta_metabolica = data["eta_metabolica"]
-                campi_da_aggiornare.append("eta_metabolica")
-            if "grasso_viscerale" in data:
-                persona.grasso_viscerale = data["grasso_viscerale"]
-                campi_da_aggiornare.append("grasso_viscerale")
-            if "whr" in data:
-                persona.whr = data["whr"]
-                campi_da_aggiornare.append("whr")
-            if "whtr" in data:
-                persona.whtr = data["whtr"]
-                campi_da_aggiornare.append("whtr")
-            if "punteggio_fisico" in data:
-                persona.punteggio_fisico = data["punteggio_fisico"]
-                campi_da_aggiornare.append("punteggio_fisico")
+            # ✅ Controllo per il reset dello storico punteggi
+            if data.get("reset_storico_punteggi", False):
+                persona.storico_punteggi = []  # ✅ Resetta lo storico
+                persona.punteggio_fisico = None  # ✅ Reset del punteggio attuale
+                persona.save(update_fields=["storico_punteggi", "punteggio_fisico"])
+                return JsonResponse({"success": True})
 
-            # Salva solo i campi aggiornati
+            # ✅ Aggiorna tutti gli altri campi se presenti
+            for field in [
+                "height", "weight", "bmi", "bmi_detection_date",
+                "girth_value", "girth_notes", "girth_date", "sport_frequency",
+                "livello_sedentarieta", "grasso", "acqua", "massa_ossea",
+                "massa_muscolare", "bmr", "eta_metabolica", "grasso_viscerale",
+                "whr", "whtr"
+            ]:
+                if field in data:
+                    setattr(persona, field, data[field])
+                    campi_da_aggiornare.append(field)
+
+            # ✅ Gestione del punteggio fisico
+            if "punteggio_fisico" in data:
+                try:
+                    nuovo_punteggio = int(data["punteggio_fisico"])  # ✅ Conversione a int
+                except ValueError:
+                    return JsonResponse({"success": False, "error": "Punteggio non valido"}, status=400)
+
+                if not (1 <= nuovo_punteggio <= 9):
+                    return JsonResponse({"success": False, "error": "Punteggio fuori range"}, status=400)
+
+                # ✅ Se il punteggio è cambiato, aggiorniamo lo storico
+                if persona.punteggio_fisico != nuovo_punteggio:
+                    if not isinstance(persona.storico_punteggi, list):
+                        persona.storico_punteggi = []  # ✅ Inizializza se non esiste
+
+                    # ✅ Aggiunge il nuovo punteggio con data
+                    persona.storico_punteggi.append({
+                        "punteggio": nuovo_punteggio,
+                        "data": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    })
+
+                    # ✅ Aggiorniamo il punteggio attuale
+                    persona.punteggio_fisico = nuovo_punteggio
+                    campi_da_aggiornare.append("punteggio_fisico")
+                    campi_da_aggiornare.append("storico_punteggi")
+
+            # ✅ Salva solo i campi aggiornati
             if campi_da_aggiornare:
                 persona.save(update_fields=campi_da_aggiornare)
 
             return JsonResponse({"success": True})
-        
-        except TabellaPazienti.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Persona non trovata"})
+
         except json.JSONDecodeError:
-            return JsonResponse({"success": False, "error": "JSON non valido"})
+            return JsonResponse({"success": False, "error": "JSON non valido"}, status=400)
         except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
     else:
-        return JsonResponse({"success": False, "error": "Metodo non valido"})
+        return JsonResponse({"success": False, "error": "Metodo non valido"}, status=405)
+
 
 
 
