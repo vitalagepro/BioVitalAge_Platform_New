@@ -261,7 +261,7 @@
 
       <div class="button-container">
         <h3>Appuntamenti</h3>
-        <button class="button">
+        <button class="button" onclick="window.location.href='{% url 'appuntamenti' %}'"> <!-- @ts-ignore -->
           <span class="button__icon-wrapper">
             <svg
               viewBox="0 0 14 15"
@@ -291,72 +291,73 @@
           </span>
           Vedi Tutti
         </button>
-    </div>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Nome Paziente</th>
-            <th>Età</th>
-            <th>Ora</th>
-            <th>Diagnosi</th>
-            <th>Tipologia</th>
-            <th>Azione</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>001</td>
-            <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> William Mathews</td>
-            <td>21</td>
-            <td>10:30AM</td>
-            <td>Attacco Cardiaco</td>
-            <td><span class="badge general">Generale</span></td>
-            <td>
-              <button class="action-btn approve">✔</button>
-              <button class="action-btn delete">✖</button>
-            </td>
-          </tr>
-          <tr>
-            <td>002</td>
-            <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> Adam Bradley</td>
-            <td>36</td>
-            <td>10:45AM</td>
-            <td>Diabetico</td>
-            <td><span class="badge consulting">Consulenza</span></td>
-            <td>
-              <button class="action-btn approve">✔</button>
-              <button class="action-btn delete">✖</button>
-            </td>
-          </tr>
-          <tr>
-            <td>002</td>
-            <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar">Adam Bradley</td>
-            <td>36</td>
-            <td>10:45AM</td>
-            <td>Diabetico</td>
-            <td><span class="badge consulting">Consulenza</span></td>
-            <td>
-              <button class="action-btn approve">✔</button>
-              <button class="action-btn delete">✖</button>
-            </td>
-          </tr>
-          <tr>
-            <td>002</td>
-            <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> Adam Bradley</td>
-            <td>36</td>
-            <td>10:45AM</td>
-            <td>Diabetico</td>
-            <td><span class="badge consulting">Consulenza</span></td>
-            <td>
-              <button class="action-btn approve">✔</button>
-              <button class="action-btn delete">✖</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
 
-    </div>
+      </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nome Paziente</th>
+              <th>Età</th>
+              <th>Ora</th>
+              <th>Diagnosi</th>
+              <th>Tipologia</th>
+              <th>Azione</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>001</td>
+              <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> William Mathews</td>
+              <td>21</td>
+              <td>10:30AM</td>
+              <td>Attacco Cardiaco</td>
+              <td><span class="badge general">Generale</span></td>
+              <td>
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> Adam Bradley</td>
+              <td>36</td>
+              <td>10:45AM</td>
+              <td>Diabetico</td>
+              <td><span class="badge consulting">Consulenza</span></td>
+              <td>
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar">Adam Bradley</td>
+              <td>36</td>
+              <td>10:45AM</td>
+              <td>Diabetico</td>
+              <td><span class="badge consulting">Consulenza</span></td>
+              <td>
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> Adam Bradley</td>
+              <td>36</td>
+              <td>10:45AM</td>
+              <td>Diabetico</td>
+              <td><span class="badge consulting">Consulenza</span></td>
+              <td>
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
 
 
     <!-- CARDS REPORT -->

@@ -2174,3 +2174,12 @@ class PrescrizioniView(View):
  
 
 
+
+
+#VIEWS APPUNTAMENTI
+class AppuntamentiView(View):
+    def get(self, request):
+        return render(request, 'includes/Appuntamenti.html')
+
+    def post(self, request):
+        return
