@@ -20,6 +20,7 @@
     
     <!-- Js Import  -->
     <script src="{% static 'includes/js/risultati.js' %}" defer></script>
+    <script src="{% static 'includes/js/Appuntamenti.js' %}" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
@@ -84,9 +85,9 @@
                 
 
                 <div class="layout-option">
-                    <button class="active">month</button>
-                    <button>week</button>
-                    <button>day</button>
+                    <button class="active" id="monthLayout">month</button>
+                    <button id="weekLayout">week</button>
+                    <button id="dayLayout">day</button>
                 </div>
 
                 <button type="button" id="button-tools" class="button button-view-all">
@@ -129,8 +130,8 @@
 
 
         <!-- CALENDARIO MONTH LAYOUT -->
-        {% if month %}
-            <div class="header-rowTrace">
+       
+        <div class="header-rowTrace" id="month-head">
                 <p>Lunedi</p>
                 <p>Martedi</p>
                 <p>Mercoledi</p>
@@ -138,9 +139,9 @@
                 <p>Venerdi</p>
                 <p>Sabato</p>
                 <p>Domenica</p>
-            </div>
+        </div>
 
-            <div class="container-content-table">
+        <div class="container-content-table" id="month-layout">
                 <div class="cella">
                     <p class="data prev">26</p>
                     <p class="appuntamenti-counter">5 Appuntamenti</p>
@@ -250,15 +251,16 @@
                     <p class="data prev">1</p>
                 </div>
                 
-            </div>  
-        {% endif %}
+        </div>  
+        
 
 
         <!-- CALENDARIO SETTIMANALE LAYOUT -->
         
-        <div class="header-week">
-            <p class="placeholder-week"></p>
+        <div class="header-week" id="week-head">
+            
             <div class="header-rowTrace">
+                <p class="placeholder-week"></p>
                 <p>Lunedi</p>
                 <p>Martedi</p>
                 <p>Mercoledi</p>
@@ -269,29 +271,127 @@
             </div>
         </div>
         
-
-        <div class="week-layout-content">
+        <div class="week-layout-content" id="week-layout">
             <div class="row-week">
-                <div id="cellaOrari">
+
+                <div class="row-for-ora">
                     <p>09:00</p>
-                    <p>10:00</p>
-                    <p>11:00</p>
-                    <p>12:00</p>
-                    <p>13:00</p>
-                    <p>15:00</p>
-                    <p>16:00</p>
-                    <p>17:00</p>
-                    <p>18:00</p>
-                    <p>19:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
                 </div>
+
+                <div class="row-for-ora">
+                    <p>10:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+
+                <div class="row-for-ora">
+                    <p>11:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+
+                <div class="row-for-ora">
+                    <p>12:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+
+                <div class="row-for-ora">
+                    <p>13:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+                <div class="row-for-ora">
+                    <p>14:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+                <div class="row-for-ora">
+                    <p>15:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+                <div class="row-for-ora">
+                    <p>16:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+                <div class="row-for-ora">
+                    <p>17:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+                <div class="row-for-ora">
+                    <p>18:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+                <div class="row-for-ora">
+                    <p>19:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+
+               
             
-                <div class="cellaWeek"></div>
-                <div class="cellaWeek"></div>
-                <div class="cellaWeek"></div>
-                <div class="cellaWeek"></div>
-                <div class="cellaWeek"></div>
-                <div class="cellaWeek"></div>
-                <div class="cellaWeek"></div>
+                
                 
                 </div>
             </div>

@@ -20,7 +20,6 @@ class TabellaPazienti(models.Model):
     phone = models.CharField(max_length=20, null=True, blank=True)
     dob = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=1, null=True, blank=True, choices=[('M', 'Male'), ('F', 'Female')])
-    cap = models.CharField(max_length=5, null=True, blank=True)
     province = models.CharField(max_length=100, null=True, blank=True)
     place_of_birth = models.CharField(max_length=100, null=True, blank=True)
     codice_fiscale = models.CharField(max_length=16, null=True, blank=True)

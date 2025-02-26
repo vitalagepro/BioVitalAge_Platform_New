@@ -278,7 +278,6 @@ class CalcoloEtaBiologica(View):
                         surname = data.get('surname'),
                         dob = data.get('dob'),
                         gender = data.get('gender'),
-                        cap = data.get('codice_fiscale'),
                         province = data.get('province'),
                         place_of_birth = data.get('place_of_birth'),
                         codice_fiscale = data.get('codice_fiscale'),
