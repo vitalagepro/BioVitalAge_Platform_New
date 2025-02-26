@@ -129,7 +129,7 @@
 
 
         <!-- CALENDARIO MONTH LAYOUT -->
-        
+        {% if month %}
             <div class="header-rowTrace">
                 <p>Lunedi</p>
                 <p>Martedi</p>
@@ -251,11 +251,11 @@
                 </div>
                 
             </div>  
-       
+        {% endif %}
 
 
         <!-- CALENDARIO SETTIMANALE LAYOUT -->
-        {% if month %}
+        
         <div class="header-week">
             <p class="placeholder-week"></p>
             <div class="header-rowTrace">
@@ -298,7 +298,7 @@
         </div>
 
 
-        {% endif %}
+        
        
 
 

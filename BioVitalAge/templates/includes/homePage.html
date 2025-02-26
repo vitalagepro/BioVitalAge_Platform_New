@@ -48,61 +48,62 @@
 
   <!-- Disclaimer -->
   {% if show_disclaimer %}
-  <div id="cookieOverlay" class="cookie-overlay hidden-disclaimer"></div>
-  <div id="disclaimerContainer" class="cookie-disclaimer hidden-disclaimer">
-    <div id="initialMessage" class="cookie-initial">
-      <p>
-        <strong>Cookie settings</strong><br>
-        Utilizziamo i cookie per fornire e migliorare i nostri servizi, analizzare l'utilizzo del sito e, se l'utente è
-        d'accordo, per personalizzare la sua esperienza e commercializzare i nostri servizi. È possibile leggere la nostra <a
-          href="#" target="_blank">Cookie Policy</a> qui.
-      </p>
-      <div class="cookie-buttons">
-        <button id="acceptCookies" class="btn-cookie">Accetta tutti</button>
-        <button id="rejectCookies" class="btn-cookie">Rifiuta tutti</button>
-        <button id="customizeCookies" class="btn-cookie">Personalizza la scelta</button>
+    <div id="cookieOverlay" class="cookie-overlay hidden-disclaimer"></div>
+    <div id="disclaimerContainer" class="cookie-disclaimer hidden-disclaimer">
+      <div id="initialMessage" class="cookie-initial">
+        <p>
+          <strong>Cookie settings</strong><br>
+          Utilizziamo i cookie per fornire e migliorare i nostri servizi, analizzare l'utilizzo del sito e, se l'utente è
+          d'accordo, per personalizzare la sua esperienza e commercializzare i nostri servizi. È possibile leggere la nostra <a
+            href="#" target="_blank">Cookie Policy</a> qui.
+        </p>
+        <div class="cookie-buttons">
+          <button id="acceptCookies" class="btn-cookie">Accetta tutti</button>
+          <button id="rejectCookies" class="btn-cookie">Rifiuta tutti</button>
+          <button id="customizeCookies" class="btn-cookie">Personalizza la scelta</button>
+        </div>
+      </div>
+
+      <div id="customizeSection" class="cookie-customize hidden-disclaimer">
+        <h3>Personalizza la scelta di cookie</h3>
+        <p>Scegliere i tipi di cookie che si desidera abilitare:</p>
+
+        <div class="toggle-group">
+          <label>Cookies funzionali</label>
+          <div class="toggle-wrapper">
+            <input class="toggle-checkbox" type="checkbox" id="functionalCookies">
+            <div class="toggle-container">
+              <div class="toggle-button"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="toggle-group">
+          <label>Analytics Cookies</label>
+          <div class="toggle-wrapper">
+            <input class="toggle-checkbox" type="checkbox" id="analyticsCookies">
+            <div class="toggle-container">
+              <div class="toggle-button"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="toggle-group">
+          <label>Marketing Cookies</label>
+          <div class="toggle-wrapper">
+            <input class="toggle-checkbox" type="checkbox" id="marketingCookies">
+            <div class="toggle-container">
+              <div class="toggle-button"></div>
+            </div>
+          </div>
+        </div>
+
+        <button id="saveCookies" class="btn-cookie">Salva le scelte</button>
       </div>
     </div>
-
-    <div id="customizeSection" class="cookie-customize hidden-disclaimer">
-      <h3>Personalizza la scelta di cookie</h3>
-      <p>Scegliere i tipi di cookie che si desidera abilitare:</p>
-
-      <div class="toggle-group">
-        <label>Cookies funzionali</label>
-        <div class="toggle-wrapper">
-          <input class="toggle-checkbox" type="checkbox" id="functionalCookies">
-          <div class="toggle-container">
-            <div class="toggle-button"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="toggle-group">
-        <label>Analytics Cookies</label>
-        <div class="toggle-wrapper">
-          <input class="toggle-checkbox" type="checkbox" id="analyticsCookies">
-          <div class="toggle-container">
-            <div class="toggle-button"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="toggle-group">
-        <label>Marketing Cookies</label>
-        <div class="toggle-wrapper">
-          <input class="toggle-checkbox" type="checkbox" id="marketingCookies">
-          <div class="toggle-container">
-            <div class="toggle-button"></div>
-          </div>
-        </div>
-      </div>
-
-      <button id="saveCookies" class="btn-cookie">Salva le scelte</button>
-    </div>
-  </div>
-  {% else %}
-  <p>Il disclaimer non è visibile perché il cookie è impostato.</p>
+    
+    {% else %}
+    <p>Il disclaimer non è visibile perché il cookie è impostato.</p>
   {% endif %}
   <!-- Debug: stampa il valore di show_disclaimer -->
   <!-- <p>Debug: show_disclaimer = {{ show_disclaimer }}</p> -->
