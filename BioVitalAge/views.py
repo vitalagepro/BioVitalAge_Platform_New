@@ -58,15 +58,12 @@ class HomePageRender(View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
         persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
 
-        # Calcolo di show_disclaimer
-        show_disclaimer = not request.COOKIES.get('disclaimer_accepted', False)
-
-        context = {
+        if dottore.cookie == "SI":
+            context = {
             'persone': persone,
             'total_pazienti': total_pazienti,
             'appuntamenti': appuntamenti,
             'dottore': dottore,
-            'show_disclaimer': show_disclaimer
         }
 
         return render(request, "includes/homePage.html", context)
@@ -97,32 +94,21 @@ class HomePageRender(View):
                             # Ottieni i dati estesi associati al referto più recente di ciascun paziente
                             datiEstesi = DatiEstesiReferti.objects.filter(referto=Subquery(ultimo_referto.values('id')[:1]))
 
-                            # Funzione helper per convertire i dati JSON-serializzabili
-                            def make_json_serializable(data):
-                                if isinstance(data, list):
-                                    return [make_json_serializable(item) for item in data]
-                                elif isinstance(data, dict):
-                                    return {key: make_json_serializable(value) for key, value in data.items()}
-                                elif isinstance(data, date):
-                                    return data.isoformat()  # Converte le date in stringhe
-                                return data
+                            if dottore.cookie == 'SI':
+                                context = {
+                                    'persone': persone,
+                                    'dottore': dottore,
+                                    'dati_estesi': datiEstesi,
+                                }
 
-                            # Prepara il contesto e lo salva in sessione
-                            context = {
-                                'persone': make_json_serializable(list(persone.values())),
-                                'datiEstesi': make_json_serializable(list(datiEstesi.values())),
-                                'dottore': dottore.id  
-                            }
-                            
-                            request.session['home_context'] = context
+                            else: 
+                                context = {
+                                    'persone': persone,
+                                    'dottore': dottore,
+                                    'show_disclaimer': True
+                                }
 
-                            # Reindirizza alla homepage
-                            response = redirect('HomePage')
-                            response.delete_cookie('disclaimer_accepted')
-                            response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
-                            response['Pragma'] = 'no-cache'
-                            return response
-
+                            return render(request, 'includes/homePage.html' , context)
                         else:
                             return render(request, 'includes/login.html', {'error': 'Password errata'})
                 else:
@@ -135,10 +121,18 @@ class HomePageRender(View):
 # VIEW PER ACCETTARE IL DISCLAIMER
 class AcceptDisclaimerView(View):
     def post(self, request):
-        # Restituisce una risposta JSON
+        
         response = JsonResponse({"success": True})
-        # Imposta un cookie per indicare che il disclaimer è stato accettato
-        response.set_cookie('disclaimer_accepted', 'true', max_age=365*24*60*60)  # 1 anno
+        
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        if dottore_id:  
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+            
+            dottore.cookie = "SI"
+            dottore.save() 
+
         return response
 
 
@@ -1887,9 +1881,9 @@ class TestEtaVitaleView(View):
             )
 
             Somma_Udito =  int(data.get('dos_3', 0)) 
-        
-            Somma_HGS = str(data.get('dodv'))
-    
+
+            Somma_HGS = str(data.get('dodv', None))
+
             Fss_Somma = (
                 int(data.get('fss_1', 0)) +
                 int(data.get('fss_2', 0)) +
@@ -1900,7 +1894,7 @@ class TestEtaVitaleView(View):
                 int(data.get('fss_7', 0)) +
                 int(data.get('fss_8', 0))
             )
-            
+
             Sarc_f_Somma = (
                 int(data.get('Sarc_f_1', 0)) +
                 int(data.get('Sarc_f_2', 0)) +
@@ -1908,9 +1902,9 @@ class TestEtaVitaleView(View):
                 int(data.get('Sarc_f_4', 0)) +
                 int(data.get('Sarc_f_5', 0)) 
             )
-
-            PFT = int(data.get('pft-1', 0))
-                
+          
+            PFT = int(data.get('pft-1', '0') or 0)
+         
             ISQ = (
                 int(data.get('SiIm_1', 0)) +
                 int(data.get('SiIm_2', 0)) +
@@ -1919,17 +1913,19 @@ class TestEtaVitaleView(View):
                 int(data.get('SiIm_5', 0)) +
                 int(data.get('SiIm_6', 0)) +
                 int(data.get('SiIm_7', 0))
-            )
+            )   
+    
+            BMI = float(data.get('bmi-1', 0) or 0)
+            CDP = float(data.get('Cir_Pol', 0) or 0)
+            WHR = float(data.get('WHip', 0) or 0)
+            WHR_Ratio = str(data.get('Whei', None))
 
-            BMI = float(data.get('bmi-1'))
-
-            CDP = float(data.get('Cir_Pol'))
-            WHR = float(data.get('WHip'))
-            WHR_Ratio = str(data.get('Whei'))
-            CST = int(data.get('numero_rip')) / int(data.get('tot_secondi'))
-            GS = int(data.get('distanza')) / int(data.get('tempo_s'))
-            PPT = int(data.get('tempo_s_pick'))
-
+            CST = int(data.get('numero_rip', 0) or 0) / int(data.get('tot_secondi', 0) or 1)
+           
+            GS = int(data.get('distanza', 0) or 0) / int(data.get('tempo_s', 0) or 1)
+       
+            PPT = int(data.get('tempo_s_pick', 0) or 1)
+    
             punteggioFinale = CalcoloPunteggioCapacitaVitale(
                                 Somma_MMSE, Somma_GDS, Somma_LOC,
                                 Somma_Vista, Somma_Udito, Somma_HGS, PFT,
@@ -2219,105 +2215,13 @@ class PrescrizioniView(View):
         return redirect('cartella_paziente', persona_id)
  
 
-#APPUNTAMENTI
-class AppointmentView(View):
+
+
+
+#VIEWS APPUNTAMENTI
+class AppuntamentiView(View):
     def get(self, request):
-        appointments = Appointment.objects.all()
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persone = TabellaPazienti.objects.all()
+        return render(request, 'includes/Appuntamenti.html')
 
-        context = {
-            'persone': persone,
-            'dottore': dottore,
-            'appointments': appointments
-            }
-        return render(request, 'includes/appointments.html', context)
-
-@csrf_exempt
-def appointment_view(request):
-    if request.method == 'POST':
-        try:
-            data_input = json.loads(request.body)
-            print("Dati ricevuti:", data_input)  # Debug log
-            
-            # Recupera l'utente autenticato
-            user = get_user(request)
-
-            # Debug: Stampiamo i tipi di dati per ogni campo
-            for key, value in data_input.items():
-                print(f"{key}: {value} (type: {type(value)})")
-
-            # Conversione dei dati con gestione degli errori
-            try:
-                numero_studio = int(data_input['numero_studio']) if data_input['numero_studio'] else None
-                orario = datetime.strptime(data_input['orario'], "%H:%M").time()
-                data_appuntamento = datetime.strptime(data_input['data'], "%Y-%m-%d").date()
-
-                print(f"Conversione riuscita - Numero Stanza: {numero_studio}, Orario: {orario}, Data: {data_appuntamento}")
-
-            except ValueError as ve:
-                print(f"Errore di conversione: {ve}")
-                return JsonResponse({'error': f'Errore di conversione dei dati: {str(ve)}'}, status=400)
-
-            # Creazione dell'appuntamento
-            appointment = Appointment.objects.create(
-                cognome_paziente=data_input.get('cognome_paziente', ''),
-                nome_paziente=data_input.get('nome_paziente', ''),
-                tipologia_visita=data_input.get('tipologia_visita', ''),
-                data=data_appuntamento,
-                orario=orario,
-                numero_studio=numero_studio,
-                dottore=user if user.is_authenticated else None
-            )
-
-            print(f"Appuntamento creato con successo! ID: {appointment.id}")
-
-            return JsonResponse({'message': 'Appuntamento creato con successo!', 'id': appointment.id}, status=201)
-
-        except json.JSONDecodeError:
-            print("Errore: Formato JSON non valido")
-            return JsonResponse({'error': 'Formato JSON non valido'}, status=400)
-        except KeyError as ke:
-            print(f"Errore: Manca il campo richiesto: {ke}")
-            return JsonResponse({'error': f'Manca il campo richiesto: {str(ke)}'}, status=400)
-        except Exception as e:
-            print(f"Errore generico: {e}")
-            return JsonResponse({'error': f'Errore generico: {str(e)}'}, status=400)
-
-    elif request.method == 'GET':
-        appointments = list(Appointment.objects.values())
-        return JsonResponse(appointments, safe=False)
-
-    else:
-        return JsonResponse({'error': 'Metodo non supportato'}, status=405)
-
-@csrf_exempt
-def approve_appointment(request, appointment_id):
-    if request.method == "POST":
-        appointment = get_object_or_404(Appointment, id=appointment_id)
-        appointment.confermato = True  # Segna l'appuntamento come confermato
-        appointment.save()
-        return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
-    return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
-
-def appointments_list(request):
-    appointments = Appointment.objects.all()
-    return render(request, "includes/appointments.html", {"appointments": appointments})
-
-
-@csrf_exempt
-def approve_appointment(request, appointment_id):
-    if request.method == "POST":
-        appointment = get_object_or_404(Appointment, id=appointment_id)
-        # Se vuoi, puoi aggiungere un campo "confermato = True" nel modello e aggiornarlo qui.
-        return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
-    return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
-
-@csrf_exempt
-def delete_appointment(request, appointment_id):
-    if request.method == "DELETE":
-        appointment = get_object_or_404(Appointment, id=appointment_id)
-        appointment.delete()
-        return JsonResponse({"success": True, "message": "Appuntamento eliminato!"})
-    return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
+    def post(self, request):
+        return

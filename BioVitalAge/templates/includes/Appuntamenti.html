@@ -1,0 +1,426 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+    
+    <title>BioVitalAge - Pazienti</title>
+
+    <!-- Css Import -->
+    <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}" />
+    <link rel="stylesheet" href="{% static 'includes/css/risultati.css' %}">
+    <link rel="stylesheet" href="{% static 'includes/css/appuntamenti.css' %}">
+
+
+    <!-- Bootstrap import -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Js Import  -->
+    <script src="{% static 'includes/js/risultati.js' %}" defer></script>
+    <script src="{% static 'includes/js/Appuntamenti.js' %}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <!-- Font Import  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loader -->
+    {% include 'components/loader.html' %}
+
+    <!-- NAVBAR -->
+    {% include 'components/navBar.html' %}
+
+    <main>
+      <div class="main-title-nav">
+        <h2 class="main-welcome-title">Calendario Appuntamenti</h2>
+        <div class="main-menu-trace">
+          <a href="{% url 'HomePage' %}">
+            <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+          </a>
+          <p>»</p>
+          <p>Home Page</p>
+          <p>»</p>
+          <p>Appuntamenti</p>
+        </div>
+      </div>
+
+
+      <div class="Calendario-container">
+
+        <div class="Calendario-Header">
+
+            <div class="filtri-container">
+                <div class="selettori-container">
+
+                    <button class="prev">
+                        <svg class="arrow" width="30" height="30" viewBox="0 0 24 24">
+                        <polyline points="15 6 9 12 15 18" stroke="#3a255d" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+
+                    <button class="next">
+                        <svg class="arrow" width="30" height="30" viewBox="0 0 24 24">
+                        <polyline points="9 6 15 12 9 18" stroke="#3a255d" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+
+                    <button id="currentBtn">Today</button>
+
+                    <input type="date" id="date" name="date">
+                </div>
+
+            </div>
+
+            <p id="currentData">25 Febbraio 2025</p> <!-- Abilitare dinamicamente -->
+            
+            <div class="tools-container">
+                
+
+                <div class="layout-option">
+                    <button class="active" id="monthLayout">month</button>
+                    <button id="weekLayout">week</button>
+                    <button id="dayLayout">day</button>
+                </div>
+
+                <button type="button" id="button-tools" class="button button-view-all">
+                    <span class="button__icon-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+                            <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></circle>
+                            <line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                        </svg>
+                        
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg button__icon-svg--copy">
+                            <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></circle>
+                            <line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                        </svg>
+                    </span>
+                </button>
+    
+                <button id="button-tools" title="Add Patient" class="button">
+
+                    <span class="button__icon-wrapper">
+        
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14"
+                        height="14">
+                        <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" />
+                      </svg>
+                  
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="button__icon-svg button__icon-svg--copy" width="14" height="14">
+                        <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" />
+                      </svg>
+                  
+                    </span>
+                    Appuntamento
+                </button>
+            </div>
+            
+            
+        </div>
+
+
+        <!-- CALENDARIO MONTH LAYOUT -->
+       
+        <div class="header-rowTrace" id="month-head">
+                <p>Lunedi</p>
+                <p>Martedi</p>
+                <p>Mercoledi</p>
+                <p>Giovedi</p>
+                <p>Venerdi</p>
+                <p>Sabato</p>
+                <p>Domenica</p>
+        </div>
+
+        <div class="container-content-table" id="month-layout">
+                <div class="cella">
+                    <p class="data prev">26</p>
+                    <p class="appuntamenti-counter">5 Appuntamenti</p>
+                </div>
+                <div class="cella">
+                    <p class="data prev">27</p>
+                </div>
+                <div class="cella">
+                    <p class="data prev">28</p>
+                </div>
+                <div class="cella">
+                    <p class="data prev">29</p>
+                </div>
+                <div class="cella">
+                    <p class="data prev">30</p>
+                    <p class="appuntamenti-counter">10 Appuntamenti</p>
+                </div>
+                <div class="cella">
+                    <p class="data prev">31</p>
+                </div>
+                <div class="cella">
+                    <p class="data">1</p>
+                </div>
+                <div class="cella">
+                    <p class="data">2</p>
+                </div>
+                <div class="cella">
+                    <p class="data">3</p>
+                </div>
+                <div class="cella">
+                    <p class="data">4</p>
+                </div>
+                <div class="cella">
+                    <p class="data">5</p>
+                    <p class="appuntamenti-counter">3 Appuntamenti</p>
+                </div>
+                <div class="cella">
+                    <p class="data">6</p>
+                </div>
+                <div class="cella">
+                    <p class="data">7</p>
+                </div>
+                <div class="cella">
+                    <p class="data">8</p>
+                </div>
+                <div class="cella">
+                    <p class="data">9</p>
+                </div>
+                <div class="cella">
+                    <p class="data">10</p>
+                </div>
+                <div class="cella">
+                    <p class="data">11</p>
+                </div>
+                <div class="cella">
+                    <p class="data">12</p>
+                </div>
+                <div class="cella">
+                    <p class="data">13</p>
+                </div>
+                <div class="cella">
+                    <p class="data">14</p>
+                </div>
+                <div class="cella">
+                    <p class="data">15</p>
+                </div>
+                <div class="cella">
+                    <p class="data">16</p>
+                </div>
+                <div class="cella">
+                    <p class="data">17</p>
+                </div>
+                <div class="cella">
+                    <p class="data">18</p>
+                </div>
+                <div class="cella">
+                    <p class="data">19</p>
+                </div>
+                <div class="cella">
+                    <p class="data">20</p>
+                </div>
+                <div class="cella">
+                    <p class="data">21</p>
+                </div>
+                <div class="cella">
+                    <p class="data">22</p>
+                </div>
+                <div class="cella">
+                    <p class="data">23</p>
+                </div>
+                <div class="cella current">
+                    <p class="data">24</p>
+                </div>
+                <div class="cella">
+                    <p class="data">25</p>
+                </div>
+                <div class="cella">
+                    <p class="data">26</p>
+                </div>
+                <div class="cella">
+                    <p class="data">27</p>
+                </div>
+                <div class="cella">
+                    <p class="data">28</p>
+                </div>
+                <div class="cella">
+                    <p class="data prev">1</p>
+                </div>
+                
+        </div>  
+        
+
+
+        <!-- CALENDARIO SETTIMANALE LAYOUT -->
+        
+        <div class="header-week" id="week-head">
+            
+            <div class="header-rowTrace">
+                <p class="placeholder-week"></p>
+                <p>Lunedi</p>
+                <p>Martedi</p>
+                <p>Mercoledi</p>
+                <p>Giovedi</p>
+                <p>Venerdi</p>
+                <p>Sabato</p>
+                <p>Domenica</p>
+            </div>
+        </div>
+        
+        <div class="week-layout-content" id="week-layout">
+            <div class="row-week">
+
+                <div class="row-for-ora">
+                    <p>09:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+
+                <div class="row-for-ora">
+                    <p>10:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+
+                <div class="row-for-ora">
+                    <p>11:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+
+                <div class="row-for-ora">
+                    <p>12:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+
+                <div class="row-for-ora">
+                    <p>13:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+                <div class="row-for-ora">
+                    <p>14:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+                <div class="row-for-ora">
+                    <p>15:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+                <div class="row-for-ora">
+                    <p>16:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+                <div class="row-for-ora">
+                    <p>17:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+                <div class="row-for-ora">
+                    <p>18:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+                <div class="row-for-ora">
+                    <p>19:00</p>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                    <div class="cellaWeek"></div>
+                </div>
+
+               
+            
+                
+                
+                </div>
+            </div>
+        </div>
+
+
+        
+       
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </main>
+</body>
+</html>

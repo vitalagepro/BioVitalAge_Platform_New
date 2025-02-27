@@ -50,7 +50,7 @@ $(document).ready(function () {
 
 /*  -----------------------------------------------------------------------------------------------
     Actions on appointments
-  --------------------------------------------------------------------------------------------------- */
+--------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".action-btn").forEach((button) => {
     button.addEventListener("click", function () {

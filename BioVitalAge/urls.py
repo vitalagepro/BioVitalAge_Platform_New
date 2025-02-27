@@ -47,8 +47,6 @@ urlpatterns = [
     path('TestVitale/<int:id>/', views.TestEtaVitaleView.as_view(), name='TestetaVitale'),
     path('RefertoTest/<int:persona_id>/<int:referto_id>/', views.RefertoQuizView.as_view(), name='referto_test'),
 
-
-
     
     path('Prescrizioni/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
     path("api/update_blood_data/<int:id>/", UpdateBloodDataView.as_view(), name="update_blood_data"),
@@ -61,6 +59,10 @@ urlpatterns = [
     path("api/appointments/<int:appointment_id>/approve/", views.approve_appointment, name="approve_appointment"),
     path("api/appointments/<int:appointment_id>/delete/", views.delete_appointment, name="delete_appointment"),
     path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>', views.StampaRefertoView.as_view(), name='download_pdf_vitale'),
+
+    #URL APPUNTAMENTI
+    path('Appuntamenti', views.AppuntamentiView.as_view(), name='appuntamenti')
+
 ]
 
 

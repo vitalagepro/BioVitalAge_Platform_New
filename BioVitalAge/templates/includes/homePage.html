@@ -48,61 +48,62 @@
 
   <!-- Disclaimer -->
   {% if show_disclaimer %}
-  <div id="cookieOverlay" class="cookie-overlay hidden-disclaimer"></div>
-  <div id="disclaimerContainer" class="cookie-disclaimer hidden-disclaimer">
-    <div id="initialMessage" class="cookie-initial">
-      <p>
-        <strong>Cookie settings</strong><br>
-        Utilizziamo i cookie per fornire e migliorare i nostri servizi, analizzare l'utilizzo del sito e, se l'utente è
-        d'accordo, per personalizzare la sua esperienza e commercializzare i nostri servizi. È possibile leggere la nostra <a
-          href="#" target="_blank">Cookie Policy</a> qui.
-      </p>
-      <div class="cookie-buttons">
-        <button id="acceptCookies" class="btn-cookie">Accetta tutti</button>
-        <button id="rejectCookies" class="btn-cookie">Rifiuta tutti</button>
-        <button id="customizeCookies" class="btn-cookie">Personalizza la scelta</button>
+    <div id="cookieOverlay" class="cookie-overlay hidden-disclaimer"></div>
+    <div id="disclaimerContainer" class="cookie-disclaimer hidden-disclaimer">
+      <div id="initialMessage" class="cookie-initial">
+        <p>
+          <strong>Cookie settings</strong><br>
+          Utilizziamo i cookie per fornire e migliorare i nostri servizi, analizzare l'utilizzo del sito e, se l'utente è
+          d'accordo, per personalizzare la sua esperienza e commercializzare i nostri servizi. È possibile leggere la nostra <a
+            href="#" target="_blank">Cookie Policy</a> qui.
+        </p>
+        <div class="cookie-buttons">
+          <button id="acceptCookies" class="btn-cookie">Accetta tutti</button>
+          <button id="rejectCookies" class="btn-cookie">Rifiuta tutti</button>
+          <button id="customizeCookies" class="btn-cookie">Personalizza la scelta</button>
+        </div>
+      </div>
+
+      <div id="customizeSection" class="cookie-customize hidden-disclaimer">
+        <h3>Personalizza la scelta di cookie</h3>
+        <p>Scegliere i tipi di cookie che si desidera abilitare:</p>
+
+        <div class="toggle-group">
+          <label>Cookies funzionali</label>
+          <div class="toggle-wrapper">
+            <input class="toggle-checkbox" type="checkbox" id="functionalCookies">
+            <div class="toggle-container">
+              <div class="toggle-button"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="toggle-group">
+          <label>Analytics Cookies</label>
+          <div class="toggle-wrapper">
+            <input class="toggle-checkbox" type="checkbox" id="analyticsCookies">
+            <div class="toggle-container">
+              <div class="toggle-button"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="toggle-group">
+          <label>Marketing Cookies</label>
+          <div class="toggle-wrapper">
+            <input class="toggle-checkbox" type="checkbox" id="marketingCookies">
+            <div class="toggle-container">
+              <div class="toggle-button"></div>
+            </div>
+          </div>
+        </div>
+
+        <button id="saveCookies" class="btn-cookie">Salva le scelte</button>
       </div>
     </div>
-
-    <div id="customizeSection" class="cookie-customize hidden-disclaimer">
-      <h3>Personalizza la scelta di cookie</h3>
-      <p>Scegliere i tipi di cookie che si desidera abilitare:</p>
-
-      <div class="toggle-group">
-        <label>Cookies funzionali</label>
-        <div class="toggle-wrapper">
-          <input class="toggle-checkbox" type="checkbox" id="functionalCookies">
-          <div class="toggle-container">
-            <div class="toggle-button"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="toggle-group">
-        <label>Analytics Cookies</label>
-        <div class="toggle-wrapper">
-          <input class="toggle-checkbox" type="checkbox" id="analyticsCookies">
-          <div class="toggle-container">
-            <div class="toggle-button"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="toggle-group">
-        <label>Marketing Cookies</label>
-        <div class="toggle-wrapper">
-          <input class="toggle-checkbox" type="checkbox" id="marketingCookies">
-          <div class="toggle-container">
-            <div class="toggle-button"></div>
-          </div>
-        </div>
-      </div>
-
-      <button id="saveCookies" class="btn-cookie">Salva le scelte</button>
-    </div>
-  </div>
-  {% else %}
-  <p>Il disclaimer non è visibile perché il cookie è impostato.</p>
+    
+    {% else %}
+    <p>Il disclaimer non è visibile perché il cookie è impostato.</p>
   {% endif %}
   <!-- Debug: stampa il valore di show_disclaimer -->
   <!-- <p>Debug: show_disclaimer = {{ show_disclaimer }}</p> -->
@@ -261,7 +262,7 @@
 
       <div class="button-container">
         <h3>Appuntamenti</h3>
-        <a class="button" href="{% url 'appointments_page' %}">
+        <button class="button" onclick="window.location.href='{% url 'appuntamenti' %}'"> <!-- @ts-ignore -->
           <span class="button__icon-wrapper">
             <svg
               viewBox="0 0 14 15"
@@ -290,49 +291,74 @@
             </svg>
           </span>
           Vedi Tutti
-        </a>
-    </div>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Nome Paziente</th>
-            <th>Data</th>
-            <th>Ora</th>
-            <th>Studio</th>
-            <th>Tipologia</th>
-            <th>Azione</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% if appuntamenti %}
-              {% for appointment in appuntamenti %}
-              <tr data-id="{{ appointment.id }}">
-                  <td>{{ appointment.id }}</td>
-                  <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> {{ appointment.nome_paziente|title }}</td>
-                  <td>{{ appointment.data|date:"d/m/Y" }}</td>
-                  <td>{{ appointment.orario|time:"H:i" }}</td>
-                  <td>{{ appointment.numero_studio }}</td>
-                  <td>
-                      <span class="badge {% if appointment.tipologia_visita == 'Generale' %}general{% else %}consulting{% endif %}">
-                          {{ appointment.tipologia_visita }}
-                      </span>
-                  </td>
-                  <td>
-                      <button class="action-btn approve">✔</button>
-                      <button class="action-btn delete">✖</button>
-                  </td>
-              </tr>
-              {% endfor %}
-          {% else %}
-              <tr>
-                  <td colspan="7" class="text-center">Nessun appuntamento disponibile</td>
-              </tr>
-          {% endif %}
-      </tbody>              
-    </table>
+        </button>
 
-    </div>
+      </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nome Paziente</th>
+              <th>Età</th>
+              <th>Ora</th>
+              <th>Diagnosi</th>
+              <th>Tipologia</th>
+              <th>Azione</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>001</td>
+              <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> William Mathews</td>
+              <td>21</td>
+              <td>10:30AM</td>
+              <td>Attacco Cardiaco</td>
+              <td><span class="badge general">Generale</span></td>
+              <td>
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> Adam Bradley</td>
+              <td>36</td>
+              <td>10:45AM</td>
+              <td>Diabetico</td>
+              <td><span class="badge consulting">Consulenza</span></td>
+              <td>
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar">Adam Bradley</td>
+              <td>36</td>
+              <td>10:45AM</td>
+              <td>Diabetico</td>
+              <td><span class="badge consulting">Consulenza</span></td>
+              <td>
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> Adam Bradley</td>
+              <td>36</td>
+              <td>10:45AM</td>
+              <td>Diabetico</td>
+              <td><span class="badge consulting">Consulenza</span></td>
+              <td>
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
 
 
     <!-- CARDS REPORT -->

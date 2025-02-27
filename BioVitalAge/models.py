@@ -9,6 +9,7 @@ class UtentiRegistratiCredenziali(models.Model):
     cognome = models.CharField(max_length=100)
     email = models.CharField(max_length=100, null=True)
     password = models.CharField(max_length=24, null=True)
+    cookie = models.CharField(max_length=2, null=True)
 
     def __str__(self):
         return f'{self.nome} {self.cognome}'
