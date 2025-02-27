@@ -612,3 +612,67 @@ input[type="range"]::-ms-thumb {
   width: 0.5rem;
   border-radius: 8px;
 }
+
+
+
+
+
+/* STYLE CARD A COMPORSA */
+.card-indices{
+  width: 100%;
+  border-radius: 8px;
+  background-color: var(--card-color);
+  padding-bottom: 20px;
+  margin-bottom: 1rem;
+}
+.card-indices_header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 5rem;
+  width: 100%;
+  background-color: var(--contrast-color-shadow);
+  border-radius: 8px;
+  padding: 20px 40px;
+  box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.5);
+}
+.card-header_title{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+.card-header_title img{
+  width: 40px;
+  height: 40px;
+  margin-top: -0.5rem;
+}
+.card-header h3{
+  color: var(--dark1);
+}
+.card-indices_content{
+  width: 98%;
+  margin: auto;
+  margin-top: 3rem;
+  border-radius: 8px;
+}
+
+.card-indices_content h3{
+  color: var(--contrast-color);
+  margin-top: 5rem;
+  padding-bottom: 10px;
+}
+.card-indices_content h5{
+  padding-bottom: 20px;
+}
+.card-indices_content p{
+  border: 1px solid #ddd;
+  width: 5rem;
+  text-align: center;
+  border-radius: 4px;
+  background-color: var(--contrast-color-shadow);
+}
+
+/* #cuoreContent{
+  display: none;
+} */
