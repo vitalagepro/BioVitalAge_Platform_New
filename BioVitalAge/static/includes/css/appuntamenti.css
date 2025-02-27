@@ -1,4 +1,4 @@
-.Calendario-container{
+.Calendario-container {
     background-color: var(--card-color);
     width: 98%;
     margin: auto;
@@ -7,7 +7,8 @@
     margin-bottom: 20px;
     padding-bottom: 5px;
 }
-.Calendario-Header{
+
+.Calendario-Header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -18,35 +19,41 @@
 }
 
 /* Filtri container */
-.filtri-container{
+.filtri-container {
     display: flex;
     justify-content: flex-start;
     align-items: center;
     gap: 20px;
 }
-.selettori-container button{
+
+.selettori-container button {
     background-color: var(--card-color);
     border-radius: 4px;
     border: none;
     cursor: pointer;
     padding: 5px 10px;
 }
-#currentBtn{
+
+#currentBtn {
     padding: 8px 20px;
     color: var(--contrast-color);
     font-size: 16px;
     width: 8rem;
 }
-.selettori-container button:hover{
+
+.selettori-container button:hover {
     background-color: var(--contrast-color2);
 }
-#currentBtn:hover{
+
+#currentBtn:hover {
     color: white;
 }
+
 .selettori-container button:hover .arrow polyline {
     stroke: white;
 }
-input[type='date']{
+
+input[type='date'] {
     padding: 8px 20px;
     border: none;
     background-color: var(--card-color);
@@ -56,7 +63,7 @@ input[type='date']{
 
 
 
-#currentData{
+#currentData {
     padding: 8px 20px;
     margin-top: 1rem;
     border-radius: 4px;
@@ -70,40 +77,107 @@ input[type='date']{
 
 
 /* Tools container */
-.tools-container{
+.modal-appointments {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-section{
+    margin-top: 10%;
+}
+
+.modal-content-appointments {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    width: 50%;
+    border-radius: 10px;
+    position: relative;
+}
+
+.header-modal-appointments{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    margin-bottom: 20px;
+}
+
+.header-modal-appointments h2{
+    margin-bottom: 0;
+}
+
+.icon-container-appointment{
+    width: 70px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--contrast-color2);
+    border-radius: 8px;
+    padding: 5px;
+}
+
+.icon-container-appointment img{
+    width: 100%;
+    height: 100%;
+}
+
+.close {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+
+.tools-container {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
 }
-#button-tools{
+
+#button-tools {
     padding: 8px 20px;
     border-radius: 4px;
 }
+
 .layout-option {
     margin-right: 5px;
     display: flex;
     gap: 8px;
 }
-.layout-option button{
+
+.layout-option button {
     background-color: var(--card-color);
     border: none;
     padding: 8px 20px;
     border-radius: 4px;
     color: var(--contrast-color);
 }
-.layout-option .active{
+
+.layout-option .active {
     background-color: var(--contrast-color2);
     color: white;
 }
-.layout-option button:hover{
+
+.layout-option button:hover {
     background-color: var(--contrast-color2);
     color: white;
 }
 
 
 /* Content style */
-.header-rowTrace{
+.header-rowTrace {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -112,7 +186,8 @@ input[type='date']{
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 }
-.header-rowTrace p{
+
+.header-rowTrace p {
     width: 100%;
     text-align: center;
     margin-top: 1rem;
@@ -127,33 +202,38 @@ input[type='date']{
     margin-top: 10px;
     display: grid;
     grid-template-columns: repeat(7, minmax(100px, 1fr));
-    gap: 5px; 
+    gap: 5px;
     justify-content: center;
     align-items: center;
-    width: 100%; 
+    width: 100%;
     padding-left: 5px;
     padding-right: 5px;
 }
+
 .cella {
-    padding: 20px; 
+    padding: 20px;
     text-align: center;
-    border: 1px solid #ddd; 
+    border: 1px solid #ddd;
     height: 150px;
     position: relative;
 }
-.data{
+
+.data {
     position: absolute;
     top: 1rem;
     right: 1rem;
     color: var(--dark1);
 }
-.data.prev{
+
+.data.prev {
     color: grey;
 }
-.cella.current{
+
+.cella.current {
     background-color: var(--contrast-color-shadow);
 }
-.appuntamenti-counter{
+
+.appuntamenti-counter {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -168,43 +248,49 @@ input[type='date']{
 
 
 /* STYLE WEEK LAYOUT */
-.week-layout-content{
+.week-layout-content {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 1rem;
 }
-.header-week{
+
+.header-week {
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.placeholder-week{
+
+.placeholder-week {
     max-width: 7.65rem;
     border-right: 1px solid #ddd;
 }
-.row-week{
+
+.row-week {
     display: flex;
     flex-direction: column;
-    height: 1400px; 
-    width: 100%; 
+    height: 1400px;
+    width: 100%;
 }
+
 .row-for-ora {
     display: grid;
     grid-template-columns: 0.5fr repeat(7, 1fr);
     height: 150px;
 }
-.row-for-ora p{
+
+.row-for-ora p {
     text-align: center;
     padding-top: 20px;
 }
 
-.cellaWeek{
-    border-right: 1px solid #ddd; 
+.cellaWeek {
+    border-right: 1px solid #ddd;
     border-left: 1px solid #ddd;
     font-size: 20px;
 }
-#cellaOrari{
+
+#cellaOrari {
     width: 5rem;
     display: flex;
     flex-direction: column;
@@ -212,7 +298,8 @@ input[type='date']{
     height: 1400px;
     text-align: center;
 }
-#cellaOrari p{
+
+#cellaOrari p {
     height: 100px;
 }
 
@@ -229,7 +316,6 @@ input[type='date']{
 
 
 #week-head,
-#week-layout{
+#week-layout {
     display: none;
 }
-

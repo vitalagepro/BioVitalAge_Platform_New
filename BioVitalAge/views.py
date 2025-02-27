@@ -2221,7 +2221,13 @@ class PrescrizioniView(View):
 #VIEWS APPUNTAMENTI
 class AppuntamentiView(View):
     def get(self, request):
-        return render(request, 'includes/Appuntamenti.html')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+
+        context = {
+            'dottore': dottore,
+        }
+
+        return render(request, 'includes/Appuntamenti.html', context)
 
     def post(self, request):
         return

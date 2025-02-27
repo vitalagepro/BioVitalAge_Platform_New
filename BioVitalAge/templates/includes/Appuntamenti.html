@@ -11,7 +11,6 @@
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}" />
-    <link rel="stylesheet" href="{% static 'includes/css/risultati.css' %}">
     <link rel="stylesheet" href="{% static 'includes/css/appuntamenti.css' %}">
 
 
@@ -19,7 +18,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Js Import  -->
-    <script src="{% static 'includes/js/risultati.js' %}" defer></script>
     <script src="{% static 'includes/js/Appuntamenti.js' %}" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
@@ -104,7 +102,30 @@
                     </span>
                 </button>
     
-                <button id="button-tools" title="Add Patient" class="button">
+                <!-- Modale per appuntamenti -->
+                <div id="appointmentModal" class="modal-appointments">
+                    <div class="modal-content-appointments">
+                        <header class="header-modal-appointments">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="icon-container-appointment">
+                                    <img src="{% static 'includes/icone/calendar-icon.png' %}" alt="Icona Calendario">
+                                </div>
+                                <h2>Nuovo Appuntamento</h2>                     
+                            </div>
+                            <span id="closeModal" class="close">&times;</span>
+                        </header>
+                        <div class="modal-section">
+                            <form action="POST" id="date-appointment">
+                                <div class="icon-form-appointment">
+                                    <img src="{% static 'includes/icone/edit-icon.png' %}" alt="edit-date">
+                                </div>
+                                <span id="day-appointement">{{ appuntamenti.day|default:"Lunedì" }}</span>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="openModal" title="Add Patient" class="button">
 
                     <span class="button__icon-wrapper">
         
