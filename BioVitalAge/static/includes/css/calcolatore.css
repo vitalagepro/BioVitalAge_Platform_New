@@ -673,6 +673,11 @@ input[type="range"]::-ms-thumb {
   background-color: var(--contrast-color-shadow);
 }
 
-/* #cuoreContent{
-  display: none;
-} */
+.card-indices_content {
+  display: none; 
+  transition: all 0.3s ease-in-out;
+}
+
+.card-indices_content.hidden {
+  display: block; 
+}

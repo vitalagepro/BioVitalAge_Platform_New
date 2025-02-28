@@ -4,9 +4,7 @@
 const ContainerIndicatori = document.querySelectorAll(".indicator-container");
 
 ContainerIndicatori.forEach((element) => {
-  try {
-    console.log("Elaborazione elemento:", element);
-
+  try { 
     const indicatorContainer = element.querySelector(".indicator-content-container");
     const indicator = element.querySelector(".indicatore");
     const valoreEsame = parseFloat(indicator?.getAttribute("data-value") || 0);
@@ -18,7 +16,7 @@ ContainerIndicatori.forEach((element) => {
 
     // Gestione del valore ">0"
     if (minPositive === ">0") {
-      minPositive = 0.1; // Sostituisci con un valore numerico appropriato
+      minPositive = 0.1; 
     }
 
     // Converti in numeri per i calcoli
@@ -33,44 +31,29 @@ ContainerIndicatori.forEach((element) => {
     );
 
     if (isNaN(valoreEsame) || isNaN(minPositive) || isNaN(maxPositive)) {
-      console.warn("Dati mancanti o non validi:", {
-        valoreEsame,
-        minPositive,
-        maxPositive,
-        rangeNegativeIndicator,
-        extremeRightRangeIndicator,
-      });
+      
       return;
     }
-
-    console.log("Valori iniziali:", {
-      valoreEsame,
-      minPositive,
-      maxPositive,
-      rangeNegativeIndicator,
-      extremeRightRangeIndicator,
-    });
 
     if (
       valoreEsame >= minPositive &&
       valoreEsame <= maxPositive
     ) {
-      console.log("Caso 1: Dentro l'intervallo positivo");
+   
       const percentuale = ((valoreEsame - minPositive) / (maxPositive - minPositive)) * 30 + 26;
       indicator.style.left = `${Math.round(percentuale)}%`;
     } else if (valoreEsame < minPositive) {
-      console.log("Caso 2: Fuori range, sotto il minimo positivo");
+     
       const percentuale = ((valoreEsame - rangeNegativeIndicator) / (minPositive - rangeNegativeIndicator)) * 30 - 4;
       indicator.style.left = `${Math.max(Math.round(percentuale), 0)}%`;
     } else if (valoreEsame > maxPositive) {
-      console.log("Caso 3: Fuori range, sopra il massimo positivo");
+ 
       const percentuale = ((valoreEsame - maxPositive) / (extremeRightRangeIndicator - maxPositive)) * 30 + 66;
       indicator.style.left = `${Math.min(Math.round(percentuale), 100)}%`;
     } else {
       console.warn("Caso non gestito per valoreEsame:", valoreEsame);
     }
 
-    console.log("Posizione indicatore:", indicator.style.left);
   } catch (error) {
     console.error("Errore durante l'elaborazione:", error, element);
   }
@@ -82,7 +65,7 @@ ContainerIndicatori.forEach((element) => {
 --------------------------------------------------------------------------------------------------- */
 
 // Add event listener to toggle buttons
-function setupSectionToggle() {
+/* function setupSectionToggle() {
   document.querySelectorAll(".btn-selected").forEach((button) => {
     button.addEventListener("click", toggleSection);
   });
@@ -97,9 +80,9 @@ function setupSectionToggle() {
       toggleSection.call(section.querySelector(".btn-selected"));
     });
   });
-}
+} */
 
-function toggleSection() {
+/* function toggleSection() {
   const container = this.closest(".section");
   const buttonIcon = this.querySelector("svg");
 
@@ -112,10 +95,38 @@ function toggleSection() {
     this.setAttribute("title", "Chiudi Sezione");
     buttonIcon.style.transform = "rotate(180deg)"; // Rotate arrow
   }
-}
+} */
 
 // Initialize the toggle functionality
-document.addEventListener("DOMContentLoaded", setupSectionToggle);
+/* document.addEventListener("DOMContentLoaded", setupSectionToggle); */
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Seleziona tutti i pulsanti delle sezioni
+  document.querySelectorAll(".btn-selected").forEach(button => {
+      button.addEventListener("click", function () {
+          // Trova il contenitore della card più vicino
+          const card = this.closest(".card-indices");
+          // Trova la sezione da mostrare/nascondere
+          const content = card.querySelector(".card-indices_content");
+
+          // Alterna la visibilità della sezione
+          content.classList.toggle("hidden");
+
+          // Alterna l'icona del pulsante
+          const icon = this.querySelector("svg polyline");
+          if (content.classList.contains("hidden")) {
+              icon.setAttribute("points", "18 15 12 9 6 15"); // Cambia direzione della freccia (verso il basso)
+          } else {
+              icon.setAttribute("points", "6 9 12 15 18 9"); // Freccia verso l'alto
+          }
+      });
+  });
+});
+
+
+
+
+
 /*  -----------------------------------------------------------------------------------------------
 Function for gender selection
 --------------------------------------------------------------------------------------------------- */
