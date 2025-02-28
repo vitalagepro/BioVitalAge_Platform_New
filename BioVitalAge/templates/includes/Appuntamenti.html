@@ -110,17 +110,54 @@
                                 <div class="icon-container-appointment">
                                     <img src="{% static 'includes/icone/calendar-icon.png' %}" alt="Icona Calendario">
                                 </div>
-                                <h2>Nuovo Appuntamento</h2>                     
+                                <h3>Nuovo Appuntamento</h3>
                             </div>
                             <span id="closeModal" class="close">&times;</span>
                         </header>
                         <div class="modal-section">
-                            <form action="POST" id="date-appointment">
-                                <div class="icon-form-appointment">
-                                    <img src="{% static 'includes/icone/edit-icon.png' %}" alt="edit-date">
-                                </div>
-                                <span id="day-appointement">{{ appuntamenti.day|default:"Lunedì" }}</span>
+                            {% if appuntamenti.day and appuntamenti.date and appuntamenti.time %}
+                                <form action="POST" id="date-appointment" class="form-appointment">
+                                    <div class="icon-form-appointment">
+                                        <img src="{% static 'includes/icone/edit-icon.png' %}" alt="edit-date">
+                                    </div>
+                                    <div>
+                                        <span id="day-appointement">{{ appuntamenti.day|default:"Lunedì" }}, </span>
+                                        <span id="date-appointement">{{ appuntamenti.date|default:"01/05/2025" }}, </span>
+                                        <span id="time-appointement">{{ appuntamenti.time|default:"10:00" }}</span>
+                                    </div>
+                                </form>
+                            {% endif %}
+
+                            <form action="POST" id="patient-appointment">
+                                <label for="tipologia" class="input-typology">
+                                    <div class="d-flex flex-column w-100">
+                                        <p class="mb-0">Tipologia</p>
+                                        <select name="tipologia" id="tipologia" class="form-select-appointment w-100">
+                                            <option>Appuntamento Paziente</option>
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="icon_add_paient">
+                                            <img src="{% static 'includes/icone/add-user.png' %}" alt="add-user">
+                                        </div>
+                                        <select name="paziente-select" id="paziente-select" class="w-100 form-select-appointment">
+                                            <option>Seleziona Paziente</option>
+                                        </select>
+                                    </div>
+                                </label>
+
+                                <label id="input-time" class="mt-4">
+                                    <select name="voce-prezzario" id="voce-prezzario">
+                                        <option>Voce prezzario</option>
+                                    </select>
+                                    <input type="time" name="time" id="time">
+                                </label>
                             </form>
+                        </div>
+                        <div class="button-modal-appointments">
+                            <button type="submit" class="btn btn-primary">Salva</button>
+                            <button type="button" class="btn btn-secondary close" id="closeModal">Chiudi</button></button>
                         </div>
                     </div>
                 </div>

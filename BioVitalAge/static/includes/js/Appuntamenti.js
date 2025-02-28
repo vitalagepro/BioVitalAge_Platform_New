@@ -148,6 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Gestione modale appuntamenti con GSAP solo sul contenuto
   openModalBtn.addEventListener("click", function () {
+    document.body.style.overflow = "hidden";
     modal.style.display = "block";
     gsap.fromTo(
       modalContent,
@@ -155,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
       { opacity: 1, scale: 1, duration: 0.3 }
     );
   });
-
+  
   closeModalBtn.addEventListener("click", function () {
     gsap.to(modalContent, {
       opacity: 0,
@@ -166,9 +167,10 @@ document.addEventListener("DOMContentLoaded", function () {
       },
     });
   });
-
+  
   window.addEventListener("click", function (event) {
     if (event.target === modal) {
+      document.body.style.overflow = "auto";
       gsap.to(modalContent, {
         opacity: 0,
         scale: 0.8,

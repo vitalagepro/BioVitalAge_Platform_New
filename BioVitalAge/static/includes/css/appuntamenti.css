@@ -96,7 +96,7 @@ input[type='date'] {
     background-color: #fff;
     margin: 15% auto;
     padding: 20px;
-    width: 50%;
+    width: 70%;
     border-radius: 10px;
     position: relative;
 }
@@ -112,19 +112,20 @@ input[type='date'] {
     margin-bottom: 20px;
 }
 
-.header-modal-appointments h2{
+.header-modal-appointments h3{
+    margin-top: 12px;
     margin-bottom: 0;
 }
 
 .icon-container-appointment{
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: var(--contrast-color2);
     border-radius: 8px;
-    padding: 5px;
+    padding: 10px;
 }
 
 .icon-container-appointment img{
@@ -138,7 +139,96 @@ input[type='date'] {
     cursor: pointer;
 }
 
+.close:hover{
+    color: red;
+}
 
+.icon-form-appointment img{
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
+}
+
+.icon-form-appointment img:hover{
+    transform: scale(1.2);
+}
+
+.form-appointment{
+    display: flex;
+}
+
+.form-appointment span{
+    color: var(--contrast-color);
+}
+
+.input-typology{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    align-items: end;
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.form-select-appointment{
+    border: none;
+    border-bottom: 1px solid var(--contrast-color);
+    color: var(--contrast-color);
+    padding: 5px;
+    cursor: pointer;
+    outline: none;
+}
+
+/* ! input time */
+
+#input-time{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#voce-prezzario{
+    border: none;
+    border-bottom: 1px solid var(--contrast-color);
+    color: var(--contrast-color);
+    padding: 5px;
+    cursor: pointer;
+    outline: none;
+}
+
+#time{
+    border: none;
+    border-bottom: 1px solid var(--contrast-color);
+    color: var(--contrast-color);
+    padding: 5px;
+    cursor: pointer;
+    outline: none;
+}
+
+.container-first-select{
+    width: max-content;
+}
+
+.container-first-select span{
+    width: max-content;
+}
+
+.icon_add_paient img{
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
+}
+
+.icon_add_paient img:hover{
+    transform: scale(1.2);
+}
+/* ! Tools container */
 .tools-container {
     display: flex;
     justify-content: center;
