@@ -4144,7 +4144,31 @@
 
             <!-- PERSONAL INFORMATION -->
             <div class="section" id="section-information">
-                <h3>Informazioni Paziente</h3>
+
+                <div class="personal_title">
+                    <div class="card-header_title">
+                        <img src="{% static 'includes/images/user.png' %}" alt="">
+                        <h3>Informazioni Personali</h3>
+                    </div>
+                    <a href="{% url 'Risultati' %}" class="button">
+                        <span class="button__icon-wrapper">
+                            <svg viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="10">
+                                <path
+                                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+                                    fill="currentColor"></path>
+                            </svg>
+                
+                            <svg viewBox="0 0 14 15" fill="none" width="10" xmlns="http://www.w3.org/2000/svg"
+                                class="button__icon-svg button__icon-svg--copy">
+                                <path
+                                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+                                    fill="currentColor"></path>
+                            </svg>
+                        </span>
+                        Vedi i Risultati
+                    </a>
+                </div>
+
                 <div class="patient-info">
 
                     <!-- Name -->
@@ -12444,895 +12468,933 @@
                 </div>
             </div>
 
-            <!-- SALUTE DEL CUORE -->
-            <div class="card-indices">
 
-                <div class="card-indices_header">
-                    <div class="card-header_title">
-                        <img src="{% static 'includes/images/saluteCuore.png' %}" alt="">
-                        <h3>Salute del cuore</h3>
-                    </div>
-                    
-                    <button class="btn-selected" type="button" title="Apri Sezione" id="cuore-show">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
 
-                <div class="card-indices_content" id="cuoreContent">  
 
-                    <div class="grid-container">     
+            <div class="contenitore-genitore">
+
+                <div class="accordion">
+
+                    <!-- SALUTE DEL CUORE -->
+                    <div class="card-indices">
+
+                        <div class="card-indices_header">
+                            <div class="card-header_title">
+                                <img src="{% static 'includes/images/saluteCuore.png' %}" alt="">
+                                <h3>Salute del cuore</h3>
+                            </div>
+                            
+                            <button class="btn-selected" type="button" title="Apri Sezione" id="cuore-show">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="card-indices_content" id="cuoreContent">  
+
+                            <div class="grid-container">     
+                                
+                                <div class="form-group">
+                                    <label for="tot_chol">Colesterolo Totale (mg/dI)</label>
+                                    <input type="number" id="tot_chol" name="tot_chol" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="tot_chol_range" name="tot_chol_range" min="0" max="400" value="0" oninput="tot_chol.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ldl_chol">Colesterolo LDL (mg/dL)</label>
+                                    <input type="number" id="ldl_chol" name="ldl_chol" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="ldl_chol_range" name="ldl_chol_range" min="0" max="200" value="0" oninput="ldl_chol.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hdl_chol_m">Colesterolo HDL Uomo(mg/dL)</label>
+                                    <input type="number" id="hdl_chol_m" name="hdl_chol_m" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="hdl_chol_m_range" name="hdl_chol_m_range" min="0" max="100" value="0" oninput="hdl_chol_m.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hdl_chol_w">Colesterolo HDL Donna(mg/dL)</label>
+                                    <input type="number" id="hdl_chol_w" name="hdl_chol_w" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="hdl_chol_w_range" name="hdl_chol_w_range" min="0" max="120" value="0" oninput="hdl_chol_w.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="trigl">Trigliceridi (mg/dL)</label>
+                                    <input type="number" id="trigl" name="trigl" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="trigl_range" name="trigl_range" min="0" max="400" value="0" oninput="trigl.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="pai_1">Inibitore dell'attivatore del plasminogeno-1</label>
+                                    <input type="number" id="pai_1" name="pai_1" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="pai_1_range" name="pai_1_range" min="0" max="244" value="0" oninput="pai_1.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="d_dimero">D-Dimero(ng/ml)</label>
+                                    <input type="number" id="d_dimero" name="d_dimero" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="d_dimero_range" name="d_dimero_range" min="0" max="400" value="0" oninput="d_dimero.value=this.value" step="0.01">
+                                </div>  
+
+                            </div> 
+
+
+                            <!-- STRESS OSSIDATIVO -->
+                            <h3 >Stress Ossidativo</h3>
+
+                            <div class="container-exam-calculator" style="margin-bottom: 2rem;">
+                                <div class="flex-container" id="flex-adjust">
+                                    <div class="form-group">
+                                        <label for="d_roms">d-ROMs</label>
+                                        <input type="number" id="d_roms" name="d_roms" placeholder="Solo valori numerici" step="0.01">
+                                        <input type="range" id="d_roms_range" name="d_roms_range" min="0" max="1000" value="0" oninput="d_roms.value=this.value" step="0.01">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="pat">Plasma Antioxidant Test (PAT)</label>
+                                        <input type="number" id="pat" name="pat" placeholder="Solo valori numerici" step="0.01">
+                                        <input type="range" id="pat_range" name="pat_range" min="0" max="5600" value="0" oninput="pat.value=this.value" step="0.01">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="osi">Oxidative Stress Index (OSI)</label>
+                                        <input type="number" id="osi" name="osi" placeholder="Solo valori numerici" step="0.01">
+                                        <input type="range" id="osi_range" name="osi_range" min="0" max="240" value="0" oninput="osi.value=this.value" step="0.01">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- OMEGA SCREENING -->
+                            <h3>Omega Screening</h3>
+                            <h5>Acidi Grassi Saturi</h5>
+                            
                         
-                        <div class="form-group">
-                            <label for="tot_chol">Colesterolo Totale (mg/dI)</label>
-                            <input type="number" id="tot_chol" name="tot_chol" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="tot_chol_range" name="tot_chol_range" min="0" max="400" value="0" oninput="tot_chol.value=this.value" step="0.01">
-                        </div>
-            
-                        <div class="form-group">
-                            <label for="ldl_chol">Colesterolo LDL (mg/dL)</label>
-                            <input type="number" id="ldl_chol" name="ldl_chol" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="ldl_chol_range" name="ldl_chol_range" min="0" max="200" value="0" oninput="ldl_chol.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="hdl_chol_m">Colesterolo HDL Uomo(mg/dL)</label>
-                            <input type="number" id="hdl_chol_m" name="hdl_chol_m" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="hdl_chol_m_range" name="hdl_chol_m_range" min="0" max="100" value="0" oninput="hdl_chol_m.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="hdl_chol_w">Colesterolo HDL Donna(mg/dL)</label>
-                            <input type="number" id="hdl_chol_w" name="hdl_chol_w" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="hdl_chol_w_range" name="hdl_chol_w_range" min="0" max="120" value="0" oninput="hdl_chol_w.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="trigl">Trigliceridi (mg/dL)</label>
-                            <input type="number" id="trigl" name="trigl" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="trigl_range" name="trigl_range" min="0" max="400" value="0" oninput="trigl.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="pai_1">Inibitore dell'attivatore del plasminogeno-1</label>
-                            <input type="number" id="pai_1" name="pai_1" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="pai_1_range" name="pai_1_range" min="0" max="244" value="0" oninput="pai_1.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="d_dimero">D-Dimero(ng/ml)</label>
-                            <input type="number" id="d_dimero" name="d_dimero" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="d_dimero_range" name="d_dimero_range" min="0" max="400" value="0" oninput="d_dimero.value=this.value" step="0.01">
-                        </div>                
-                    </div> 
-
-
-                    <!-- STRESS OSSIDATIVO -->
-                    <h3 >Stress Ossidativo</h3>
-
-                    <div class="container-exam-calculator" style="margin-bottom: 2rem;">
-                        <div class="flex-container" id="flex-adjust">
-                            <div class="form-group">
-                                <label for="d_roms">d-ROMs</label>
-                                <input type="number" id="d_roms" name="d_roms" placeholder="Solo valori numerici" step="0.01">
-                                <input type="range" id="d_roms_range" name="d_roms_range" min="0" max="1000" value="0" oninput="d_roms.value=this.value" step="0.01">
+                            <div class="grid-container" style="row-gap: 60px;">
+                                <div class="form-group">
+                                    <label for="my_acid">Acido Miristico</label>
+                                    <input type="number" id="my_acid" name="my_acid" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="my_acid_range" name="my_acid_range" min="0" max="128" value="0" oninput="my_acid.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="p_acid">Acido Palmitico</label>
+                                    <input type="number" id="p_acid" name="p_acid" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="p_acid_range" name="p_acid_range" min="0" max="1786" value="0" oninput="p_acid.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="st_acid">Acido Stearico</label>
+                                    <input type="number" id="st_acid" name="st_acid" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="st_acid_range" name="st_acid_range" min="0" max="560" value="0" oninput="st_acid.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ar_acid">Acido Arachidico</label>
+                                    <input type="number" id="ar_acid" name="ar_acid" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="ar_acid_range" name="ar_acid_range" min="0" max="20" value="0" oninput="ar_acid.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="beenic_acid">Acido Beenico</label>
+                                    <input type="number" id="beenic_acid" name="beenic_acid" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="beenic_acid_range" name="beenic_acid_range" min="0" max="60" value="0" oninput="beenic_acid.value=this.value" step="0.01">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="pat">Plasma Antioxidant Test (PAT)</label>
-                                <input type="number" id="pat" name="pat" placeholder="Solo valori numerici" step="0.01">
-                                <input type="range" id="pat_range" name="pat_range" min="0" max="5600" value="0" oninput="pat.value=this.value" step="0.01">
+                        
+                            <h5 style="margin-top: 4rem;">Acidi Grassi Insaturi</h5>
+
+                            <p>Omega 7</p>
+                            <div class="flex-container" id="flex-adjust">
+                                <div class="form-group">
+                                    <label for="pal_acid">Acido Palmitoleico</label>
+                                    <input type="number" id="pal_acid" name="pal_acid" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="pal_acid_range" name="pal_acid_range" min="0" max="248" value="0" oninput="pal_acid.value=this.value" step="0.01">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="osi">Oxidative Stress Index (OSI)</label>
-                                <input type="number" id="osi" name="osi" placeholder="Solo valori numerici" step="0.01">
-                                <input type="range" id="osi_range" name="osi_range" min="0" max="240" value="0" oninput="osi.value=this.value" step="0.01">
+
+                            <p style="margin-top: 4rem;">Omega 9</p>
+                            <div class="flex-container" id="flex-adjust">
+                                <div class="form-group">
+                                    <label for="ol_acid">Acido Oleico</label>
+                                    <input type="number" id="ol_acid" name="ol_acid" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="ol_acid_range" name="ol_acid_range" min="0" max="1832" value="0" oninput="ol_acid.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ner_acid">Acido Nervonico</label>
+                                    <input type="number" id="ner_acid" name="ner_acid" placeholder="Solo valori numerici">
+                                    <input type="range" id="ner_acid_range" name="ner_acid_range" min="0" max="82" value="0" oninput="ner_acid.value=this.value">
+                                </div>
+                            </div>
+
+                            <p style="margin-top: 4rem;">Omega 3</p>
+                            <div class="flex-container" id="flex-adjust">
+                                <div class="form-group">
+                                    <label for="a_linoleic_acid">Acido Linoleico Alpha</label>
+                                    <input type="number" id="a_linoleic_acid" name="a_linoleic_acid" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="a_linoleic_acid_range" name="a_linoleic_acid_range" min="0" max="66" value="0" oninput="a_linoleic_acid.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="eico_acid">Acido(EPA) Eicosapentaenoico</label>
+                                    <input type="number" id="eico_acid" name="eico_acid" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="eico_acid_range" name="eico_acid_range" min="0" max="122" value="0" oninput="eico_acid.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="doco_acid">Acido(DHA) Docosaesaenoico</label>
+                                    <input type="number" id="doco_acid" name="doco_acid" placeholder="Solo valori numerici"step="0.01">
+                                    <input type="range" id="doco_acid_range" name="doco_acid_range" min="0" max="222" value="0" oninput="doco_acid.value=this.value"step="0.01">
+                                </div>
+                            </div>
+
+                            <p style="margin-top: 4rem;">Omega 6</p>
+                            <div class="grid-container">
+                                <div class="form-group">
+                                    <label for="lin_acid">Acido Linolenico</label>
+                                    <input type="number" id="lin_acid" name="lin_acid" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="lin_acid_range" name="lin_acid_range" min="0" max="2334" value="0" oninput="lin_acid.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gamma_lin_acid">Acido Gamma Linolenico</label>
+                                    <input type="number" id="gamma_lin_acid" name="gamma_lin_acid" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="gamma_lin_acid_range" name="gamma_lin_acid_range" min="0" max="50" value="0" oninput="gamma_lin_acid.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="dih_gamma_lin_acid">Acido Diomo Gamma Linolenico</label>
+                                    <input type="number" id="dih_gamma_lin_acid" name="dih_gamma_lin_acid" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="dih_gamma_lin_acid_range" name="dih_gamma_lin_acid_range" min="0" max="150" value="0" oninput="dih_gamma_lin_acid.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="arachidonic_acid">Acido Arachidonico</label>
+                                    <input type="number" id="arachidonic_acid" name="arachidonic_acid" placeholder="Solo valori numerici">
+                                    <input type="range" id="arachidonic_acid_range" name="arachidonic_acid_range" min="0" max="686" value="0" oninput="arachidonic_acid.value=this.value">
+                                </div>
+                            </div>
+
+                            <div class="grid-container">
+
+                                <div class="form-group">
+                                    <label for="sa_un_fatty_acid">Quoziente Acidi Grassi Saturi/Insaturi</label>
+                                    <input type="number" id="sa_un_fatty_acid" name="sa_un_fatty_acid" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="sa_un_fatty_acid_range" name="sa_un_fatty_acid_range" min="0" max="1.2" value="0" oninput="sa_un_fatty_acid.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="o3o6_fatty_acid_quotient">Quoziente Acidi Grassi O-6/O-3(AA/DHA)</label>
+                                    <input type="number" id="o3o6_fatty_acid_quotient" name="o3o6_fatty_acid_quotient" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="o3o6_fatty_acid_quotient_range" name="o3o6_fatty_acid_quotient_range" min="0" max="30" value="0" oninput="o3o6_fatty_acid_quotient.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="aa_epa">Quoziente AA/EPA</label>
+                                    <input type="number" id="aa_epa" name="aa_epa" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="aa_epa_range" name="aa_epa_range" min="0" max="8" value="0" oninput="aa_epa.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="o3_index">Omega 3 index</label>
+                                    <input type="number" id="o3_index" name="o3_index" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="o3_index_range" name="o3_index_range" min="0" max="16" value="0" oninput="o3_index.value=this.value" step="0.01">
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- SALUTE RENALE -->
+                    <div class="card-indices">
+                        <div class="card-indices_header">
+                            <div class="card-header_title">
+                                <img src="{% static 'includes/images/reni.png' %}" alt="">
+                                <h3>Salute Renale</h3>
+                            </div>
+                            
+                            <button class="btn-selected" type="button" title="Apri Sezione" id="renale-show">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="card-indices_content" id="renaleContent">  
+
+                            <div class="grid-container"  style="padding-bottom: 50px;">     
+
+                                <div class="form-group">
+                                    <label for="creatinine_m">Creatinina Uomo(mg/dL)</label>
+                                    <input type="number" id="creatinine_m" name="creatinine_m" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="creatinine_m_range" name="creatinine_m_range" min="0" max="2.4" value="0"  oninput="creatinine_m.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="creatinine_w">Creatinina Donna(mg/dL)</label>
+                                    <input type="number" id="creatinine_w" name="creatinine_w" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="creatinine_w_range" name="creatinine_w_range" min="0" max="2" value="0"  oninput="creatinine_w.value=this.value" step="0.01">
+                                </div> 
+
+                                <div class="form-group">
+                                    <label for="azotemia">Azotemia (mg/dL)</label>
+                                    <input type="number" id="azotemia" name="azotemia" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="azotemia_range" name="azotemia_range" min="0" max="100" value="0"  oninput="azotemia.value=this.value" step="0.01">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="cistatine_c">Cistatine C (mg/dL)</label>
+                                    <input type="number" id="cistatine_c" name="cistatine_c" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="cistatine_c_range" name="cistatine_c_range" min="0" max="2"  value="0" oninput="cistatine_c.value=this.value" step="0.01">
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="ci">Cloruri (mEq/L)</label>
+                                    <input type="number" id="ci" name="ci" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="ci_range" name="ci_range" min="0" max="200" value="0" oninput="ci.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="ca">Calcio (mg/dL)</label>
+                                    <input type="number" id="ca" name="ca" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="ca_range" name="ca_range" min="0" max="20" value="0"  oninput="ca.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="p">Fosforo (mg/dL)</label>
+                                    <input type="number" id="p" name="p" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="p_range" name="p_range" min="0" max="10" value="0"  oninput="p.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="uricemy_m">Uricemia Uomo(mg/dL)</label>
+                                    <input type="number" id="uricemy_m" name="uricemy_m" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="uricemy_m_range" name="uricemy_m_range" min="0" max="14"  value="0" oninput="uricemy_m.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="uricemy_w">Uricemia Donna(mg/dL)</label>
+                                    <input type="number" id="uricemy_w" name="uricemy_w" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="uricemy_w_range" name="uricemy_w_range" min="0" max="11.4"  value="0" oninput="uricemy_w.value=this.value" step="0.01">
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+
+                    <!-- SALUTE EPATICA -->
+                    <div class="card-indices">
+                        <div class="card-indices_header">
+                            <div class="card-header_title">
+                                <img src="{% static 'includes/images/fegato.png' %}" alt="">
+                                <h3>Salute Epatica</h3>
+                            </div>
+                            
+                            <button class="btn-selected" type="button" title="Apri Sezione" id="epatica-show">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="card-indices_content" id="epaticaContent">  
+
+                            <div class="grid-container"  style="padding-bottom: 50px;">     
+
+                                <div class="form-group">
+                                    <label for="g_gt_m">Gamma GT Uomo(U/I)</label>
+                                    <input type="number" id="g_gt_m" name="g_gt_m" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="g_gt_m_range" name="g_gt_m_range" min="0" max="80" value="0"
+                                        oninput="g_gt_m.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="g_gt_w">Gamma GT Donna(U/I)</label>
+                                    <input type="number" id="g_gt_w" name="g_gt_w" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="g_gt_w_range" name="g_gt_w_range" min="0" max="120" value="0"
+                                        oninput="g_gt_w.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="got_m">Transaminasi Uomo(GOT, U/I)</label>
+                                    <input type="number" id="got_m" name="got_m" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="got_m_range" name="got_m_range" min="0" max="80" value="0"
+                                        oninput="got_m.value=this.value" step="0.01">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="got_w">Transaminasi Donna(GOT, U/I)</label>
+                                    <input type="number" id="got_w" name="got_w" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="got_w_range" name="got_w_range" min="0" max="60" value="0"
+                                        oninput="got_w.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="gpt_m">Transaminasi Uomo(GPT, U/I)</label>
+                                    <input type="number" id="gpt_m" name="gpt_m" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="gpt_m_range" name="gpt_m_range" min="0" max="82" value="0"
+                                        oninput="gpt_m.value=this.value" step="0.01">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="gpt_w">Transaminasi Donna(GPT, U/I)</label>
+                                    <input type="number" id="gpt_w" name="gpt_w" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="gpt_w_range" name="gpt_w_range" min="0" max="60" value="0"
+                                        oninput="gpt_w.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="a_photo_m">Fosfatasi Alcalina Uomo(U/I)</label>
+                                    <input type="number" id="a_photo_m" name="a_photo_m" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="a_photo_m_range" name="a_photo_m_range" min="0" max="260" value="0"
+                                        oninput="a_photo_m.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="a_photo_w">Fosfatasi Alcalina Donna(U/I)</label>
+                                    <input type="number" id="a_photo_w" name="a_photo_w" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="a_photo_w_range" name="a_photo_w_range" min="0" max="205" value="0"
+                                        oninput="a_photo_w.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="tot_bili">Bilirubina totale (mg/dI)</label>
+                                    <input type="number" id="tot_bili" name="tot_bili" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="tot_bili_range" name="tot_bili_range" min="0" max="2.40" value="0" 
+                                        oninput="tot_bili.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="direct_bili">Bilirubina diretta (mg/dI)</label>
+                                    <input type="number" id="direct_bili" name="direct_bili" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="direct_bili_range" name="direct_bili_range" min="0" max="0.60" value="0" 
+                                        oninput="direct_bili.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="idirect_bili">Bilirubina indiretta (mg/dI)</label>
+                                    <input type="number" id="idirect_bili" name="idirect_bili" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="idirect_bili_range" name="idirect_bili_range" min="0" max="2" value="0" 
+                                        oninput="idirect_bili.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="albumin_ele">Albumina (%)</label>
+                                    <input type="number" id="albumin_ele" name="albumin_ele" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="albumin_ele_range" name="albumin_ele_range" min="0" max="120" value="0"  oninput="albumin_ele.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="tot_prot">Proteine totali (g/dI)</label>
+                                    <input type="number" id="tot_prot" name="tot_prot" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="tot_prot_range" name="tot_prot_range" min="0" max="20" value="0"  oninput="tot_prot.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="tot_prot_ele">Proteine Totali (%)</label>
+                                    <input type="number" id="tot_prot_ele" name="tot_prot_ele" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="tot_prot_ele_range" name="tot_prot_ele_range" min="0" max="20" value="0"  oninput="tot_prot_ele.value=this.value" step="0.01">
+                                </div>
+
+                            </div> 
+                        </div>
+                    </div>
+
+                    <!-- SALUTE CEREBRALE -->
+                    <div class="card-indices">
+                        <div class="card-indices_header">
+                            <div class="card-header_title">
+                                <img src="{% static 'includes/images/cervello.png' %}" alt="">
+                                <h3>Salute Cerebrale</h3>
+                            </div>
+                            
+                            <button class="btn-selected" type="button" title="Apri Sezione" id="celebrale-show">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="card-indices_content" id="celebraleContent">  
+
+                            <div class="grid-container"  style="padding-bottom: 50px;"> 
+
+
+
+                                <div class="form-group">
+                                    <label for="mg">Magnesio (mg/dL)</label>
+                                    <input type="number" id="mg" name="mg" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="mg_range" name="mg_range" min="0" max="5" value="0"  oninput="mg.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="na">Sodio (mEq/L)</label>
+                                    <input type="number" id="na" name="na" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="na_range" name="na_range" min="0" max="300" value="0" oninput="na.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="k">Potassio (mEq/L)</label>
+                                    <input type="number" id="k" name="k" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="k_range" name="k_range" min="0" max="10" value="0"  oninput="k.value=this.value" step="0.01">
+                                </div>
+
                             </div>
                         </div>
                     </div>
 
-                    <!-- OMEGA SCREENING -->
-                    <h3>Omega Screening</h3>
-                    <h5>Acidi Grassi Saturi</h5>
-                    
+                </div>
                 
-                    <div class="grid-container" style="row-gap: 60px;">
-                        <div class="form-group">
-                            <label for="my_acid">Acido Miristico</label>
-                            <input type="number" id="my_acid" name="my_acid" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="my_acid_range" name="my_acid_range" min="0" max="128" value="0" oninput="my_acid.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="p_acid">Acido Palmitico</label>
-                            <input type="number" id="p_acid" name="p_acid" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="p_acid_range" name="p_acid_range" min="0" max="1786" value="0" oninput="p_acid.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="st_acid">Acido Stearico</label>
-                            <input type="number" id="st_acid" name="st_acid" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="st_acid_range" name="st_acid_range" min="0" max="560" value="0" oninput="st_acid.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="ar_acid">Acido Arachidico</label>
-                            <input type="number" id="ar_acid" name="ar_acid" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="ar_acid_range" name="ar_acid_range" min="0" max="20" value="0" oninput="ar_acid.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="beenic_acid">Acido Beenico</label>
-                            <input type="number" id="beenic_acid" name="beenic_acid" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="beenic_acid_range" name="beenic_acid_range" min="0" max="60" value="0" oninput="beenic_acid.value=this.value" step="0.01">
-                        </div>
-                    </div>
-                  
-                    <h5 style="margin-top: 4rem;">Acidi Grassi Insaturi</h5>
-    
-                    <p>Omega 7</p>
-                    <div class="flex-container" id="flex-adjust">
-                        <div class="form-group">
-                            <label for="pal_acid">Acido Palmitoleico</label>
-                            <input type="number" id="pal_acid" name="pal_acid" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="pal_acid_range" name="pal_acid_range" min="0" max="248" value="0" oninput="pal_acid.value=this.value" step="0.01">
-                        </div>
-                    </div>
-    
-                    <p style="margin-top: 4rem;">Omega 9</p>
-                    <div class="flex-container" id="flex-adjust">
-                        <div class="form-group">
-                            <label for="ol_acid">Acido Oleico</label>
-                            <input type="number" id="ol_acid" name="ol_acid" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="ol_acid_range" name="ol_acid_range" min="0" max="1832" value="0" oninput="ol_acid.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="ner_acid">Acido Nervonico</label>
-                            <input type="number" id="ner_acid" name="ner_acid" placeholder="Solo valori numerici">
-                            <input type="range" id="ner_acid_range" name="ner_acid_range" min="0" max="82" value="0" oninput="ner_acid.value=this.value">
-                        </div>
-                    </div>
-    
-                    <p style="margin-top: 4rem;">Omega 3</p>
-                    <div class="flex-container" id="flex-adjust">
-                        <div class="form-group">
-                            <label for="a_linoleic_acid">Acido Linoleico Alpha</label>
-                            <input type="number" id="a_linoleic_acid" name="a_linoleic_acid" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="a_linoleic_acid_range" name="a_linoleic_acid_range" min="0" max="66" value="0" oninput="a_linoleic_acid.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="eico_acid">Acido(EPA) Eicosapentaenoico</label>
-                            <input type="number" id="eico_acid" name="eico_acid" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="eico_acid_range" name="eico_acid_range" min="0" max="122" value="0" oninput="eico_acid.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="doco_acid">Acido(DHA) Docosaesaenoico</label>
-                            <input type="number" id="doco_acid" name="doco_acid" placeholder="Solo valori numerici"step="0.01">
-                            <input type="range" id="doco_acid_range" name="doco_acid_range" min="0" max="222" value="0" oninput="doco_acid.value=this.value"step="0.01">
-                        </div>
-                    </div>
-    
-                    <p style="margin-top: 4rem;">Omega 6</p>
-                    <div class="grid-container">
-                        <div class="form-group">
-                            <label for="lin_acid">Acido Linolenico</label>
-                            <input type="number" id="lin_acid" name="lin_acid" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="lin_acid_range" name="lin_acid_range" min="0" max="2334" value="0" oninput="lin_acid.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="gamma_lin_acid">Acido Gamma Linolenico</label>
-                            <input type="number" id="gamma_lin_acid" name="gamma_lin_acid" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="gamma_lin_acid_range" name="gamma_lin_acid_range" min="0" max="50" value="0" oninput="gamma_lin_acid.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="dih_gamma_lin_acid">Acido Diomo Gamma Linolenico</label>
-                            <input type="number" id="dih_gamma_lin_acid" name="dih_gamma_lin_acid" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="dih_gamma_lin_acid_range" name="dih_gamma_lin_acid_range" min="0" max="150" value="0" oninput="dih_gamma_lin_acid.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="arachidonic_acid">Acido Arachidonico</label>
-                            <input type="number" id="arachidonic_acid" name="arachidonic_acid" placeholder="Solo valori numerici">
-                            <input type="range" id="arachidonic_acid_range" name="arachidonic_acid_range" min="0" max="686" value="0" oninput="arachidonic_acid.value=this.value">
-                        </div>
-                    </div>
-    
-                    <div class="grid-container">
-    
-                        <div class="form-group">
-                            <label for="sa_un_fatty_acid">Quoziente Acidi Grassi Saturi/Insaturi</label>
-                            <input type="number" id="sa_un_fatty_acid" name="sa_un_fatty_acid" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="sa_un_fatty_acid_range" name="sa_un_fatty_acid_range" min="0" max="1.2" value="0" oninput="sa_un_fatty_acid.value=this.value" step="0.01">
-                        </div>
-    
-                        <div class="form-group">
-                            <label for="o3o6_fatty_acid_quotient">Quoziente Acidi Grassi O-6/O-3(AA/DHA)</label>
-                            <input type="number" id="o3o6_fatty_acid_quotient" name="o3o6_fatty_acid_quotient" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="o3o6_fatty_acid_quotient_range" name="o3o6_fatty_acid_quotient_range" min="0" max="30" value="0" oninput="o3o6_fatty_acid_quotient.value=this.value" step="0.01">
-                        </div>
-    
-                        <div class="form-group">
-                            <label for="aa_epa">Quoziente AA/EPA</label>
-                            <input type="number" id="aa_epa" name="aa_epa" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="aa_epa_range" name="aa_epa_range" min="0" max="8" value="0" oninput="aa_epa.value=this.value" step="0.01">
-                        </div>
-    
-                        <div class="form-group">
-                            <label for="o3_index">Omega 3 index</label>
-                            <input type="number" id="o3_index" name="o3_index" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="o3_index_range" name="o3_index_range" min="0" max="16" value="0" oninput="o3_index.value=this.value" step="0.01">
-                        </div>
-    
-                    </div>
+                <div class="accordion">
 
-                </div>
-            </div>
+                    <!-- SALUTE ORMONALE -->
+                    <div class="card-indices">
+                        <div class="card-indices_header">
+                            <div class="card-header_title">
+                                <img src="{% static 'includes/images/cellula.png' %}" alt="">
+                                <h3>Salute Ormonale</h3>
+                            </div>
+                            
+                            <button class="btn-selected" type="button" title="Apri Sezione" id="ormonale-show">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
 
-            <!-- SALUTE RENALE -->
-            <div class="card-indices">
-                <div class="card-indices_header">
-                    <div class="card-header_title">
-                        <img src="{% static 'includes/images/reni.png' %}" alt="">
-                        <h3>Salute Renale</h3>
-                    </div>
+                        <div class="card-indices_content" id="ormonaleContent">  
+
+                            <div class="grid-container"  style="padding-bottom: 50px;"> 
+
+                                <div class="form-group">
+                                    <label for="tsh">Ormone stimolante della tiroide (uIU/ml)</label>
+                                    <input type="number" id="tsh" name="tsh" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="tsh_range" name="tsh_range" min="0" max="8.40" value="0"  oninput="tsh.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ft3">Triodotironina libera (pg/ml)</label>
+                                    <input type="number" id="ft3" name="ft3" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="ft3_range" name="ft3_range" min="0" max="8.8"  value="0" oninput="ft3.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ft4">Tiroxina libera (ng/dL)</label>
+                                    <input type="number" id="ft4" name="ft4" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="ft4_range" name="ft4_range" min="0" max="3.4" value="0"  oninput="ft4.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="insulin">Insulina (ng/mL)</label>
+                                    <input type="number" id="insulin" name="insulin" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="insulin_range" name="insulin_range" min="0" max="30" value="0" oninput="insulin.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="homa">Homa test</label>
+                                    <input type="number" id="homa" name="homa" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="homa_range" name="homa_range" min="0" max="5" value="0"  oninput="homa.value=this.value" step="0.01">
+                                </div>
                     
-                    <button class="btn-selected" type="button" title="Apri Sezione" onclick="disappear">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
+                                <div class="form-group">
+                                    <label for="ir">IR test</label>
+                                    <input type="number" id="ir" name="ir" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="ir_range" name="ir_range" min="0" max="6" value="0" oninput="ir.value=this.value" step="0.01">
+                                </div>
 
-                <div class="card-indices_content" id="cuoreContent">  
+                                <div class="form-group">
+                                    <label for="dhea_m">DHEA Uomo(ng/ml)</label>
+                                    <input type="number" id="dhea_m" name="dhea_m" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="dhea_m_range" name="dhea_m_range" min="0" max="25"  value="0" oninput="dhea_m.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="dhea_w">DHEA Donna(ng/ml)</label>
+                                    <input type="number" id="dhea_w" name="dhea_w" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="dhea_w_range" name="dhea_w_range" min="0" max="20" value="0"  oninput="dhea_w.value=this.value" step="0.01">
+                                </div>
 
-                    <div class="grid-container"  style="padding-bottom: 50px;">     
-
-                        <div class="form-group">
-                            <label for="creatinine_m">Creatinina Uomo(mg/dL)</label>
-                            <input type="number" id="creatinine_m" name="creatinine_m" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="creatinine_m_range" name="creatinine_m_range" min="0" max="2.4" value="0"  oninput="creatinine_m.value=this.value" step="0.01">
+                                <div class="form-group">
+                                    <label for="testo_m">Testosterone Uomo(ng/mI)</label>
+                                    <input type="number" id="testo_m" name="testo_m" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="testo_m_range" name="testo_m_range" min="0" max="14" value="0"  oninput="testo_m.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="testo_w">Testosterone Donna(ng/mI)</label>
+                                    <input type="number" id="testo_w" name="testo_w" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="testo_w_range" name="testo_w_range" min="0" max="2" value="0" step="0.01" oninput="testo_w.value=this.value" step="0.01">
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="form-group">
-                            <label for="creatinine_w">Creatinina Donna(mg/dL)</label>
-                            <input type="number" id="creatinine_w" name="creatinine_w" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="creatinine_w_range" name="creatinine_w_range" min="0" max="2" value="0"  oninput="creatinine_w.value=this.value" step="0.01">
-                        </div> 
-
-                        <div class="form-group">
-                            <label for="azotemia">Azotemia (mg/dL)</label>
-                            <input type="number" id="azotemia" name="azotemia" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="azotemia_range" name="azotemia_range" min="0" max="100" value="0"  oninput="azotemia.value=this.value" step="0.01">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="cistatine_c">Cistatine C (mg/dL)</label>
-                            <input type="number" id="cistatine_c" name="cistatine_c" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="cistatine_c_range" name="cistatine_c_range" min="0" max="2"  value="0" oninput="cistatine_c.value=this.value" step="0.01">
-                        </div>
-
-
-                        <div class="form-group">
-                            <label for="ci">Cloruri (mEq/L)</label>
-                            <input type="number" id="ci" name="ci" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="ci_range" name="ci_range" min="0" max="200" value="0" oninput="ci.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="ca">Calcio (mg/dL)</label>
-                            <input type="number" id="ca" name="ca" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="ca_range" name="ca_range" min="0" max="20" value="0"  oninput="ca.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="p">Fosforo (mg/dL)</label>
-                            <input type="number" id="p" name="p" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="p_range" name="p_range" min="0" max="10" value="0"  oninput="p.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="uricemy_m">Uricemia Uomo(mg/dL)</label>
-                            <input type="number" id="uricemy_m" name="uricemy_m" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="uricemy_m_range" name="uricemy_m_range" min="0" max="14"  value="0" oninput="uricemy_m.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="uricemy_w">Uricemia Donna(mg/dL)</label>
-                            <input type="number" id="uricemy_w" name="uricemy_w" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="uricemy_w_range" name="uricemy_w_range" min="0" max="11.4"  value="0" oninput="uricemy_w.value=this.value" step="0.01">
-                        </div>
-                    </div> 
-                </div>
-            </div>
-
-            <!-- SALUTE EPATICA -->
-            <div class="card-indices">
-                <div class="card-indices_header">
-                    <div class="card-header_title">
-                        <img src="{% static 'includes/images/fegato.png' %}" alt="">
-                        <h3>Salute Epatica</h3>
                     </div>
+
+                    <!-- SALUTE DEL SANGUE -->
+                    <div class="card-indices">
+
+                        <div class="card-indices_header">
+                            <div class="card-header_title">
+                                <img src="{% static 'includes/images/sangue.png' %}" alt="">
+                                <h3>Salute del Sangue</h3>
+                            </div>
+                            
+                            <button class="btn-selected" type="button" title="Apri Sezione" id="sangue-show">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="card-indices_content" id="sangueContent">  
+
+                            <div class="grid-container"> 
+
+                                <div class="form-group">
+                                    <label for="tsh">Ormone stimolante della tiroide (uIU/ml)</label>
+                                    <input type="number" id="tsh" name="tsh" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="tsh_range" name="tsh_range" min="0" max="8.40" value="0"  oninput="tsh.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ft3">Triodotironina libera (pg/ml)</label>
+                                    <input type="number" id="ft3" name="ft3" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="ft3_range" name="ft3_range" min="0" max="8.8"  value="0" oninput="ft3.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ft4">Tiroxina libera (ng/dL)</label>
+                                    <input type="number" id="ft4" name="ft4" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="ft4_range" name="ft4_range" min="0" max="3.4" value="0"  oninput="ft4.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="insulin">Insulina (ng/mL)</label>
+                                    <input type="number" id="insulin" name="insulin" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="insulin_range" name="insulin_range" min="0" max="30" value="0" oninput="insulin.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="homa">Homa test</label>
+                                    <input type="number" id="homa" name="homa" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="homa_range" name="homa_range" min="0" max="5" value="0"  oninput="homa.value=this.value" step="0.01">
+                                </div>
                     
-                    <button class="btn-selected" type="button" title="Apri Sezione" onclick="disappear">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
+                                <div class="form-group">
+                                    <label for="ir">IR test</label>
+                                    <input type="number" id="ir" name="ir" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="ir_range" name="ir_range" min="0" max="6" value="0" oninput="ir.value=this.value" step="0.01">
+                                </div>
 
-                <div class="card-indices_content" id="cuoreContent">  
+                                <div class="form-group">
+                                    <label for="dhea_m">DHEA Uomo(ng/ml)</label>
+                                    <input type="number" id="dhea_m" name="dhea_m" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="dhea_m_range" name="dhea_m_range" min="0" max="25"  value="0" oninput="dhea_m.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="dhea_w">DHEA Donna(ng/ml)</label>
+                                    <input type="number" id="dhea_w" name="dhea_w" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="dhea_w_range" name="dhea_w_range" min="0" max="20" value="0"  oninput="dhea_w.value=this.value" step="0.01">
+                                </div>
 
-                    <div class="grid-container"  style="padding-bottom: 50px;">     
+                                <div class="form-group">
+                                    <label for="testo_m">Testosterone Uomo(ng/mI)</label>
+                                    <input type="number" id="testo_m" name="testo_m" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="testo_m_range" name="testo_m_range" min="0" max="14" value="0"  oninput="testo_m.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="testo_w">Testosterone Donna(ng/mI)</label>
+                                    <input type="number" id="testo_w" name="testo_w" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="testo_w_range" name="testo_w_range" min="0" max="2" value="0" step="0.01" oninput="testo_w.value=this.value" step="0.01">
+                                </div>
+                            </div>
 
-                        <div class="form-group">
-                            <label for="g_gt_m">Gamma GT Uomo(U/I)</label>
-                            <input type="number" id="g_gt_m" name="g_gt_m" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="g_gt_m_range" name="g_gt_m_range" min="0" max="80" value="0"
-                                oninput="g_gt_m.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="g_gt_w">Gamma GT Donna(U/I)</label>
-                            <input type="number" id="g_gt_w" name="g_gt_w" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="g_gt_w_range" name="g_gt_w_range" min="0" max="120" value="0"
-                                oninput="g_gt_w.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="got_m">Transaminasi Uomo(GOT, U/I)</label>
-                            <input type="number" id="got_m" name="got_m" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="got_m_range" name="got_m_range" min="0" max="80" value="0"
-                                oninput="got_m.value=this.value" step="0.01">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="got_w">Transaminasi Donna(GOT, U/I)</label>
-                            <input type="number" id="got_w" name="got_w" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="got_w_range" name="got_w_range" min="0" max="60" value="0"
-                                oninput="got_w.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="gpt_m">Transaminasi Uomo(GPT, U/I)</label>
-                            <input type="number" id="gpt_m" name="gpt_m" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="gpt_m_range" name="gpt_m_range" min="0" max="82" value="0"
-                                oninput="gpt_m.value=this.value" step="0.01">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="gpt_w">Transaminasi Donna(GPT, U/I)</label>
-                            <input type="number" id="gpt_w" name="gpt_w" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="gpt_w_range" name="gpt_w_range" min="0" max="60" value="0"
-                                oninput="gpt_w.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="a_photo_m">Fosfatasi Alcalina Uomo(U/I)</label>
-                            <input type="number" id="a_photo_m" name="a_photo_m" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="a_photo_m_range" name="a_photo_m_range" min="0" max="260" value="0"
-                                oninput="a_photo_m.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="a_photo_w">Fosfatasi Alcalina Donna(U/I)</label>
-                            <input type="number" id="a_photo_w" name="a_photo_w" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="a_photo_w_range" name="a_photo_w_range" min="0" max="205" value="0"
-                                oninput="a_photo_w.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="tot_bili">Bilirubina totale (mg/dI)</label>
-                            <input type="number" id="tot_bili" name="tot_bili" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="tot_bili_range" name="tot_bili_range" min="0" max="2.40" value="0" 
-                                oninput="tot_bili.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="direct_bili">Bilirubina diretta (mg/dI)</label>
-                            <input type="number" id="direct_bili" name="direct_bili" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="direct_bili_range" name="direct_bili_range" min="0" max="0.60" value="0" 
-                                oninput="direct_bili.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="idirect_bili">Bilirubina indiretta (mg/dI)</label>
-                            <input type="number" id="idirect_bili" name="idirect_bili" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="idirect_bili_range" name="idirect_bili_range" min="0" max="2" value="0" 
-                                oninput="idirect_bili.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="albumin_ele">Albumina (%)</label>
-                            <input type="number" id="albumin_ele" name="albumin_ele" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="albumin_ele_range" name="albumin_ele_range" min="0" max="120" value="0"  oninput="albumin_ele.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="tot_prot">Proteine totali (g/dI)</label>
-                            <input type="number" id="tot_prot" name="tot_prot" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="tot_prot_range" name="tot_prot_range" min="0" max="20" value="0"  oninput="tot_prot.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="tot_prot_ele">Proteine Totali (%)</label>
-                            <input type="number" id="tot_prot_ele" name="tot_prot_ele" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="tot_prot_ele_range" name="tot_prot_ele_range" min="0" max="20" value="0"  oninput="tot_prot_ele.value=this.value" step="0.01">
-                        </div>
-
-                    </div> 
-                </div>
-            </div>
-
-            <!-- SALUTE CEREBRALE -->
-            <div class="card-indices">
-                <div class="card-indices_header">
-                    <div class="card-header_title">
-                        <img src="{% static 'includes/images/cervello.png' %}" alt="">
-                        <h3>Salute Cerebrale</h3>
-                    </div>
-                    
-                    <button class="btn-selected" type="button" title="Apri Sezione" onclick="disappear">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-
-                <div class="card-indices_content" id="cuoreContent">  
-
-                    <div class="grid-container"  style="padding-bottom: 50px;"> 
-
-
-
-                        <div class="form-group">
-                            <label for="mg">Magnesio (mg/dL)</label>
-                            <input type="number" id="mg" name="mg" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="mg_range" name="mg_range" min="0" max="5" value="0"  oninput="mg.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="na">Sodio (mEq/L)</label>
-                            <input type="number" id="na" name="na" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="na_range" name="na_range" min="0" max="300" value="0" oninput="na.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="k">Potassio (mEq/L)</label>
-                            <input type="number" id="k" name="k" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="k_range" name="k_range" min="0" max="10" value="0"  oninput="k.value=this.value" step="0.01">
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- SALUTE ORMONALE -->
-            <div class="card-indices">
-                <div class="card-indices_header">
-                    <div class="card-header_title">
-                        <img src="{% static 'includes/images/cellula.png' %}" alt="">
-                        <h3>Salute Ormonale</h3>
-                    </div>
-                    
-                    <button class="btn-selected" type="button" title="Apri Sezione" onclick="disappear">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-
-                <div class="card-indices_content" id="cuoreContent">  
-
-                    <div class="grid-container"  style="padding-bottom: 50px;"> 
-
-                        <div class="form-group">
-                            <label for="tsh">Ormone stimolante della tiroide (uIU/ml)</label>
-                            <input type="number" id="tsh" name="tsh" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="tsh_range" name="tsh_range" min="0" max="8.40" value="0"  oninput="tsh.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="ft3">Triodotironina libera (pg/ml)</label>
-                            <input type="number" id="ft3" name="ft3" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="ft3_range" name="ft3_range" min="0" max="8.8"  value="0" oninput="ft3.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="ft4">Tiroxina libera (ng/dL)</label>
-                            <input type="number" id="ft4" name="ft4" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="ft4_range" name="ft4_range" min="0" max="3.4" value="0"  oninput="ft4.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="insulin">Insulina (ng/mL)</label>
-                            <input type="number" id="insulin" name="insulin" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="insulin_range" name="insulin_range" min="0" max="30" value="0" oninput="insulin.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="homa">Homa test</label>
-                            <input type="number" id="homa" name="homa" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="homa_range" name="homa_range" min="0" max="5" value="0"  oninput="homa.value=this.value" step="0.01">
-                        </div>
+                            <h3>Globuli Bianchi</h3>
+                            <div class="grid-container">
+                                <div class="form-group">
+                                    <label for="baso">Basofili (%)</label>
+                                    <input type="number" id="baso" name="baso" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="baso_range" name="baso_range" min="0" max="5" value="0"  oninput="baso.value=this.value" step="0.01">
+                                </div>
             
-                        <div class="form-group">
-                            <label for="ir">IR test</label>
-                            <input type="number" id="ir" name="ir" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="ir_range" name="ir_range" min="0" max="6" value="0" oninput="ir.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="dhea_m">DHEA Uomo(ng/ml)</label>
-                            <input type="number" id="dhea_m" name="dhea_m" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="dhea_m_range" name="dhea_m_range" min="0" max="25"  value="0" oninput="dhea_m.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="dhea_w">DHEA Donna(ng/ml)</label>
-                            <input type="number" id="dhea_w" name="dhea_w" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="dhea_w_range" name="dhea_w_range" min="0" max="20" value="0"  oninput="dhea_w.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="testo_m">Testosterone Uomo(ng/mI)</label>
-                            <input type="number" id="testo_m" name="testo_m" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="testo_m_range" name="testo_m_range" min="0" max="14" value="0"  oninput="testo_m.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="testo_w">Testosterone Donna(ng/mI)</label>
-                            <input type="number" id="testo_w" name="testo_w" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="testo_w_range" name="testo_w_range" min="0" max="2" value="0" step="0.01" oninput="testo_w.value=this.value" step="0.01">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SALUTE DEL SANGUE -->
-            <div class="card-indices">
-
-                <div class="card-indices_header">
-                    <div class="card-header_title">
-                        <img src="{% static 'includes/images/sangue.png' %}" alt="">
-                        <h3>Salute del Sangue</h3>
-                    </div>
-                    
-                    <button class="btn-selected" type="button" title="Apri Sezione" onclick="disappear">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-
-                <div class="card-indices_content" id="cuoreContent">  
-
-                    <div class="grid-container"> 
-
-                        <div class="form-group">
-                            <label for="tsh">Ormone stimolante della tiroide (uIU/ml)</label>
-                            <input type="number" id="tsh" name="tsh" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="tsh_range" name="tsh_range" min="0" max="8.40" value="0"  oninput="tsh.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="ft3">Triodotironina libera (pg/ml)</label>
-                            <input type="number" id="ft3" name="ft3" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="ft3_range" name="ft3_range" min="0" max="8.8"  value="0" oninput="ft3.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="ft4">Tiroxina libera (ng/dL)</label>
-                            <input type="number" id="ft4" name="ft4" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="ft4_range" name="ft4_range" min="0" max="3.4" value="0"  oninput="ft4.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="insulin">Insulina (ng/mL)</label>
-                            <input type="number" id="insulin" name="insulin" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="insulin_range" name="insulin_range" min="0" max="30" value="0" oninput="insulin.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="homa">Homa test</label>
-                            <input type="number" id="homa" name="homa" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="homa_range" name="homa_range" min="0" max="5" value="0"  oninput="homa.value=this.value" step="0.01">
-                        </div>
+                                <div class="form-group">
+                                    <label for="eosi">Eosinofili (%)</label>
+                                    <input type="number" id="eosi" name="eosi" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="eosi_range" name="eosi_range" min="0" max="20" value="0" oninput="eosi.value=this.value" step="0.01">
+                                </div>
             
-                        <div class="form-group">
-                            <label for="ir">IR test</label>
-                            <input type="number" id="ir" name="ir" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="ir_range" name="ir_range" min="0" max="6" value="0" oninput="ir.value=this.value" step="0.01">
+                                <div class="form-group">
+                                    <label for="lymph">Linfociti (%)</label>
+                                    <input type="number" id="lymph" name="lymph" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="lymph_range" name="lymph_range" min="0" max="100" value="0" oninput="lymph.value=this.value" step="0.01">
+                                </div>
+            
+                                <div class="form-group">
+                                    <label for="mono">Monociti (%)</label>
+                                    <input type="number" id="mono" name="mono" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="mono_range" name="mono_range" min="0" max="20" value="0" oninput="mono.value=this.value" step="0.01">
+                                </div>
+            
+                                <div class="form-group">
+                                    <label for="neut">Neutrofili (%)</label>
+                                    <input type="number" id="neut" name="neut" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="neut_range" name="neut_range" min="0" max="140" value="0" oninput="neut.value=this.value" step="0.01">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="wbc">Globuli bianchi (10^3/uL)</label>
+                                    <input type="number" id="wbc" name="wbc" placeholder="Solo valori numerici"   step="0.01">
+                                    <input type="range" id="wbc_range" name="wbc_range" min="0" max="20" value="0"  oninput="wbc.value=this.value" step="0.01">
+                                </div>
+            
+                                <div class="form-group">
+                                    <label for="neut_ul">Neutrofili (10^3/uL)</label>
+                                    <input type="number" id="neut_ul" name="neut_ul" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="neut_ul_range" name="neut_ul_range" min="0" max="16"  value="0" oninput="neut_ul.value=this.value" step="0.01">
+                                </div>
+            
+                                <div class="form-group">
+                                    <label for="lymph_ul">Linfociti (10^3/uL)</label>
+                                    <input type="number" id="lymph_ul" name="lymph_ul" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="lymph_ul_range" name="lymph_ul_range" min="0" max="7" value="0"  oninput="lymph_ul.value=this.value" step="0.01">
+                                </div>
+            
+                                <div class="form-group"> 
+                                    <label for="mono_ul">Monociti (10^3/uL)</label>
+                                    <input type="number" id="mono_ul" name="mono_ul" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="mono_ul_range" name="mono_ul_range" min="0" max="2" value="0"  oninput="mono_ul.value=this.value" step="0.01">
+                                </div>
+            
+                                <div class="form-group">
+                                    <label for="eosi_ul">Eosinofili (10^3/uL)</label>
+                                    <input type="number" id="eosi_ul" name="eosi_ul" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="eosi_ul_range" name="eosi_ul_range" min="0" max="1.4" value="0"  oninput="eosi_ul.value=this.value" step="0.01">
+                                </div>
+            
+                                <div class="form-group">
+                                    <label for="baso_ul">Basofili (10^3/uL)</label>
+                                    <input type="number" id="baso_ul" name="baso_ul" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="baso_ul_range" name="baso_ul_range" min="0" max="0.4" value="0"  oninput="baso_ul.value=this.value" step="0.01">
+                                </div>
+                            </div>
+
+                            <h3>Globuli Rossi</h3>
+                            <div class="grid-container" style="row-gap: 60px;">
+                                <div class="form-group">
+                                    <label for="hct_m">Hematocrit Uomo(%)</label>
+                                    <input type="number" id="hct_m" name="hct_m" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="hct_m_range" name="hct_m_range" min="0" max="105" value="0" oninput="hct_m.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hct_w">Hematocrit Donna(%)</label>
+                                    <input type="number" id="hct_w" name="hct_w" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="hct_w_range" name="hct_w_range" min="0" max="100" value="0" oninput="hct_w.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hgb_m">Hemoglobin Uomo(g/dL)</label>
+                                    <input type="number" id="hgb_m" name="hgb_m" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="hgb_m_range" name="hgb_m_range" min="0" max="40" value="0" oninput="hgb_m.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hgb_w">Hemoglobin Donna(g/dL)</label>
+                                    <input type="number" id="hgb_w" name="hgb_w" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="hgb_w_range" name="hgb_w_range" min="0" max="32" value="0" oninput="hgb_w.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="mch">Emoglobina corpuscolare media (pg)</label>
+                                    <input type="number" id="mch" name="mch" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="mch_range" name="mch_range" min="0" max="60" value="0" oninput="mch.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="mchc">Concentrazione media di emoglobina corpuscolare (g/dL)</label>
+                                    <input type="number" id="mchc" name="mchc" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="mchc_range" name="mchc_range" min="0" max="80" value="0" oninput="mchc.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="mcv">Volume corpuscolare medio (fL)</label>
+                                    <input type="number" id="mcv" name="mcv" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="mcv_range" name="mcv_range" min="0" max="200" value="0" oninput="mcv.value=this.value" step="0.01">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="rbc_m">Globuli rossi Uomo(10^6/uL)</label>
+                                    <input type="number" id="rbc_m" name="rbc_m" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="rbc_m_range" name="rbc_m_range" min="0" max="12" value="0"  oninput="rbc_m.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="rbc_w">Globuli rossi Donna(10^6/uL)</label>
+                                    <input type="number" id="rbc_w" name="rbc_w" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="rbc_w_range" name="rbc_w_range" min="0" max="10" value="0"  oninput="rbc_w.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="rdwsd">RDW-SD (fL)</label>
+                                    <input type="number" id="rdwsd" name="rdwsd" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="rdwsd_range" name="rdwsd_range" min="0" max="100" value="0"  oninput="rdwsd.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="rdwcv">RDW-CV (%)</label>
+                                    <input type="number" id="rdwcv" name="rdwcv" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="rdwcv_range" name="rdwcv_range" min="0" max="30" value="0"  oninput="rdwcv.value=this.value" step="0.01">
+                                </div>
+                            </div>
+
+                            <h3>Stato della coagulazione</h3>
+                            <div class="grid-container" style="padding-bottom: 50px;">
+                                <div class="form-group">
+                                    <label for="plt">Piastrine (10^3/uL)</label>
+                                    <input type="number" id="plt" name="plt" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="plt_range" name="plt_range" min="0" max="1000" value="0" oninput="plt.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="mpv">Volume medio delle piastrine (fL)</label>
+                                    <input type="number" id="mpv" name="mpv" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="mpv_range" name="mpv_range" min="0" max="30" value="0"  oninput="mpv.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="plcr">P-LCR (%)</label>
+                                    <input type="number" id="plcr" name="plcr" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="plcr_range" name="plcr_range" min="0" max="100" value="0"  oninput="plcr.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="pct">Procalcitonina (%)</label>
+                                    <input type="number" id="pct" name="pct" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="pct_range" name="pct_range" min="0" max="0.8" value="0"  oninput="pct.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="pdw">Larghezza di distribuzione delle piastrine (fL)</label>
+                                    <input type="number" id="pdw" name="pdw" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="pdw_range" name="pdw_range" min="0" max="30" value="0" oninput="pdw.value=this.value" step="0.01">
+                                </div>
+                            </div>
+
+                            <div class="flex-container"  id="flex-adjust" style="padding-bottom: 50px;">
+                                <div class="form-group">
+                                    <label for="fe">Sidermia (µg/dI)</label>
+                                    <input type="number" id="fe" name="fe" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="fe_range" name="fe_range" min="0" max="400" value="0" oninput="fe.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ferritin_m">Ferritina Uomo(ng/mL)</label>
+                                    <input type="number" id="ferritin_m" name="ferritin_m" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="ferritin_m_range" name="ferritin_m_range" min="0" max="800" value="0" oninput="ferritin_m.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ferritin_w">Ferritina Donna(ng/mL)</label>
+                                    <input type="number" id="ferritin_w" name="ferritin_w" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="ferritin_w_range" name="ferritin_w_range" min="0" max="300" value="0" oninput="ferritin_w.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="transferrin">Transferrina (mg/dL)</label>
+                                    <input type="number" id="transferrin" name="transferrin" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="transferrin_range" name="transferrin_range" min="0" max="700" value="0" oninput="transferrin.value=this.value" step="0.01">
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="dhea_m">DHEA Uomo(ng/ml)</label>
-                            <input type="number" id="dhea_m" name="dhea_m" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="dhea_m_range" name="dhea_m_range" min="0" max="25"  value="0" oninput="dhea_m.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="dhea_w">DHEA Donna(ng/ml)</label>
-                            <input type="number" id="dhea_w" name="dhea_w" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="dhea_w_range" name="dhea_w_range" min="0" max="20" value="0"  oninput="dhea_w.value=this.value" step="0.01">
+                    </div>
+
+                    <!-- SALUTE DEL SISTEMA IMMUNITARIO -->
+                    <div class="card-indices">
+
+                        <div class="card-indices_header">
+                            <div class="card-header_title">
+                                <img src="{% static 'includes/images/sistema.png' %}" alt="">
+                                <h3>Salute del Sistema Immunitario</h3>
+                            </div>
+                            
+                            <button class="btn-selected" type="button" title="Apri Sezione" id="immunitario-show">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
                         </div>
 
-                        <div class="form-group">
-                            <label for="testo_m">Testosterone Uomo(ng/mI)</label>
-                            <input type="number" id="testo_m" name="testo_m" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="testo_m_range" name="testo_m_range" min="0" max="14" value="0"  oninput="testo_m.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="testo_w">Testosterone Donna(ng/mI)</label>
-                            <input type="number" id="testo_w" name="testo_w" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="testo_w_range" name="testo_w_range" min="0" max="2" value="0" step="0.01" oninput="testo_w.value=this.value" step="0.01">
+                        <div class="card-indices_content" id="immunitarioContent">  
+
+                            <div class="grid-container"> 
+                                <div class="form-group">
+                                    <label for="pcr_c">PCR-C-Proteina Reattiva (mg/I)</label>
+                                    <input type="number" id="pcr_c" name="pcr_c" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="pcr_c_range" name="pcr_c_range" min="0" max="10" value="0" oninput="pcr_c.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="ves2">Omocisteina (uµol/I)</label>
+                                    <input type="number" id="ves2" name="ves2" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="ves2_range" name="ves2_range" min="0" max="300"  value="0"
+                                        oninput="ves2.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="tnf_a">TNF-alpha (pg/ml)</label>
+                                    <input type="number" id="tnf_a" name="tnf_a" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="tnf_a_range" name="tnf_a_range" min="0" max="14.80"  value="0"
+                                        oninput="tnf_a.value=this.value" step="0.01">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <h3>Globuli Bianchi</h3>
-                    <div class="grid-container">
-                        <div class="form-group">
-                            <label for="baso">Basofili (%)</label>
-                            <input type="number" id="baso" name="baso" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="baso_range" name="baso_range" min="0" max="5" value="0"  oninput="baso.value=this.value" step="0.01">
+                    <!-- SALUTE MUSCOLARE -->
+                    <div class="card-indices">
+
+                        <div class="card-indices_header">
+                            <div class="card-header_title">
+                                <img src="{% static 'includes/images/muscolo.png' %}" alt="">
+                                <h3>Salute Muscolare</h3>
+                            </div>
+                            
+                            <button class="btn-selected" type="button" title="Apri Sezione" id="muscolare-show">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
                         </div>
-    
-                        <div class="form-group">
-                            <label for="eosi">Eosinofili (%)</label>
-                            <input type="number" id="eosi" name="eosi" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="eosi_range" name="eosi_range" min="0" max="20" value="0" oninput="eosi.value=this.value" step="0.01">
-                        </div>
-    
-                        <div class="form-group">
-                            <label for="lymph">Linfociti (%)</label>
-                            <input type="number" id="lymph" name="lymph" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="lymph_range" name="lymph_range" min="0" max="100" value="0" oninput="lymph.value=this.value" step="0.01">
-                        </div>
-    
-                        <div class="form-group">
-                            <label for="mono">Monociti (%)</label>
-                            <input type="number" id="mono" name="mono" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="mono_range" name="mono_range" min="0" max="20" value="0" oninput="mono.value=this.value" step="0.01">
-                        </div>
-    
-                        <div class="form-group">
-                            <label for="neut">Neutrofili (%)</label>
-                            <input type="number" id="neut" name="neut" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="neut_range" name="neut_range" min="0" max="140" value="0" oninput="neut.value=this.value" step="0.01">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="wbc">Globuli bianchi (10^3/uL)</label>
-                            <input type="number" id="wbc" name="wbc" placeholder="Solo valori numerici"   step="0.01">
-                            <input type="range" id="wbc_range" name="wbc_range" min="0" max="20" value="0"  oninput="wbc.value=this.value" step="0.01">
-                        </div>
-    
-                        <div class="form-group">
-                            <label for="neut_ul">Neutrofili (10^3/uL)</label>
-                            <input type="number" id="neut_ul" name="neut_ul" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="neut_ul_range" name="neut_ul_range" min="0" max="16"  value="0" oninput="neut_ul.value=this.value" step="0.01">
-                        </div>
-    
-                        <div class="form-group">
-                            <label for="lymph_ul">Linfociti (10^3/uL)</label>
-                            <input type="number" id="lymph_ul" name="lymph_ul" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="lymph_ul_range" name="lymph_ul_range" min="0" max="7" value="0"  oninput="lymph_ul.value=this.value" step="0.01">
-                        </div>
-    
-                        <div class="form-group"> 
-                            <label for="mono_ul">Monociti (10^3/uL)</label>
-                            <input type="number" id="mono_ul" name="mono_ul" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="mono_ul_range" name="mono_ul_range" min="0" max="2" value="0"  oninput="mono_ul.value=this.value" step="0.01">
-                        </div>
-    
-                        <div class="form-group">
-                            <label for="eosi_ul">Eosinofili (10^3/uL)</label>
-                            <input type="number" id="eosi_ul" name="eosi_ul" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="eosi_ul_range" name="eosi_ul_range" min="0" max="1.4" value="0"  oninput="eosi_ul.value=this.value" step="0.01">
-                        </div>
-    
-                        <div class="form-group">
-                            <label for="baso_ul">Basofili (10^3/uL)</label>
-                            <input type="number" id="baso_ul" name="baso_ul" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="baso_ul_range" name="baso_ul_range" min="0" max="0.4" value="0"  oninput="baso_ul.value=this.value" step="0.01">
+
+                        <div class="card-indices_content" id="muscolareContent">  
+
+                            <div class="grid-container"> 
+                                <div class="form-group">
+                                    <label for="ca">Calcio (mg/dL)</label>
+                                    <input type="number" id="ca" name="ca" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="ca_range" name="ca_range" min="0" max="20" value="0"  oninput="ca.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="p">Fosforo (mg/dL)</label>
+                                    <input type="number" id="p" name="p" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="p_range" name="p_range" min="0" max="10" value="0"  oninput="p.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="mg">Magnesio (mg/dL)</label>
+                                    <input type="number" id="mg" name="mg" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="mg_range" name="mg_range" min="0" max="5" value="0"  oninput="mg.value=this.value" step="0.01">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <h3>Globuli Rossi</h3>
-                    <div class="grid-container" style="row-gap: 60px;">
-                        <div class="form-group">
-                            <label for="hct_m">Hematocrit Uomo(%)</label>
-                            <input type="number" id="hct_m" name="hct_m" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="hct_m_range" name="hct_m_range" min="0" max="105" value="0" oninput="hct_m.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="hct_w">Hematocrit Donna(%)</label>
-                            <input type="number" id="hct_w" name="hct_w" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="hct_w_range" name="hct_w_range" min="0" max="100" value="0" oninput="hct_w.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="hgb_m">Hemoglobin Uomo(g/dL)</label>
-                            <input type="number" id="hgb_m" name="hgb_m" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="hgb_m_range" name="hgb_m_range" min="0" max="40" value="0" oninput="hgb_m.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="hgb_w">Hemoglobin Donna(g/dL)</label>
-                            <input type="number" id="hgb_w" name="hgb_w" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="hgb_w_range" name="hgb_w_range" min="0" max="32" value="0" oninput="hgb_w.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="mch">Emoglobina corpuscolare media (pg)</label>
-                            <input type="number" id="mch" name="mch" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="mch_range" name="mch_range" min="0" max="60" value="0" oninput="mch.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="mchc">Concentrazione media di emoglobina corpuscolare (g/dL)</label>
-                            <input type="number" id="mchc" name="mchc" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="mchc_range" name="mchc_range" min="0" max="80" value="0" oninput="mchc.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="mcv">Volume corpuscolare medio (fL)</label>
-                            <input type="number" id="mcv" name="mcv" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="mcv_range" name="mcv_range" min="0" max="200" value="0" oninput="mcv.value=this.value" step="0.01">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="rbc_m">Globuli rossi Uomo(10^6/uL)</label>
-                            <input type="number" id="rbc_m" name="rbc_m" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="rbc_m_range" name="rbc_m_range" min="0" max="12" value="0"  oninput="rbc_m.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="rbc_w">Globuli rossi Donna(10^6/uL)</label>
-                            <input type="number" id="rbc_w" name="rbc_w" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="rbc_w_range" name="rbc_w_range" min="0" max="10" value="0"  oninput="rbc_w.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="rdwsd">RDW-SD (fL)</label>
-                            <input type="number" id="rdwsd" name="rdwsd" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="rdwsd_range" name="rdwsd_range" min="0" max="100" value="0"  oninput="rdwsd.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="rdwcv">RDW-CV (%)</label>
-                            <input type="number" id="rdwcv" name="rdwcv" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="rdwcv_range" name="rdwcv_range" min="0" max="30" value="0"  oninput="rdwcv.value=this.value" step="0.01">
-                        </div>
-                    </div>
-
-                    <h3>Stato della coagulazione</h3>
-                    <div class="grid-container" style="padding-bottom: 50px;">
-                        <div class="form-group">
-                            <label for="plt">Piastrine (10^3/uL)</label>
-                            <input type="number" id="plt" name="plt" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="plt_range" name="plt_range" min="0" max="1000" value="0" oninput="plt.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="mpv">Volume medio delle piastrine (fL)</label>
-                            <input type="number" id="mpv" name="mpv" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="mpv_range" name="mpv_range" min="0" max="30" value="0"  oninput="mpv.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="plcr">P-LCR (%)</label>
-                            <input type="number" id="plcr" name="plcr" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="plcr_range" name="plcr_range" min="0" max="100" value="0"  oninput="plcr.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="pct">Procalcitonina (%)</label>
-                            <input type="number" id="pct" name="pct" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="pct_range" name="pct_range" min="0" max="0.8" value="0"  oninput="pct.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="pdw">Larghezza di distribuzione delle piastrine (fL)</label>
-                            <input type="number" id="pdw" name="pdw" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="pdw_range" name="pdw_range" min="0" max="30" value="0" oninput="pdw.value=this.value" step="0.01">
-                        </div>
-                    </div>
-
-                    <div class="flex-container"  id="flex-adjust" style="padding-bottom: 50px;">
-                        <div class="form-group">
-                            <label for="fe">Sidermia (µg/dI)</label>
-                            <input type="number" id="fe" name="fe" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="fe_range" name="fe_range" min="0" max="400" value="0" oninput="fe.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="ferritin_m">Ferritina Uomo(ng/mL)</label>
-                            <input type="number" id="ferritin_m" name="ferritin_m" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="ferritin_m_range" name="ferritin_m_range" min="0" max="800" value="0" oninput="ferritin_m.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="ferritin_w">Ferritina Donna(ng/mL)</label>
-                            <input type="number" id="ferritin_w" name="ferritin_w" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="ferritin_w_range" name="ferritin_w_range" min="0" max="300" value="0" oninput="ferritin_w.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="transferrin">Transferrina (mg/dL)</label>
-                            <input type="number" id="transferrin" name="transferrin" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="transferrin_range" name="transferrin_range" min="0" max="700" value="0" oninput="transferrin.value=this.value" step="0.01">
-                        </div>
-                    </div>
                 </div>
-
             </div>
+            
+            
+            <div class="toolkit">
+                <img src="{% static 'includes/images/arrow.png' %}" alt="" style="width: 40px; height: 40px;">
 
-            <!-- SALUTE DEL SISTEMA IMMUNITARIO -->
-            <div class="card-indices">
-
-                <div class="card-indices_header">
-                    <div class="card-header_title">
-                        <img src="{% static 'includes/images/sistema.png' %}" alt="">
-                        <h3>Salute del Sistema Immunitario</h3>
-                    </div>
-                    
-                    <button class="btn-selected" type="button" title="Apri Sezione" onclick="disappear">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
+                <button id="calculateButton" type="submit" class="button">
+                    <span class="button__icon-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
+                            <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
-                    </button>
-                </div>
-
-                <div class="card-indices_content" id="cuoreContent">  
-
-                    <div class="grid-container"> 
-                        <div class="form-group">
-                            <label for="pcr_c">PCR-C-Proteina Reattiva (mg/I)</label>
-                            <input type="number" id="pcr_c" name="pcr_c" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="pcr_c_range" name="pcr_c_range" min="0" max="10" value="0" oninput="pcr_c.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="ves2">Omocisteina (uµol/I)</label>
-                            <input type="number" id="ves2" name="ves2" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="ves2_range" name="ves2_range" min="0" max="300"  value="0"
-                                oninput="ves2.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="tnf_a">TNF-alpha (pg/ml)</label>
-                            <input type="number" id="tnf_a" name="tnf_a" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="tnf_a_range" name="tnf_a_range" min="0" max="14.80"  value="0"
-                                oninput="tnf_a.value=this.value" step="0.01">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SALUTE MUSCOLARE -->
-            <div class="card-indices">
-
-                <div class="card-indices_header">
-                    <div class="card-header_title">
-                        <img src="{% static 'includes/images/muscolo.png' %}" alt="">
-                        <h3>Salute Muscolare</h3>
-                    </div>
-                    
-                    <button class="btn-selected" type="button" title="Apri Sezione" onclick="disappear">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
+            
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
+                            class="button__icon-svg button__icon-svg--copy">
+                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
+                            <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
-                    </button>
-                </div>
-
-                <div class="card-indices_content" id="cuoreContent">  
-
-                    <div class="grid-container"> 
-                        <div class="form-group">
-                            <label for="ca">Calcio (mg/dL)</label>
-                            <input type="number" id="ca" name="ca" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="ca_range" name="ca_range" min="0" max="20" value="0"  oninput="ca.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="p">Fosforo (mg/dL)</label>
-                            <input type="number" id="p" name="p" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="p_range" name="p_range" min="0" max="10" value="0"  oninput="p.value=this.value" step="0.01">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="mg">Magnesio (mg/dL)</label>
-                            <input type="number" id="mg" name="mg" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="mg_range" name="mg_range" min="0" max="5" value="0"  oninput="mg.value=this.value" step="0.01">
-                        </div>
-                    </div>
-                </div>
+                    </span>
+                    Calcola Età Biologica
+                </button>
             </div>
-
+            
+                
+         
+        </form> 
 
 
            <!--  
@@ -13888,43 +13950,7 @@
 
 
 
-            <div class="button-container">
-                <button id="calculateButton" type="submit" class="button">
-                    <span class="button__icon-wrapper">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
-                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
-                            <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        </svg>
             
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
-                            class="button__icon-svg button__icon-svg--copy">
-                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
-                            <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        </svg>
-                    </span>
-                    Calcola Età Biologica
-                </button>
-                <a href="{% url 'Risultati' %}" class="button">
-                    <span class="button__icon-wrapper">
-                        <svg viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="10">
-                            <path
-                                d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
-                                fill="currentColor"></path>
-                        </svg>
-            
-                        <svg viewBox="0 0 14 15" fill="none" width="10" xmlns="http://www.w3.org/2000/svg"
-                            class="button__icon-svg button__icon-svg--copy">
-                            <path
-                                d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
-                                fill="currentColor"></path>
-                        </svg>
-                    </span>
-                    Vedi i Risultati
-                </a>
-            </div>
-        </form> 
     </main>
 
     <script>

@@ -100,28 +100,55 @@ ContainerIndicatori.forEach((element) => {
 // Initialize the toggle functionality
 /* document.addEventListener("DOMContentLoaded", setupSectionToggle); */
 
+
 document.addEventListener("DOMContentLoaded", function () {
-  // Seleziona tutti i pulsanti delle sezioni
   document.querySelectorAll(".btn-selected").forEach(button => {
       button.addEventListener("click", function () {
-          // Trova il contenitore della card più vicino
-          const card = this.closest(".card-indices");
-          // Trova la sezione da mostrare/nascondere
-          const content = card.querySelector(".card-indices_content");
+          const buttonId = this.id;
+          const contentId = buttonId.replace("-show", "Content");
+          const content = document.getElementById(contentId);
+          
+  
+          document.querySelectorAll(".card-indices_content").forEach(section => {
+              if (section !== content) {
+                  section.classList.remove("open");
+                  section.style.maxHeight = "0";
+              }
+          });
 
-          // Alterna la visibilità della sezione
-          content.classList.toggle("hidden");
 
-          // Alterna l'icona del pulsante
-          const icon = this.querySelector("svg polyline");
-          if (content.classList.contains("hidden")) {
-              icon.setAttribute("points", "18 15 12 9 6 15"); // Cambia direzione della freccia (verso il basso)
+          document.querySelectorAll(".btn-selected svg polyline").forEach(svg => {
+              svg.setAttribute("points", "6 9 12 15 18 9");
+          });
+
+ 
+          if (content.classList.contains("open")) {
+              content.classList.remove("open");
+              content.style.maxHeight = "0";
+              this.querySelector("svg polyline").setAttribute("points", "6 9 12 15 18 9");
           } else {
-              icon.setAttribute("points", "6 9 12 15 18 9"); // Freccia verso l'alto
+    
+              content.classList.add("open");
+              content.style.maxHeight = content.scrollHeight + "px";
+              this.querySelector("svg polyline").setAttribute("points", "18 15 12 9 6 15");
           }
       });
   });
 });
+
+
+
+
+
+/* const button = document.getElementById('cuore-show');
+
+button.addEventListener('click', ()=>{
+
+})
+ */
+
+
+
 
 
 
