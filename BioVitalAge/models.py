@@ -428,8 +428,9 @@ class EsameVisita(models.Model):
 class Appointment(models.Model):
     cognome_paziente = models.CharField(max_length=255, blank=True, null=True)
     nome_paziente = models.CharField(max_length=255, blank=True, null=True)
-    tipologia_visita = models.CharField(max_length=100, choices=[('Generale', 'Generale'), ('Specialistica', 'Specialistica')], blank=True, null=True)    
+    tipologia_visita = models.CharField(max_length=100, choices=[('Generale', 'Generale'), ('Specialistica', 'Specialistica')], blank=True, null=True)
     data = models.DateField(default=datetime.now)
+    giorno = models.CharField(max_length=255, blank=True, null=True)
     orario = models.TimeField()
     numero_studio = models.IntegerField(blank=True, null=True)
     dottore = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)

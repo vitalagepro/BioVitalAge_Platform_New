@@ -1,3 +1,6 @@
+/*  -----------------------------------------------------------------------------------------------
+  LAYOUT
+--------------------------------------------------------------------------------------------------- */
 const monthLayoutBtn = document.getElementById("monthLayout");
 const weekLayoutBtn = document.getElementById("weekLayout");
 
@@ -43,38 +46,28 @@ monthLayoutBtn.addEventListener("click", () => {
                                             CALENDAR
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
-  const currentDateElement = document.getElementById("currentData");
-  const monthLayout = document.getElementById("month-layout");
-  const prevButton = document.querySelector(".prev");
-  const nextButton = document.querySelector(".next");
-  const todayButton = document.getElementById("currentBtn");
-  const dateInput = document.getElementById("date");
   const modal = document.getElementById("appointmentModal");
   const modalContent = document.querySelector(".modal-content-appointments");
   const openModalBtn = document.getElementById("openModal");
-  const closeModalBtn = document.getElementById("closeModal");
+  const closeModalIcon = document.getElementById("closeModal");
+  const closeModalBtn = document.getElementById("closeModalBtn");
+  const saveAppointmentBtn = document.querySelector(".btn-primary");
+
+  const alertContainer = document.createElement("div");
+  alertContainer.classList.add("position-fixed", "top-0", "end-0", "p-3");
+  document.body.appendChild(alertContainer);
+
+  const dayAppointmentSpan = document.getElementById("day-appointment");
+  const dateAppointmentSpan = document.getElementById("date-appointment");
+  const timeAppointmentSpan = document.getElementById("time-appointment");
+  const editTimeBtn = document.getElementById("edit-date-btn");
+
   const monthGrid = document.querySelector(".container-content-table");
 
   let currentDate = new Date();
+  let isFromCalendar = false;
 
   function updateCalendar() {
-    const monthNames = [
-      "Gennaio",
-      "Febbraio",
-      "Marzo",
-      "Aprile",
-      "Maggio",
-      "Giugno",
-      "Luglio",
-      "Agosto",
-      "Settembre",
-      "Ottobre",
-      "Novembre",
-      "Dicembre",
-    ];
-    currentDateElement.textContent = `${currentDate.getDate()} ${
-      monthNames[currentDate.getMonth()]
-    } ${currentDate.getFullYear()}`;
     generateCalendar();
   }
 
@@ -123,64 +116,165 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  prevButton.addEventListener("click", function () {
-    currentDate.setMonth(currentDate.getMonth() - 1);
-    updateCalendar();
-  });
+  function formatDate(date) {
+    const giorniSettimana = [
+      "Domenica",
+      "Lunedì",
+      "Martedì",
+      "Mercoledì",
+      "Giovedì",
+      "Venerdì",
+      "Sabato",
+    ];
+    let giornoSettimana = giorniSettimana[date.getDay()];
+    let giorno = String(date.getDate()).padStart(2, "0");
+    let mese = String(date.getMonth() + 1).padStart(2, "0");
+    let anno = date.getFullYear();
 
-  nextButton.addEventListener("click", function () {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-    updateCalendar();
-  });
+    return { giornoSettimana, giorno, mese, anno };
+  }
 
-  todayButton.addEventListener("click", function () {
-    currentDate = new Date();
-    updateCalendar();
-  });
+  function showAlert(message, type) {
+    const alert = document.createElement("div");
+    alert.classList.add("alert", `alert-${type}`, "fade", "show");
+    alert.setAttribute("role", "alert");
+    alert.innerHTML = message;
 
-  dateInput.addEventListener("change", function () {
-    const selectedDate = new Date(this.value);
-    if (!isNaN(selectedDate)) {
-      currentDate = selectedDate;
-      updateCalendar();
-    }
-  });
+    alertContainer.appendChild(alert);
 
-  // Gestione modale appuntamenti con GSAP solo sul contenuto
-  openModalBtn.addEventListener("click", function () {
+    setTimeout(() => {
+      alert.classList.remove("show");
+      setTimeout(() => alert.remove(), 200);
+    }, 3000);
+  }
+
+  function openModalWithDate(date, fromCalendarClick = false) {
+    isFromCalendar = fromCalendarClick;
     document.body.style.overflow = "hidden";
     modal.style.display = "block";
+
     gsap.fromTo(
       modalContent,
       { opacity: 0, scale: 0.8 },
       { opacity: 1, scale: 1, duration: 0.3 }
     );
-  });
-  
-  closeModalBtn.addEventListener("click", function () {
+
+    if (isFromCalendar) {
+      let { giornoSettimana, giorno, mese, anno } = formatDate(date);
+      dayAppointmentSpan.textContent = `${giornoSettimana}, `;
+      dateAppointmentSpan.textContent = `${giorno}/${mese}/${anno}, `;
+      timeAppointmentSpan.textContent = `Ora`;
+    } else {
+      dayAppointmentSpan.textContent = `Giorno, `;
+      dateAppointmentSpan.textContent = `Data, `;
+      timeAppointmentSpan.textContent = `Ora`;
+    }
+  }
+
+  function closeModal() {
+    document.body.style.overflow = "auto";
     gsap.to(modalContent, {
       opacity: 0,
       scale: 0.8,
       duration: 0.3,
       onComplete: function () {
         modal.style.display = "none";
+        dayAppointmentSpan.textContent = "Giorno, ";
+        dateAppointmentSpan.textContent = "Data, ";
+        timeAppointmentSpan.textContent = "Ora";
+        removeInputIfPresent(dateAppointmentSpan);
+        removeInputIfPresent(timeAppointmentSpan);
       },
     });
+  }
+
+  editTimeBtn.addEventListener("click", function () {
+    if (
+      dateAppointmentSpan.querySelector("input") ||
+      timeAppointmentSpan.querySelector("input")
+    ) {
+      return;
+    }
+
+    let dateInput = document.createElement("input");
+    dateInput.type = "date";
+    dateInput.classList.add("form-control");
+
+    let timeInput = document.createElement("input");
+    timeInput.type = "time";
+    timeInput.classList.add("form-control");
+
+    dateInput.addEventListener("change", function () {
+      let selectedDate = new Date(this.value);
+      let { giornoSettimana } = formatDate(selectedDate);
+      dayAppointmentSpan.textContent = `${giornoSettimana}, `;
+    });
+
+    dateAppointmentSpan.innerHTML = "";
+    dateAppointmentSpan.appendChild(dateInput);
+
+    timeAppointmentSpan.innerHTML = "";
+    timeAppointmentSpan.appendChild(timeInput);
   });
-  
-  window.addEventListener("click", function (event) {
-    if (event.target === modal) {
-      document.body.style.overflow = "auto";
-      gsap.to(modalContent, {
-        opacity: 0,
-        scale: 0.8,
-        duration: 0.3,
-        onComplete: function () {
-          modal.style.display = "none";
-        },
+
+  function removeInputIfPresent(element) {
+    let input = element.querySelector("input");
+    if (input) {
+      element.textContent = input.value || "Ora";
+      element.removeChild(input);
+    }
+  }
+
+  saveAppointmentBtn.addEventListener("click", function () {
+    let dateInput = dateAppointmentSpan.querySelector("input[type='date']");
+    let timeInput = timeAppointmentSpan.querySelector("input[type='time']");
+
+    let finalDateValue = dateInput
+      ? dateInput.value
+      : dateAppointmentSpan.textContent.replace(",", "").trim();
+    let finalTimeValue = timeInput
+      ? timeInput.value
+      : timeAppointmentSpan.textContent.replace(",", "").trim();
+
+    let appointmentData = {
+      date: finalDateValue,
+      time: finalTimeValue,
+    };
+
+    fetch("/salva-appuntamento/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(appointmentData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        showAlert("Appuntamento salvato con successo!", "success");
+        closeModal();
+      })
+      .catch((error) => {
+        showAlert("Errore nel salvataggio, riprova!", "danger");
       });
+  });
+
+  monthGrid.addEventListener("click", function (event) {
+    let cell = event.target.closest(".cella");
+    if (cell && cell.querySelector(".data")) {
+      let dayNum = parseInt(cell.querySelector(".data").textContent);
+      let selectedDate = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        dayNum
+      );
+      openModalWithDate(selectedDate, true);
     }
   });
+
+  openModalBtn.addEventListener("click", function () {
+    openModalWithDate(new Date(), false);
+  });
+
+  closeModalIcon.addEventListener("click", closeModal);
+  closeModalBtn.addEventListener("click", closeModal);
 
   updateCalendar();
 });

@@ -2222,9 +2222,12 @@ class PrescrizioniView(View):
 class AppuntamentiView(View):
     def get(self, request):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
-
+        persone = TabellaPazienti.objects.all().order_by('-id')
+        appuntamenti = Appointment.objects.all().order_by('-id')
         context = {
             'dottore': dottore,
+            'persone': persone,
+            'appuntamenti': appuntamenti
         }
 
         return render(request, 'includes/Appuntamenti.html', context)

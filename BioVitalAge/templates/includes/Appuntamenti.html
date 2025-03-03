@@ -23,6 +23,7 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Font Import  -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -70,7 +71,7 @@
                       </svg>
                     </button>
 
-                    <button id="currentBtn">Today</button>
+                    <button id="currentBtn">Oggi</button>
 
                     <input type="date" id="date" name="date">
                 </div>
@@ -83,9 +84,9 @@
                 
 
                 <div class="layout-option">
-                    <button class="active" id="monthLayout">month</button>
-                    <button id="weekLayout">week</button>
-                    <button id="dayLayout">day</button>
+                    <button class="active" id="monthLayout">Mese</button>
+                    <button id="weekLayout">Settimana</button>
+                    <button id="dayLayout">Giorno</button>
                 </div>
 
                 <button type="button" id="button-tools" class="button button-view-all">
@@ -115,18 +116,17 @@
                             <span id="closeModal" class="close">&times;</span>
                         </header>
                         <div class="modal-section">
-                            {% if appuntamenti.day and appuntamenti.date and appuntamenti.time %}
-                                <form action="POST" id="date-appointment" class="form-appointment">
-                                    <div class="icon-form-appointment">
-                                        <img src="{% static 'includes/icone/edit-icon.png' %}" alt="edit-date">
-                                    </div>
-                                    <div>
-                                        <span id="day-appointement">{{ appuntamenti.day|default:"Lunedì" }}, </span>
-                                        <span id="date-appointement">{{ appuntamenti.date|default:"01/05/2025" }}, </span>
-                                        <span id="time-appointement">{{ appuntamenti.time|default:"10:00" }}</span>
-                                    </div>
-                                </form>
-                            {% endif %}
+                            <form action="POST" id="date-appointment-form" class="form-appointment" data-id="{{ appuntamenti.id }}">
+                                <div class="icon-form-appointment" id="edit-date-btn">
+                                    <img src="{% static 'includes/icone/edit-icon.png' %}" alt="edit-date">
+                                </div>
+                                <div>
+                                    <span id="day-appointment"></span>
+                                    <span id="date-appointment"></span>
+                                    <span id="time-appointment"></span>
+                                </div>
+                            </form>
+                            
 
                             <form action="POST" id="patient-appointment">
                                 <label for="tipologia" class="input-typology">
@@ -134,7 +134,6 @@
                                         <p class="mb-0">Tipologia</p>
                                         <select name="tipologia" id="tipologia" class="form-select-appointment w-100">
                                             <option>Appuntamento Paziente</option>
-                                            <option></option>
                                         </select>
                                     </div>
                                     <div class="d-flex align-items-center gap-2">
@@ -143,21 +142,31 @@
                                         </div>
                                         <select name="paziente-select" id="paziente-select" class="w-100 form-select-appointment">
                                             <option>Seleziona Paziente</option>
+                                            {% for paziente in persone %}
+                                                <option value="{{ paziente.id }}">{{ paziente.name|title }} {{ paziente.surname|title }}</option>
+                                            {% endfor %}
                                         </select>
                                     </div>
                                 </label>
 
                                 <label id="input-time" class="mt-4">
-                                    <select name="voce-prezzario" id="voce-prezzario">
-                                        <option>Voce prezzario</option>
-                                    </select>
-                                    <input type="time" name="time" id="time">
+                                    <div>
+                                        <select name="voce-prezzario" id="voce-prezzario" class="w-100">
+                                            <option>Voce prezzario</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0">Durata</p>
+                                        <select name="time" id="time">
+                                            <option>Seleziona una Durata</option>
+                                        </select>
+                                    </div>
                                 </label>
                             </form>
                         </div>
                         <div class="button-modal-appointments">
-                            <button type="submit" class="btn btn-primary">Salva</button>
-                            <button type="button" class="btn btn-secondary close" id="closeModal">Chiudi</button></button>
+                            <button type="submit" class="button btn-primary">Salva</button>
+                            <button type="button" class="button btn-secondary" id="closeModalBtn">Chiudi</button></button>
                         </div>
                     </div>
                 </div>

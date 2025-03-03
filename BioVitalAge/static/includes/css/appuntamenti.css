@@ -1,3 +1,4 @@
+/* ! Calendario */
 .Calendario-container {
     background-color: var(--card-color);
     width: 98%;
@@ -17,6 +18,19 @@
     padding: 20px;
     background-color: var(--contrast-color-shadow);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Filtri container */
 .filtri-container {
@@ -76,7 +90,15 @@ input[type='date'] {
 
 
 
-/* Tools container */
+
+
+
+
+
+
+
+
+/* Modale */
 .modal-appointments {
     display: none;
     position: fixed;
@@ -143,6 +165,23 @@ input[type='date'] {
     color: red;
 }
 
+.button-modal-appointments{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.button-modal-appointments .btn-secondary{
+    background-color: var(--card-color);
+    color: var(--contrast-color);
+    border: 2px solid var(--contrast-color2);
+}
+
+.button-modal-appointments .btn-secondary:hover{
+    background-color: var(--contrast-color2);
+    color: white;
+}
+
 .icon-form-appointment img{
     cursor: pointer;
     width: 20px;
@@ -156,6 +195,7 @@ input[type='date'] {
 
 .form-appointment{
     display: flex;
+    gap: 10px;
 }
 
 .form-appointment span{
@@ -185,6 +225,7 @@ input[type='date'] {
 
 #input-time{
     display: grid;
+    align-items: end;
     grid-template-columns: 2fr 1fr;
     grid-template-rows: 1fr 1fr;
     gap: 10px;
@@ -208,6 +249,11 @@ input[type='date'] {
     padding: 5px;
     cursor: pointer;
     outline: none;
+    width: 100%;
+}
+
+#time:first-child{
+    opacity: 0.5;
 }
 
 .container-first-select{
@@ -228,6 +274,21 @@ input[type='date'] {
 .icon_add_paient img:hover{
     transform: scale(1.2);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ! Tools container */
 .tools-container {
     display: flex;
@@ -266,6 +327,17 @@ input[type='date'] {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
 /* Content style */
 .header-rowTrace {
     width: 100%;
@@ -285,6 +357,20 @@ input[type='date'] {
     font-weight: bold;
     color: var(--contrast-color);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* STYLE MONTH LAYOUT */
@@ -334,6 +420,16 @@ input[type='date'] {
     cursor: pointer;
     padding: 10px 0px;
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -402,9 +498,6 @@ input[type='date'] {
 
 
 /* ACTIVE LAYOUT STYLE */
-
-
-
 #week-head,
 #week-layout {
     display: none;
