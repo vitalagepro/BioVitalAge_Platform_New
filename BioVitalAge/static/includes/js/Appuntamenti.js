@@ -266,6 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // -----------------------------
   function openModalWithGSAP() {
     appointmentModal.style.display = "block"; // overlay
+    document.body.style.overflow = "hidden";
     gsap.fromTo(
       modalContent,
       { opacity: 0, scale: 0.8 },
@@ -274,6 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function closeModalWithGSAP() {
+    document.body.style.overflow = "auto";
     gsap.to(modalContent, {
       opacity: 0,
       scale: 0.8,
