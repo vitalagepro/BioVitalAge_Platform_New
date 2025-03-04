@@ -7,7 +7,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
     
-    <title>BioVitalAge - Pazienti</title>
+    <title>BioVitalAge - Calendario Appuntamenti</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}" />
@@ -15,11 +15,11 @@
 
 
     <!-- Bootstrap import -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Js Import  -->
     <script src="{% static 'includes/js/Appuntamenti.js' %}" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -78,7 +78,7 @@
 
             </div>
 
-            <p id="currentData">25 Febbraio 2025</p> <!-- Abilitare dinamicamente -->
+            <p id="currentData"></p> <!-- Abilitare dinamicamente -->
             
             <div class="tools-container">
                 
@@ -106,6 +106,7 @@
                 <!-- Modale per appuntamenti -->
                 <div id="appointmentModal" class="modal-appointments">
                     <div class="modal-content-appointments">
+
                         <header class="header-modal-appointments">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="icon-container-appointment">
@@ -115,25 +116,42 @@
                             </div>
                             <span id="closeModal" class="close">&times;</span>
                         </header>
+
                         <div class="modal-section">
+
                             <form action="POST" id="date-appointment-form" class="form-appointment" data-id="{{ appuntamenti.id }}">
-                                <div class="icon-form-appointment" id="edit-date-btn">
-                                    <img src="{% static 'includes/icone/edit-icon.png' %}" alt="edit-date">
-                                </div>
+                                <a id="edit-date-btn" class="Btn-modify" title="Modifica">
+                                    Edita
+                                    <svg class="svg" viewBox="0 0 512 512">
+                                        <path
+                                            d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z">
+                                        </path>
+                                    </svg>
+                                </a>
                                 <div>
                                     <span id="day-appointment"></span>
                                     <span id="date-appointment"></span>
                                     <span id="time-appointment"></span>
                                 </div>
                             </form>
-                            
-
+                
+                
+                            <!-- Contenitore nascosto con input date/time -->
+                            <div id="edit-date-container" style="display:none;">
+                                <input type="date" id="editDate" style="display:none;">
+                                <input type="time" id="editTime" style="display:none;">
+                            </div>
+                
+                
                             <form action="POST" id="patient-appointment">
                                 <label for="tipologia" class="input-typology">
                                     <div class="d-flex flex-column w-100">
                                         <p class="mb-0">Tipologia</p>
                                         <select name="tipologia" id="tipologia" class="form-select-appointment w-100">
                                             <option>Appuntamento Paziente</option>
+                                            {% for appuntamento in appuntamenti %}
+                                            <option value="{{ appuntamento.id }}">{{ appuntamento.tipologia_visita }}</option>
+                                            {% endfor %}
                                         </select>
                                     </div>
                                     <div class="d-flex align-items-center gap-2">
@@ -143,12 +161,13 @@
                                         <select name="paziente-select" id="paziente-select" class="w-100 form-select-appointment">
                                             <option>Seleziona Paziente</option>
                                             {% for paziente in persone %}
-                                                <option value="{{ paziente.id }}">{{ paziente.name|title }} {{ paziente.surname|title }}</option>
+                                            <option value="{{ paziente.id }}">{{ paziente.name|title }} {{ paziente.surname|title }}
+                                            </option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                 </label>
-
+                
                                 <label id="input-time" class="mt-4">
                                     <div>
                                         <select name="voce-prezzario" id="voce-prezzario" class="w-100">
@@ -163,7 +182,9 @@
                                     </div>
                                 </label>
                             </form>
+
                         </div>
+
                         <div class="button-modal-appointments">
                             <button type="submit" class="button btn-primary">Salva</button>
                             <button type="button" class="button btn-secondary" id="closeModalBtn">Chiudi</button></button>
@@ -209,117 +230,8 @@
         </div>
 
         <div class="container-content-table" id="month-layout">
-                <div class="cella">
-                    <p class="data prev">26</p>
-                    <p class="appuntamenti-counter">5 Appuntamenti</p>
-                </div>
-                <div class="cella">
-                    <p class="data prev">27</p>
-                </div>
-                <div class="cella">
-                    <p class="data prev">28</p>
-                </div>
-                <div class="cella">
-                    <p class="data prev">29</p>
-                </div>
-                <div class="cella">
-                    <p class="data prev">30</p>
-                    <p class="appuntamenti-counter">10 Appuntamenti</p>
-                </div>
-                <div class="cella">
-                    <p class="data prev">31</p>
-                </div>
-                <div class="cella">
-                    <p class="data">1</p>
-                </div>
-                <div class="cella">
-                    <p class="data">2</p>
-                </div>
-                <div class="cella">
-                    <p class="data">3</p>
-                </div>
-                <div class="cella">
-                    <p class="data">4</p>
-                </div>
-                <div class="cella">
-                    <p class="data">5</p>
-                    <p class="appuntamenti-counter">3 Appuntamenti</p>
-                </div>
-                <div class="cella">
-                    <p class="data">6</p>
-                </div>
-                <div class="cella">
-                    <p class="data">7</p>
-                </div>
-                <div class="cella">
-                    <p class="data">8</p>
-                </div>
-                <div class="cella">
-                    <p class="data">9</p>
-                </div>
-                <div class="cella">
-                    <p class="data">10</p>
-                </div>
-                <div class="cella">
-                    <p class="data">11</p>
-                </div>
-                <div class="cella">
-                    <p class="data">12</p>
-                </div>
-                <div class="cella">
-                    <p class="data">13</p>
-                </div>
-                <div class="cella">
-                    <p class="data">14</p>
-                </div>
-                <div class="cella">
-                    <p class="data">15</p>
-                </div>
-                <div class="cella">
-                    <p class="data">16</p>
-                </div>
-                <div class="cella">
-                    <p class="data">17</p>
-                </div>
-                <div class="cella">
-                    <p class="data">18</p>
-                </div>
-                <div class="cella">
-                    <p class="data">19</p>
-                </div>
-                <div class="cella">
-                    <p class="data">20</p>
-                </div>
-                <div class="cella">
-                    <p class="data">21</p>
-                </div>
-                <div class="cella">
-                    <p class="data">22</p>
-                </div>
-                <div class="cella">
-                    <p class="data">23</p>
-                </div>
-                <div class="cella current">
-                    <p class="data">24</p>
-                </div>
-                <div class="cella">
-                    <p class="data">25</p>
-                </div>
-                <div class="cella">
-                    <p class="data">26</p>
-                </div>
-                <div class="cella">
-                    <p class="data">27</p>
-                </div>
-                <div class="cella">
-                    <p class="data">28</p>
-                </div>
-                <div class="cella">
-                    <p class="data prev">1</p>
-                </div>
-                
-        </div>  
-        
+            <!-- Qui le celle verranno create dinamicamente da JS -->
+        </div>
 
 
         <!-- CALENDARIO SETTIMANALE LAYOUT -->

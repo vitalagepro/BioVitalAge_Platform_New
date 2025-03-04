@@ -195,6 +195,7 @@ input[type='date'] {
 
 .form-appointment{
     display: flex;
+    align-items: center;
     gap: 10px;
 }
 
@@ -394,6 +395,14 @@ input[type='date'] {
     position: relative;
 }
 
+.past-day p{
+    color: rgba(0, 0, 0, 0.418);
+}
+
+.today{
+    background: #ddd;
+}
+
 .data {
     position: absolute;
     top: 1rem;
@@ -501,4 +510,66 @@ input[type='date'] {
 #week-head,
 #week-layout {
     display: none;
+}
+
+
+
+
+
+
+
+
+/* ! Button modify */
+/* From Uiverse.io by vinodjangid07 */
+.Btn-modify {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    padding: 0px 20px;
+    background-color: var(--contrast-color2);
+    color: white;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 50px;
+    transition-duration: .3s;
+}
+
+.button-view-all {
+    padding: 0.48rem 1.4rem;
+    width: max-content;
+    border-radius: 10px;
+}
+
+.svg {
+    width: 15px;
+    position: absolute;
+    fill: white;
+    transition-duration: .3s;
+}
+
+.save-icon {
+    width: 20px !important;
+}
+
+.Btn-modify:hover {
+    color: transparent;
+}
+
+.Btn-modify:hover svg {
+    transform: scale(1.2);
+    margin: 0;
+    padding: 0;
+    border: none;
+    transition-duration: .3s;
+}
+
+.Btn-modify:active {
+    transform: translate(3px, 3px);
+    transition-duration: .3s;
+    box-shadow: 2px 2px 0px rgb(140, 32, 212);
 }
