@@ -532,17 +532,19 @@ input[type="range"]::-ms-thumb {
 /* PERSONAL INFORMATION STILE */
 .personal_title{
   width: 100%;
-  padding: 10px 20px;
+  padding: 20px 20px;
   border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid #ddd;
+  background-color: var(--contrast-color-shadow);
   margin-bottom: 20px;
+  box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.5);
 }
 .personal_title img{
   width: 50px;
   height: 50px;
+  margin-left: 1rem;
 }
 .patient-info {
   display: grid;
@@ -551,6 +553,16 @@ input[type="range"]::-ms-thumb {
   gap: 10px;
   row-gap: 20px;
 }
+#personalContent{
+  display: none;
+}
+#fix-personal{
+  grid-template-columns: repeat(4, 1fr);
+  row-gap: 10px;
+  padding-bottom: 20px;
+}
+
+
 
 /* TOOLKIT STYLE */
 .toolkit {
@@ -571,21 +583,23 @@ input[type="range"]::-ms-thumb {
   transform: translateX(10px);
   transition: width 0.4s ease-in-out, opacity 0.3s ease-in-out, transform 0.4s ease-in-out;
 }
-
+.toolkit img{
+  margin-right: -4rem;
+}
 .toolkit:hover {
-  width: 20rem;
+  width: 30rem;
   opacity: 1;
   transform: translateX(0); 
 }
-
-#calculateButton {
+#calculateButton,
+#vediButton {
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
-
-.toolkit:hover #calculateButton {
+.toolkit:hover #calculateButton,
+.toolkit:hover #vediButton {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -596,16 +610,18 @@ input[type="range"]::-ms-thumb {
 /* STYLE CARD A COMPORSA */
 .contenitore-genitore{
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
 }
-.accordion{
-  width: 50%;
+#personal{
+  width: 100%;
 }
 .card-indices{
   border-radius: 8px;
   background-color: var(--card-color);
   margin-bottom: 1rem;
   padding: 20px;
+  width: 49.7%;
 }
 .card-indices_header{
   display: flex;
@@ -638,7 +654,7 @@ input[type="range"]::-ms-thumb {
   color: var(--dark1);
 }
 .card-indices_content{
-  margin-top: 3rem;
+  padding-top: 10px;
   border-radius: 8px;
 }
 .card-indices_content h3{
@@ -656,11 +672,6 @@ input[type="range"]::-ms-thumb {
   border-radius: 4px;
   background-color: var(--contrast-color-shadow);
 }
-/* .card-indices_content{
-  display: none;
-}
- */
-
 .card-indices_content {
   max-height: 1px;
   overflow: hidden;
@@ -670,7 +681,16 @@ input[type="range"]::-ms-thumb {
 .card-indices_content.open {
   opacity: 1;
   transition: max-height 0.6s ease-in-out, opacity 0.6s ease-in-out;
+  padding-top: 30px;
 } 
+.card-indices:has(.card-indices_content.open) {
+  width: 100%; 
+  transition: all 0.4s ease-in-out;
+}
+.full_width{
+  width: 100%;
+  transition: width 0.4s ease-in-out;
+}
 
 
 
