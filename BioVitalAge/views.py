@@ -1482,7 +1482,8 @@ class InserisciPazienteView(View):
 
             if paziente_esistente:
                 campi_opzionali = [
-                    'province', 'cap', 'email', 'phone', 'associate_staff', 'height', 'weight', 'bmi', 'bmi_detection_date',
+                    'residence', 'province', 'cap', 'email', 'phone',
+                    'associate_staff', 'height', 'weight', 'bmi', 'bmi_detection_date',
                     'girth_value', 'girth_notes', 'girth_date',
                     'alcol', 'alcol_type', 'data_alcol', 'alcol_frequency',
                     'smoke', 'smoke_frequency', 'reduced_intake',
@@ -1491,42 +1492,44 @@ class InserisciPazienteView(View):
                 ]
 
                 if any(request.POST.get(campo) for campo in campi_opzionali):
-                    paziente_esistente.email = request.POST.get('email')
-                    paziente_esistente.phone = request.POST.get('phone')
-                    paziente_esistente.cap = request.POST.get('cap')
-                    paziente_esistente.province = request.POST.get('province')
-                    paziente_esistente.associate_staff = request.POST.get('associate_staff')
-                    paziente_esistente.height = request.POST.get('height')
-                    paziente_esistente.weight = request.POST.get('weight')
-                    paziente_esistente.bmi = request.POST.get('bmi')
-                    paziente_esistente.bmi_detection_date = parse_date(request.POST.get('bmi_detection_date'))
-                    paziente_esistente.girth_value = request.POST.get('girth_value')
-                    paziente_esistente.girth_notes = request.POST.get('girth_notes')
-                    paziente_esistente.girth_date = parse_date(request.POST.get('girth_date'))
-                    paziente_esistente.alcol = request.POST.get('alcol')
-                    paziente_esistente.alcol_type = request.POST.get('alcol_type')
-                    paziente_esistente.data_alcol = parse_date(request.POST.get('data_alcol'))
-                    paziente_esistente.alcol_frequency = request.POST.get('alcol_frequency')
-                    paziente_esistente.smoke = request.POST.get('smoke')
-                    paziente_esistente.smoke_frequency = request.POST.get('smoke_frequency')
-                    paziente_esistente.reduced_intake = request.POST.get('reduced_intake')
-                    paziente_esistente.sport = request.POST.get('sport')
-                    paziente_esistente.sport_livello = request.POST.get('sport_livello')
-                    paziente_esistente.sport_frequency = request.POST.get('sport_frequency')
-                    paziente_esistente.attivita_sedentaria = request.POST.get('attivita_sedentaria')
-                    paziente_esistente.livello_sedentarieta = request.POST.get('livello_sedentarieta')
-                    paziente_esistente.sedentarieta_nota = request.POST.get('sedentarieta_nota')
-                    paziente_esistente.blood_group = request.POST.get('blood_group')
+                    paziente_esistente.residence = request.POST.get('residence') or None
+                    paziente_esistente.email = request.POST.get('email') or None
+                    paziente_esistente.phone = request.POST.get('phone') or None
+                    paziente_esistente.cap = request.POST.get('cap') or None
+                    paziente_esistente.province = request.POST.get('province') or None
+                    paziente_esistente.associate_staff = request.POST.get('associate_staff') or None
+                    paziente_esistente.height = request.POST.get('height') or None
+                    paziente_esistente.weight = request.POST.get('weight') or None
+                    paziente_esistente.bmi = request.POST.get('bmi') or None
+                    paziente_esistente.bmi_detection_date = parse_date(request.POST.get('bmi_detection_date')) or None
+                    paziente_esistente.girth_value = request.POST.get('girth_value') or None
+                    paziente_esistente.girth_notes = request.POST.get('girth_notes') or None
+                    paziente_esistente.girth_date = parse_date(request.POST.get('girth_date')) or None
+                    paziente_esistente.alcol = request.POST.get('alcol') or None
+                    paziente_esistente.alcol_type = request.POST.get('alcol_type') or None
+                    paziente_esistente.data_alcol = parse_date(request.POST.get('data_alcol')) or None
+                    paziente_esistente.alcol_frequency = request.POST.get('alcol_frequency') or None
+                    paziente_esistente.smoke = request.POST.get('smoke') or None
+                    paziente_esistente.smoke_frequency = request.POST.get('smoke_frequency') or None
+                    paziente_esistente.reduced_intake = request.POST.get('reduced_intake') or None
+                    paziente_esistente.sport = request.POST.get('sport') or None
+                    paziente_esistente.sport_livello = request.POST.get('sport_livello') or None
+                    paziente_esistente.sport_frequency = request.POST.get('sport_frequency') or None
+                    paziente_esistente.attivita_sedentaria = request.POST.get('attivita_sedentaria') or None
+                    paziente_esistente.livello_sedentarieta = request.POST.get('livello_sedentarieta') or None
+                    paziente_esistente.sedentarieta_nota = request.POST.get('sedentarieta_nota') or None
+                    paziente_esistente.blood_group = request.POST.get('blood_group') or None
 
                     paziente_esistente.save()
                     success = "I dati del paziente sono stati aggiornati con successo!"
+                
                 else:
                     errore = "Operazione non andata a buon fine: 'Un Utente con questo Codice Fiscale è gia presente all'interno del database'."
                     context['errore'] = errore
             
             else:
                 campi_opzionali = [
-                    'email', 'password', 'blood_group', 'associate_staff', 'height',
+                    'residence', 'email', 'password', 'blood_group', 'associate_staff', 'height',
                     'weight', 'bmi','bmi_detection_date', 'girth_value', 'girth_notes',
                     'girth_notes','girth_date', 'alcol',  'alcol_type', 'data_alcol',
                     'alcol_frequency','smoke', 'smoke_frequency', 'reduced_intake',
@@ -1540,6 +1543,7 @@ class InserisciPazienteView(View):
                             dottore=dottore,
                             name=request.POST.get('name'),
                             surname=request.POST.get('surname'),
+                            residence=request.POST.get('residence'),
                             email=request.POST.get('email') or None,
                             phone=request.POST.get('phone') or None,
                             dob=parse_date(request.POST.get('dob')),
@@ -1643,6 +1647,7 @@ def update_persona_contact(request, id):
             data = json.loads(request.body)
             cap = data.get("cap")
             province = data.get("province")
+            residence = data.get("residence")
             email = data.get("email")
             phone = data.get("phone")
             associate_staff = data.get("associate_staff")
@@ -1654,6 +1659,7 @@ def update_persona_contact(request, id):
             from .models import TabellaPazienti  # Sostituisci con il tuo modello
             persona = TabellaPazienti.objects.get(id=id)
             persona.cap = cap
+            persona.residence = residence
             persona.province = province
             persona.email = email
             persona.phone = phone

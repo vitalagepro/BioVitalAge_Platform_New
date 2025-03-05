@@ -135,7 +135,7 @@
 
                     <div class="field">
                         <p>Città di residenza:</p>
-                        <p>{{ persona.place_of_birth|title }}</p>
+                        <p id="residence">{{ persona.residence|title }}</p>
                     </div>
 
                     <div class="field">
@@ -289,7 +289,7 @@
                     <div class="space"></div>
                 </div>
                 <div class="card-content">
-                    <img src="{% static 'includes/icone/analisi.png' %}" alt="">
+                    <img src="{% static 'includes/images/biolovitale.webp' %}" alt="">
                     <p style="top: 4rem;">Referti Età Biologica</p>
                     <p style="top: 6rem;"><strong>Ultimo Calcolo:</strong> &nbsp; {{ ultimo_referto.data_referto|date:"d/m/Y" }} </p>
                     <a href="{% url 'elenco_referti' persona.id %}" style="top: 10rem;" id="adjust">Vai ai referti</a>
@@ -298,6 +298,49 @@
             </div>
         </div>
         
+
+        <!-- CARD SEZIONI RESILIENZA E THERAPY -->
+        <div class="container-sezioniInterne containerStyle" style="margin-top: -1rem;">
+            
+            <!-- RESILIENZA -->
+            <div class="cardDati">
+
+                <div class="cartella-effect">
+                    <h3>Resilienza</h3>
+                    <div class="space"></div>
+                </div>
+
+
+                <div class="card-content">
+                    <img src="{% static 'includes/images/Resilienza.png' %}" alt="">
+                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aspernatur exercitationem placeat impedit mollitia dolor est nesciunt enim in libero repellat temporibus voluptatum esse adipisci, maiores expedita eaque nulla architecto nihil!
+                    </p>
+                    <a href="#">Vai alla sezione</a>
+                </div>
+            </div>
+
+            <!-- TERAPHY -->
+            <div class="cardDati">
+                <div class="cartella-effect">
+                    <h3>BioVitalAge Therapy</h3>
+                    <div class="space"></div>
+                </div>
+                <div class="card-content">
+                    <img src="{% static 'includes/images/teraphy.png' %}" alt="">
+                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsum impedit velit libero perspiciatis. Qui, a nihil earum quasi impedit praesentium quia temporibus magnam modi minima libero delectus nam repudiandae amet?
+                    </p>
+                    <a href="#">Vai alla sezione</a>
+                </div>
+            </div>
+        </div>
+        
+
+
+
+
+
+
+
         <!-- TABELLA ELENCO PRESCRIZIONI -->
 
         <!-- Modal Elenco Dettagli Visita -->

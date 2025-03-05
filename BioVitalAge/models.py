@@ -39,6 +39,7 @@ class TabellaPazienti(models.Model):
     dob = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=1, null=True, blank=True, choices=[('M', 'Male'), ('F', 'Female')])
     cap = models.CharField(max_length=5, null=True, blank=True)
+    residence = models.CharField(max_length=100, null=True, blank=True)
     province = models.CharField(max_length=100, null=True, blank=True)
     place_of_birth = models.CharField(max_length=100, null=True, blank=True)
     chronological_age = models.IntegerField(null=True, blank=True)
