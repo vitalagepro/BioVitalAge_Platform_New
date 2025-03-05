@@ -63,8 +63,9 @@ urlpatterns = [
     path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>', views.StampaRefertoView.as_view(), name='download_pdf_vitale'),
 
     #URL APPUNTAMENTI
-    path('Appuntamenti', views.AppuntamentiView.as_view(), name='appuntamenti')
-
+    path('Appuntamenti', views.AppuntamentiView.as_view(), name='appuntamenti'),
+    path("salva-appuntamento/", salva_appuntamento, name="salva_appuntamento"),
+    path("get-appointments/", get_appointments, name="get_appointments"),
 ]
 
 

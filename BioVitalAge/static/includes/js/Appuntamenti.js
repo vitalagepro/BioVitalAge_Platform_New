@@ -45,6 +45,61 @@ monthLayoutBtn.addEventListener("click", () => {
 /*  -----------------------------------------------------------------------------------------------
                                     DYNAMIC CALENDAR & MODAL APPEARS
 --------------------------------------------------------------------------------------------------- */
+function loadAppointments() {
+  fetch("/get-appointments/")
+      .then(response => response.json())
+      .then(appointmentsByDate => {
+          console.log("Appuntamenti ricevuti:", appointmentsByDate); // Debug
+
+          // Seleziona tutte le celle del calendario
+          const cells = document.querySelectorAll(".cella");
+
+          cells.forEach(cell => {
+              const cellDay = cell.textContent.trim(); // Ottiene il numero del giorno dalla cella
+              if (!cellDay || isNaN(cellDay)) return; // Se non è un numero, esci
+
+              const formattedDate = formatDateForBackend(typeof currentDate !== "undefined" ? currentDate : new Date(), cellDay);
+
+              if (appointmentsByDate[formattedDate]) {
+                  // Se ci sono appuntamenti per questa data, li mostriamo
+                  appointmentsByDate[formattedDate].forEach(appointment => {
+                      addAppointmentToCell(cell, appointment.tipologia_visita, appointment.orario);
+                  });
+              }
+          });
+      })
+      .catch(error => console.error("Errore nel caricamento appuntamenti:", error));
+}
+
+// Funzione per formattare la data in YYYY-MM-DD per il backend
+function formatDateForBackend(date, day) {
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Mese in due cifre
+  const year = date.getFullYear();
+  const dayFormatted = String(day).padStart(2, "0"); // Giorno in due cifre
+  return `${year}-${month}-${dayFormatted}`;
+}
+
+
+// Funzione per aggiungere un appuntamento alla cella
+function addAppointmentToCell(cella, tipologia, orario) {
+  let appointmentBox = document.createElement("div");
+  appointmentBox.classList.add("appointment-box");
+  appointmentBox.textContent = `${tipologia} - ${orario}`;
+
+  // Stili minimi, personalizzabili in CSS
+  appointmentBox.style.backgroundColor = "#3a255d";
+  appointmentBox.style.color = "#fff";
+  appointmentBox.style.padding = "5px";
+  appointmentBox.style.marginTop = "3px";
+  appointmentBox.style.fontSize = "0.75rem";
+  appointmentBox.style.borderRadius = "4px";
+  appointmentBox.style.textAlign = "center";
+
+  cella.appendChild(appointmentBox);
+}
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
   /***********************************************************************
    * SEZIONE 1: LOGICA DEL CALENDARIO
@@ -142,58 +197,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Celle vuote prima del 1° giorno (se non è lunedì)
     for (let i = 1; i < startIndex; i++) {
-      const emptyCell = document.createElement("div");
-      emptyCell.classList.add("cella", "empty-cell");
-      monthLayoutContainer.appendChild(emptyCell);
+        const emptyCell = document.createElement("div");
+        emptyCell.classList.add("cella", "empty-cell");
+        monthLayoutContainer.appendChild(emptyCell);
     }
 
     // Celle con i giorni
     for (let day = 1; day <= totalDaysInMonth; day++) {
-      const cella = document.createElement("div");
-      cella.classList.add("cella");
+        const cella = document.createElement("div");
+        cella.classList.add("cella");
 
-      const dayParagraph = document.createElement("p");
-      dayParagraph.classList.add("data");
-      dayParagraph.textContent = day;
+        const dayParagraph = document.createElement("p");
+        dayParagraph.classList.add("data");
+        dayParagraph.textContent = day;
 
-      // Se è oggi, evidenzia
-      if (checkIfToday(year, month, day)) {
-        cella.classList.add("today");
-      }
+        // Creazione del contenitore per gli appuntamenti (scrollabile)
+        const appointmentsContainer = document.createElement("div");
+        appointmentsContainer.classList.add("appointments-container");
 
-      // Controllo se il giorno è già passato
-      const cellDate = new Date(year, month, day);
-      cellDate.setHours(0, 0, 0, 0);
+        // Se è oggi, evidenzia
+        if (checkIfToday(year, month, day)) {
+            cella.classList.add("today");
+        }
 
-      if (cellDate < todayMidnight) {
-        // Giorno passato: classe "past-day" e nessun listener
-        cella.classList.add("past-day");
-      } else {
-        // Giorno presente/futuro: aggiungo listener
-        cella.addEventListener("click", () => {
-          selectedDayCell = cella;
+        // Controllo se il giorno è già passato
+        const cellDate = new Date(year, month, day);
+        cellDate.setHours(0, 0, 0, 0);
 
-          // Calcolo la data corrispondente
-          const selectedDate = new Date(year, month, day);
+        if (cellDate < todayMidnight) {
+            // Giorno passato: classe "past-day" e nessun listener
+            cella.classList.add("past-day");
+        } else {
+            // Giorno presente/futuro: aggiungo listener
+            cella.addEventListener("click", () => {
+                selectedDayCell = cella;
 
-          // 1) Compilo i <span> con la data effettiva
-          fillFormForCalendar(selectedDate);
+                // Calcolo la data corrispondente
+                const selectedDate = new Date(year, month, day);
 
-          // 2) (Opzionale) Mostro anteprima nella cella
-          showAppointmentPreview(cella);
+                // 1) Compilo i <span> con la data effettiva
+                fillFormForCalendar(selectedDate);
 
-          // 3) Apro modale
-          openModalWithGSAP();
-        });
-      }
+                // 2) (Opzionale) Mostro anteprima nella cella
+                showAppointmentPreview(cella);
 
-      cella.appendChild(dayParagraph);
-      monthLayoutContainer.appendChild(cella);
+                // 3) Apro modale
+                openModalWithGSAP();
+            });
+        }
+
+        cella.appendChild(dayParagraph);
+        cella.appendChild(appointmentsContainer); // Aggiungo il contenitore alla cella
+        monthLayoutContainer.appendChild(cella);
     }
+
+    // Carica gli appuntamenti dopo aver generato il calendario
+    loadAppointments();
 
     // Aggiorno label "Mese Anno"
     currentDataLabel.textContent = formatDateLabel(currentDate);
   }
+
 
   // -----------------------------
   // NAVIGAZIONE CALENDARIO
@@ -513,5 +577,93 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /*  -----------------------------------------------------------------------------------------------
-                              FORM HOURS & DATE
+                              Saving form data
 --------------------------------------------------------------------------------------------------- */
+function convertDateFormat(dateString) {
+  if (!dateString) return "";
+  const parts = dateString.replace(/[^0-9\/]/g, "").split("/"); // Rimuove caratteri extra e split su "/"
+  if (parts.length === 3) {
+    return `${parts[2]}-${parts[1].padStart(2, "0")}-${parts[0].padStart(
+      2,
+      "0"
+    )}`; // Converte DD/MM/YYYY → YYYY-MM-DD
+  }
+  return dateString; // Ritorna la stringa originale se il formato è già corretto
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  document
+    .querySelector(".btn-primary")
+    .addEventListener("click", function (event) {
+      // Ottieni i valori selezionati
+      const tipologiaElement = document.getElementById("tipologia_visita");
+      const tipologia_visita = tipologiaElement
+        ? tipologiaElement.options[tipologiaElement.selectedIndex].value.trim()
+        : "";
+
+      const orarioElement = document.getElementById("editTime");
+      const orario = orarioElement ? orarioElement.value.trim() : "";
+
+      // Ottenere i valori dagli <span>
+      const giorno_appointment =
+        document.getElementById("day-appointment")?.textContent.trim() || "";
+      const raw_data_appointment =
+        document.getElementById("date-appointment")?.textContent.trim() || "";
+      const data_appointment = convertDateFormat(raw_data_appointment); // 🛠️ Converte la data nel formato corretto
+      const time_appointment =
+        document.getElementById("time-appointment")?.textContent.trim() || "";
+
+      console.log("DEBUG - Dati degli span:");
+      console.log("Giorno:", giorno_appointment);
+      console.log("Data (originale):", raw_data_appointment);
+      console.log("Data (convertita):", data_appointment);
+      console.log("Orario:", time_appointment);
+
+      const appointmentData = {
+        tipologia_visita: tipologia_visita,
+        nome_paziente:
+          document
+            .getElementById("paziente-select")
+            .selectedOptions[0]?.text.split(" ")[0] || "",
+        cognome_paziente:
+          document
+            .getElementById("paziente-select")
+            .selectedOptions[0]?.text.split(" ")[1] || "",
+        numero_studio: document.getElementById("studio").value.trim(),
+        note: document.getElementById("note").value.trim(),
+        orario: orario,
+        giorno: giorno_appointment,
+        data: data_appointment, // 🛠️ Ora ha il formato YYYY-MM-DD
+        time: time_appointment,
+        csrfmiddlewaretoken:
+          document.querySelector("input[name='csrfmiddlewaretoken']")?.value ||
+          "",
+      };
+
+      console.log("Dati inviati:", appointmentData); // Debug
+
+      // Invia i dati al back-end Django
+      fetch("/salva-appuntamento/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": appointmentData.csrfmiddlewaretoken,
+        },
+        body: JSON.stringify(appointmentData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Risposta dal server:", data); // Debug
+          if (data.success) {
+            alert("Appuntamento salvato con successo!");
+            location.reload();
+          } else {
+            alert("Errore nel salvataggio dell'appuntamento: " + data.error);
+          }
+        })
+        .catch((error) => {
+          console.error("Errore durante il salvataggio:", error);
+          alert("Si è verificato un errore inaspettato.");
+        });
+    });
+});

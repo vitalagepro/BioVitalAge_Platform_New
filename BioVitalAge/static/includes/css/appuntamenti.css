@@ -112,7 +112,7 @@ input[type='date'] {
 }
 
 .modal-section{
-    margin-top: 10%;
+    margin-top: 5%;
 }
 
 .modal-content-appointments {
@@ -206,7 +206,7 @@ input[type='date'] {
 
 .input-typology{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
     align-items: end;
     gap: 10px;
@@ -223,13 +223,20 @@ input[type='date'] {
     outline: none;
 }
 
+.form-textarea {
+    height: 35px;
+    width: 100%;
+    background: #dddddd47;
+    cursor: auto;
+}
+
 /* ! input time */
 
 #input-time{
     display: grid;
     align-items: end;
-    grid-template-columns: 2fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
     gap: 10px;
     width: 100%;
     margin-top: 10px;
@@ -256,6 +263,16 @@ input[type='date'] {
 
 #time:first-child{
     opacity: 0.5;
+}
+
+#studio{
+    border: none;
+    border-bottom: 1px solid var(--contrast-color);
+    color: var(--contrast-color);
+    padding: 5px;
+    cursor: pointer;
+    outline: none;
+    width: 100%;
 }
 
 .container-first-select{
@@ -327,6 +344,22 @@ input[type='date'] {
     background-color: var(--contrast-color2);
     color: white;
 }
+.appointment-box {
+    background-color: #3a255d;
+    position: relative;
+    z-index: 100;
+    color: #fff;
+    padding: 5px;
+    margin-top: 5px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    text-align: center;
+    cursor: grab;
+}
+
+.appointment-box:active {
+    cursor: grabbing;
+}
 
 
 
@@ -389,11 +422,12 @@ input[type='date'] {
 }
 
 .cella {
-    padding: 20px;
+    padding: 30px;
     text-align: center;
     border: 1px solid #ddd;
     height: 150px;
     position: relative;
+    cursor: pointer;
 }
 
 .past-day p{
@@ -419,17 +453,20 @@ input[type='date'] {
     background-color: var(--contrast-color-shadow);
 }
 
-.appuntamenti-counter {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 96%;
-    border: 1px solid var(--contrast-color2);
+.appointment-box {
+    background-color: #3a255d;
+    color: #fff;
+    padding: 5px;
+    margin-top: 3px;
+    font-size: 0.75rem;
     border-radius: 4px;
-    cursor: pointer;
-    padding: 10px 0px;
+    text-align: center;
+    word-wrap: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+
 
 
 
