@@ -149,7 +149,6 @@
                   <label for="place_of_birth">Città di nascita</label>
                   <input type="text" id="place_of_birth" list="cities" name="place_of_birth" required placeholder="Inserisci la città di nascita">
 
-
                   <datalist id="cities">
                       <option value="Comune Comune" data-province="Provincia" data-codice-catastale="del">Comune Comune</option>
                       <option value="Abano Terme" data-province="PD" data-codice-catastale="A001">Abano Terme</option>
@@ -8377,6 +8376,19 @@
                   </datalist>
 
               </div>
+
+              <!-- Città di residenza -->
+              <div class="form-group">
+                <label for="place_of_birth">Città di residenza</label>
+                <input type="text" id="place_of_birth" list="cities" name="residence" value="{{ paziente.residence|default_if_none:'' }}" placeholder="Inserisci il paese di residenza">
+              </div>
+
+              <!-- CAP  -->
+              <div class="form-group">
+                <label for="place_of_birth">CAP</label>
+                <input type="text" id="place_of_birth" list="cities" name="cap" value="{{ paziente.cap|default_if_none:'' }}" placeholder="Inserisci il CAP">
+              </div>
+
               <div class="form-group">
                   <label for="province">Provincia</label>
                   <input type="text" id="province" name="province" required placeholder="Inserisci la provincia (e.g., RM)">

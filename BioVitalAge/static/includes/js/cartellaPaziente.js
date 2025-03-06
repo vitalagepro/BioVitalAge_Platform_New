@@ -1,37 +1,4 @@
-/*  -----------------------------------------------------------------------------------------------
-  function to transform the first letter of a string to uppercase
---------------------------------------------------------------------------------------------------- */
-document.addEventListener("DOMContentLoaded", function () {
-  // Seleziona tutti gli elementi con la classe 'field'
-  let fields = document.querySelectorAll(".info_container .field");
 
-  fields.forEach((field) => {
-    let label = field.querySelector("p:first-of-type"); // Prende il primo <p> (etichetta)
-    let valueP = field.querySelector("p:nth-of-type(2)"); // Prende il secondo <p> (valore)
-
-    if (label && valueP) {
-      let labelText = label.innerText.trim();
-
-      // Controlla se il campo è "Nome:" o "Cognome:"
-      if (labelText === "Nome:" || labelText === "Cognome:") {
-        let text = valueP.innerText.trim();
-        if (text.length > 0) {
-          // Converte la prima lettera in maiuscolo di ogni parola se la parola è tutta in minuscolo
-          let formattedText = text
-            .split(" ") // Divide il testo in parole
-            .map((word) =>
-              word === word.toLowerCase()
-                ? word.charAt(0).toUpperCase() + word.slice(1)
-                : word
-            ) // Se è minuscola, la corregge
-            .join(" "); // Ricompone la stringa
-
-          valueP.innerText = formattedText;
-        }
-      }
-    }
-  });
-});
 
 /*  -----------------------------------------------------------------------------------------------
   Funzione di paginazione con controllo di tabelle con la stessa classe
@@ -189,6 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const capSpan = document.getElementById("cap");
+  const residenceSpan = document.getElementById("residence");
   const provinceSpan = document.getElementById("province");
   const emailSpan = document.getElementById("email");
   const phoneSpan = document.getElementById("phone");
@@ -252,6 +220,11 @@ document.addEventListener("DOMContentLoaded", function () {
       capInput.value = capSpan.textContent.trim();
       capInput.id = "capInput";
 
+      const residenceInput = document.createElement("input");
+      residenceInput.type = "text";
+      residenceInput.value = residenceSpan.textContent.trim();
+      residenceInput.id = "residenceInput";
+
       const provinceInput = document.createElement("input");
       provinceInput.type = "text";
       provinceInput.value = provinceSpan.textContent.trim();
@@ -294,6 +267,9 @@ document.addEventListener("DOMContentLoaded", function () {
       capSpan.textContent = "";
       capSpan.appendChild(capInput);
 
+      residenceSpan.textContent = "";
+      residenceSpan.appendChild(residenceInput);
+
       provinceSpan.textContent = "";
       provinceSpan.appendChild(provinceInput);
 
@@ -333,6 +309,7 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       // Modalità visualizzazione
       const capInput = document.getElementById("capInput");
+      const residenceInput = document.getElementById("residenceInput");
       const provinceInput = document.getElementById("provinceInput");
       const emailInput = document.getElementById("emailInput");
       const phoneInput = document.getElementById("phoneInput");
@@ -344,6 +321,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const bloodGroupInput = document.getElementById("bloodGroupInput");
 
       const updatedCap = capInput.value;
+      const updatedResidence = residenceInput.value;
       const updatedProvince = provinceInput.value;
       const updatedEmail = emailInput.value;
       const updatedPhone = phoneInput.value;
@@ -366,6 +344,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         body: JSON.stringify({
           cap: updatedCap,
+          residence: updatedResidence,
           province: updatedProvince,
           email: updatedEmail,
           phone: formattedPhone,
@@ -387,6 +366,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (data.success) {
             console.log("Dati aggiornati con successo.");
             capSpan.textContent = updatedCap;
+            residenceSpan.textContent = updatedResidence;
             provinceSpan.textContent = updatedProvince;
             emailSpan.textContent = updatedEmail;
             phoneSpan.textContent = formattedPhone;
@@ -436,6 +416,15 @@ document.addEventListener("DOMContentLoaded", function () {
       : `+39 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
   }
 });
+
+
+
+
+
+
+
+
+
 
 /*  -----------------------------------------------------------------------------------------------
     CLOCK

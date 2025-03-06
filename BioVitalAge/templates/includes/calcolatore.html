@@ -4198,23 +4198,11 @@
                             <input type="text" id="place_of_birth" list="cities" name="place_of_birth" required value="{{ paziente.place_of_birth|default_if_none:'' }}" placeholder="Inserisci il paese di nascita">
                         </div>
 
-                        <!-- Città di residenza -->
-                        <div class="form-group">
-                            <label for="place_of_birth">Città di residenza</label>
-                            <input type="text" id="place_of_birth" list="cities" name="place_of_residence" value="{{ paziente.residence|default_if_none:'' }}" placeholder="Inserisci il paese di residenza">
-                        </div>
-        
                         <!-- Province -->
                         <div class="form-group">
                             <label for="province">Provincia</label>
                             <input type="text" id="province" name="province" required value="{{ paziente.province|default_if_none:'' }}" placeholder="Inserisci la provincia (e.g., RM)">
                         </div> 
-
-                        <!-- CAP  -->
-                        <div class="form-group">
-                            <label for="place_of_birth">CAP</label>
-                            <input type="text" id="place_of_birth" list="cities" name="cap" value="{{ paziente.cap|default_if_none:'' }}" placeholder="Inserisci il CAP">
-                        </div>
 
                         <script>
                             document.getElementById('place_of_birth').addEventListener('input', function() {
@@ -12956,6 +12944,11 @@
                         <div class="card-indices_content" id="ormonaleContent">  
 
                             <div class="grid-container"  style="padding-bottom: 50px;"> 
+                                <div class="form-group">
+                                    <label for="glicemy">Glicemia (mg/dL)</label>
+                                    <input type="number" id="glicemy" name="glicemy" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="glicemy_range" name="glicemy_range" min="0" max="200" value="0" oninput="glicemy.value=this.value" step="0.01">
+                                </div>
 
                                 <div class="form-group">
                                     <label for="tsh">Ormone stimolante della tiroide (uIU/ml)</label>
@@ -13361,11 +13354,7 @@
                     oninput="nt_pro.value=this.value" step="0.01">
             </div>
 
-            <div class="form-group">
-                <label for="glicemy">Glicemia (mg/dL)</label>
-                <input type="number" id="glicemy" name="glicemy" placeholder="Solo valori numerici" step="0.01">
-                <input type="range" id="glicemy_range" name="glicemy_range" min="0" max="200" value="0" oninput="glicemy.value=this.value" step="0.01">
-            </div>
+           
 
             <!-- STRESS OSSIDATIVO -->
             <!-- <div class="section hidden-exam" id="flexed-section">
