@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from xml.etree.ElementInclude import include
+from django.utils.dateparse import parse_date, parse_time
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
@@ -15,8 +15,9 @@ from django.conf import settings
 from django.utils.decorators import method_decorator
 import traceback
 from django.shortcuts import redirect
-from django.contrib.auth import get_user
+import logging
 
+logger = logging.getLogger(__name__)
 
 # VIEW PER GESTIONE LOGIN PIATTAFORMA E IL RENDERING DELLA HOME PAGE
 class LoginRenderingPage(View):
@@ -2230,13 +2231,89 @@ class AppuntamentiView(View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
         persone = TabellaPazienti.objects.all().order_by('-id')
         appuntamenti = Appointment.objects.all().order_by('-id')
+
+        # Ottieni le opzioni definite nei choices
+        tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
+        numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
+        voce_prezzario = [choice[0] for choice in Appointment._meta.get_field('voce_prezzario').choices]
+        durata = [choice[0] for choice in Appointment._meta.get_field('durata').choices]
+
         context = {
             'dottore': dottore,
             'persone': persone,
-            'appuntamenti': appuntamenti
+            'appuntamenti': appuntamenti,
+            'tipologia_appuntamenti': tipologia_appuntamenti,
+            'numero_studio': numero_studio,
+            'voce_prezzario': voce_prezzario,
+            'durata': durata
         }
 
         return render(request, 'includes/Appuntamenti.html', context)
+    
 
-    def post(self, request):
-        return
+@csrf_exempt
+def salva_appuntamento(request):
+    if request.method == "POST":
+        try:
+            body_raw = request.body.decode('utf-8')
+            print(f"📥 Body ricevuto: {body_raw}")  # Debug
+
+            data = json.loads(body_raw)
+            print(f"📤 Dati JSON convertiti: {data}")  # Debug
+
+            giorno = data.get("giorno", "").strip()
+            data_appointment = data.get("data", "").strip()
+            time_appointment = data.get("time", "").strip()
+
+            if not time_appointment:
+                print("❌ ERRORE: Il campo 'orario' è mancante o vuoto!")
+
+            # Creazione dell'appuntamento
+            appuntamento = Appointment.objects.create(
+                tipologia_visita=data.get("tipologia_visita"),
+                nome_paziente=data.get("nome_paziente"),
+                cognome_paziente=data.get("cognome_paziente"),
+                numero_studio=data.get("numero_studio"),
+                note=data.get("note"),
+                giorno=giorno,  # 🛠️ Aggiunto nuovo campo
+                data=data_appointment,  # 🛠️ Aggiunto nuovo campo
+                orario=time_appointment,  # 🛠️ Aggiunto nuovo campo
+            )
+
+            print(f"✅ Appuntamento creato con ID: {appuntamento.id}")
+            return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!"})
+
+        except json.JSONDecodeError as e:
+            print(f"❌ ERRORE JSON: {str(e)}")
+            return JsonResponse({"success": False, "error": "Formato JSON non valido"}, status=400)
+        except Exception as e:
+            print(f"❌ ERRORE GENERICO: {str(e)}")
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+    return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
+
+
+def get_appointments(request):
+    """
+    Ritorna tutti gli appuntamenti nel formato JSON per il calendario.
+    """
+    appointments = Appointment.objects.all()
+    
+    # Creiamo un dizionario dove ogni data ha una lista di appuntamenti
+    appointments_by_date = {}
+    
+    for appt in appointments:
+        date_str = appt.data.strftime("%Y-%m-%d")  # Converte la data in stringa YYYY-MM-DD
+        if date_str not in appointments_by_date:
+            appointments_by_date[date_str] = []  # Inizializza lista se non esiste
+        
+        appointments_by_date[date_str].append({
+            "tipologia_visita": appt.tipologia_visita,
+            "orario": appt.orario.strftime("%H:%M")  # Converte l'orario in HH:MM
+        })
+    
+    return JsonResponse(appointments_by_date, safe=False)
+
+
+
+
