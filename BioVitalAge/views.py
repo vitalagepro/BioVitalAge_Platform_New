@@ -1656,7 +1656,7 @@ def update_persona_contact(request, id):
             blood_group = data.get("blood_group")
 
             # Recupera il modello e aggiorna i dati
-            from .models import TabellaPazienti  # Sostituisci con il tuo modello
+            from .models import TabellaPazienti 
             persona = TabellaPazienti.objects.get(id=id)
             persona.cap = cap
             persona.residence = residence
@@ -1667,7 +1667,7 @@ def update_persona_contact(request, id):
             persona.lastVisit = lastVisit
             persona.upcomingVisit = upcomingVisit
             persona.blood_group = blood_group
-            persona.save()  # Salva le modifiche nel database
+            persona.save() 
 
             # print(f"Persona {id} aggiornata con email: {email}, telefono: {phone}, associate_staff: {associate_staff}, lastVisit: {lastVisit}, upcomingVisit: {upcomingVisit}, blood_group: {blood_group}")
 
