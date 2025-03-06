@@ -434,6 +434,11 @@ input[type='date'] {
     color: rgba(0, 0, 0, 0.418);
 }
 
+.past-day .appointment-box{
+    background-color: var(--neutral-range-color) !important;
+    opacity: 0.5;
+}
+
 .today{
     background: #ddd;
 }

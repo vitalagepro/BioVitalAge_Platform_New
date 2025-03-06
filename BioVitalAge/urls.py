@@ -38,9 +38,8 @@ urlpatterns = [
     path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
 
     path("api/update_blood_data/<int:id>/", UpdateBloodDataView.as_view(), name="update_blood_data"),
-    path('update-persona-composizione/<int:id>/', views.update_persona_composizione, name='update_persona_composizione'),
-    path('update-persona/<int:id>/', views.update_persona_contact, name='update_persona_contact'),
-    path('update-persona-composizione/<int:id>/', views.update_persona_composizione, name='update_persona_composizione'),
+    path('update-persona-composizione/<int:id>/', views.UpdatePersonaComposizioneView.as_view(), name='update_persona_composizione'),
+    path('update-persona/<int:id>/', views.UpdatePersonaContactView.as_view(), name='update_persona_contact'),
 
     # URL PER IL TEST DELLA CAPACITA' VITALE
     path('EtaVitale/<int:id>/', views.EtaVitaleView.as_view(), name='etaVitale'),
@@ -52,20 +51,20 @@ urlpatterns = [
     path("api/update_blood_data/<int:id>/", UpdateBloodDataView.as_view(), name="update_blood_data"),
     path("CartellaPaziente/Update/<int:persona_id>/<int:visite_id>/", DettagliPrescrizioni.as_view(), name="dettagli_prescrizioni"),
     path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
-    path('update-persona-composizione/<int:id>/', views.update_persona_composizione, name='update_persona_composizione'),
 
     
     # path('appointments_page/', views.AppointmentView.as_view(), name='appointments_page'),
     # path('api/appointments/', views.appointment_view, name='appointment_api'),
     # path('appointments/', views.appointments_list, name='appointments_list'),  # ✅ Aggiunto il percorso per la tabella
-    # path("api/appointments/<int:appointment_id>/approve/", views.approve_appointment, name="approve_appointment"),
-    # path("api/appointments/<int:appointment_id>/delete/", views.delete_appointment, name="delete_appointment"),
+    path("api/appointments/<int:appointment_id>/approve/", views.ApproveAppointmentView.as_view(), name="approve_appointment"),
+    path("api/appointments/<int:appointment_id>/delete/", views.DeleteAppointmentView.as_view(), name="delete_appointment"),
     path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>', views.StampaRefertoView.as_view(), name='download_pdf_vitale'),
 
     #URL APPUNTAMENTI
     path('Appuntamenti', views.AppuntamentiView.as_view(), name='appuntamenti'),
-    path("salva-appuntamento/", salva_appuntamento, name="salva_appuntamento"),
-    path("get-appointments/", get_appointments, name="get_appointments"),
+    path("salva-appuntamento/", views.AppuntamentiSalvaView.as_view(), name="salva_appuntamento"),
+    path("get-appointments/", views.AppuntamentiJsonView.as_view(), name="get_appointments"),
+    path('update-appointment/<int:appointment_id>/', views.UpdateAppointmentView.as_view(), name='update_appointment'),
 ]
 
 

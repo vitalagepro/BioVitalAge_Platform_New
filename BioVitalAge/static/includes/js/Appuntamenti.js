@@ -45,30 +45,50 @@ monthLayoutBtn.addEventListener("click", () => {
 /*  -----------------------------------------------------------------------------------------------
                                     DYNAMIC CALENDAR & MODAL APPEARS
 --------------------------------------------------------------------------------------------------- */
+let currentDate = new Date(); // Definisci la variabile globalmente
+
 function loadAppointments() {
   fetch("/get-appointments/")
-      .then(response => response.json())
-      .then(appointmentsByDate => {
-          console.log("Appuntamenti ricevuti:", appointmentsByDate); // Debug
+    .then((response) => response.json())
+    .then((appointmentsByDate) => {
+      console.log("Appuntamenti ricevuti:", appointmentsByDate); // Debug
 
-          // Seleziona tutte le celle del calendario
-          const cells = document.querySelectorAll(".cella");
+      // Seleziona tutte le celle del calendario
+      const cells = document.querySelectorAll(".cella");
 
-          cells.forEach(cell => {
-              const cellDay = cell.textContent.trim(); // Ottiene il numero del giorno dalla cella
-              if (!cellDay || isNaN(cellDay)) return; // Se non è un numero, esci
+      cells.forEach((cell) => {
+        const cellDay = cell.dataset.day; // Usa un attributo dataset per identificare il giorno
+        const cellMonth = cell.dataset.month; // Mese corretto della cella
+        const cellYear = cell.dataset.year; // Anno corretto della cella
 
-              const formattedDate = formatDateForBackend(typeof currentDate !== "undefined" ? currentDate : new Date(), cellDay);
+        if (!cellDay || isNaN(cellDay) || !cellMonth || !cellYear) return; // Se non ha una data valida, esci
 
-              if (appointmentsByDate[formattedDate]) {
-                  // Se ci sono appuntamenti per questa data, li mostriamo
-                  appointmentsByDate[formattedDate].forEach(appointment => {
-                      addAppointmentToCell(cell, appointment.tipologia_visita, appointment.orario);
-                  });
-              }
+        // Formatta la data come YYYY-MM-DD per il confronto con gli appuntamenti
+        const formattedDate = `${cellYear}-${String(cellMonth).padStart(
+          2,
+          "0"
+        )}-${String(cellDay).padStart(2, "0")}`;
+
+        // Rimuove eventuali appuntamenti precedenti nella cella
+        cell
+          .querySelectorAll(".appointment-box")
+          .forEach((app) => app.remove());
+
+        // Controlla se ci sono appuntamenti per questa data esatta
+        if (appointmentsByDate[formattedDate]) {
+          appointmentsByDate[formattedDate].forEach((appointment) => {
+            addAppointmentToCell(
+              cell,
+              appointment.tipologia_visita,
+              appointment.orario
+            );
           });
-      })
-      .catch(error => console.error("Errore nel caricamento appuntamenti:", error));
+        }
+      });
+    })
+    .catch((error) =>
+      console.error("Errore nel caricamento appuntamenti:", error)
+    );
 }
 
 // Funzione per formattare la data in YYYY-MM-DD per il backend
@@ -78,15 +98,67 @@ function formatDateForBackend(date, day) {
   const dayFormatted = String(day).padStart(2, "0"); // Giorno in due cifre
   return `${year}-${month}-${dayFormatted}`;
 }
+function handleDragStart(event) {
+  event.dataTransfer.setData("text/plain", event.target.dataset.id); // Salva l'ID dell'appuntamento
+  event.dataTransfer.effectAllowed = "move"; // Indica al browser che vogliamo spostare l'elemento
+  event.target.classList.add("dragging"); // Aggiunge una classe per evidenziare l'elemento trascinato
+}
+
+function handleDragEnd(event) {
+  event.target.classList.remove("dragging");
+}
+
+function handleDragOver(event) {
+  event.preventDefault(); // Necessario per permettere il drop
+  event.dataTransfer.dropEffect = "move"; // Cambia l'icona del cursore per indicare il drag & drop
+}
+
+function handleDrop(event) {
+  event.preventDefault();
+
+  // Recupera l'ID dell'appuntamento trascinato
+  const appointmentId = event.dataTransfer.getData("text/plain");
+
+  // Trova l'elemento trascinato
+  const appointmentBox = document.querySelector(`[data-id='${appointmentId}']`);
+  if (!appointmentBox) return;
+
+  // Trova la cella target
+  let targetCell = event.target.closest(".cella");
+  if (!targetCell || targetCell.classList.contains("past-day")) return; // Non permettere il drop nei giorni passati
+
+  const appointmentsContainer = targetCell.querySelector(".appointments-container");
+
+  // Se l'appuntamento è già in questa cella, esci
+  if (appointmentsContainer.contains(appointmentBox)) return;
+
+  // Sposta l'appuntamento nella nuova cella
+  appointmentsContainer.appendChild(appointmentBox);
+
+  // Ottieni la nuova data dalla cella target
+  const newDay = targetCell.dataset.day;
+  const newMonth = targetCell.dataset.month;
+  const newYear = targetCell.dataset.year;
+  if (!newDay || !newMonth || !newYear) return;
+
+  const newDate = `${newYear}-${String(newMonth).padStart(2, "0")}-${String(newDay).padStart(2, "0")}`;
+
+  // Aggiorna la data dell'appuntamento nel backend
+  updateAppointmentDate(appointmentId, newDate);
+}
 
 
 // Funzione per aggiungere un appuntamento alla cella
-function addAppointmentToCell(cella, tipologia, orario) {
+function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
+  const appointmentsContainer = cella.querySelector(".appointments-container");
+
   let appointmentBox = document.createElement("div");
   appointmentBox.classList.add("appointment-box");
   appointmentBox.textContent = `${tipologia} - ${orario}`;
+  appointmentBox.setAttribute("draggable", "true"); // Abilita il drag
+  appointmentBox.dataset.id = appointmentId; // Salva l'ID dell'appuntamento
 
-  // Stili minimi, personalizzabili in CSS
+  // 🔹 Stili per l'appuntamento (ripristinati)
   appointmentBox.style.backgroundColor = "#3a255d";
   appointmentBox.style.color = "#fff";
   appointmentBox.style.padding = "5px";
@@ -94,11 +166,16 @@ function addAppointmentToCell(cella, tipologia, orario) {
   appointmentBox.style.fontSize = "0.75rem";
   appointmentBox.style.borderRadius = "4px";
   appointmentBox.style.textAlign = "center";
+  appointmentBox.style.cursor = "grab"; // 🔹 Cambia il cursore per indicare che è trascinabile
+  appointmentBox.style.userSelect = "none"; // 🔹 Evita selezione del testo mentre si trascina
+  appointmentBox.style.transition = "opacity 0.2s ease-in-out"; // 🔹 Effetto fluido
 
-  cella.appendChild(appointmentBox);
+  // 🔹 Eventi Drag & Drop
+  appointmentBox.addEventListener("dragstart", handleDragStart);
+  appointmentBox.addEventListener("dragend", handleDragEnd);
+
+  appointmentsContainer.appendChild(appointmentBox);
 }
-
-
 
 document.addEventListener("DOMContentLoaded", () => {
   /***********************************************************************
@@ -197,59 +274,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Celle vuote prima del 1° giorno (se non è lunedì)
     for (let i = 1; i < startIndex; i++) {
-        const emptyCell = document.createElement("div");
-        emptyCell.classList.add("cella", "empty-cell");
-        monthLayoutContainer.appendChild(emptyCell);
+      const emptyCell = document.createElement("div");
+      emptyCell.classList.add("cella", "empty-cell");
+      monthLayoutContainer.appendChild(emptyCell);
     }
 
     // Celle con i giorni
     for (let day = 1; day <= totalDaysInMonth; day++) {
-        const cella = document.createElement("div");
-        cella.classList.add("cella");
-
-        const dayParagraph = document.createElement("p");
-        dayParagraph.classList.add("data");
-        dayParagraph.textContent = day;
-
-        // Creazione del contenitore per gli appuntamenti (scrollabile)
-        const appointmentsContainer = document.createElement("div");
-        appointmentsContainer.classList.add("appointments-container");
-
-        // Se è oggi, evidenzia
-        if (checkIfToday(year, month, day)) {
-            cella.classList.add("today");
-        }
-
-        // Controllo se il giorno è già passato
-        const cellDate = new Date(year, month, day);
-        cellDate.setHours(0, 0, 0, 0);
-
-        if (cellDate < todayMidnight) {
-            // Giorno passato: classe "past-day" e nessun listener
-            cella.classList.add("past-day");
-        } else {
-            // Giorno presente/futuro: aggiungo listener
-            cella.addEventListener("click", () => {
-                selectedDayCell = cella;
-
-                // Calcolo la data corrispondente
-                const selectedDate = new Date(year, month, day);
-
-                // 1) Compilo i <span> con la data effettiva
-                fillFormForCalendar(selectedDate);
-
-                // 2) (Opzionale) Mostro anteprima nella cella
-                showAppointmentPreview(cella);
-
-                // 3) Apro modale
-                openModalWithGSAP();
-            });
-        }
-
-        cella.appendChild(dayParagraph);
-        cella.appendChild(appointmentsContainer); // Aggiungo il contenitore alla cella
-        monthLayoutContainer.appendChild(cella);
+      const cella = document.createElement("div");
+      cella.classList.add("cella");
+  
+      // Assegno dataset con il giorno, mese e anno corretti
+      cella.dataset.day = day;
+      cella.dataset.month = month + 1; // Mese base 1
+      cella.dataset.year = year;
+  
+      const dayParagraph = document.createElement("p");
+      dayParagraph.classList.add("data");
+      dayParagraph.textContent = day;
+  
+      // Contenitore per gli appuntamenti
+      const appointmentsContainer = document.createElement("div");
+      appointmentsContainer.classList.add("appointments-container");
+  
+      // Se è oggi, evidenzia
+      if (checkIfToday(year, month, day)) {
+          cella.classList.add("today");
+      }
+  
+      // Controllo se il giorno è già passato
+      const cellDate = new Date(year, month, day);
+      cellDate.setHours(0, 0, 0, 0);
+  
+      if (cellDate < todayMidnight) {
+          cella.classList.add("past-day");
+      } else {
+          // Aggiungo event listeners per Drag & Drop
+          cella.addEventListener("dragover", handleDragOver);
+          cella.addEventListener("drop", handleDrop);
+  
+          // Aggiungo il click per aprire la modale
+          cella.addEventListener("click", () => {
+              selectedDayCell = cella;
+              const selectedDate = new Date(year, month, day);
+              fillFormForCalendar(selectedDate);
+              showAppointmentPreview(cella);
+              openModalWithGSAP();
+          });
+      }
+  
+      cella.appendChild(dayParagraph);
+      cella.appendChild(appointmentsContainer);
+      monthLayoutContainer.appendChild(cella);
     }
+  
 
     // Carica gli appuntamenti dopo aver generato il calendario
     loadAppointments();
@@ -257,7 +335,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Aggiorno label "Mese Anno"
     currentDataLabel.textContent = formatDateLabel(currentDate);
   }
-
 
   // -----------------------------
   // NAVIGAZIONE CALENDARIO
