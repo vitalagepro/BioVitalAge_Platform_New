@@ -429,66 +429,54 @@ document.addEventListener("DOMContentLoaded", function () {
 /*  -----------------------------------------------------------------------------------------------
     CLOCK
 --------------------------------------------------------------------------------------------------- */
-// Access to :root style css
+// Accesso ai colori definiti in :root
 const rootStyles = getComputedStyle(document.documentElement);
-
-// Access to color in the :root
 const bgColorDark = rootStyles.getPropertyValue("--contrast-color").trim();
 
-function updateKidneyClock() {
-  const kidneyClock = document.getElementById("kidneyClock");
-  const kidneyPercentage = document.getElementById("kidneyPercentage");
+// Funzione per aggiornare ogni clock con animazione
+function animateClock(clockId, percentageId, targetPercentage) {
+  const clock = document.getElementById(clockId);
+  const percentage = document.getElementById(percentageId);
 
-  const percentage = 57;
-  const angle = (percentage / 100) * 360;
+  if (!clock || !percentage) {
+      console.error(`Elemento non trovato: ${clockId} o ${percentageId}`);
+      return;
+  }
 
-  kidneyClock.style.background = `conic-gradient(${bgColorDark} ${angle}deg, #e0e0e0 ${angle}deg)`;
+  const radius = 60; // Nuovo raggio più grande
+  const circumference = 2 * Math.PI * radius;
+  const targetOffset = circumference - (targetPercentage / 100) * circumference;
 
-  kidneyPercentage.textContent = `${percentage}%`;
-  kidneyPercentage.style.color = bgColorDark;
-}
-function updateLipidClock() {
-  const lipidClock = document.getElementById("lipidClock");
-  const lipidPercentage = document.getElementById("lipidPercentage");
+  clock.style.strokeDasharray = circumference;
+  clock.style.strokeDashoffset = circumference;
 
-  const percentage = 33;
-  const angle = (percentage / 100) * 360;
+  setTimeout(() => {
+      clock.style.strokeDashoffset = targetOffset;
+  }, 100);
 
-  lipidClock.style.background = `conic-gradient(${bgColorDark} ${angle}deg, #e0e0e0 ${angle}deg)`;
-
-  lipidPercentage.textContent = `${percentage}%`;
-  lipidPercentage.style.color = bgColorDark;
-}
-function updateLiverClock() {
-  const liverClock = document.getElementById("liverClock");
-  const liverPercentage = document.getElementById("liverPercentage");
-
-  const percentage = 73;
-  const angle = (percentage / 100) * 360;
-
-  liverClock.style.background = `conic-gradient(${bgColorDark} ${angle}deg, #e0e0e0 ${angle}deg)`;
-
-  liverPercentage.textContent = `${percentage}%`;
-  liverPercentage.style.color = bgColorDark;
-}
-function updateGlucoseClock() {
-  const glucoseClock = document.getElementById("glucoseClock");
-  const glucosePercentage = document.getElementById("glucosePercentage");
-
-  const percentage = 15;
-  const angle = (percentage / 100) * 360;
-
-  glucoseClock.style.background = `conic-gradient(${bgColorDark} ${angle}deg, #e0e0e0 ${angle}deg)`;
-
-  glucosePercentage.textContent = `${percentage}%`;
-  glucosePercentage.style.color = bgColorDark;
+  percentage.textContent = `${targetPercentage}%`;
 }
 
-updateKidneyClock();
-updateLipidClock();
-updateLiverClock();
-updateGlucoseClock();
 
+// Aggiorna i vari clock con animazione
+document.addEventListener("DOMContentLoaded", () => {
+  animateClock("heartClock", "heartPercentage", 80);
+  animateClock("kidneyClock", "kidneyPercentage", 57);
+  animateClock("liverClock", "liverPercentage", 73);
+  animateClock("brainClock", "brainPercentage", 65);
+  animateClock("hormoneClock", "hormonePercentage", 50);
+  animateClock("bloodClock", "bloodPercentage", 40);
+  animateClock("immuneClock", "immunePercentage", 90);
+  animateClock("muscleClock", "musclePercentage", 75);
+
+  // Genera i grafici al caricamento della pagina
+  generateChart(document.getElementById("chart1").getContext("2d"), [140, 190, 230, 210, 180], "Livello BP");
+  generateChart(document.getElementById("chart2").getContext("2d"), [90, 100, 110, 120, 130], "Livello di zuccheri");
+  generateChart(document.getElementById("chart3").getContext("2d"), [80, 85, 90, 95, 100], "Frequenza Cardiaca");
+  generateChart(document.getElementById("chart4").getContext("2d"), [180, 220, 240, 200, 210], "Colesterolo");
+});
+
+// Funzione per generare i grafici
 function generateChart(ctx, data, label) {
   new Chart(ctx, {
     type: "line",
@@ -519,29 +507,9 @@ function generateChart(ctx, data, label) {
   });
 }
 
-// Generate charts for each card
-document.addEventListener("DOMContentLoaded", () => {
-  generateChart(
-    document.getElementById("chart1").getContext("2d"),
-    [140, 190, 230, 210, 180],
-    "Livello BP"
-  );
-  generateChart(
-    document.getElementById("chart2").getContext("2d"),
-    [90, 100, 110, 120, 130],
-    "Livello di zuccheri"
-  );
-  generateChart(
-    document.getElementById("chart3").getContext("2d"),
-    [80, 85, 90, 95, 100],
-    "Frequenza Cardiaca"
-  );
-  generateChart(
-    document.getElementById("chart4").getContext("2d"),
-    [180, 220, 240, 200, 210],
-    "Colesterolo"
-  );
-});
+
+
+
 
 /* FILTRI TABELLA PRESCRIZIONE */
 document.addEventListener("DOMContentLoaded", function () {
@@ -580,6 +548,8 @@ document.addEventListener("DOMContentLoaded", function () {
     rows.forEach((row) => tableContent.appendChild(row));
   });
 });
+
+
 
 /*  -----------------------------------------------------------------------------------------------
     Mostra di più
