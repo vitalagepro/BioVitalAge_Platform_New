@@ -15,20 +15,13 @@ class CalcolatoreLogin(View):
         Query = UtentiCredenzialiCalcolatore.objects.all().values()
 
         for record in Query:  
-            for key, value in record.items():
-                if key == 'email':
-                    if value == emailInput: 
-                        if record['password'] == passwordInput:
+            if record['email'] == emailInput: 
+                if record['password'] == passwordInput:
+                    return render(request, 'includes/index.html')  
+                else:
+                    return render(request, 'includes/login.html', {'error': 'Password errata'}) 
 
-                          
-                            return render(request, 'includes/index.html')
-
-                        else:
-                            return render(request, 'includes/login.html', {'error': 'Password errata'})
-                        
-                    else:
-                        return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
-        
+       
         return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
 
 
