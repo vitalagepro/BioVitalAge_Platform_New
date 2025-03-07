@@ -51,38 +51,40 @@ function loadAppointments() {
   fetch("/get-appointments/")
     .then((response) => response.json())
     .then((appointmentsByDate) => {
-      console.log("Appuntamenti ricevuti:", appointmentsByDate); // Debug
-
       // Seleziona tutte le celle del calendario
       const cells = document.querySelectorAll(".cella");
 
       cells.forEach((cell) => {
-        const cellDay = cell.dataset.day; // Usa un attributo dataset per identificare il giorno
-        const cellMonth = cell.dataset.month; // Mese corretto della cella
-        const cellYear = cell.dataset.year; // Anno corretto della cella
+        const cellDay = cell.dataset.day; // Assicuriamoci di usare il dataset
+        const cellMonth = cell.dataset.month;
+        const cellYear = cell.dataset.year;
 
-        if (!cellDay || isNaN(cellDay) || !cellMonth || !cellYear) return; // Se non ha una data valida, esci
+        if (!cellDay || !cellMonth || !cellYear) return; // Se la cella non ha dati, esci
 
-        // Formatta la data come YYYY-MM-DD per il confronto con gli appuntamenti
+        // Formatta la data in YYYY-MM-DD per il confronto con gli appuntamenti ricevuti
         const formattedDate = `${cellYear}-${String(cellMonth).padStart(
           2,
           "0"
         )}-${String(cellDay).padStart(2, "0")}`;
 
         // Rimuove eventuali appuntamenti precedenti nella cella
-        cell
-          .querySelectorAll(".appointment-box")
-          .forEach((app) => app.remove());
+        const appointmentsContainer = cell.querySelector(
+          ".appointments-container"
+        );
+        appointmentsContainer.innerHTML = ""; // Pulisce la cella prima di aggiungere nuovi appuntamenti
 
-        // Controlla se ci sono appuntamenti per questa data esatta
-        if (appointmentsByDate[formattedDate]) {
-          appointmentsByDate[formattedDate].forEach((appointment) => {
-            addAppointmentToCell(
-              cell,
-              appointment.tipologia_visita,
-              appointment.orario
-            );
-          });
+        // Controlla se ci sono appuntamenti per questa data
+        if (appointmentsByDate.appointments[formattedDate]) {
+          appointmentsByDate.appointments[formattedDate].forEach(
+            (appointment) => {
+              addAppointmentToCell(
+                cell,
+                appointment.tipologia_visita,
+                appointment.orario,
+                appointment.id
+              );
+            }
+          );
         }
       });
     })
@@ -98,36 +100,57 @@ function formatDateForBackend(date, day) {
   const dayFormatted = String(day).padStart(2, "0"); // Giorno in due cifre
   return `${year}-${month}-${dayFormatted}`;
 }
+let isDragging = false; // Variabile di stato globale per il drag
+
 function handleDragStart(event) {
-  event.dataTransfer.setData("text/plain", event.target.dataset.id); // Salva l'ID dell'appuntamento
-  event.dataTransfer.effectAllowed = "move"; // Indica al browser che vogliamo spostare l'elemento
-  event.target.classList.add("dragging"); // Aggiunge una classe per evidenziare l'elemento trascinato
+  isDragging = true;
+  event.dataTransfer.setData("text/plain", event.target.dataset.id);
+  event.dataTransfer.effectAllowed = "move";
+  event.target.classList.add("dragging");
+
+  // Effetto visivo (ombra e riduzione opacità)
+  gsap.to(event.target, { opacity: 0.7, scale: 1.1, duration: 0.2 });
 }
 
 function handleDragEnd(event) {
+  setTimeout(() => {
+    isDragging = false;
+  }, 200);
+  event.target.classList.remove("dragging");
+
+  // Ripristina l'opacità e la dimensione
+  gsap.to(event.target, { opacity: 1, scale: 1, duration: 0.2 });
+}
+
+
+function handleDragEnd(event) {
+  setTimeout(() => {
+    isDragging = false; // Reset dopo breve ritardo
+  }, 200);
   event.target.classList.remove("dragging");
 }
 
+
+// Funzione che gestisce il cambio del cursore durante il drag & drop
 function handleDragOver(event) {
   event.preventDefault(); // Necessario per permettere il drop
   event.dataTransfer.dropEffect = "move"; // Cambia l'icona del cursore per indicare il drag & drop
 }
 
+// Funzione che gestisce il drop
 function handleDrop(event) {
   event.preventDefault();
 
-  // Recupera l'ID dell'appuntamento trascinato
-  const appointmentId = event.dataTransfer.getData("text/plain");
-
-  // Trova l'elemento trascinato
-  const appointmentBox = document.querySelector(`[data-id='${appointmentId}']`);
-  if (!appointmentBox) return;
-
-  // Trova la cella target
+  // Assicuriamoci di droppare SOLO dentro una cella
   let targetCell = event.target.closest(".cella");
   if (!targetCell || targetCell.classList.contains("past-day")) return; // Non permettere il drop nei giorni passati
 
   const appointmentsContainer = targetCell.querySelector(".appointments-container");
+
+  // Recupera l'ID dell'appuntamento trascinato
+  const appointmentId = event.dataTransfer.getData("text/plain");
+  const appointmentBox = document.querySelector(`[data-id='${appointmentId}']`);
+  if (!appointmentBox) return;
 
   // Se l'appuntamento è già in questa cella, esci
   if (appointmentsContainer.contains(appointmentBox)) return;
@@ -148,35 +171,415 @@ function handleDrop(event) {
 }
 
 
+function updateAppointmentDate(appointmentId, newDate) {
+  if (!appointmentId || !newDate) {
+    console.error("❌ Errore: appointmentId o newDate non valido!", { appointmentId, newDate });
+    return;
+  }
+
+  console.log(`📢 Aggiornamento appuntamento ID: ${appointmentId} con data: ${newDate}`);
+
+  fetch(`/update-appointment/${appointmentId}/`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ new_date: newDate }),
+  })
+  .then(response => {
+    console.log(`📢 Risposta HTTP: ${response.status}`);
+    return response.json();
+  })
+  .then(data => {
+    if (data.success) {
+      showAlert("success", "Appuntamento spostato con successo!");
+    } else {
+      showAlert("danger", `Errore nello spostamento dell'appuntamento: ${data.error}`);
+    }
+  })
+  .catch(error => console.error("❌ Errore nella richiesta:", error));
+}
+
 // Funzione per aggiungere un appuntamento alla cella
-function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
+function addAppointmentToCell(cella, tipologia, orario, appointmentId) {  
   const appointmentsContainer = cella.querySelector(".appointments-container");
 
   let appointmentBox = document.createElement("div");
   appointmentBox.classList.add("appointment-box");
-  appointmentBox.textContent = `${tipologia} - ${orario}`;
-  appointmentBox.setAttribute("draggable", "true"); // Abilita il drag
-  appointmentBox.dataset.id = appointmentId; // Salva l'ID dell'appuntamento
+  appointmentBox.setAttribute("draggable", "true");
+  appointmentBox.dataset.id = appointmentId;
 
-  // 🔹 Stili per l'appuntamento (ripristinati)
+  // 🔹 Formattazione dell'orario: da "HH:mm:ss" a "HH:mm"
+  let formattedTime = orario.slice(0, 5);
+
+  // 🔹 Flag per evitare apertura modale al drag
+  let isDragging = false;
+  appointmentBox.addEventListener("dragstart", () => {
+      isDragging = true;
+  });
+  appointmentBox.addEventListener("dragend", () => {
+      setTimeout(() => {
+          isDragging = false;
+      }, 100); // Reset dopo breve delay
+  });
+
+  // 🔹 Apre la modale SOLO se non è stato fatto drag
+  appointmentBox.addEventListener("click", (event) => {
+    if (event) {
+      event.stopPropagation(); // Evita propagazione solo se event esiste
+    }
+    if (!isDragging) { // Apri solo se NON stai trascinando
+      openAppointmentModal(appointmentId);
+    }
+  });
+
+  // 🔹 Creazione del contenuto dell'appuntamento (testo + bottone elimina)
+  let textSpan = document.createElement("span");
+  textSpan.textContent = `${tipologia} - ${formattedTime}`;
+  textSpan.style.flex = "1";
+
+  let deleteButton = document.createElement("button");
+  deleteButton.innerHTML = "&times;";
+  deleteButton.classList.add("delete-appointment");
+  deleteButton.setAttribute("data-id", appointmentId);
+  deleteButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      confirmDeleteAppointment(appointmentId, appointmentBox);
+  });
+
+  // 🔹 Stili per l'appointment box
   appointmentBox.style.backgroundColor = "#3a255d";
   appointmentBox.style.color = "#fff";
-  appointmentBox.style.padding = "5px";
-  appointmentBox.style.marginTop = "3px";
-  appointmentBox.style.fontSize = "0.75rem";
-  appointmentBox.style.borderRadius = "4px";
-  appointmentBox.style.textAlign = "center";
-  appointmentBox.style.cursor = "grab"; // 🔹 Cambia il cursore per indicare che è trascinabile
-  appointmentBox.style.userSelect = "none"; // 🔹 Evita selezione del testo mentre si trascina
-  appointmentBox.style.transition = "opacity 0.2s ease-in-out"; // 🔹 Effetto fluido
+  appointmentBox.style.padding = "6px 10px";
+  appointmentBox.style.marginTop = "5px";
+  appointmentBox.style.borderRadius = "6px";
+  appointmentBox.style.display = "flex";
+  appointmentBox.style.alignItems = "center";
+  appointmentBox.style.justifyContent = "space-between";
+  appointmentBox.style.cursor = "grab";
+  appointmentBox.style.userSelect = "none";
+  appointmentBox.style.transition = "opacity 0.2s ease-in-out";
+  appointmentBox.style.fontSize = "11.7px";
 
-  // 🔹 Eventi Drag & Drop
-  appointmentBox.addEventListener("dragstart", handleDragStart);
-  appointmentBox.addEventListener("dragend", handleDragEnd);
+  // 🔹 Stili per il pulsante "X"
+  deleteButton.style.background = "none";
+  deleteButton.style.border = "none";
+  deleteButton.style.color = "#fff";
+  deleteButton.style.fontSize = "1rem";
+  deleteButton.style.cursor = "pointer";
+  deleteButton.style.marginLeft = "8px";
+  deleteButton.style.padding = "2px";
+  deleteButton.style.transition = "color 0.2s ease-in-out";
+  
+  // Effetto hover sulla "X"
+  deleteButton.addEventListener("mouseenter", () => {
+      deleteButton.style.color = "#ff6961";
+  });
+  deleteButton.addEventListener("mouseleave", () => {
+      deleteButton.style.color = "#fff";
+  });
 
+  // 🔹 Append elementi
+  appointmentBox.appendChild(textSpan);
+  appointmentBox.appendChild(deleteButton);
   appointmentsContainer.appendChild(appointmentBox);
 }
 
+
+// Funzione per aprire la modale
+function openAppointmentModal(appointmentId) {
+  fetch(`/get-appointment/${appointmentId}/`)
+      .then(response => response.json())
+      .then(data => {
+          console.log("📢 DEBUG: Dati ricevuti dal backend:", data); // 🔍 Debug per vedere i valori
+
+          if (data.success) {
+              // 🔹 Popoliamo i campi della modale con i dati ricevuti dal backend
+              document.getElementById("day-appointment").textContent = data.giorno;
+              const dateParts = data.data.split("-");
+              const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+              document.getElementById("date-appointment").textContent = formattedDate + ", ";
+              document.getElementById("time-appointment").textContent = data.orario.slice(0, 5);
+              document.getElementById("tipologia_visita").value = data.tipologia_visita || "";
+
+              // 🔹 GESTIONE SELEZIONE PAZIENTE
+              let pazienteSelect = document.getElementById("paziente-select");
+              let nomeCompletoBackend = `${data.nome_paziente} ${data.cognome_paziente}`.trim().toLowerCase();
+
+              // 🔹 Controlliamo le opzioni nel <select> confrontando in lowercase per evitare problemi di maiuscole/minuscole
+              let pazienteOption = [...pazienteSelect.options].find(option => 
+                  option.value.trim().toLowerCase() === nomeCompletoBackend
+              );
+
+              if (pazienteOption) {
+                  pazienteSelect.value = pazienteOption.value;  // ✅ Se esiste, lo selezioniamo
+              } else {
+                  // ❗ Se non esiste, creiamo una nuova option con stile diverso
+                  let newOption = document.createElement("option");
+                  newOption.value = nomeCompletoBackend;
+                  newOption.textContent = `${data.nome_paziente} ${data.cognome_paziente} (Non in elenco)`;
+                  newOption.style.color = "red";
+                  pazienteSelect.appendChild(newOption);
+                  pazienteSelect.value = nomeCompletoBackend;
+              }
+
+              // 🔹 GESTIONE SELEZIONE VOCE PREZZARIO
+              let vocePrezzarioSelect = document.getElementById("voce-prezzario");
+              let voceOption = [...vocePrezzarioSelect.options].find(option => option.value.trim().toLowerCase() === data.voce_prezzario?.toLowerCase());
+
+              if (voceOption) {
+                  vocePrezzarioSelect.value = voceOption.value;
+              } else if (data.voce_prezzario) {
+                  let newVoceOption = document.createElement("option");
+                  newVoceOption.value = data.voce_prezzario;
+                  newVoceOption.textContent = data.voce_prezzario + " (Non in elenco)";
+                  newVoceOption.style.color = "red";
+                  vocePrezzarioSelect.appendChild(newVoceOption);
+                  vocePrezzarioSelect.value = data.voce_prezzario;
+              }
+
+              // 🔹 GESTIONE SELEZIONE DURATA
+              let durataSelect = document.getElementById("time");
+              let durataOption = [...durataSelect.options].find(option => option.value.trim().toLowerCase() === data.durata?.toLowerCase());
+
+              if (durataOption) {
+                  durataSelect.value = durataOption.value;
+              } else if (data.durata) {
+                  let newDurataOption = document.createElement("option");
+                  newDurataOption.value = data.durata;
+                  newDurataOption.textContent = data.durata + " (Non in elenco)";
+                  newDurataOption.style.color = "red";
+                  durataSelect.appendChild(newDurataOption);
+                  durataSelect.value = data.durata;
+              }
+
+              // 🔹 GESTIONE SELEZIONE NUMERO STUDIO
+              let studioSelect = document.getElementById("studio");
+              if ([...studioSelect.options].some(option => option.value === data.numero_studio)) {
+                  studioSelect.value = data.numero_studio;
+              } else {
+                  studioSelect.selectedIndex = 0; // Se non esiste, seleziona la prima opzione
+              }
+
+              // 🔹 ASSEGNA NOTE SE PRESENTI
+              document.getElementById("note").value = data.note || "";
+
+              // 🔹 Salviamo l'ID dell'appuntamento per la modifica
+              document.getElementById("date-appointment-form").setAttribute("data-id", appointmentId);
+
+              // 🔹 Apriamo la modale con GSAP
+              document.getElementById("appointmentModal").style.display = "block";
+              document.body.style.overflow = "hidden";
+              gsap.fromTo(
+                document.querySelector(".modal-content-appointments"),
+                { opacity: 0, scale: 0.8 },
+                { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }
+              );
+          } else {
+              console.error("❌ Errore nel recupero dati appuntamento:", data.error);
+          }
+      })
+      .catch(error => console.error("❌ Errore nella richiesta:", error));
+}
+
+// Funzione per salvare le modifiche all'appuntamento
+function saveAppointmentChanges() {
+  const appointmentId = document.getElementById("date-appointment-form").getAttribute("data-id");
+  const updatedTipologia = document.getElementById("tipologia_visita").value;
+  const updatedOrario = document.getElementById("time-appointment").textContent.trim();
+  const updatedPaziente = document.getElementById("paziente-select").value;
+  const updatedVocePrezzario = document.getElementById("voce-prezzario").value;
+  const updatedDurata = document.getElementById("time").value;
+  const updatedStudio = document.getElementById("studio").value;
+  const updatedNote = document.getElementById("note").value;
+
+  fetch(`/update-appointment/${appointmentId}/`, {
+      method: "PATCH",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+          tipologia_visita: updatedTipologia,
+          orario: updatedOrario,
+          paziente_id: updatedPaziente,
+          voce_prezzario: updatedVocePrezzario,
+          durata: updatedDurata,
+          numero_studio: updatedStudio,
+          note: updatedNote,
+      })
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.success) {
+          console.log("Appuntamento aggiornato con successo!");
+          location.reload(); // Ricarica la pagina per aggiornare il calendario
+      } else {
+          console.error("Errore aggiornamento appuntamento:", data.error);
+      }
+  })
+  .catch(error => console.error("Errore nella richiesta:", error));
+}
+
+// Funzione per eliminare un appuntamento
+function deleteAppointment(appointmentId, appointmentBox, confirmAlert) {
+  fetch(`/delete-appointment/${appointmentId}/`, {
+      method: "DELETE",
+      headers: {
+          "Content-Type": "application/json",
+      }
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error(`Errore HTTP: ${response.status}`);
+      }
+      return response.json();
+  })
+  .then(data => {
+      if (data.success) {
+          console.log("✅ Appuntamento eliminato:", data.message);
+
+          // 🔹 Effetto GSAP per la rimozione fluida del box appuntamento
+          gsap.to(appointmentBox, {
+              opacity: 0,
+              duration: 0.3,
+              ease: "power2.in",
+              onComplete: () => appointmentBox.remove()
+          });
+
+          // 🔹 Rimuove anche l'alert di conferma
+          gsap.to(confirmAlert, {
+              opacity: 0,
+              duration: 0.3,
+              ease: "power2.in",
+              onComplete: () => confirmAlert.remove()
+          });
+
+          // 🔹 Mostra l'alert di successo
+          showAlert("success", "Appuntamento eliminato con successo!");
+      } else {
+          console.error("❌ Errore nella cancellazione:", data.error);
+          showAlert("danger", "Errore nella cancellazione dell'appuntamento.");
+      }
+  })
+  .catch(error => {
+      console.error("❌ Errore nella richiesta:", error);
+      showAlert("danger", "Errore nella richiesta al server.");
+  });
+}
+
+// Funzione per confermare l'eliminazione di un appuntamento tramite modale bootstrap// Funzione per confermare l'eliminazione di un appuntamento tramite modale bootstrap con GSAP
+function confirmDeleteAppointment(appointmentId, appointmentBox) {
+  // Controllo se c'è già un alert visibile
+  let existingAlert = document.getElementById("delete-alert");
+  if (existingAlert) existingAlert.remove();
+
+  // 🔹 Creazione alert Bootstrap personalizzato
+  let confirmAlert = document.createElement("div");
+  confirmAlert.id = "delete-alert";
+  confirmAlert.classList.add("alert", "alert-danger", "fade", "show");
+  confirmAlert.style.position = "fixed";
+  confirmAlert.style.top = "20px";
+  confirmAlert.style.left = "50%";
+  confirmAlert.style.transform = "translateX(-50%)";
+  confirmAlert.style.zIndex = "1050";
+  confirmAlert.style.width = "auto";
+  confirmAlert.style.maxWidth = "400px";
+  confirmAlert.style.display = "flex";
+  confirmAlert.style.justifyContent = "space-between";
+  confirmAlert.style.alignItems = "center";
+  confirmAlert.style.padding = "10px 15px";
+  confirmAlert.style.borderRadius = "6px";
+  confirmAlert.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
+  confirmAlert.style.opacity = "0"; // 🔹 Opacità iniziale per GSAP
+
+  confirmAlert.innerHTML = `
+      <span>Sei sicuro di voler eliminare questo appuntamento?</span>
+      <div>
+          <button type="button" class="btn btn-sm btn-danger" id="confirmDelete">Elimina</button>
+          <button type="button" class="btn btn-sm btn-secondary" id="cancelDelete">Annulla</button>
+      </div>
+  `;
+
+  // 🔹 Aggiungo l'alert al DOM
+  document.body.appendChild(confirmAlert);
+
+  // 🔹 Effetto GSAP per far apparire l'alert con un fade-in
+  gsap.to(confirmAlert, { opacity: 1, duration: 0.3, ease: "power2.out" });
+
+  // 🔹 Eventi sui bottoni
+  document.getElementById("confirmDelete").addEventListener("click", () => {
+      deleteAppointment(appointmentId, appointmentBox, confirmAlert);
+  });
+
+  document.getElementById("cancelDelete").addEventListener("click", () => {
+      gsap.to(confirmAlert, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => confirmAlert.remove()
+      });
+  });
+
+  // 🔹 Rimuove automaticamente l'alert dopo 10 secondi con un fade-out GSAP
+  setTimeout(() => {
+      gsap.to(confirmAlert, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => confirmAlert.remove()
+      });
+  }, 10000);
+}
+
+function showAlert(type, message) {
+  // Controllo se esiste già un alert visibile
+  let existingAlert = document.getElementById("global-alert");
+  if (existingAlert) existingAlert.remove();
+
+  // Creazione del div per l'alert Bootstrap
+  let alertDiv = document.createElement("div");
+  alertDiv.id = "global-alert";
+  alertDiv.classList.add("alert", `alert-${type}`, "fade", "show");
+  alertDiv.style.position = "fixed";
+  alertDiv.style.top = "20px";
+  alertDiv.style.left = "50%";
+  alertDiv.style.transform = "translateX(-50%)";
+  alertDiv.style.zIndex = "1050";
+  alertDiv.style.width = "auto";
+  alertDiv.style.maxWidth = "400px";
+  alertDiv.style.display = "flex";
+  alertDiv.style.justifyContent = "space-between";
+  alertDiv.style.alignItems = "center";
+  alertDiv.style.padding = "10px 15px";
+  alertDiv.style.borderRadius = "6px";
+  alertDiv.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
+  alertDiv.style.opacity = "0"; // Inizialmente nascosto
+
+  // Contenuto dell'alert
+  alertDiv.innerHTML = `
+      <span>${message}</span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  `;
+
+  // Aggiunge l'alert al DOM
+  document.body.appendChild(alertDiv);
+
+  // Effetto di comparsa con GSAP
+  gsap.to(alertDiv, { opacity: 1, duration: 0.3, ease: "power2.out" });
+
+  // Rimuove automaticamente l'alert dopo 5 secondi con un fade-out
+  setTimeout(() => {
+      gsap.to(alertDiv, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => alertDiv.remove()
+      });
+  }, 5000);
+}
+
+
+// Funzione principale
 document.addEventListener("DOMContentLoaded", () => {
   /***********************************************************************
    * SEZIONE 1: LOGICA DEL CALENDARIO
@@ -283,51 +686,50 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let day = 1; day <= totalDaysInMonth; day++) {
       const cella = document.createElement("div");
       cella.classList.add("cella");
-  
+
       // Assegno dataset con il giorno, mese e anno corretti
       cella.dataset.day = day;
       cella.dataset.month = month + 1; // Mese base 1
       cella.dataset.year = year;
-  
+
       const dayParagraph = document.createElement("p");
       dayParagraph.classList.add("data");
       dayParagraph.textContent = day;
-  
+
       // Contenitore per gli appuntamenti
       const appointmentsContainer = document.createElement("div");
       appointmentsContainer.classList.add("appointments-container");
-  
+
       // Se è oggi, evidenzia
       if (checkIfToday(year, month, day)) {
-          cella.classList.add("today");
+        cella.classList.add("today");
       }
-  
+
       // Controllo se il giorno è già passato
       const cellDate = new Date(year, month, day);
       cellDate.setHours(0, 0, 0, 0);
-  
+
       if (cellDate < todayMidnight) {
-          cella.classList.add("past-day");
+        cella.classList.add("past-day");
       } else {
-          // Aggiungo event listeners per Drag & Drop
-          cella.addEventListener("dragover", handleDragOver);
-          cella.addEventListener("drop", handleDrop);
-  
-          // Aggiungo il click per aprire la modale
-          cella.addEventListener("click", () => {
-              selectedDayCell = cella;
-              const selectedDate = new Date(year, month, day);
-              fillFormForCalendar(selectedDate);
-              showAppointmentPreview(cella);
-              openModalWithGSAP();
-          });
+        // Aggiungo event listeners per Drag & Drop
+        cella.addEventListener("dragover", handleDragOver);
+        cella.addEventListener("drop", handleDrop);
+
+        // Aggiungo il click per aprire la modale
+        cella.addEventListener("click", () => {
+          selectedDayCell = cella;
+          const selectedDate = new Date(year, month, day);
+          fillFormForCalendar(selectedDate);
+          showAppointmentPreview(cella);
+          openModalWithGSAP();
+        });
       }
-  
+
       cella.appendChild(dayParagraph);
       cella.appendChild(appointmentsContainer);
       monthLayoutContainer.appendChild(cella);
     }
-  
 
     // Carica gli appuntamenti dopo aver generato il calendario
     loadAppointments();
@@ -668,58 +1070,68 @@ function convertDateFormat(dateString) {
   return dateString; // Ritorna la stringa originale se il formato è già corretto
 }
 
+// Listener sul pulsante "Salva"
 document.addEventListener("DOMContentLoaded", function () {
   document
     .querySelector(".btn-primary")
     .addEventListener("click", function (event) {
-      // Ottieni i valori selezionati
-      const tipologiaElement = document.getElementById("tipologia_visita");
-      const tipologia_visita = tipologiaElement
-        ? tipologiaElement.options[tipologiaElement.selectedIndex].value.trim()
+      event.preventDefault(); // 🔹 Evita il comportamento predefinito del pulsante
+
+      // 🔹 Ottieni il nome completo dal <select>
+      const pazienteSelect = document.getElementById("paziente-select");
+      const nomeCompleto = pazienteSelect.selectedOptions[0]?.text.trim() || "";
+      
+      // 🔹 Dividiamo nome e cognome senza troncare i cognomi composti
+      const nomeArray = nomeCompleto.split(" ");
+      const nome_paziente = nomeArray[0]; // Il primo elemento è il nome
+      const cognome_paziente = nomeArray.slice(1).join(" "); // Tutto il resto è il cognome intero
+
+      // 🔹 Recupera voce prezzario e durata
+      const vocePrezzarioElement = document.getElementById("voce-prezzario");
+      const voce_prezzario = vocePrezzarioElement
+        ? vocePrezzarioElement.options[vocePrezzarioElement.selectedIndex].value.trim()
         : "";
 
-      const orarioElement = document.getElementById("editTime");
-      const orario = orarioElement ? orarioElement.value.trim() : "";
+      const durataElement = document.getElementById("time");
+      const durata = durataElement
+        ? durataElement.options[durataElement.selectedIndex].value.trim()
+        : "";
 
-      // Ottenere i valori dagli <span>
-      const giorno_appointment =
-        document.getElementById("day-appointment")?.textContent.trim() || "";
+      // 🔹 Recupera altri dati
+      const tipologia_visita = document.getElementById("tipologia_visita")?.value.trim() || "";
+      const numero_studio = document.getElementById("studio")?.value.trim() || "";
+      const note = document.getElementById("note")?.value.trim() || "";
+
       const raw_data_appointment =
         document.getElementById("date-appointment")?.textContent.trim() || "";
-      const data_appointment = convertDateFormat(raw_data_appointment); // 🛠️ Converte la data nel formato corretto
+      const data_appointment = convertDateFormat(raw_data_appointment);
       const time_appointment =
         document.getElementById("time-appointment")?.textContent.trim() || "";
 
-      console.log("DEBUG - Dati degli span:");
-      console.log("Giorno:", giorno_appointment);
-      console.log("Data (originale):", raw_data_appointment);
-      console.log("Data (convertita):", data_appointment);
+      console.log("📢 DEBUG - Dati preparati per invio:");
+      console.log("Nome:", nome_paziente);
+      console.log("Cognome:", cognome_paziente);
+      console.log("Voce Prezzario:", voce_prezzario);
+      console.log("Durata:", durata);
+      console.log("Data:", data_appointment);
       console.log("Orario:", time_appointment);
 
       const appointmentData = {
-        tipologia_visita: tipologia_visita,
-        nome_paziente:
-          document
-            .getElementById("paziente-select")
-            .selectedOptions[0]?.text.split(" ")[0] || "",
-        cognome_paziente:
-          document
-            .getElementById("paziente-select")
-            .selectedOptions[0]?.text.split(" ")[1] || "",
-        numero_studio: document.getElementById("studio").value.trim(),
-        note: document.getElementById("note").value.trim(),
-        orario: orario,
-        giorno: giorno_appointment,
-        data: data_appointment, // 🛠️ Ora ha il formato YYYY-MM-DD
-        time: time_appointment,
-        csrfmiddlewaretoken:
-          document.querySelector("input[name='csrfmiddlewaretoken']")?.value ||
-          "",
+        tipologia_visita,
+        nome_paziente,
+        cognome_paziente,
+        numero_studio,
+        note,
+        voce_prezzario,
+        durata,
+        data: data_appointment,
+        orario: time_appointment,
+        csrfmiddlewaretoken: document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "",
       };
 
-      console.log("Dati inviati:", appointmentData); // Debug
+      console.log("📢 Dati inviati:", appointmentData); // Debug
 
-      // Invia i dati al back-end Django
+      // 🔹 Invia i dati al backend Django
       fetch("/salva-appuntamento/", {
         method: "POST",
         headers: {
@@ -730,17 +1142,17 @@ document.addEventListener("DOMContentLoaded", function () {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log("Risposta dal server:", data); // Debug
+          console.log("📢 Risposta dal server:", data); // Debug
           if (data.success) {
-            alert("Appuntamento salvato con successo!");
+            showAlert("success", "Appuntamento salvato con successo!");
             location.reload();
           } else {
-            alert("Errore nel salvataggio dell'appuntamento: " + data.error);
+            showAlert("danger", "Errore nel salvataggio dell'appuntamento: " + data.error);
           }
         })
         .catch((error) => {
-          console.error("Errore durante il salvataggio:", error);
-          alert("Si è verificato un errore inaspettato.");
+          console.error("❌ Errore durante il salvataggio:", error);
+          showAlert("danger", "Si è verificato un errore inaspettato.");
         });
     });
 });

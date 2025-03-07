@@ -63,8 +63,10 @@ urlpatterns = [
     #URL APPUNTAMENTI
     path('Appuntamenti', views.AppuntamentiView.as_view(), name='appuntamenti'),
     path("salva-appuntamento/", views.AppuntamentiSalvaView.as_view(), name="salva_appuntamento"),
-    path("get-appointments/", views.AppuntamentiJsonView.as_view(), name="get_appointments"),
-    path('update-appointment/<int:appointment_id>/', views.UpdateAppointmentView.as_view(), name='update_appointment'),
+    path('get-appointments/', AppuntamentiGetView.as_view(), name='get_appointments'),
+    path('get-appointment/<int:appointment_id>/', GetSingleAppointmentView.as_view(), name='get_appointment'),
+    path('update-appointment/<int:appointment_id>/', UpdateAppointmentView.as_view(), name='update_appointment'),
+    path('delete-appointment/<int:appointment_id>/', DeleteAppointmentView.as_view(), name='delete_appointment'),
 ]
 
 

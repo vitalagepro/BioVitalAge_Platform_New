@@ -2,6 +2,7 @@ from datetime import date, datetime
 from django.utils.dateparse import parse_date, parse_time
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.timezone import now
 from django.views import View
 from .models import *
 from .utils import calculate_biological_age, CalcoloPunteggioCapacitaVitale
@@ -1624,7 +1625,7 @@ class ComposizioneView(View):
         return render(request, "includes/composizione.html", context)
 
 class UpdatePersonaContactView(View):
-    def post(request, id):
+    def post(self, request, id):
         if request.method == "POST":
             try:
                 # Estrai il corpo della richiesta
@@ -1667,7 +1668,7 @@ class UpdatePersonaContactView(View):
 
 # Funzione per aggiornare i dati di una persona in composizione corpo
 class UpdatePersonaComposizioneView(View):
-    def update_persona_composizione(request, id):
+    def get(self, request, id):
         try:
             persona = TabellaPazienti.objects.get(id=id)
         except TabellaPazienti.DoesNotExist:
@@ -1765,8 +1766,6 @@ class UpdatePersonaComposizioneView(View):
 
         else:
             return JsonResponse({"success": False, "error": "Metodo non valido"}, status=405)
-
-
 
 
 # VIEWS PER CALCOLO CAPACITA', SEZIONE CAPACITA' VITALE
@@ -2231,89 +2230,149 @@ class AppuntamentiView(View):
 
         return render(request, 'includes/Appuntamenti.html', context)
     
-
+# VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
 class AppuntamentiSalvaView(View):
- def post( self, request):
-    if request.method == "POST":
-        try:
-            body_raw = request.body.decode('utf-8')
-            print(f"📥 Body ricevuto: {body_raw}")  # Debug
-
-            data = json.loads(body_raw)
-            print(f"📤 Dati JSON convertiti: {data}")  # Debug
-
-            giorno = data.get("giorno", "").strip()
-            data_appointment = data.get("data", "").strip()
-            time_appointment = data.get("time", "").strip()
-
-            if not time_appointment:
-                print("❌ ERRORE: Il campo 'orario' è mancante o vuoto!")
-
-            # Creazione dell'appuntamento
-            appuntamento = Appointment.objects.create(
-                tipologia_visita=data.get("tipologia_visita"),
-                nome_paziente=data.get("nome_paziente"),
-                cognome_paziente=data.get("cognome_paziente"),
-                numero_studio=data.get("numero_studio"),
-                note=data.get("note"),
-                giorno=giorno,  # 🛠️ Aggiunto nuovo campo
-                data=data_appointment,  # 🛠️ Aggiunto nuovo campo
-                orario=time_appointment,  # 🛠️ Aggiunto nuovo campo
-            )
-
-            print(f"✅ Appuntamento creato con ID: {appuntamento.id}")
-            return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!"})
-
-        except json.JSONDecodeError as e:
-            print(f"❌ ERRORE JSON: {str(e)}")
-            return JsonResponse({"success": False, "error": "Formato JSON non valido"}, status=400)
-        except Exception as e:
-            print(f"❌ ERRORE GENERICO: {str(e)}")
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-    return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
-
-
-class AppuntamentiJsonView(View):
-    def get(self, request):
-        appointments = Appointment.objects.all()
-        
-        # Creiamo un dizionario dove ogni data ha una lista di appuntamenti
-        appointments_by_date = {}
-        
-        for appt in appointments:
-            date_str = appt.data.strftime("%Y-%m-%d")  # Converte la data in stringa YYYY-MM-DD
-            if date_str not in appointments_by_date:
-                appointments_by_date[date_str] = []  # Inizializza lista se non esiste
-            
-            appointments_by_date[date_str].append({
-                "tipologia_visita": appt.tipologia_visita,
-                "orario": appt.orario.strftime("%H:%M")  # Converte l'orario in HH:MM
-            })
-        
-        return JsonResponse(appointments_by_date, safe=False)
-
-class UpdateAppointmentView(View):
-    def update_appointment(request, appointment_id):
-        if request.method == "PATCH":
+    def post(self, request):
+        if request.method == "POST":
             try:
-                data = json.loads(request.body)
-                new_date = data.get("new_date")
+                body_raw = request.body.decode('utf-8')
+                print(f"📥 Body ricevuto: {body_raw}")  # Debug
 
-                appointment = Appointment.objects.get(id=appointment_id)
-                appointment.date = new_date  # Assicurati che il tuo modello abbia questo campo
-                appointment.save()
+                data = json.loads(body_raw)
+                print(f"📤 Dati JSON convertiti: {data}")  # Debug
 
-                return JsonResponse({"success": True, "message": "Appuntamento aggiornato!"})
-            except Appointment.DoesNotExist:
-                return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
+                # Recuperiamo i dati, facendo attenzione ai valori mancanti
+                giorno = data.get("giorno", "").strip()
+                data_appointment = data.get("data", "").strip()
+                time_appointment = data.get("orario", "").strip()
+                voce_prezzario = data.get("voce_prezzario", "").strip()
+                durata = data.get("durata", "").strip()
+
+                if not time_appointment:
+                    print("❌ ERRORE: Il campo 'orario' è mancante o vuoto!")
+
+                # Creazione dell'appuntamento
+                appuntamento = Appointment.objects.create(
+                    tipologia_visita=data.get("tipologia_visita"),
+                    nome_paziente=data.get("nome_paziente"),
+                    cognome_paziente=data.get("cognome_paziente"),
+                    numero_studio=data.get("numero_studio"),
+                    note=data.get("note"),
+                    giorno=giorno,
+                    data=data_appointment,
+                    orario=time_appointment,
+                    voce_prezzario=voce_prezzario,  # 🔹 Ora viene salvato
+                    durata=durata,  # 🔹 Ora viene salvata
+                )
+
+                print(f"✅ Appuntamento creato con ID: {appuntamento.id}")
+                return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!"})
+
+            except json.JSONDecodeError as e:
+                print(f"❌ ERRORE JSON: {str(e)}")
+                return JsonResponse({"success": False, "error": "Formato JSON non valido"}, status=400)
             except Exception as e:
+                print(f"❌ ERRORE GENERICO: {str(e)}")
                 return JsonResponse({"success": False, "error": str(e)}, status=500)
 
         return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
 
+# VIEWS SINGLE APPOINTMENT
+class GetSingleAppointmentView(View):
+    def get(self, request, appointment_id):
+        """Recupera i dettagli di un singolo appuntamento"""
+        try:
+            appointment = Appointment.objects.get(id=appointment_id)
+
+            response_data = {
+                "success": True,
+                "id": appointment.id,
+                "nome_paziente": appointment.nome_paziente,
+                "cognome_paziente": appointment.cognome_paziente,
+                "giorno": appointment.giorno,
+                "data": appointment.data.strftime("%Y-%m-%d"),
+                "numero_studio": appointment.numero_studio or "",  # Se è null, assegna ""
+                "note": appointment.note or "",  # Se è null, assegna ""
+                "voce_prezzario": appointment.voce_prezzario or "",  # Se è null, assegna ""
+                "tipologia_visita": appointment.tipologia_visita or "",  # Se è null, assegna ""
+                "orario": str(appointment.orario)[:5],  # Formattato in HH:mm
+                "durata": appointment.durata or "",  # Se è null, assegna ""
+            }
+
+            print("📢 DEBUG: Dati inviati al frontend:", json.dumps(response_data, indent=4)) # Debug Django
+
+            return JsonResponse(response_data)
+        except Appointment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+# VIEWS GET ALL APPOINTMENTS
+class AppuntamentiGetView(View):
+    def get(self, request):
+        """Recupera gli appuntamenti futuri ed elimina quelli passati"""
+        
+        # 📌 1. Ottenere la data di oggi senza ore/minuti/secondi
+        today = now().date()
+
+        # 📌 2. Eliminare gli appuntamenti con data precedente a oggi
+        deleted_count, _ = Appointment.objects.filter(data__lt=today).delete()  # Cambiato "date" in "data"
+
+        # 📌 3. Recuperare solo gli appuntamenti futuri o di oggi
+        future_appointments = Appointment.objects.filter(data__gte=today)  # Cambiato "date" in "data"
+
+        # 📌 4. Costruire il dizionario degli appuntamenti organizzati per data
+        appointments_by_date = {}
+        for appointment in future_appointments:
+            date_str = appointment.data.strftime("%Y-%m-%d")  # Formattazione YYYY-MM-DD
+            if date_str not in appointments_by_date:
+                appointments_by_date[date_str] = []
+            appointments_by_date[date_str].append({
+                "id": appointment.id,
+                "nome_paziente": appointment.nome_paziente,
+                "cognome_paziente": appointment.cognome_paziente,
+                "giorno": appointment.giorno,
+                "data": appointment.data,
+                "numero_studio": appointment.numero_studio,
+                "note": appointment.note,
+                "voce_prezzario": appointment.voce_prezzario,
+                "tipologia_visita": appointment.tipologia_visita,
+                "orario": appointment.orario,
+            })
+
+        return JsonResponse({"success": True, "deleted": deleted_count, "appointments": appointments_by_date})
+
+# VIEWS UPDATE APPOINTMENT
+class UpdateAppointmentView(View):
+    def patch(self, request, appointment_id):
+        try:
+            data = json.loads(request.body)
+
+            appointment = Appointment.objects.get(id=appointment_id)
+            if "new_date" in data:
+                appointment.data = data["new_date"]  # Corretto: "data" invece di "date"
+            if "tipologia_visita" in data:
+                appointment.tipologia_visita = data["tipologia_visita"]
+            if "orario" in data:
+                appointment.orario = data["orario"]
+            if "numero_studio" in data:
+                appointment.numero_studio = data["numero_studio"]
+            if "voce_prezzario" in data:
+                appointment.voce_prezzario = data["voce_prezzario"]
+            if "note" in data:
+                appointment.note = data["note"]
+
+            appointment.save()
+
+            return JsonResponse({"success": True, "message": "Appuntamento aggiornato!"})
+        except Appointment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+# VIEWS APPROVE APPOINTMENT
 class ApproveAppointmentView(View):
-    def approve_appointment(request, appointment_id):
+    def approve_appointment(self, request, appointment_id):
         if request.method == "POST":
             appointment = get_object_or_404(Appointment, id=appointment_id)
             appointment.confermato = True  # Segna l'appuntamento come confermato
@@ -2321,11 +2380,19 @@ class ApproveAppointmentView(View):
             return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
         return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
 
+# VIEWS DELETE APPOINTMENT
+@method_decorator(csrf_exempt, name='dispatch')  # 👈 Disabilita CSRF per questa view
 class DeleteAppointmentView(View):
     def delete(self, request, appointment_id):
-        appointment = get_object_or_404(Appointment, id=appointment_id)
-        appointment.delete()
-        return JsonResponse({"success": True, "message": "Appuntamento eliminato!"})
+        try:
+            appointment = Appointment.objects.get(id=appointment_id)
+            appointment.delete()
+            return JsonResponse({"success": True, "message": "Appuntamento eliminato con successo!"})
+        except Appointment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
 
 
 

@@ -458,18 +458,44 @@ input[type='date'] {
     background-color: var(--contrast-color-shadow);
 }
 
+/* STYLE WEEK LAYOUT */
 .appointment-box {
     background-color: #3a255d;
+    /* Mantiene il colore */
     color: #fff;
     padding: 5px;
     margin-top: 3px;
     font-size: 0.75rem;
     border-radius: 4px;
     text-align: center;
-    word-wrap: break-word;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    transition: transform 0.2s ease-out;
+}
+
+.appointment-box.dragging {
+    opacity: 1 !important;
+    /* Mantiene l'opacità */
+    transform: scale(1.1);
+    /* Effetto di ingrandimento */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    /* Effetto sollevamento */
+}
+
+.appointment-box.hold {
+    opacity: 1 !important;
+    /* Impedisce la trasparenza */
+}
+
+.cella {
+    border: 1px solid #ddd;
+    min-height: 80px;
+    padding: 5px;
+    position: relative;
+}
+
+.cella.drag-over {
+    background-color: #f1f1f1;
+    /* Evidenzia la cella di destinazione */
+    border: 2px dashed #3a255d;
 }
 
 
