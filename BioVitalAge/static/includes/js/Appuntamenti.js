@@ -47,49 +47,51 @@ monthLayoutBtn.addEventListener("click", () => {
 --------------------------------------------------------------------------------------------------- */
 let currentDate = new Date(); // Definisci la variabile globalmente
 
+/* LOAD APPOINTMENTS */
 function loadAppointments() {
   fetch("/get-appointments/")
     .then((response) => response.json())
     .then((appointmentsByDate) => {
-      // Seleziona tutte le celle del calendario
-      const cells = document.querySelectorAll(".cella");
+      console.log("📢 Appuntamenti ricevuti dal backend:", appointmentsByDate);
 
-      cells.forEach((cell) => {
-        const cellDay = cell.dataset.day; // Assicuriamoci di usare il dataset
+      document.querySelectorAll(".cella").forEach((cell) => {
+        const cellDay = cell.dataset.day;
         const cellMonth = cell.dataset.month;
         const cellYear = cell.dataset.year;
 
-        if (!cellDay || !cellMonth || !cellYear) return; // Se la cella non ha dati, esci
+        if (!cellDay || !cellMonth || !cellYear) return;
 
-        // Formatta la data in YYYY-MM-DD per il confronto con gli appuntamenti ricevuti
         const formattedDate = `${cellYear}-${String(cellMonth).padStart(
           2,
           "0"
         )}-${String(cellDay).padStart(2, "0")}`;
 
-        // Rimuove eventuali appuntamenti precedenti nella cella
         const appointmentsContainer = cell.querySelector(
           ".appointments-container"
         );
-        appointmentsContainer.innerHTML = ""; // Pulisce la cella prima di aggiungere nuovi appuntamenti
+        appointmentsContainer.innerHTML = "";
 
-        // Controlla se ci sono appuntamenti per questa data
         if (appointmentsByDate.appointments[formattedDate]) {
           appointmentsByDate.appointments[formattedDate].forEach(
             (appointment) => {
-              addAppointmentToCell(
-                cell,
-                appointment.tipologia_visita,
-                appointment.orario,
-                appointment.id
-              );
+              console.log("📢 DEBUG: Appuntamento ricevuto:", appointment);
+              if (!appointment.id || appointment.id === "") {
+                console.error("❌ Errore: Appuntamento senza ID!", appointment);
+              } else {
+                addAppointmentToCell(
+                  cell,
+                  appointment.tipologia_visita,
+                  appointment.orario,
+                  appointment.id
+                );
+              }
             }
           );
         }
       });
     })
     .catch((error) =>
-      console.error("Errore nel caricamento appuntamenti:", error)
+      console.error("❌ Errore nel caricamento appuntamenti:", error)
     );
 }
 
@@ -100,36 +102,41 @@ function formatDateForBackend(date, day) {
   const dayFormatted = String(day).padStart(2, "0"); // Giorno in due cifre
   return `${year}-${month}-${dayFormatted}`;
 }
+
 let isDragging = false; // Variabile di stato globale per il drag
 
+// Funzione che gestisce il drag di un appuntamento
 function handleDragStart(event) {
-  isDragging = true;
-  event.dataTransfer.setData("text/plain", event.target.dataset.id);
-  event.dataTransfer.effectAllowed = "move";
-  event.target.classList.add("dragging");
+  const appointmentBox = event.target;
 
-  // Effetto visivo (ombra e riduzione opacità)
+  // Assicurati che dataset.id sia valorizzato
+  let appointmentId = appointmentBox.dataset.id ? String(appointmentBox.dataset.id) : "";
+
+  console.log("📢 DRAG START - Elemento trascinato:", appointmentBox);
+  console.log("📢 DRAG START - ID dell'appuntamento:", appointmentId);
+
+  if (!appointmentId || appointmentId.trim() === "") {
+    console.error("❌ DRAG START ERRORE: appointmentBox non ha un dataset.id valido!", appointmentBox);
+    event.preventDefault(); // 🔥 Blocca il drag se l'ID è mancante
+    return;
+  }
+
+  isDragging = true;
+  event.dataTransfer.setData("text/plain", appointmentId);
+  console.log("📢 DRAG START - ID salvato in dataTransfer:", event.dataTransfer.getData("text/plain"));
+
+  event.dataTransfer.effectAllowed = "move";
+  appointmentBox.classList.add("dragging");
+
   gsap.to(event.target, { opacity: 0.7, scale: 1.1, duration: 0.2 });
 }
 
+// Resetta il dragging dopo un piccolo delay
 function handleDragEnd(event) {
   setTimeout(() => {
     isDragging = false;
-  }, 200);
-  event.target.classList.remove("dragging");
-
-  // Ripristina l'opacità e la dimensione
-  gsap.to(event.target, { opacity: 1, scale: 1, duration: 0.2 });
+  }, 100);
 }
-
-
-function handleDragEnd(event) {
-  setTimeout(() => {
-    isDragging = false; // Reset dopo breve ritardo
-  }, 200);
-  event.target.classList.remove("dragging");
-}
-
 
 // Funzione che gestisce il cambio del cursore durante il drag & drop
 function handleDragOver(event) {
@@ -137,47 +144,86 @@ function handleDragOver(event) {
   event.dataTransfer.dropEffect = "move"; // Cambia l'icona del cursore per indicare il drag & drop
 }
 
-// Funzione che gestisce il drop
+// Funzione che gestisce il drop di un appuntamento
 function handleDrop(event) {
   event.preventDefault();
 
-  // Assicuriamoci di droppare SOLO dentro una cella
-  let targetCell = event.target.closest(".cella");
-  if (!targetCell || targetCell.classList.contains("past-day")) return; // Non permettere il drop nei giorni passati
+  let appointmentId = event.dataTransfer.getData("text/plain");
+  appointmentId = appointmentId ? String(appointmentId) : ""; // 🔹 Converti in stringa e verifica
 
-  const appointmentsContainer = targetCell.querySelector(".appointments-container");
+  console.log("📢 DROP - ID ricevuto dal drag:", appointmentId);
 
-  // Recupera l'ID dell'appuntamento trascinato
-  const appointmentId = event.dataTransfer.getData("text/plain");
-  const appointmentBox = document.querySelector(`[data-id='${appointmentId}']`);
-  if (!appointmentBox) return;
-
-  // Se l'appuntamento è già in questa cella, esci
-  if (appointmentsContainer.contains(appointmentBox)) return;
-
-  // Sposta l'appuntamento nella nuova cella
-  appointmentsContainer.appendChild(appointmentBox);
-
-  // Ottieni la nuova data dalla cella target
-  const newDay = targetCell.dataset.day;
-  const newMonth = targetCell.dataset.month;
-  const newYear = targetCell.dataset.year;
-  if (!newDay || !newMonth || !newYear) return;
-
-  const newDate = `${newYear}-${String(newMonth).padStart(2, "0")}-${String(newDay).padStart(2, "0")}`;
-
-  // Aggiorna la data dell'appuntamento nel backend
-  updateAppointmentDate(appointmentId, newDate);
-}
-
-
-function updateAppointmentDate(appointmentId, newDate) {
-  if (!appointmentId || !newDate) {
-    console.error("❌ Errore: appointmentId o newDate non valido!", { appointmentId, newDate });
+  if (!appointmentId || appointmentId.trim() === "") {
+    console.error("❌ DROP ERRORE: appointmentId non valido!", { appointmentId });
     return;
   }
 
-  console.log(`📢 Aggiornamento appuntamento ID: ${appointmentId} con data: ${newDate}`);
+  const appointmentBox = document.querySelector(`[data-id='${appointmentId}']`);
+  if (!appointmentBox) {
+    console.error("❌ DROP ERRORE: Nessun elemento trovato con data-id:", appointmentId);
+    return;
+  }
+
+  let targetCell = event.target.closest(".cella");
+  if (!targetCell || targetCell.classList.contains("past-day")) return;
+
+  const appointmentsContainer = targetCell.querySelector(".appointments-container");
+
+  let editButton = targetCell.querySelector(".edit-button");
+  if (editButton) editButton.remove();
+
+  if (appointmentsContainer.contains(appointmentBox)) return;
+
+  appointmentsContainer.appendChild(appointmentBox);
+  appointmentBox.classList.remove("dragging");
+  isDragging = false;
+
+  const newDay = targetCell.dataset.day;
+  const newMonth = targetCell.dataset.month;
+  const newYear = targetCell.dataset.year;
+  if (!newDay || !newMonth || !newYear) {
+    console.error("❌ DROP ERRORE: Dati mancanti per la data!", { newDay, newMonth, newYear });
+    return;
+  }
+
+  const newDate = `${newYear}-${String(newMonth).padStart(2, "0")}-${String(newDay).padStart(2, "0")}`;
+  console.log("✅ DROP - Appuntamento spostato con successo!", { appointmentId, newDate });
+
+  updateAppointmentDate(appointmentId, newDate);
+}
+
+// Assicura che il drag non attivi la modale
+function handleDragStart(event) {
+  const appointmentBox = event.target;
+
+  // Assicuriamoci che l'elemento trascinato abbia un dataset.id valido
+  if (!appointmentBox.dataset.id) {
+    console.error(
+      "❌ Errore: appointmentBox non ha un dataset.id valido!",
+      appointmentBox
+    );
+    return;
+  }
+
+  isDragging = true;
+  event.dataTransfer.setData("text/plain", appointmentBox.dataset.id);
+  event.dataTransfer.effectAllowed = "move";
+  appointmentBox.classList.add("dragging");
+}
+
+// Aggiorna la data di un appuntamento nel backend
+function updateAppointmentDate(appointmentId, newDate) {
+  if (!appointmentId || !newDate) {
+    console.error("❌ Errore: appointmentId o newDate non valido!", {
+      appointmentId,
+      newDate,
+    });
+    return;
+  }
+
+  console.log(
+    `📢 Aggiornamento appuntamento ID: ${appointmentId} con data: ${newDate}`
+  );
 
   fetch(`/update-appointment/${appointmentId}/`, {
     method: "PATCH",
@@ -186,54 +232,42 @@ function updateAppointmentDate(appointmentId, newDate) {
     },
     body: JSON.stringify({ new_date: newDate }),
   })
-  .then(response => {
-    console.log(`📢 Risposta HTTP: ${response.status}`);
-    return response.json();
-  })
-  .then(data => {
-    if (data.success) {
-      showAlert("success", "Appuntamento spostato con successo!");
-    } else {
-      showAlert("danger", `Errore nello spostamento dell'appuntamento: ${data.error}`);
-    }
-  })
-  .catch(error => console.error("❌ Errore nella richiesta:", error));
+    .then((response) => {
+      console.log(`📢 Risposta HTTP: ${response.status}`);
+      return response.json();
+    })
+    .then((data) => {
+      if (data.success) {
+        showAlert("success", "Appuntamento spostato con successo!");
+      } else {
+        showAlert(
+          "danger",
+          `Errore nello spostamento dell'appuntamento: ${data.error}`
+        );
+      }
+    })
+    .catch((error) => console.error("❌ Errore nella richiesta:", error));
 }
 
 // Funzione per aggiungere un appuntamento alla cella
-function addAppointmentToCell(cella, tipologia, orario, appointmentId) {  
+function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
   const appointmentsContainer = cella.querySelector(".appointments-container");
 
   let appointmentBox = document.createElement("div");
   appointmentBox.classList.add("appointment-box");
   appointmentBox.setAttribute("draggable", "true");
-  appointmentBox.dataset.id = appointmentId;
 
-  // 🔹 Formattazione dell'orario: da "HH:mm:ss" a "HH:mm"
-  let formattedTime = orario.slice(0, 5);
+  // 🔹 Converti in stringa e verifica che non sia null o undefined
+  appointmentId = appointmentId ? String(appointmentId) : "";
 
-  // 🔹 Flag per evitare apertura modale al drag
-  let isDragging = false;
-  appointmentBox.addEventListener("dragstart", () => {
-      isDragging = true;
-  });
-  appointmentBox.addEventListener("dragend", () => {
-      setTimeout(() => {
-          isDragging = false;
-      }, 100); // Reset dopo breve delay
-  });
+  if (!appointmentId || appointmentId.trim() === "") {
+    console.error("❌ Errore: appointmentId non valido durante la creazione!", { appointmentId });
+    return;
+  }
 
-  // 🔹 Apre la modale SOLO se non è stato fatto drag
-  appointmentBox.addEventListener("click", (event) => {
-    if (event) {
-      event.stopPropagation(); // Evita propagazione solo se event esiste
-    }
-    if (!isDragging) { // Apri solo se NON stai trascinando
-      openAppointmentModal(appointmentId);
-    }
-  });
+  appointmentBox.dataset.id = appointmentId; // 🔥 Assicura che l'ID venga assegnato correttamente
 
-  // 🔹 Creazione del contenuto dell'appuntamento (testo + bottone elimina)
+  let formattedTime = orario ? orario.slice(0, 5) : "00:00";
   let textSpan = document.createElement("span");
   textSpan.textContent = `${tipologia} - ${formattedTime}`;
   textSpan.style.flex = "1";
@@ -242,151 +276,141 @@ function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
   deleteButton.innerHTML = "&times;";
   deleteButton.classList.add("delete-appointment");
   deleteButton.setAttribute("data-id", appointmentId);
+
   deleteButton.addEventListener("click", (event) => {
-      event.stopPropagation();
-      confirmDeleteAppointment(appointmentId, appointmentBox);
+    event.stopPropagation();
+    confirmDeleteAppointment(appointmentId, appointmentBox);
   });
 
-  // 🔹 Stili per l'appointment box
-  appointmentBox.style.backgroundColor = "#3a255d";
-  appointmentBox.style.color = "#fff";
-  appointmentBox.style.padding = "6px 10px";
-  appointmentBox.style.marginTop = "5px";
-  appointmentBox.style.borderRadius = "6px";
-  appointmentBox.style.display = "flex";
-  appointmentBox.style.alignItems = "center";
-  appointmentBox.style.justifyContent = "space-between";
-  appointmentBox.style.cursor = "grab";
-  appointmentBox.style.userSelect = "none";
-  appointmentBox.style.transition = "opacity 0.2s ease-in-out";
-  appointmentBox.style.fontSize = "11.7px";
-
-  // 🔹 Stili per il pulsante "X"
-  deleteButton.style.background = "none";
-  deleteButton.style.border = "none";
-  deleteButton.style.color = "#fff";
-  deleteButton.style.fontSize = "1rem";
-  deleteButton.style.cursor = "pointer";
-  deleteButton.style.marginLeft = "8px";
-  deleteButton.style.padding = "2px";
-  deleteButton.style.transition = "color 0.2s ease-in-out";
-  
-  // Effetto hover sulla "X"
-  deleteButton.addEventListener("mouseenter", () => {
-      deleteButton.style.color = "#ff6961";
-  });
-  deleteButton.addEventListener("mouseleave", () => {
-      deleteButton.style.color = "#fff";
-  });
-
-  // 🔹 Append elementi
   appointmentBox.appendChild(textSpan);
   appointmentBox.appendChild(deleteButton);
   appointmentsContainer.appendChild(appointmentBox);
-}
 
+  console.log("✅ Elemento creato con ID:", appointmentBox.dataset.id); // 🔍 Debug
+}
 
 // Funzione per aprire la modale
 function openAppointmentModal(appointmentId) {
   fetch(`/get-appointment/${appointmentId}/`)
-      .then(response => response.json())
-      .then(data => {
-          console.log("📢 DEBUG: Dati ricevuti dal backend:", data); // 🔍 Debug per vedere i valori
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("📢 DEBUG: Dati ricevuti dal backend:", data); // 🔍 Debug per vedere i valori
 
-          if (data.success) {
-              // 🔹 Popoliamo i campi della modale con i dati ricevuti dal backend
-              document.getElementById("day-appointment").textContent = data.giorno;
-              const dateParts = data.data.split("-");
-              const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-              document.getElementById("date-appointment").textContent = formattedDate + ", ";
-              document.getElementById("time-appointment").textContent = data.orario.slice(0, 5);
-              document.getElementById("tipologia_visita").value = data.tipologia_visita || "";
+      if (data.success) {
+        // 🔹 Popoliamo i campi della modale con i dati ricevuti dal backend
+        document.getElementById("day-appointment").textContent = data.giorno;
+        const dateParts = data.data.split("-");
+        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+        document.getElementById("date-appointment").textContent =
+          formattedDate + ", ";
+        document.getElementById("time-appointment").textContent =
+          data.orario.slice(0, 5);
+        document.getElementById("tipologia_visita").value =
+          data.tipologia_visita || "";
 
-              // 🔹 GESTIONE SELEZIONE PAZIENTE
-              let pazienteSelect = document.getElementById("paziente-select");
-              let nomeCompletoBackend = `${data.nome_paziente} ${data.cognome_paziente}`.trim().toLowerCase();
+        // 🔹 GESTIONE SELEZIONE PAZIENTE
+        let pazienteSelect = document.getElementById("paziente-select");
+        let nomeCompletoBackend =
+          `${data.nome_paziente} ${data.cognome_paziente}`.trim().toLowerCase();
 
-              // 🔹 Controlliamo le opzioni nel <select> confrontando in lowercase per evitare problemi di maiuscole/minuscole
-              let pazienteOption = [...pazienteSelect.options].find(option => 
-                  option.value.trim().toLowerCase() === nomeCompletoBackend
-              );
+        // 🔹 Controlliamo le opzioni nel <select> confrontando in lowercase per evitare problemi di maiuscole/minuscole
+        let pazienteOption = [...pazienteSelect.options].find(
+          (option) => option.value.trim().toLowerCase() === nomeCompletoBackend
+        );
 
-              if (pazienteOption) {
-                  pazienteSelect.value = pazienteOption.value;  // ✅ Se esiste, lo selezioniamo
-              } else {
-                  // ❗ Se non esiste, creiamo una nuova option con stile diverso
-                  let newOption = document.createElement("option");
-                  newOption.value = nomeCompletoBackend;
-                  newOption.textContent = `${data.nome_paziente} ${data.cognome_paziente} (Non in elenco)`;
-                  newOption.style.color = "red";
-                  pazienteSelect.appendChild(newOption);
-                  pazienteSelect.value = nomeCompletoBackend;
-              }
+        if (pazienteOption) {
+          pazienteSelect.value = pazienteOption.value; // ✅ Se esiste, lo selezioniamo
+        } else {
+          // ❗ Se non esiste, creiamo una nuova option con stile diverso
+          let newOption = document.createElement("option");
+          newOption.value = nomeCompletoBackend;
+          newOption.textContent = `${data.nome_paziente} ${data.cognome_paziente} (Non in elenco)`;
+          newOption.style.color = "red";
+          pazienteSelect.appendChild(newOption);
+          pazienteSelect.value = nomeCompletoBackend;
+        }
 
-              // 🔹 GESTIONE SELEZIONE VOCE PREZZARIO
-              let vocePrezzarioSelect = document.getElementById("voce-prezzario");
-              let voceOption = [...vocePrezzarioSelect.options].find(option => option.value.trim().toLowerCase() === data.voce_prezzario?.toLowerCase());
+        // 🔹 GESTIONE SELEZIONE VOCE PREZZARIO
+        let vocePrezzarioSelect = document.getElementById("voce-prezzario");
+        let voceOption = [...vocePrezzarioSelect.options].find(
+          (option) =>
+            option.value.trim().toLowerCase() ===
+            data.voce_prezzario?.toLowerCase()
+        );
 
-              if (voceOption) {
-                  vocePrezzarioSelect.value = voceOption.value;
-              } else if (data.voce_prezzario) {
-                  let newVoceOption = document.createElement("option");
-                  newVoceOption.value = data.voce_prezzario;
-                  newVoceOption.textContent = data.voce_prezzario + " (Non in elenco)";
-                  newVoceOption.style.color = "red";
-                  vocePrezzarioSelect.appendChild(newVoceOption);
-                  vocePrezzarioSelect.value = data.voce_prezzario;
-              }
+        if (voceOption) {
+          vocePrezzarioSelect.value = voceOption.value;
+        } else if (data.voce_prezzario) {
+          let newVoceOption = document.createElement("option");
+          newVoceOption.value = data.voce_prezzario;
+          newVoceOption.textContent = data.voce_prezzario + " (Non in elenco)";
+          newVoceOption.style.color = "red";
+          vocePrezzarioSelect.appendChild(newVoceOption);
+          vocePrezzarioSelect.value = data.voce_prezzario;
+        }
 
-              // 🔹 GESTIONE SELEZIONE DURATA
-              let durataSelect = document.getElementById("time");
-              let durataOption = [...durataSelect.options].find(option => option.value.trim().toLowerCase() === data.durata?.toLowerCase());
+        // 🔹 GESTIONE SELEZIONE DURATA
+        let durataSelect = document.getElementById("time");
+        let durataOption = [...durataSelect.options].find(
+          (option) =>
+            option.value.trim().toLowerCase() === data.durata?.toLowerCase()
+        );
 
-              if (durataOption) {
-                  durataSelect.value = durataOption.value;
-              } else if (data.durata) {
-                  let newDurataOption = document.createElement("option");
-                  newDurataOption.value = data.durata;
-                  newDurataOption.textContent = data.durata + " (Non in elenco)";
-                  newDurataOption.style.color = "red";
-                  durataSelect.appendChild(newDurataOption);
-                  durataSelect.value = data.durata;
-              }
+        if (durataOption) {
+          durataSelect.value = durataOption.value;
+        } else if (data.durata) {
+          let newDurataOption = document.createElement("option");
+          newDurataOption.value = data.durata;
+          newDurataOption.textContent = data.durata + " (Non in elenco)";
+          newDurataOption.style.color = "red";
+          durataSelect.appendChild(newDurataOption);
+          durataSelect.value = data.durata;
+        }
 
-              // 🔹 GESTIONE SELEZIONE NUMERO STUDIO
-              let studioSelect = document.getElementById("studio");
-              if ([...studioSelect.options].some(option => option.value === data.numero_studio)) {
-                  studioSelect.value = data.numero_studio;
-              } else {
-                  studioSelect.selectedIndex = 0; // Se non esiste, seleziona la prima opzione
-              }
+        // 🔹 GESTIONE SELEZIONE NUMERO STUDIO
+        let studioSelect = document.getElementById("studio");
+        if (
+          [...studioSelect.options].some(
+            (option) => option.value === data.numero_studio
+          )
+        ) {
+          studioSelect.value = data.numero_studio;
+        } else {
+          studioSelect.selectedIndex = 0; // Se non esiste, seleziona la prima opzione
+        }
 
-              // 🔹 ASSEGNA NOTE SE PRESENTI
-              document.getElementById("note").value = data.note || "";
+        // 🔹 ASSEGNA NOTE SE PRESENTI
+        document.getElementById("note").value = data.note || "";
 
-              // 🔹 Salviamo l'ID dell'appuntamento per la modifica
-              document.getElementById("date-appointment-form").setAttribute("data-id", appointmentId);
+        // 🔹 Salviamo l'ID dell'appuntamento per la modifica
+        document
+          .getElementById("date-appointment-form")
+          .setAttribute("data-id", appointmentId);
 
-              // 🔹 Apriamo la modale con GSAP
-              document.getElementById("appointmentModal").style.display = "block";
-              document.body.style.overflow = "hidden";
-              gsap.fromTo(
-                document.querySelector(".modal-content-appointments"),
-                { opacity: 0, scale: 0.8 },
-                { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }
-              );
-          } else {
-              console.error("❌ Errore nel recupero dati appuntamento:", data.error);
-          }
-      })
-      .catch(error => console.error("❌ Errore nella richiesta:", error));
+        // 🔹 Apriamo la modale con GSAP
+        document.getElementById("appointmentModal").style.display = "block";
+        document.body.style.overflow = "hidden";
+        gsap.fromTo(
+          document.querySelector(".modal-content-appointments"),
+          { opacity: 0, scale: 0.8 },
+          { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }
+        );
+      } else {
+        console.error("❌ Errore nel recupero dati appuntamento:", data.error);
+      }
+    })
+    .catch((error) => console.error("❌ Errore nella richiesta:", error));
 }
 
 // Funzione per salvare le modifiche all'appuntamento
 function saveAppointmentChanges() {
-  const appointmentId = document.getElementById("date-appointment-form").getAttribute("data-id");
+  const appointmentId = document
+    .getElementById("date-appointment-form")
+    .getAttribute("data-id");
   const updatedTipologia = document.getElementById("tipologia_visita").value;
-  const updatedOrario = document.getElementById("time-appointment").textContent.trim();
+  const updatedOrario = document
+    .getElementById("time-appointment")
+    .textContent.trim();
   const updatedPaziente = document.getElementById("paziente-select").value;
   const updatedVocePrezzario = document.getElementById("voce-prezzario").value;
   const updatedDurata = document.getElementById("time").value;
@@ -394,77 +418,77 @@ function saveAppointmentChanges() {
   const updatedNote = document.getElementById("note").value;
 
   fetch(`/update-appointment/${appointmentId}/`, {
-      method: "PATCH",
-      headers: {
-          "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-          tipologia_visita: updatedTipologia,
-          orario: updatedOrario,
-          paziente_id: updatedPaziente,
-          voce_prezzario: updatedVocePrezzario,
-          durata: updatedDurata,
-          numero_studio: updatedStudio,
-          note: updatedNote,
-      })
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      tipologia_visita: updatedTipologia,
+      orario: updatedOrario,
+      paziente_id: updatedPaziente,
+      voce_prezzario: updatedVocePrezzario,
+      durata: updatedDurata,
+      numero_studio: updatedStudio,
+      note: updatedNote,
+    }),
   })
-  .then(response => response.json())
-  .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       if (data.success) {
-          console.log("Appuntamento aggiornato con successo!");
-          location.reload(); // Ricarica la pagina per aggiornare il calendario
+        console.log("Appuntamento aggiornato con successo!");
+        location.reload(); // Ricarica la pagina per aggiornare il calendario
       } else {
-          console.error("Errore aggiornamento appuntamento:", data.error);
+        console.error("Errore aggiornamento appuntamento:", data.error);
       }
-  })
-  .catch(error => console.error("Errore nella richiesta:", error));
+    })
+    .catch((error) => console.error("Errore nella richiesta:", error));
 }
 
 // Funzione per eliminare un appuntamento
 function deleteAppointment(appointmentId, appointmentBox, confirmAlert) {
   fetch(`/delete-appointment/${appointmentId}/`, {
-      method: "DELETE",
-      headers: {
-          "Content-Type": "application/json",
-      }
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
   })
-  .then(response => {
+    .then((response) => {
       if (!response.ok) {
-          throw new Error(`Errore HTTP: ${response.status}`);
+        throw new Error(`Errore HTTP: ${response.status}`);
       }
       return response.json();
-  })
-  .then(data => {
+    })
+    .then((data) => {
       if (data.success) {
-          console.log("✅ Appuntamento eliminato:", data.message);
+        console.log("✅ Appuntamento eliminato:", data.message);
 
-          // 🔹 Effetto GSAP per la rimozione fluida del box appuntamento
-          gsap.to(appointmentBox, {
-              opacity: 0,
-              duration: 0.3,
-              ease: "power2.in",
-              onComplete: () => appointmentBox.remove()
-          });
+        // 🔹 Effetto GSAP per la rimozione fluida del box appuntamento
+        gsap.to(appointmentBox, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => appointmentBox.remove(),
+        });
 
-          // 🔹 Rimuove anche l'alert di conferma
-          gsap.to(confirmAlert, {
-              opacity: 0,
-              duration: 0.3,
-              ease: "power2.in",
-              onComplete: () => confirmAlert.remove()
-          });
+        // 🔹 Rimuove anche l'alert di conferma
+        gsap.to(confirmAlert, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => confirmAlert.remove(),
+        });
 
-          // 🔹 Mostra l'alert di successo
-          showAlert("success", "Appuntamento eliminato con successo!");
+        // 🔹 Mostra l'alert di successo
+        showAlert("success", "Appuntamento eliminato con successo!");
       } else {
-          console.error("❌ Errore nella cancellazione:", data.error);
-          showAlert("danger", "Errore nella cancellazione dell'appuntamento.");
+        console.error("❌ Errore nella cancellazione:", data.error);
+        showAlert("danger", "Errore nella cancellazione dell'appuntamento.");
       }
-  })
-  .catch(error => {
+    })
+    .catch((error) => {
       console.error("❌ Errore nella richiesta:", error);
       showAlert("danger", "Errore nella richiesta al server.");
-  });
+    });
 }
 
 // Funzione per confermare l'eliminazione di un appuntamento tramite modale bootstrap// Funzione per confermare l'eliminazione di un appuntamento tramite modale bootstrap con GSAP
@@ -508,26 +532,26 @@ function confirmDeleteAppointment(appointmentId, appointmentBox) {
 
   // 🔹 Eventi sui bottoni
   document.getElementById("confirmDelete").addEventListener("click", () => {
-      deleteAppointment(appointmentId, appointmentBox, confirmAlert);
+    deleteAppointment(appointmentId, appointmentBox, confirmAlert);
   });
 
   document.getElementById("cancelDelete").addEventListener("click", () => {
-      gsap.to(confirmAlert, {
-          opacity: 0,
-          duration: 0.3,
-          ease: "power2.in",
-          onComplete: () => confirmAlert.remove()
-      });
+    gsap.to(confirmAlert, {
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () => confirmAlert.remove(),
+    });
   });
 
   // 🔹 Rimuove automaticamente l'alert dopo 10 secondi con un fade-out GSAP
   setTimeout(() => {
-      gsap.to(confirmAlert, {
-          opacity: 0,
-          duration: 0.3,
-          ease: "power2.in",
-          onComplete: () => confirmAlert.remove()
-      });
+    gsap.to(confirmAlert, {
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () => confirmAlert.remove(),
+    });
   }, 10000);
 }
 
@@ -569,15 +593,14 @@ function showAlert(type, message) {
 
   // Rimuove automaticamente l'alert dopo 5 secondi con un fade-out
   setTimeout(() => {
-      gsap.to(alertDiv, {
-          opacity: 0,
-          duration: 0.3,
-          ease: "power2.in",
-          onComplete: () => alertDiv.remove()
-      });
+    gsap.to(alertDiv, {
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () => alertDiv.remove(),
+    });
   }, 5000);
 }
-
 
 // Funzione principale
 document.addEventListener("DOMContentLoaded", () => {
@@ -1080,7 +1103,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // 🔹 Ottieni il nome completo dal <select>
       const pazienteSelect = document.getElementById("paziente-select");
       const nomeCompleto = pazienteSelect.selectedOptions[0]?.text.trim() || "";
-      
+
       // 🔹 Dividiamo nome e cognome senza troncare i cognomi composti
       const nomeArray = nomeCompleto.split(" ");
       const nome_paziente = nomeArray[0]; // Il primo elemento è il nome
@@ -1089,7 +1112,9 @@ document.addEventListener("DOMContentLoaded", function () {
       // 🔹 Recupera voce prezzario e durata
       const vocePrezzarioElement = document.getElementById("voce-prezzario");
       const voce_prezzario = vocePrezzarioElement
-        ? vocePrezzarioElement.options[vocePrezzarioElement.selectedIndex].value.trim()
+        ? vocePrezzarioElement.options[
+            vocePrezzarioElement.selectedIndex
+          ].value.trim()
         : "";
 
       const durataElement = document.getElementById("time");
@@ -1098,8 +1123,10 @@ document.addEventListener("DOMContentLoaded", function () {
         : "";
 
       // 🔹 Recupera altri dati
-      const tipologia_visita = document.getElementById("tipologia_visita")?.value.trim() || "";
-      const numero_studio = document.getElementById("studio")?.value.trim() || "";
+      const tipologia_visita =
+        document.getElementById("tipologia_visita")?.value.trim() || "";
+      const numero_studio =
+        document.getElementById("studio")?.value.trim() || "";
       const note = document.getElementById("note")?.value.trim() || "";
 
       const raw_data_appointment =
@@ -1126,7 +1153,9 @@ document.addEventListener("DOMContentLoaded", function () {
         durata,
         data: data_appointment,
         orario: time_appointment,
-        csrfmiddlewaretoken: document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "",
+        csrfmiddlewaretoken:
+          document.querySelector("input[name='csrfmiddlewaretoken']")?.value ||
+          "",
       };
 
       console.log("📢 Dati inviati:", appointmentData); // Debug
@@ -1147,7 +1176,10 @@ document.addEventListener("DOMContentLoaded", function () {
             showAlert("success", "Appuntamento salvato con successo!");
             location.reload();
           } else {
-            showAlert("danger", "Errore nel salvataggio dell'appuntamento: " + data.error);
+            showAlert(
+              "danger",
+              "Errore nel salvataggio dell'appuntamento: " + data.error
+            );
           }
         })
         .catch((error) => {

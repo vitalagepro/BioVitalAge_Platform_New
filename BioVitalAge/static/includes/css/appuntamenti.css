@@ -498,6 +498,20 @@ input[type='date'] {
     border: 2px dashed #3a255d;
 }
 
+.delete-appointment {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: 8px;
+    padding: 2px;
+    transition: color 0.2s ease-in-out;
+}
+
+.delete-appointment:hover {
+    color: #ff6961;
+}
 
 
 
