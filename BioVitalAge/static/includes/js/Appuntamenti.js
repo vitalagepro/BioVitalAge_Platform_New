@@ -203,30 +203,28 @@ function openAppointmentModal(appointmentId) {
         document.getElementById("tipologia_visita").value =
           data.tipologia_visita || "";
 
-        // 🔹 GESTIONE SELEZIONE PAZIENTE
+        // Recupera il select dei pazienti
         let pazienteSelect = document.getElementById("paziente-select");
-        function normalizeName(name) {
-          return name.trim().toLowerCase();
-        }
+        // Costruisci il nome completo in lowercase dal back-end
+        let nomeCompletoBackend = `${data.nome_paziente} ${data.cognome_paziente}`.trim().toLowerCase();
 
-        let nomeCompletoBackend = normalizeName(
-          `${data.nome_paziente} ${data.cognome_paziente}`
-        );
-
+        // Cerca un'opzione che, normalizzata, corrisponda al testo dell'opzione (in lowercase)
         let pazienteOption = [...pazienteSelect.options].find(
-          (option) => normalizeName(option.value) === nomeCompletoBackend
+          (option) => option.textContent.trim().toLowerCase() === nomeCompletoBackend
         );
 
         if (pazienteOption) {
-          pazienteSelect.value = pazienteOption.value; // ✅ Se esiste, lo selezioniamo
+          // Se trovata, imposta il value del select usando il value dell'opzione (che è il paziente.id)
+          pazienteSelect.value = pazienteOption.value;
         } else {
-          // ❗ Se non esiste, creiamo una nuova option con stile diverso
+          // Se non viene trovata, crea una nuova option per indicare "Non in elenco"
           let newOption = document.createElement("option");
+          // Poiché non hai un id, puoi usare il nome completo come value (o un identificatore temporaneo)
           newOption.value = nomeCompletoBackend;
           newOption.textContent = `${data.nome_paziente} ${data.cognome_paziente} (Non in elenco)`;
           newOption.style.color = "red";
           pazienteSelect.appendChild(newOption);
-          pazienteSelect.value = nomeCompletoBackend;
+          pazienteSelect.value = newOption.value;
         }
 
         // 🔹 GESTIONE SELEZIONE VOCE PREZZARIO
