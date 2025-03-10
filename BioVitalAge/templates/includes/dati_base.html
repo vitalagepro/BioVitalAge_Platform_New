@@ -67,6 +67,100 @@
           <span>Dati Base & Stile di Vita</span>
         </div>
       </div>
+
+      <!-- INFORMAZIONI PERSONALi -->
+      <div class="container-informazioni-personali">
+        <div class="header-container">
+          <h3>Informazioni Personali</h3>
+          
+          <div class="container-tools">
+            <div class="tools-menu-button" id="menu-3">
+              <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-3')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+            </div>
+            <button title="Apri Menu" type="button" class="tools-table" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-3') : openMenuTools('menu-3')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
+          </div>
+        </div>
+
+        <div class="container-content">
+          
+          <div class="flex-container">
+
+            <div class="container-celle-design">
+              <p class="subtitle">Professione: </p>
+              <textarea name="" id=""></textarea>
+            </div>
+
+            <div class="container-celle-design">
+              <p class="subtitle">Pensionato:</p>
+              <input type="text" value="Si" disabled> <!-- Popolare Dinamicamente -->
+            </div>
+          
+          </div>
+
+          <!-- ABILITARE IL CHECK DEL GENERE -->
+          <div class="flex-container">
+
+            <div class="container-celle-design">
+              <p class="subtitle" style="padding-top: 0px; padding-bottom: 0px;">Età del menarca in anni: </p>
+              <input type="text" placeholder="Inserire il numero" disabled style="width: 75%;"> <!-- Popolare dinamicamente -->
+            </div>
+
+            <div class="container-celle-design">
+              <p class="subtitle">Ciclo:</p>
+              <input type="text" value="Regolare" disabled> <!-- Popolare Dinamicamente -->
+            </div>
+          </div>
+
+          <div class="flex-container" style="flex-direction: column; justify-content: flex-start;">
+            <p style="font-weight: bold; margin-top: 10px;">Menopausa:</p>
+            <div class="flex-container-container">
+              
+              <div class="container-celle-design">
+                <p class="subtitle" style="padding-top: 0px; padding-bottom: 0px;">Età del menarca in anni: </p>
+                <input type="text" placeholder="Inserire il numero" disabled style="width: 75%;"> <!-- Popolare dinamicamente -->
+              </div>
+            
+            
+              <div class="container-celle-design">
+                <p class="subtitle">Ciclo:</p>
+                <input type="text" value="Regolare" disabled> <!-- Popolare Dinamicamente -->
+              </div>
+
+            </div>
+          </div>
+
+          <div class="flex-container" style="flex-direction: column; justify-content: flex-start;">
+            <p style="font-weight: bold; margin-top: 10px; margin-bottom: 0px;">Gravidanze:</p>
+            <div class="flex-container-container" style="gap: 10px;">
+              
+              <div class="container-celle-design">
+                <p class="subtitle">Tipo di parto: </p>
+                <input type="text" placeholder="Naturale" disabled style="width: 75%;"> <!-- Popolare dinamicamente -->
+              </div>
+
+              <div class="container-celle-design">
+                <p class="subtitle" style="padding-top: 0px; padding-bottom: 0px;">Complicanze post-parto:</p>
+                <input type="text" value="Inserisci Valore" disabled> <!-- Popolare Dinamicamente -->
+              </div>
+          
+              <div class="container-celle-design">
+                <p class="subtitle">Aborti:</p>
+                <input type="text" value="No" disabled> <!-- Popolare Dinamicamente -->
+              </div>
+
+            </div>
+          </div>
+
+          
+        </div>
+      </div>
+
+
+
+      <!-- STILE DI VITA -->
       <section class="container_data table_data">
         <h3 style="margin-top: 20px; margin-bottom: -20px;">Stile di vita</h3>
         <form id="datiBaseForm1" method="POST">
@@ -203,7 +297,98 @@
               </div>
             </div>
         </form>
-      </section>
+      </section>  
+
+      <!-- ANAMNESI  -->
+
+      <div class="container-informazioni-personali">
+        <div class="header-container">
+          <h3>Anamnesi</h3>
+          
+          <div class="container-tools">
+            <div class="tools-menu-button" id="menu-3">
+              <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-3')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+            </div>
+            <button title="Apri Menu" type="button" class="tools-table" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-3') : openMenuTools('menu-3')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
+          </div>
+        </div>
+
+        <div class="container-content">
+          <p class="subtitle" style="width: 15rem;">Anamnesi Familiare:</p>
+ 
+          <div class="grid-layout">
+
+            <div class="field">
+              <p>Malattie cardiache:</p>
+              <p id="whtr">Si</p>
+            </div>
+            <div class="field">
+              <p>Diabete mellito:</p>
+              <p id="whtr">Si</p>
+            </div>
+            <div class="field">
+              <p>Ipertensione:</p>
+              <p id="whtr">Si</p>
+            </div>
+            <div class="field">
+              <p>Obesità:</p>
+              <p id="whtr">Si</p>
+            </div>
+            <div class="field">
+              <p>Epilessia:</p>
+              <p id="whtr">Si</p>
+            </div>
+            <div class="field">
+              <p>Malattie tiroidee:</p>
+              <p id="whtr">Si</p>
+            </div>
+            <div class="field">
+              <p>Malattie polmonari:</p>
+              <p id="whtr">Si</p>
+            </div>
+            <div class="field">
+              <p>Tumori:</p>
+              <p id="whtr">Si</p>
+            </div>
+            <div class="field">
+              <p>Asma/allergie:</p>
+              <p id="whtr">Si</p>
+            </div>
+            <div class="field">
+              <p>Malattie psichiatriche:</p>
+              <p id="whtr">Si</p>
+            </div>
+          
+          </div>
+
+          <p class="subtitle" style="width: 18rem;">Anamnesi patologica prossima:</p>
+
+          <select name="patologie" id="">
+            <option value="">Malattie infettive</option>
+            <option value="">Neoplasie (tumori)</option>
+            <option value="">Malattie del sangue e degli organi ematopoietici</option>
+            <option value="">Disturbi del sistema immunitario</option>
+            <option value="">Malattie endocrine, nutrizionali e metaboliche</option>
+            <option value="">Disturbi mentali, comportamentali e del neurosviluppo</option>
+            <option value="">Malattie del sistema nervoso</option>
+
+            
+            <option value="">Neoplasie (tumori)</option>
+            <option value="">Neoplasie (tumori)</option>
+            <option value="">Neoplasie (tumori)</option>
+            <option value="">Neoplasie (tumori)</option>
+            <option value="">Neoplasie (tumori)</option>
+            <option value="">Neoplasie (tumori)</option>
+            <option value="">Neoplasie (tumori)</option>
+            <option value="">Neoplasie (tumori)</option>
+            <option value="">Neoplasie (tumori)</option>
+            <option value="">Neoplasie (tumori)</option>
+          </select>
+        </div>
+      </div>
 
       <section class="container_data blood_data">
         
