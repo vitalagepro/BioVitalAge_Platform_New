@@ -184,42 +184,61 @@ function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
   });
 }
 
+function getItalianDayName(dateObj) {
+  const giorniItaliani = [
+    "Domenica",
+    "Lunedì",
+    "Martedì",
+    "Mercoledì",
+    "Giovedì",
+    "Venerdì",
+    "Sabato"
+  ];
+  return giorniItaliani[dateObj.getDay()];
+}
+
 // Funzione per aprire la modale
 function openAppointmentModal(appointmentId) {
   fetch(`/get-appointment/${appointmentId}/`)
     .then((response) => response.json())
     .then((data) => {
-      console.log("📢 DEBUG: Dati ricevuti dal backend:", data); // 🔍 Debug per vedere i valori
+      console.log("📢 DEBUG: Dati ricevuti dal backend:", data);
 
       if (data.success) {
-        // 🔹 Popoliamo i campi della modale con i dati ricevuti dal backend
-        document.getElementById("day-appointment").textContent = data.giorno;
+        // Se il campo "giorno" è vuoto, calcola il giorno a partire dalla data (formato "YYYY-MM-DD")
+        let dayText = data.giorno;
+        if (!dayText || dayText.trim() === "") {
+          const dateParts = data.data.split("-");
+          if (dateParts.length === 3) {
+            const year = parseInt(dateParts[0]);
+            const month = parseInt(dateParts[1]) - 1; // Date è 0-indexed per i mesi
+            const day = parseInt(dateParts[2]);
+            const dateObj = new Date(year, month, day);
+            dayText = getItalianDayName(dateObj); // Assicurati di avere questa funzione definita
+          } else {
+            dayText = "Giorno non definito";
+          }
+        }
+        document.getElementById("day-appointment").textContent = dayText;
+        document.getElementById("date-appointment-form").setAttribute("data-id", appointmentId);
+        
+        // Popola gli altri campi della modale
         const dateParts = data.data.split("-");
         const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-        document.getElementById("date-appointment").textContent =
-          formattedDate + ", ";
-        document.getElementById("time-appointment").textContent =
-          data.orario.slice(0, 5);
-        document.getElementById("tipologia_visita").value =
-          data.tipologia_visita || "";
+        document.getElementById("date-appointment").textContent = formattedDate + ", ";
+        document.getElementById("time-appointment").textContent = data.orario.slice(0, 5);
+        document.getElementById("tipologia_visita").value = data.tipologia_visita || "";
 
-        // Recupera il select dei pazienti
+        // Gestione della selezione del paziente
         let pazienteSelect = document.getElementById("paziente-select");
-        // Costruisci il nome completo in lowercase dal back-end
         let nomeCompletoBackend = `${data.nome_paziente} ${data.cognome_paziente}`.trim().toLowerCase();
-
-        // Cerca un'opzione che, normalizzata, corrisponda al testo dell'opzione (in lowercase)
         let pazienteOption = [...pazienteSelect.options].find(
           (option) => option.textContent.trim().toLowerCase() === nomeCompletoBackend
         );
-
         if (pazienteOption) {
-          // Se trovata, imposta il value del select usando il value dell'opzione (che è il paziente.id)
           pazienteSelect.value = pazienteOption.value;
         } else {
-          // Se non viene trovata, crea una nuova option per indicare "Non in elenco"
           let newOption = document.createElement("option");
-          // Poiché non hai un id, puoi usare il nome completo come value (o un identificatore temporaneo)
           newOption.value = nomeCompletoBackend;
           newOption.textContent = `${data.nome_paziente} ${data.cognome_paziente} (Non in elenco)`;
           newOption.style.color = "red";
@@ -227,14 +246,12 @@ function openAppointmentModal(appointmentId) {
           pazienteSelect.value = newOption.value;
         }
 
-        // 🔹 GESTIONE SELEZIONE VOCE PREZZARIO
+        // Gestione delle altre selezioni (prezzario, durata, studio)
         let vocePrezzarioSelect = document.getElementById("voce-prezzario");
         let voceOption = [...vocePrezzarioSelect.options].find(
           (option) =>
-            option.value.trim().toLowerCase() ===
-            data.voce_prezzario?.toLowerCase()
+            option.value.trim().toLowerCase() === data.voce_prezzario?.toLowerCase()
         );
-
         if (voceOption) {
           vocePrezzarioSelect.value = voceOption.value;
         } else if (data.voce_prezzario) {
@@ -246,13 +263,10 @@ function openAppointmentModal(appointmentId) {
           vocePrezzarioSelect.value = data.voce_prezzario;
         }
 
-        // 🔹 GESTIONE SELEZIONE DURATA
         let durataSelect = document.getElementById("time");
         let durataOption = [...durataSelect.options].find(
-          (option) =>
-            option.value.trim().toLowerCase() === data.durata?.toLowerCase()
+          (option) => option.value.trim().toLowerCase() === data.durata?.toLowerCase()
         );
-
         if (durataOption) {
           durataSelect.value = durataOption.value;
         } else if (data.durata) {
@@ -264,27 +278,19 @@ function openAppointmentModal(appointmentId) {
           durataSelect.value = data.durata;
         }
 
-        // 🔹 GESTIONE SELEZIONE NUMERO STUDIO
         let studioSelect = document.getElementById("studio");
-        if (
-          [...studioSelect.options].some(
-            (option) => option.value === data.numero_studio
-          )
-        ) {
+        if ([...studioSelect.options].some((option) => option.value === data.numero_studio)) {
           studioSelect.value = data.numero_studio;
         } else {
-          studioSelect.selectedIndex = 0; // Se non esiste, seleziona la prima opzione
+          studioSelect.selectedIndex = 0;
         }
 
-        // 🔹 ASSEGNA NOTE SE PRESENTI
         document.getElementById("note").value = data.note || "";
 
-        // 🔹 Salviamo l'ID dell'appuntamento per la modifica
-        document
-          .getElementById("date-appointment-form")
-          .setAttribute("data-id", appointmentId);
+        // Salva l'ID dell'appuntamento per eventuali modifiche
+        document.getElementById("date-appointment-form").setAttribute("data-id", appointmentId);
 
-        // 🔹 Apriamo la modale con GSAP
+        // Apri la modale con GSAP
         document.getElementById("appointmentModal").style.display = "block";
         document.body.style.overflow = "hidden";
         gsap.fromTo(
@@ -299,47 +305,79 @@ function openAppointmentModal(appointmentId) {
     .catch((error) => console.error("❌ Errore nella richiesta:", error));
 }
 
+
 // Funzione per salvare le modifiche all'appuntamento
 function saveAppointmentChanges() {
-  const appointmentId = document
-    .getElementById("date-appointment-form")
-    .getAttribute("data-id");
+  const formElement = document.getElementById("date-appointment-form");
+  const appointmentId = formElement.getAttribute("data-id");
+
+  // Raccogli i dati dal form
   const updatedTipologia = document.getElementById("tipologia_visita").value;
-  const updatedOrario = document
-    .getElementById("time-appointment")
-    .textContent.trim();
+  const updatedOrario = document.getElementById("time-appointment").textContent.trim();
   const updatedPaziente = document.getElementById("paziente-select").value;
   const updatedVocePrezzario = document.getElementById("voce-prezzario").value;
   const updatedDurata = document.getElementById("time").value;
   const updatedStudio = document.getElementById("studio").value;
   const updatedNote = document.getElementById("note").value;
 
-  fetch(`/update-appointment/${appointmentId}/`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      tipologia_visita: updatedTipologia,
-      orario: updatedOrario,
-      paziente_id: updatedPaziente,
-      voce_prezzario: updatedVocePrezzario,
-      durata: updatedDurata,
-      numero_studio: updatedStudio,
-      note: updatedNote,
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.success) {
-        console.log("Appuntamento aggiornato con successo!");
-        location.reload(); // Ricarica la pagina per aggiornare il calendario
-      } else {
-        console.error("Errore aggiornamento appuntamento:", data.error);
-      }
+  // Se appointmentId esiste, è una modifica; altrimenti, è un nuovo appuntamento
+  if (appointmentId) {
+    // Aggiorna l'appuntamento esistente via PATCH
+    fetch(`/update-appointment/${appointmentId}/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tipologia_visita: updatedTipologia,
+        orario: updatedOrario,
+        paziente_id: updatedPaziente,
+        voce_prezzario: updatedVocePrezzario,
+        durata: updatedDurata,
+        numero_studio: updatedStudio,
+        note: updatedNote,
+      }),
     })
-    .catch((error) => console.error("Errore nella richiesta:", error));
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          console.log("Appuntamento aggiornato con successo!");
+          location.reload(); // Ricarica la pagina per aggiornare il calendario
+        } else {
+          console.error("Errore aggiornamento appuntamento:", data.error);
+        }
+      })
+      .catch((error) => console.error("Errore nella richiesta:", error));
+  } else {
+    // Qui va la logica per creare un nuovo appuntamento (ad es. un fetch POST a /salva-appuntamento/)
+    fetch("/salva-appuntamento/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tipologia_visita: updatedTipologia,
+        paziente_id: updatedPaziente,
+        voce_prezzario: updatedVocePrezzario,
+        durata: updatedDurata,
+        numero_studio: updatedStudio,
+        note: updatedNote,
+        // Aggiungi qui anche data e orario se necessario
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          console.log("Appuntamento creato con successo!");
+          location.reload();
+        } else {
+          console.error("Errore nel salvataggio dell'appuntamento:", data.error);
+        }
+      })
+      .catch((error) => console.error("Errore nella richiesta:", error));
+  }
 }
+
 
 // Funzione per eliminare un appuntamento
 function deleteAppointment(appointmentId, appointmentBox, confirmAlert) {
@@ -646,20 +684,33 @@ for (let day = 1; day <= totalDaysInMonth; day++) {
           selectedAppointment = null;
         }
       }
-    });
+    });  
 
     cella.addEventListener("click", (e) => {
-      if (e.target.closest('.appointment-box')) return; // Se il click è sull'appointment-box, non aprire la modale per un nuovo appuntamento
+      // Se il click proviene da un appointment-box, non aprire la modale per un nuovo appuntamento
+      if (e.target.closest('.appointment-box')) return;
+      
       selectedDayCell = cella;
+      
+      // Rimuovi eventuali anteprime già presenti nella cella (se necessario)
+      removeAppointmentPreview(cella);
+      
+      // Mostra l'anteprima nella cella
+      showAppointmentPreview(cella);
+      
       // Crea l'oggetto Date basandoti sui dataset della cella
       const selectedDate = new Date(
         parseInt(cella.dataset.year),
-        parseInt(cella.dataset.month) - 1, // il mese in Date è 0-indexed
+        parseInt(cella.dataset.month) - 1,
         parseInt(cella.dataset.day)
       );
+      
+      // Compila il form per un nuovo appuntamento con la data dinamica
       fillFormForNewAppointment(selectedDate);
+      
+      // Apri la modale con l'animazione GSAP
       openModalWithGSAP();
-    });      
+    });    
   } else {
     // Se la cella rappresenta un giorno passato, disabilita l'interazione
     cella.style.pointerEvents = "none";
@@ -765,7 +816,7 @@ for (let day = 1; day <= totalDaysInMonth; day++) {
       ease: "power2.in",
       onComplete: () => {
         appointmentModal.style.display = "none";
-        // Se avevo cliccato su una cella e ho aggiunto anteprima
+        // Se era stata aggiunta un'anteprima alla cella, rimuovila
         if (selectedDayCell) {
           removeAppointmentPreview(selectedDayCell);
           selectedDayCell = null;
@@ -773,6 +824,14 @@ for (let day = 1; day <= totalDaysInMonth; day++) {
       },
     });
   }
+  
+  function removeAppointmentPreview(cella) {
+    const preview = cella.querySelector(".appointment-preview");
+    if (preview) {
+      cella.removeChild(preview);
+    }
+  }
+  
 
   btnCloseModal.addEventListener("click", closeModalWithGSAP);
   iconCloseModal.addEventListener("click", closeModalWithGSAP);
@@ -805,14 +864,9 @@ for (let day = 1; day <= totalDaysInMonth; day++) {
   // -----------------------------
   function showAppointmentPreview(cella) {
     let preview = document.createElement("div");
+    preview.classList.add("appointment-box");
     preview.classList.add("appointment-preview");
-    preview.textContent = "Anteprima";
-    // Stili minimi, poi gestiscili nel tuo CSS
-    preview.style.border = "1px solid #3a255d";
-    preview.style.marginTop = "5px";
-    preview.style.padding = "2px 4px";
-    preview.style.fontSize = "0.7rem";
-    preview.style.borderRadius = "4px";
+    preview.textContent = "Anteprima - 00:00";
     cella.appendChild(preview);
   }
   function removeAppointmentPreview(cella) {
@@ -864,26 +918,12 @@ for (let day = 1; day <= totalDaysInMonth; day++) {
   }
 
   /**
-   * Se ho cliccato sul calendario, compilo i <span> con data e orario
-   */
-  function fillFormForCalendar(selectedDate) {
-    fromCalendar = true;
-    daySpan.textContent = getItalianDayName(selectedDate) + ",";
-    dateSpan.textContent = formatItalianDate(selectedDate) + ",";
-    timeSpan.textContent = "09:00"; // orario di default
-
-    // Nascosti gli input
-    editDateContainer.style.display = "none";
-    editDateInput.style.display = "none";
-    editTimeInput.style.display = "none";
-  }
-
-  /**
    * Se ho cliccato su "Appuntamento", metto placeholder
    */
   function fillFormForNewAppointment(selectedDate) {
     fromCalendar = false;
-    // Se è stata passata una data, usala per compilare i <span> dinamicamente
+    document.getElementById("date-appointment-form").removeAttribute("data-id");
+    
     if (selectedDate instanceof Date) {
       daySpan.textContent = getItalianDayName(selectedDate) + ",";
       dateSpan.textContent = formatItalianDate(selectedDate) + ",";
@@ -891,13 +931,14 @@ for (let day = 1; day <= totalDaysInMonth; day++) {
       daySpan.textContent = "Giorno,";
       dateSpan.textContent = "Data,";
     }
-    timeSpan.textContent = "Orario"; // placeholder per l'orario
-  
-    // Nascondi i campi per l'editing (se non servono all'apertura)
+    // Imposta un orario di default valido (es. "09:00")
+    timeSpan.textContent = "Ora";
+    
+    // Nascondi i campi per l'editing (se presenti)
     editDateContainer.style.display = "none";
     editDateInput.style.display = "none";
     editTimeInput.style.display = "none";
-  }  
+  }   
 
   /***********************************************************************
    * TOGGLE EDIT ↔ SALVA
