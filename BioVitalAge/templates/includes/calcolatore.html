@@ -12755,6 +12755,61 @@
                                     <input type="number" id="uricemy_w" name="uricemy_w" placeholder="Solo valori numerici"  step="0.01">
                                     <input type="range" id="uricemy_w_range" name="uricemy_w_range" min="0" max="11.4"  value="0" oninput="uricemy_w.value=this.value" step="0.01">
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="s_weight">Peso specifico</label>
+                                    <input type="number" id="s_weight" name="s_weight" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="s_weight_range" name="s_weight_range" min="0" max="2060" value="0"
+                                        oninput="s_weight.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ph">PH</label>
+                                    <input type="number" id="ph" name="ph" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="ph_range" name="ph_range" min="0" max="10" value="0" 
+                                        oninput="ph.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="glucose">Glucosio (mmol/L)</label>
+                                    <input type="number" id="glucose" name="glucose" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="glucose_range" name="glucose_range" min="0" max="10" value="0"
+                                        oninput="glucose.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="proteins_ex">Proteine (mg/dI)</label>
+                                    <input type="number" id="proteins_ex" name="proteins_ex" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="proteins_ex_range" name="proteins_ex_range" min="0" max="30" value="0"
+                                        oninput="proteins_ex.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="blood_ex">Sangue (ery/µL)</label>
+                                    <input type="number" id="blood_ex" name="blood_ex" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="blood_ex_range" name="blood_ex_range" min="0" max="10" value="0"
+                                        oninput="blood_ex.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ketones">Chetoni (mg/dI)</label>
+                                    <input type="number" id="ketones" name="ketones" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="ketones_range" name="ketones_range" min="0" max="30" value="0"
+                                        oninput="ketones.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="uro">Urobilinogeno (umol/L)</label>
+                                    <input type="number" id="uro" name="uro" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="uro_range" name="uro_range" min="0" max="35" value="0"
+                                        oninput="uro.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bilirubin_ex">Bilirubina (mg/dI)</label>
+                                    <input type="number" id="bilirubin_ex" name="bilirubin_ex" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="bilirubin_ex_range" name="bilirubin_ex_range" min="0" max="2" value="0"
+                                        oninput="bilirubin_ex.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="leuc">Leucociti (Leu/uL)</label>
+                                    <input type="number" id="leuc" name="leuc" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="leuc_range" name="leuc_range" min="0" max="30" value="0"
+                                        oninput="leuc.value=this.value" step="0.01">
+                                </div>
                             </div> 
                         </div>
                     </div>
@@ -12926,6 +12981,13 @@
                                     <input type="range" id="k_range" name="k_range" min="0" max="10" value="0"  oninput="k.value=this.value" step="0.01">
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="v_b12">Vitamina B12</label>
+                                    <input type="number" id="v_b12" name="v_b12" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="v_b12_range" name="v_b12_range" min="0" max="1542" value="0"
+                                        oninput="v_b12.value=this.value" step="0.01">
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -13009,6 +13071,38 @@
                                     <label for="testo_w">Testosterone Donna(ng/mI)</label>
                                     <input type="number" id="testo_w" name="testo_w" placeholder="Solo valori numerici"  step="0.01">
                                     <input type="range" id="testo_w_range" name="testo_w_range" min="0" max="2" value="0" step="0.01" oninput="testo_w.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="beta_es_m">17 beta estradiolo Uomo</label>
+                                    <input type="number" id="beta_es_m" name="beta_es_m" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="beta_es_m_range" name="beta_es_m_range" min="0" max="86" value="0"  oninput="beta_es_m.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="beta_es_w">17 beta estradiolo Donna</label>
+                                    <input type="number" id="beta_es_w" name="beta_es_w" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="beta_es_w_range" name="beta_es_w_range" min="0" max="60000" value="0"  oninput="beta_es_w.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="prog_m">Progesterone Uomo</label>
+                                    <input type="number" id="prog_m" name="prog_m" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="prog_m_range" name="prog_m_range" min="0" max="0.3" value="0" step="0.01" oninput="prog_m.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="prog_w">Progesterone Donna</label>
+                                    <input type="number" id="prog_w" name="prog_w" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="prog_w_range" name="prog_w_range" min="0" max="29" value="0"  oninput="prog_w.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="shbg_m">Globulina legante gli ormoni sessuali Uomo</label>
+                                    <input type="number" id="shbg_m" name="shbg_m" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="shbg_m_range" name="shbg_m_range" min="0" max="200"  value="0"
+                                        oninput="shbg_m.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="shbg_w">Globulina legante gli ormoni sessuali Donna</label>
+                                    <input type="number" id="shbg_w" name="shbg_w" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="shbg_w_range" name="shbg_w_range" min="0" max="300" value="0"
+                                        oninput="shbg_w.value=this.value" step="0.01">
                                 </div>
                             </div>
                         </div>
@@ -13258,6 +13352,19 @@
                                     <input type="range" id="tnf_a_range" name="tnf_a_range" min="0" max="14.80"  value="0"
                                         oninput="tnf_a.value=this.value" step="0.01">
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="inter_6">Interleuchina-6 (pg/ml)</label>
+                                    <input type="number" id="inter_6" name="inter_6" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="inter_6_range" name="inter_6_range" min="0" max="8.8"  value="0"
+                                        oninput="inter_6.value=this.value" step="0.01">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inter_10">Interleuchina-10 (ng/ml)</label>
+                                    <input type="number" id="inter_10" name="inter_10" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="inter_10_range" name="inter_10_range" min="0" max="21.6"  value="0"
+                                        oninput="inter_10.value=this.value" step="0.01">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -13268,7 +13375,7 @@
                         <div class="card-indices_header">
                             <div class="card-header_title">
                                 <img src="{% static 'includes/images/muscolo.png' %}" alt="">
-                                <h3>Salute Muscolare</h3>
+                                <h3>Salute Muscolo-scheletrica</h3>
                             </div>
                             
                             <button class="btn-selected" type="button" title="Apri Sezione" id="muscolare-show">
@@ -13299,6 +13406,13 @@
                                     <label for="mg">Magnesio (mg/dL)</label>
                                     <input type="number" id="mg" name="mg" placeholder="Solo valori numerici"  step="0.01">
                                     <input type="range" id="mg_range" name="mg_range" min="0" max="5" value="0"  oninput="mg.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="v_d">Vitamina D</label>
+                                    <input type="number" id="v_d" name="v_d" placeholder="Solo valori numerici" step="0.01">
+                                    <input type="range" id="v_d_range" name="v_d_range" min="0" max="200" value="0"
+                                        oninput="v_d.value=this.value" step="0.01">
                                 </div>
                             </div>
                         </div>
@@ -13362,147 +13476,10 @@
 
            
 
-            <!-- STRESS OSSIDATIVO -->
-            <!-- <div class="section hidden-exam" id="flexed-section">
-                <div class="header-section-exam">
-                    <h3>Stress Ossidativo</h3>
-                    <button class="btn-selected" data-selection="ox_stress" type="button" title="Apri Sezione">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-                
-            </div> -->
+            
 
-            <!-- OMEGA SCREENING  -->
-            <!-- <div class="section hidden-exam">
-                <div class="header-section-exam">
-                    <h3>Omega Screening</h3>
-                    <button class="btn-selected" data-selection="o-screening" type="button" title="Apri Sezione">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-                <div class="container-exam-calculator">
-                    <hr>
-                    
-                </div>
-            </div> -->
 
-            <!-- GLOBULI BIANCHI  -->
-            <!-- <div class="section hidden-exam">
-                <div class="header-section-exam">
-                    <h3>Globuli Bianchi</h3>
-                    <button class="btn-selected" data-selection="wbc" type="button" title="Apri Sezione">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-                <div class="container-exam-calculator">
-                   
-                </div>
-            </div> -->
-
-            <!-- GLOBULI ROSSI -->
-            <!-- <div class="section hidden-exam">
-                <div class="header-section-exam">
-                    <h3>Globuli Rossi</h3>
-                    <button class="btn-selected" data-selection="rbc" type="button" title="Apri Sezione">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-                <div class="container-exam-calculator">
-                    
-                </div>
-            </div> -->
-  
-            <!-- FUNZIONALITÀ RENALE -->
-            <!-- <div class="section hidden-exam" id="flexed-section">
-                <div class="header-section-exam">
-                    <h3>Funzionalità Renale</h3>
-                    <button class="btn-selected" data-selection="r_function" type="button" title="Apri Sezione">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-                <div class="container-exam-calculator">
-                    <div class="grid-container">
-                        
-                       
-                    </div>
-                </div>
-            </div> -->
-
-            <!-- STATO DELLA COAGULAZIONE -->
-            <!-- <div class="section hidden-exam">
-                <div class="header-section-exam">
-                    
-                    <button class="btn-selected" data-selection="clotting_s" type="button" title="Apri Sezione">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-                <div class="container-exam-calculator">
-                    
-                </div>
-            </div> -->
-
-            <!-- ASSETTO LIPIDICO -->
-            <!-- <div class="section hidden-exam">
-                <div class="header-section-exam">
-                    <h3>Assetto Lipidico</h3>
-                    <button class="btn-selected" data-selection="lipid_app" type="button" title="Apri Sezione">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-                <div class="container-exam-calculator">
-                       
-                </div>
-            </div> -->
-
-            <!-- MINERALI -->
-            <!-- <div class="section hidden-exam">
-                <div class="header-section-exam">
-                    <h3>Minerali</h3>
-                    <button class="btn-selected" data-selection="minerals" type="button" title="Apri Sezione">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-                <div class="container-exam-calculator">
-                    <div class="grid-container">
-                        
-                        
-                        
-                    </div>
-                </div>
-            </div> -->
+           
 
             <!-- ASSETTO ORMONALE -->
             <!-- <div class="section hidden-exam">
@@ -13521,66 +13498,12 @@
                         
                         
                        
-                        <div class="form-group">
-                            <label for="beta_es_m">17 beta estradiolo Uomo</label>
-                            <input type="number" id="beta_es_m" name="beta_es_m" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="beta_es_m_range" name="beta_es_m_range" min="0" max="86" value="0"  oninput="beta_es_m.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="beta_es_w">17 beta estradiolo Donna</label>
-                            <input type="number" id="beta_es_w" name="beta_es_w" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="beta_es_w_range" name="beta_es_w_range" min="0" max="60000" value="0"  oninput="beta_es_w.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="prog_m">Progesterone Uomo</label>
-                            <input type="number" id="prog_m" name="prog_m" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="prog_m_range" name="prog_m_range" min="0" max="0.3" value="0" step="0.01" oninput="prog_m.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="prog_w">Progesterone Donna</label>
-                            <input type="number" id="prog_w" name="prog_w" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="prog_w_range" name="prog_w_range" min="0" max="29" value="0"  oninput="prog_w.value=this.value" step="0.01">
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-
-            <!-- ASSETTO MARZIALE -->
-            <!-- <div class="section hidden-exam" id="flexed-section">
-                <div class="header-section-exam">
-                    <h3>Assetto Marziale</h3>
-                    <button class="btn-selected" data-selection="martial_trim" type="button" title="Apri Sezione">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-                <div class="container-exam-calculator">
-                    
-                </div>
-            </div> -->
-
-            <!-- ASSETTO DIABETOLOGICO -->
-            <!-- <div class="section hidden-exam">
-                <div class="header-section-exam">
-                    <h3>Assetto Diabetologico</h3>
-                    <button class="btn-selected" data-selection="diab_setup" type="button" title="Apri Sezione">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-                <div class="container-exam-calculator">
-                    <div class="grid-container">
-                        
                        
                     </div>
                 </div>
             </div> -->
+
+
 
             <!-- PROTEINE -->
             <!-- <div class="section hidden-exam">
@@ -13662,50 +13585,9 @@
                     </div>
                 </div>
             </div> -->
-            
-            <!-- FUNZIONALITÀ EPATICA -->
-            <!-- <div class="section hidden-exam">
-                <div class="header-section-exam">
-                    <h3>Funzionalità Epatica</h3>
-                    <button class="btn-selected" data-selection="liver_func" type="button" title="Apri Sezione">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-                <div class="container-exam-calculator">
-                    <div class="grid-container">
-                        
-                        
-                        
-                    </div>
-                    <h3 style="margin-top: 40px;">Bilirubina totale e frazionata</h3>
-                    <div class="flex-container" id="flex-adjust">
-                        
-                    </div>
-                </div>
-            </div> -->
+           
 
-            <!-- INDICI DI FLOGOSI -->
-            <!-- <div class="section hidden-exam" id="flexed-section">
-                <div class="header-section-exam">
-                    <h3>Indici di flogosi</h3>
-                    <button class="btn-selected" data-selection="indices_ph" type="button" title="Apri Sezione">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                </div>
-                <div class="container-exam-calculator">
-                    <div class="flex-container" id="flex-adjust">
-                       
-                    </div>
-                </div>
-            </div>   -->
+           
 
             <!-- INFIAMMAZIONE ADVANCE/SASP -->
             <!-- <div class="section hidden-exam" id="flexed-section">
@@ -13722,18 +13604,7 @@
                 <div class="container-exam-calculator">
                     <div class="flex-container" id="flex-adjust">
                         
-                        <div class="form-group">
-                            <label for="inter_6">Interleuchina-6 (pg/ml)</label>
-                            <input type="number" id="inter_6" name="inter_6" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="inter_6_range" name="inter_6_range" min="0" max="8.8"  value="0"
-                                oninput="inter_6.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="inter_10">Interleuchina-10 (ng/ml)</label>
-                            <input type="number" id="inter_10" name="inter_10" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="inter_10_range" name="inter_10_range" min="0" max="21.6"  value="0"
-                                oninput="inter_10.value=this.value" step="0.01">
-                        </div>
+                        
                     </div>
                 </div>
             </div> -->
@@ -13783,89 +13654,15 @@
                 <div class="container-exam-calculator">
                     <div class="grid-container" id="flex-adjust">
                         
-                        <div class="form-group">
-                            <label for="shbg_m">Globulina legante gli ormoni sessuali Uomo</label>
-                            <input type="number" id="shbg_m" name="shbg_m" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="shbg_m_range" name="shbg_m_range" min="0" max="200"  value="0"
-                                oninput="shbg_m.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="shbg_w">Globulina legante gli ormoni sessuali Donna</label>
-                            <input type="number" id="shbg_w" name="shbg_w" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="shbg_w_range" name="shbg_w_range" min="0" max="300" value="0"
-                                oninput="shbg_w.value=this.value" step="0.01">
-                        </div>
                         
-                        <div class="form-group">
-                            <label for="v_b12">Vitamina B12</label>
-                            <input type="number" id="v_b12" name="v_b12" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="v_b12_range" name="v_b12_range" min="0" max="1542" value="0"
-                                oninput="v_b12.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="v_d">Vitamina D</label>
-                            <input type="number" id="v_d" name="v_d" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="v_d_range" name="v_d_range" min="0" max="200" value="0"
-                                oninput="v_d.value=this.value" step="0.01">
-                        </div>
+                        
+                       
+                        
                     </div>
                     <div class="spacer"></div>
                     <h3 style="margin-bottom: 40px; margin-top: 40px;">Analisi delle urine</h3>
                     <div class="grid-container">
-                        <div class="form-group">
-                            <label for="s_weight">Peso specifico</label>
-                            <input type="number" id="s_weight" name="s_weight" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="s_weight_range" name="s_weight_range" min="0" max="2060" value="0"
-                                oninput="s_weight.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="ph">PH</label>
-                            <input type="number" id="ph" name="ph" placeholder="Solo valori numerici"  step="0.01">
-                            <input type="range" id="ph_range" name="ph_range" min="0" max="10" value="0" 
-                                oninput="ph.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="glucose">Glucosio (mmol/L)</label>
-                            <input type="number" id="glucose" name="glucose" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="glucose_range" name="glucose_range" min="0" max="10" value="0"
-                                oninput="glucose.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="proteins_ex">Proteine (mg/dI)</label>
-                            <input type="number" id="proteins_ex" name="proteins_ex" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="proteins_ex_range" name="proteins_ex_range" min="0" max="30" value="0"
-                                oninput="proteins_ex.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="blood_ex">Sangue (ery/µL)</label>
-                            <input type="number" id="blood_ex" name="blood_ex" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="blood_ex_range" name="blood_ex_range" min="0" max="10" value="0"
-                                oninput="blood_ex.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="ketones">Chetoni (mg/dI)</label>
-                            <input type="number" id="ketones" name="ketones" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="ketones_range" name="ketones_range" min="0" max="30" value="0"
-                                oninput="ketones.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="uro">Urobilinogeno (umol/L)</label>
-                            <input type="number" id="uro" name="uro" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="uro_range" name="uro_range" min="0" max="35" value="0"
-                                oninput="uro.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="bilirubin_ex">Bilirubina (mg/dI)</label>
-                            <input type="number" id="bilirubin_ex" name="bilirubin_ex" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="bilirubin_ex_range" name="bilirubin_ex_range" min="0" max="2" value="0"
-                                oninput="bilirubin_ex.value=this.value" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="leuc">Leucociti (Leu/uL)</label>
-                            <input type="number" id="leuc" name="leuc" placeholder="Solo valori numerici" step="0.01">
-                            <input type="range" id="leuc_range" name="leuc_range" min="0" max="30" value="0"
-                                oninput="leuc.value=this.value" step="0.01">
-                        </div>
+                        
                     </div>
                 </div>
             </div> -->
