@@ -1411,7 +1411,6 @@ class DatiBaseView(View):
             # Salva le modifiche solo se c'è un form valido
             if form_id:
                 persona.save()
-                print(f"Modifiche salvate per {form_id}")
             else:
                 print("Errore: form_id non ricevuto o non valido")
 
@@ -2236,10 +2235,8 @@ class AppuntamentiSalvaView(View):
         if request.method == "POST":
             try:
                 body_raw = request.body.decode('utf-8')
-                print(f"📥 Body ricevuto: {body_raw}")  # Debug
 
                 data = json.loads(body_raw)
-                print(f"📤 Dati JSON convertiti: {data}")  # Debug
 
                 # Recuperiamo i dati, facendo attenzione ai valori mancanti
                 giorno = data.get("giorno", "").strip()
@@ -2265,7 +2262,6 @@ class AppuntamentiSalvaView(View):
                     durata=durata,  # 🔹 Ora viene salvata
                 )
 
-                print(f"✅ Appuntamento creato con ID: {appuntamento.id}")
                 return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!"})
 
             except json.JSONDecodeError as e:
@@ -2298,8 +2294,6 @@ class GetSingleAppointmentView(View):
                 "orario": str(appointment.orario)[:5],  # Formattato in HH:mm
                 "durata": appointment.durata or "",  # Se è null, assegna ""
             }
-
-            print("📢 DEBUG: Dati inviati al frontend:", json.dumps(response_data, indent=4)) # Debug Django
 
             return JsonResponse(response_data)
         except Appointment.DoesNotExist:

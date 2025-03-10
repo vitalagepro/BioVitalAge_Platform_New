@@ -46,6 +46,7 @@ monthLayoutBtn.addEventListener("click", () => {
                                     DYNAMIC CALENDAR & MODAL APPEARS
 --------------------------------------------------------------------------------------------------- */
 let currentDate = new Date(); // Definisci la variabile globalmente
+let selectedAppointment = null;
 
 /* LOAD APPOINTMENTS */
 function loadAppointments() {
@@ -74,7 +75,6 @@ function loadAppointments() {
         if (appointmentsByDate.appointments[formattedDate]) {
           appointmentsByDate.appointments[formattedDate].forEach(
             (appointment) => {
-              console.log("📢 DEBUG: Appuntamento ricevuto:", appointment);
               if (!appointment.id || appointment.id === "") {
                 console.error("❌ Errore: Appuntamento senza ID!", appointment);
               } else {
@@ -103,132 +103,21 @@ function formatDateForBackend(date, day) {
   return `${year}-${month}-${dayFormatted}`;
 }
 
-let isDragging = false; // Variabile di stato globale per il drag
-
-// Funzione che gestisce il drag di un appuntamento
-function handleDragStart(event) {
-  const appointmentBox = event.target;
-
-  // Assicurati che dataset.id sia valorizzato
-  let appointmentId = appointmentBox.dataset.id ? String(appointmentBox.dataset.id) : "";
-
-  console.log("📢 DRAG START - Elemento trascinato:", appointmentBox);
-  console.log("📢 DRAG START - ID dell'appuntamento:", appointmentId);
-
-  if (!appointmentId || appointmentId.trim() === "") {
-    console.error("❌ DRAG START ERRORE: appointmentBox non ha un dataset.id valido!", appointmentBox);
-    event.preventDefault(); // 🔥 Blocca il drag se l'ID è mancante
-    return;
-  }
-
-  isDragging = true;
-  event.dataTransfer.setData("text/plain", appointmentId);
-  console.log("📢 DRAG START - ID salvato in dataTransfer:", event.dataTransfer.getData("text/plain"));
-
-  event.dataTransfer.effectAllowed = "move";
-  appointmentBox.classList.add("dragging");
-
-  gsap.to(event.target, { opacity: 0.7, scale: 1.1, duration: 0.2 });
-}
-
-// Resetta il dragging dopo un piccolo delay
-function handleDragEnd(event) {
-  setTimeout(() => {
-    isDragging = false;
-  }, 100);
-}
-
-// Funzione che gestisce il cambio del cursore durante il drag & drop
-function handleDragOver(event) {
-  event.preventDefault(); // Necessario per permettere il drop
-  event.dataTransfer.dropEffect = "move"; // Cambia l'icona del cursore per indicare il drag & drop
-}
-
-// Funzione che gestisce il drop di un appuntamento
-function handleDrop(event) {
-  event.preventDefault();
-
-  let appointmentId = event.dataTransfer.getData("text/plain");
-  appointmentId = appointmentId ? String(appointmentId) : ""; // 🔹 Converti in stringa e verifica
-
-  console.log("📢 DROP - ID ricevuto dal drag:", appointmentId);
-
-  if (!appointmentId || appointmentId.trim() === "") {
-    console.error("❌ DROP ERRORE: appointmentId non valido!", { appointmentId });
-    return;
-  }
-
-  const appointmentBox = document.querySelector(`[data-id='${appointmentId}']`);
-  if (!appointmentBox) {
-    console.error("❌ DROP ERRORE: Nessun elemento trovato con data-id:", appointmentId);
-    return;
-  }
-
-  let targetCell = event.target.closest(".cella");
-  if (!targetCell || targetCell.classList.contains("past-day")) return;
-
-  const appointmentsContainer = targetCell.querySelector(".appointments-container");
-
-  let editButton = targetCell.querySelector(".edit-button");
-  if (editButton) editButton.remove();
-
-  if (appointmentsContainer.contains(appointmentBox)) return;
-
-  appointmentsContainer.appendChild(appointmentBox);
-  appointmentBox.classList.remove("dragging");
-  isDragging = false;
-
-  const newDay = targetCell.dataset.day;
-  const newMonth = targetCell.dataset.month;
-  const newYear = targetCell.dataset.year;
-  if (!newDay || !newMonth || !newYear) {
-    console.error("❌ DROP ERRORE: Dati mancanti per la data!", { newDay, newMonth, newYear });
-    return;
-  }
-
-  const newDate = `${newYear}-${String(newMonth).padStart(2, "0")}-${String(newDay).padStart(2, "0")}`;
-  console.log("✅ DROP - Appuntamento spostato con successo!", { appointmentId, newDate });
-
-  updateAppointmentDate(appointmentId, newDate);
-}
-
-// Assicura che il drag non attivi la modale
-function handleDragStart(event) {
-  const appointmentBox = event.target;
-
-  // Assicuriamoci che l'elemento trascinato abbia un dataset.id valido
-  if (!appointmentBox.dataset.id) {
-    console.error(
-      "❌ Errore: appointmentBox non ha un dataset.id valido!",
-      appointmentBox
-    );
-    return;
-  }
-
-  isDragging = true;
-  event.dataTransfer.setData("text/plain", appointmentBox.dataset.id);
-  event.dataTransfer.effectAllowed = "move";
-  appointmentBox.classList.add("dragging");
-}
-
 // Aggiorna la data di un appuntamento nel backend
 function updateAppointmentDate(appointmentId, newDate) {
   if (!appointmentId || !newDate) {
-    console.error("❌ Errore: appointmentId o newDate non valido!", {
-      appointmentId,
-      newDate,
-    });
+    console.error("❌ Errore: appointmentId o newDate non valido!", { appointmentId, newDate });
     return;
   }
 
-  console.log(
-    `📢 Aggiornamento appuntamento ID: ${appointmentId} con data: ${newDate}`
-  );
+  // Recupera il token CSRF dal campo hidden (assicurati che l'input esista nel DOM)
+  const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']")?.value || '';
 
   fetch(`/update-appointment/${appointmentId}/`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken, // Includi il token CSRF
     },
     body: JSON.stringify({ new_date: newDate }),
   })
@@ -238,12 +127,9 @@ function updateAppointmentDate(appointmentId, newDate) {
     })
     .then((data) => {
       if (data.success) {
-        showAlert("success", "Appuntamento spostato con successo!");
+        console.log("✅ Appuntamento spostato con successo!"); // Debug
       } else {
-        showAlert(
-          "danger",
-          `Errore nello spostamento dell'appuntamento: ${data.error}`
-        );
+        showAlert("danger", `Errore nello spostamento dell'appuntamento: ${data.error}`);
       }
     })
     .catch((error) => console.error("❌ Errore nella richiesta:", error));
@@ -257,15 +143,13 @@ function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
   appointmentBox.classList.add("appointment-box");
   appointmentBox.setAttribute("draggable", "true");
 
-  // 🔹 Converti in stringa e verifica che non sia null o undefined
+  // Assicurati che l'ID sia una stringa valida
   appointmentId = appointmentId ? String(appointmentId) : "";
-
-  if (!appointmentId || appointmentId.trim() === "") {
+  if (!appointmentId.trim()) {
     console.error("❌ Errore: appointmentId non valido durante la creazione!", { appointmentId });
     return;
   }
-
-  appointmentBox.dataset.id = appointmentId; // 🔥 Assicura che l'ID venga assegnato correttamente
+  appointmentBox.dataset.id = appointmentId;
 
   let formattedTime = orario ? orario.slice(0, 5) : "00:00";
   let textSpan = document.createElement("span");
@@ -276,7 +160,6 @@ function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
   deleteButton.innerHTML = "&times;";
   deleteButton.classList.add("delete-appointment");
   deleteButton.setAttribute("data-id", appointmentId);
-
   deleteButton.addEventListener("click", (event) => {
     event.stopPropagation();
     confirmDeleteAppointment(appointmentId, appointmentBox);
@@ -286,7 +169,19 @@ function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
   appointmentBox.appendChild(deleteButton);
   appointmentsContainer.appendChild(appointmentBox);
 
-  console.log("✅ Elemento creato con ID:", appointmentBox.dataset.id); // 🔍 Debug
+  // Event listener per il drag
+  appointmentBox.addEventListener("dragstart", (e) => {
+    selectedAppointment = e.target;
+  });
+
+  // Event listener per il click sull'appointment-box
+  appointmentBox.addEventListener("click", (e) => {
+    e.stopPropagation(); // Impedisce il bubble verso la cella
+    const appointmentId = appointmentBox.dataset.id;
+    if (appointmentId) {
+      openAppointmentModal(appointmentId);
+    }
+  });
 }
 
 // Funzione per aprire la modale
@@ -310,12 +205,16 @@ function openAppointmentModal(appointmentId) {
 
         // 🔹 GESTIONE SELEZIONE PAZIENTE
         let pazienteSelect = document.getElementById("paziente-select");
-        let nomeCompletoBackend =
-          `${data.nome_paziente} ${data.cognome_paziente}`.trim().toLowerCase();
+        function normalizeName(name) {
+          return name.trim().toLowerCase();
+        }
 
-        // 🔹 Controlliamo le opzioni nel <select> confrontando in lowercase per evitare problemi di maiuscole/minuscole
+        let nomeCompletoBackend = normalizeName(
+          `${data.nome_paziente} ${data.cognome_paziente}`
+        );
+
         let pazienteOption = [...pazienteSelect.options].find(
-          (option) => option.value.trim().toLowerCase() === nomeCompletoBackend
+          (option) => normalizeName(option.value) === nomeCompletoBackend
         );
 
         if (pazienteOption) {
@@ -460,8 +359,6 @@ function deleteAppointment(appointmentId, appointmentBox, confirmAlert) {
     })
     .then((data) => {
       if (data.success) {
-        console.log("✅ Appuntamento eliminato:", data.message);
-
         // 🔹 Effetto GSAP per la rimozione fluida del box appuntamento
         gsap.to(appointmentBox, {
           opacity: 0,
@@ -676,90 +573,111 @@ document.addEventListener("DOMContentLoaded", () => {
   // -----------------------------
   // GENERAZIONE CALENDARIO MENSILE
   // -----------------------------
-  function renderMonthCalendar() {
-    // Svuoto container
-    monthLayoutContainer.innerHTML = "";
+// Durante la generazione del calendario mensile, aggiungi la classe "past-day" se la data è passata
+function renderMonthCalendar() {
+  monthLayoutContainer.innerHTML = "";
 
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
 
-    // Prima e ultima data del mese
-    const firstDayOfMonth = new Date(year, month, 1);
-    const lastDayOfMonth = new Date(year, month + 1, 0);
+  const firstDayOfMonth = new Date(year, month, 1);
+  const lastDayOfMonth = new Date(year, month + 1, 0);
 
-    // In JS la settimana parte da domenica=0
-    let startIndex = firstDayOfMonth.getDay();
-    // Forzo la domenica a 7 per avere lun->dom
-    if (startIndex === 0) startIndex = 7;
+  let startIndex = firstDayOfMonth.getDay();
+  if (startIndex === 0) startIndex = 7;
 
-    const totalDaysInMonth = lastDayOfMonth.getDate();
+  const totalDaysInMonth = lastDayOfMonth.getDate();
 
-    // Giorno di "oggi" con ore/min/sec azzerate per confronti
-    const todayMidnight = new Date();
-    todayMidnight.setHours(0, 0, 0, 0);
+  // Data di oggi (senza ore, minuti, secondi)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-    // Celle vuote prima del 1° giorno (se non è lunedì)
-    for (let i = 1; i < startIndex; i++) {
-      const emptyCell = document.createElement("div");
-      emptyCell.classList.add("cella", "empty-cell");
-      monthLayoutContainer.appendChild(emptyCell);
-    }
-
-    // Celle con i giorni
-    for (let day = 1; day <= totalDaysInMonth; day++) {
-      const cella = document.createElement("div");
-      cella.classList.add("cella");
-
-      // Assegno dataset con il giorno, mese e anno corretti
-      cella.dataset.day = day;
-      cella.dataset.month = month + 1; // Mese base 1
-      cella.dataset.year = year;
-
-      const dayParagraph = document.createElement("p");
-      dayParagraph.classList.add("data");
-      dayParagraph.textContent = day;
-
-      // Contenitore per gli appuntamenti
-      const appointmentsContainer = document.createElement("div");
-      appointmentsContainer.classList.add("appointments-container");
-
-      // Se è oggi, evidenzia
-      if (checkIfToday(year, month, day)) {
-        cella.classList.add("today");
-      }
-
-      // Controllo se il giorno è già passato
-      const cellDate = new Date(year, month, day);
-      cellDate.setHours(0, 0, 0, 0);
-
-      if (cellDate < todayMidnight) {
-        cella.classList.add("past-day");
-      } else {
-        // Aggiungo event listeners per Drag & Drop
-        cella.addEventListener("dragover", handleDragOver);
-        cella.addEventListener("drop", handleDrop);
-
-        // Aggiungo il click per aprire la modale
-        cella.addEventListener("click", () => {
-          selectedDayCell = cella;
-          const selectedDate = new Date(year, month, day);
-          fillFormForCalendar(selectedDate);
-          showAppointmentPreview(cella);
-          openModalWithGSAP();
-        });
-      }
-
-      cella.appendChild(dayParagraph);
-      cella.appendChild(appointmentsContainer);
-      monthLayoutContainer.appendChild(cella);
-    }
-
-    // Carica gli appuntamenti dopo aver generato il calendario
-    loadAppointments();
-
-    // Aggiorno label "Mese Anno"
-    currentDataLabel.textContent = formatDateLabel(currentDate);
+  // Celle vuote prima del 1° giorno
+  for (let i = 1; i < startIndex; i++) {
+    const emptyCell = document.createElement("div");
+    emptyCell.classList.add("cella", "empty-cell");
+    monthLayoutContainer.appendChild(emptyCell);
   }
+
+  // Genera le celle dei giorni
+// Durante la generazione delle celle nel calendario:
+for (let day = 1; day <= totalDaysInMonth; day++) {
+  const cella = document.createElement("div");
+  cella.classList.add("cella");
+
+  // Imposta i dataset per giorno, mese e anno
+  cella.dataset.day = day;
+  cella.dataset.month = month + 1; // Mese in base 1
+  cella.dataset.year = year;
+
+  const dayParagraph = document.createElement("p");
+  dayParagraph.classList.add("data");
+  dayParagraph.textContent = day;
+
+  const appointmentsContainer = document.createElement("div");
+  appointmentsContainer.classList.add("appointments-container");
+
+  // Controlla se la data della cella è passata
+  const cellDate = new Date(year, month, day);
+  cellDate.setHours(0, 0, 0, 0);
+  if (cellDate < today) {
+    cella.classList.add("past-day");
+  }
+
+  // Aggiungi listener per drag & drop e per il click solo se la cella non è passata
+  if (!cella.classList.contains("past-day")) {
+    cella.addEventListener("dragover", (e) => {
+      e.preventDefault();
+    });
+
+    cella.addEventListener("drop", (e) => {
+      e.preventDefault();
+      if (selectedAppointment) {
+        const appointmentsContainer = cella.querySelector(".appointments-container");
+        if (!appointmentsContainer.contains(selectedAppointment)) {
+          appointmentsContainer.appendChild(selectedAppointment);
+
+          // Recupera la nuova data dalla cella e aggiorna l'appuntamento
+          const newDay = cella.dataset.day;
+          const newMonth = cella.dataset.month;
+          const newYear = cella.dataset.year;
+          if (newDay && newMonth && newYear) {
+            const newDate = `${newYear}-${String(newMonth).padStart(2, "0")}-${String(newDay).padStart(2, "0")}`;
+            updateAppointmentDate(selectedAppointment.dataset.id, newDate);
+          }
+          selectedAppointment = null;
+        }
+      }
+    });
+
+    cella.addEventListener("click", (e) => {
+      if (e.target.closest('.appointment-box')) return; // Se il click è sull'appointment-box, non aprire la modale per un nuovo appuntamento
+      selectedDayCell = cella;
+      // Crea l'oggetto Date basandoti sui dataset della cella
+      const selectedDate = new Date(
+        parseInt(cella.dataset.year),
+        parseInt(cella.dataset.month) - 1, // il mese in Date è 0-indexed
+        parseInt(cella.dataset.day)
+      );
+      fillFormForNewAppointment(selectedDate);
+      openModalWithGSAP();
+    });      
+  } else {
+    // Se la cella rappresenta un giorno passato, disabilita l'interazione
+    cella.style.pointerEvents = "none";
+  }
+
+  cella.appendChild(dayParagraph);
+  cella.appendChild(appointmentsContainer);
+  monthLayoutContainer.appendChild(cella);
+}
+
+
+  // Carica gli appuntamenti dopo aver generato il calendario
+  loadAppointments();
+  currentDataLabel.textContent = formatDateLabel(currentDate);
+}
+
 
   // -----------------------------
   // NAVIGAZIONE CALENDARIO
@@ -863,18 +781,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Se clicco sul pulsante "Appuntamento"
   btnOpenModal.addEventListener("click", () => {
-    // Rimuovo anteprima se c'era
+    // Rimuovo eventuale anteprima e resetto la cella selezionata
     if (selectedDayCell) {
       removeAppointmentPreview(selectedDayCell);
       selectedDayCell = null;
     }
-
-    // Compilo i campi <span> con placeholder
+    
+    // Resetta il form per un nuovo appuntamento
     fillFormForNewAppointment();
-
-    // Apro modale
+  
+    // Se necessario, resetta anche gli input del form (oltre agli span)
+    document.getElementById("tipologia_visita").selectedIndex = 0;
+    document.getElementById("paziente-select").selectedIndex = 0;
+    document.getElementById("voce-prezzario").selectedIndex = 0;
+    document.getElementById("time").selectedIndex = 0;
+    document.getElementById("studio").selectedIndex = 0;
+    document.getElementById("note").value = "";
+    
+    // Apri la modale con l'animazione
     openModalWithGSAP();
-  });
+  });  
 
   // -----------------------------
   // ANTEPRIMA APPUNTAMENTO NELLA CELLA
@@ -957,16 +883,23 @@ document.addEventListener("DOMContentLoaded", () => {
   /**
    * Se ho cliccato su "Appuntamento", metto placeholder
    */
-  function fillFormForNewAppointment() {
+  function fillFormForNewAppointment(selectedDate) {
     fromCalendar = false;
-    daySpan.textContent = "Giorno,";
-    dateSpan.textContent = "Data,";
-    timeSpan.textContent = "Orario";
-
+    // Se è stata passata una data, usala per compilare i <span> dinamicamente
+    if (selectedDate instanceof Date) {
+      daySpan.textContent = getItalianDayName(selectedDate) + ",";
+      dateSpan.textContent = formatItalianDate(selectedDate) + ",";
+    } else {
+      daySpan.textContent = "Giorno,";
+      dateSpan.textContent = "Data,";
+    }
+    timeSpan.textContent = "Orario"; // placeholder per l'orario
+  
+    // Nascondi i campi per l'editing (se non servono all'apertura)
     editDateContainer.style.display = "none";
     editDateInput.style.display = "none";
     editTimeInput.style.display = "none";
-  }
+  }  
 
   /***********************************************************************
    * TOGGLE EDIT ↔ SALVA
@@ -1134,14 +1067,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const data_appointment = convertDateFormat(raw_data_appointment);
       const time_appointment =
         document.getElementById("time-appointment")?.textContent.trim() || "";
-
-      console.log("📢 DEBUG - Dati preparati per invio:");
-      console.log("Nome:", nome_paziente);
-      console.log("Cognome:", cognome_paziente);
-      console.log("Voce Prezzario:", voce_prezzario);
-      console.log("Durata:", durata);
-      console.log("Data:", data_appointment);
-      console.log("Orario:", time_appointment);
 
       const appointmentData = {
         tipologia_visita,
