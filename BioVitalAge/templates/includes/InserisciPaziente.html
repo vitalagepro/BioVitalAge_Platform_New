@@ -122,6 +122,8 @@
 
       <form method="POST" action="{% url 'inserisci_paziente' %}" class="form-container" id="age-form"> 
         {% csrf_token %} 
+
+        <!-- INFORMAZIONI PERSONALI -->
         <div class="section">
           <h3>Patient Information</h3>
           <div class="patient-info">
@@ -8420,6 +8422,118 @@
                   <label for="associate_staff">Dottore Associato</label>
                   <input type="text" id="associate_staff" name="associate_staff" placeholder="Inserisci il dottore associato">
               </div>
+          </div>
+        </div>
+
+
+
+
+        <!--  PROFESSIONE -->
+        <div class="container-card">
+          
+          <h3 class="table-tittle">Professione</h3>
+            
+          <div class="container-content">
+            
+            <div class="flex-container">
+
+              <div class="container-celle-design">
+                <p class="subtitle">Professione: </p>
+                <input type="text" name="" id="" placeholder="Inserisci la professione">
+              </div>
+
+              <div class="container-celle-design">
+                <p class="subtitle">Pensionato:</p>
+
+                <div class="opzione-cella" style="margin-left: 15px;"> 
+                  <input type="radio" id="si" name="scelta" value="SI">
+                  <label for="si">Sì</label>
+                </div>
+
+                <div class="opzione-cella">
+                  <input type="radio" id="no" name="scelta" value="NO">
+                  <label for="no">No</label>
+                </div>
+                
+              </div>
+            
+            </div>
+   
+          </div>
+  
+        </div>
+
+
+
+        <!-- PER LA DONNA  -->
+        <div class="container-card" style="margin-top: 2rem;">
+          
+          <h3 class="table-tittle">Donna</h3>
+          
+          <div class="container-content">
+            
+            
+            <!-- ABILITARE IL CHECK DEL GENERE -->
+            <div class="flex-container">
+
+              <div class="container-celle-design">
+                <p class="subtitle">Età del menarca in anni: </p>
+                <input type="text" placeholder="Inserire il numero"> 
+              </div>
+
+              <div class="container-celle-design">
+                <p class="subtitle">Ciclo:</p>
+                <div class="opzione-cella" style="margin-left: 15px;"> 
+                  <input type="radio" id="si" name="scelta" value="SI">
+                  <label for="si">Regolare</label>
+                </div>
+
+                <div class="opzione-cella">
+                  <input type="radio" id="no" name="scelta" value="NO">
+                  <label for="no">Irregolare</label>
+                </div>
+              </div>
+            </div>
+
+            <p style="font-weight: bold; margin-top: 10px;">Menopausa:</p>
+            <div class="flex-container">
+            
+                <div class="container-celle-design">
+                  <p class="subtitle">Età dell’esordio:</p>
+                  <input type="text" placeholder="placeholder">
+                </div>
+              
+              
+                <div class="container-celle-design">
+                  <p class="subtitle">Manifestazioni e sintomi:</p>
+                  <input type="text" placeholder="placeholder"> 
+                </div>
+
+            
+            </div>
+
+            <p style="font-weight: bold; margin-top: 10px; margin-bottom: 0px;">Gravidanze:</p>
+            <div class="flex-container">
+              
+      
+                <div class="container-celle-design">
+                  <p class="subtitle">Tipo di parto: </p>
+                  <input type="text" placeholder="placeholder"> 
+                </div>
+
+                <div class="container-celle-design">
+                  <p class="subtitle" >Complicanze post-parto:</p>
+                  <input type="text" placeholder="placeholder"> 
+                </div>
+            
+                <div class="container-celle-design">
+                  <p class="subtitle">Aborti:</p>
+                  <input type="text" placeholder="placeholder"> 
+                </div>
+
+         
+            </div>
+           
           </div>
         </div>
            

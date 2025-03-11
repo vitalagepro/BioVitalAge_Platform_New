@@ -134,9 +134,7 @@ input[type="range"] {
     padding-left: 20px;
 }
 
-.container-card {
-    padding: 20px;
-}
+
 
 table {
     width: 100%;
@@ -251,4 +249,63 @@ td input {
 .button-style-choose:active {
     transform: scale(1);
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+
+/* CONTAINER PROFESSIONE STILE */
+.container-card{
+    width: 100%;
+    background-color: var(--card-color);
+    border-radius: 8px;
+    padding: 40px;
+}
+.table-tittle{
+    background-color: var(--contrast-color-shadow);
+    width: 100%;
+    padding: 20px;
+    border-radius: 8px 8px 0px 0px;
+}
+.container-content{
+    border: 1px solid #ddd;
+    margin-top: -0.5rem;
+    padding: 20px;
+}
+.flex-container{
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+.container-celle-design{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    width: 49%;
+}
+.container-celle-design .subtitle{
+    background-color: var(--contrast-color-shadow);
+    padding: 10px 10px;
+    width: 15rem;
+    border-radius: 8px;
+    color: var(--dark1);
+    font-weight: bold;
+    margin-top: 1rem;
+    text-align: center;
+}
+.container-celle-design input{
+    width: 70%;
+    padding: 10px;
+    border-radius: 8px;
+    outline: none;
+    border: 1px solid #ddd;
+}
+.opzione-cella{
+    width: 40%;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: white;
+    border-radius: 8px;
 }
