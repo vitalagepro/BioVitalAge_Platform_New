@@ -489,7 +489,7 @@ function confirmDeleteAppointment(appointmentId, appointmentBox) {
 
   confirmAlert.innerHTML = `
       <span>Sei sicuro di voler eliminare questo appuntamento?</span>
-      <div>
+      <div class="d-flex gap-2">
           <button type="button" class="btn btn-sm btn-danger" id="confirmDelete">Elimina</button>
           <button type="button" class="btn btn-sm btn-secondary" id="cancelDelete">Annulla</button>
       </div>
