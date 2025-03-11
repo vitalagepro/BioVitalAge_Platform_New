@@ -247,7 +247,7 @@ function openAppointmentModal(appointmentId) {
         const dateParts = data.data.split("-");
         const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
         document.getElementById("date-appointment").textContent =
-          formattedDate + ", ";
+          `, ${formattedDate}, `;
         document.getElementById("time-appointment").textContent =
           data.orario.slice(0, 5);
         document.getElementById("tipologia_visita").value =
@@ -349,15 +349,12 @@ function openAppointmentModal(appointmentId) {
 function saveAppointmentChanges() {
   const formElement = document.getElementById("date-appointment-form");
   const appointmentId = formElement.getAttribute("data-id");
-  // Recupera il token CSRF dal campo hidden (assicurati che esista nel DOM)
-  const csrfToken =
-    document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "";
+  // Recupera il token CSRF
+  const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "";
 
   // Raccogli i dati dal form
   const updatedTipologia = document.getElementById("tipologia_visita").value;
-  const updatedOrario = document
-    .getElementById("time-appointment")
-    .textContent.trim();
+  const updatedOrario = document.getElementById("time-appointment").textContent.trim();
   const updatedPaziente = document.getElementById("paziente-select").value;
   const updatedVocePrezzario = document.getElementById("voce-prezzario").value;
   const updatedDurata = document.getElementById("time").value;
@@ -385,7 +382,20 @@ function saveAppointmentChanges() {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          console.log("Appuntamento modificato con successo!");
+          showAlert("success", "Appuntamento modificato con successo!");
+          // Cerca il box dell'appuntamento da aggiornare nel DOM
+          const appointmentBox = document.querySelector(`.appointment-box[data-id="${appointmentId}"]`);
+          if (appointmentBox) {
+            // Supponiamo che il testo sia contenuto in un <span> all'interno del box:
+            const textSpan = appointmentBox.querySelector("span");
+            if (textSpan) {
+              // Aggiorna il contenuto con i nuovi dati
+              // Ad esempio, se vuoi visualizzare "tipologia - orario":
+              textSpan.textContent = `${updatedTipologia} - ${updatedOrario.slice(0, 5)}`;
+            }
+          }
+          // Puoi anche aggiornare altri elementi del box se necessario
+
           resetFormFields();
           closeModalWithGSAP();
         } else {
@@ -393,50 +403,19 @@ function saveAppointmentChanges() {
         }
       })
       .catch((error) => console.error("Errore nella richiesta:", error));
-  } else {
-    // Crea un nuovo appuntamento via POST
-    fetch("/salva-appuntamento/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrfToken, // Includi il token CSRF
-      },
-      body: JSON.stringify({
-        tipologia_visita: updatedTipologia,
-        paziente_id: updatedPaziente,
-        voce_prezzario: updatedVocePrezzario,
-        durata: updatedDurata,
-        numero_studio: updatedStudio,
-        note: updatedNote,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          console.log("Appuntamento creato con successo!");
-          resetFormFields();
-          closeModalWithGSAP();
-        } else {
-          console.error(
-            "Errore nel salvataggio dell'appuntamento:",
-            data.error
-          );
-        }
-      })
-      .catch((error) => console.error("Errore nella richiesta:", error));
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  const saveButton = document.querySelector(".btn-primary");
-  if (saveButton) {
-    saveButton.addEventListener("click", function (event) {
-      event.preventDefault();
-      console.count("saveButtonClick");
-      saveAppointmentChanges();
-    });
-  }
-});
+// document.addEventListener("DOMContentLoaded", function () {
+//   const saveButton = document.querySelector(".btn-primary");
+//   if (saveButton) {
+//     saveButton.addEventListener("click", function (event) {
+//       event.preventDefault();
+//       console.count("saveButtonClick");
+//       saveAppointmentChanges();
+//     });
+//   }
+// });
 
 // Funzione per eliminare un appuntamento
 function deleteAppointment(appointmentId, appointmentBox, confirmAlert) {
@@ -1044,6 +1023,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (isEditing) {
       // Finalizza le modifiche: ad esempio, aggiorna gli span con i nuovi valori
       if (fromCalendar) {
+        console.log(fromCalendar);
         const newTime = editTimeInput.value;
         if (newTime) {
           timeSpan.textContent = newTime;
