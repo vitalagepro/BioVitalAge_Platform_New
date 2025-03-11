@@ -2262,7 +2262,7 @@ class AppuntamentiSalvaView(View):
                     durata=durata,  # 🔹 Ora viene salvata
                 )
 
-                return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!"})
+                return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!", 'clear_form': True})
 
             except json.JSONDecodeError as e:
                 print(f"❌ ERRORE JSON: {str(e)}")
