@@ -223,7 +223,10 @@ function openAppointmentModal(appointmentId) {
   fetch(`/get-appointment/${appointmentId}/`)
     .then((response) => response.json())
     .then((data) => {
-      console.log("📢 DEBUG: Dati ricevuti dal backend:", data);
+      console.log("Dati ricevuti dal backend:", data);
+      console.log("ID:", data.id);
+      console.log("Nome:", data.nome_paziente);
+      console.log("Cognome:", data.cognome_paziente);
 
       if (data.success) {
         // Se il campo "giorno" è vuoto, calcola il giorno a partire dalla data (formato "YYYY-MM-DD")
@@ -259,25 +262,45 @@ function openAppointmentModal(appointmentId) {
         document.getElementById("tipologia_visita").value =
           data.tipologia_visita || "";
 
-        // Gestione della selezione del paziente
-        let pazienteSelect = document.getElementById("paziente-select");
-        let nomeCompletoBackend =
-          `${data.nome_paziente} ${data.cognome_paziente}`.trim().toLowerCase();
+        function normalizeString(str) {
+          // Sostituisce spazi multipli, elimina spazi iniziali/finali e trasforma in minuscolo
+          return str.replace(/\s+/g, " ").trim().toLowerCase();
+        }
 
-        // Rimuovo eventuali extra come "(Non in elenco)" dal testo delle opzioni
+        let pazienteSelect = document.getElementById("paziente-select");
+        // Supponiamo che il backend restituisca i dati del paziente con nome, cognome e id
+        let nomeCompletoBackend = normalizeString(
+          `${data.nome_paziente} ${data.cognome_paziente}`
+        );
+        let pazienteIdBackend = String(data.id); // assicurati che sia una stringa
+
+        // Debug: stampa il nome e l'id attesi
+        console.log("Nome backend normalizzato:", nomeCompletoBackend);
+        console.log("ID backend:", pazienteIdBackend);
+
+        // Cerca nel select un'opzione con il nome e l'id corrispondenti
         let pazienteOption = [...pazienteSelect.options].find((option) => {
-          let optionText = option.textContent
-            .replace("(Non in elenco)", "")
-            .trim()
-            .toLowerCase();
-          return optionText === nomeCompletoBackend;
+          if (option.value) {
+            // Separiamo il nome e l'id usando il delimitatore "|"
+            let parts = option.value.split("|");
+            let optionName = normalizeString(parts[0]);
+            let optionId = parts[1] ? parts[1].trim() : "";
+            console.log("Confronto option:", optionName, optionId);
+            // Confronta sia il nome che l'id
+            return (
+              optionName === nomeCompletoBackend &&
+              optionId === pazienteIdBackend
+            );
+          }
+          return false;
         });
 
         if (pazienteOption) {
           pazienteSelect.value = pazienteOption.value;
         } else {
+          // Se non esiste, crea una nuova option con il delimitatore
           let newOption = document.createElement("option");
-          newOption.value = nomeCompletoBackend;
+          newOption.value = `${nomeCompletoBackend}|${pazienteIdBackend}`;
           newOption.textContent = `${data.nome_paziente} ${data.cognome_paziente} (Non in elenco)`;
           newOption.style.color = "red";
           pazienteSelect.appendChild(newOption);
