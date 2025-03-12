@@ -219,7 +219,6 @@ td input {
     display: flex;
     gap: 10px;
 }
-
 .button-style-choose {
     padding: 3px 30px;
     font-size: 18px;
@@ -230,22 +229,18 @@ td input {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
 }
-
 .button-style-choose[data-choice="yes"] {
     background-color: #28a745;
     color: #ffffff;
 }
-
 .button-style-choose[data-choice="no"] {
     background-color: #dc3545;
     color: #ffffff;
 }
-
 .button-style-choose:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
-
 .button-style-choose:active {
     transform: scale(1);
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
@@ -276,6 +271,7 @@ td input {
 .flex-container{
     display: flex;
     justify-content: space-between;
+    align-items: center;
     gap: 15px;
 }
 .container-celle-design{
@@ -285,7 +281,7 @@ td input {
     gap: 15px;
     width: 49%;
 }
-.container-celle-design .subtitle{
+.subtitle{
     background-color: var(--contrast-color-shadow);
     padding: 10px 10px;
     width: 15rem;
@@ -308,4 +304,12 @@ td input {
     padding: 10px;
     background-color: white;
     border-radius: 8px;
+}
+
+#malattie-select{
+    padding: 12px;
+    border-radius: 8px;
+    outline: none;
+    border: 1px solid #ddd;
+    width: 70%;
 }
