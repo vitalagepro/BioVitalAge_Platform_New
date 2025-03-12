@@ -2214,8 +2214,6 @@ class AppuntamentiView(View):
         # Ottieni le opzioni definite nei choices
         tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
         numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
-        voce_prezzario = [choice[0] for choice in Appointment._meta.get_field('voce_prezzario').choices]
-        durata = [choice[0] for choice in Appointment._meta.get_field('durata').choices]
 
         context = {
             'dottore': dottore,
@@ -2223,8 +2221,6 @@ class AppuntamentiView(View):
             'appuntamenti': appuntamenti,
             'tipologia_appuntamenti': tipologia_appuntamenti,
             'numero_studio': numero_studio,
-            'voce_prezzario': voce_prezzario,
-            'durata': durata
         }
 
         return render(request, 'includes/Appuntamenti.html', context)

@@ -218,6 +218,8 @@ function getItalianDayName(dateObj) {
 
 // Funzione per aprire la modale
 function openAppointmentModal(appointmentId) {
+  fromCalendar = true; // Indica che la modale è aperta da un appointment-box (quindi non modificare la data)
+
   fetch(`/get-appointment/${appointmentId}/`)
     .then((response) => response.json())
     .then((data) => {
@@ -243,11 +245,15 @@ function openAppointmentModal(appointmentId) {
           .getElementById("date-appointment-form")
           .setAttribute("data-id", appointmentId);
 
+        // Nascondi il campo data perché l'utente può modificare solo l'orario
+        editDateInput.style.display = "none";
+
         // Popola gli altri campi della modale
         const dateParts = data.data.split("-");
         const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-        document.getElementById("date-appointment").textContent =
-          `, ${formattedDate}, `;
+        document.getElementById(
+          "date-appointment"
+        ).textContent = `, ${formattedDate}, `;
         document.getElementById("time-appointment").textContent =
           data.orario.slice(0, 5);
         document.getElementById("tipologia_visita").value =
@@ -350,11 +356,14 @@ function saveAppointmentChanges() {
   const formElement = document.getElementById("date-appointment-form");
   const appointmentId = formElement.getAttribute("data-id");
   // Recupera il token CSRF
-  const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "";
+  const csrfToken =
+    document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "";
 
   // Raccogli i dati dal form
   const updatedTipologia = document.getElementById("tipologia_visita").value;
-  const updatedOrario = document.getElementById("time-appointment").textContent.trim();
+  const updatedOrario = document
+    .getElementById("time-appointment")
+    .textContent.trim();
   const updatedPaziente = document.getElementById("paziente-select").value;
   const updatedVocePrezzario = document.getElementById("voce-prezzario").value;
   const updatedDurata = document.getElementById("time").value;
@@ -384,14 +393,19 @@ function saveAppointmentChanges() {
         if (data.success) {
           showAlert("success", "Appuntamento modificato con successo!");
           // Cerca il box dell'appuntamento da aggiornare nel DOM
-          const appointmentBox = document.querySelector(`.appointment-box[data-id="${appointmentId}"]`);
+          const appointmentBox = document.querySelector(
+            `.appointment-box[data-id="${appointmentId}"]`
+          );
           if (appointmentBox) {
             // Supponiamo che il testo sia contenuto in un <span> all'interno del box:
             const textSpan = appointmentBox.querySelector("span");
             if (textSpan) {
               // Aggiorna il contenuto con i nuovi dati
               // Ad esempio, se vuoi visualizzare "tipologia - orario":
-              textSpan.textContent = `${updatedTipologia} - ${updatedOrario.slice(0, 5)}`;
+              textSpan.textContent = `${updatedTipologia} - ${updatedOrario.slice(
+                0,
+                5
+              )}`;
             }
           }
           // Puoi anche aggiornare altri elementi del box se necessario
@@ -929,7 +943,6 @@ document.addEventListener("DOMContentLoaded", () => {
    ***********************************************************************/
   // Flag: ci dice se abbiamo aperto la modale da un giorno del calendario (true) o dal pulsante "Appuntamento" (false)
   let fromCalendar = false;
-
   // Array dei giorni in italiano
   const giorniSettimana = [
     "Domenica",
@@ -971,7 +984,7 @@ document.addEventListener("DOMContentLoaded", () => {
       dateSpan.textContent = "Data,";
     }
     // Imposta un orario di default
-    timeSpan.textContent = "Ora";
+    timeSpan.textContent = "Orario";
 
     // Nasconde i campi per l'editing
     editDateContainer.style.display = "none";
@@ -1088,6 +1101,127 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /*  -----------------------------------------------------------------------------------------------
+
+  --------------------------------------------------------------------------------------------------- */
+const mappingTipologie = {
+  Fisioestetica: [
+    { value: "Crioterapia", text: "Crioterapia", duration: [30] },
+    {
+      value: "Radiofrequenza medica",
+      text: "Radiofrequenza medica",
+      duration: [20, 30, 45],
+    },
+    {
+      value: "Mesoterapia transdermica",
+      text: "Mesoterapia transdermica",
+      duration: [20, 30, 45],
+    },
+    {
+      value: "Mesoterapia intramedica",
+      text: "Mesoterapia intramedica",
+      duration: [30],
+    },
+    { value: "TECAR + massaggio", text: "TECAR + massaggio", duration: [20] },
+    {
+      value: "Massaggio linfodrenante",
+      text: "Massaggio linfodrenante",
+      duration: [30],
+    },
+    {
+      value: "Massaggio tonificante volto",
+      text: "Massaggio tonificante volto",
+      duration: [20],
+    },
+    { value: "Onde d'urto", text: "Onde d'urto", duration: [10] },
+  ],
+  "Fisioterapia e Riabilitazione": [
+    { value: "Visita fisiatrica", text: "Visita fisiatrica", duration: [30] },
+    { value: "Visita ortopedica", text: "Visita ortopedica", duration: [30] },
+    { value: "Visita neurologica", text: "Visita neurologica", duration: [30] },
+    { value: "Visita reumatologica", text: "Visita reumatologica", duration: [30] },
+    { value: "Chinesiterapia manuale/strumentale", text: "Chinesiterapia manuale/strumentale", duration: [30] },
+    { value: "Elettrostimolazioni - diadinamica, ionoforesi o tens", text: "Elettrostimolazioni - diadinamica, ionoforesi o tens", duration: [20] },
+    { value: "Infiltrazioni", text: "Infiltrazioni", duration: ["Da definire"] },
+    { value: "Infrarossi", text: "Infrarossi", duration: [10] },
+    { value: "Laserterapia", text: "Laserterapia", duration: [20] },
+    { value: "Magnetoterapia", text: "Magnetoterapia", duration: [20] },
+    { value: "Massaggio linfodrenante", text: "Massaggio linfodrenante", duration: [30] },
+    { value: "Massoterapia", text: "Massoterapia", duration: [20] },
+    { value: "Mesoterapia antalgica-antinfiammatoria", text: "Mesoterapia antalgica-antinfiammatoria", duration: [30] },
+    { value: "Mobilizzazioni articolari", text: "Mobilizzazioni articolari", duration: [15] },
+    { value: "Rieducazione motoria/rinforzo muscolare", text: "Rieducazione motoria/rinforzo muscolare", duration: [30] },
+    { value: "TECAR", text: "TECAR", duration: [20] },
+    { value: "Ultrasuonoterapia", text: "Ultrasuonoterapia", duration: [15] },
+    { value: "Onde d'urto", text: "Onde d'urto", duration: [10] },
+    { value: "Trattamento miofasciale", text: "Trattamento miofasciale", duration: [30] },
+    { value: "Valutazione + Cervical ROM", text: "Valutazione + Cervical ROM", duration: [30] },
+  ],
+  "Fisioterapia Sportiva": [
+    { value: "Rieducazione motoria/Rinforzo muscolare", text: "Rieducazione motoria/Rinforzo muscolare", duration: [30] },
+    { value: "Prevenzione infotuni sport specifico", text: "Prevenzione infotuni sport specifico", duration: [30] },
+    { value: "Massaggio decontratturante", text: "Massaggio decontratturante", duration: [30] },
+  ],
+};
+
+// Al caricamento della pagina, collega i listener agli elementi
+document.addEventListener("DOMContentLoaded", function () {
+  const tipologiaSelect = document.getElementById("tipologia_visita");
+  const vocePrezzarioSelect = document.getElementById("voce-prezzario");
+  const durataSelect = document.getElementById("time");
+
+  // Quando cambia il select della tipologia, aggiorna le opzioni del select "voce prezzario"
+  tipologiaSelect.addEventListener("change", function () {
+    const tipologia = tipologiaSelect.value;
+
+    // Resetta i select "voce prezzario" e "durata"
+    vocePrezzarioSelect.innerHTML = "";
+    durataSelect.innerHTML = "";
+
+    // Opzione default per "voce prezzario"
+    const defaultOptionVoce = document.createElement("option");
+    defaultOptionVoce.value = "";
+    defaultOptionVoce.textContent = "Seleziona voce prezzario";
+    vocePrezzarioSelect.appendChild(defaultOptionVoce);
+
+    // Se esiste una mappatura per la tipologia selezionata, popola il select
+    if (mappingTipologie[tipologia]) {
+      mappingTipologie[tipologia].forEach(function (item) {
+        const opt = document.createElement("option");
+        opt.value = item.value;
+        opt.textContent = item.text;
+        // Salviamo l'array delle durate usando dataset (convertito in stringa JSON)
+        opt.dataset.duration = JSON.stringify(item.duration);
+        vocePrezzarioSelect.appendChild(opt);
+      });
+    }
+  });
+
+  // Quando cambia il select "voce prezzario", aggiorna il select "durata"
+  vocePrezzarioSelect.addEventListener("change", function () {
+    const selectedOption =
+      vocePrezzarioSelect.options[vocePrezzarioSelect.selectedIndex];
+    durataSelect.innerHTML = "";
+
+    // Opzione default per la durata
+    const defaultOptionDurata = document.createElement("option");
+    defaultOptionDurata.value = "";
+    defaultOptionDurata.textContent = "Seleziona durata";
+    durataSelect.appendChild(defaultOptionDurata);
+
+    if (selectedOption && selectedOption.dataset.duration) {
+      // Estrai l'array delle durate e convertilo da JSON
+      const durations = JSON.parse(selectedOption.dataset.duration);
+      durations.forEach(function (dur) {
+        const opt = document.createElement("option");
+        opt.value = dur;
+        opt.textContent = dur + " minuti";
+        durataSelect.appendChild(opt);
+      });
+    }
+  });
+});
+
+/*  -----------------------------------------------------------------------------------------------
                               Saving form data
 --------------------------------------------------------------------------------------------------- */
 function convertDateFormat(dateString) {
@@ -1114,7 +1248,7 @@ function resetFormFields() {
   // Reset degli <span> per data e orario
   document.getElementById("day-appointment").textContent = "Giorno,";
   document.getElementById("date-appointment").textContent = "Data,";
-  document.getElementById("time-appointment").textContent = "Ora";
+  document.getElementById("time-appointment").textContent = "Orario,";
 }
 
 function closeModalWithGSAP() {
@@ -1147,99 +1281,115 @@ function removeAppointmentPreview(cella) {
   }
 }
 
-document.querySelector(".btn-primary").addEventListener("click", function (event) {
-  event.preventDefault();
+document
+  .querySelector(".btn-primary")
+  .addEventListener("click", function (event) {
+    event.preventDefault();
 
-  // Recupera il form e verifica se è presente un data-id
-  const formElement = document.getElementById("date-appointment-form");
-  const appointmentId = formElement.getAttribute("data-id");
+    // Recupera il form e verifica se è presente un data-id
+    const formElement = document.getElementById("date-appointment-form");
+    const appointmentId = formElement.getAttribute("data-id");
 
-  if (appointmentId) {
-    // Se c'è un data-id, significa che stiamo modificando un appuntamento esistente:
-    console.log("Modal aperta da appointment-box: eseguo l'update (PATCH)");
-    saveAppointmentChanges();
-    return; // Esci dal listener per evitare ulteriori esecuzioni
-  }
+    if (appointmentId) {
+      // Se c'è un data-id, significa che stiamo modificando un appuntamento esistente:
+      console.log("Modal aperta da appointment-box: eseguo l'update (PATCH)");
+      saveAppointmentChanges();
+      return; // Esci dal listener per evitare ulteriori esecuzioni
+    }
 
-  // Altrimenti, è un nuovo appuntamento e procede con il salvataggio via POST
+    // Altrimenti, è un nuovo appuntamento e procede con il salvataggio via POST
 
-  // Validazione dei campi obbligatori
-  const tipologia = document.getElementById("tipologia_visita").value.trim();
-  const pazienteSelect = document.getElementById("paziente-select");
-  const pazienteValue = pazienteSelect.options[pazienteSelect.selectedIndex].value.trim();
+    // Validazione dei campi obbligatori
+    const tipologia = document.getElementById("tipologia_visita").value.trim();
+    const pazienteSelect = document.getElementById("paziente-select");
+    const pazienteValue =
+      pazienteSelect.options[pazienteSelect.selectedIndex].value.trim();
 
-  if (!tipologia || !pazienteValue) {
-    showAlert("danger", "Compila tutti i campi obbligatori prima di salvare.");
-    return;
-  }
+    if (!tipologia || !pazienteValue) {
+      showAlert(
+        "danger",
+        "Compila tutti i campi obbligatori prima di salvare."
+      );
+      return;
+    }
 
-  // Raccogli i dati dal form per la creazione
-  const nomeCompleto = pazienteSelect.selectedOptions[0]?.text.trim() || "";
-  const nomeArray = nomeCompleto.split(" ");
-  const nome_paziente = nomeArray[0];
-  const cognome_paziente = nomeArray.slice(1).join(" ");
-  const vocePrezzarioElement = document.getElementById("voce-prezzario");
-  const voce_prezzario = vocePrezzarioElement
-    ? vocePrezzarioElement.options[vocePrezzarioElement.selectedIndex].value.trim()
-    : "";
-  const durataElement = document.getElementById("time");
-  const durata = durataElement
-    ? durataElement.options[durataElement.selectedIndex].value.trim()
-    : "";
+    // Raccogli i dati dal form per la creazione
+    const nomeCompleto = pazienteSelect.selectedOptions[0]?.text.trim() || "";
+    const nomeArray = nomeCompleto.split(" ");
+    const nome_paziente = nomeArray[0];
+    const cognome_paziente = nomeArray.slice(1).join(" ");
+    const vocePrezzarioElement = document.getElementById("voce-prezzario");
+    const voce_prezzario = vocePrezzarioElement
+      ? vocePrezzarioElement.options[
+          vocePrezzarioElement.selectedIndex
+        ].value.trim()
+      : "";
+    const durataElement = document.getElementById("time");
+    const durata = durataElement
+      ? durataElement.options[durataElement.selectedIndex].value.trim()
+      : "";
 
-  const tipologia_visita = tipologia;
-  const numero_studio = document.getElementById("studio")?.value.trim() || "";
-  const note = document.getElementById("note")?.value.trim() || "";
+    const tipologia_visita = tipologia;
+    const numero_studio = document.getElementById("studio")?.value.trim() || "";
+    const note = document.getElementById("note")?.value.trim() || "";
 
-  const raw_data_appointment = document.getElementById("date-appointment")?.textContent.trim() || "";
-  const data_appointment = convertDateFormat(raw_data_appointment);
-  const time_appointment = document.getElementById("time-appointment")?.textContent.trim() || "";
+    const raw_data_appointment =
+      document.getElementById("date-appointment")?.textContent.trim() || "";
+    const data_appointment = convertDateFormat(raw_data_appointment);
+    const time_appointment =
+      document.getElementById("time-appointment")?.textContent.trim() || "";
 
-  const appointmentData = {
-    tipologia_visita,
-    nome_paziente,
-    cognome_paziente,
-    numero_studio,
-    note,
-    voce_prezzario,
-    durata,
-    data: data_appointment,
-    orario: time_appointment,
-    csrfmiddlewaretoken:
-      document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "",
-  };
+    const appointmentData = {
+      tipologia_visita,
+      nome_paziente,
+      cognome_paziente,
+      numero_studio,
+      note,
+      voce_prezzario,
+      durata,
+      data: data_appointment,
+      orario: time_appointment,
+      csrfmiddlewaretoken:
+        document.querySelector("input[name='csrfmiddlewaretoken']")?.value ||
+        "",
+    };
 
-  console.log("📢 Dati inviati (POST):", appointmentData);
+    console.log("📢 Dati inviati (POST):", appointmentData);
 
-  // Invio dei dati al backend Django tramite POST
-  fetch("/salva-appuntamento/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": appointmentData.csrfmiddlewaretoken,
-    },
-    body: JSON.stringify(appointmentData),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("📢 Risposta dal server (POST):", data);
-      if (data.success) {
-        showAlert("success", "Appuntamento salvato con successo!");
-        // Rimuove le anteprime e resetta il form
-        document.querySelectorAll(".appointment-preview").forEach((el) => el.remove());
-        if (selectedDayCell) {
-          removeAppointmentPreview(selectedDayCell);
-          selectedDayCell = null;
-        }
-        resetFormFields();
-        loadAppointments();
-        closeModalWithGSAP();
-      } else {
-        showAlert("danger", "Errore nel salvataggio dell'appuntamento: " + data.error);
-      }
+    // Invio dei dati al backend Django tramite POST
+    fetch("/salva-appuntamento/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": appointmentData.csrfmiddlewaretoken,
+      },
+      body: JSON.stringify(appointmentData),
     })
-    .catch((error) => {
-      console.error("❌ Errore durante il salvataggio (POST):", error);
-      showAlert("danger", "Si è verificato un errore inaspettato.");
-    });
-});
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("📢 Risposta dal server (POST):", data);
+        if (data.success) {
+          showAlert("success", "Appuntamento salvato con successo!");
+          // Rimuove le anteprime e resetta il form
+          document
+            .querySelectorAll(".appointment-preview")
+            .forEach((el) => el.remove());
+          if (selectedDayCell) {
+            removeAppointmentPreview(selectedDayCell);
+            selectedDayCell = null;
+          }
+          resetFormFields();
+          loadAppointments();
+          closeModalWithGSAP();
+        } else {
+          showAlert(
+            "danger",
+            "Errore nel salvataggio dell'appuntamento: " + data.error
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("❌ Errore durante il salvataggio (POST):", error);
+        showAlert("danger", "Si è verificato un errore inaspettato.");
+      });
+  });
