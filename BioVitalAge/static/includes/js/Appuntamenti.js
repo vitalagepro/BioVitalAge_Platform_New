@@ -1452,19 +1452,19 @@ document.getElementById("addUserModal").addEventListener("click", function (e) {
 /*  -----------------------------------------------------------------------------------------------
     evento per aggiungere un paziente
 --------------------------------------------------------------------------------------------------- */
-document.getElementById("addUserForm").addEventListener("submit", function (e) {
-  e.preventDefault();
+document.getElementById("savePatientBtn").addEventListener("click", function (e) {
+  e.preventDefault(); // 🔥 Impedisce il submit del form principale appuntamenti
+  e.stopPropagation(); // 🔥 Evita l'event bubbling
 
   let newName = document.getElementById("newName").value.trim();
   let newSurname = document.getElementById("newSurname").value.trim();
-  let newPhone = document.getElementById("newPhone").value.trim();
+  let newCell = document.getElementById("newCell").value.trim();
 
   if (!newName || !newSurname) {
       alert("Nome e cognome sono obbligatori!");
       return;
   }
 
-  // Recupera il token CSRF
   let csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
 
   fetch("/aggiungi-paziente/", {
@@ -1473,19 +1473,45 @@ document.getElementById("addUserForm").addEventListener("submit", function (e) {
           "Content-Type": "application/json",
           "X-CSRFToken": csrfToken
       },
-      body: JSON.stringify({ name: newName, surname: newSurname, phone: newPhone })
+      body: JSON.stringify({ name: newName, surname: newSurname, phone: newCell })
   })
   .then(response => response.json())
   .then(data => {
       if (data.success) {
-          alert("Paziente aggiunto con successo!");
-          location.reload(); // Ricarica la pagina per aggiornare il select
+          alert("✅ Paziente aggiunto con successo!");
+
+          // 🔹 Aggiungi il paziente appena creato al <select> della modale appuntamento
+          aggiungiPazienteASelect(newName, newSurname, data.paziente_id);
+
+          // 🔹 Chiude solo la modale paziente
+          chiudiModalePaziente();
       } else {
-          alert("Errore: " + data.error);
+          alert("❌ Errore: " + data.error);
       }
   })
-  .catch(error => console.error("Errore:", error));
+  .catch(error => console.error("❌ Errore:", error));
 });
+
+// Aggiungi il paziente appena creato al <select> della modale appuntamento
+function aggiungiPazienteASelect(nome, cognome, paziente_id) {
+  let pazienteSelect = document.getElementById("paziente-select");
+  let nuovaOpzione = document.createElement("option");
+  nuovaOpzione.value = paziente_id;
+  nuovaOpzione.textContent = `${nome} ${cognome}`;
+  pazienteSelect.appendChild(nuovaOpzione);
+
+  // Seleziona automaticamente il paziente appena creato
+  pazienteSelect.value = paziente_id;
+}
+
+// Chiudi solo la modale paziente
+function chiudiModalePaziente() {
+  let addUserModal = document.getElementById("addUserModal");
+  addUserModal.classList.add("hidden-user-modal");
+
+  // Riattiva la modale principale
+  document.getElementById("appointmentModal").style.pointerEvents = "auto";
+}
 
 /*  -----------------------------------------------------------------------------------------------
     gestione input animati

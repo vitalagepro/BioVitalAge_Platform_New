@@ -118,6 +118,7 @@
                             <span id="closeAddUserModal" class="close">&times;</span>
                         </header>
                         <form id="addUserForm">
+                            {% csrf_token %}
                             <div class="d-grid" id="first-input-user">
                                 <div class="input-container">
                                     <p class="m-0 floating-label">Nome</p>
@@ -156,7 +157,7 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="button float-end btn-primary">Salva Paziente</button>
+                            <button type="submit" id="savePatientBtn" class="button float-end btn-primary">Salva Paziente</button>
                         </form>
                     </div>
                 </div>

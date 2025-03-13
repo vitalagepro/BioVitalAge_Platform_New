@@ -2384,6 +2384,44 @@ class DeleteAppointmentView(View):
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 
+#VIEW CREATE PATIENT FROM SECOND MODAL
+class CreaPazienteView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+
+            name = data.get("name", "").strip()
+            surname = data.get("surname", "").strip()
+            phone = data.get("phone", "").strip()
+
+            if not name or not surname:
+                return JsonResponse({"success": False, "error": "Nome e cognome sono obbligatori!"}, status=400)
+
+            # Trova il dottore basandosi sull'utente autenticato (assumendo che la mail sia unica)
+            if not request.user.is_authenticated:
+                return JsonResponse({"success": False, "error": "Devi essere autenticato per aggiungere un paziente."}, status=403)
+
+            try:
+                dottore = get_object_or_404(UtentiRegistratiCredenziali, email=request.user.email)
+            except:
+                return JsonResponse({"success": False, "error": "Dottore non trovato."}, status=404)
+
+            # Creazione paziente
+            paziente = TabellaPazienti.objects.create(
+                dottore=dottore,
+                name=name,
+                surname=surname,
+                phone=phone
+            )
+
+            return JsonResponse({"success": True, "message": "Paziente aggiunto con successo!", "id": paziente.id})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "Formato JSON non valido."}, status=400)
+
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
 
 
 
