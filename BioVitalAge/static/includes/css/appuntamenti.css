@@ -320,6 +320,191 @@ input[type='time'] {
 
 
 
+
+
+
+
+
+ /* Stile per la seconda modale */
+
+ /* Stile per il selettore dei prefissi */
+ .custom-select {
+     position: relative;
+     width: 200px;
+     cursor: pointer;
+     user-select: none;
+ }
+
+ .selected-option {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     padding: 0 10px;
+     border: none;
+     border-bottom: 1px solid var(--contrast-color);
+     background-color: white;
+ }
+
+ .selected-option img {
+     width: 30px;
+     margin-right: 8px;
+ }
+
+ .options-list {
+     position: absolute;
+     top: 100%;
+     left: 0;
+     width: 100%;
+     background: white;
+     border: 1px solid #ddd;
+     padding-left: 0 !important;
+     display: none;
+     z-index: 10;
+ }
+
+ .options-list li {
+     display: flex;
+     align-items: center;
+     padding: 8px;
+     cursor: pointer;
+     padding-left: 10px;
+     transition: background 0.2s;
+ }
+
+ .options-list li:hover {
+     background: #f0f0f0;
+ }
+
+ .options-list img {
+     width: 30px;
+     margin-right: 8px;
+ }
+
+ /* Contenitore dell'input */
+ .input-container {
+     position: relative;
+     width: 100%;
+ }
+
+ /* Input standard */
+ .input-container input {
+     width: 100%;
+     font-size: 16px;
+     transition: border 0.3s;
+     background-color: transparent;
+ }
+
+ /* Floating Label (inizialmente all'interno dell'input) */
+ .floating-label {
+     position: absolute;
+     top: 50%;
+     transform: translateY(-50%);
+     font-size: 16px;
+     color: var(--contrast-color);
+     pointer-events: none;
+     transition: all 0.2s ease-in-out;
+ }
+
+ /* Quando l'input è attivo o contiene un valore, il label si solleva */
+ .active {
+     top: 0px !important;
+     font-weight: bold;
+     color: var(--contrast-color2);
+     font-size: 12px;
+ }
+
+ /* Bordo evidenziato quando l'input è attivo */
+ .input-container input:focus {
+     border-color: #6200ea;
+ }
+
+/* Stile per l'input */
+ #newName,
+ #newSurname,
+ #newCell,
+ #newEmail,
+ #prefisso {
+     border: none;
+     border-bottom: 1px solid var(--contrast-color);
+     color: var(--contrast-color);
+     padding: 5px;
+     cursor: auto;
+     outline: none;
+     width: 100%;
+ }
+
+ #first-input-user {
+     display: grid;
+     gap: 3%;
+     grid-template-columns: 1fr 1fr;
+     margin-bottom: 20px;
+ }
+
+ #second-input-user {
+     display: grid;
+     gap: 3%;
+     grid-template-columns: 2fr 1fr 2fr;
+     align-items: end;
+     margin-bottom: 20px;
+ }
+
+
+ #addUserForm{
+    margin-top: 7%;
+ }
+ /* Stile per la modale */
+ .modal-overlay-user {
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background: rgba(0, 0, 0, 0.5);
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     z-index: 2000;
+     /* Deve essere sopra la prima modale */
+ }
+
+ .modal-content-user {
+     background: white;
+     padding: 20px;
+     border-radius: 8px;
+     width: 50%;
+     position: relative;
+     z-index: 3000;
+     /* Ancora più in alto */
+ }
+
+ .hidden-user-modal {
+     display: none;
+ }
+
+ .close-btn {
+     position: absolute;
+     top: 10px;
+     right: 15px;
+     font-size: 20px;
+     cursor: pointer;
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ! Tools container */
 .tools-container {
     display: flex;

@@ -103,6 +103,64 @@
                     </span>
                 </button>
     
+
+                <!-- Modale per aggiungere un paziente -->
+                 <!-- Seconda modale (sopramodale) -->
+                <div id="addUserModal" class="modal-overlay-user hidden-user-modal">
+                    <div class="modal-content-user">
+                        <header class="header-modal-appointments mb-5">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="icon-container-appointment">
+                                    <img src="{% static 'includes/icone/add-user-modal.png' %}" alt="Icona Calendario">
+                                </div>
+                                <h3>Aggiungi Paziente</h3>
+                            </div>
+                            <span id="closeAddUserModal" class="close">&times;</span>
+                        </header>
+                        <form id="addUserForm">
+                            <div class="d-grid" id="first-input-user">
+                                <div class="input-container">
+                                    <p class="m-0 floating-label">Nome</p>
+                                    <input type="text" id="newName" required>
+                                </div>
+                                
+                                <div class="input-container">
+                                    <p class="m-0 floating-label">Cognome</p>
+                                    <input type="text" id="newSurname" required>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid" id="second-input-user">
+                                <div class="input-container">
+                                    <p class="m-0 floating-label">Email</p>
+                                    <input type="text" id="newEmail">
+                                </div>
+                                <div>
+                                    <p class="m-0">Prefisso</p>
+                                    <div class="custom-select">
+                                        <div class="selected-option">
+                                            <img src="{% static 'includes/icone/bandiera-italiana.png' %}" alt="bandiera-italiana" class="flag-icon">
+                                            <span id="selected-prefix">+39</span>
+                                        </div>
+                                        <ul class="options-list">
+                                            <!-- Qui verranno inserite le opzioni dinamicamente -->
+                                        </ul>
+                                    </div>
+                                    
+                                    <!-- Campo nascosto per inviare il prefisso selezionato al backend -->
+                                    <input type="hidden" name="prefisso" id="hidden-prefisso" value="+39">                                    
+                                </div>
+                                <div class="input-container">
+                                    <p class="mb-0 floating-label">Cellulare</p>
+                                    <input type="text" id="newCell">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="button float-end btn-primary">Salva Paziente</button>
+                        </form>
+                    </div>
+                </div>
+
                 <!-- Modale per appuntamenti -->
                 <div id="appointmentModal" class="modal-appointments">
                     <div class="modal-content-appointments">
@@ -158,7 +216,7 @@
                                     </div>
                                     <div class="d-flex align-items-center gap-2">
                                         <div class="icon_add_paient">
-                                            <img src="{% static 'includes/icone/add-user.png' %}" alt="add-user">
+                                            <img src="{% static 'includes/icone/add-user.png' %}" alt="add-user" title="add-user">
                                         </div>
                                         <select name="paziente-select" id="paziente-select" class="w-100 form-select-appointment">
                                             <option>Seleziona Paziente</option>

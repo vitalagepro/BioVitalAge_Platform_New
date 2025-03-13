@@ -268,32 +268,26 @@ function openAppointmentModal(appointmentId) {
         }
 
         let pazienteSelect = document.getElementById("paziente-select");
-        // Supponiamo che il backend restituisca i dati del paziente con nome, cognome e id
-        let nomeCompletoBackend = normalizeString(
-          `${data.nome_paziente} ${data.cognome_paziente}`
-        );
-        let pazienteIdBackend = String(data.id); // assicurati che sia una stringa
-
-        // Debug: stampa il nome e l'id attesi
-        console.log("Nome backend normalizzato:", nomeCompletoBackend);
-        console.log("ID backend:", pazienteIdBackend);
-
-        // Cerca nel select un'opzione con il nome e l'id corrispondenti
-        let pazienteOption = [...pazienteSelect.options].find((option) => {
-          if (option.value) {
-            // Separiamo il nome e l'id usando il delimitatore "|"
-            let parts = option.value.split("|");
-            let optionName = normalizeString(parts[0]);
-            let optionId = parts[1] ? parts[1].trim() : "";
-            console.log("Confronto option:", optionName, optionId);
-            // Confronta sia il nome che l'id
-            return (
-              optionName === nomeCompletoBackend &&
-              optionId === pazienteIdBackend
-            );
-          }
-          return false;
+        let nomeCompletoBackend = normalizeString(`${data.nome_paziente} ${data.cognome_paziente}`);
+        
+        let pazienteOption = [...pazienteSelect.options].find((opt) => {
+          if (!opt.value) return false;
+          let [optNome] = opt.value.split("|"); // Prende solo nome e cognome, ignorando l'ID
+          optNome = normalizeString(optNome);
+          return optNome === nomeCompletoBackend;
         });
+        
+        if (pazienteOption) {
+          pazienteSelect.value = pazienteOption.value;
+        } else {
+          // SOLO qui aggiungiamo "(Non in elenco)"
+          let newOption = document.createElement("option");
+          newOption.value = nomeCompletoBackend;
+          newOption.textContent = `${data.nome_paziente} ${data.cognome_paziente} (Non in elenco)`;
+          newOption.style.color = "red";
+          pazienteSelect.appendChild(newOption);
+          pazienteSelect.value = nomeCompletoBackend;
+        }              
 
         if (pazienteOption) {
           pazienteSelect.value = pazienteOption.value;
@@ -1416,3 +1410,171 @@ document
         showAlert("danger", "Si è verificato un errore inaspettato.");
       });
   });
+
+
+
+
+
+
+
+// GESTIONE SECONDA MODALE
+/*  -----------------------------------------------------------------------------------------------
+    evento per aprire la seconda modale
+--------------------------------------------------------------------------------------------------- */
+// Selezioniamo il pulsante "add-user"
+document.querySelectorAll('[title="add-user"]').forEach((btn) => {
+  btn.addEventListener("click", function (e) {
+      e.stopPropagation(); // Evita chiusure accidentali della modale principale
+
+      // Mostra la sopramodale
+      let addUserModal = document.getElementById("addUserModal");
+      addUserModal.classList.remove("hidden-user-modal");
+
+      // Disabilita temporaneamente l'interazione con la modale principale
+      document.getElementById("appointmentModal").style.pointerEvents = "none";
+  });
+});
+
+// Chiudi la seconda modale senza chiudere la principale
+document.getElementById("closeAddUserModal").addEventListener("click", function () {
+  let addUserModal = document.getElementById("addUserModal");
+  addUserModal.classList.add("hidden-user-modal");
+
+  // Riattiva la modale principale
+  document.getElementById("appointmentModal").style.pointerEvents = "auto";
+});
+
+// Impedisce la chiusura della modale principale quando si clicca dentro la seconda
+document.getElementById("addUserModal").addEventListener("click", function (e) {
+  e.stopPropagation();
+});
+
+/*  -----------------------------------------------------------------------------------------------
+    evento per aggiungere un paziente
+--------------------------------------------------------------------------------------------------- */
+document.getElementById("addUserForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  let newName = document.getElementById("newName").value.trim();
+  let newSurname = document.getElementById("newSurname").value.trim();
+  let newPhone = document.getElementById("newPhone").value.trim();
+
+  if (!newName || !newSurname) {
+      alert("Nome e cognome sono obbligatori!");
+      return;
+  }
+
+  // Recupera il token CSRF
+  let csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+
+  fetch("/aggiungi-paziente/", {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken
+      },
+      body: JSON.stringify({ name: newName, surname: newSurname, phone: newPhone })
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.success) {
+          alert("Paziente aggiunto con successo!");
+          location.reload(); // Ricarica la pagina per aggiornare il select
+      } else {
+          alert("Errore: " + data.error);
+      }
+  })
+  .catch(error => console.error("Errore:", error));
+});
+
+/*  -----------------------------------------------------------------------------------------------
+    gestione input animati
+--------------------------------------------------------------------------------------------------- */
+
+// gestione input prefissi
+document.addEventListener("DOMContentLoaded", function () {
+  // Lista di prefissi con bandiere
+  const prefissi = [
+      { value: "+39", flag: "/static/includes/icone/bandiera-italiana.png", country: "Italia", code: "IT" },
+      { value: "+33", flag: "/static/includes/icone/bandiera-francia.png", country: "Francia", code: "FR" },
+      { value: "+44", flag: "/static/includes/icone/bandiera-inglese.png", country: "Regno Unito", code: "GB" },
+      { value: "+49", flag: "/static/includes/icone/bandiera-germania.png", country: "Germania", code: "DE" },
+      { value: "+34", flag: "/static/includes/icone/bandiera-spagnola.png", country: "Spagna", code: "ES" },
+      { value: "+1", flag: "/static/includes/icone/bandiera-usa.png", country: "Stati Uniti", code: "US" },
+  ];
+
+  const selectContainer = document.querySelector(".custom-select");
+  const selectedOption = selectContainer.querySelector(".selected-option");
+  const optionsList = selectContainer.querySelector(".options-list");
+  const hiddenInput = document.getElementById("hidden-prefisso");
+
+  // **1️⃣ Rileva la posizione dell'utente e imposta il prefisso corretto**
+  async function setUserCountryPrefix() {
+      try {
+          const response = await fetch("https://ip-api.com/json/?fields=countryCode");
+          const data = await response.json();
+          console.log("📍 Nazione rilevata:", data.countryCode);
+
+          // Trova il prefisso associato alla nazione
+          const userPrefix = prefissi.find(p => p.code === data.countryCode);
+          if (userPrefix) {
+              updateSelectedPrefix(userPrefix);
+          }
+      } catch (error) {
+          console.error("❌ Errore nel rilevare la posizione dell'utente:", error);
+      }
+  }
+
+  // **2️⃣ Funzione per aggiornare il prefisso selezionato**
+  function updateSelectedPrefix(prefisso) {
+      selectedOption.innerHTML = `
+          <img src="${prefisso.flag}" alt="${prefisso.country}" class="flag-icon">
+          <span id="selected-prefix">${prefisso.value}</span>
+      `;
+      hiddenInput.value = prefisso.value; // Aggiorna il campo nascosto
+  }
+
+  // **3️⃣ Popola la lista delle opzioni dinamicamente**
+  prefissi.forEach(prefisso => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+          <img src="${prefisso.flag}" alt="${prefisso.country}" class="flag-icon">
+          <span>${prefisso.value}</span>
+      `;
+      li.addEventListener("click", () => {
+          updateSelectedPrefix(prefisso);
+          optionsList.style.display = "none"; // Chiude il menu
+      });
+      optionsList.appendChild(li);
+  });
+
+  // **4️⃣ Mostra/Nasconde il menu delle opzioni**
+  selectedOption.addEventListener("click", () => {
+      optionsList.style.display = optionsList.style.display === "block" ? "none" : "block";
+      optionsList.paddingLeft = "0px";
+  });
+
+  // **5️⃣ Chiude il menu se si clicca fuori**
+  document.addEventListener("click", (e) => {
+      if (!selectContainer.contains(e.target)) {
+          optionsList.style.display = "none";
+      }
+  });
+
+  // **6️⃣ Imposta il prefisso predefinito in base alla nazione dell'utente**
+  setUserCountryPrefix();
+});
+
+
+// Gestione input animati form
+document.querySelectorAll(".input-container input").forEach((input) => {
+  input.addEventListener("focus", function () {
+      this.previousElementSibling.classList.add("active");
+  });
+
+  input.addEventListener("blur", function () {
+      if (this.value === "") {
+          this.previousElementSibling.classList.remove("active");
+      }
+  });
+});
