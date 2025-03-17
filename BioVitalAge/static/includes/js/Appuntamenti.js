@@ -229,6 +229,56 @@ function openAppointmentModal(appointmentId) {
       console.log("Cognome:", data.cognome_paziente);
 
       if (data.success) {
+        
+        // **SETTAGGIO TIPOLOGIA VISITA**
+        let tipologiaSelect = document.getElementById("tipologia_visita");
+        tipologiaSelect.value = data.tipologia_visita || "";
+
+        // **TRIGGER AUTOMATICO DEL CAMBIO TIPOLOGIA**
+        tipologiaSelect.dispatchEvent(new Event("change"));
+
+        setTimeout(() => {
+          let voceOption = [...vocePrezzarioSelect.options].find(
+            (option) =>
+              option.value.trim().toLowerCase() ===
+              data.voce_prezzario?.toLowerCase()
+          );
+
+          if (voceOption) {
+            vocePrezzarioSelect.value = voceOption.value;
+          } else if (data.voce_prezzario) {
+            let newVoceOption = document.createElement("option");
+            newVoceOption.value = data.voce_prezzario;
+            newVoceOption.textContent = data.voce_prezzario + " (Non in elenco)";
+            newVoceOption.style.color = "red";
+            vocePrezzarioSelect.appendChild(newVoceOption);
+            vocePrezzarioSelect.value = data.voce_prezzario;
+          }
+
+          // **TRIGGER AUTOMATICO DEL CAMBIO VOCE PREZZARIO**
+          vocePrezzarioSelect.dispatchEvent(new Event("change"));
+        }, 300); // Aggiunto un ritardo per aspettare la popolazione dinamica
+
+        // **SETTAGGIO DURATA**
+        setTimeout(() => {
+          let durataSelect = document.getElementById("time");
+          let durataOption = [...durataSelect.options].find(
+            (option) =>
+              option.value.trim().toLowerCase() === data.durata?.toLowerCase()
+          );
+
+          if (durataOption) {
+            durataSelect.value = durataOption.value;
+          } else if (data.durata) {
+            let newDurataOption = document.createElement("option");
+            newDurataOption.value = data.durata;
+            newDurataOption.textContent = data.durata + " (Non in elenco)";
+            newDurataOption.style.color = "red";
+            durataSelect.appendChild(newDurataOption);
+            durataSelect.value = data.durata;
+          }
+        }, 500); // Un leggero ritardo per assicurarsi che gli altri select siano popolati prima
+
         // Se il campo "giorno" è vuoto, calcola il giorno a partire dalla data (formato "YYYY-MM-DD")
         let dayText = data.giorno;
         if (!dayText || dayText.trim() === "") {
@@ -268,15 +318,17 @@ function openAppointmentModal(appointmentId) {
         }
 
         let pazienteSelect = document.getElementById("paziente-select");
-        let nomeCompletoBackend = normalizeString(`${data.nome_paziente} ${data.cognome_paziente}`);
-        
+        let nomeCompletoBackend = normalizeString(
+          `${data.nome_paziente} ${data.cognome_paziente}`
+        );
+
         let pazienteOption = [...pazienteSelect.options].find((opt) => {
           if (!opt.value) return false;
           let [optNome] = opt.value.split("|"); // Prende solo nome e cognome, ignorando l'ID
           optNome = normalizeString(optNome);
           return optNome === nomeCompletoBackend;
         });
-        
+
         if (pazienteOption) {
           pazienteSelect.value = pazienteOption.value;
         } else {
@@ -287,18 +339,6 @@ function openAppointmentModal(appointmentId) {
           newOption.style.color = "red";
           pazienteSelect.appendChild(newOption);
           pazienteSelect.value = nomeCompletoBackend;
-        }              
-
-        if (pazienteOption) {
-          pazienteSelect.value = pazienteOption.value;
-        } else {
-          // Se non esiste, crea una nuova option con il delimitatore
-          let newOption = document.createElement("option");
-          newOption.value = `${nomeCompletoBackend}|${pazienteIdBackend}`;
-          newOption.textContent = `${data.nome_paziente} ${data.cognome_paziente} (Non in elenco)`;
-          newOption.style.color = "red";
-          pazienteSelect.appendChild(newOption);
-          pazienteSelect.value = newOption.value;
         }
 
         // Gestione delle altre selezioni (prezzario, durata, studio)
@@ -1155,28 +1195,80 @@ const mappingTipologie = {
     { value: "Visita fisiatrica", text: "Visita fisiatrica", duration: [30] },
     { value: "Visita ortopedica", text: "Visita ortopedica", duration: [30] },
     { value: "Visita neurologica", text: "Visita neurologica", duration: [30] },
-    { value: "Visita reumatologica", text: "Visita reumatologica", duration: [30] },
-    { value: "Chinesiterapia manuale/strumentale", text: "Chinesiterapia manuale/strumentale", duration: [30] },
-    { value: "Elettrostimolazioni - diadinamica, ionoforesi o tens", text: "Elettrostimolazioni - diadinamica, ionoforesi o tens", duration: [20] },
-    { value: "Infiltrazioni", text: "Infiltrazioni", duration: ["Da definire"] },
+    {
+      value: "Visita reumatologica",
+      text: "Visita reumatologica",
+      duration: [30],
+    },
+    {
+      value: "Chinesiterapia manuale/strumentale",
+      text: "Chinesiterapia manuale/strumentale",
+      duration: [30],
+    },
+    {
+      value: "Elettrostimolazioni - diadinamica, ionoforesi o tens",
+      text: "Elettrostimolazioni - diadinamica, ionoforesi o tens",
+      duration: [20],
+    },
+    {
+      value: "Infiltrazioni",
+      text: "Infiltrazioni",
+      duration: ["Da definire"],
+    },
     { value: "Infrarossi", text: "Infrarossi", duration: [10] },
     { value: "Laserterapia", text: "Laserterapia", duration: [20] },
     { value: "Magnetoterapia", text: "Magnetoterapia", duration: [20] },
-    { value: "Massaggio linfodrenante", text: "Massaggio linfodrenante", duration: [30] },
+    {
+      value: "Massaggio linfodrenante",
+      text: "Massaggio linfodrenante",
+      duration: [30],
+    },
     { value: "Massoterapia", text: "Massoterapia", duration: [20] },
-    { value: "Mesoterapia antalgica-antinfiammatoria", text: "Mesoterapia antalgica-antinfiammatoria", duration: [30] },
-    { value: "Mobilizzazioni articolari", text: "Mobilizzazioni articolari", duration: [15] },
-    { value: "Rieducazione motoria/rinforzo muscolare", text: "Rieducazione motoria/rinforzo muscolare", duration: [30] },
+    {
+      value: "Mesoterapia antalgica-antinfiammatoria",
+      text: "Mesoterapia antalgica-antinfiammatoria",
+      duration: [30],
+    },
+    {
+      value: "Mobilizzazioni articolari",
+      text: "Mobilizzazioni articolari",
+      duration: [15],
+    },
+    {
+      value: "Rieducazione motoria/rinforzo muscolare",
+      text: "Rieducazione motoria/rinforzo muscolare",
+      duration: [30],
+    },
     { value: "TECAR", text: "TECAR", duration: [20] },
     { value: "Ultrasuonoterapia", text: "Ultrasuonoterapia", duration: [15] },
     { value: "Onde d'urto", text: "Onde d'urto", duration: [10] },
-    { value: "Trattamento miofasciale", text: "Trattamento miofasciale", duration: [30] },
-    { value: "Valutazione + Cervical ROM", text: "Valutazione + Cervical ROM", duration: [30] },
+    {
+      value: "Trattamento miofasciale",
+      text: "Trattamento miofasciale",
+      duration: [30],
+    },
+    {
+      value: "Valutazione + Cervical ROM",
+      text: "Valutazione + Cervical ROM",
+      duration: [30],
+    },
   ],
   "Fisioterapia Sportiva": [
-    { value: "Rieducazione motoria/Rinforzo muscolare", text: "Rieducazione motoria/Rinforzo muscolare", duration: [30] },
-    { value: "Prevenzione infotuni sport specifico", text: "Prevenzione infotuni sport specifico", duration: [30] },
-    { value: "Massaggio decontratturante", text: "Massaggio decontratturante", duration: [30] },
+    {
+      value: "Rieducazione motoria/Rinforzo muscolare",
+      text: "Rieducazione motoria/Rinforzo muscolare",
+      duration: [30],
+    },
+    {
+      value: "Prevenzione infotuni sport specifico",
+      text: "Prevenzione infotuni sport specifico",
+      duration: [30],
+    },
+    {
+      value: "Massaggio decontratturante",
+      text: "Massaggio decontratturante",
+      duration: [30],
+    },
   ],
 };
 
@@ -1411,12 +1503,6 @@ document
       });
   });
 
-
-
-
-
-
-
 // GESTIONE SECONDA MODALE
 /*  -----------------------------------------------------------------------------------------------
     evento per aprire la seconda modale
@@ -1424,25 +1510,27 @@ document
 // Selezioniamo il pulsante "add-user"
 document.querySelectorAll('[title="add-user"]').forEach((btn) => {
   btn.addEventListener("click", function (e) {
-      e.stopPropagation(); // Evita chiusure accidentali della modale principale
+    e.stopPropagation(); // Evita chiusure accidentali della modale principale
 
-      // Mostra la sopramodale
-      let addUserModal = document.getElementById("addUserModal");
-      addUserModal.classList.remove("hidden-user-modal");
+    // Mostra la sopramodale
+    let addUserModal = document.getElementById("addUserModal");
+    addUserModal.classList.remove("hidden-user-modal");
 
-      // Disabilita temporaneamente l'interazione con la modale principale
-      document.getElementById("appointmentModal").style.pointerEvents = "none";
+    // Disabilita temporaneamente l'interazione con la modale principale
+    document.getElementById("appointmentModal").style.pointerEvents = "none";
   });
 });
 
 // Chiudi la seconda modale senza chiudere la principale
-document.getElementById("closeAddUserModal").addEventListener("click", function () {
-  let addUserModal = document.getElementById("addUserModal");
-  addUserModal.classList.add("hidden-user-modal");
+document
+  .getElementById("closeAddUserModal")
+  .addEventListener("click", function () {
+    let addUserModal = document.getElementById("addUserModal");
+    addUserModal.classList.add("hidden-user-modal");
 
-  // Riattiva la modale principale
-  document.getElementById("appointmentModal").style.pointerEvents = "auto";
-});
+    // Riattiva la modale principale
+    document.getElementById("appointmentModal").style.pointerEvents = "auto";
+  });
 
 // Impedisce la chiusura della modale principale quando si clicca dentro la seconda
 document.getElementById("addUserModal").addEventListener("click", function (e) {
@@ -1452,66 +1540,83 @@ document.getElementById("addUserModal").addEventListener("click", function (e) {
 /*  -----------------------------------------------------------------------------------------------
     evento per aggiungere un paziente
 --------------------------------------------------------------------------------------------------- */
-document.getElementById("savePatientBtn").addEventListener("click", function (e) {
-  e.preventDefault(); // 🔥 Impedisce il submit del form principale appuntamenti
-  e.stopPropagation(); // 🔥 Evita l'event bubbling
+document.getElementById("addUserForm").addEventListener("submit", function (e) {
+  e.preventDefault();
 
   let newName = document.getElementById("newName").value.trim();
   let newSurname = document.getElementById("newSurname").value.trim();
-  let newCell = document.getElementById("newCell").value.trim();
+  let newPhone = document.getElementById("newCell").value.trim();
+  let newEmail = document.getElementById("newEmail").value.trim();
+
+  // 🔹 Recupera il token CSRF
+  function getCSRFToken() {
+    let csrfTokenElement = document.querySelector(
+      "input[name='csrfmiddlewaretoken']"
+    );
+    return csrfTokenElement ? csrfTokenElement.value : null;
+  }
+
+  if (!newName || !newSurname || !newPhone || !newEmail) {
+    alert("Errore: Uno o più campi del form non sono stati trovati nel DOM.");
+    return;
+  }
 
   if (!newName || !newSurname) {
-      alert("Nome e cognome sono obbligatori!");
+    showAlert("danger", "Nome e cognome sono obbligatori!");
+    return;
+  }
+
+  let csrfToken = getCSRFToken();
+  if (!csrfToken) {
+      console.error("Errore: token CSRF non trovato nel DOM.");
+      showAlert("danger", "Errore di sicurezza: impossibile procedere. Ricarica la pagina e riprova.");
       return;
   }
 
-  let csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
-
   fetch("/aggiungi-paziente/", {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken
-      },
-      body: JSON.stringify({ name: newName, surname: newSurname, phone: newCell })
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken,
+    },
+    body: JSON.stringify({
+      name: newName,
+      surname: newSurname,
+      email: newEmail,
+      phone: newPhone,
+    }),
   })
-  .then(response => response.json())
-  .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       if (data.success) {
-          alert("✅ Paziente aggiunto con successo!");
+        showAlert("success", "Paziente aggiunto con successo!");
+        // **AGGIORNAMENTO DINAMICO DEL SELECT**
+        let selectPazienti = document.getElementById("paziente-select"); // Assicurati che l'ID del select sia corretto
+        if (selectPazienti) {
+          let newOption = document.createElement("option");
+          newOption.value = `${newName} ${newSurname}`; // Puoi anche usare un ID se il backend lo restituisce
+          newOption.textContent = `${newName} ${newSurname}`;
+          selectPazienti.appendChild(newOption);
+        }
 
-          // 🔹 Aggiungi il paziente appena creato al <select> della modale appuntamento
-          aggiungiPazienteASelect(newName, newSurname, data.paziente_id);
+        // **Chiudi la modale senza ricaricare la pagina**
+        let addUserModal = document.getElementById("addUserModal");
+        addUserModal.classList.add("hidden-user-modal");
 
-          // 🔹 Chiude solo la modale paziente
-          chiudiModalePaziente();
+        // Riattiva la modale principale
+        document.getElementById("appointmentModal").style.pointerEvents = "auto";
+
+        // **Svuota i campi del form**
+        newName.value = "";
+        newSurname.value = "";
+        newPhone.value = "";
+        newEmail.value = "";
       } else {
-          alert("❌ Errore: " + data.error);
+        showAlert("danger", "Errore: " + data.error);
       }
-  })
-  .catch(error => console.error("❌ Errore:", error));
+    })
+    .catch((error) => showAlert("danger", "Errore:", error));
 });
-
-// Aggiungi il paziente appena creato al <select> della modale appuntamento
-function aggiungiPazienteASelect(nome, cognome, paziente_id) {
-  let pazienteSelect = document.getElementById("paziente-select");
-  let nuovaOpzione = document.createElement("option");
-  nuovaOpzione.value = paziente_id;
-  nuovaOpzione.textContent = `${nome} ${cognome}`;
-  pazienteSelect.appendChild(nuovaOpzione);
-
-  // Seleziona automaticamente il paziente appena creato
-  pazienteSelect.value = paziente_id;
-}
-
-// Chiudi solo la modale paziente
-function chiudiModalePaziente() {
-  let addUserModal = document.getElementById("addUserModal");
-  addUserModal.classList.add("hidden-user-modal");
-
-  // Riattiva la modale principale
-  document.getElementById("appointmentModal").style.pointerEvents = "auto";
-}
 
 /*  -----------------------------------------------------------------------------------------------
     gestione input animati
@@ -1521,12 +1626,42 @@ function chiudiModalePaziente() {
 document.addEventListener("DOMContentLoaded", function () {
   // Lista di prefissi con bandiere
   const prefissi = [
-      { value: "+39", flag: "/static/includes/icone/bandiera-italiana.png", country: "Italia", code: "IT" },
-      { value: "+33", flag: "/static/includes/icone/bandiera-francia.png", country: "Francia", code: "FR" },
-      { value: "+44", flag: "/static/includes/icone/bandiera-inglese.png", country: "Regno Unito", code: "GB" },
-      { value: "+49", flag: "/static/includes/icone/bandiera-germania.png", country: "Germania", code: "DE" },
-      { value: "+34", flag: "/static/includes/icone/bandiera-spagnola.png", country: "Spagna", code: "ES" },
-      { value: "+1", flag: "/static/includes/icone/bandiera-usa.png", country: "Stati Uniti", code: "US" },
+    {
+      value: "+39",
+      flag: "/static/includes/icone/bandiera-italiana.png",
+      country: "Italia",
+      code: "IT",
+    },
+    {
+      value: "+33",
+      flag: "/static/includes/icone/bandiera-francia.png",
+      country: "Francia",
+      code: "FR",
+    },
+    {
+      value: "+44",
+      flag: "/static/includes/icone/bandiera-inglese.png",
+      country: "Regno Unito",
+      code: "GB",
+    },
+    {
+      value: "+49",
+      flag: "/static/includes/icone/bandiera-germania.png",
+      country: "Germania",
+      code: "DE",
+    },
+    {
+      value: "+34",
+      flag: "/static/includes/icone/bandiera-spagnola.png",
+      country: "Spagna",
+      code: "ES",
+    },
+    {
+      value: "+1",
+      flag: "/static/includes/icone/bandiera-usa.png",
+      country: "Stati Uniti",
+      code: "US",
+    },
   ];
 
   const selectContainer = document.querySelector(".custom-select");
@@ -1536,71 +1671,73 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // **1️⃣ Rileva la posizione dell'utente e imposta il prefisso corretto**
   async function setUserCountryPrefix() {
-      try {
-          const response = await fetch("https://ip-api.com/json/?fields=countryCode");
-          const data = await response.json();
-          console.log("📍 Nazione rilevata:", data.countryCode);
+    try {
+      const response = await fetch(
+        "https://ip-api.com/json/?fields=countryCode"
+      );
+      const data = await response.json();
+      console.log("📍 Nazione rilevata:", data.countryCode);
 
-          // Trova il prefisso associato alla nazione
-          const userPrefix = prefissi.find(p => p.code === data.countryCode);
-          if (userPrefix) {
-              updateSelectedPrefix(userPrefix);
-          }
-      } catch (error) {
-          console.error("❌ Errore nel rilevare la posizione dell'utente:", error);
+      // Trova il prefisso associato alla nazione
+      const userPrefix = prefissi.find((p) => p.code === data.countryCode);
+      if (userPrefix) {
+        updateSelectedPrefix(userPrefix);
       }
+    } catch (error) {
+      console.error("❌ Errore nel rilevare la posizione dell'utente:", error);
+    }
   }
 
   // **2️⃣ Funzione per aggiornare il prefisso selezionato**
   function updateSelectedPrefix(prefisso) {
-      selectedOption.innerHTML = `
+    selectedOption.innerHTML = `
           <img src="${prefisso.flag}" alt="${prefisso.country}" class="flag-icon">
           <span id="selected-prefix">${prefisso.value}</span>
       `;
-      hiddenInput.value = prefisso.value; // Aggiorna il campo nascosto
+    hiddenInput.value = prefisso.value; // Aggiorna il campo nascosto
   }
 
   // **3️⃣ Popola la lista delle opzioni dinamicamente**
-  prefissi.forEach(prefisso => {
-      const li = document.createElement("li");
-      li.innerHTML = `
+  prefissi.forEach((prefisso) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
           <img src="${prefisso.flag}" alt="${prefisso.country}" class="flag-icon">
           <span>${prefisso.value}</span>
       `;
-      li.addEventListener("click", () => {
-          updateSelectedPrefix(prefisso);
-          optionsList.style.display = "none"; // Chiude il menu
-      });
-      optionsList.appendChild(li);
+    li.addEventListener("click", () => {
+      updateSelectedPrefix(prefisso);
+      optionsList.style.display = "none"; // Chiude il menu
+    });
+    optionsList.appendChild(li);
   });
 
   // **4️⃣ Mostra/Nasconde il menu delle opzioni**
   selectedOption.addEventListener("click", () => {
-      optionsList.style.display = optionsList.style.display === "block" ? "none" : "block";
-      optionsList.paddingLeft = "0px";
+    optionsList.style.display =
+      optionsList.style.display === "block" ? "none" : "block";
+    optionsList.paddingLeft = "0px";
   });
 
   // **5️⃣ Chiude il menu se si clicca fuori**
   document.addEventListener("click", (e) => {
-      if (!selectContainer.contains(e.target)) {
-          optionsList.style.display = "none";
-      }
+    if (!selectContainer.contains(e.target)) {
+      optionsList.style.display = "none";
+    }
   });
 
   // **6️⃣ Imposta il prefisso predefinito in base alla nazione dell'utente**
   setUserCountryPrefix();
 });
 
-
 // Gestione input animati form
 document.querySelectorAll(".input-container input").forEach((input) => {
   input.addEventListener("focus", function () {
-      this.previousElementSibling.classList.add("active");
+    this.previousElementSibling.classList.add("active");
   });
 
   input.addEventListener("blur", function () {
-      if (this.value === "") {
-          this.previousElementSibling.classList.remove("active");
-      }
+    if (this.value === "") {
+      this.previousElementSibling.classList.remove("active");
+    }
   });
 });

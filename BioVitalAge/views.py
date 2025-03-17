@@ -2214,12 +2214,14 @@ class AppuntamentiView(View):
         # Ottieni le opzioni definite nei choices
         tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
         numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
+        voce_prezzario = Appointment._meta.get_field('voce_prezzario').choices
 
         context = {
             'dottore': dottore,
             'persone': persone,
             'appuntamenti': appuntamenti,
             'tipologia_appuntamenti': tipologia_appuntamenti,
+            'voce_prezzario': voce_prezzario,
             'numero_studio': numero_studio,
         }
 
@@ -2245,7 +2247,7 @@ class AppuntamentiSalvaView(View):
                     print("❌ ERRORE: Il campo 'orario' è mancante o vuoto!")
 
                 # Creazione dell'appuntamento
-                appuntamento = Appointment.objects.create(
+                Appointment.objects.create(
                     tipologia_visita=data.get("tipologia_visita"),
                     nome_paziente=data.get("nome_paziente"),
                     cognome_paziente=data.get("cognome_paziente"),
@@ -2389,37 +2391,44 @@ class CreaPazienteView(View):
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)
+            print("📥 Dati ricevuti dal frontend:", data)  # DEBUG
 
             name = data.get("name", "").strip()
             surname = data.get("surname", "").strip()
             phone = data.get("phone", "").strip()
+            email = data.get("email", "").strip()  # Assumendo che tu abbia il campo email nel modello
+            dottore_id = request.session.get('dottore_id')
 
             if not name or not surname:
+                print("⚠ Errore: Nome e cognome obbligatori")  # DEBUG
                 return JsonResponse({"success": False, "error": "Nome e cognome sono obbligatori!"}, status=400)
 
-            # Trova il dottore basandosi sull'utente autenticato (assumendo che la mail sia unica)
-            if not request.user.is_authenticated:
+            if not dottore_id:
+                print("⚠ Errore: dottore_id mancante!")  # DEBUG
                 return JsonResponse({"success": False, "error": "Devi essere autenticato per aggiungere un paziente."}, status=403)
-
-            try:
-                dottore = get_object_or_404(UtentiRegistratiCredenziali, email=request.user.email)
-            except:
-                return JsonResponse({"success": False, "error": "Dottore non trovato."}, status=404)
 
             # Creazione paziente
             paziente = TabellaPazienti.objects.create(
-                dottore=dottore,
                 name=name,
                 surname=surname,
-                phone=phone
+                phone=phone,
+                email=email  # Assumendo che email esista nel modello
             )
+            print(f"✅ Paziente {paziente.id} salvato: {paziente.name} {paziente.surname}, {paziente.email}")  # DEBUG
 
-            return JsonResponse({"success": True, "message": "Paziente aggiunto con successo!", "id": paziente.id})
+            return JsonResponse({
+                "success": True,
+                "message": "Paziente aggiunto con successo!",
+                "id": paziente.id,
+                "full_name": f"{paziente.name} {paziente.surname}"
+            })
 
         except json.JSONDecodeError:
+            print("❌ Errore JSON ricevuto nel backend!")  # DEBUG
             return JsonResponse({"success": False, "error": "Formato JSON non valido."}, status=400)
 
         except Exception as e:
+            print(f"❌ Errore nel backend: {e}")  # DEBUG
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 

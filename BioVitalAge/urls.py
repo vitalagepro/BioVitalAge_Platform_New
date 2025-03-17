@@ -22,6 +22,7 @@ urlpatterns = [
 
     # URL INSERISCI PAZIENTE
     path("AggiungiPaziente/", views.InserisciPazienteView.as_view(), name="inserisci_paziente"),
+    path("aggiungi-paziente/", views.CreaPazienteView.as_view(), name="aggiungi_paziente"),
 
     # URL PER VEDERE IL REFERTO DEL CALCOLO DELL'ETA' BIOLOGICA
     path("persona/<int:persona_id>/", views.PersonaDetailView.as_view(), name="persona_detail"),
