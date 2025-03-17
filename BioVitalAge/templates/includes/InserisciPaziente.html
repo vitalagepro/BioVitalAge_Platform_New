@@ -8425,9 +8425,6 @@
           </div>
         </div>
 
-
-
-
         <!--  PROFESSIONE -->
         <div class="container-card">
           
@@ -8439,19 +8436,19 @@
 
               <div class="container-celle-design">
                 <p class="subtitle">Professione: </p>
-                <input type="text" name="" id="" placeholder="Inserisci la professione">
+                <input type="text" name="professione" id="" placeholder="Inserisci la professione">
               </div>
 
               <div class="container-celle-design">
                 <p class="subtitle">Pensionato:</p>
 
                 <div class="opzione-cella" style="margin-left: 15px;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="pensionato" value="SI">
                   <label for="si">Sì</label>
                 </div>
 
                 <div class="opzione-cella">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="pensionato" value="NO">
                   <label for="no">No</label>
                 </div>
                 
@@ -8463,7 +8460,6 @@
   
         </div>
 
-
         <!-- PER LA DONNA  -->
         <div class="container-card" style="margin-top: 2rem;">
           
@@ -8471,24 +8467,23 @@
           
           <div class="container-content">
             
-            
             <!-- ABILITARE IL CHECK DEL GENERE -->
             <div class="flex-container">
 
               <div class="container-celle-design">
                 <p class="subtitle">Età del menarca in anni: </p>
-                <input type="text" placeholder="Inserire il numero"> 
+                <input type="text" name="menarca" placeholder="Inserire il numero"> 
               </div>
 
               <div class="container-celle-design">
                 <p class="subtitle">Ciclo:</p>
                 <div class="opzione-cella" style="margin-left: 15px;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="ciclo" value="SI">
                   <label for="si">Regolare</label>
                 </div>
 
                 <div class="opzione-cella">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="ciclo" value="NO">
                   <label for="no">Irregolare</label>
                 </div>
               </div>
@@ -8505,10 +8500,8 @@
               
                 <div class="container-celle-design">
                   <p class="subtitle">Manifestazioni e sintomi:</p>
-                  <input type="text" placeholder="placeholder"> 
-                </div>
-
-            
+                  <input type="text" name="sintomi" placeholder="placeholder"> 
+                </div>           
             </div>
 
             <p style="font-weight: bold; margin-top: 10px; margin-bottom: 0px;">Gravidanze:</p>
@@ -8516,17 +8509,17 @@
               
                 <div class="container-celle-design">
                   <p class="subtitle">Tipo di parto: </p>
-                  <input type="text" placeholder="placeholder"> 
+                  <input type="text" name="parto" placeholder="placeholder"> 
                 </div>
 
                 <div class="container-celle-design">
                   <p class="subtitle" >Complicanze post-parto:</p>
-                  <input type="text" placeholder="placeholder"> 
+                  <input type="text" name="post_parto" placeholder="placeholder"> 
                 </div>
             
                 <div class="container-celle-design">
                   <p class="subtitle">Aborti:</p>
-                  <input type="text" placeholder="placeholder"> 
+                  <input type="text" name="aborto" placeholder="placeholder"> 
                 </div>
 
             </div>
@@ -8541,7 +8534,7 @@
           <h3 class="table-tittle">Anamnesi</h3>
         
           <div class="container-content">
-            <p style="font-weight: bold; margin-top: 10px;">Menopausa:</p>
+            <p style="font-weight: bold; margin-top: 10px;">Anamnesi familiare:</p>
             <p>C'è qualcuno in famiglia (padre, madre, fratelli, nonni) che soffre o abbia sofferto di:</p>
             
             <div class="flex-container">
@@ -8550,17 +8543,17 @@
                 <p class="subtitle">Malattie cardiache:</p>
 
                 <div class="opzione-cella" style="margin-left: 15px; width: 28%;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="m_cardiache" value="SI">
                   <label for="si">Sì</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 28%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="m_cardiache" value="NO">
                   <label for="no">No</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 44%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="m_cardiache" value="NO">
                   <label for="no">Non lo so</label>
                 </div>
                 
@@ -8570,17 +8563,17 @@
                 <p class="subtitle">Diabete mellito:</p>
 
                 <div class="opzione-cella" style="margin-left: 15px; width: 28%;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="diabete_m" value="SI">
                   <label for="si">Sì</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 28%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="diabete_m" value="NO">
                   <label for="no">No</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 44%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="diabete_m" value="NO">
                   <label for="no">Non lo so</label>
                 </div>
 
@@ -8594,17 +8587,17 @@
                 <p class="subtitle">Obesità:</p>
 
                 <div class="opzione-cella" style="margin-left: 15px; width: 28%;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="obesita" value="SI">
                   <label for="si">Sì</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 28%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="obesita" value="NO">
                   <label for="no">No</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 44%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="obesita" value="NO">
                   <label for="no">Non lo so</label>
                 </div>
                 
@@ -8614,17 +8607,17 @@
                 <p class="subtitle">Epilessia:</p>
 
                 <div class="opzione-cella" style="margin-left: 15px; width: 28%;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="epilessia" value="SI">
                   <label for="si">Sì</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 28%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="epilessia" value="NO">
                   <label for="no">No</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 44%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="epilessia" value="NO">
                   <label for="no">Non lo so</label>
                 </div>
                 
@@ -8638,17 +8631,17 @@
                 <p class="subtitle">Ipertensione:</p>
 
                 <div class="opzione-cella" style="margin-left: 15px; width: 28%;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="ipertensione" value="SI">
                   <label for="si">Sì</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 28%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="ipertensione" value="NO">
                   <label for="no">No</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 44%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="ipertensione" value="NO">
                   <label for="no">Non lo so</label>
                 </div>
                 
@@ -8658,20 +8651,20 @@
                 <p class="subtitle">Malattie tiroidee:</p>
 
                 <div class="opzione-cella" style="margin-left: 15px; width: 28%;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="m_tiroidee" value="SI">
                   <label for="si">Sì</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 28%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="m_tiroidee" value="NO">
                   <label for="no">No</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 44%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="m_tiroidee" value="NO">
                   <label for="no">Non lo so</label>
                 </div>
-                
+              
               </div>
               
             </div>
@@ -8682,17 +8675,17 @@
                 <p class="subtitle">Malattie polmonari:</p>
 
                 <div class="opzione-cella" style="margin-left: 15px; width: 28%;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="m_polmonari" value="SI">
                   <label for="si">Sì</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 28%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="m_polmonari" value="NO">
                   <label for="no">No</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 44%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="m_polmonari" value="NO">
                   <label for="no">Non lo so</label>
                 </div>
                 
@@ -8702,17 +8695,17 @@
                 <p class="subtitle">Tumori:</p>
 
                 <div class="opzione-cella" style="margin-left: 15px; width: 28%;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="tumori" value="SI">
                   <label for="si">Sì</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 28%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="tumori" value="NO">
                   <label for="no">No</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 44%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="tumori" value="NO">
                   <label for="no">Non lo so</label>
                 </div>
                 
@@ -8726,17 +8719,17 @@
                 <p class="subtitle">Asma/allergie:</p>
 
                 <div class="opzione-cella" style="margin-left: 15px; width: 28%;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="allergie" value="SI">
                   <label for="si">Sì</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 28%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="allergie" value="NO">
                   <label for="no">No</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 44%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="allergie" value="NO">
                   <label for="no">Non lo so</label>
                 </div>
                 
@@ -8746,17 +8739,17 @@
                 <p class="subtitle" style="padding-top: 0px; padding-bottom: 0px;">Malattie psichiatriche:</p>
 
                 <div class="opzione-cella" style="margin-left: 15px; width: 28%;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="m_psichiatriche" value="SI">
                   <label for="si">Sì</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 28%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="m_psichiatriche" value="NO">
                   <label for="no">No</label>
                 </div>
 
                 <div class="opzione-cella" style="width: 44%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
+                  <input type="radio" id="no" name="m_psichiatriche" value="NO">
                   <label for="no">Non lo so</label>
                 </div>
                 
@@ -8772,55 +8765,34 @@
                 <p class="subtitle">Al Momento è affetto: </p>
                 
                 <select name="patologie" id="malattie-select">
-                  <option value="">Malattie infettive</option>
-                  <option value="">Neoplasie (tumori)</option>
-                  <option value="">Malattie del sangue e degli organi ematopoietici</option>
-                  <option value="">Disturbi del sistema immunitario</option>
-                  <option value="">Malattie endocrine, nutrizionali e metaboliche</option>
-                  <option value="">Disturbi mentali, comportamentali e del neurosviluppo</option>
-                  <option value="">Malattie del sistema nervoso</option>
-                  <option value="">Malattie dell'occhio e degli annessi oculari</option>
-                  <option value="">Malattie dell'orecchio e del sistema uditivo</option>
-                  <option value="">Malattie del sistema circolatorio</option>
-                  <option value="">Malattie del sistema respiratorio</option>
-                  <option value="">Malattie dell'apparato digerente</option>
-                  <option value="">Malattie della pelle</option>
-                  <option value="">Malattie del sistema muscoloscheletrico</option>
-                  <option value="">Malattie del sistema genito-urinario</option>
-                  <option value="">Gravidanza, parto e puerperio</option>
-                  <option value="">Alcune condizioni perinatali</option>
-                  <option value="">Malformazioni congenite, deformità e anomalie cromosomiche</option>
-                  <option value="">Sintomi, segni e risultati clinici anormali</option>
-                  <option value="">Lesioni, avvelenamenti e altre conseguenze di cause esterne</option>
+                  <option>Malattie infettive</option>
+                  <option>Neoplasie (tumori)</option>
+                  <option>Malattie del sangue e degli organi ematopoietici</option>
+                  <option>Disturbi del sistema immunitario</option>
+                  <option>Malattie endocrine, nutrizionali e metaboliche</option>
+                  <option>Disturbi mentali, comportamentali e del neurosviluppo</option>
+                  <option>Malattie del sistema nervoso</option>
+                  <option>Malattie dell'occhio e degli annessi oculari</option>
+                  <option>Malattie dell'orecchio e del sistema uditivo</option>
+                  <option>Malattie del sistema circolatorio</option>
+                  <option>Malattie del sistema respiratorio</option>
+                  <option>Malattie dell'apparato digerente</option>
+                  <option>Malattie della pelle</option>
+                  <option>Malattie del sistema muscoloscheletrico</option>
+                  <option>Malattie del sistema genito-urinario</option>
+                  <option>Gravidanza, parto e puerperio</option>
+                  <option>Alcune condizioni perinatali</option>
+                  <option>Malformazioni congenite, deformità e anomalie cromosomiche</option>
+                  <option>Sintomi, segni e risultati clinici anormali</option>
+                  <option>Lesioni, avvelenamenti e altre conseguenze di cause esterne</option>
                 </select>
               </div>
 
               <div class="container-celle-design">
-                <p class="subtitle">Malattie cardiache:</p>
-
-                <div class="opzione-cella" style="margin-left: 15px; width: 28%;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
-                  <label for="si">Sì</label>
-                </div>
-
-                <div class="opzione-cella" style="width: 28%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
-                  <label for="no">No</label>
-                </div>
-
-                <div class="opzione-cella" style="width: 44%;">
-                  <input type="radio" id="no" name="scelta" value="NO">
-                  <label for="no">Non lo so</label>
-                </div>
+                <p class="subtitle">Altro:</p>
+  
+                <input type="text" name="p_p_altro" placeholder="placeholder">
               </div>
-
-            </div>
-
-            <div class="container-celle-design">
-              <p class="subtitle">Altro:</p>
-
-              <input type="text" placeholder="placeholder">
-
             </div>
 
             <p style="font-weight: bold; margin-top: 20px;">Eventuali terapie in corso:</p>
@@ -8830,21 +8802,21 @@
               <div class="container-celle-design">
                 <p class="subtitle">Farmaco:</p>
   
-                <input type="text" placeholder="placeholder">
+                <input type="text" name="t_farmaco" placeholder="placeholder">
   
               </div>
 
               <div class="container-celle-design">
                 <p class="subtitle">Dosaggio:</p>
   
-                <input type="text" placeholder="placeholder">
+                <input type="text" name="t_dosaggio" placeholder="placeholder">
   
               </div>
 
               <div class="container-celle-design">
                 <p class="subtitle">Durata della terapia:</p>
   
-                <input type="text" placeholder="placeholder">
+                <input type="text" name="t_durata" placeholder="placeholder">
   
               </div>
 
@@ -8858,22 +8830,22 @@
                 <p class="subtitle" >Problemi cardiovascolari:</p>
                 
                 <div class="opzione-cella" style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="p_cardiovascolari">
                   <label for="si">Ipertensione arteriosa</label>
                 </div>
 
                 <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="p_cardiovascolari">
                   <label for="si">Infarto del miocardio</label>
                 </div>
 
                 <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="p_cardiovascolari">
                   <label for="si">Insufficienza cardiaca</label>
                 </div>
 
                 <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
+                  <input type="radio" id="si" name="p_cardiovascolari">
                   <label for="si">Altro (specificare):</label> 
                   <!-- Input da abilitare quando clicca altro -->
                   <input type="text" disabled>
@@ -8887,22 +8859,22 @@
               <p class="subtitle" >Una malattia metabolica:</p>
               
               <div class="opzione-cella" style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_metabolica">
                 <label for="si">Diabete mellito tipo 1</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_metabolica">
                 <label for="si"> Diabete mellito tipo 2</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_metabolica">
                 <label for="si"> Ipercolesterolemia</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_metabolica">
                 <label for="si">Altro (specificare):</label> 
                 <!-- Input da abilitare quando clicca altro -->
                 <input type="text" disabled>
@@ -8915,22 +8887,22 @@
               <p class="subtitle" >Problemi respiratori cronici:</p>
               
               <div class="opzione-cella" style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="p_respiratori_cronici">
                 <label for="si">Asma bronchiale</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="p_respiratori_cronici">
                 <label for="si">Broncopneumopatia cronica ostruttiva (BPCO)</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="p_respiratori_cronici">
                 <label for="si">Fibrosi polmonare</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="p_respiratori_cronici">
                 <label for="si">Altro:</label> 
                 <!-- Input da abilitare quando clicca altro -->
                 <input type="text" disabled>
@@ -8943,22 +8915,22 @@
               <p class="subtitle" >Una malattia neurologica:</p>
               
               <div class="opzione-cella" style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_neurologica">
                 <label for="si">Epilessia</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_neurologica">
                 <label for="si">Morbo di Parkinson</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_neurologica">
                 <label for="si">Ictus cerebrale</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_neurologica">
                 <label for="si">Altro:</label> 
                 <!-- Input da abilitare quando clicca altro -->
                 <input type="text" disabled>
@@ -8971,22 +8943,22 @@
               <p class="subtitle" >Una malattia endocrina:</p>
               
               <div class="opzione-cella" style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_endocrina">
                 <label for="si">Ipertiroidismo</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_endocrina">
                 <label for="si">Ipotiroidismo</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_endocrina">
                 <label for="si">Sindrome di Cushing</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_endocrina">
                 <label for="si">Altro:</label> 
                 <!-- Input da abilitare quando clicca altro -->
                 <input type="text" disabled>
@@ -8999,22 +8971,22 @@
               <p class="subtitle" >Una malattia autoimmune:</p>
               
               <div class="opzione-cella" style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_autoimmune">
                 <label for="si">Lupus eritematoso sistemico</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_autoimmune">
                 <label for="si">Artrite reumatoide</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_autoimmune">
                 <label for="si">Sclerosi multipla</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_autoimmune">
                 <label for="si">Altro:</label> 
                 <!-- Input da abilitare quando clicca altro -->
                 <input type="text" disabled>
@@ -9027,50 +8999,22 @@
               <p class="subtitle" >Problemi epatici:</p>
               
               <div class="opzione-cella" style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="p_epatici">
                 <label for="si">Cirrosi epatica</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="p_epatici">
                 <label for="si">Epatite cronica(B o C)</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="p_epatici">
                 <label for="si">Fegato grasso non alcolico (NAFLD)</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Altro:</label> 
-                <!-- Input da abilitare quando clicca altro -->
-                <input type="text" disabled>
-              </div>
-              
-            </div>
-
-            <div class="flex-container">
-
-              <p class="subtitle" >Problemi epatici:</p>
-              
-              <div class="opzione-cella" style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Cirrosi epatica</label>
-              </div>
-
-              <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Epatite cronica(B o C)</label>
-              </div>
-
-              <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Fegato grasso non alcolico (NAFLD)</label>
-              </div>
-
-              <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="p_epatici">
                 <label for="si">Altro:</label> 
                 <!-- Input da abilitare quando clicca altro -->
                 <input type="text" disabled>
@@ -9083,22 +9027,22 @@
               <p class="subtitle" >Una malattia renale:</p>
               
               <div class="opzione-cella" style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_renale">
                 <label for="si">Insufficienza renale cronica</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_renale">
                 <label for="si">Calcolosi renale ricorrente</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_renale">
                 <label for="si">Glomerulonefrite</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="m_renale">
                 <label for="si">Altro:</label> 
                 <!-- Input da abilitare quando clicca altro -->
                 <input type="text" disabled>
@@ -9111,22 +9055,22 @@
               <p class="subtitle" >Disturbi gastrointestinali significativi:</p>
               
               <div class="opzione-cella" style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="d_gastrointestinali">
                 <label for="si">Malattia da reflusso gastroesofageo (MRGE)</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="d_gastrointestinali">
                 <label for="si">Colite ulcerosa</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="d_gastrointestinali">
                 <label for="si">Morbo di Crohn</label>
               </div>
 
               <div class="opzione-cella"  style=" width: 28%; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 0; height: 4.2rem;"> 
-                <input type="radio" id="si" name="scelta" value="SI">
+                <input type="radio" id="si" name="d_gastrointestinali">
                 <label for="si">Altro:</label> 
                 <!-- Input da abilitare quando clicca altro -->
                 <input type="text" disabled>
@@ -9305,111 +9249,109 @@
           
           <h3 class="table-tittle">Esame Obbiettivo</h3>
             
-          <div class="container-content">
+          <div class="container-content" id="grid-container">
             
-            <div class="flex-container">
-
+            <div class="cella-content-grid">
                 <p class="subtitle">Aspetto generale:</p>
 
-                <div class="opzione-cella"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
-                  <label for="si">Ottimo</label>
-                </div>
-                <div class="opzione-cella"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
-                  <label for="si">Buono</label>
-                </div>
-                <div class="opzione-cella"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
-                  <label for="si">Discreto</label>
-                </div>
-                <div class="opzione-cella"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
-                  <label for="si">Scadente</label>
-                </div>
-                <div class="opzione-cella"> 
-                  <input type="radio" id="si" name="scelta" value="SI">
-                  <label for="si">Grave</label>
-                </div>
-
-             
-            
-            </div>  
-
-            <div class="flex-container">
-
+                <select name="a_generale" id="">
+                  <option>Ottimo</option>
+                  <option>Buono</option>
+                  <option>Discreto</option>
+                  <option>Scadente</option>
+                  <option>Grave</option>
+                </select>
+            </div>
+              
+            <div class="cella-content-grid">
               <p class="subtitle">Psiche:</p>
 
-              <div class="opzione-cella"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Vigile e cosciente</label>
-              </div>
-              <div class="opzione-cella"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Confuso</label>
-              </div>
-              <div class="opzione-cella"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Obnubilato</label>
-              </div>
-              <div class="opzione-cella"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Sonnolento</label>
-              </div>
-              <div class="opzione-cella"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Letargico</label>
-              </div>
+              <select name="psiche" id="">
+                <option>Vigile e cosciente</option>
+                <option>Confuso</option>
+                <option>Obnubilato</option>
+                <option>Sonnolento</option>
+                <option>Letargico</option>
+              </select>
+            </div>
 
-            </div>  
-
-            <div class="flex-container">
-
+            <div class="cella-content-grid">
               <p class="subtitle">Relazione con l’ambiente:</p>
 
-              <div class="opzione-cella"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Collaborante</label>
-              </div>
-              <div class="opzione-cella"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Non collaborante</label>
-              </div>
-              <div class="opzione-cella"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Orientato nello spazio e nel tempo</label>
-              </div>
-              <div class="opzione-cella"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Disorientato nello spazio e nel tempo</label>
-              </div>
+              <select name="r_ambiente" id="">
+                <option>Collaborante</option>
+                <option>Non collaborante</option>
+                <option>Orientato nello spazio e nel tempo</option>
+                <option>Disorientato nello spazio e nel tempo</option>
+              </select>
             </div>
-            
-            <div class="flex-container">
 
+            <div class="cella-content-grid">
               <p class="subtitle">Stato emotivo:</p>
 
-              <div class="opzione-cella"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Collaborante</label>
-              </div>
-              <div class="opzione-cella"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Non collaborante</label>
-              </div>
-              <div class="opzione-cella"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Orientato nello spazio e nel tempo</label>
-              </div>
-              <div class="opzione-cella"> 
-                <input type="radio" id="si" name="scelta" value="SI">
-                <label for="si">Disorientato nello spazio e nel tempo</label>
-              </div>
+              <select name="s_emotivo" id="">
+                <option>Tranquillo</option>
+                <option>Irritato</option>
+                <option>Delirante</option>
+                <option>Depressione</option>
+                <option>Ansia</option>
+                <option>Euforia</option>
+                <option>Allucinazioni</option>
+               
+              </select>
             </div>
 
+            <div class="cella-content-grid">
+              <p class="subtitle">Costituzione:</p>
+
+              <select name="costituzione" id="">
+                <option>Normotipica</option>
+                <option>Brachitipica</option>
+                <option>Longilinea</option>               
+              </select>
+            </div>
+           
+            <div class="cella-content-grid">
+              <p class="subtitle">Statura:</p>
+
+              <select name="statura" id="">
+                <option>Adeguata</option>
+                <option>Anormale per infantilismo</option>
+                <option>Anormale per nanismo armonico ipofisario</option> 
+                <option>Anormale per nanismo disarmonico tiroideo</option>  
+                <option>Anormale per nanismo disarmonico osseo</option>  
+                <option>Anormale per gigantismo acromegalico</option>   
+                <option>Aspetto marfanoide</option>             
+              </select>
+            </div>
+         
+            <div class="cella-content-grid">
+              <p class="subtitle">Stato nutrizionale:</p>
+
+              <select name="s_nutrizionale" id="">
+                <option>Eunutrito</option>
+                <option>Alterato per sovrappeso</option>
+                <option>Alterato per obesità androide</option> 
+                <option>Alterato per obesità ginoide</option>  
+                <option>Alterato per magrezza costituzionale</option>  
+                <option>Alterato per magrezza secondaria</option>   
+                <option>Cachessia</option>             
+              </select>
+            </div>
+            
+            <div class="cella-content-grid">
+              <p class="subtitle">Eloquio:</p>
+
+              <select name="eloquio" id="">
+                <option>Fluente e organizzato</option>
+                <option>Non fluente e disorganizzato</option>
+                <option>Disartria</option> 
+                <option>Disfasia</option>  
+                <option>Con frasi di senso compiuto</option>             
+              </select>
+            </div>
 
           </div>
-  
         </div>
 
 

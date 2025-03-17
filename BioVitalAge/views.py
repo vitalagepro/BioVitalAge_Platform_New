@@ -1595,7 +1595,6 @@ class InserisciPazienteView(View):
                         )
                         success = "Nuovo paziente salvato con successo!"
 
-
             if success:
                 context["success"] = success
 

@@ -313,3 +313,23 @@ td input {
     border: 1px solid #ddd;
     width: 70%;
 }
+
+#grid-container{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.cella-content-grid{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 10px;
+}
+.cella-content-grid select{
+   padding: 12px 20px;
+   border: 1px solid #ddd;
+   border-radius: 8px;
+   width: 70%;
+}
