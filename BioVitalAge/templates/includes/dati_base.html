@@ -90,12 +90,12 @@
 
             <div class="container-celle-design">
               <p class="subtitle">Professione: </p>
-              <textarea name="" id=""></textarea>
+              <input type="text" value="{{ persona.professione }}" disabled>
             </div>
 
             <div class="container-celle-design">
               <p class="subtitle">Pensionato:</p>
-              <input type="text" value="Si" disabled> <!-- Popolare Dinamicamente -->
+              <input type="text" value="{{ persona.pensionato }}" disabled> <!-- Popolare Dinamicamente -->
             </div>
           
           </div>
@@ -105,12 +105,12 @@
 
             <div class="container-celle-design">
               <p class="subtitle" style="padding-top: 0px; padding-bottom: 0px;">Età del menarca in anni: </p>
-              <input type="text" placeholder="Inserire il numero" disabled style="width: 75%;"> <!-- Popolare dinamicamente -->
+              <input type="text" value="{{ persona.menarca }}" placeholder="Inserire il numero" disabled style="width: 75%;"> <!-- Popolare dinamicamente -->
             </div>
 
             <div class="container-celle-design">
               <p class="subtitle">Ciclo:</p>
-              <input type="text" value="Regolare" disabled> <!-- Popolare Dinamicamente -->
+              <input type="text"  value="{{ persona.ciclo }}" disabled> <!-- Popolare Dinamicamente -->
             </div>
           </div>
 
@@ -120,13 +120,13 @@
               
               <div class="container-celle-design">
                 <p class="subtitle" style="padding-top: 0px; padding-bottom: 0px;">Età del menarca in anni: </p>
-                <input type="text" placeholder="Inserire il numero" disabled style="width: 75%;"> <!-- Popolare dinamicamente -->
+                <input type="text" value="{{ persona.esordio }}" placeholder="Inserire il numero" disabled style="width: 75%;"> <!-- Popolare dinamicamente -->
               </div>
             
             
               <div class="container-celle-design">
                 <p class="subtitle">Ciclo:</p>
-                <input type="text" value="Regolare" disabled> <!-- Popolare Dinamicamente -->
+                <input type="text" value="{{ persona.ciclo }}" disabled> <!-- Popolare Dinamicamente -->
               </div>
 
             </div>
@@ -138,23 +138,20 @@
               
               <div class="container-celle-design">
                 <p class="subtitle">Tipo di parto: </p>
-                <input type="text" placeholder="Naturale" disabled style="width: 75%;"> <!-- Popolare dinamicamente -->
+                <input type="text" value="{{ persona.parto }}" placeholder="Naturale" disabled style="width: 75%;"> <!-- Popolare dinamicamente -->
               </div>
 
               <div class="container-celle-design">
                 <p class="subtitle" style="padding-top: 0px; padding-bottom: 0px;">Complicanze post-parto:</p>
-                <input type="text" value="Inserisci Valore" disabled> <!-- Popolare Dinamicamente -->
+                <input type="text" value="{{ persona.post_parto }}" disabled> <!-- Popolare Dinamicamente -->
               </div>
           
               <div class="container-celle-design">
                 <p class="subtitle">Aborti:</p>
-                <input type="text" value="No" disabled> <!-- Popolare Dinamicamente -->
+                <input type="text"  value="{{ persona.aborto }}" disabled> <!-- Popolare Dinamicamente -->
               </div>
-
             </div>
           </div>
-
-          
         </div>
       </div>
 
@@ -300,7 +297,6 @@
       </section>  
 
       <!-- ANAMNESI  -->
-
       <div class="container-informazioni-personali">
         <div class="header-container">
           <h3>Anamnesi</h3>
@@ -320,54 +316,53 @@
           <p class="subtitle" style="width: 15rem;">Anamnesi Familiare:</p>
  
           <div class="grid-layout">
-
             <div class="field">
               <p>Malattie cardiache:</p>
-              <p id="whtr">Si</p>
+              <p id="whtr"> {{ persona.m_cardiache }}</p>
             </div>
             <div class="field">
               <p>Diabete mellito:</p>
-              <p id="whtr">Si</p>
+              <p id="whtr"> {{ persona.diabete_m }}</p>
             </div>
             <div class="field">
               <p>Ipertensione:</p>
-              <p id="whtr">Si</p>
+              <p id="whtr">{{ persona.ipertensione }}</p>
             </div>
             <div class="field">
               <p>Obesità:</p>
-              <p id="whtr">Si</p>
+              <p id="whtr">{{ persona.obesita }}</p>
             </div>
             <div class="field">
               <p>Epilessia:</p>
-              <p id="whtr">Si</p>
+              <p id="whtr">{{ persona.epilessia }}</p>
             </div>
             <div class="field">
               <p>Malattie tiroidee:</p>
-              <p id="whtr">Si</p>
+              <p id="whtr">{{ persona.m_tiroidee }}</p>
             </div>
             <div class="field">
               <p>Malattie polmonari:</p>
-              <p id="whtr">Si</p>
+              <p id="whtr">{{ persona.m_polmonari }}</p>
             </div>
             <div class="field">
               <p>Tumori:</p>
-              <p id="whtr">Si</p>
+              <p id="whtr">{{ persona.tumori }}</p>
             </div>
             <div class="field">
               <p>Asma/allergie:</p>
-              <p id="whtr">Si</p>
+              <p id="whtr">{{ persona.allergie }}</p>
             </div>
             <div class="field">
               <p>Malattie psichiatriche:</p>
-              <p id="whtr">Si</p>
-            </div>
-          
+              <p id="whtr">{{ persona.m_psichiatriche }}</p>
+            </div>   
           </div>
 
           <div class="flex-container">
 
             <div class="container-celle-design">
               <p class="subtitle" style="width: 18rem; padding-top: 0px; padding-bottom: 0px;">Anamnesi patologica prossima: </p>
+              
               <select name="patologie" id="">
                 <option value="">Malattie infettive</option>
                 <option value="">Neoplasie (tumori)</option>
@@ -393,15 +388,46 @@
             </div>
 
             <div class="container-celle-design">
-              <p class="subtitle">Pensionato:</p>
+              <p class="subtitle">Altro:</p>
               <input type="text" value="valore" disabled> <!-- Popolare Dinamicamente -->
             </div>
-  
+
+
+          </div>
+
+
+          <p style="font-weight: bold; margin-top: 20px;">Eventuali terapie in corso:</p>
+
+          <div class="flex-container">
+
             <div class="container-celle-design">
               <p class="subtitle" style="width: 18rem; padding-top: 0px; padding-bottom: 0px;">Eventuali Terapie in corso:</p>
               <input type="text" value="Si" disabled>  <!-- Popolare Dinamicamente -->
             </div>
 
+            <div class="container-celle-design">
+              <p class="subtitle">Farmaco:</p>
+
+              <input type="text" name="t_farmaco" placeholder="placeholder" value="{{ persona.t_farmaco }}">
+
+            </div>
+
+          </div>
+
+          <div class="flex-container">
+            <div class="container-celle-design">
+              <p class="subtitle">Dosaggio:</p>
+
+              <input type="text" name="t_dosaggio" placeholder="placeholder" value="{{ persona.t_dosaggio }}">
+
+            </div>
+
+            <div class="container-celle-design">
+              <p class="subtitle">Durata della terapia:</p>
+
+              <input type="text" name="t_durata" placeholder="placeholder" value="{{ persona.t_durata }}">
+
+            </div>
           </div>
 
           <p class="subtitle" style="width: 15rem; margin-top: 2rem;">Anamnesi patologica remota:</p>
@@ -410,40 +436,41 @@
 
             <div class="field">
               <p>Problemi cardiovascolari:</p>
-              <p id="whtr">placeholder</p>
+              <p id="whtr"> {{ persona.p_cardiovascolari }}</p>
             </div>
             <div class="field">
               <p>Una malattia metabolica:</p>
-              <p id="whtr">placeholder</p>
+              <p id="whtr"> {{ persona.m_metabolica }}</p>
             </div>
             <div class="field">
               <p>Problemi respiratori cronici:</p>
-              <p id="whtr">placeholder</p>
+              <p id="whtr"> {{ persona.p_respiratori_cronici }}</p>
             </div>
             <div class="field">
               <p>Una malattia neurologica:</p>
-              <p id="whtr">placeholder</p>
+              <p id="whtr"> {{ persona.m_neurologica }}</p>
             </div>
             <div class="field">
               <p>Una malattia endocrina:</p>
-              <p id="whtr">placeholder</p>
+              <p id="whtr"> {{ persona.m_endocrina  }}</p>
             </div>
             <div class="field">
               <p>Una malattia autoimmune:</p>
-              <p id="whtr">placeholder</p>
+              <p id="whtr"> {{ persona.m_autoimmune }}</p>
             </div>
             <div class="field">
               <p>Problemi epatici:</p>
-              <p id="whtr">placeholder</p>
+              <p id="whtr"> {{ persona.p_epatici }}</p>
             </div>
             <div class="field">
               <p>Una malattia renale:</p>
-              <p id="whtr">placeholder</p>
+              <p id="whtr"> {{ persona.m_renale }}</p>
             </div>
             <div class="field">
               <p>Disturbi gastrointestinali significativi:</p>
-              <p id="whtr">placeholder</p>
+              <p id="whtr"> {{ persona.d_gastrointestinali }}</p>
             </div>         
+          
           </div>
         </div>
       </div>
