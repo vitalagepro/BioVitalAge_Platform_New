@@ -21,15 +21,106 @@ function resetMonthLayout() {
 
 /* SETTING WEEK LAYOUT */
 weekLayoutBtn.addEventListener("click", () => {
-  monthLayoutBtn.classList.remove("active");
   weekLayoutBtn.classList.add("active");
+  monthLayoutBtn.classList.remove("active");
 
-  monthWeek.style.display = "none";
-  monthLayout.style.display = "none";
+  weekHead.style.display = "block";
+  weekLayoutContainer.style.display = "block";
+  monthHead.style.display = "none";
+  monthLayoutContainer.style.display = "none";
 
-  headWeek.style.display = "block";
-  weekLayout.style.display = "block";
+  // Ricarica gli appuntamenti nella vista settimanale
+  loadAppointments();
 });
+
+// Funzione per generare la vista settimanale
+function generateWeeklyAppointments(appointmentsByDate) {
+  console.log("📢 Popolamento vista settimanale con appuntamenti:", appointmentsByDate);
+
+  const weekCells = document.querySelectorAll(".cellaWeek");
+
+  // Pulisce tutte le celle prima di riempirle
+  weekCells.forEach(cell => cell.innerHTML = "");
+
+  // Scorri tutti gli appuntamenti e posizionali nella vista settimanale
+  Object.entries(appointmentsByDate.appointments).forEach(([date, appointments]) => {
+      const appointmentDate = new Date(date);
+      const weekDay = appointmentDate.getDay(); // 0 = Domenica, 6 = Sabato
+
+      // Filtra solo gli appuntamenti che rientrano nella settimana visualizzata
+      appointments.forEach(appointment => {
+          const { orario, tipologia_visita, id } = appointment;
+
+          // Ottieni ora e calcola la posizione nella griglia settimanale
+          const hour = parseInt(orario.split(":")[0], 10);
+          const rowIndex = hour - 9; // Supponendo che il calendario inizi alle 09:00
+
+          if (rowIndex >= 0 && rowIndex < weekCells.length / 7) {
+              const cellIndex = rowIndex * 7 + (weekDay - 1); // Calcola la posizione nella griglia
+
+              if (cellIndex >= 0 && cellIndex < weekCells.length) {
+                  const cell = weekCells[cellIndex];
+
+                  // Crea un nuovo box appuntamento
+                  const appointmentBox = document.createElement("div");
+                  appointmentBox.classList.add("appointment-box");
+                  appointmentBox.setAttribute("draggable", "true");
+                  appointmentBox.dataset.id = id;
+                  appointmentBox.innerHTML = `<span>${tipologia_visita} - ${orario.slice(0, 5)}</span>`;
+
+                  // Aggiunge il box nella cella giusta
+                  cell.appendChild(appointmentBox);
+
+                  // Abilita il drag & drop
+                  addDragAndDropEvents(appointmentBox);
+              }
+          }
+      });
+  });
+}
+
+// Funzione per abilitare il drag & drop
+function addDragAndDropEvents(appointmentBox) {
+  appointmentBox.addEventListener("dragstart", (e) => {
+      selectedAppointment = e.target;
+      e.dataTransfer.setData("text/plain", selectedAppointment.dataset.id);
+  });
+
+  document.querySelectorAll(".cellaWeek").forEach(cell => {
+      cell.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          cell.classList.add("drag-over");
+      });
+
+      cell.addEventListener("dragleave", () => {
+          cell.classList.remove("drag-over");
+      });
+
+      cell.addEventListener("drop", (e) => {
+          e.preventDefault();
+          cell.classList.remove("drag-over");
+
+          if (selectedAppointment) {
+              cell.appendChild(selectedAppointment);
+
+              // Recupera la nuova data e orario dalla cella settimanale
+              const dayIndex = [...cell.parentElement.children].indexOf(cell) % 7; // Ottieni il giorno della settimana
+              const hourIndex = Math.floor([...cell.parentElement.children].indexOf(cell) / 7); // Ottieni l'ora
+              
+              const newDate = new Date(currentDate);
+              newDate.setDate(newDate.getDate() - newDate.getDay() + 1 + dayIndex); // Calcola la data corretta
+              const newTime = `${String(9 + hourIndex).padStart(2, "0")}:00`;
+
+              // Aggiorna l'appuntamento nel database
+              updateAppointmentDate(selectedAppointment.dataset.id, newDate.toISOString().split('T')[0], newTime);
+
+              selectedAppointment = null;
+          }
+      });
+  });
+}
+
+
 
 /* SETTING MONTH LAYOUT */
 monthLayoutBtn.addEventListener("click", () => {
@@ -99,6 +190,9 @@ function loadAppointments() {
           );
         }
       });
+
+      // Genera la vista settimanale
+      generateWeeklyAppointments(appointmentsByDate);
     })
     .catch((error) =>
       console.error("❌ Errore nel caricamento appuntamenti:", error)
@@ -1511,25 +1605,48 @@ document
 document.querySelectorAll('[title="add-user"]').forEach((btn) => {
   btn.addEventListener("click", function (e) {
     e.stopPropagation(); // Evita chiusure accidentali della modale principale
-
-    // Mostra la sopramodale
+    
+    // 1. Mostra l'overlay subito (senza animazioni)
     let addUserModal = document.getElementById("addUserModal");
     addUserModal.classList.remove("hidden-user-modal");
-
-    // Disabilita temporaneamente l'interazione con la modale principale
+    
+    // 2. Anima solo il contenuto interno con GSAP
+    gsap.fromTo(
+      ".modal-content-user",
+      { opacity: 0, y: -50 },   // stato iniziale
+      { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" } // stato finale
+    );
+    
+    // Disabilita la modale principale finché è aperta la "seconda" modale
     document.getElementById("appointmentModal").style.pointerEvents = "none";
   });
 });
+
 
 // Chiudi la seconda modale senza chiudere la principale
 document
   .getElementById("closeAddUserModal")
   .addEventListener("click", function () {
-    let addUserModal = document.getElementById("addUserModal");
-    addUserModal.classList.add("hidden-user-modal");
+    // Prima animiamo il contenuto .modal-content-user con GSAP
+    gsap.to(".modal-content-user", {
+      opacity: 0,
+      y: -50,
+      duration: 0.3,
+      ease: "power2.out",
+      onComplete: () => {
+        // Al termine dell'animazione, aggiungi la classe che nasconde la modale
+        let addUserModal = document.getElementById("addUserModal");
+        addUserModal.classList.add("hidden-user-modal");
+        
+        // Riattiva la modale principale
+        document.getElementById("appointmentModal").style.pointerEvents = "auto";
 
-    // Riattiva la modale principale
-    document.getElementById("appointmentModal").style.pointerEvents = "auto";
+        // Facoltativo: se vuoi che, alla prossima apertura,
+        // la modal parta di nuovo da opacity:0, y:-50,
+        // reimposta subito questi valori:
+        gsap.set(".modal-content-user", { opacity: 1, y: 0 });
+      }
+    });
   });
 
 // Impedisce la chiusura della modale principale quando si clicca dentro la seconda
@@ -1732,12 +1849,12 @@ document.addEventListener("DOMContentLoaded", function () {
 // Gestione input animati form
 document.querySelectorAll(".input-container input").forEach((input) => {
   input.addEventListener("focus", function () {
-    this.previousElementSibling.classList.add("active");
+    this.previousElementSibling.classList.add("active-label");
   });
 
   input.addEventListener("blur", function () {
     if (this.value === "") {
-      this.previousElementSibling.classList.remove("active");
+      this.previousElementSibling.classList.remove("active-label");
     }
   });
 });

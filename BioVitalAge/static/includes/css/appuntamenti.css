@@ -406,7 +406,7 @@ input[type='time'] {
  }
 
  /* Quando l'input è attivo o contiene un valore, il label si solleva */
- .active {
+ .active-label {
      top: 0px !important;
      font-weight: bold;
      color: var(--contrast-color2);
@@ -532,7 +532,7 @@ input[type='time'] {
     color: var(--contrast-color);
 }
 
-.layout-option .active {
+.active {
     background-color: var(--contrast-color2);
     color: white;
 }
@@ -689,18 +689,6 @@ input[type='time'] {
 }
 
 /* STYLE WEEK LAYOUT */
-.appointment-box {
-    background-color: #3a255d;
-    /* Mantiene il colore */
-    color: #fff;
-    padding: 5px;
-    margin-top: 3px;
-    font-size: 0.75rem;
-    border-radius: 4px;
-    text-align: center;
-    transition: transform 0.2s ease-out;
-}
-
 .appointment-box.dragging {
     opacity: 1 !important;
     /* Mantiene l'opacità */
