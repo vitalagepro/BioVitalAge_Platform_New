@@ -66,7 +66,7 @@ function generateWeeklyAppointments(appointmentsByDate) {
                   appointmentBox.classList.add("appointment-box");
                   appointmentBox.setAttribute("draggable", "true");
                   appointmentBox.dataset.id = id;
-                  appointmentBox.innerHTML = `<span>${tipologia_visita} - ${orario.slice(0, 5)}</span>`;
+                  appointmentBox.innerHTML = `<span style="flex: 1 1 0%">${tipologia_visita} - ${orario.slice(0, 5)}</span><button class="delete-appointment" data-id="${id}">&times;</button>`;
 
                   // Aggiunge il box nella cella giusta
                   cell.appendChild(appointmentBox);
@@ -844,11 +844,28 @@ document.addEventListener("DOMContentLoaded", () => {
       const appointmentsContainer = document.createElement("div");
       appointmentsContainer.classList.add("appointments-container");
 
+      const holidays = [
+        `${year}-01-01`, // Capodanno
+        `${year}-12-25`, // Natale
+        `${year}-12-31`  // San Silvestro (opzionale)
+      ];
+
       // Controlla se la data della cella è passata
       const cellDate = new Date(year, month, day);
       cellDate.setHours(0, 0, 0, 0);
       if (cellDate < today) {
         cella.classList.add("past-day");
+      }
+
+      // Controlla se la data della cella è oggi
+      if (cellDate.getTime() === today.getTime()) {
+        cella.classList.add("present-day");
+      }
+
+      // Controlla se la data della cella è una festività
+      const formattedCellDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      if (holidays.includes(formattedCellDate)) {
+          cella.classList.add("holiday-day");
       }
 
       // Aggiungi listener per drag & drop e per il click solo se la cella non è passata

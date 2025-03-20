@@ -578,7 +578,7 @@ input[type='time'] {
     color: #fff;
     padding: 5px;
     margin-top: 5px;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     border-radius: 4px;
     text-align: center;
     cursor: grab;
@@ -660,6 +660,14 @@ input[type='time'] {
     cursor: pointer;
 }
 
+.holiday-day{
+    background-color: #8B0000;
+}
+
+.present-day{
+    background-color: #ddd;
+}
+
 .past-day p{
     color: rgba(0, 0, 0, 0.418);
 }
@@ -667,10 +675,6 @@ input[type='time'] {
 .past-day .appointment-box{
     background-color: var(--neutral-range-color) !important;
     opacity: 0.5;
-}
-
-.today{
-    background: #ddd;
 }
 
 .data {
