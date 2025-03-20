@@ -1,3 +1,18 @@
+* p,
+* input,
+* select{
+    font-family: 'Poppins', sans-serif !important;
+}
+* h3{
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 23px !important;
+    font-weight: 600 !important;
+}
+* span{
+    font-family: 'Montserrat', sans-serif !important;
+}
+  
+
 .form-container {
     width: 100%;
     margin: auto;
@@ -332,4 +347,36 @@ td input {
    border: 1px solid #ddd;
    border-radius: 8px;
    width: 70%;
+}
+
+
+
+.container-title{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 0px 20px 0px;
+}
+.container-title img{
+    width: 40px;
+    height: 40px;
+    margin-top: -1.5rem;
+}
+.container-title h3{
+    color: var(--contrast-color);
+}
+.toolkit{
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+#prevStep,
+#nextStep{
+    height: 3rem;
+    margin-top: 0.8rem;
 }
