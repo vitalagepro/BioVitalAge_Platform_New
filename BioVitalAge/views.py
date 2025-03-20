@@ -2,6 +2,7 @@ from datetime import date, datetime
 from django.utils.dateparse import parse_date, parse_time
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.timezone import now
 from django.views import View
 from .models import *
 from .utils import calculate_biological_age, CalcoloPunteggioCapacitaVitale
@@ -1410,7 +1411,6 @@ class DatiBaseView(View):
             # Salva le modifiche solo se c'è un form valido
             if form_id:
                 persona.save()
-                print(f"Modifiche salvate per {form_id}")
             else:
                 print("Errore: form_id non ricevuto o non valido")
 
@@ -1665,167 +1665,148 @@ class ComposizioneView(View):
 
         return render(request, "includes/composizione.html", context)
 
-def dettaglio_paziente(request, id):
-    try:
-        paziente = TabellaPazienti.objects.get(id=id)
-    except TabellaPazienti.DoesNotExist:
-        return redirect('pagina_errore')  # Gestione dell'errore se il paziente non esiste
+class UpdatePersonaContactView(View):
+    def post(self, request, id):
+        if request.method == "POST":
+            try:
+                # Estrai il corpo della richiesta
+                data = json.loads(request.body)
+                cap = data.get("cap")
+                province = data.get("province")
+                residence = data.get("residence")
+                email = data.get("email")
+                phone = data.get("phone")
+                associate_staff = data.get("associate_staff")
+                lastVisit = data.get("lastVisit")
+                upcomingVisit = data.get("upcomingVisit")
+                blood_group = data.get("blood_group")
 
-    # Aggiungi valori di default se email o telefono non sono disponibili
-    email = getattr(paziente, 'email', "Not provided")
-    phone = getattr(paziente, 'phone', "Not provided")
+                # Recupera il modello e aggiorna i dati
+                from .models import TabellaPazienti  # Sostituisci con il tuo modello
+                persona = TabellaPazienti.objects.get(id=id)
+                persona.cap = cap
+                persona.residence = residence
+                persona.province = province
+                persona.email = email
+                persona.phone = phone
+                persona.associate_staff = associate_staff
+                persona.lastVisit = lastVisit
+                persona.upcomingVisit = upcomingVisit
+                persona.blood_group = blood_group
+                persona.save()  # Salva le modifiche nel database
 
-    context = {
-        'persona': paziente,
-        'email': email,
-        'phone': phone,
-    }
-    return render(request, 'nome_del_tuo_template.html', context)
+                # print(f"Persona {id} aggiornata con email: {email}, telefono: {phone}, associate_staff: {associate_staff}, lastVisit: {lastVisit}, upcomingVisit: {upcomingVisit}, blood_group: {blood_group}")
 
-@csrf_exempt  
-def update_persona_contact(request, id):
-    if request.method == "POST":
-        try:
-            # Estrai il corpo della richiesta
-            data = json.loads(request.body)
-            cap = data.get("cap")
-            province = data.get("province")
-            residence = data.get("residence")
-            email = data.get("email")
-            phone = data.get("phone")
-            associate_staff = data.get("associate_staff")
-            lastVisit = data.get("lastVisit")
-            upcomingVisit = data.get("upcomingVisit")
-            blood_group = data.get("blood_group")
-
-            # Recupera il modello e aggiorna i dati
-            from .models import TabellaPazienti 
-            persona = TabellaPazienti.objects.get(id=id)
-            persona.cap = cap
-            persona.residence = residence
-            persona.province = province
-            persona.email = email
-            persona.phone = phone
-            persona.associate_staff = associate_staff
-            persona.lastVisit = lastVisit
-            persona.upcomingVisit = upcomingVisit
-            persona.blood_group = blood_group
-            persona.save() 
-
-            # print(f"Persona {id} aggiornata con email: {email}, telefono: {phone}, associate_staff: {associate_staff}, lastVisit: {lastVisit}, upcomingVisit: {upcomingVisit}, blood_group: {blood_group}")
-
-            return JsonResponse({"success": True})
-        except TabellaPazienti.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Persona non trovata"})
-        except json.JSONDecodeError:
-            return JsonResponse({"success": False, "error": "JSON non valido"})
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
-    else:
-        return JsonResponse({"success": False, "error": "Metodo non valido"})
+                return JsonResponse({"success": True})
+            except TabellaPazienti.DoesNotExist:
+                return JsonResponse({"success": False, "error": "Persona non trovata"})
+            except json.JSONDecodeError:
+                return JsonResponse({"success": False, "error": "JSON non valido"})
+            except Exception as e:
+                return JsonResponse({"success": False, "error": str(e)})
+        else:
+            return JsonResponse({"success": False, "error": "Metodo non valido"})
 
 # Funzione per aggiornare i dati di una persona in composizione corpo
-@csrf_exempt
-def update_persona_composizione(request, id):
-    try:
-        persona = TabellaPazienti.objects.get(id=id)
-    except TabellaPazienti.DoesNotExist:
-        return JsonResponse({"success": False, "error": "Persona non trovata"}, status=404)
-
-    if request.method == "GET":
-        # ✅ Manteniamo tutti i dati della persona
-        data = {
-            "success": True,
-            "personaComposizione": {
-                "height": persona.height,
-                "weight": persona.weight,
-                "bmi": persona.bmi,
-                "bmi_detection_date": persona.bmi_detection_date,
-                "girth_value": persona.girth_value,
-                "girth_notes": persona.girth_notes,
-                "girth_date": persona.girth_date,
-                "sport_frequency": persona.sport_frequency,
-                "livello_sedentarieta": persona.livello_sedentarieta,
-                "grasso": persona.grasso,
-                "acqua": persona.acqua,
-                "massa_ossea": persona.massa_ossea,
-                "massa_muscolare": persona.massa_muscolare,
-                "bmr": persona.bmr,
-                "eta_metabolica": persona.eta_metabolica,
-                "grasso_viscerale": persona.grasso_viscerale,
-                "whr": persona.whr,
-                "whtr": persona.whtr,
-                "punteggio_fisico": persona.punteggio_fisico,
-                "storico_punteggi": persona.storico_punteggi or [],  # ✅ Restituiamo anche lo storico
-            },
-        }
-        return JsonResponse(data)
-
-    elif request.method == "POST":
+class UpdatePersonaComposizioneView(View):
+    def get(self, request, id):
         try:
-            data = json.loads(request.body)
-            campi_da_aggiornare = []
+            persona = TabellaPazienti.objects.get(id=id)
+        except TabellaPazienti.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Persona non trovata"}, status=404)
 
-            # ✅ Controllo per il reset dello storico punteggi
-            if data.get("reset_storico_punteggi", False):
-                persona.storico_punteggi = []  # ✅ Resetta lo storico
-                persona.punteggio_fisico = None  # ✅ Reset del punteggio attuale
-                persona.save(update_fields=["storico_punteggi", "punteggio_fisico"])
+        if request.method == "GET":
+            # ✅ Manteniamo tutti i dati della persona
+            data = {
+                "success": True,
+                "personaComposizione": {
+                    "height": persona.height,
+                    "weight": persona.weight,
+                    "bmi": persona.bmi,
+                    "bmi_detection_date": persona.bmi_detection_date,
+                    "girth_value": persona.girth_value,
+                    "girth_notes": persona.girth_notes,
+                    "girth_date": persona.girth_date,
+                    "sport_frequency": persona.sport_frequency,
+                    "livello_sedentarieta": persona.livello_sedentarieta,
+                    "grasso": persona.grasso,
+                    "acqua": persona.acqua,
+                    "massa_ossea": persona.massa_ossea,
+                    "massa_muscolare": persona.massa_muscolare,
+                    "bmr": persona.bmr,
+                    "eta_metabolica": persona.eta_metabolica,
+                    "grasso_viscerale": persona.grasso_viscerale,
+                    "whr": persona.whr,
+                    "whtr": persona.whtr,
+                    "punteggio_fisico": persona.punteggio_fisico,
+                    "storico_punteggi": persona.storico_punteggi or [],  # ✅ Restituiamo anche lo storico
+                },
+            }
+            return JsonResponse(data)
+
+        elif request.method == "POST":
+            try:
+                data = json.loads(request.body)
+                campi_da_aggiornare = []
+
+                # ✅ Controllo per il reset dello storico punteggi
+                if data.get("reset_storico_punteggi", False):
+                    persona.storico_punteggi = []  # ✅ Resetta lo storico
+                    persona.punteggio_fisico = None  # ✅ Reset del punteggio attuale
+                    persona.save(update_fields=["storico_punteggi", "punteggio_fisico"])
+                    return JsonResponse({"success": True})
+
+                # ✅ Aggiorna tutti gli altri campi se presenti
+                for field in [
+                    "height", "weight", "bmi", "bmi_detection_date",
+                    "girth_value", "girth_notes", "girth_date", "sport_frequency",
+                    "livello_sedentarieta", "grasso", "acqua", "massa_ossea",
+                    "massa_muscolare", "bmr", "eta_metabolica", "grasso_viscerale",
+                    "whr", "whtr"
+                ]:
+                    if field in data:
+                        setattr(persona, field, data[field])
+                        campi_da_aggiornare.append(field)
+
+                # ✅ Gestione del punteggio fisico
+                if "punteggio_fisico" in data:
+                    try:
+                        nuovo_punteggio = int(data["punteggio_fisico"])  # ✅ Conversione a int
+                    except ValueError:
+                        return JsonResponse({"success": False, "error": "Punteggio non valido"}, status=400)
+
+                    if not (1 <= nuovo_punteggio <= 9):
+                        return JsonResponse({"success": False, "error": "Punteggio fuori range"}, status=400)
+
+                    # ✅ Se il punteggio è cambiato, aggiorniamo lo storico
+                    if persona.punteggio_fisico != nuovo_punteggio:
+                        if not isinstance(persona.storico_punteggi, list):
+                            persona.storico_punteggi = []  # ✅ Inizializza se non esiste
+
+                        # ✅ Aggiunge il nuovo punteggio con data
+                        persona.storico_punteggi.append({
+                            "punteggio": nuovo_punteggio,
+                            "data": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        })
+
+                        # ✅ Aggiorniamo il punteggio attuale
+                        persona.punteggio_fisico = nuovo_punteggio
+                        campi_da_aggiornare.append("punteggio_fisico")
+                        campi_da_aggiornare.append("storico_punteggi")
+
+                # ✅ Salva solo i campi aggiornati
+                if campi_da_aggiornare:
+                    persona.save(update_fields=campi_da_aggiornare)
+
                 return JsonResponse({"success": True})
 
-            # ✅ Aggiorna tutti gli altri campi se presenti
-            for field in [
-                "height", "weight", "bmi", "bmi_detection_date",
-                "girth_value", "girth_notes", "girth_date", "sport_frequency",
-                "livello_sedentarieta", "grasso", "acqua", "massa_ossea",
-                "massa_muscolare", "bmr", "eta_metabolica", "grasso_viscerale",
-                "whr", "whtr"
-            ]:
-                if field in data:
-                    setattr(persona, field, data[field])
-                    campi_da_aggiornare.append(field)
+            except json.JSONDecodeError:
+                return JsonResponse({"success": False, "error": "JSON non valido"}, status=400)
+            except Exception as e:
+                return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-            # ✅ Gestione del punteggio fisico
-            if "punteggio_fisico" in data:
-                try:
-                    nuovo_punteggio = int(data["punteggio_fisico"])  # ✅ Conversione a int
-                except ValueError:
-                    return JsonResponse({"success": False, "error": "Punteggio non valido"}, status=400)
-
-                if not (1 <= nuovo_punteggio <= 9):
-                    return JsonResponse({"success": False, "error": "Punteggio fuori range"}, status=400)
-
-                # ✅ Se il punteggio è cambiato, aggiorniamo lo storico
-                if persona.punteggio_fisico != nuovo_punteggio:
-                    if not isinstance(persona.storico_punteggi, list):
-                        persona.storico_punteggi = []  # ✅ Inizializza se non esiste
-
-                    # ✅ Aggiunge il nuovo punteggio con data
-                    persona.storico_punteggi.append({
-                        "punteggio": nuovo_punteggio,
-                        "data": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    })
-
-                    # ✅ Aggiorniamo il punteggio attuale
-                    persona.punteggio_fisico = nuovo_punteggio
-                    campi_da_aggiornare.append("punteggio_fisico")
-                    campi_da_aggiornare.append("storico_punteggi")
-
-            # ✅ Salva solo i campi aggiornati
-            if campi_da_aggiornare:
-                persona.save(update_fields=campi_da_aggiornare)
-
-            return JsonResponse({"success": True})
-
-        except json.JSONDecodeError:
-            return JsonResponse({"success": False, "error": "JSON non valido"}, status=400)
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-    else:
-        return JsonResponse({"success": False, "error": "Metodo non valido"}, status=405)
-
-
+        else:
+            return JsonResponse({"success": False, "error": "Metodo non valido"}, status=405)
 
 
 # VIEWS PER CALCOLO CAPACITA', SEZIONE CAPACITA' VITALE
@@ -2221,9 +2202,10 @@ class StampaRefertoView(View):
 
 
 # Referto View
-def referti_view(request, referto_id):
-    referto = ArchivioReferti.objects.get(id=referto_id)
-    return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
+class RefertoView(View):
+    def get(self, request, referto_id):
+        referto = ArchivioReferti.objects.get(id=referto_id)
+        return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
 
 #PRESCRIZIONI VIEW
 class PrescrizioniView(View):
@@ -2262,10 +2244,6 @@ class PrescrizioniView(View):
             )
 
         return redirect('cartella_paziente', persona_id)
- 
-
-
-
 
 #VIEWS APPUNTAMENTI
 class AppuntamentiView(View):
@@ -2274,87 +2252,226 @@ class AppuntamentiView(View):
         persone = TabellaPazienti.objects.all().order_by('-id')
         appuntamenti = Appointment.objects.all().order_by('-id')
 
+
         # Ottieni le opzioni definite nei choices
         tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
         numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
-        voce_prezzario = [choice[0] for choice in Appointment._meta.get_field('voce_prezzario').choices]
-        durata = [choice[0] for choice in Appointment._meta.get_field('durata').choices]
+        voce_prezzario = Appointment._meta.get_field('voce_prezzario').choices
 
         context = {
             'dottore': dottore,
             'persone': persone,
             'appuntamenti': appuntamenti,
             'tipologia_appuntamenti': tipologia_appuntamenti,
-            'numero_studio': numero_studio,
             'voce_prezzario': voce_prezzario,
-            'durata': durata
+            'numero_studio': numero_studio,
         }
 
         return render(request, 'includes/Appuntamenti.html', context)
     
+# VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
+class AppuntamentiSalvaView(View):
+    def post(self, request):
+        if request.method == "POST":
+            try:
+                body_raw = request.body.decode('utf-8')
 
-@csrf_exempt
-def salva_appuntamento(request):
-    if request.method == "POST":
+                data = json.loads(body_raw)
+
+                # Recuperiamo i dati, facendo attenzione ai valori mancanti
+                giorno = data.get("giorno", "").strip()
+                data_appointment = data.get("data", "").strip()
+                time_appointment = data.get("orario", "").strip()
+                voce_prezzario = data.get("voce_prezzario", "").strip()
+                durata = data.get("durata", "").strip()
+
+                if not time_appointment:
+                    print("❌ ERRORE: Il campo 'orario' è mancante o vuoto!")
+
+                # Creazione dell'appuntamento
+                Appointment.objects.create(
+                    tipologia_visita=data.get("tipologia_visita"),
+                    nome_paziente=data.get("nome_paziente"),
+                    cognome_paziente=data.get("cognome_paziente"),
+                    numero_studio=data.get("numero_studio"),
+                    note=data.get("note"),
+                    giorno=giorno,
+                    data=data_appointment,
+                    orario=time_appointment,
+                    voce_prezzario=voce_prezzario,  # 🔹 Ora viene salvato
+                    durata=durata,  # 🔹 Ora viene salvata
+                )
+
+                return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!", 'clear_form': True})
+
+            except json.JSONDecodeError as e:
+                print(f"❌ ERRORE JSON: {str(e)}")
+                return JsonResponse({"success": False, "error": "Formato JSON non valido"}, status=400)
+            except Exception as e:
+                print(f"❌ ERRORE GENERICO: {str(e)}")
+                return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+        return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
+
+# VIEWS SINGLE APPOINTMENT
+class GetSingleAppointmentView(View):
+    def get(self, request, appointment_id):
+        """Recupera i dettagli di un singolo appuntamento"""
         try:
-            body_raw = request.body.decode('utf-8')
-            print(f"📥 Body ricevuto: {body_raw}")  # Debug
+            appointment = Appointment.objects.get(id=appointment_id)
 
-            data = json.loads(body_raw)
-            print(f"📤 Dati JSON convertiti: {data}")  # Debug
+            response_data = {
+                "success": True,
+                "id": appointment.id,
+                "nome_paziente": appointment.nome_paziente,
+                "cognome_paziente": appointment.cognome_paziente,
+                "giorno": appointment.giorno,
+                "data": appointment.data.strftime("%Y-%m-%d"),
+                "numero_studio": appointment.numero_studio or "",  # Se è null, assegna ""
+                "note": appointment.note or "",  # Se è null, assegna ""
+                "voce_prezzario": appointment.voce_prezzario or "",  # Se è null, assegna ""
+                "tipologia_visita": appointment.tipologia_visita or "",  # Se è null, assegna ""
+                "orario": str(appointment.orario)[:5],  # Formattato in HH:mm
+                "durata": appointment.durata or "",  # Se è null, assegna ""
+            }
 
-            giorno = data.get("giorno", "").strip()
-            data_appointment = data.get("data", "").strip()
-            time_appointment = data.get("time", "").strip()
-
-            if not time_appointment:
-                print("❌ ERRORE: Il campo 'orario' è mancante o vuoto!")
-
-            # Creazione dell'appuntamento
-            appuntamento = Appointment.objects.create(
-                tipologia_visita=data.get("tipologia_visita"),
-                nome_paziente=data.get("nome_paziente"),
-                cognome_paziente=data.get("cognome_paziente"),
-                numero_studio=data.get("numero_studio"),
-                note=data.get("note"),
-                giorno=giorno,  # 🛠️ Aggiunto nuovo campo
-                data=data_appointment,  # 🛠️ Aggiunto nuovo campo
-                orario=time_appointment,  # 🛠️ Aggiunto nuovo campo
-            )
-
-            print(f"✅ Appuntamento creato con ID: {appuntamento.id}")
-            return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!"})
-
-        except json.JSONDecodeError as e:
-            print(f"❌ ERRORE JSON: {str(e)}")
-            return JsonResponse({"success": False, "error": "Formato JSON non valido"}, status=400)
+            return JsonResponse(response_data)
+        except Appointment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
         except Exception as e:
-            print(f"❌ ERRORE GENERICO: {str(e)}")
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-    return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
-
-
-def get_appointments(request):
-    """
-    Ritorna tutti gli appuntamenti nel formato JSON per il calendario.
-    """
-    appointments = Appointment.objects.all()
-    
-    # Creiamo un dizionario dove ogni data ha una lista di appuntamenti
-    appointments_by_date = {}
-    
-    for appt in appointments:
-        date_str = appt.data.strftime("%Y-%m-%d")  # Converte la data in stringa YYYY-MM-DD
-        if date_str not in appointments_by_date:
-            appointments_by_date[date_str] = []  # Inizializza lista se non esiste
+# VIEWS GET ALL APPOINTMENTS
+class AppuntamentiGetView(View):
+    def get(self, request):
+        """Recupera gli appuntamenti futuri ed elimina quelli passati"""
         
-        appointments_by_date[date_str].append({
-            "tipologia_visita": appt.tipologia_visita,
-            "orario": appt.orario.strftime("%H:%M")  # Converte l'orario in HH:MM
-        })
-    
-    return JsonResponse(appointments_by_date, safe=False)
+        # 📌 1. Ottenere la data di oggi senza ore/minuti/secondi
+        today = now().date()
+
+        # 📌 2. Eliminare gli appuntamenti con data precedente a oggi
+        deleted_count, _ = Appointment.objects.filter(data__lt=today).delete()  # Cambiato "date" in "data"
+
+        # 📌 3. Recuperare solo gli appuntamenti futuri o di oggi
+        future_appointments = Appointment.objects.filter(data__gte=today)  # Cambiato "date" in "data"
+
+        # 📌 4. Costruire il dizionario degli appuntamenti organizzati per data
+        appointments_by_date = {}
+        for appointment in future_appointments:
+            date_str = appointment.data.strftime("%Y-%m-%d")  # Formattazione YYYY-MM-DD
+            if date_str not in appointments_by_date:
+                appointments_by_date[date_str] = []
+            appointments_by_date[date_str].append({
+                "id": appointment.id,
+                "nome_paziente": appointment.nome_paziente,
+                "cognome_paziente": appointment.cognome_paziente,
+                "giorno": appointment.giorno,
+                "data": appointment.data,
+                "numero_studio": appointment.numero_studio,
+                "note": appointment.note,
+                "voce_prezzario": appointment.voce_prezzario,
+                "tipologia_visita": appointment.tipologia_visita,
+                "orario": appointment.orario,
+            })
+
+        return JsonResponse({"success": True, "deleted": deleted_count, "appointments": appointments_by_date})
+
+# VIEWS UPDATE APPOINTMENT
+class UpdateAppointmentView(View):
+    def patch(self, request, appointment_id):
+        try:
+            data = json.loads(request.body)
+
+            appointment = Appointment.objects.get(id=appointment_id)
+            if "new_date" in data:
+                appointment.data = data["new_date"]  # Corretto: "data" invece di "date"
+            if "tipologia_visita" in data:
+                appointment.tipologia_visita = data["tipologia_visita"]
+            if "orario" in data:
+                appointment.orario = data["orario"]
+            if "numero_studio" in data:
+                appointment.numero_studio = data["numero_studio"]
+            if "voce_prezzario" in data:
+                appointment.voce_prezzario = data["voce_prezzario"]
+            if "note" in data:
+                appointment.note = data["note"]
+
+            appointment.save()
+
+            return JsonResponse({"success": True, "message": "Appuntamento aggiornato!"})
+        except Appointment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+# VIEWS APPROVE APPOINTMENT
+class ApproveAppointmentView(View):
+    def approve_appointment(self, request, appointment_id):
+        if request.method == "POST":
+            appointment = get_object_or_404(Appointment, id=appointment_id)
+            appointment.confermato = True  # Segna l'appuntamento come confermato
+            appointment.save()
+            return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
+        return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
+
+# VIEWS DELETE APPOINTMENT
+@method_decorator(csrf_exempt, name='dispatch')  # 👈 Disabilita CSRF per questa view
+class DeleteAppointmentView(View):
+    def delete(self, request, appointment_id):
+        try:
+            appointment = Appointment.objects.get(id=appointment_id)
+            appointment.delete()
+            return JsonResponse({"success": True, "message": "Appuntamento eliminato con successo!"})
+        except Appointment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+
+#VIEW CREATE PATIENT FROM SECOND MODAL
+class CreaPazienteView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            print("📥 Dati ricevuti dal frontend:", data)  # DEBUG
+
+            name = data.get("name", "").strip()
+            surname = data.get("surname", "").strip()
+            phone = data.get("phone", "").strip()
+            email = data.get("email", "").strip()  # Assumendo che tu abbia il campo email nel modello
+            dottore_id = request.session.get('dottore_id')
+
+            if not name or not surname:
+                print("⚠ Errore: Nome e cognome obbligatori")  # DEBUG
+                return JsonResponse({"success": False, "error": "Nome e cognome sono obbligatori!"}, status=400)
+
+            if not dottore_id:
+                print("⚠ Errore: dottore_id mancante!")  # DEBUG
+                return JsonResponse({"success": False, "error": "Devi essere autenticato per aggiungere un paziente."}, status=403)
+
+            # Creazione paziente
+            paziente = TabellaPazienti.objects.create(
+                name=name,
+                surname=surname,
+                phone=phone,
+                email=email  # Assumendo che email esista nel modello
+            )
+            print(f"✅ Paziente {paziente.id} salvato: {paziente.name} {paziente.surname}, {paziente.email}")  # DEBUG
+
+            return JsonResponse({
+                "success": True,
+                "message": "Paziente aggiunto con successo!",
+                "id": paziente.id,
+                "full_name": f"{paziente.name} {paziente.surname}"
+            })
+
+        except json.JSONDecodeError:
+            print("❌ Errore JSON ricevuto nel backend!")  # DEBUG
+            return JsonResponse({"success": False, "error": "Formato JSON non valido."}, status=400)
+
+        except Exception as e:
+            print(f"❌ Errore nel backend: {e}")  # DEBUG
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 
 

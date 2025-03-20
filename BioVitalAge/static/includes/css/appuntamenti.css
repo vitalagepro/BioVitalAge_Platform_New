@@ -67,7 +67,8 @@
     stroke: white;
 }
 
-input[type='date'] {
+input[type='date'],
+input[type='time'] {
     padding: 8px 20px;
     border: none;
     background-color: var(--card-color);
@@ -91,7 +92,11 @@ input[type='date'] {
 
 
 
-
+/* ! Button 'Appuntamento' */
+.button{
+    border-radius: 5px;
+    padding: 0.5rem 1.5rem;
+}
 
 
 
@@ -204,6 +209,13 @@ input[type='date'] {
     color: var(--contrast-color);
 }
 
+#edit-date-container{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
 .input-typology{
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -308,6 +320,191 @@ input[type='date'] {
 
 
 
+
+
+
+
+
+ /* Stile per la seconda modale */
+
+ /* Stile per il selettore dei prefissi */
+ .custom-select {
+     position: relative;
+     width: 200px;
+     cursor: pointer;
+     user-select: none;
+ }
+
+ .selected-option {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     padding: 0 10px;
+     border: none;
+     border-bottom: 1px solid var(--contrast-color);
+     background-color: white;
+ }
+
+ .selected-option img {
+     width: 30px;
+     margin-right: 8px;
+ }
+
+ .options-list {
+     position: absolute;
+     top: 100%;
+     left: 0;
+     width: 100%;
+     background: white;
+     border: 1px solid #ddd;
+     padding-left: 0 !important;
+     display: none;
+     z-index: 10;
+ }
+
+ .options-list li {
+     display: flex;
+     align-items: center;
+     padding: 8px;
+     cursor: pointer;
+     padding-left: 10px;
+     transition: background 0.2s;
+ }
+
+ .options-list li:hover {
+     background: #f0f0f0;
+ }
+
+ .options-list img {
+     width: 30px;
+     margin-right: 8px;
+ }
+
+ /* Contenitore dell'input */
+ .input-container {
+     position: relative;
+     width: 100%;
+ }
+
+ /* Input standard */
+ .input-container input {
+     width: 100%;
+     font-size: 16px;
+     transition: border 0.3s;
+     background-color: transparent;
+ }
+
+ /* Floating Label (inizialmente all'interno dell'input) */
+ .floating-label {
+     position: absolute;
+     top: 50%;
+     transform: translateY(-50%);
+     font-size: 16px;
+     color: var(--contrast-color);
+     pointer-events: none;
+     transition: all 0.2s ease-in-out;
+ }
+
+ /* Quando l'input è attivo o contiene un valore, il label si solleva */
+ .active-label {
+     top: 0px !important;
+     font-weight: bold;
+     color: var(--contrast-color2);
+     font-size: 12px;
+ }
+
+ /* Bordo evidenziato quando l'input è attivo */
+ .input-container input:focus {
+     border-color: #6200ea;
+ }
+
+/* Stile per l'input */
+ #newName,
+ #newSurname,
+ #newCell,
+ #newEmail,
+ #prefisso {
+     border: none;
+     border-bottom: 1px solid var(--contrast-color);
+     color: var(--contrast-color);
+     padding: 5px;
+     cursor: auto;
+     outline: none;
+     width: 100%;
+ }
+
+ #first-input-user {
+     display: grid;
+     gap: 3%;
+     grid-template-columns: 1fr 1fr;
+     margin-bottom: 20px;
+ }
+
+ #second-input-user {
+     display: grid;
+     gap: 3%;
+     grid-template-columns: 2fr 1fr 2fr;
+     align-items: end;
+     margin-bottom: 20px;
+ }
+
+
+ #addUserForm{
+    margin-top: 7%;
+ }
+ /* Stile per la modale */
+ .modal-overlay-user {
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background: rgba(0, 0, 0, 0.5);
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     z-index: 2000;
+     /* Deve essere sopra la prima modale */
+ }
+
+ .modal-content-user {
+     background: white;
+     padding: 20px;
+     border-radius: 8px;
+     width: 50%;
+     position: relative;
+     z-index: 3000;
+     /* Ancora più in alto */
+ }
+
+ .hidden-user-modal {
+     display: none;
+ }
+
+ .close-btn {
+     position: absolute;
+     top: 10px;
+     right: 15px;
+     font-size: 20px;
+     cursor: pointer;
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ! Tools container */
 .tools-container {
     display: flex;
@@ -335,15 +532,45 @@ input[type='date'] {
     color: var(--contrast-color);
 }
 
-.layout-option .active {
-    background-color: var(--contrast-color2);
-    color: white;
+.active {
+    background-color: var(--contrast-color2) !important;
+    color: white !important;
 }
 
 .layout-option button:hover {
     background-color: var(--contrast-color2);
     color: white;
 }
+.cella {
+    overflow: auto;
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+}
+
+/* Chrome, Safari, Edge */
+.cella::-webkit-scrollbar {
+    width: 8px;
+    /* Larghezza della scrollbar */
+}
+
+.cella::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* Colore del tracciato */
+    border-radius: 4px;
+}
+
+.cella::-webkit-scrollbar-thumb {
+    background: #888;
+    /* Colore della thumb */
+    border-radius: 4px;
+}
+
+.cella::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    /* Colore della thumb al passaggio del mouse */
+}
+
 .appointment-box {
     background-color: #3a255d;
     position: relative;
@@ -351,10 +578,13 @@ input[type='date'] {
     color: #fff;
     padding: 5px;
     margin-top: 5px;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     border-radius: 4px;
     text-align: center;
     cursor: grab;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .appointment-box:active {
@@ -430,12 +660,21 @@ input[type='date'] {
     cursor: pointer;
 }
 
+.holiday-day{
+    background-color: #8B0000;
+}
+
+.present-day{
+    background-color: #ddd;
+}
+
 .past-day p{
     color: rgba(0, 0, 0, 0.418);
 }
 
-.today{
-    background: #ddd;
+.past-day .appointment-box{
+    background-color: var(--neutral-range-color) !important;
+    opacity: 0.5;
 }
 
 .data {
@@ -453,20 +692,48 @@ input[type='date'] {
     background-color: var(--contrast-color-shadow);
 }
 
-.appointment-box {
-    background-color: #3a255d;
-    color: #fff;
-    padding: 5px;
-    margin-top: 3px;
-    font-size: 0.75rem;
-    border-radius: 4px;
-    text-align: center;
-    word-wrap: break-word;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* STYLE WEEK LAYOUT */
+.appointment-box.dragging {
+    opacity: 1 !important;
+    /* Mantiene l'opacità */
+    transform: scale(1.1);
+    /* Effetto di ingrandimento */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    /* Effetto sollevamento */
 }
 
+.appointment-box.hold {
+    opacity: 1 !important;
+    /* Impedisce la trasparenza */
+}
+
+.cella {
+    border: 1px solid #ddd;
+    min-height: 80px;
+    padding: 10px;
+    position: relative;
+}
+
+.cella.drag-over {
+    background-color: #f1f1f1;
+    /* Evidenzia la cella di destinazione */
+    border: 2px dashed #3a255d;
+}
+
+.delete-appointment {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: 8px;
+    padding: 2px;
+    transition: color 0.2s ease-in-out;
+}
+
+.delete-appointment:hover {
+    color: #ff6961;
+}
 
 
 
