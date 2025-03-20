@@ -1467,6 +1467,7 @@ class InserisciPazienteView(View):
 
     def post(self, request):
         try:
+            print(request.POST)
             success = None 
             dottore = request.user.utentiregistraticredenziali if hasattr(request.user, 'utentiregistraticredenziali') else None
             codice_fiscale = request.POST.get('codice_fiscale')
@@ -1576,6 +1577,48 @@ class InserisciPazienteView(View):
                             attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on' or None,
                             livello_sedentarieta=request.POST.get('livello_sedentarieta') or None,
                             sedentarieta_nota=request.POST.get('sedentarieta_nota') or None,
+                            
+                            professione = request.POST.get('professione') or None,
+                            pensionato = request.POST.get('pensionato') or None,
+                            menarca = request.POST.get('menarca') or None,
+                            ciclo = request.POST.get('ciclo') or None,
+                            sintomi = request.POST.get('sintomi') or None,
+                            esordio = request.POST.get('esordio') or None,
+                            parto = request.POST.get('parto') or None,
+                            post_parto = request.POST.get('post_parto') or None,
+                            aborto = request.POST.get('aborto') or None,
+                            m_cardiache = request.POST.get('m_cardiache') or None,
+                            diabete_m = request.POST.get('diabete_m') or None,
+                            obesita = request.POST.get('obesita') or None,
+                            epilessia = request.POST.get('epilessia') or None,
+                            ipertensione = request.POST.get('ipertensione') or None,
+                            m_tiroidee = request.POST.get('m_tiroidee') or None,
+                            m_polmonari = request.POST.get('m_polmonari') or None,
+                            tumori = request.POST.get('tumori') or None,
+                            allergie = request.POST.get('allergie') or None,
+                            m_psichiatriche = request.POST.get('m_psichiatriche') or None,
+                            patologie = request.POST.get('patologie') or None,
+                            p_p_altro = request.POST.get('p_p_altro') or None,
+                            t_farmaco = request.POST.get('t_farmaco') or None,
+                            t_dosaggio = request.POST.get('t_dosaggio') or None,
+                            t_durata = request.POST.get('t_durata') or None,
+                            p_cardiovascolari = request.POST.get('p_cardiovascolari') or None,
+                            m_metabolica = request.POST.get('m_metabolica') or None,
+                            p_respiratori_cronici = request.POST.get('p_respiratori_cronici') or None,
+                            m_neurologica = request.POST.get('m_neurologica') or None,
+                            m_endocrina = request.POST.get('m_endocrina') or None,
+                            m_autoimmune = request.POST.get('m_autoimmune') or None,
+                            p_epatici = request.POST.get('p_epatici') or None,
+                            m_renale = request.POST.get('m_renale') or None,
+                            d_gastrointestinali = request.POST.get('d_gastrointestinali') or None,
+                            eloquio = request.POST.get('eloquio') or None,
+                            s_nutrizionale = request.POST.get('s_nutrizionale') or None,
+                            a_genarale = request.POST.get('a_genarale') or None,
+                            psiche = request.POST.get('psiche') or None,
+                            r_ambiente = request.POST.get('r_ambiente') or None,
+                            s_emotivo = request.POST.get('s_emotivo') or None,
+                            costituzione = request.POST.get('costituzione') or None,
+                            statura = request.POST.get('statura') or None,
                         )
                         success = "Nuovo paziente salvato con successo!"
 
@@ -1594,7 +1637,6 @@ class InserisciPazienteView(View):
                             
                         )
                         success = "Nuovo paziente salvato con successo!"
-
 
             if success:
                 context["success"] = success

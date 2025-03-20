@@ -24,6 +24,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet"/>
+    
 
     <!-- JS import -->
     <script src="{% static 'includes/js/dati_base.js' %}" defer></script>
@@ -38,6 +39,7 @@
 
     <main>
       <div class="main-title-nav">
+
         <div class="back-tittle">
           <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to folder"></a>
           <h2 class="main-welcome-title">
@@ -57,6 +59,7 @@
             {% endif %}
         </h2>
         </div>
+
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
             <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page"/>
@@ -66,26 +69,133 @@
           <span>»</span>
           <span>Dati Base & Stile di Vita</span>
         </div>
+
       </div>
-      <section class="container_data table_data">
-        <h3 style="margin-top: 20px; margin-bottom: -20px;">Stile di vita</h3>
-        <form id="datiBaseForm1" method="POST">
-          {% csrf_token %} 
-            <div class="table-title-tools">
-              <p class="table-title">Alcol</p>
-              <div class="container-menu">
-                <div class="tools-menu-button" id="menu-3">
-                  <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-3')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
-                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
-                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
-                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
-                </div>
-  
-                <button title="Apri Menu" type="button" class="tools-table" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-3') : openMenuTools('menu-3')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
-              </div>
+
+      <!-- INFORMAZIONI PERSONALi -->
+      <div class="container-informazioni-personali">
+
+        <div class="header-container">
+
+          <div class="title-card">
+
+            <img src="{% static 'includes/icone/work.png' %}" alt="">
+            <h3>Informazioni occupazione</h3>
+           
+          </div>
+          
+          <div class="container-tools">
+            <div class="tools-menu-button" id="menu-3">
+              <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-3')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
             </div>
+            <button title="Apri Menu" type="button" class="tools-table" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-3') : openMenuTools('menu-3')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
+          </div>
+
+        </div>
+  
+        <div class="flex-container container-general">
+
+            <div class="container-celle-design">
+              <p class="subtitle">Professione: </p>
+              <input type="text" value="{{ persona.professione }}" disabled>
+            </div>
+
+            <div class="container-celle-design">
+              <p class="subtitle">Pensionato:</p>
+              <input type="text" value="{{ persona.pensionato }}" disabled> <!-- Popolare Dinamicamente -->
+            </div>
+    
+        </div>
+
+        {% if persona.gender == 'F' %}
+          <div class="flex-container">
+
+              <div class="container-celle-design">
+                <p class="subtitle" style="padding-top: 0px; padding-bottom: 0px;">Età del menarca in anni: </p>
+                <input type="text" value="{{ persona.menarca }}" placeholder="Inserire il numero" disabled style="width: 75%;"> <!-- Popolare dinamicamente -->
+              </div>
+
+              <div class="container-celle-design">
+                <p class="subtitle">Ciclo:</p>
+                <input type="text"  value="{{ persona.ciclo }}" disabled> <!-- Popolare Dinamicamente -->
+              </div>
+          </div>
+
+          <div class="flex-container" style="flex-direction: column; justify-content: flex-start;">
+              <p style="font-weight: bold; margin-top: 10px;">Menopausa:</p>
+              <div class="flex-container-container">
+                
+                <div class="container-celle-design">
+                  <p class="subtitle" style="padding-top: 0px; padding-bottom: 0px;">Età del menarca in anni: </p>
+                  <input type="text" value="{{ persona.esordio }}" placeholder="Inserire il numero" disabled style="width: 75%;"> <!-- Popolare dinamicamente -->
+                </div>
+              
+              
+                <div class="container-celle-design">
+                  <p class="subtitle">Ciclo:</p>
+                  <input type="text" value="{{ persona.ciclo }}" disabled> <!-- Popolare Dinamicamente -->
+                </div>
+
+              </div>
+          </div>
+
+          <div class="flex-container" style="flex-direction: column; justify-content: flex-start;">
+              <p style="font-weight: bold; margin-top: 10px; margin-bottom: 0px;">Gravidanze:</p>
+              <div class="flex-container-container" style="gap: 10px;">
+                
+                <div class="container-celle-design">
+                  <p class="subtitle">Tipo di parto: </p>
+                  <input type="text" value="{{ persona.parto }}" placeholder="Naturale" disabled style="width: 75%;"> <!-- Popolare dinamicamente -->
+                </div>
+
+                <div class="container-celle-design">
+                  <p class="subtitle" style="padding-top: 0px; padding-bottom: 0px;">Complicanze post-parto:</p>
+                  <input type="text" value="{{ persona.post_parto }}" disabled> <!-- Popolare Dinamicamente -->
+                </div>
             
+                <div class="container-celle-design">
+                  <p class="subtitle">Aborti:</p>
+                  <input type="text"  value="{{ persona.aborto }}" disabled> <!-- Popolare Dinamicamente -->
+                </div>
+              </div>
+          </div>
+        {% endif %}
+
+      </div>
+
+      <!-- STILE DI VITA -->
+      <section class="container_data table_data">
+
+        <div class="header-container">
+
+          <div class="title-card">
+
+            <img src="{% static 'includes/icone/piantina.png' %}" alt="">
+            <h3>Stile di vita</h3>
+           
+          </div>
+          
+          <div class="container-tools">
+            <div class="tools-menu-button" id="menu-3">
+              <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-3')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+            </div>
+            <button title="Apri Menu" type="button" class="tools-table" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-3') : openMenuTools('menu-3')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
+          </div>
+
+        </div>
+
+        <div id="datiBaseForm1" style="margin-top: -10px;">
+        
+            <p class="table-title">Alcol</p>
+               
             <div class="table-container">
+
               <div class="table-header">
                 <p>Quantità di cc al giorno</p>
                 <p>Assunzione di alcol</p>
@@ -94,6 +204,7 @@
               </div>
             
               <div class="table-content">
+
                 <div class="riga-container">
                   <p> <input name="alcol" type="text" value="{{ persona.alcol|default:'N/A' }}" disabled> </p>
                   <p> <input name="alcol_type" type="text" value="{{ persona.alcol_type|default:'N/A' }}" disabled> </p>
@@ -101,25 +212,17 @@
                   <p> <input name="alcol_frequency" type="text" value="{{ persona.alcol_frequency|default:'N/A' }}" disabled> </p>
                   <input type="hidden" name="form_id" value="datiBaseForm1">
                 </div>
+                
               </div>
+
             </div>
-        </form>
+        
+        </div>
    
-        <form id="datiBaseForm2" method="POST">
-          {% csrf_token %} 
-            <div class="table-title-tools">
-              <p class="table-title">Fumo</p>
-              <div class="container-menu">
-                <div class="tools-menu-button" id="menu-4">
-                  <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-4')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
-                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
-                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
-                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
-                </div>
-  
-                <button title="Apri Menu" type="button" class="tools-table" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-4') : openMenuTools('menu-4')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
-              </div>
-            </div>
+        <div id="datiBaseForm2">
+
+            <p class="table-title">Fumo</p>
+       
             <div class="table-container">
               <div class="table-header">
                 <p>Quantità giornaliera</p>
@@ -136,23 +239,12 @@
                 </div>
               </div>
             </div>
-        </form>        
+        </div>        
       
-        <form id="datiBaseForm3" method="POST">
-          {% csrf_token %}
-            <div class="table-title-tools">
-              <p class="table-title">Sport</p>
-              <div class="container-menu">
-                <div class="tools-menu-button" id="menu-5">
-                  <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-5')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
-                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
-                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
-                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
-                </div>
-  
-                <button title="Apri Menu" class="tools-table" type="button" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-5') : openMenuTools('menu-5')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
-              </div>
-            </div>
+        <div id="datiBaseForm3">
+
+            <p class="table-title">Sport</p>
+              
             <div class="table-container">
               <div class="table-header">
                 <p>Attività Fisica</p>
@@ -169,23 +261,12 @@
                 </div>
               </div>
             </div>
-        </form>
+        </div>
 
-        <form id="datiBaseForm4" method="POST">
-          {% csrf_token %}
-            <div class="table-title-tools">
-              <p class="table-title">Sedentarietà</p>
-              <div class="container-menu">
-                <div class="tools-menu-button" id="menu-6">
-                  <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-6')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
-                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
-                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
-                  <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
-                </div>
-  
-                <button title="Apri Menu" type="button" class="tools-table" title="Apri Menu" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-6') : openMenuTools('menu-6')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
-              </div>
-            </div>
+        <div id="datiBaseForm4">
+
+            <p class="table-title">Sedentarietà</p>
+ 
             <div class="table-container">
               <div class="table-header">
                 <p>Attività Sedentaria</p>
@@ -202,9 +283,270 @@
                 </div>
               </div>
             </div>
-        </form>
-      </section>
+            
+        </div>
 
+      </section>  
+
+      <!-- ANAMNESI  -->
+      <div class="container-informazioni-personali">
+        <div class="header-container">
+          
+          <div class="title-card">
+
+            <img src="{% static 'includes/icone/anamnesi.png' %}" alt="">
+            <h3>Anamnesi</h3>
+           
+          </div>
+          
+          <div class="container-tools">
+            <div class="tools-menu-button" id="menu-3">
+              <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-3')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+            </div>
+            <button title="Apri Menu" type="button" class="tools-table" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-3') : openMenuTools('menu-3')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
+          </div>
+        </div>
+
+        <div class="container-content" style="margin-top: 20px;">
+
+          <div class="sub-container-card">
+
+            <p class="table-title" style="width: 15rem; margin-bottom: 30px; margin-top: 0px;">Anamnesi Familiare:</p>
+  
+            <div class="grid-layout">
+              <div class="field">
+                <p>Malattie cardiache:</p>
+                <p id="whtr"> {{ persona.m_cardiache }}</p>
+              </div>
+              <div class="field">
+                <p>Diabete mellito:</p>
+                <p id="whtr"> {{ persona.diabete_m }}</p>
+              </div>
+              <div class="field">
+                <p>Ipertensione:</p>
+                <p id="whtr">{{ persona.ipertensione }}</p>
+              </div>
+              <div class="field">
+                <p>Obesità:</p>
+                <p id="whtr">{{ persona.obesita }}</p>
+              </div>
+              <div class="field">
+                <p>Epilessia:</p>
+                <p id="whtr">{{ persona.epilessia }}</p>
+              </div>
+              <div class="field">
+                <p>Malattie tiroidee:</p>
+                <p id="whtr">{{ persona.m_tiroidee }}</p>
+              </div>
+              <div class="field">
+                <p>Malattie polmonari:</p>
+                <p id="whtr">{{ persona.m_polmonari }}</p>
+              </div>
+              <div class="field">
+                <p>Tumori:</p>
+                <p id="whtr">{{ persona.tumori }}</p>
+              </div>
+              <div class="field">
+                <p>Asma/allergie:</p>
+                <p id="whtr">{{ persona.allergie }}</p>
+              </div>
+              <div class="field">
+                <p>Malattie psichiatriche:</p>
+                <p id="whtr">{{ persona.m_psichiatriche }}</p>
+              </div>   
+            </div>
+
+          </div>
+
+          <div class="sub-container-card" style="margin-top: 20px;">
+            <div class="flex-container">
+
+              <div class="container-celle-design">
+                <p class="subtitle" style="width: 18rem; padding-top: 0px; padding-bottom: 0px;">Anamnesi patologica prossima: </p>
+                
+                <select name="patologie" id="">
+                  <option value="">Malattie infettive</option>
+                  <option value="">Neoplasie (tumori)</option>
+                  <option value="">Malattie del sangue e degli organi ematopoietici</option>
+                  <option value="">Disturbi del sistema immunitario</option>
+                  <option value="">Malattie endocrine, nutrizionali e metaboliche</option>
+                  <option value="">Disturbi mentali, comportamentali e del neurosviluppo</option>
+                  <option value="">Malattie del sistema nervoso</option>
+                  <option value="">Malattie dell'occhio e degli annessi oculari</option>
+                  <option value="">Malattie dell'orecchio e del sistema uditivo</option>
+                  <option value="">Malattie del sistema circolatorio</option>
+                  <option value="">Malattie del sistema respiratorio</option>
+                  <option value="">Malattie dell'apparato digerente</option>
+                  <option value="">Malattie della pelle</option>
+                  <option value="">Malattie del sistema muscoloscheletrico</option>
+                  <option value="">Malattie del sistema genito-urinario</option>
+                  <option value="">Gravidanza, parto e puerperio</option>
+                  <option value="">Alcune condizioni perinatali</option>
+                  <option value="">Malformazioni congenite, deformità e anomalie cromosomiche</option>
+                  <option value="">Sintomi, segni e risultati clinici anormali</option>
+                  <option value="">Lesioni, avvelenamenti e altre conseguenze di cause esterne</option>
+                </select>
+              </div>
+
+              <div class="container-celle-design">
+                <p class="subtitle">Altro:</p>
+                <input type="text" value="valore" disabled> <!-- Popolare Dinamicamente -->
+              </div>
+
+
+            </div>
+          </div>
+
+          <div class="sub-container-card" style="margin-top: 20px;">
+
+            <p class="table-title" style="font-weight: bold; margin-top: 0px; margin-bottom: 30px;">Eventuali terapie in corso:</p>
+
+            <div class="grid-layout">
+              <div class="field">
+                <p>Eventuali Terapie in corso:</p>
+                <p id="whtr"> {{ persona.m_cardiache }}</p>
+              </div>
+              <div class="field">
+                <p>Farmaco:</p>
+                <p id="whtr"> {{ persona.t_farmaco }}</p>
+              </div>
+              <div class="field">
+                <p>Dosaggio:</p>
+                <p id="whtr">{{ persona.t_dosaggio }}</p>
+              </div>
+              <div class="field">
+                <p>Durata della terapia:</p>
+                <p id="whtr">{{ persona.t_durata }}</p>
+              </div>
+              
+               
+            </div>
+
+          </div>
+
+          <div class="sub-container-card" style="margin-top: 20px;">
+            <p class="table-title" style="margin-bottom: 30px;">Anamnesi patologica remota:</p>
+  
+            <div class="grid-layout">
+
+              <div class="field">
+                <p>Problemi cardiovascolari:</p>
+                <p id="whtr"> {{ persona.p_cardiovascolari }}</p>
+              </div>
+              <div class="field">
+                <p>Una malattia metabolica:</p>
+                <p id="whtr"> {{ persona.m_metabolica }}</p>
+              </div>
+              <div class="field">
+                <p>Problemi respiratori cronici:</p>
+                <p id="whtr"> {{ persona.p_respiratori_cronici }}</p>
+              </div>
+              <div class="field">
+                <p>Una malattia neurologica:</p>
+                <p id="whtr"> {{ persona.m_neurologica }}</p>
+              </div>
+              <div class="field">
+                <p>Una malattia endocrina:</p>
+                <p id="whtr"> {{ persona.m_endocrina  }}</p>
+              </div>
+              <div class="field">
+                <p>Una malattia autoimmune:</p>
+                <p id="whtr"> {{ persona.m_autoimmune }}</p>
+              </div>
+              <div class="field">
+                <p>Problemi epatici:</p>
+                <p id="whtr"> {{ persona.p_epatici }}</p>
+              </div>
+              <div class="field">
+                <p>Una malattia renale:</p>
+                <p id="whtr"> {{ persona.m_renale }}</p>
+              </div>
+              <div class="field">
+                <p>Disturbi gastrointestinali significativi:</p>
+                <p id="whtr"> {{ persona.d_gastrointestinali }}</p>
+              </div>         
+            
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+       <!-- ESAME OBBIETTIVO -->
+      <div class="container-informazioni-personali" style="margin-top: 1rem; margin-bottom: 20px;">
+          
+        <div class="header-container">
+          
+          <div class="title-card">
+
+            <img src="{% static 'includes/icone/obiettivo.png' %}" alt="">
+            <h3>Esame Obbiettivo</h3>
+           
+          </div>
+          
+          <div class="container-tools">
+            <div class="tools-menu-button" id="menu-3">
+              <button type="button" class="tools-table" type="button" onclick="closeMenuTools('menu-3')" style="margin-right: 20px;"><img src="{% static 'includes/icone/chiudi.png' %}" alt="Chiudi" title="Chiudi"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/aggiungi.png' %}" alt="Aggiungi" title="Aggiungi"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/modifica.png' %}" alt="Modifica" title="Modifica"></button>
+              <button type="button" class="tools-table"><img src="{% static 'includes/icone/cestino.png' %}" alt="Cestino" title="Cestino"></button>
+            </div>
+            <button title="Apri Menu" type="button" class="tools-table" onclick="this.title === 'Salva le modifiche' ? closeMenuTools('menu-3') : openMenuTools('menu-3')"><img src="{% static 'includes/icone/modify.png' %}" alt="Apri Menu"></button>
+          </div>
+        </div>
+
+        <div class="sub-container-card" style="margin-top: 10px;"> 
+          <div class="grid-layout">
+
+            <div class="field">
+              <p>Aspetto generale:</p>
+              <p id="whtr"> {{ persona.a_genarale }}</p>
+            </div>
+
+            <div class="field">
+              <p>Psiche:</p>
+              <p id="whtr"> {{ persona.psiche }}</p>
+            </div>
+
+            <div class="field">
+              <p>Relazione con l’ambiente:</p>
+              <p id="whtr">{{ persona.r_ambiente }}</p>
+            </div>
+
+            <div class="field">
+              <p>Stato emotivo:</p>
+              <p id="whtr">{{ persona.s_emotivo }}</p>
+            </div>
+
+            <div class="field">
+              <p>Costituzione:</p>
+              <p id="whtr">{{ persona.costituzione }}</p>
+            </div>
+           
+            <div class="field">
+              <p>Statura:</p>
+              <p id="whtr">{{ persona.statura }}</p>
+            </div>
+
+            <div class="field">
+              <p>Stato nutrizionale:</p>
+              <p id="whtr">{{ persona.s_nutrizionale }}</p>
+            </div>
+
+            <div class="field">
+              <p>Eloquio:</p>
+              <p id="whtr">{{ persona.eloquio }}</p>
+            </div>
+      
+          </div>
+        </div>
+      </div>
+
+      <!-- Blood info -->
       <section class="container_data blood_data">
         
         <div class="container-blood-input">
@@ -280,6 +622,7 @@
           Aggiorna
         </button>
       </section>
+      
     </main>
 
     <script>
