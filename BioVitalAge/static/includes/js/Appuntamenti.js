@@ -1,4 +1,11 @@
 /*  -----------------------------------------------------------------------------------------------
+  GLOBAL VARIABLE
+--------------------------------------------------------------------------------------------------- */
+// Dichiarazione globale
+let fromCalendar = false;
+let isEditing = false;
+
+/*  -----------------------------------------------------------------------------------------------
   LAYOUT
 --------------------------------------------------------------------------------------------------- */
 const monthLayoutBtn = document.getElementById("monthLayout");
@@ -146,7 +153,6 @@ const editDateContainer = document.getElementById("edit-date-container");
 const editDateInput = document.getElementById("editDate");
 const editTimeInput = document.getElementById("editTime");
 let currentDate = new Date(); // Definisci la variabile globalmente
-let isEditing = false;
 let selectedAppointment = null;
 
 /* LOAD APPOINTMENTS */
@@ -318,9 +324,6 @@ function openAppointmentModal(appointmentId) {
     .then((response) => response.json())
     .then((data) => {
       console.log("Dati ricevuti dal backend:", data);
-      console.log("ID:", data.id);
-      console.log("Nome:", data.nome_paziente);
-      console.log("Cognome:", data.cognome_paziente);
 
       if (data.success) {
         
@@ -1109,8 +1112,6 @@ document.addEventListener("DOMContentLoaded", () => {
   /***********************************************************************
    * SEZIONE 2: LOGICA DEL FORM (autocompletamento <span>, edit, salvataggio)
    ***********************************************************************/
-  // Flag: ci dice se abbiamo aperto la modale da un giorno del calendario (true) o dal pulsante "Appuntamento" (false)
-  let fromCalendar = false;
   // Array dei giorni in italiano
   const giorniSettimana = [
     "Domenica",
@@ -1169,8 +1170,6 @@ document.addEventListener("DOMContentLoaded", () => {
    * Al primo click su "Edita" → mostro input, passo a "Salva"
    * Al secondo click → salvo, nascondo input, passo a "Edita"
    ***********************************************************************/
-  let isEditing = false;
-
   // HTML da mostrare quando siamo in modalità "Edita"
   // (cioè la tua icona e testo)
   const editHTML = `
@@ -1204,7 +1203,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (isEditing) {
       // Finalizza le modifiche: ad esempio, aggiorna gli span con i nuovi valori
       if (fromCalendar) {
-        console.log(fromCalendar);
         const newTime = editTimeInput.value;
         if (newTime) {
           timeSpan.textContent = newTime;
@@ -1512,7 +1510,6 @@ document
 
     if (appointmentId) {
       // Se c'è un data-id, significa che stiamo modificando un appuntamento esistente:
-      console.log("Modal aperta da appointment-box: eseguo l'update (PATCH)");
       saveAppointmentChanges();
       return; // Esci dal listener per evitare ulteriori esecuzioni
     }
@@ -1807,13 +1804,13 @@ document.addEventListener("DOMContentLoaded", function () {
   async function setUserCountryPrefix() {
     try {
       const response = await fetch(
-        "https://ip-api.com/json/?fields=countryCode"
+        "https://ipapi.co/json/"
       );
       const data = await response.json();
-      console.log("📍 Nazione rilevata:", data.countryCode);
+      console.log("📍 Nazione rilevata:", data.country);
 
       // Trova il prefisso associato alla nazione
-      const userPrefix = prefissi.find((p) => p.code === data.countryCode);
+      const userPrefix = prefissi.find((p) => p.code === data.country);
       if (userPrefix) {
         updateSelectedPrefix(userPrefix);
       }

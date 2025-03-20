@@ -533,8 +533,8 @@ input[type='time'] {
 }
 
 .active {
-    background-color: var(--contrast-color2);
-    color: white;
+    background-color: var(--contrast-color2) !important;
+    color: white !important;
 }
 
 .layout-option button:hover {
