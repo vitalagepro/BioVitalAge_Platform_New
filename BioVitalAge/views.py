@@ -1649,6 +1649,16 @@ class InserisciPazienteView(View):
 
 
 
+
+
+
+
+
+
+
+
+
+
 class ComposizioneView(View):
 
     def get(self, request, id):
