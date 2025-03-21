@@ -2385,6 +2385,10 @@ class UpdateAppointmentView(View):
             appointment = Appointment.objects.get(id=appointment_id)
             if "new_date" in data:
                 appointment.data = data["new_date"]  # Corretto: "data" invece di "date"
+            if "nome_paziente" in data:
+                appointment.nome_paziente = data["nome_paziente"]
+            if "cognome_paziente" in data:
+                appointment.cognome_paziente = data["cognome_paziente"]
             if "tipologia_visita" in data:
                 appointment.tipologia_visita = data["tipologia_visita"]
             if "orario" in data:

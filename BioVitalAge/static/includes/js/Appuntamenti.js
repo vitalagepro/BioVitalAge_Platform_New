@@ -524,6 +524,12 @@ function saveAppointmentChanges() {
   const updatedStudio = document.getElementById("studio").value;
   const updatedNote = document.getElementById("note").value;
 
+  // Separiamo nome e cognome dall'eventuale ID
+  const [nameSurname, id] = updatedPaziente.split("|");
+  const parts = nameSurname.trim().split(" ");
+  const nomePaziente = parts.shift();
+  const cognomePaziente = parts.join(" ");
+
   if (appointmentId) {
     // Aggiorna l'appuntamento esistente via PATCH
     fetch(`/update-appointment/${appointmentId}/`, {
@@ -535,7 +541,8 @@ function saveAppointmentChanges() {
       body: JSON.stringify({
         tipologia_visita: updatedTipologia,
         orario: updatedOrario,
-        paziente_id: updatedPaziente,
+        nome_paziente: nomePaziente,
+        cognome_paziente: cognomePaziente,
         voce_prezzario: updatedVocePrezzario,
         durata: updatedDurata,
         numero_studio: updatedStudio,
