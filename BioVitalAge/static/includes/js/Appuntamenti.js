@@ -92,6 +92,19 @@ function generateWeeklyAppointments(appointmentsByDate) {
   });
 }
 
+function updateWeekView(dateRiferimento) {
+  const settimanaCorrente = getWeekDates(dateRiferimento);
+  const appointmentsForWeek = {};
+
+  Object.entries(appointmentsData.appointments || {}).forEach(([data, appuntamenti]) => {
+    if (settimanaCorrente.includes(data)) {
+      appointmentsForWeek[data] = appuntamenti;
+    }
+  });
+
+  generateWeeklyAppointments({ appointments: appointmentsForWeek });
+}
+
 // Funzione per abilitare il drag & drop
 function addDragAndDropEvents(appointmentBox) {
   appointmentBox.addEventListener("dragstart", (e) => {
@@ -250,6 +263,7 @@ function loadAppointments() {
         }
       });
 
+      
       // Genera la vista settimanale
       generateWeeklyAppointments(appointmentsByDate);
     })
@@ -1013,10 +1027,12 @@ document.addEventListener("DOMContentLoaded", () => {
   btnPrev.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     renderMonthCalendar();
+    updateWeekView(currentDate);
   });
   btnNext.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
     renderMonthCalendar();
+    updateWeekView(currentDate);
   });
   btnToday.addEventListener("click", () => {
     currentDate = new Date();
@@ -1028,6 +1044,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const [yyyy, mm, dd] = val.split("-");
       currentDate = new Date(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd));
       renderMonthCalendar();
+      updateWeekView(currentDate);
     }
   });
 
