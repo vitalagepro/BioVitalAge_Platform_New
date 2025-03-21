@@ -2381,27 +2381,27 @@ class UpdateAppointmentView(View):
     def patch(self, request, appointment_id):
         try:
             data = json.loads(request.body)
-
             appointment = Appointment.objects.get(id=appointment_id)
-            if "new_date" in data:
-                appointment.data = data["new_date"]  # Corretto: "data" invece di "date"
-            if "nome_paziente" in data:
+            
+            # Aggiorna solo se i valori sono presenti e non vuoti nel payload
+            if data.get("new_date"):
+                appointment.data = data["new_date"]
+            if data.get("new_time"):
+                appointment.orario = data["new_time"]
+            if data.get("nome_paziente"):
                 appointment.nome_paziente = data["nome_paziente"]
-            if "cognome_paziente" in data:
+            if data.get("cognome_paziente"):
                 appointment.cognome_paziente = data["cognome_paziente"]
-            if "tipologia_visita" in data:
+            if data.get("tipologia_visita"):
                 appointment.tipologia_visita = data["tipologia_visita"]
-            if "orario" in data:
-                appointment.orario = data["orario"]
-            if "numero_studio" in data:
+            if data.get("numero_studio"):
                 appointment.numero_studio = data["numero_studio"]
-            if "voce_prezzario" in data:
+            if data.get("voce_prezzario"):
                 appointment.voce_prezzario = data["voce_prezzario"]
-            if "note" in data:
+            if "note" in data:  # anche se è vuota, la nota verrà aggiornato
                 appointment.note = data["note"]
-
+            
             appointment.save()
-
             return JsonResponse({"success": True, "message": "Appuntamento aggiornato!"})
         except Appointment.DoesNotExist:
             return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)

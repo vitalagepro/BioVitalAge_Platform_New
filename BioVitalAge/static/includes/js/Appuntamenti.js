@@ -62,9 +62,13 @@ function generateWeeklyAppointments(appointmentsByDate) {
           const hour = parseInt(orario.split(":")[0], 10);
           const rowIndex = hour - 9; // Supponendo che il calendario inizi alle 09:00
 
-          if (rowIndex >= 0 && rowIndex < weekCells.length / 7) {
-              const cellIndex = rowIndex * 7 + (weekDay - 1); // Calcola la posizione nella griglia
+            // Domenica=0 → colonna=6, Lunedì=1 → colonna=0, ...
+            const realWeekDay = new Date(date).getDay(); 
+            const colIndex = (realWeekDay + 6) % 7;
 
+            const cellIndex = rowIndex * 7 + colIndex;
+
+          if (rowIndex >= 0 && rowIndex < weekCells.length / 7) {
               if (cellIndex >= 0 && cellIndex < weekCells.length) {
                   const cell = weekCells[cellIndex];
 
@@ -73,6 +77,8 @@ function generateWeeklyAppointments(appointmentsByDate) {
                   appointmentBox.classList.add("appointment-box");
                   appointmentBox.setAttribute("draggable", "true");
                   appointmentBox.dataset.id = id;
+                  appointmentBox.dataset.tipologia = tipologia_visita;
+                  appointmentBox.dataset.orario = orario;
                   appointmentBox.innerHTML = `<span style="flex: 1 1 0%">${tipologia_visita} - ${orario.slice(0, 5)}</span><button class="delete-appointment" data-id="${id}">&times;</button>`;
 
                   // Aggiunge il box nella cella giusta
@@ -91,6 +97,13 @@ function addDragAndDropEvents(appointmentBox) {
   appointmentBox.addEventListener("dragstart", (e) => {
       selectedAppointment = e.target;
       e.dataTransfer.setData("text/plain", selectedAppointment.dataset.id);
+      e.target.style.opacity = "0.5";
+  });
+
+  appointmentBox.addEventListener("dragend", () => {
+      if (selectedAppointment) {
+          selectedAppointment.style.opacity = "1";
+      }
   });
 
   document.querySelectorAll(".cellaWeek").forEach(cell => {
@@ -107,27 +120,67 @@ function addDragAndDropEvents(appointmentBox) {
           e.preventDefault();
           cell.classList.remove("drag-over");
 
-          if (selectedAppointment) {
-              cell.appendChild(selectedAppointment);
+          if (!selectedAppointment) return;
 
-              // Recupera la nuova data e orario dalla cella settimanale
-              const dayIndex = [...cell.parentElement.children].indexOf(cell) % 7; // Ottieni il giorno della settimana
-              const hourIndex = Math.floor([...cell.parentElement.children].indexOf(cell) / 7); // Ottieni l'ora
-              
-              const newDate = new Date(currentDate);
-              newDate.setDate(newDate.getDate() - newDate.getDay() + 1 + dayIndex); // Calcola la data corretta
-              const newTime = `${String(9 + hourIndex).padStart(2, "0")}:00`;
+          const appointmentId = selectedAppointment.dataset.id;
+          const tipologia = selectedAppointment.dataset.tipologia || "Sconosciuto";
 
-              // Aggiorna l'appuntamento nel database
-              updateAppointmentDate(selectedAppointment.dataset.id, newDate.toISOString().split('T')[0], newTime);
-
-              selectedAppointment = null;
+          if (!appointmentId) {
+              console.error("❌ Errore: ID appuntamento mancante!");
+              return;
           }
+
+          // ✅ **Trova il primo giorno della settimana (lunedì)**
+          let weekStart = new Date(currentDate);
+          let dayOfWeek = weekStart.getDay(); // 0 = Domenica, ..., 6 = Sabato
+          let mondayOffset = (dayOfWeek === 0) ? -6 : 1 - dayOfWeek;
+          weekStart.setDate(weekStart.getDate() + mondayOffset);
+
+          // ✅ **Trova il giorno della settimana e l'orario**
+          // Prendi TUTTE le celle della griglia settimanale
+          const allWeekCells = [...document.querySelectorAll(".cellaWeek")];
+          // Calcola l'indice globale di quella cella
+          const cellIndex = allWeekCells.indexOf(cell);
+
+          const dayOffset = cellIndex % 7;
+          const hourIndex = Math.floor(cellIndex / 7);
+
+
+          let newDate = new Date(weekStart);
+          newDate.setDate(newDate.getDate() + dayOffset);
+          newDate.setHours(0, 0, 0, 0);
+
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          // ✅ **Blocca i giorni passati, compresa la domenica**
+          if (newDate < today) {
+              showAlert("danger", "❌ Non puoi spostare un appuntamento in un giorno passato!");
+              selectedAppointment.style.opacity = "1";
+              return;
+          }
+
+          // ✅ **Calcola il nuovo orario basato sulla riga nella griglia**
+          const newTime = `${String(9 + hourIndex).padStart(2, "0")}:00`;
+
+          // ✅ **Sposta l'elemento senza duplicarlo**
+          cell.appendChild(selectedAppointment);
+          selectedAppointment.style.opacity = "1";
+
+          // ✅ **Aggiorna il dataset con la tipologia corretta**
+          selectedAppointment.dataset.tipologia = tipologia;
+
+          // ✅ **Aggiorna visivamente il box con i dati corretti**
+          selectedAppointment.querySelector("span").textContent = `${tipologia} - ${newTime}`;
+
+          // ✅ **Aggiorna l'appuntamento nel database**
+          const formattedDate = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`;
+          updateAppointmentDate(appointmentId, formattedDate, newTime);
+
+          selectedAppointment = null;
       });
   });
 }
-
-
 
 /* SETTING MONTH LAYOUT */
 monthLayoutBtn.addEventListener("click", () => {
@@ -214,42 +267,35 @@ function formatDateForBackend(date, day) {
 }
 
 // Aggiorna la data di un appuntamento nel backend
-function updateAppointmentDate(appointmentId, newDate) {
+function updateAppointmentDate(appointmentId, newDate, newTime) {
   if (!appointmentId || !newDate) {
-    console.error("❌ Errore: appointmentId o newDate non valido!", {
-      appointmentId,
-      newDate,
-    });
-    return;
+      console.error("❌ Errore: appointmentId, newDate o newTime non valido!", {
+          appointmentId,
+          newDate,
+          newTime,
+      });
+      return;
   }
 
-  // Recupera il token CSRF dal campo hidden (assicurati che l'input esista nel DOM)
-  const csrfToken =
-    document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "";
+  const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "";
 
   fetch(`/update-appointment/${appointmentId}/`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrfToken, // Includi il token CSRF
-    },
-    body: JSON.stringify({ new_date: newDate }),
+      method: "PATCH",
+      headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+      },
+      body: JSON.stringify({ new_date: newDate, new_time: newTime }),
   })
-    .then((response) => {
-      console.log(`📢 Risposta HTTP: ${response.status}`);
-      return response.json();
-    })
-    .then((data) => {
+  .then((response) => response.json())
+  .then((data) => {
       if (data.success) {
-        console.log("✅ Appuntamento spostato con successo!"); // Debug
+          console.log("✅ Appuntamento aggiornato con successo!");
       } else {
-        showAlert(
-          "danger",
-          `Errore nello spostamento dell'appuntamento: ${data.error}`
-        );
+          showAlert("danger", `Errore nello spostamento dell'appuntamento: ${data.error}`);
       }
-    })
-    .catch((error) => console.error("❌ Errore nella richiesta:", error));
+  })
+  .catch((error) => console.error("❌ Errore nella richiesta:", error));
 }
 
 // Funzione per aggiungere un appuntamento alla cella
