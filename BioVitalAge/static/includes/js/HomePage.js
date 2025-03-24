@@ -1,4 +1,54 @@
 /*  -----------------------------------------------------------------------------------------------
+  GLOBAL FUNCTION
+--------------------------------------------------------------------------------------------------- */
+function showAlert(type, message) {
+  // Controllo se esiste già un alert visibile
+  let existingAlert = document.getElementById("global-alert");
+  if (existingAlert) existingAlert.remove();
+
+  // Creazione del div per l'alert Bootstrap
+  let alertDiv = document.createElement("div");
+  alertDiv.id = "global-alert";
+  alertDiv.classList.add("alert", `alert-${type}`, "fade", "show");
+  alertDiv.style.position = "fixed";
+  alertDiv.style.top = "20px";
+  alertDiv.style.left = "50%";
+  alertDiv.style.transform = "translateX(-50%)";
+  alertDiv.style.zIndex = "9999999999999";
+  alertDiv.style.width = "auto";
+  alertDiv.style.maxWidth = "400px";
+  alertDiv.style.display = "flex";
+  alertDiv.style.justifyContent = "space-between";
+  alertDiv.style.alignItems = "center";
+  alertDiv.style.padding = "10px 15px";
+  alertDiv.style.borderRadius = "6px";
+  alertDiv.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
+  alertDiv.style.opacity = "0"; // Inizialmente nascosto
+
+  // Contenuto dell'alert
+  alertDiv.innerHTML = `
+      <span>${message}</span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  `;
+
+  // Aggiunge l'alert al DOM
+  document.body.appendChild(alertDiv);
+
+  // Effetto di comparsa con GSAP
+  gsap.to(alertDiv, { opacity: 1, duration: 0.3, ease: "power2.out" });
+
+  // Rimuove automaticamente l'alert dopo 5 secondi con un fade-out
+  setTimeout(() => {
+    gsap.to(alertDiv, {
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () => alertDiv.remove(),
+    });
+  }, 5000);
+}
+
+/*  -----------------------------------------------------------------------------------------------
   Disclaimer
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function () {
@@ -284,6 +334,105 @@ function removeNotification(notification) {
 /*  -----------------------------------------------------------------------------------------------
   Actions on appointments
 --------------------------------------------------------------------------------------------------- */
+function confirmDeleteAppointment(appointmentId) {
+  // Controllo se c'è già un alert visibile
+  let existingAlert = document.getElementById("delete-alert");
+  if (existingAlert) existingAlert.remove();
+
+  // 🔹 Creazione alert Bootstrap personalizzato
+  let confirmAlert = document.createElement("div");
+  confirmAlert.id = "delete-alert";
+  confirmAlert.classList.add("alert", "alert-danger", "fade", "show");
+  confirmAlert.style.position = "fixed";
+  confirmAlert.style.top = "20px";
+  confirmAlert.style.left = "50%";
+  confirmAlert.style.transform = "translateX(-50%)";
+  confirmAlert.style.zIndex = "1050";
+  confirmAlert.style.width = "auto";
+  confirmAlert.style.maxWidth = "420px";
+  confirmAlert.style.display = "flex";
+  confirmAlert.style.justifyContent = "space-between";
+  confirmAlert.style.alignItems = "center";
+  confirmAlert.style.padding = "10px 15px";
+  confirmAlert.style.borderRadius = "6px";
+  confirmAlert.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
+  confirmAlert.style.opacity = "0"; // 🔹 Opacità iniziale per GSAP
+
+  confirmAlert.innerHTML = `
+      <span>Sei sicuro di voler eliminare questo appuntamento?</span>
+      <div class="d-flex gap-2">
+          <button type="button" class="btn btn-sm btn-danger" id="confirmDelete">Elimina</button>
+          <button type="button" class="btn btn-sm btn-secondary" id="cancelDelete">Annulla</button>
+      </div>
+  `;
+
+  // 🔹 Aggiungo l'alert al DOM
+  document.body.appendChild(confirmAlert);
+
+  // 🔹 Effetto GSAP per far apparire l'alert con un fade-in
+  gsap.to(confirmAlert, { opacity: 1, duration: 0.3, ease: "power2.out" });
+
+  // 🔹 Eventi sui bottoni
+  document.getElementById("confirmDelete").addEventListener("click", () => {
+    deleteAppointment(appointmentId, confirmAlert);
+  });
+
+  document.getElementById("cancelDelete").addEventListener("click", () => {
+    gsap.to(confirmAlert, {
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () => confirmAlert.remove(),
+    });
+  });
+
+  // 🔹 Rimuove automaticamente l'alert dopo 10 secondi con un fade-out GSAP
+  setTimeout(() => {
+    gsap.to(confirmAlert, {
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () => confirmAlert.remove(),
+    });
+  }, 10000);
+}
+
+function deleteAppointment(appointmentId, confirmAlert) {
+  fetch(`/delete-appointment/${appointmentId}/`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Errore HTTP: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.success) {
+        // 🔹 Rimuove anche l'alert di conferma
+        gsap.to(confirmAlert, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => confirmAlert.remove(),
+        });
+
+        // 🔹 Mostra l'alert di successo
+        showAlert("success", "Appuntamento eliminato con successo!");
+      } else {
+        console.error("❌ Errore nella cancellazione:", data.error);
+        showAlert("danger", "Errore nella cancellazione dell'appuntamento.");
+      }
+    })
+    .catch((error) => {
+      console.error("❌ Errore nella richiesta:", error);
+      showAlert("danger", "Errore nella richiesta al server.");
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".action-btn").forEach((button) => {
     button.addEventListener("click", function () {
@@ -303,31 +452,13 @@ document.addEventListener("DOMContentLoaded", function () {
           .then((data) => {
             if (data.success) {
               row.style.backgroundColor = "#d4edda"; // Verde per indicare confermato
-              alert("Appuntamento confermato!");
+              showAlert("success", "Appuntamento confermato!");
             } else {
-              alert("Errore: " + data.error);
+              showAlert("danger", "Errore: " + data.error);
             }
           });
       } else if (action === "delete") {
-        if (!confirm("Sei sicuro di voler eliminare questo appuntamento?"))
-          return;
-
-        fetch(`/api/appointments/${appointmentId}/delete/`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCSRFToken(),
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
-              row.remove(); // Rimuove la riga dalla tabella
-              alert("Appuntamento eliminato!");
-            } else {
-              alert("Errore: " + data.error);
-            }
-          });
+        confirmDeleteAppointment(appointmentId);
       }
     });
   });

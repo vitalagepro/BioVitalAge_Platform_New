@@ -54,9 +54,6 @@ urlpatterns = [
     path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
 
     
-    # path('appointments_page/', views.AppointmentView.as_view(), name='appointments_page'),
-    # path('api/appointments/', views.appointment_view, name='appointment_api'),
-    # path('appointments/', views.appointments_list, name='appointments_list'),  # ✅ Aggiunto il percorso per la tabella
     path("api/appointments/<int:appointment_id>/approve/", views.ApproveAppointmentView.as_view(), name="approve_appointment"),
     path("api/appointments/<int:appointment_id>/delete/", views.DeleteAppointmentView.as_view(), name="delete_appointment"),
     path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>', views.StampaRefertoView.as_view(), name='download_pdf_vitale'),

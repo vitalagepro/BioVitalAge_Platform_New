@@ -59,6 +59,7 @@ class HomePageRender(View):
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
         persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
+        # Se vuoi il conteggio dei confermati in tutti gli appuntamenti
 
         if dottore.cookie == "SI":
             context = {
@@ -2420,13 +2421,11 @@ class UpdateAppointmentView(View):
 
 # VIEWS APPROVE APPOINTMENT
 class ApproveAppointmentView(View):
-    def approve_appointment(self, request, appointment_id):
-        if request.method == "POST":
-            appointment = get_object_or_404(Appointment, id=appointment_id)
-            appointment.confermato = True  # Segna l'appuntamento come confermato
-            appointment.save()
-            return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
-        return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
+    def post(self, request, appointment_id):
+        appointment = get_object_or_404(Appointment, id=appointment_id)
+        appointment.confermato = True  # Segna l'appuntamento come confermato
+        appointment.save()
+        return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
 
 # VIEWS DELETE APPOINTMENT
 @method_decorator(csrf_exempt, name='dispatch')  # 👈 Disabilita CSRF per questa view
