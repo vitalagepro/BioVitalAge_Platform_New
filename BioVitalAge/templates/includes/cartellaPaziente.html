@@ -232,7 +232,7 @@
         <!-- CARD CLOCK -->
         <div class="container-indicatori containerStyle" style="margin-top: 0rem;">
             <div class="card card4" id="card-style">
-                <h3 class="section-tittle">Score organi e apparati</h3>
+                <h3 class="section-tittle" style="padding-top: 20px;">Indicatori di performance</h3>
 
                 <div class="score-clock-graph">
     
@@ -329,11 +329,11 @@
                             <circle class="progress-ring__progress" id="immuneClock" cx="70" cy="70" r="65"></circle>
                         </svg>
 
-                        <div class="percentage" id="immunePercentage"></div>
+                        <div class="percentage" id="immunePercentage" style="margin-top: 5px;"></div>
                      
                         <div class="descrizione-clock" style="margin-bottom: -10px;">
                             <img src="{% static 'includes/images/sistema.png' %}" alt="">
-                            <p style="max-width: 60%;">Salute del Sistema Immunitario</p>
+                            <p style="max-width: 60%; font-size: 14px;">Salute del Sistema Immunitario</p>
                         </div>
                     </div>
                 
@@ -348,6 +348,44 @@
                         <div class="descrizione-clock">
                             <img src="{% static 'includes/images/muscolo.png' %}" alt="">
                             <p>Salute Muscolare</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="eta-container">
+                    <h3>Età Biologica</h3>
+                    <div class="lineaContainer">
+                        <div class="cronologic-age">
+                            <img src="{% static 'includes/icone/biologica.png' %}" alt="">
+                            <p>38 anni</p>
+                            <p class="linea">|</p>
+                        </div>
+                        <div class="barra-valore"></div>
+                        <div class="biologic-age">
+                            <img src="{% static 'includes/icone/cronologica.png' %}" alt="">
+                            <p>44 anni</p>
+                            <p class="linea">|</p>
+                        </div>
+                    </div>
+
+                    <div class="legenda">
+                        <div class="subcontainer-legenda">
+                            <img src="{% static 'includes/icone/biologica.png' %}" alt="">
+                            <p>Età Biologica</p>
+                        </div>
+                      
+                        <div class="subcontainer-legenda">
+                            <img src="{% static 'includes/icone/cronologica.png' %}" alt="" >
+                            <p>Età Biologica</p>
+                        </div>
+
+                        <div class="subcontainer-legenda">
+                            <p class="quadrato neg"></p>
+                            <p>Valore Negativo</p>
+                        </div>
+                        <div class="subcontainer-legenda">
+                            <p class="quadrato pos"></p>
+                            <p>Valore Positivo</p>
                         </div>
                     </div>
                 </div>
@@ -448,7 +486,7 @@
             <!-- TERAPHY -->
             <div class="cardDati">
                 <div class="cartella-effect">
-                    <h3>BioVitalAge Therapy</h3>
+                    <h3>Piano Terapeutico</h3>
                     <div class="space"></div>
                 </div>
                 <div class="card-content">
@@ -460,12 +498,6 @@
             </div>
         </div>
         
-
-
-
-
-
-
 
         <!-- TABELLA ELENCO PRESCRIZIONI -->
 
@@ -522,7 +554,6 @@
         {% endif %}
 
         
-
         <div class="contenitore-tabella" style="margin-top: 0; ">
 
             <div class="recent-patients" id="card-style">
@@ -1105,8 +1136,6 @@
                 </div>
             </div>
         </div>
-
-        
 
     </main>
 
