@@ -1467,6 +1467,7 @@ class InserisciPazienteView(View):
 
     def post(self, request):
         try:
+            print(request.POST)
             success = None 
             dottore = request.user.utentiregistraticredenziali if hasattr(request.user, 'utentiregistraticredenziali') else None
             codice_fiscale = request.POST.get('codice_fiscale')
@@ -1576,6 +1577,48 @@ class InserisciPazienteView(View):
                             attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on' or None,
                             livello_sedentarieta=request.POST.get('livello_sedentarieta') or None,
                             sedentarieta_nota=request.POST.get('sedentarieta_nota') or None,
+                            
+                            professione = request.POST.get('professione') or None,
+                            pensionato = request.POST.get('pensionato') or None,
+                            menarca = request.POST.get('menarca') or None,
+                            ciclo = request.POST.get('ciclo') or None,
+                            sintomi = request.POST.get('sintomi') or None,
+                            esordio = request.POST.get('esordio') or None,
+                            parto = request.POST.get('parto') or None,
+                            post_parto = request.POST.get('post_parto') or None,
+                            aborto = request.POST.get('aborto') or None,
+                            m_cardiache = request.POST.get('m_cardiache') or None,
+                            diabete_m = request.POST.get('diabete_m') or None,
+                            obesita = request.POST.get('obesita') or None,
+                            epilessia = request.POST.get('epilessia') or None,
+                            ipertensione = request.POST.get('ipertensione') or None,
+                            m_tiroidee = request.POST.get('m_tiroidee') or None,
+                            m_polmonari = request.POST.get('m_polmonari') or None,
+                            tumori = request.POST.get('tumori') or None,
+                            allergie = request.POST.get('allergie') or None,
+                            m_psichiatriche = request.POST.get('m_psichiatriche') or None,
+                            patologie = request.POST.get('patologie') or None,
+                            p_p_altro = request.POST.get('p_p_altro') or None,
+                            t_farmaco = request.POST.get('t_farmaco') or None,
+                            t_dosaggio = request.POST.get('t_dosaggio') or None,
+                            t_durata = request.POST.get('t_durata') or None,
+                            p_cardiovascolari = request.POST.get('p_cardiovascolari') or None,
+                            m_metabolica = request.POST.get('m_metabolica') or None,
+                            p_respiratori_cronici = request.POST.get('p_respiratori_cronici') or None,
+                            m_neurologica = request.POST.get('m_neurologica') or None,
+                            m_endocrina = request.POST.get('m_endocrina') or None,
+                            m_autoimmune = request.POST.get('m_autoimmune') or None,
+                            p_epatici = request.POST.get('p_epatici') or None,
+                            m_renale = request.POST.get('m_renale') or None,
+                            d_gastrointestinali = request.POST.get('d_gastrointestinali') or None,
+                            eloquio = request.POST.get('eloquio') or None,
+                            s_nutrizionale = request.POST.get('s_nutrizionale') or None,
+                            a_genarale = request.POST.get('a_genarale') or None,
+                            psiche = request.POST.get('psiche') or None,
+                            r_ambiente = request.POST.get('r_ambiente') or None,
+                            s_emotivo = request.POST.get('s_emotivo') or None,
+                            costituzione = request.POST.get('costituzione') or None,
+                            statura = request.POST.get('statura') or None,
                         )
                         success = "Nuovo paziente salvato con successo!"
 
@@ -1595,7 +1638,6 @@ class InserisciPazienteView(View):
                         )
                         success = "Nuovo paziente salvato con successo!"
 
-
             if success:
                 context["success"] = success
 
@@ -1604,6 +1646,16 @@ class InserisciPazienteView(View):
         except Exception as e:
             context["errore"] = f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova."
             return render(request, "includes/InserisciPaziente.html", context)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2214,12 +2266,14 @@ class AppuntamentiView(View):
         # Ottieni le opzioni definite nei choices
         tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
         numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
+        voce_prezzario = Appointment._meta.get_field('voce_prezzario').choices
 
         context = {
             'dottore': dottore,
             'persone': persone,
             'appuntamenti': appuntamenti,
             'tipologia_appuntamenti': tipologia_appuntamenti,
+            'voce_prezzario': voce_prezzario,
             'numero_studio': numero_studio,
         }
 
@@ -2245,7 +2299,7 @@ class AppuntamentiSalvaView(View):
                     print("❌ ERRORE: Il campo 'orario' è mancante o vuoto!")
 
                 # Creazione dell'appuntamento
-                appuntamento = Appointment.objects.create(
+                Appointment.objects.create(
                     tipologia_visita=data.get("tipologia_visita"),
                     nome_paziente=data.get("nome_paziente"),
                     cognome_paziente=data.get("cognome_paziente"),
@@ -2337,23 +2391,27 @@ class UpdateAppointmentView(View):
     def patch(self, request, appointment_id):
         try:
             data = json.loads(request.body)
-
             appointment = Appointment.objects.get(id=appointment_id)
-            if "new_date" in data:
-                appointment.data = data["new_date"]  # Corretto: "data" invece di "date"
-            if "tipologia_visita" in data:
+            
+            # Aggiorna solo se i valori sono presenti e non vuoti nel payload
+            if data.get("new_date"):
+                appointment.data = data["new_date"]
+            if data.get("new_time"):
+                appointment.orario = data["new_time"]
+            if data.get("nome_paziente"):
+                appointment.nome_paziente = data["nome_paziente"]
+            if data.get("cognome_paziente"):
+                appointment.cognome_paziente = data["cognome_paziente"]
+            if data.get("tipologia_visita"):
                 appointment.tipologia_visita = data["tipologia_visita"]
-            if "orario" in data:
-                appointment.orario = data["orario"]
-            if "numero_studio" in data:
+            if data.get("numero_studio"):
                 appointment.numero_studio = data["numero_studio"]
-            if "voce_prezzario" in data:
+            if data.get("voce_prezzario"):
                 appointment.voce_prezzario = data["voce_prezzario"]
-            if "note" in data:
+            if "note" in data:  # anche se è vuota, la nota verrà aggiornato
                 appointment.note = data["note"]
-
+            
             appointment.save()
-
             return JsonResponse({"success": True, "message": "Appuntamento aggiornato!"})
         except Appointment.DoesNotExist:
             return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
@@ -2389,39 +2447,42 @@ class CreaPazienteView(View):
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)
+            print("📥 Dati ricevuti dal frontend:", data)  # DEBUG
 
             name = data.get("name", "").strip()
             surname = data.get("surname", "").strip()
             phone = data.get("phone", "").strip()
+            email = data.get("email", "").strip()  # Assumendo che tu abbia il campo email nel modello
+            dottore_id = request.session.get('dottore_id')
 
             if not name or not surname:
+                print("⚠ Errore: Nome e cognome obbligatori")  # DEBUG
                 return JsonResponse({"success": False, "error": "Nome e cognome sono obbligatori!"}, status=400)
 
-            # Trova il dottore basandosi sull'utente autenticato (assumendo che la mail sia unica)
-            if not request.user.is_authenticated:
+            if not dottore_id:
+                print("⚠ Errore: dottore_id mancante!")  # DEBUG
                 return JsonResponse({"success": False, "error": "Devi essere autenticato per aggiungere un paziente."}, status=403)
-
-            try:
-                dottore = get_object_or_404(UtentiRegistratiCredenziali, email=request.user.email)
-            except:
-                return JsonResponse({"success": False, "error": "Dottore non trovato."}, status=404)
 
             # Creazione paziente
             paziente = TabellaPazienti.objects.create(
-                dottore=dottore,
                 name=name,
                 surname=surname,
-                phone=phone
+                phone=phone,
+                email=email  # Assumendo che email esista nel modello
             )
+            print(f"✅ Paziente {paziente.id} salvato: {paziente.name} {paziente.surname}, {paziente.email}")  # DEBUG
 
-            return JsonResponse({"success": True, "message": "Paziente aggiunto con successo!", "id": paziente.id})
+            return JsonResponse({
+                "success": True,
+                "message": "Paziente aggiunto con successo!",
+                "id": paziente.id,
+                "full_name": f"{paziente.name} {paziente.surname}"
+            })
 
         except json.JSONDecodeError:
+            print("❌ Errore JSON ricevuto nel backend!")  # DEBUG
             return JsonResponse({"success": False, "error": "Formato JSON non valido."}, status=400)
 
         except Exception as e:
+            print(f"❌ Errore nel backend: {e}")  # DEBUG
             return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-
-
-

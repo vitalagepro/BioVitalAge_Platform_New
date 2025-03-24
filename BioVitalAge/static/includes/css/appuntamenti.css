@@ -406,7 +406,7 @@ input[type='time'] {
  }
 
  /* Quando l'input è attivo o contiene un valore, il label si solleva */
- .active {
+ .active-label {
      top: 0px !important;
      font-weight: bold;
      color: var(--contrast-color2);
@@ -532,9 +532,9 @@ input[type='time'] {
     color: var(--contrast-color);
 }
 
-.layout-option .active {
-    background-color: var(--contrast-color2);
-    color: white;
+.active {
+    background-color: var(--contrast-color2) !important;
+    color: white !important;
 }
 
 .layout-option button:hover {
@@ -574,11 +574,10 @@ input[type='time'] {
 .appointment-box {
     background-color: #3a255d;
     position: relative;
-    z-index: 100;
     color: #fff;
-    padding: 5px;
+    padding: 7px;
     margin-top: 5px;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     border-radius: 4px;
     text-align: center;
     cursor: grab;
@@ -591,7 +590,114 @@ input[type='time'] {
     cursor: grabbing;
 }
 
+.delete-appointment
 
+/* ! Action menu */
+.action-menu {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 8px 12px;
+    z-index: 3000;
+    display: flex;
+    gap: 12px;
+}
+
+.action-icon {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.action-icon:hover {
+    transform: scale(1.2);
+}
+
+/* !  Popup actions */
+.popup-actions {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 6px;
+    display: flex;
+    gap: 8px;
+    z-index: 999;
+    transition: opacity 0.2s ease;
+}
+
+.popup-actions.hidden-popup {
+    display: none;
+}
+
+.popup-actions button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 18px;
+    transition: transform 0.2s ease;
+}
+
+.popup-actions button:hover {
+    transform: scale(1.2);
+}
+
+/* Overlay */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.custom-modal-overlay.hidden-details {
+    display: none;
+}
+
+/* Modale */
+.custom-modal-content {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 30px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    position: relative;
+    transform: scale(0.8);
+    opacity: 0;
+}
+
+/* Chiudi */
+.custom-close {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.custom-close:hover {
+    color: #ff6961;
+}
+
+/* Contenuto */
+.custom-details-content p {
+    margin: 10px 0;
+    font-size: 16px;
+}
+  
 
 
 
@@ -660,6 +766,14 @@ input[type='time'] {
     cursor: pointer;
 }
 
+.holiday-day{
+    background-color: #8B0000;
+}
+
+.present-day{
+    background-color: #ddd;
+}
+
 .past-day p{
     color: rgba(0, 0, 0, 0.418);
 }
@@ -667,10 +781,6 @@ input[type='time'] {
 .past-day .appointment-box{
     background-color: var(--neutral-range-color) !important;
     opacity: 0.5;
-}
-
-.today{
-    background: #ddd;
 }
 
 .data {
@@ -689,18 +799,6 @@ input[type='time'] {
 }
 
 /* STYLE WEEK LAYOUT */
-.appointment-box {
-    background-color: #3a255d;
-    /* Mantiene il colore */
-    color: #fff;
-    padding: 5px;
-    margin-top: 3px;
-    font-size: 0.75rem;
-    border-radius: 4px;
-    text-align: center;
-    transition: transform 0.2s ease-out;
-}
-
 .appointment-box.dragging {
     opacity: 1 !important;
     /* Mantiene l'opacità */
@@ -734,9 +832,11 @@ input[type='time'] {
     color: white;
     font-size: 1rem;
     cursor: pointer;
-    margin-left: 8px;
     padding: 2px;
     transition: color 0.2s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .delete-appointment:hover {
@@ -795,7 +895,8 @@ input[type='time'] {
 .cellaWeek {
     border-right: 1px solid #ddd;
     border-left: 1px solid #ddd;
-    font-size: 20px;
+    font-size: 16px;
+    padding: 15px;
 }
 
 #cellaOrari {

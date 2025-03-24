@@ -157,7 +157,7 @@
                                 </div>
                             </div>
 
-                            <button type="submit" id="savePatientBtn" class="button float-end btn-primary">Salva Paziente</button>
+                            <button type="submit" id="savePatientBtn" class="button float-end">Salva Paziente</button>
                         </form>
                     </div>
                 </div>
@@ -327,7 +327,7 @@
         
         <div class="week-layout-content" id="week-layout">
             <div class="row-week">
-
+        
                 <div class="row-for-ora">
                     <p>09:00</p>
                     <div class="cellaWeek"></div>
@@ -338,7 +338,7 @@
                     <div class="cellaWeek"></div>
                     <div class="cellaWeek"></div>
                 </div>
-
+        
                 <div class="row-for-ora">
                     <p>10:00</p>
                     <div class="cellaWeek"></div>
@@ -349,7 +349,7 @@
                     <div class="cellaWeek"></div>
                     <div class="cellaWeek"></div>
                 </div>
-
+        
                 <div class="row-for-ora">
                     <p>11:00</p>
                     <div class="cellaWeek"></div>
@@ -360,7 +360,7 @@
                     <div class="cellaWeek"></div>
                     <div class="cellaWeek"></div>
                 </div>
-
+        
                 <div class="row-for-ora">
                     <p>12:00</p>
                     <div class="cellaWeek"></div>
@@ -371,7 +371,7 @@
                     <div class="cellaWeek"></div>
                     <div class="cellaWeek"></div>
                 </div>
-
+        
                 <div class="row-for-ora">
                     <p>13:00</p>
                     <div class="cellaWeek"></div>
@@ -442,12 +442,7 @@
                     <div class="cellaWeek"></div>
                     <div class="cellaWeek"></div>
                 </div>
-
-               
-            
-                
-                
-                </div>
+        
             </div>
         </div>
 
@@ -476,5 +471,24 @@
 
 
     </main>
+    <!-- POPUP APPOINTMENTS -->
+
+    <!-- Modale Visualizza Dettagli -->
+    <div id="detailsModal" class="custom-modal-overlay hidden-details">
+        <div class="custom-modal-content">
+        <span id="closeDetailsModal" class="custom-close">&times;</span>
+        <h3>📋 Dettagli Appuntamento</h3>
+        <div id="appointmentDetails" class="custom-details-content">
+            <!-- I dati verranno iniettati qui -->
+        </div>
+        </div>
+    </div>
+  
+
+    <!-- Bottone per aprire il popup -->
+    <div id="appointment-actions-popup" class="popup-actions hidden-popup">
+        <button class="btn-view" title="Visualizza dettagli">👁️</button>
+        <button class="btn-edit" title="Modifica appuntamento">✏️</button>
+    </div>
 </body>
 </html>

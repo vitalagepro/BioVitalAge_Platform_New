@@ -1,4 +1,45 @@
 /*  -----------------------------------------------------------------------------------------------
+  GLOBAL VARIABLE
+--------------------------------------------------------------------------------------------------- */
+// Dichiarazione globale
+let fromCalendar = false;
+let isEditing = false;
+let appointmentsData = {}; // Definita globalmente per contenere i dati caricati
+
+/*  -----------------------------------------------------------------------------------------------
+  GLOBAL FUNCTION
+--------------------------------------------------------------------------------------------------- */
+function getWeekDates(baseDate) {
+  let startDate = new Date(baseDate);
+  let day = startDate.getDay(); // 0 = Domenica, 1 = Lunedì, ecc.
+  // Per avere la settimana che inizia da lunedì:
+  let diff = startDate.getDate() - day + (day === 0 ? -6 : 1);
+  let monday = new Date(startDate.setDate(diff));
+
+  let weekDates = [];
+  for (let i = 0; i < 7; i++) {
+    let d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    weekDates.push(d.toISOString().split("T")[0]); // formato "YYYY-MM-DD"
+  }
+  return weekDates;
+}
+
+function updateWeekView(dateRiferimento) {
+  const weekDates = getWeekDates(dateRiferimento);
+  const appointmentsForWeek = {};
+
+  // Filtra gli appuntamenti globali per includere solo quelli della settimana corrente
+  Object.entries(appointmentsData.appointments || {}).forEach(([date, apps]) => {
+    if (weekDates.includes(date)) {
+      appointmentsForWeek[date] = apps;
+    }
+  });
+  // Chiama la funzione che genera il layout settimanale con questi dati filtrati
+  generateWeeklyAppointments({ appointments: appointmentsForWeek });
+}
+
+/*  -----------------------------------------------------------------------------------------------
   LAYOUT
 --------------------------------------------------------------------------------------------------- */
 const monthLayoutBtn = document.getElementById("monthLayout");
@@ -21,15 +62,327 @@ function resetMonthLayout() {
 
 /* SETTING WEEK LAYOUT */
 weekLayoutBtn.addEventListener("click", () => {
-  monthLayoutBtn.classList.remove("active");
   weekLayoutBtn.classList.add("active");
+  monthLayoutBtn.classList.remove("active");
 
-  monthWeek.style.display = "none";
-  monthLayout.style.display = "none";
+  weekHead.style.display = "block";
+  weekLayoutContainer.style.display = "block";
+  monthHead.style.display = "none";
+  monthLayoutContainer.style.display = "none";
 
-  headWeek.style.display = "block";
-  weekLayout.style.display = "block";
+  // Ricarica gli appuntamenti nella vista settimanale
+  loadAppointments();
 });
+
+// Funzione per generare la vista settimanale
+function generateWeeklyAppointments(appointmentsByDate) {
+  console.log("📢 Popolamento vista settimanale con appuntamenti:", appointmentsByDate);
+
+  const weekCells = document.querySelectorAll(".cellaWeek");
+
+  // Pulisce tutte le celle prima di riempirle
+  weekCells.forEach(cell => cell.innerHTML = "");
+
+  // Scorri tutti gli appuntamenti e posizionali nella vista settimanale
+  Object.entries(appointmentsByDate.appointments).forEach(([date, appointments]) => {
+      // Filtra solo gli appuntamenti che rientrano nella settimana visualizzata
+      appointments.forEach(appointment => {
+          const { orario, tipologia_visita, id } = appointment;
+
+          // Ottieni ora e calcola la posizione nella griglia settimanale
+          const hour = parseInt(orario.split(":")[0], 10);
+          const rowIndex = hour - 9; // Supponendo che il calendario inizi alle 09:00
+
+            // Domenica=0 → colonna=6, Lunedì=1 → colonna=0, ...
+            const realWeekDay = new Date(date).getDay(); 
+            const colIndex = (realWeekDay + 6) % 7;
+
+            const cellIndex = rowIndex * 7 + colIndex;
+
+          if (rowIndex >= 0 && rowIndex < weekCells.length / 7) {
+              if (cellIndex >= 0 && cellIndex < weekCells.length) {
+                const cell = weekCells[cellIndex];
+
+                // Crea un nuovo box appuntamento
+                const appointmentBox = document.createElement("div");
+                appointmentBox.classList.add("appointment-box");
+                appointmentBox.setAttribute("draggable", "true");
+                appointmentBox.dataset.id = id;
+                appointmentBox.dataset.tipologia = tipologia_visita;
+                appointmentBox.dataset.orario = orario;
+                appointmentBox.innerHTML = `<span style="flex: 1 1 0%">${tipologia_visita} - ${orario.slice(
+                  0,
+                  5
+                )}</span><button class="delete-appointment" data-id="${id}">&times;</button>`;
+
+                // Aggiunge il box nella cella giusta
+                cell.appendChild(appointmentBox);
+
+                // Abilita il click sul pulsante di eliminazione
+                const deleteButton = appointmentBox.querySelector(
+                  ".delete-appointment"
+                );
+                if (deleteButton) {
+                  deleteButton.addEventListener("click", (event) => {
+                    event.stopPropagation(); // evita apertura modale
+                    confirmDeleteAppointment(id, appointmentBox); // usa la tua funzione esistente
+                  });
+                }
+
+                function viewAppointmentDetails(appointmentId) {
+                  fetch(`/get-appointment/${appointmentId}/`)
+                    .then((res) => res.json())
+                    .then((data) => {
+                      if (data.success) {
+                        const modal = document.getElementById("detailsModal");
+                        const content =
+                          document.getElementById("appointmentDetails");
+
+                        // Popola i dettagli nella modale
+                        content.innerHTML = `
+                            <p><strong>🧑 Paziente:</strong> ${
+                              data.nome_paziente
+                            } ${data.cognome_paziente}</p>
+                            <p><strong>📅 Data:</strong> ${data.data}</p>
+                            <p><strong>⏰ Orario:</strong> ${data.orario.slice(
+                              0,
+                              5
+                            )}</p>
+                            <p><strong>💬 Tipologia:</strong> ${
+                              data.tipologia_visita
+                            }</p>
+                            <p><strong>🏥 Studio:</strong> ${
+                              data.numero_studio
+                            }</p>
+                            <p><strong>🧾 Voce prezzario:</strong> ${
+                              data.voce_prezzario
+                            }</p>
+                            <p><strong>🕒 Durata:</strong> ${
+                              data.durata
+                            } minuti</p>
+                            <p><strong>📝 Note:</strong> ${
+                              data.note || "Nessuna"
+                            }</p>
+                          `;
+
+                        modal.classList.remove("hidden-details");
+                        document.body.style.overflow = "hidden";
+
+                        gsap.fromTo(
+                          ".custom-modal-content",
+                          { scale: 0.8, opacity: 0 },
+                          {
+                            scale: 1,
+                            opacity: 1,
+                            duration: 0.3,
+                            ease: "power2.out",
+                          }
+                        );
+                      }
+                    });
+                }
+
+                // 🔹 Listener per chiudere la modale
+                document
+                  .getElementById("closeDetailsModal")
+                  .addEventListener("click", () => {
+                    const modal = document.getElementById("detailsModal");
+                    const content = modal.querySelector(
+                      ".custom-modal-content"
+                    );
+                    document.body.style.overflow = "auto";
+
+                    gsap.to(content, {
+                      opacity: 0,
+                      scale: 0.8,
+                      duration: 0.3,
+                      ease: "power2.in",
+                      onComplete: () => {
+                        modal.classList.add("hidden-details");
+                        gsap.set(content, { opacity: 1, scale: 1 }); // Reset per la prossima apertura
+                      },
+                    });
+                  });
+
+                // 🔹 Listener per apertura modale al click sul pulsante
+                function setupPopupActions() {
+                  const popup = document.getElementById("appointment-actions-popup");
+                
+                  // Sostituisci i pulsanti per eliminare eventuali listener duplicati
+                  const oldEditBtn = popup.querySelector(".btn-edit");
+                  const newEditBtn = oldEditBtn.cloneNode(true);
+                  oldEditBtn.parentNode.replaceChild(newEditBtn, oldEditBtn);
+                
+                  const oldViewBtn = popup.querySelector(".btn-view");
+                  const newViewBtn = oldViewBtn.cloneNode(true);
+                  oldViewBtn.parentNode.replaceChild(newViewBtn, oldViewBtn);
+                
+                  // Listener pulito per ✏️ Modifica
+                  newEditBtn.addEventListener("click", () => {
+                    const id = popup.dataset.id;
+                    if (id) {
+                      openAppointmentModal(id);
+                      popup.classList.add("hidden-popup");
+                    }
+                  });
+                
+                  // Listener pulito per 👁️ Visualizza
+                  newViewBtn.addEventListener("click", () => {
+                    const id = popup.dataset.id;
+                    if (id) {
+                      viewAppointmentDetails(id);
+                      popup.classList.add("hidden-popup");
+                    }
+                  });
+                }
+
+
+                // Funzione per nascondere il popup
+                function hidePopup() {
+                  document
+                    .getElementById("appointment-actions-popup")
+                    .classList.add("hidden-popup");
+                }
+
+                // Chiudi il popup se clicchi fuori
+                document.addEventListener("click", (e) => {
+                  const popup = document.getElementById(
+                    "appointment-actions-popup"
+                  );
+                  if (!popup.contains(e.target)) {
+                    popup.classList.add("hidden-popup");
+                  }
+                });
+
+                // 🔹 Listener per apertura modale al click sull'appuntamento
+                appointmentBox.addEventListener("click", (e) => {
+                  e.stopPropagation();
+
+                  const popup = document.getElementById(
+                    "appointment-actions-popup"
+                  );
+
+                  // Posiziona il popup vicino al box cliccato
+                  const rect = appointmentBox.getBoundingClientRect();
+                  popup.style.top = `${rect.top + window.scrollY + 40}px`;
+                  popup.style.left = `${rect.left + window.scrollX}px`;
+
+                  popup.classList.remove("hidden-popup");
+
+                  // Reset opacità e scala prima dell'animazione
+                  // ✅ Resetto eventuali animazioni precedenti
+                  gsap.set(popup, { opacity: 0 });
+
+                  // 🔥 Animazione GSAP di comparsa fluida
+                  gsap.to(popup, {
+                    opacity: 1,
+                    duration: 0.2,
+                    ease: "power2.out",
+                  });
+
+                  // Salva l'id dell'appuntamento selezionato
+                  popup.dataset.id = id;
+
+                  setupPopupActions();
+                });
+
+                // Abilita il drag & drop
+                addDragAndDropEvents(appointmentBox);
+              }
+          }
+      });
+  });
+}
+
+// Funzione per abilitare il drag & drop
+function addDragAndDropEvents(appointmentBox) {
+  appointmentBox.addEventListener("dragstart", (e) => {
+      selectedAppointment = e.target;
+      e.dataTransfer.setData("text/plain", selectedAppointment.dataset.id);
+      e.target.style.opacity = "0.5";
+  });
+
+  appointmentBox.addEventListener("dragend", () => {
+      if (selectedAppointment) {
+          selectedAppointment.style.opacity = "1";
+      }
+  });
+
+  document.querySelectorAll(".cellaWeek").forEach(cell => {
+      cell.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          cell.classList.add("drag-over");
+      });
+
+      cell.addEventListener("dragleave", () => {
+          cell.classList.remove("drag-over");
+      });
+
+      cell.addEventListener("drop", (e) => {
+          e.preventDefault();
+          cell.classList.remove("drag-over");
+
+          if (!selectedAppointment) return;
+
+          const appointmentId = selectedAppointment.dataset.id;
+          const tipologia = selectedAppointment.dataset.tipologia || "Sconosciuto";
+
+          if (!appointmentId) {
+              console.error("❌ Errore: ID appuntamento mancante!");
+              return;
+          }
+
+          // ✅ **Trova il primo giorno della settimana (lunedì)**
+          let weekStart = new Date(currentDate);
+          let dayOfWeek = weekStart.getDay(); // 0 = Domenica, ..., 6 = Sabato
+          let mondayOffset = (dayOfWeek === 0) ? -6 : 1 - dayOfWeek;
+          weekStart.setDate(weekStart.getDate() + mondayOffset);
+
+          // ✅ **Trova il giorno della settimana e l'orario**
+          // Prendi TUTTE le celle della griglia settimanale
+          const allWeekCells = [...document.querySelectorAll(".cellaWeek")];
+          // Calcola l'indice globale di quella cella
+          const cellIndex = allWeekCells.indexOf(cell);
+
+          const dayOffset = cellIndex % 7;
+          const hourIndex = Math.floor(cellIndex / 7);
+
+
+          let newDate = new Date(weekStart);
+          newDate.setDate(newDate.getDate() + dayOffset);
+          newDate.setHours(0, 0, 0, 0);
+
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          // ✅ **Blocca i giorni passati, compresa la domenica**
+          if (newDate < today) {
+              showAlert("danger", "❌ Non puoi spostare un appuntamento in un giorno passato!");
+              selectedAppointment.style.opacity = "1";
+              return;
+          }
+
+          // ✅ **Calcola il nuovo orario basato sulla riga nella griglia**
+          const newTime = `${String(9 + hourIndex).padStart(2, "0")}:00`;
+
+          // ✅ **Sposta l'elemento senza duplicarlo**
+          cell.appendChild(selectedAppointment);
+          selectedAppointment.style.opacity = "1";
+
+          // ✅ **Aggiorna il dataset con la tipologia corretta**
+          selectedAppointment.dataset.tipologia = tipologia;
+
+          // ✅ **Aggiorna visivamente il box con i dati corretti**
+          selectedAppointment.querySelector("span").textContent = `${tipologia} - ${newTime}`;
+
+          // ✅ **Aggiorna l'appuntamento nel database**
+          const formattedDate = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`;
+          updateAppointmentDate(appointmentId, formattedDate, newTime);
+
+          selectedAppointment = null;
+      });
+  });
+}
 
 /* SETTING MONTH LAYOUT */
 monthLayoutBtn.addEventListener("click", () => {
@@ -55,7 +408,6 @@ const editDateContainer = document.getElementById("edit-date-container");
 const editDateInput = document.getElementById("editDate");
 const editTimeInput = document.getElementById("editTime");
 let currentDate = new Date(); // Definisci la variabile globalmente
-let isEditing = false;
 let selectedAppointment = null;
 
 /* LOAD APPOINTMENTS */
@@ -99,6 +451,10 @@ function loadAppointments() {
           );
         }
       });
+
+      
+      // Genera la vista settimanale
+      generateWeeklyAppointments(appointmentsByDate);
     })
     .catch((error) =>
       console.error("❌ Errore nel caricamento appuntamenti:", error)
@@ -114,43 +470,132 @@ function formatDateForBackend(date, day) {
 }
 
 // Aggiorna la data di un appuntamento nel backend
-function updateAppointmentDate(appointmentId, newDate) {
+function updateAppointmentDate(appointmentId, newDate, newTime) {
   if (!appointmentId || !newDate) {
-    console.error("❌ Errore: appointmentId o newDate non valido!", {
-      appointmentId,
-      newDate,
-    });
-    return;
+      console.error("❌ Errore: appointmentId, newDate o newTime non valido!", {
+          appointmentId,
+          newDate,
+          newTime,
+      });
+      return;
   }
 
-  // Recupera il token CSRF dal campo hidden (assicurati che l'input esista nel DOM)
-  const csrfToken =
-    document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "";
+  const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "";
 
   fetch(`/update-appointment/${appointmentId}/`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrfToken, // Includi il token CSRF
-    },
-    body: JSON.stringify({ new_date: newDate }),
+      method: "PATCH",
+      headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+      },
+      body: JSON.stringify({ new_date: newDate, new_time: newTime }),
   })
-    .then((response) => {
-      console.log(`📢 Risposta HTTP: ${response.status}`);
-      return response.json();
-    })
+  .then((response) => response.json())
+  .then((data) => {
+      if (data.success) {
+          console.log("✅ Appuntamento aggiornato con successo!");
+      } else {
+          showAlert("danger", `Errore nello spostamento dell'appuntamento: ${data.error}`);
+      }
+  })
+  .catch((error) => console.error("❌ Errore nella richiesta:", error));
+}
+
+// gestione popup
+function viewAppointmentDetails(appointmentId) {
+  fetch(`/get-appointment/${appointmentId}/`)
+    .then((res) => res.json())
     .then((data) => {
       if (data.success) {
-        console.log("✅ Appuntamento spostato con successo!"); // Debug
-      } else {
-        showAlert(
-          "danger",
-          `Errore nello spostamento dell'appuntamento: ${data.error}`
+        const modal = document.getElementById("detailsModal");
+        const content =
+          document.getElementById("appointmentDetails");
+
+        // Popola i dettagli nella modale
+        content.innerHTML = `
+            <p><strong>🧑 Paziente:</strong> ${
+              data.nome_paziente
+            } ${data.cognome_paziente}</p>
+            <p><strong>📅 Data:</strong> ${data.data}</p>
+            <p><strong>⏰ Orario:</strong> ${data.orario.slice(
+              0,
+              5
+            )}</p>
+            <p><strong>💬 Tipologia:</strong> ${
+              data.tipologia_visita
+            }</p>
+            <p><strong>🏥 Studio:</strong> ${
+              data.numero_studio
+            }</p>
+            <p><strong>🧾 Voce prezzario:</strong> ${
+              data.voce_prezzario
+            }</p>
+            <p><strong>🕒 Durata:</strong> ${
+              data.durata
+            } minuti</p>
+            <p><strong>📝 Note:</strong> ${
+              data.note || "Nessuna"
+            }</p>
+          `;
+
+        modal.classList.remove("hidden-details");
+        document.body.style.overflow = "hidden";
+
+        gsap.fromTo(
+          ".custom-modal-content",
+          { scale: 0.8, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.3,
+            ease: "power2.out",
+          }
         );
       }
-    })
-    .catch((error) => console.error("❌ Errore nella richiesta:", error));
+    });
 }
+
+const popup = document.getElementById("appointment-actions-popup");
+
+function setupPopupActions() {
+  const popup = document.getElementById("appointment-actions-popup");
+
+  // Sostituisci i pulsanti per eliminare eventuali listener duplicati
+  const oldEditBtn = popup.querySelector(".btn-edit");
+  const newEditBtn = oldEditBtn.cloneNode(true);
+  oldEditBtn.parentNode.replaceChild(newEditBtn, oldEditBtn);
+
+  const oldViewBtn = popup.querySelector(".btn-view");
+  const newViewBtn = oldViewBtn.cloneNode(true);
+  oldViewBtn.parentNode.replaceChild(newViewBtn, oldViewBtn);
+
+  // Listener pulito per ✏️ Modifica
+  newEditBtn.addEventListener("click", () => {
+    const id = popup.dataset.id;
+    if (id) {
+      openAppointmentModal(id);
+      popup.classList.add("hidden-popup");
+    }
+  });
+
+  // Listener pulito per 👁️ Visualizza
+  newViewBtn.addEventListener("click", () => {
+    const id = popup.dataset.id;
+    if (id) {
+      viewAppointmentDetails(id);
+      popup.classList.add("hidden-popup");
+    }
+  });
+}
+
+// Nascondi il popup cliccando altrove
+document.addEventListener("click", (e) => {
+  if (!popup.contains(e.target)) {
+    popup.classList.add("hidden-popup");
+    gsap.set(popup, { opacity: 0 });
+  }
+});
+
 
 // Funzione per aggiungere un appuntamento alla cella
 function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
@@ -193,14 +638,33 @@ function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
     selectedAppointment = e.target;
   });
 
-  // Event listener per il click sull'appointment-box
   appointmentBox.addEventListener("click", (e) => {
-    e.stopPropagation(); // Impedisce il bubble verso la cella
+    e.stopPropagation();
     const appointmentId = appointmentBox.dataset.id;
-    if (appointmentId) {
-      openAppointmentModal(appointmentId);
-    }
-  });
+  
+    const popup = document.getElementById("appointment-actions-popup");
+  
+    // Posiziona il popup vicino all'appuntamento box (stile uniforme)
+    const rect = appointmentBox.getBoundingClientRect();
+    popup.style.top = `${rect.top + window.scrollY + 40}px`;
+    popup.style.left = `${rect.left + window.scrollX}px`;
+  
+    popup.classList.remove("hidden-popup");
+  
+    // Reset opacità e scala per animazione GSAP
+    gsap.set(popup, { opacity: 0, scale: 0.95 });
+  
+    // Effetto GSAP fluido
+    gsap.to(popup, {
+      opacity: 1,
+      duration: 0.2,
+      ease: "power2.out"
+    });
+  
+    popup.dataset.id = appointmentId; // memorizza ID per i bottoni 👁️ e ✏️
+
+    setupPopupActions();
+  });  
 }
 
 function getItalianDayName(dateObj) {
@@ -224,11 +688,58 @@ function openAppointmentModal(appointmentId) {
     .then((response) => response.json())
     .then((data) => {
       console.log("Dati ricevuti dal backend:", data);
-      console.log("ID:", data.id);
-      console.log("Nome:", data.nome_paziente);
-      console.log("Cognome:", data.cognome_paziente);
 
       if (data.success) {
+        
+        // **SETTAGGIO TIPOLOGIA VISITA**
+        let tipologiaSelect = document.getElementById("tipologia_visita");
+        tipologiaSelect.value = data.tipologia_visita || "";
+
+        // **TRIGGER AUTOMATICO DEL CAMBIO TIPOLOGIA**
+        tipologiaSelect.dispatchEvent(new Event("change"));
+
+        setTimeout(() => {
+          let voceOption = [...vocePrezzarioSelect.options].find(
+            (option) =>
+              option.value.trim().toLowerCase() ===
+              data.voce_prezzario?.toLowerCase()
+          );
+
+          if (voceOption) {
+            vocePrezzarioSelect.value = voceOption.value;
+          } else if (data.voce_prezzario) {
+            let newVoceOption = document.createElement("option");
+            newVoceOption.value = data.voce_prezzario;
+            newVoceOption.textContent = data.voce_prezzario + " (Non in elenco)";
+            newVoceOption.style.color = "red";
+            vocePrezzarioSelect.appendChild(newVoceOption);
+            vocePrezzarioSelect.value = data.voce_prezzario;
+          }
+
+          // **TRIGGER AUTOMATICO DEL CAMBIO VOCE PREZZARIO**
+          vocePrezzarioSelect.dispatchEvent(new Event("change"));
+        }, 300); // Aggiunto un ritardo per aspettare la popolazione dinamica
+
+        // **SETTAGGIO DURATA**
+        setTimeout(() => {
+          let durataSelect = document.getElementById("time");
+          let durataOption = [...durataSelect.options].find(
+            (option) =>
+              option.value.trim().toLowerCase() === data.durata?.toLowerCase()
+          );
+
+          if (durataOption) {
+            durataSelect.value = durataOption.value;
+          } else if (data.durata) {
+            let newDurataOption = document.createElement("option");
+            newDurataOption.value = data.durata;
+            newDurataOption.textContent = data.durata + " (Non in elenco)";
+            newDurataOption.style.color = "red";
+            durataSelect.appendChild(newDurataOption);
+            durataSelect.value = data.durata;
+          }
+        }, 500); // Un leggero ritardo per assicurarsi che gli altri select siano popolati prima
+
         // Se il campo "giorno" è vuoto, calcola il giorno a partire dalla data (formato "YYYY-MM-DD")
         let dayText = data.giorno;
         if (!dayText || dayText.trim() === "") {
@@ -268,15 +779,17 @@ function openAppointmentModal(appointmentId) {
         }
 
         let pazienteSelect = document.getElementById("paziente-select");
-        let nomeCompletoBackend = normalizeString(`${data.nome_paziente} ${data.cognome_paziente}`);
-        
+        let nomeCompletoBackend = normalizeString(
+          `${data.nome_paziente} ${data.cognome_paziente}`
+        );
+
         let pazienteOption = [...pazienteSelect.options].find((opt) => {
           if (!opt.value) return false;
           let [optNome] = opt.value.split("|"); // Prende solo nome e cognome, ignorando l'ID
           optNome = normalizeString(optNome);
           return optNome === nomeCompletoBackend;
         });
-        
+
         if (pazienteOption) {
           pazienteSelect.value = pazienteOption.value;
         } else {
@@ -287,18 +800,6 @@ function openAppointmentModal(appointmentId) {
           newOption.style.color = "red";
           pazienteSelect.appendChild(newOption);
           pazienteSelect.value = nomeCompletoBackend;
-        }              
-
-        if (pazienteOption) {
-          pazienteSelect.value = pazienteOption.value;
-        } else {
-          // Se non esiste, crea una nuova option con il delimitatore
-          let newOption = document.createElement("option");
-          newOption.value = `${nomeCompletoBackend}|${pazienteIdBackend}`;
-          newOption.textContent = `${data.nome_paziente} ${data.cognome_paziente} (Non in elenco)`;
-          newOption.style.color = "red";
-          pazienteSelect.appendChild(newOption);
-          pazienteSelect.value = newOption.value;
         }
 
         // Gestione delle altre selezioni (prezzario, durata, studio)
@@ -387,6 +888,12 @@ function saveAppointmentChanges() {
   const updatedStudio = document.getElementById("studio").value;
   const updatedNote = document.getElementById("note").value;
 
+  // Separiamo nome e cognome dall'eventuale ID
+  const [nameSurname, id] = updatedPaziente.split("|");
+  const parts = nameSurname.trim().split(" ");
+  const nomePaziente = parts.shift();
+  const cognomePaziente = parts.join(" ");
+
   if (appointmentId) {
     // Aggiorna l'appuntamento esistente via PATCH
     fetch(`/update-appointment/${appointmentId}/`, {
@@ -398,7 +905,8 @@ function saveAppointmentChanges() {
       body: JSON.stringify({
         tipologia_visita: updatedTipologia,
         orario: updatedOrario,
-        paziente_id: updatedPaziente,
+        nome_paziente: nomePaziente,
+        cognome_paziente: cognomePaziente,
         voce_prezzario: updatedVocePrezzario,
         durata: updatedDurata,
         numero_studio: updatedStudio,
@@ -509,7 +1017,7 @@ function confirmDeleteAppointment(appointmentId, appointmentBox) {
   confirmAlert.style.transform = "translateX(-50%)";
   confirmAlert.style.zIndex = "1050";
   confirmAlert.style.width = "auto";
-  confirmAlert.style.maxWidth = "400px";
+  confirmAlert.style.maxWidth = "420px";
   confirmAlert.style.display = "flex";
   confirmAlert.style.justifyContent = "space-between";
   confirmAlert.style.alignItems = "center";
@@ -710,11 +1218,28 @@ document.addEventListener("DOMContentLoaded", () => {
       const appointmentsContainer = document.createElement("div");
       appointmentsContainer.classList.add("appointments-container");
 
+      const holidays = [
+        `${year}-01-01`, // Capodanno
+        `${year}-12-25`, // Natale
+        `${year}-12-31`  // San Silvestro (opzionale)
+      ];
+
       // Controlla se la data della cella è passata
       const cellDate = new Date(year, month, day);
       cellDate.setHours(0, 0, 0, 0);
       if (cellDate < today) {
         cella.classList.add("past-day");
+      }
+
+      // Controlla se la data della cella è oggi
+      if (cellDate.getTime() === today.getTime()) {
+        cella.classList.add("present-day");
+      }
+
+      // Controlla se la data della cella è una festività
+      const formattedCellDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      if (holidays.includes(formattedCellDate)) {
+          cella.classList.add("holiday-day");
       }
 
       // Aggiungi listener per drag & drop e per il click solo se la cella non è passata
@@ -806,10 +1331,14 @@ document.addEventListener("DOMContentLoaded", () => {
   btnPrev.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     renderMonthCalendar();
+    loadAppointments();
+    updateWeekView(currentDate);
   });
   btnNext.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
     renderMonthCalendar();
+    loadAppointments();
+    updateWeekView(currentDate);
   });
   btnToday.addEventListener("click", () => {
     currentDate = new Date();
@@ -821,6 +1350,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const [yyyy, mm, dd] = val.split("-");
       currentDate = new Date(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd));
       renderMonthCalendar();
+      loadAppointments();
+      updateWeekView(currentDate);
     }
   });
 
@@ -958,8 +1489,6 @@ document.addEventListener("DOMContentLoaded", () => {
   /***********************************************************************
    * SEZIONE 2: LOGICA DEL FORM (autocompletamento <span>, edit, salvataggio)
    ***********************************************************************/
-  // Flag: ci dice se abbiamo aperto la modale da un giorno del calendario (true) o dal pulsante "Appuntamento" (false)
-  let fromCalendar = false;
   // Array dei giorni in italiano
   const giorniSettimana = [
     "Domenica",
@@ -1018,8 +1547,6 @@ document.addEventListener("DOMContentLoaded", () => {
    * Al primo click su "Edita" → mostro input, passo a "Salva"
    * Al secondo click → salvo, nascondo input, passo a "Edita"
    ***********************************************************************/
-  let isEditing = false;
-
   // HTML da mostrare quando siamo in modalità "Edita"
   // (cioè la tua icona e testo)
   const editHTML = `
@@ -1053,7 +1580,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (isEditing) {
       // Finalizza le modifiche: ad esempio, aggiorna gli span con i nuovi valori
       if (fromCalendar) {
-        console.log(fromCalendar);
         const newTime = editTimeInput.value;
         if (newTime) {
           timeSpan.textContent = newTime;
@@ -1155,28 +1681,80 @@ const mappingTipologie = {
     { value: "Visita fisiatrica", text: "Visita fisiatrica", duration: [30] },
     { value: "Visita ortopedica", text: "Visita ortopedica", duration: [30] },
     { value: "Visita neurologica", text: "Visita neurologica", duration: [30] },
-    { value: "Visita reumatologica", text: "Visita reumatologica", duration: [30] },
-    { value: "Chinesiterapia manuale/strumentale", text: "Chinesiterapia manuale/strumentale", duration: [30] },
-    { value: "Elettrostimolazioni - diadinamica, ionoforesi o tens", text: "Elettrostimolazioni - diadinamica, ionoforesi o tens", duration: [20] },
-    { value: "Infiltrazioni", text: "Infiltrazioni", duration: ["Da definire"] },
+    {
+      value: "Visita reumatologica",
+      text: "Visita reumatologica",
+      duration: [30],
+    },
+    {
+      value: "Chinesiterapia manuale/strumentale",
+      text: "Chinesiterapia manuale/strumentale",
+      duration: [30],
+    },
+    {
+      value: "Elettrostimolazioni - diadinamica, ionoforesi o tens",
+      text: "Elettrostimolazioni - diadinamica, ionoforesi o tens",
+      duration: [20],
+    },
+    {
+      value: "Infiltrazioni",
+      text: "Infiltrazioni",
+      duration: ["Da definire"],
+    },
     { value: "Infrarossi", text: "Infrarossi", duration: [10] },
     { value: "Laserterapia", text: "Laserterapia", duration: [20] },
     { value: "Magnetoterapia", text: "Magnetoterapia", duration: [20] },
-    { value: "Massaggio linfodrenante", text: "Massaggio linfodrenante", duration: [30] },
+    {
+      value: "Massaggio linfodrenante",
+      text: "Massaggio linfodrenante",
+      duration: [30],
+    },
     { value: "Massoterapia", text: "Massoterapia", duration: [20] },
-    { value: "Mesoterapia antalgica-antinfiammatoria", text: "Mesoterapia antalgica-antinfiammatoria", duration: [30] },
-    { value: "Mobilizzazioni articolari", text: "Mobilizzazioni articolari", duration: [15] },
-    { value: "Rieducazione motoria/rinforzo muscolare", text: "Rieducazione motoria/rinforzo muscolare", duration: [30] },
+    {
+      value: "Mesoterapia antalgica-antinfiammatoria",
+      text: "Mesoterapia antalgica-antinfiammatoria",
+      duration: [30],
+    },
+    {
+      value: "Mobilizzazioni articolari",
+      text: "Mobilizzazioni articolari",
+      duration: [15],
+    },
+    {
+      value: "Rieducazione motoria/rinforzo muscolare",
+      text: "Rieducazione motoria/rinforzo muscolare",
+      duration: [30],
+    },
     { value: "TECAR", text: "TECAR", duration: [20] },
     { value: "Ultrasuonoterapia", text: "Ultrasuonoterapia", duration: [15] },
     { value: "Onde d'urto", text: "Onde d'urto", duration: [10] },
-    { value: "Trattamento miofasciale", text: "Trattamento miofasciale", duration: [30] },
-    { value: "Valutazione + Cervical ROM", text: "Valutazione + Cervical ROM", duration: [30] },
+    {
+      value: "Trattamento miofasciale",
+      text: "Trattamento miofasciale",
+      duration: [30],
+    },
+    {
+      value: "Valutazione + Cervical ROM",
+      text: "Valutazione + Cervical ROM",
+      duration: [30],
+    },
   ],
   "Fisioterapia Sportiva": [
-    { value: "Rieducazione motoria/Rinforzo muscolare", text: "Rieducazione motoria/Rinforzo muscolare", duration: [30] },
-    { value: "Prevenzione infotuni sport specifico", text: "Prevenzione infotuni sport specifico", duration: [30] },
-    { value: "Massaggio decontratturante", text: "Massaggio decontratturante", duration: [30] },
+    {
+      value: "Rieducazione motoria/Rinforzo muscolare",
+      text: "Rieducazione motoria/Rinforzo muscolare",
+      duration: [30],
+    },
+    {
+      value: "Prevenzione infotuni sport specifico",
+      text: "Prevenzione infotuni sport specifico",
+      duration: [30],
+    },
+    {
+      value: "Massaggio decontratturante",
+      text: "Massaggio decontratturante",
+      duration: [30],
+    },
   ],
 };
 
@@ -1309,7 +1887,6 @@ document
 
     if (appointmentId) {
       // Se c'è un data-id, significa che stiamo modificando un appuntamento esistente:
-      console.log("Modal aperta da appointment-box: eseguo l'update (PATCH)");
       saveAppointmentChanges();
       return; // Esci dal listener per evitare ulteriori esecuzioni
     }
@@ -1411,12 +1988,6 @@ document
       });
   });
 
-
-
-
-
-
-
 // GESTIONE SECONDA MODALE
 /*  -----------------------------------------------------------------------------------------------
     evento per aprire la seconda modale
@@ -1424,25 +1995,50 @@ document
 // Selezioniamo il pulsante "add-user"
 document.querySelectorAll('[title="add-user"]').forEach((btn) => {
   btn.addEventListener("click", function (e) {
-      e.stopPropagation(); // Evita chiusure accidentali della modale principale
-
-      // Mostra la sopramodale
-      let addUserModal = document.getElementById("addUserModal");
-      addUserModal.classList.remove("hidden-user-modal");
-
-      // Disabilita temporaneamente l'interazione con la modale principale
-      document.getElementById("appointmentModal").style.pointerEvents = "none";
+    e.stopPropagation(); // Evita chiusure accidentali della modale principale
+    
+    // 1. Mostra l'overlay subito (senza animazioni)
+    let addUserModal = document.getElementById("addUserModal");
+    addUserModal.classList.remove("hidden-user-modal");
+    
+    // 2. Anima solo il contenuto interno con GSAP
+    gsap.fromTo(
+      ".modal-content-user",
+      { opacity: 0, y: -50 },   // stato iniziale
+      { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" } // stato finale
+    );
+    
+    // Disabilita la modale principale finché è aperta la "seconda" modale
+    document.getElementById("appointmentModal").style.pointerEvents = "none";
   });
 });
 
-// Chiudi la seconda modale senza chiudere la principale
-document.getElementById("closeAddUserModal").addEventListener("click", function () {
-  let addUserModal = document.getElementById("addUserModal");
-  addUserModal.classList.add("hidden-user-modal");
 
-  // Riattiva la modale principale
-  document.getElementById("appointmentModal").style.pointerEvents = "auto";
-});
+// Chiudi la seconda modale senza chiudere la principale
+document
+  .getElementById("closeAddUserModal")
+  .addEventListener("click", function () {
+    // Prima animiamo il contenuto .modal-content-user con GSAP
+    gsap.to(".modal-content-user", {
+      opacity: 0,
+      y: -50,
+      duration: 0.3,
+      ease: "power2.out",
+      onComplete: () => {
+        // Al termine dell'animazione, aggiungi la classe che nasconde la modale
+        let addUserModal = document.getElementById("addUserModal");
+        addUserModal.classList.add("hidden-user-modal");
+        
+        // Riattiva la modale principale
+        document.getElementById("appointmentModal").style.pointerEvents = "auto";
+
+        // Facoltativo: se vuoi che, alla prossima apertura,
+        // la modal parta di nuovo da opacity:0, y:-50,
+        // reimposta subito questi valori:
+        gsap.set(".modal-content-user", { opacity: 1, y: 0 });
+      }
+    });
+  });
 
 // Impedisce la chiusura della modale principale quando si clicca dentro la seconda
 document.getElementById("addUserModal").addEventListener("click", function (e) {
@@ -1452,66 +2048,83 @@ document.getElementById("addUserModal").addEventListener("click", function (e) {
 /*  -----------------------------------------------------------------------------------------------
     evento per aggiungere un paziente
 --------------------------------------------------------------------------------------------------- */
-document.getElementById("savePatientBtn").addEventListener("click", function (e) {
-  e.preventDefault(); // 🔥 Impedisce il submit del form principale appuntamenti
-  e.stopPropagation(); // 🔥 Evita l'event bubbling
+document.getElementById("addUserForm").addEventListener("submit", function (e) {
+  e.preventDefault();
 
   let newName = document.getElementById("newName").value.trim();
   let newSurname = document.getElementById("newSurname").value.trim();
-  let newCell = document.getElementById("newCell").value.trim();
+  let newPhone = document.getElementById("newCell").value.trim();
+  let newEmail = document.getElementById("newEmail").value.trim();
+
+  // 🔹 Recupera il token CSRF
+  function getCSRFToken() {
+    let csrfTokenElement = document.querySelector(
+      "input[name='csrfmiddlewaretoken']"
+    );
+    return csrfTokenElement ? csrfTokenElement.value : null;
+  }
+
+  if (!newName || !newSurname || !newPhone || !newEmail) {
+    alert("Errore: Uno o più campi del form non sono stati trovati nel DOM.");
+    return;
+  }
 
   if (!newName || !newSurname) {
-      alert("Nome e cognome sono obbligatori!");
+    showAlert("danger", "Nome e cognome sono obbligatori!");
+    return;
+  }
+
+  let csrfToken = getCSRFToken();
+  if (!csrfToken) {
+      console.error("Errore: token CSRF non trovato nel DOM.");
+      showAlert("danger", "Errore di sicurezza: impossibile procedere. Ricarica la pagina e riprova.");
       return;
   }
 
-  let csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
-
   fetch("/aggiungi-paziente/", {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken
-      },
-      body: JSON.stringify({ name: newName, surname: newSurname, phone: newCell })
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken,
+    },
+    body: JSON.stringify({
+      name: newName,
+      surname: newSurname,
+      email: newEmail,
+      phone: newPhone,
+    }),
   })
-  .then(response => response.json())
-  .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       if (data.success) {
-          alert("✅ Paziente aggiunto con successo!");
+        showAlert("success", "Paziente aggiunto con successo!");
+        // **AGGIORNAMENTO DINAMICO DEL SELECT**
+        let selectPazienti = document.getElementById("paziente-select"); // Assicurati che l'ID del select sia corretto
+        if (selectPazienti) {
+          let newOption = document.createElement("option");
+          newOption.value = `${newName} ${newSurname}`; // Puoi anche usare un ID se il backend lo restituisce
+          newOption.textContent = `${newName} ${newSurname}`;
+          selectPazienti.appendChild(newOption);
+        }
 
-          // 🔹 Aggiungi il paziente appena creato al <select> della modale appuntamento
-          aggiungiPazienteASelect(newName, newSurname, data.paziente_id);
+        // **Chiudi la modale senza ricaricare la pagina**
+        let addUserModal = document.getElementById("addUserModal");
+        addUserModal.classList.add("hidden-user-modal");
 
-          // 🔹 Chiude solo la modale paziente
-          chiudiModalePaziente();
+        // Riattiva la modale principale
+        document.getElementById("appointmentModal").style.pointerEvents = "auto";
+
+        // **Svuota i campi del form**
+        newName.value = "";
+        newSurname.value = "";
+        newPhone.value = "";
+        newEmail.value = "";
       } else {
-          alert("❌ Errore: " + data.error);
+        showAlert("danger", "Errore: " + data.error);
       }
-  })
-  .catch(error => console.error("❌ Errore:", error));
+    })
+    .catch((error) => showAlert("danger", "Errore:", error));
 });
-
-// Aggiungi il paziente appena creato al <select> della modale appuntamento
-function aggiungiPazienteASelect(nome, cognome, paziente_id) {
-  let pazienteSelect = document.getElementById("paziente-select");
-  let nuovaOpzione = document.createElement("option");
-  nuovaOpzione.value = paziente_id;
-  nuovaOpzione.textContent = `${nome} ${cognome}`;
-  pazienteSelect.appendChild(nuovaOpzione);
-
-  // Seleziona automaticamente il paziente appena creato
-  pazienteSelect.value = paziente_id;
-}
-
-// Chiudi solo la modale paziente
-function chiudiModalePaziente() {
-  let addUserModal = document.getElementById("addUserModal");
-  addUserModal.classList.add("hidden-user-modal");
-
-  // Riattiva la modale principale
-  document.getElementById("appointmentModal").style.pointerEvents = "auto";
-}
 
 /*  -----------------------------------------------------------------------------------------------
     gestione input animati
@@ -1521,12 +2134,42 @@ function chiudiModalePaziente() {
 document.addEventListener("DOMContentLoaded", function () {
   // Lista di prefissi con bandiere
   const prefissi = [
-      { value: "+39", flag: "/static/includes/icone/bandiera-italiana.png", country: "Italia", code: "IT" },
-      { value: "+33", flag: "/static/includes/icone/bandiera-francia.png", country: "Francia", code: "FR" },
-      { value: "+44", flag: "/static/includes/icone/bandiera-inglese.png", country: "Regno Unito", code: "GB" },
-      { value: "+49", flag: "/static/includes/icone/bandiera-germania.png", country: "Germania", code: "DE" },
-      { value: "+34", flag: "/static/includes/icone/bandiera-spagnola.png", country: "Spagna", code: "ES" },
-      { value: "+1", flag: "/static/includes/icone/bandiera-usa.png", country: "Stati Uniti", code: "US" },
+    {
+      value: "+39",
+      flag: "/static/includes/icone/bandiera-italiana.png",
+      country: "Italia",
+      code: "IT",
+    },
+    {
+      value: "+33",
+      flag: "/static/includes/icone/bandiera-francia.png",
+      country: "Francia",
+      code: "FR",
+    },
+    {
+      value: "+44",
+      flag: "/static/includes/icone/bandiera-inglese.png",
+      country: "Regno Unito",
+      code: "GB",
+    },
+    {
+      value: "+49",
+      flag: "/static/includes/icone/bandiera-germania.png",
+      country: "Germania",
+      code: "DE",
+    },
+    {
+      value: "+34",
+      flag: "/static/includes/icone/bandiera-spagnola.png",
+      country: "Spagna",
+      code: "ES",
+    },
+    {
+      value: "+1",
+      flag: "/static/includes/icone/bandiera-usa.png",
+      country: "Stati Uniti",
+      code: "US",
+    },
   ];
 
   const selectContainer = document.querySelector(".custom-select");
@@ -1536,71 +2179,73 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // **1️⃣ Rileva la posizione dell'utente e imposta il prefisso corretto**
   async function setUserCountryPrefix() {
-      try {
-          const response = await fetch("https://ip-api.com/json/?fields=countryCode");
-          const data = await response.json();
-          console.log("📍 Nazione rilevata:", data.countryCode);
+    try {
+      const response = await fetch(
+        "https://ipapi.co/json/"
+      );
+      const data = await response.json();
+      console.log("📍 Nazione rilevata:", data.country);
 
-          // Trova il prefisso associato alla nazione
-          const userPrefix = prefissi.find(p => p.code === data.countryCode);
-          if (userPrefix) {
-              updateSelectedPrefix(userPrefix);
-          }
-      } catch (error) {
-          console.error("❌ Errore nel rilevare la posizione dell'utente:", error);
+      // Trova il prefisso associato alla nazione
+      const userPrefix = prefissi.find((p) => p.code === data.country);
+      if (userPrefix) {
+        updateSelectedPrefix(userPrefix);
       }
+    } catch (error) {
+      console.error("❌ Errore nel rilevare la posizione dell'utente:", error);
+    }
   }
 
   // **2️⃣ Funzione per aggiornare il prefisso selezionato**
   function updateSelectedPrefix(prefisso) {
-      selectedOption.innerHTML = `
+    selectedOption.innerHTML = `
           <img src="${prefisso.flag}" alt="${prefisso.country}" class="flag-icon">
           <span id="selected-prefix">${prefisso.value}</span>
       `;
-      hiddenInput.value = prefisso.value; // Aggiorna il campo nascosto
+    hiddenInput.value = prefisso.value; // Aggiorna il campo nascosto
   }
 
   // **3️⃣ Popola la lista delle opzioni dinamicamente**
-  prefissi.forEach(prefisso => {
-      const li = document.createElement("li");
-      li.innerHTML = `
+  prefissi.forEach((prefisso) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
           <img src="${prefisso.flag}" alt="${prefisso.country}" class="flag-icon">
           <span>${prefisso.value}</span>
       `;
-      li.addEventListener("click", () => {
-          updateSelectedPrefix(prefisso);
-          optionsList.style.display = "none"; // Chiude il menu
-      });
-      optionsList.appendChild(li);
+    li.addEventListener("click", () => {
+      updateSelectedPrefix(prefisso);
+      optionsList.style.display = "none"; // Chiude il menu
+    });
+    optionsList.appendChild(li);
   });
 
   // **4️⃣ Mostra/Nasconde il menu delle opzioni**
   selectedOption.addEventListener("click", () => {
-      optionsList.style.display = optionsList.style.display === "block" ? "none" : "block";
-      optionsList.paddingLeft = "0px";
+    optionsList.style.display =
+      optionsList.style.display === "block" ? "none" : "block";
+    optionsList.paddingLeft = "0px";
   });
 
   // **5️⃣ Chiude il menu se si clicca fuori**
   document.addEventListener("click", (e) => {
-      if (!selectContainer.contains(e.target)) {
-          optionsList.style.display = "none";
-      }
+    if (!selectContainer.contains(e.target)) {
+      optionsList.style.display = "none";
+    }
   });
 
   // **6️⃣ Imposta il prefisso predefinito in base alla nazione dell'utente**
   setUserCountryPrefix();
 });
 
-
 // Gestione input animati form
 document.querySelectorAll(".input-container input").forEach((input) => {
   input.addEventListener("focus", function () {
-      this.previousElementSibling.classList.add("active");
+    this.previousElementSibling.classList.add("active-label");
   });
 
   input.addEventListener("blur", function () {
-      if (this.value === "") {
-          this.previousElementSibling.classList.remove("active");
-      }
+    if (this.value === "") {
+      this.previousElementSibling.classList.remove("active-label");
+    }
   });
 });
