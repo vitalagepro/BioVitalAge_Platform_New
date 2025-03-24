@@ -103,6 +103,56 @@ class TabellaPazienti(models.Model):
     livello_sedentarieta = models.CharField(max_length=100, blank=True, null=True)
     sedentarieta_nota = models.TextField(blank=True, null=True)
 
+    professione = models.CharField(max_length=100, null=True)
+    pensionato = models.CharField(max_length=100, null=True)
+
+    #SOLO DONNA---
+    menarca = models.CharField(max_length=100, null=True)
+    ciclo = models.CharField(max_length=100, null=True)
+    sintomi = models.CharField(max_length=100, null=True)
+    esordio = models.CharField(max_length=100, null=True)
+    parto = models.CharField(max_length=100, null=True)
+    post_parto = models.CharField(max_length=100, null=True)
+    aborto = models.CharField(max_length=100, null=True)
+    
+    #ANAMNESI FAMILIARE---
+    m_cardiache = models.CharField(max_length=100, null=True)
+    diabete_m = models.CharField(max_length=100, null=True)
+    obesita = models.CharField(max_length=100, null=True)
+    epilessia = models.CharField(max_length=100, null=True)
+    ipertensione = models.CharField(max_length=100, null=True)
+    m_tiroidee = models.CharField(max_length=100, null=True)
+    m_polmonari = models.CharField(max_length=100, null=True)
+    tumori = models.CharField(max_length=100, null=True)
+    allergie = models.CharField(max_length=100, null=True)
+    m_psichiatriche = models.CharField(max_length=100, null=True)
+
+    patologie = models.CharField(max_length=100, null=True)
+    p_p_altro = models.CharField(max_length=100, null=True)
+    t_farmaco = models.CharField(max_length=100, null=True)
+    t_dosaggio = models.CharField(max_length=100, null=True)
+    t_durata = models.CharField(max_length=100, null=True)
+
+    #ANAMNESI PATOLOGICA REMOTA---
+    p_cardiovascolari = models.CharField(max_length=100, null=True)
+    m_metabolica = models.CharField(max_length=100, null=True)
+    p_respiratori_cronici = models.CharField(max_length=100, null=True)
+    m_neurologica = models.CharField(max_length=100, null=True)
+    m_endocrina = models.CharField(max_length=100, null=True)
+    m_autoimmune = models.CharField(max_length=100, null=True)
+    p_epatici = models.CharField(max_length=100, null=True)
+    m_renale = models.CharField(max_length=100, null=True)
+    d_gastrointestinali = models.CharField(max_length=100, null=True)
+    
+    #ESAME OBBIETTIVO
+    eloquio = models.CharField(max_length=100, null=True)
+    s_nutrizionale = models.CharField(max_length=100, null=True)
+    a_genarale = models.CharField(max_length=100, null=True)
+    psiche = models.CharField(max_length=100, null=True)
+    r_ambiente = models.CharField(max_length=100, null=True)
+    s_emotivo = models.CharField(max_length=100, null=True)
+    costituzione = models.CharField(max_length=100, null=True)
+    statura = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return f"Paziente: {self.name} {self.surname}"

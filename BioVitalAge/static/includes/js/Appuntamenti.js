@@ -85,6 +85,9 @@ function generateWeeklyAppointments(appointmentsByDate) {
 
   // Scorri tutti gli appuntamenti e posizionali nella vista settimanale
   Object.entries(appointmentsByDate.appointments).forEach(([date, appointments]) => {
+      const appointmentDate = new Date(date);
+      const weekDay = appointmentDate.getDay(); // 0 = Domenica, 6 = Sabato
+
       // Filtra solo gli appuntamenti che rientrano nella settimana visualizzata
       appointments.forEach(appointment => {
           const { orario, tipologia_visita, id } = appointment;
@@ -101,197 +104,210 @@ function generateWeeklyAppointments(appointmentsByDate) {
 
           if (rowIndex >= 0 && rowIndex < weekCells.length / 7) {
               if (cellIndex >= 0 && cellIndex < weekCells.length) {
-                const cell = weekCells[cellIndex];
+                  const cell = weekCells[cellIndex];
 
-                // Crea un nuovo box appuntamento
-                const appointmentBox = document.createElement("div");
-                appointmentBox.classList.add("appointment-box");
-                appointmentBox.setAttribute("draggable", "true");
-                appointmentBox.dataset.id = id;
-                appointmentBox.dataset.tipologia = tipologia_visita;
-                appointmentBox.dataset.orario = orario;
-                appointmentBox.innerHTML = `<span style="flex: 1 1 0%">${tipologia_visita} - ${orario.slice(
-                  0,
-                  5
-                )}</span><button class="delete-appointment" data-id="${id}">&times;</button>`;
-
-                // Aggiunge il box nella cella giusta
-                cell.appendChild(appointmentBox);
-
-                // Abilita il click sul pulsante di eliminazione
-                const deleteButton = appointmentBox.querySelector(
-                  ".delete-appointment"
-                );
-                if (deleteButton) {
-                  deleteButton.addEventListener("click", (event) => {
-                    event.stopPropagation(); // evita apertura modale
-                    confirmDeleteAppointment(id, appointmentBox); // usa la tua funzione esistente
-                  });
-                }
-
-                function viewAppointmentDetails(appointmentId) {
-                  fetch(`/get-appointment/${appointmentId}/`)
-                    .then((res) => res.json())
-                    .then((data) => {
-                      if (data.success) {
-                        const modal = document.getElementById("detailsModal");
-                        const content =
-                          document.getElementById("appointmentDetails");
-
-                        // Popola i dettagli nella modale
-                        content.innerHTML = `
-                            <p><strong>🧑 Paziente:</strong> ${
-                              data.nome_paziente
-                            } ${data.cognome_paziente}</p>
-                            <p><strong>📅 Data:</strong> ${data.data}</p>
-                            <p><strong>⏰ Orario:</strong> ${data.orario.slice(
-                              0,
-                              5
-                            )}</p>
-                            <p><strong>💬 Tipologia:</strong> ${
-                              data.tipologia_visita
-                            }</p>
-                            <p><strong>🏥 Studio:</strong> ${
-                              data.numero_studio
-                            }</p>
-                            <p><strong>🧾 Voce prezzario:</strong> ${
-                              data.voce_prezzario
-                            }</p>
-                            <p><strong>🕒 Durata:</strong> ${
-                              data.durata
-                            } minuti</p>
-                            <p><strong>📝 Note:</strong> ${
-                              data.note || "Nessuna"
-                            }</p>
-                          `;
-
-                        modal.classList.remove("hidden-details");
-                        document.body.style.overflow = "hidden";
-
-                        gsap.fromTo(
-                          ".custom-modal-content",
-                          { scale: 0.8, opacity: 0 },
-                          {
-                            scale: 1,
-                            opacity: 1,
-                            duration: 0.3,
-                            ease: "power2.out",
-                          }
-                        );
+                  // Crea un nuovo box appuntamento
+                  const appointmentBox = document.createElement("div");
+                  appointmentBox.classList.add("appointment-box");
+                  appointmentBox.setAttribute("draggable", "true");
+                  appointmentBox.dataset.id = id;
+                  appointmentBox.dataset.tipologia = tipologia_visita;
+                  appointmentBox.dataset.orario = orario;
+                  appointmentBox.innerHTML = `<span style="flex: 1 1 0%">${tipologia_visita} - ${orario.slice(
+                    0,
+                    5
+                  )}</span><button class="delete-appointment" data-id="${id}">&times;</button>`;
+  
+                  // Aggiunge il box nella cella giusta
+                  cell.appendChild(appointmentBox);
+  
+                  // Abilita il click sul pulsante di eliminazione
+                  const deleteButton = appointmentBox.querySelector(
+                    ".delete-appointment"
+                  );
+                  if (deleteButton) {
+                    deleteButton.addEventListener("click", (event) => {
+                      event.stopPropagation(); // evita apertura modale
+                      confirmDeleteAppointment(id, appointmentBox); // usa la tua funzione esistente
+                    });
+                  }
+  
+                  function viewAppointmentDetails(appointmentId) {
+                    fetch(`/get-appointment/${appointmentId}/`)
+                      .then((res) => res.json())
+                      .then((data) => {
+                        if (data.success) {
+                          const modal = document.getElementById("detailsModal");
+                          const content =
+                            document.getElementById("appointmentDetails");
+  
+                          // Popola i dettagli nella modale
+                          content.innerHTML = `
+                              <p><strong>🧑 Paziente:</strong> ${
+                                data.nome_paziente
+                              } ${data.cognome_paziente}</p>
+                              <p><strong>📅 Data:</strong> ${data.data}</p>
+                              <p><strong>⏰ Orario:</strong> ${data.orario.slice(
+                                0,
+                                5
+                              )}</p>
+                              <p><strong>💬 Tipologia:</strong> ${
+                                data.tipologia_visita
+                              }</p>
+                              <p><strong>🏥 Studio:</strong> ${
+                                data.numero_studio
+                              }</p>
+                              <p><strong>🧾 Voce prezzario:</strong> ${
+                                data.voce_prezzario
+                              }</p>
+                              <p><strong>🕒 Durata:</strong> ${
+                                data.durata
+                              } minuti</p>
+                              <p><strong>📝 Note:</strong> ${
+                                data.note || "Nessuna"
+                              }</p>
+                            `;
+  
+                          modal.classList.remove("hidden-details");
+                          document.body.style.overflow = "hidden";
+  
+                          gsap.fromTo(
+                            ".custom-modal-content",
+                            { scale: 0.8, opacity: 0 },
+                            {
+                              scale: 1,
+                              opacity: 1,
+                              duration: 0.3,
+                              ease: "power2.out",
+                            }
+                          );
+                        }
+                      });
+                  }
+  
+                  // 🔹 Listener per chiudere la modale
+                  document
+                    .getElementById("closeDetailsModal")
+                    .addEventListener("click", () => {
+                      const modal = document.getElementById("detailsModal");
+                      const content = modal.querySelector(
+                        ".custom-modal-content"
+                      );
+                      document.body.style.overflow = "auto";
+  
+                      gsap.to(content, {
+                        opacity: 0,
+                        scale: 0.8,
+                        duration: 0.3,
+                        ease: "power2.in",
+                        onComplete: () => {
+                          modal.classList.add("hidden-details");
+                          gsap.set(content, { opacity: 1, scale: 1 }); // Reset per la prossima apertura
+                        },
+                      });
+                    });
+  
+                  // 🔹 Listener per apertura modale al click sul pulsante
+                  function setupPopupActions() {
+                    const popup = document.getElementById("appointment-actions-popup");
+                  
+                    // Sostituisci i pulsanti per eliminare eventuali listener duplicati
+                    const oldEditBtn = popup.querySelector(".btn-edit");
+                    const newEditBtn = oldEditBtn.cloneNode(true);
+                    oldEditBtn.parentNode.replaceChild(newEditBtn, oldEditBtn);
+                  
+                    const oldViewBtn = popup.querySelector(".btn-view");
+                    const newViewBtn = oldViewBtn.cloneNode(true);
+                    oldViewBtn.parentNode.replaceChild(newViewBtn, oldViewBtn);
+                  
+                    // Listener pulito per ✏️ Modifica
+                    newEditBtn.addEventListener("click", () => {
+                      const id = popup.dataset.id;
+                      if (id) {
+                        openAppointmentModal(id);
+                        popup.classList.add("hidden-popup");
                       }
                     });
-                }
-
-                // 🔹 Listener per chiudere la modale
-                document
-                  .getElementById("closeDetailsModal")
-                  .addEventListener("click", () => {
-                    const modal = document.getElementById("detailsModal");
-                    const content = modal.querySelector(
-                      ".custom-modal-content"
-                    );
-                    document.body.style.overflow = "auto";
-
-                    gsap.to(content, {
-                      opacity: 0,
-                      scale: 0.8,
-                      duration: 0.3,
-                      ease: "power2.in",
-                      onComplete: () => {
-                        modal.classList.add("hidden-details");
-                        gsap.set(content, { opacity: 1, scale: 1 }); // Reset per la prossima apertura
-                      },
+                  
+                    // Listener pulito per 👁️ Visualizza
+                    newViewBtn.addEventListener("click", () => {
+                      const id = popup.dataset.id;
+                      if (id) {
+                        viewAppointmentDetails(id);
+                        popup.classList.add("hidden-popup");
+                      }
                     });
-                  });
-
-                // 🔹 Listener per apertura modale al click sul pulsante
-                function setupPopupActions() {
-                  const popup = document.getElementById("appointment-actions-popup");
-                
-                  // Sostituisci i pulsanti per eliminare eventuali listener duplicati
-                  const oldEditBtn = popup.querySelector(".btn-edit");
-                  const newEditBtn = oldEditBtn.cloneNode(true);
-                  oldEditBtn.parentNode.replaceChild(newEditBtn, oldEditBtn);
-                
-                  const oldViewBtn = popup.querySelector(".btn-view");
-                  const newViewBtn = oldViewBtn.cloneNode(true);
-                  oldViewBtn.parentNode.replaceChild(newViewBtn, oldViewBtn);
-                
-                  // Listener pulito per ✏️ Modifica
-                  newEditBtn.addEventListener("click", () => {
-                    const id = popup.dataset.id;
-                    if (id) {
-                      openAppointmentModal(id);
-                      popup.classList.add("hidden-popup");
-                    }
-                  });
-                
-                  // Listener pulito per 👁️ Visualizza
-                  newViewBtn.addEventListener("click", () => {
-                    const id = popup.dataset.id;
-                    if (id) {
-                      viewAppointmentDetails(id);
-                      popup.classList.add("hidden-popup");
-                    }
-                  });
-                }
-
-
-                // Funzione per nascondere il popup
-                function hidePopup() {
-                  document
-                    .getElementById("appointment-actions-popup")
-                    .classList.add("hidden-popup");
-                }
-
-                // Chiudi il popup se clicchi fuori
-                document.addEventListener("click", (e) => {
-                  const popup = document.getElementById(
-                    "appointment-actions-popup"
-                  );
-                  if (!popup.contains(e.target)) {
-                    popup.classList.add("hidden-popup");
                   }
-                });
-
-                // 🔹 Listener per apertura modale al click sull'appuntamento
-                appointmentBox.addEventListener("click", (e) => {
-                  e.stopPropagation();
-
-                  const popup = document.getElementById(
-                    "appointment-actions-popup"
-                  );
-
-                  // Posiziona il popup vicino al box cliccato
-                  const rect = appointmentBox.getBoundingClientRect();
-                  popup.style.top = `${rect.top + window.scrollY + 40}px`;
-                  popup.style.left = `${rect.left + window.scrollX}px`;
-
-                  popup.classList.remove("hidden-popup");
-
-                  // Reset opacità e scala prima dell'animazione
-                  // ✅ Resetto eventuali animazioni precedenti
-                  gsap.set(popup, { opacity: 0 });
-
-                  // 🔥 Animazione GSAP di comparsa fluida
-                  gsap.to(popup, {
-                    opacity: 1,
-                    duration: 0.2,
-                    ease: "power2.out",
+  
+  
+                  // Funzione per nascondere il popup
+                  function hidePopup() {
+                    document
+                      .getElementById("appointment-actions-popup")
+                      .classList.add("hidden-popup");
+                  }
+  
+                  // Chiudi il popup se clicchi fuori
+                  document.addEventListener("click", (e) => {
+                    const popup = document.getElementById(
+                      "appointment-actions-popup"
+                    );
+                    if (!popup.contains(e.target)) {
+                      popup.classList.add("hidden-popup");
+                    }
                   });
+  
+                  // 🔹 Listener per apertura modale al click sull'appuntamento
+                  appointmentBox.addEventListener("click", (e) => {
+                    e.stopPropagation();
+  
+                    const popup = document.getElementById(
+                      "appointment-actions-popup"
+                    );
+  
+                    // Posiziona il popup vicino al box cliccato
+                    const rect = appointmentBox.getBoundingClientRect();
+                    popup.style.top = `${rect.top + window.scrollY + 40}px`;
+                    popup.style.left = `${rect.left + window.scrollX}px`;
+  
+                    popup.classList.remove("hidden-popup");
+  
+                    // Reset opacità e scala prima dell'animazione
+                    // ✅ Resetto eventuali animazioni precedenti
+                    gsap.set(popup, { opacity: 0 });
+  
+                    // 🔥 Animazione GSAP di comparsa fluida
+                    gsap.to(popup, {
+                      opacity: 1,
+                      duration: 0.2,
+                      ease: "power2.out",
+                    });
+  
+                    // Salva l'id dell'appuntamento selezionato
+                    popup.dataset.id = id;
+  
+                    setupPopupActions();
+                  });
+  
+                  // Abilita il drag & drop
+                  addDragAndDropEvents(appointmentBox);
+                }
+            }
+        });
+    });
+}
 
-                  // Salva l'id dell'appuntamento selezionato
-                  popup.dataset.id = id;
+function updateWeekView(dateRiferimento) {
+  const settimanaCorrente = getWeekDates(dateRiferimento);
+  const appointmentsForWeek = {};
 
-                  setupPopupActions();
-                });
-
-                // Abilita il drag & drop
-                addDragAndDropEvents(appointmentBox);
-              }
-          }
-      });
+  Object.entries(appointmentsData.appointments || {}).forEach(([data, appuntamenti]) => {
+    if (settimanaCorrente.includes(data)) {
+      appointmentsForWeek[data] = appuntamenti;
+    }
   });
+
+  generateWeeklyAppointments({ appointments: appointmentsForWeek });
 }
 
 // Funzione per abilitare il drag & drop
@@ -1331,13 +1347,11 @@ document.addEventListener("DOMContentLoaded", () => {
   btnPrev.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     renderMonthCalendar();
-    loadAppointments();
     updateWeekView(currentDate);
   });
   btnNext.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
     renderMonthCalendar();
-    loadAppointments();
     updateWeekView(currentDate);
   });
   btnToday.addEventListener("click", () => {
@@ -1350,7 +1364,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const [yyyy, mm, dd] = val.split("-");
       currentDate = new Date(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd));
       renderMonthCalendar();
-      loadAppointments();
       updateWeekView(currentDate);
     }
   });
