@@ -2490,3 +2490,52 @@ class CreaPazienteView(View):
 
 
 
+
+
+#VIEWS PER SEZIONE RESILIENZA 
+class ResilienzaView(View):
+    def get(self, request, persona_id):
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        context = {
+            'persona': persona,
+            'dottore' : dottore,
+        }
+
+        return render(request, "includes/Resilienza.html", context)
+    
+    def post(self, request, persona_id): 
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        # Estrai i dati dal form (con gestione errori base)
+        try:
+            retrivedData = Resilienza.objects.create(
+                paziente=persona,
+                hrv=request.POST.get("hrv"),
+                cortisolo=request.POST.get("cortisolo"),
+                ros=request.POST.get("ros"),
+                osi=request.POST.get("osi"),
+                droms=request.POST.get("dRoms"),
+                pcr=request.POST.get("pcr"),
+                nlr=request.POST.get("nlr"),
+                homa=request.POST.get("homa_t"),
+                ir=request.POST.get("ir_t"),
+                omega_3=request.POST.get("omega_3"),
+                vo2max=request.POST.get("vo2"),
+            )
+            retrivedData.save()
+
+        except Exception as e:
+            print("Errore nel salvataggio del referto:", e)
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+            'successo': True
+        }
+        return render(request, "includes/Resilienza.html", context)
