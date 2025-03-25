@@ -522,4 +522,4 @@ class Resilienza(models.Model):
     risultato = models.FloatField(null=True, blank=True)
 
     def __str__(self):
-        return f"Referto {self.titolo} - {self.paziente.name} {self.paziente.surname}"
+        return f"Referto - {self.paziente.name} {self.paziente.surname}"
