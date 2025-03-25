@@ -626,7 +626,6 @@ input[type='time'] {
     padding: 6px;
     display: flex;
     gap: 8px;
-    z-index: 999;
     transition: opacity 0.2s ease;
 }
 
@@ -715,7 +714,6 @@ input[type='time'] {
     display: flex;
     justify-content: center;
     height: 4rem;
-    margin-top: 1rem;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 }
@@ -920,12 +918,60 @@ input[type='time'] {
 
 
 
+/* DAY LAYOUT STYLE */
+.day-layout-content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.header-day{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.row-day{
+    display: flex;
+    flex-direction: column;
+    height: 1400px;
+    width: 100%;
+}
+
+.row-for-ora-day{
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    height: 150px;
+}
+
+.row-for-ora-day p{
+    text-align: center;
+    padding-top: 20px;
+}
+
+.cellaDay{
+    border-right: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    font-size: 16px;
+    padding: 15px;
+}
+
+
+
+
+
+
 /* ACTIVE LAYOUT STYLE */
 #week-head,
 #week-layout {
     display: none;
 }
 
+/* ACTIVE LAYOUT STYLE DAILY */
+#day-layout {
+    display: none;
+}
 
 
 

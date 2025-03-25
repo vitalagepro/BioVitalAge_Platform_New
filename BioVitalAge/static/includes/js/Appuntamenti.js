@@ -41,13 +41,14 @@ const dayLayoutBtn = document.getElementById("dayLayout");
 
 const monthLayoutContainer = document.getElementById("month-layout");
 const weekLayoutContainer = document.getElementById("week-layout");
+const dayLayoutContainer = document.getElementById("day-layout");
 // Variabili data
 let selectedDayCell = null; // cella cliccata
 // const dayLayoutContainer = document.getElementById("day-layout"); // se esiste
 
 const monthHead = document.getElementById("month-head");
 const weekHead = document.getElementById("week-head");
-// const dayHead = document.getElementById("day-head");
+const dayHead = document.getElementById("day-head");
 
 const btnPrev = document.querySelector(".prev");
 const btnNext = document.querySelector(".next");
@@ -212,6 +213,40 @@ function getWeekDates(baseDate) {
     weekDates.push(d.toISOString().split("T")[0]); // formato "YYYY-MM-DD"
   }
   return weekDates;
+}
+
+// Funzione per formattare la data in italiano
+function formatDayLabel(dateObj) {
+  const giorniItaliani = [
+    "Domenica",
+    "Lunedì",
+    "Martedì",
+    "Mercoledì",
+    "Giovedì",
+    "Venerdì",
+    "Sabato"
+  ];
+  const mesiItaliani = [
+    "Gennaio",
+    "Febbraio",
+    "Marzo",
+    "Aprile",
+    "Maggio",
+    "Giugno",
+    "Luglio",
+    "Agosto",
+    "Settembre",
+    "Ottobre",
+    "Novembre",
+    "Dicembre"
+  ];
+  
+  const nomeGiorno = giorniItaliani[dateObj.getDay()];
+  const giorno = dateObj.getDate();
+  const mese = mesiItaliani[dateObj.getMonth()];
+  const anno = dateObj.getFullYear();
+  
+  return `${nomeGiorno}, ${giorno} ${mese} ${anno}`;
 }
 
 // Funzione per aggiornare il layout della settimana
@@ -554,6 +589,9 @@ monthLayoutBtn.addEventListener("click", () => {
 
   headWeek.style.display = "none";
   weekLayout.style.display = "none";
+
+  headDay.style.display = "none";
+  dayLayout.style.display = "none";
 
   resetMonthLayout();
 });
@@ -1439,8 +1477,8 @@ document.addEventListener("DOMContentLoaded", () => {
     monthLayoutContainer.style.display = "grid";
     weekHead.style.display = "none";
     weekLayoutContainer.style.display = "none";
-    // dayHead.style.display = "none";
-    // dayLayoutContainer.style.display = "none";
+    dayHead.style.display = "none";
+    dayLayoutContainer.style.display = "none";
 
     renderMonthCalendar();
     loadAppointments();
@@ -1454,11 +1492,11 @@ document.addEventListener("DOMContentLoaded", () => {
     weekLayoutContainer.style.display = "block";
     monthHead.style.display = "none";
     monthLayoutContainer.style.display = "none";
+    dayHead.style.display = "none";
+    dayLayoutContainer.style.display = "none";
 
     // Ricarica gli appuntamenti nella vista settimanale
     loadAppointmentsForWeeklyView();
-    // dayHead.style.display = "none";
-    // dayLayoutContainer.style.display = "none";
   });
   dayLayoutBtn.addEventListener("click", () => {
     dayLayoutBtn.classList.add("active");
@@ -1471,6 +1509,14 @@ document.addEventListener("DOMContentLoaded", () => {
     monthLayoutContainer.style.display = "none";
     weekHead.style.display = "none";
     weekLayoutContainer.style.display = "none";
+    dayLayoutContainer.style.display = "block";
+    dayHead.style.display = "block";
+
+
+
+    // Aggiorna il <p> "currentDate" con la data formattata
+    const currentDateTag = document.getElementById("currentData");
+    currentDateTag.textContent = formatDayLabel(currentDate);
   });
 
   // -----------------------------
