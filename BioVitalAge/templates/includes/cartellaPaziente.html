@@ -355,6 +355,7 @@
                 <div class="eta-container">
                     <h3>Età Biologica</h3>
                     <div class="lineaContainer">
+                        <p class="estremoInferiore">0</p>
                         <div class="cronologic-age">
                             <img src="{% static 'includes/icone/biologica.png' %}" alt="">
                             <p>38 anni</p>
@@ -366,6 +367,7 @@
                             <p>44 anni</p>
                             <p class="linea">|</p>
                         </div>
+                        <p class="estremoSuperiore">100</p>
                     </div>
 
                     <div class="legenda">
@@ -394,7 +396,7 @@
         </div>
 
         <!-- CARD SEZIONI DATI BASE E COMPOSIZIONE CORPOREA -->
-        <div class="container-sezioniInterne containerStyle"  style="margin-top: -2rem;">
+        <div class="container-sezioniInterne containerStyle"  style="margin-top: -1rem;">
             <div class="cardDati">
 
              
@@ -416,7 +418,7 @@
 
             <div class="cardDati">
                 <div class="cartella-effect">
-                    <h3>Composizione Corporea Paziente</h3>
+                    <h3>Età Metabolica</h3>
                     <div class="space"></div>
                 </div>
                 <div class="card-content">
@@ -479,7 +481,7 @@
                     <img src="{% static 'includes/images/Resilienza.png' %}" alt="">
                     <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aspernatur exercitationem placeat impedit mollitia dolor est nesciunt enim in libero repellat temporibus voluptatum esse adipisci, maiores expedita eaque nulla architecto nihil!
                     </p>
-                    <a href="#">Vai alla sezione</a>
+                    <a href="{% url 'resilienza' persona.id %}">Vai alla sezione</a>
                 </div>
             </div>
 

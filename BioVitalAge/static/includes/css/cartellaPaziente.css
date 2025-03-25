@@ -535,7 +535,7 @@
   position: absolute;
   left: 31.9%;
   width: 26.4%;
-  background-color: red;
+  background-color: var(--negative-color-right);
   height: 1rem;
 }
 
@@ -579,12 +579,23 @@
   height: 20px;
 }
 .neg{
-  background-color: red;
+  background-color: var(--negative-color-right);
 }
 .pos{
-  background-color: green;
+  background-color: var(--positive-color);
 }
-
+.estremoInferiore{
+  position: absolute;
+  left: -3rem;
+  top: -0.3rem;
+  font-size: 18px;
+}
+.estremoSuperiore{
+  position: absolute;
+  right: -3rem;
+  top: -0.3rem;
+  font-size: 18px;
+}
 
 
 

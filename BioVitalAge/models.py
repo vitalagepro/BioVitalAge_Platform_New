@@ -492,3 +492,34 @@ class Appointment(models.Model):
     
     def __str__(self):
         return f"{self.nome_paziente} - {self.orario}"
+    
+
+
+
+
+
+#TABELLA CAPACITA' RESILIENZA
+class Resilienza(models.Model):
+    paziente = models.ForeignKey(
+        TabellaPazienti,
+        on_delete=models.CASCADE,
+        related_name='resilienza'
+    )
+
+    # Esempio di dati clinici associati al referto
+    hrv = models.FloatField(null=True, blank=True)
+    cortisolo = models.FloatField(null=True, blank=True)
+    ros = models.FloatField(null=True, blank=True)
+    osi = models.FloatField(null=True, blank=True)
+    droms = models.FloatField(null=True, blank=True)
+    pcr = models.FloatField(null=True, blank=True)
+    nlr = models.FloatField(null=True, blank=True)
+    homa = models.FloatField(null=True, blank=True)
+    ir = models.FloatField(null=True, blank=True)
+    omega_3 = models.FloatField(null=True, blank=True)
+    vo2max = models.FloatField(null=True, blank=True)
+
+    risultato = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Referto {self.titolo} - {self.paziente.name} {self.paziente.surname}"
