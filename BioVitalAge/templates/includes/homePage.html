@@ -310,7 +310,7 @@
                       {% for appointment in appuntamenti %}
                       <tr data-id="{{ appointment.id }}">
                           <td>{{ appointment.id }}</td>
-                          <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> {{ appointment.nome_paziente }}</td>
+                          <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> {{ appointment.nome_paziente|title }}</td>
                           <td>{{ appointment.data|date:"d/m/Y" }}</td>
                           <td>{{ appointment.orario|time:"H:i" }}</td>
                           <td>{{ appointment.numero_studio }}</td>

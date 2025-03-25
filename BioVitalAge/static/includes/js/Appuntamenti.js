@@ -563,6 +563,27 @@ function generateDailyAppointments(appointmentsForDay) {
       gsap.set(popup, { opacity: 0 });
       gsap.to(popup, { opacity: 1, duration: 0.2, ease: "power2.out" });
       popup.dataset.id = appointment.id;
+
+      // 🔹 Listener per chiudere la modale
+      document
+        .getElementById("closeDetailsModal")
+        .addEventListener("click", () => {
+          const modal = document.getElementById("detailsModal");
+          const content = modal.querySelector(".custom-modal-content");
+          document.body.style.overflow = "auto";
+
+          gsap.to(content, {
+            opacity: 0,
+            scale: 0.8,
+            duration: 0.3,
+            ease: "power2.in",
+            onComplete: () => {
+              modal.classList.add("hidden-details");
+              gsap.set(content, { opacity: 1, scale: 1 }); // Reset per la prossima apertura
+            },
+          });
+        });
+
       setupPopupActions();
     });
 
@@ -1634,7 +1655,7 @@ document.addEventListener("DOMContentLoaded", () => {
       renderMonthCalendar();
       loadAppointments();
     }
-  });  
+  });
   
   btnToday.addEventListener("click", () => {
     currentDate = new Date();
@@ -1650,7 +1671,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       loadAppointments();
     }
-  });  
+  });
   
   datePicker.addEventListener("change", (e) => {
     const val = e.target.value;
@@ -1660,12 +1681,14 @@ document.addEventListener("DOMContentLoaded", () => {
       renderMonthCalendar();
       if (weekLayoutBtn.classList.contains("active")) {
         updateWeekView(currentDate);
+      } else if (dayLayoutBtn && dayLayoutBtn.classList.contains("active")) {
+        currentDataLabel.textContent = formatDayLabel(currentDate);
+        loadAppointmentsForDailyView();
       } else {
         loadAppointments();
       }
     }
   });
-  
 
   // -----------------------------
   // SWITCH LAYOUT
