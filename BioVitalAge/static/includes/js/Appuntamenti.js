@@ -1448,6 +1448,15 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       loadAppointments();
     }
+
+    // Se la vista "Giorno" è attiva, aggiorna il tag "currentDate"
+    if (dayLayoutBtn && dayLayoutBtn.classList.contains("active")) {
+      const currentDateTag = document.getElementById("currentDate");
+      currentDateTag.textContent = formatDayLabel(currentDate);
+      
+      // Eventualmente, aggiorna anche il contenuto specifico del layout giorno,
+      // per esempio, caricando gli appuntamenti relativi alla giornata corrente.
+    }
   });
   
   datePicker.addEventListener("change", (e) => {
@@ -1480,9 +1489,12 @@ document.addEventListener("DOMContentLoaded", () => {
     dayHead.style.display = "none";
     dayLayoutContainer.style.display = "none";
 
+    currentDataLabel.textContent = formatDateLabel(currentDate);
+
     renderMonthCalendar();
     loadAppointments();
   });
+
   weekLayoutBtn.addEventListener("click", () => {
     weekLayoutBtn.classList.add("active");
     monthLayoutBtn.classList.remove("active");
@@ -1495,9 +1507,12 @@ document.addEventListener("DOMContentLoaded", () => {
     dayHead.style.display = "none";
     dayLayoutContainer.style.display = "none";
 
+    currentDataLabel.textContent = formatDateLabel(currentDate);
+
     // Ricarica gli appuntamenti nella vista settimanale
     loadAppointmentsForWeeklyView();
   });
+
   dayLayoutBtn.addEventListener("click", () => {
     dayLayoutBtn.classList.add("active");
     monthLayoutBtn.classList.remove("active");
@@ -1515,8 +1530,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // Aggiorna il <p> "currentDate" con la data formattata
-    const currentDateTag = document.getElementById("currentData");
-    currentDateTag.textContent = formatDayLabel(currentDate);
+    currentDataLabel.textContent = formatDayLabel(currentDate);
   });
 
   // -----------------------------
