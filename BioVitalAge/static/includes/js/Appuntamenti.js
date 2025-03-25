@@ -1,10 +1,13 @@
-/*  -----------------------------------------------------------------------------------------------
-  GLOBAL VARIABLE
---------------------------------------------------------------------------------------------------- */
+                                          /*  -----------------------------------------------------------------------------------------------
+                                                                                    GLOBAL VARIABLE
+                                          --------------------------------------------------------------------------------------------------- */
 // Dichiarazione globale
 let fromCalendar = false;
 let isEditing = false;
 let appointmentsData = {}; // Definita globalmente per contenere i dati caricati
+
+// gestione popup
+const popup = document.getElementById("appointment-actions-popup");
 
 // Layout
 const monthLayoutBtn = document.getElementById("monthLayout");
@@ -17,14 +20,188 @@ const monthWeek = document.getElementById("month-head");
 const monthLayout = document.getElementById("month-layout");
 
 /*  -----------------------------------------------------------------------------------------------
-  GLOBAL FUNCTION
+                                    DYNAMIC CALENDAR & MODAL APPEARS
 --------------------------------------------------------------------------------------------------- */
+// Riferimenti ai <span> e agli input nascosti
+const daySpan = document.getElementById("day-appointment");
+const dateSpan = document.getElementById("date-appointment");
+const timeSpan = document.getElementById("time-appointment");
+
+const editDateBtn = document.getElementById("edit-date-btn");
+const editDateContainer = document.getElementById("edit-date-container");
+const editDateInput = document.getElementById("editDate");
+const editTimeInput = document.getElementById("editTime");
+let currentDate = new Date(); // Definisci la variabile globalmente
+let selectedAppointment = null;
+
+// -----------------------------
+// RIFERIMENTI ELEMENTI CALENDARIO
+// -----------------------------
+const dayLayoutBtn = document.getElementById("dayLayout");
+
+const monthLayoutContainer = document.getElementById("month-layout");
+const weekLayoutContainer = document.getElementById("week-layout");
+// Variabili data
+let selectedDayCell = null; // cella cliccata
+// const dayLayoutContainer = document.getElementById("day-layout"); // se esiste
+
+const monthHead = document.getElementById("month-head");
+const weekHead = document.getElementById("week-head");
+// const dayHead = document.getElementById("day-head");
+
+const btnPrev = document.querySelector(".prev");
+const btnNext = document.querySelector(".next");
+const btnToday = document.getElementById("currentBtn");
+const datePicker = document.getElementById("date");
+const currentDataLabel = document.getElementById("currentData");
+
+// Modale
+const appointmentModal = document.getElementById("appointmentModal"); // overlay
+const modalContent = document.querySelector(".modal-content-appointments"); // contenuto modale
+const btnCloseModal = document.getElementById("closeModalBtn");
+const iconCloseModal = document.getElementById("closeModal");
+
+// Pulsante "Appuntamento"
+const btnOpenModal = document.getElementById("openModal");
+/*  -----------------------------------------------------------------------------------------------
+    MAPPING TIPOLOGIE
+  --------------------------------------------------------------------------------------------------- */
+const mappingTipologie = {
+  Fisioestetica: [
+    { value: "Crioterapia", text: "Crioterapia", duration: [30] },
+    {
+      value: "Radiofrequenza medica",
+      text: "Radiofrequenza medica",
+      duration: [20, 30, 45],
+    },
+    {
+      value: "Mesoterapia transdermica",
+      text: "Mesoterapia transdermica",
+      duration: [20, 30, 45],
+    },
+    {
+      value: "Mesoterapia intramedica",
+      text: "Mesoterapia intramedica",
+      duration: [30],
+    },
+    { value: "TECAR + massaggio", text: "TECAR + massaggio", duration: [20] },
+    {
+      value: "Massaggio linfodrenante",
+      text: "Massaggio linfodrenante",
+      duration: [30],
+    },
+    {
+      value: "Massaggio tonificante volto",
+      text: "Massaggio tonificante volto",
+      duration: [20],
+    },
+    { value: "Onde d'urto", text: "Onde d'urto", duration: [10] },
+  ],
+  "Fisioterapia e Riabilitazione": [
+    { value: "Visita fisiatrica", text: "Visita fisiatrica", duration: [30] },
+    { value: "Visita ortopedica", text: "Visita ortopedica", duration: [30] },
+    {
+      value: "Visita neurologica",
+      text: "Visita neurologica",
+      duration: [30],
+    },
+    {
+      value: "Visita reumatologica",
+      text: "Visita reumatologica",
+      duration: [30],
+    },
+    {
+      value: "Chinesiterapia manuale/strumentale",
+      text: "Chinesiterapia manuale/strumentale",
+      duration: [30],
+    },
+    {
+      value: "Elettrostimolazioni - diadinamica, ionoforesi o tens",
+      text: "Elettrostimolazioni - diadinamica, ionoforesi o tens",
+      duration: [20],
+    },
+    {
+      value: "Infiltrazioni",
+      text: "Infiltrazioni",
+      duration: ["Da definire"],
+    },
+    { value: "Infrarossi", text: "Infrarossi", duration: [10] },
+    { value: "Laserterapia", text: "Laserterapia", duration: [20] },
+    { value: "Magnetoterapia", text: "Magnetoterapia", duration: [20] },
+    {
+      value: "Massaggio linfodrenante",
+      text: "Massaggio linfodrenante",
+      duration: [30],
+    },
+    { value: "Massoterapia", text: "Massoterapia", duration: [20] },
+    {
+      value: "Mesoterapia antalgica-antinfiammatoria",
+      text: "Mesoterapia antalgica-antinfiammatoria",
+      duration: [30],
+    },
+    {
+      value: "Mobilizzazioni articolari",
+      text: "Mobilizzazioni articolari",
+      duration: [15],
+    },
+    {
+      value: "Rieducazione motoria/rinforzo muscolare",
+      text: "Rieducazione motoria/rinforzo muscolare",
+      duration: [30],
+    },
+    { value: "TECAR", text: "TECAR", duration: [20] },
+    { value: "Ultrasuonoterapia", text: "Ultrasuonoterapia", duration: [15] },
+    { value: "Onde d'urto", text: "Onde d'urto", duration: [10] },
+    {
+      value: "Trattamento miofasciale",
+      text: "Trattamento miofasciale",
+      duration: [30],
+    },
+    {
+      value: "Valutazione + Cervical ROM",
+      text: "Valutazione + Cervical ROM",
+      duration: [30],
+    },
+  ],
+  "Fisioterapia Sportiva": [
+    {
+      value: "Rieducazione motoria/Rinforzo muscolare",
+      text: "Rieducazione motoria/Rinforzo muscolare",
+      duration: [30],
+    },
+    {
+      value: "Prevenzione infotuni sport specifico",
+      text: "Prevenzione infotuni sport specifico",
+      duration: [30],
+    },
+    {
+      value: "Massaggio decontratturante",
+      text: "Massaggio decontratturante",
+      duration: [30],
+    },
+  ],
+};
+
+
+
+
+
+
+
+
+
+
+
+
+                                                        /*  -----------------------------------------------------------------------------------------------
+                                                                                         GLOBAL FUNCTION
+                                                        --------------------------------------------------------------------------------------------------- */
 
 // Funzione per ottenere i giorni della settimana a partire dalla data di riferimento
 function getWeekDates(baseDate) {
   let startDate = new Date(baseDate);
   let day = startDate.getDay(); // 0 = Domenica, 1 = Lunedì, ecc.
-  // Per avere la settimana che inizia da lunedì:
+  // Per far iniziare la settimana da lunedì:
   let diff = startDate.getDate() - day + (day === 0 ? -6 : 1);
   let monday = new Date(startDate.setDate(diff));
 
@@ -48,7 +225,7 @@ function updateWeekView(dateRiferimento) {
       appointmentsForWeek[date] = apps;
     }
   });
-  // Chiama la funzione che genera il layout settimanale con questi dati filtrati
+  // Genera la vista settimanale usando i dati filtrati
   generateWeeklyAppointments({ appointments: appointmentsForWeek });
 }
 
@@ -212,9 +389,7 @@ function generateWeeklyAppointments(appointmentsByDate) {
                   }               
   
                   // 🔹 Listener per chiudere la modale
-                  document
-                    .getElementById("closeDetailsModal")
-                    .addEventListener("click", () => {
+                  document.getElementById("closeDetailsModal").addEventListener("click", () => {
                       const modal = document.getElementById("detailsModal");
                       const content = modal.querySelector(
                         ".custom-modal-content"
@@ -231,7 +406,7 @@ function generateWeeklyAppointments(appointmentsByDate) {
                           gsap.set(content, { opacity: 1, scale: 1 }); // Reset per la prossima apertura
                         },
                       });
-                    });
+                  });
                   // Chiudi il popup se clicchi fuori
                   document.addEventListener("click", (e) => {
                     const popup = document.getElementById(
@@ -383,69 +558,67 @@ monthLayoutBtn.addEventListener("click", () => {
   resetMonthLayout();
 });
 
-/*  -----------------------------------------------------------------------------------------------
-                                    DYNAMIC CALENDAR & MODAL APPEARS
---------------------------------------------------------------------------------------------------- */
-// Riferimenti ai <span> e agli input nascosti
-const daySpan = document.getElementById("day-appointment");
-const dateSpan = document.getElementById("date-appointment");
-const timeSpan = document.getElementById("time-appointment");
-
-const editDateBtn = document.getElementById("edit-date-btn");
-const editDateContainer = document.getElementById("edit-date-container");
-const editDateInput = document.getElementById("editDate");
-const editTimeInput = document.getElementById("editTime");
-let currentDate = new Date(); // Definisci la variabile globalmente
-let selectedAppointment = null;
-
 /* LOAD APPOINTMENTS */
 function loadAppointments() {
   fetch("/get-appointments/")
     .then((response) => response.json())
-    .then((appointmentsByDate) => {
-      console.log("📢 Appuntamenti ricevuti dal backend:", appointmentsByDate);
-
-      document.querySelectorAll(".cella").forEach((cell) => {
-        const cellDay = cell.dataset.day;
-        const cellMonth = cell.dataset.month;
-        const cellYear = cell.dataset.year;
-
-        if (!cellDay || !cellMonth || !cellYear) return;
-
-        const formattedDate = `${cellYear}-${String(cellMonth).padStart(
-          2,
-          "0"
-        )}-${String(cellDay).padStart(2, "0")}`;
-
-        const appointmentsContainer = cell.querySelector(
-          ".appointments-container"
-        );
-        appointmentsContainer.innerHTML = "";
-
-        if (appointmentsByDate.appointments[formattedDate]) {
-          appointmentsByDate.appointments[formattedDate].forEach(
-            (appointment) => {
-              if (!appointment.id || appointment.id === "") {
-                console.error("❌ Errore: Appuntamento senza ID!", appointment);
-              } else {
-                addAppointmentToCell(
-                  cell,
-                  appointment.tipologia_visita,
-                  appointment.orario,
-                  appointment.id
-                );
-              }
-            }
+    .then((data) => {
+      if (data.success) {
+        console.log("📢 Appuntamenti ricevuti dal backend:", data);
+  
+        document.querySelectorAll(".cella").forEach((cell) => {
+          const cellDay = cell.dataset.day;
+          const cellMonth = cell.dataset.month;
+          const cellYear = cell.dataset.year;
+  
+          if (!cellDay || !cellMonth || !cellYear) return;
+  
+          const formattedDate = `${cellYear}-${String(cellMonth).padStart(
+            2,
+            "0"
+          )}-${String(cellDay).padStart(2, "0")}`;
+  
+          const appointmentsContainer = cell.querySelector(
+            ".appointments-container"
           );
-        }
-      });
-
-      
-      // Genera la vista settimanale
-      generateWeeklyAppointments(appointmentsByDate);
+          appointmentsContainer.innerHTML = "";
+  
+          if (data.appointments[formattedDate]) {
+            data.appointments[formattedDate].forEach(
+              (appointment) => {
+                if (!appointment.id || appointment.id === "") {
+                  console.error("❌ Errore: Appuntamento senza ID!", appointment);
+                } else {
+                  addAppointmentToCell(
+                    cell,
+                    appointment.tipologia_visita,
+                    appointment.orario,
+                    appointment.id
+                  );
+                }
+              }
+            );
+          }
+        });
+      }
     })
     .catch((error) =>
       console.error("❌ Errore nel caricamento appuntamenti:", error)
+    );
+}
+
+function loadAppointmentsForWeeklyView() {
+  fetch("/get-appointments/")
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("📢 Appuntamenti ricevuti (vista settimanale):", data);
+      // Aggiorna la variabile globale
+      appointmentsData = data;
+      // Chiama la funzione che filtra gli appuntamenti per la settimana corrente
+      updateWeekView(currentDate);
+    })
+    .catch((error) =>
+      console.error("❌ Errore nel caricamento degli appuntamenti (settimanale):", error)
     );
 }
 
@@ -488,9 +661,6 @@ function updateAppointmentDate(appointmentId, newDate, newTime) {
   })
   .catch((error) => console.error("❌ Errore nella richiesta:", error));
 }
-
-// gestione popup
-const popup = document.getElementById("appointment-actions-popup");
 
 // Nascondi il popup cliccando altrove
 document.addEventListener("click", (e) => {
@@ -566,6 +736,26 @@ function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
     });
   
     popup.dataset.id = appointmentId; // memorizza ID per i bottoni 👁️ e ✏️
+
+    // 🔹 Listener per chiudere la modale
+    document.getElementById("closeDetailsModal").addEventListener("click", () => {
+      const modal = document.getElementById("detailsModal");
+      const content = modal.querySelector(
+        ".custom-modal-content"
+      );
+      document.body.style.overflow = "auto";
+
+      gsap.to(content, {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.3,
+        ease: "power2.in",
+        onComplete: () => {
+          modal.classList.add("hidden-details");
+          gsap.set(content, { opacity: 1, scale: 1 }); // Reset per la prossima apertura
+        },
+      });
+    });
 
     setupPopupActions();
   });  
@@ -849,17 +1039,6 @@ function saveAppointmentChanges() {
   }
 }
 
-// document.addEventListener("DOMContentLoaded", function () {
-//   const saveButton = document.querySelector(".btn-primary");
-//   if (saveButton) {
-//     saveButton.addEventListener("click", function (event) {
-//       event.preventDefault();
-//       console.count("saveButtonClick");
-//       saveAppointmentChanges();
-//     });
-//   }
-// });
-
 // Funzione per eliminare un appuntamento
 function deleteAppointment(appointmentId, appointmentBox, confirmAlert) {
   fetch(`/delete-appointment/${appointmentId}/`, {
@@ -1016,37 +1195,7 @@ function showAlert(type, message) {
   }, 5000);
 }
 
-// Funzione principale
-
-// -----------------------------
-// RIFERIMENTI ELEMENTI CALENDARIO
-// -----------------------------
-const dayLayoutBtn = document.getElementById("dayLayout");
-
-const monthLayoutContainer = document.getElementById("month-layout");
-const weekLayoutContainer = document.getElementById("week-layout");
-// Variabili data
-let selectedDayCell = null; // cella cliccata
-// const dayLayoutContainer = document.getElementById("day-layout"); // se esiste
-
-const monthHead = document.getElementById("month-head");
-const weekHead = document.getElementById("week-head");
-// const dayHead = document.getElementById("day-head");
-
-const btnPrev = document.querySelector(".prev");
-const btnNext = document.querySelector(".next");
-const btnToday = document.getElementById("currentBtn");
-const datePicker = document.getElementById("date");
-const currentDataLabel = document.getElementById("currentData");
-
-// Modale
-const appointmentModal = document.getElementById("appointmentModal"); // overlay
-const modalContent = document.querySelector(".modal-content-appointments"); // contenuto modale
-const btnCloseModal = document.getElementById("closeModalBtn");
-const iconCloseModal = document.getElementById("closeModal");
-
-// Pulsante "Appuntamento"
-const btnOpenModal = document.getElementById("openModal");
+/////////////////////////////////////////////////////////////////////// FUNZIONE PRINCIPALE ////////////////////////////////////////////////////////////////////////////////////////////
 
 document.addEventListener("DOMContentLoaded", () => {
   /***********************************************************************
@@ -1235,26 +1384,48 @@ document.addEventListener("DOMContentLoaded", () => {
   btnPrev.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     renderMonthCalendar();
-    updateWeekView(currentDate);
+    // Se il layout settimanale è attivo, aggiorna anche la vista settimanale
+    if (weekLayoutBtn.classList.contains("active")) {
+      updateWeekView(currentDate);
+    } else {
+      loadAppointments();
+    }
   });
+  
   btnNext.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
     renderMonthCalendar();
-    updateWeekView(currentDate);
+    if (weekLayoutBtn.classList.contains("active")) {
+      updateWeekView(currentDate);
+    } else {
+      loadAppointments();
+    }
   });
+  
   btnToday.addEventListener("click", () => {
     currentDate = new Date();
     renderMonthCalendar();
+    if (weekLayoutBtn.classList.contains("active")) {
+      updateWeekView(currentDate);
+    } else {
+      loadAppointments();
+    }
   });
+  
   datePicker.addEventListener("change", (e) => {
     const val = e.target.value;
     if (val) {
       const [yyyy, mm, dd] = val.split("-");
       currentDate = new Date(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd));
       renderMonthCalendar();
-      updateWeekView(currentDate);
+      if (weekLayoutBtn.classList.contains("active")) {
+        updateWeekView(currentDate);
+      } else {
+        loadAppointments();
+      }
     }
   });
+  
 
   // -----------------------------
   // SWITCH LAYOUT
@@ -1272,6 +1443,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // dayLayoutContainer.style.display = "none";
 
     renderMonthCalendar();
+    loadAppointments();
   });
   weekLayoutBtn.addEventListener("click", () => {
     weekLayoutBtn.classList.add("active");
@@ -1282,6 +1454,9 @@ document.addEventListener("DOMContentLoaded", () => {
     weekLayoutContainer.style.display = "block";
     monthHead.style.display = "none";
     monthLayoutContainer.style.display = "none";
+
+    // Ricarica gli appuntamenti nella vista settimanale
+    loadAppointmentsForWeeklyView();
     // dayHead.style.display = "none";
     // dayLayoutContainer.style.display = "none";
   });
@@ -1544,121 +1719,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-/*  -----------------------------------------------------------------------------------------------
-
-  --------------------------------------------------------------------------------------------------- */
-const mappingTipologie = {
-  Fisioestetica: [
-    { value: "Crioterapia", text: "Crioterapia", duration: [30] },
-    {
-      value: "Radiofrequenza medica",
-      text: "Radiofrequenza medica",
-      duration: [20, 30, 45],
-    },
-    {
-      value: "Mesoterapia transdermica",
-      text: "Mesoterapia transdermica",
-      duration: [20, 30, 45],
-    },
-    {
-      value: "Mesoterapia intramedica",
-      text: "Mesoterapia intramedica",
-      duration: [30],
-    },
-    { value: "TECAR + massaggio", text: "TECAR + massaggio", duration: [20] },
-    {
-      value: "Massaggio linfodrenante",
-      text: "Massaggio linfodrenante",
-      duration: [30],
-    },
-    {
-      value: "Massaggio tonificante volto",
-      text: "Massaggio tonificante volto",
-      duration: [20],
-    },
-    { value: "Onde d'urto", text: "Onde d'urto", duration: [10] },
-  ],
-  "Fisioterapia e Riabilitazione": [
-    { value: "Visita fisiatrica", text: "Visita fisiatrica", duration: [30] },
-    { value: "Visita ortopedica", text: "Visita ortopedica", duration: [30] },
-    { value: "Visita neurologica", text: "Visita neurologica", duration: [30] },
-    {
-      value: "Visita reumatologica",
-      text: "Visita reumatologica",
-      duration: [30],
-    },
-    {
-      value: "Chinesiterapia manuale/strumentale",
-      text: "Chinesiterapia manuale/strumentale",
-      duration: [30],
-    },
-    {
-      value: "Elettrostimolazioni - diadinamica, ionoforesi o tens",
-      text: "Elettrostimolazioni - diadinamica, ionoforesi o tens",
-      duration: [20],
-    },
-    {
-      value: "Infiltrazioni",
-      text: "Infiltrazioni",
-      duration: ["Da definire"],
-    },
-    { value: "Infrarossi", text: "Infrarossi", duration: [10] },
-    { value: "Laserterapia", text: "Laserterapia", duration: [20] },
-    { value: "Magnetoterapia", text: "Magnetoterapia", duration: [20] },
-    {
-      value: "Massaggio linfodrenante",
-      text: "Massaggio linfodrenante",
-      duration: [30],
-    },
-    { value: "Massoterapia", text: "Massoterapia", duration: [20] },
-    {
-      value: "Mesoterapia antalgica-antinfiammatoria",
-      text: "Mesoterapia antalgica-antinfiammatoria",
-      duration: [30],
-    },
-    {
-      value: "Mobilizzazioni articolari",
-      text: "Mobilizzazioni articolari",
-      duration: [15],
-    },
-    {
-      value: "Rieducazione motoria/rinforzo muscolare",
-      text: "Rieducazione motoria/rinforzo muscolare",
-      duration: [30],
-    },
-    { value: "TECAR", text: "TECAR", duration: [20] },
-    { value: "Ultrasuonoterapia", text: "Ultrasuonoterapia", duration: [15] },
-    { value: "Onde d'urto", text: "Onde d'urto", duration: [10] },
-    {
-      value: "Trattamento miofasciale",
-      text: "Trattamento miofasciale",
-      duration: [30],
-    },
-    {
-      value: "Valutazione + Cervical ROM",
-      text: "Valutazione + Cervical ROM",
-      duration: [30],
-    },
-  ],
-  "Fisioterapia Sportiva": [
-    {
-      value: "Rieducazione motoria/Rinforzo muscolare",
-      text: "Rieducazione motoria/Rinforzo muscolare",
-      duration: [30],
-    },
-    {
-      value: "Prevenzione infotuni sport specifico",
-      text: "Prevenzione infotuni sport specifico",
-      duration: [30],
-    },
-    {
-      value: "Massaggio decontratturante",
-      text: "Massaggio decontratturante",
-      duration: [30],
-    },
-  ],
-};
-
 // Al caricamento della pagina, collega i listener agli elementi
 document.addEventListener("DOMContentLoaded", function () {
   const tipologiaSelect = document.getElementById("tipologia_visita");
@@ -1720,6 +1780,8 @@ document.addEventListener("DOMContentLoaded", function () {
 /*  -----------------------------------------------------------------------------------------------
                               Saving form data
 --------------------------------------------------------------------------------------------------- */
+
+// Funzione per convertire la data da "DD/MM/YYYY" a "YYYY-MM-DD"
 function convertDateFormat(dateString) {
   if (!dateString) return "";
   const parts = dateString.replace(/[^0-9\/]/g, "").split("/"); // Rimuove caratteri extra e split su "/"
@@ -1732,6 +1794,7 @@ function convertDateFormat(dateString) {
   return dateString; // Ritorna la stringa originale se il formato è già corretto
 }
 
+// Funzione per resettare i campi del form
 function resetFormFields() {
   // Reset degli <select>
   document.getElementById("tipologia_visita").selectedIndex = 0;
@@ -1747,6 +1810,7 @@ function resetFormFields() {
   document.getElementById("time-appointment").textContent = "Orario,";
 }
 
+// Funzione per chiudere il modal
 function closeModalWithGSAP() {
   document.body.style.overflow = "auto";
   gsap.to(modalContent, {
@@ -1770,6 +1834,7 @@ function closeModalWithGSAP() {
   });
 }
 
+// Funzione per rimuovere la previsione di un appuntamento
 function removeAppointmentPreview(cella) {
   const preview = cella.querySelector(".appointment-preview");
   if (preview) {
@@ -1777,9 +1842,8 @@ function removeAppointmentPreview(cella) {
   }
 }
 
-document
-  .querySelector(".btn-primary")
-  .addEventListener("click", function (event) {
+// Listener per il pulsante "Salva"
+document.querySelector(".btn-primary").addEventListener("click", function (event) {
     event.preventDefault();
 
     // Recupera il form e verifica se è presente un data-id
@@ -1887,7 +1951,7 @@ document
         console.error("❌ Errore durante il salvataggio (POST):", error);
         showAlert("danger", "Si è verificato un errore inaspettato.");
       });
-  });
+});
 
 // GESTIONE SECONDA MODALE
 /*  -----------------------------------------------------------------------------------------------
@@ -1916,9 +1980,7 @@ document.querySelectorAll('[title="add-user"]').forEach((btn) => {
 
 
 // Chiudi la seconda modale senza chiudere la principale
-document
-  .getElementById("closeAddUserModal")
-  .addEventListener("click", function () {
+document.getElementById("closeAddUserModal").addEventListener("click", function () {
     // Prima animiamo il contenuto .modal-content-user con GSAP
     gsap.to(".modal-content-user", {
       opacity: 0,
@@ -1939,7 +2001,7 @@ document
         gsap.set(".modal-content-user", { opacity: 1, y: 0 });
       }
     });
-  });
+});
 
 // Impedisce la chiusura della modale principale quando si clicca dentro la seconda
 document.getElementById("addUserModal").addEventListener("click", function (e) {
