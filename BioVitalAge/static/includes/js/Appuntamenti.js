@@ -376,9 +376,6 @@ function generateWeeklyAppointments(appointmentsByDate) {
 
   // Scorri tutti gli appuntamenti e posizionali nella vista settimanale
   Object.entries(appointmentsByDate.appointments).forEach(([date, appointments]) => {
-      const appointmentDate = new Date(date);
-      const weekDay = appointmentDate.getDay(); // 0 = Domenica, 6 = Sabato
-
       // Filtra solo gli appuntamenti che rientrano nella settimana visualizzata
       appointments.forEach(appointment => {
           const { orario, tipologia_visita, id } = appointment;
@@ -492,7 +489,106 @@ function generateWeeklyAppointments(appointmentsByDate) {
     });
 }
 
-// Funzione per abilitare il drag & drop
+// Funzione per generare la vista Giorno
+function generateDailyAppointments(appointmentsForDay) {
+  // Ottieni tutte le righe della griglia giornaliera
+  const rows = document.querySelectorAll("#day-layout .row-for-ora-day");
+  if (!rows.length) {
+    console.warn("Nessuna riga trovata nel layout giornaliero!");
+    return;
+  }
+  // Pulisci tutte le celle per evitare duplicazioni
+  rows.forEach(row => {
+    const cells = row.querySelectorAll(".cellaDay");
+    cells.forEach(cell => cell.innerHTML = "");
+  });
+
+  const totalRows = rows.length;      // ad esempio 12 (ogni riga = 5 minuti)
+  const totalColumns = 11;             // 11 colonne per le ore (09:00-19:00)
+  const startHour = 9;                 // Orario di partenza
+
+  appointmentsForDay.forEach(appointment => {
+    // Estrai l'orario nel formato "HH:mm"
+    const [hourStr, minuteStr] = appointment.orario.split(":");
+    const hour = parseInt(hourStr, 10);
+    const minute = parseInt(minuteStr, 10);
+
+    // Calcola colonna e riga
+    const colIndex = hour - startHour;
+    const rowIndex = Math.floor(minute / 5);
+
+    // Verifica che i valori siano nel range
+    if (colIndex < 0 || colIndex >= totalColumns) {
+      console.warn("Appuntamento fuori range orario:", appointment);
+      return;
+    }
+    if (rowIndex < 0 || rowIndex >= totalRows) {
+      console.warn("Appuntamento fuori range minuti:", appointment);
+      return;
+    }
+
+    // Trova la cella corrispondente
+    const targetRow = rows[rowIndex];
+    const cellsInRow = targetRow.querySelectorAll(".cellaDay");
+    if (colIndex >= cellsInRow.length) {
+      console.warn("Cella non trovata per l'appuntamento:", appointment);
+      return;
+    }
+    const targetCell = cellsInRow[colIndex];
+
+    // Crea il box per l'appuntamento
+    const appointmentBox = document.createElement("div");
+    appointmentBox.classList.add("appointment-box");
+    appointmentBox.setAttribute("draggable", "true");
+    appointmentBox.dataset.id = appointment.id;
+    appointmentBox.dataset.tipologia = appointment.tipologia_visita;
+    appointmentBox.dataset.orario = appointment.orario;
+    appointmentBox.innerHTML = `<span style="flex: 1;">${appointment.tipologia_visita} - ${appointment.orario.slice(0, 5)}</span>
+      <button class="delete-appointment" data-id="${appointment.id}">&times;</button>`;
+
+    // Inserisci il box nella cella
+    targetCell.appendChild(appointmentBox);
+
+    // Abilita i listener specifici per il drag & drop in daily view
+    addDragAndDropEventsDaily(appointmentBox);
+
+    // Aggiungi il listener per aprire il popup dei dettagli
+    appointmentBox.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const popup = document.getElementById("appointment-actions-popup");
+      const rect = appointmentBox.getBoundingClientRect();
+      popup.style.top = `${rect.top + window.scrollY + 40}px`;
+      popup.style.left = `${rect.left + window.scrollX}px`;
+      popup.classList.remove("hidden-popup");
+      gsap.set(popup, { opacity: 0 });
+      gsap.to(popup, { opacity: 1, duration: 0.2, ease: "power2.out" });
+      popup.dataset.id = appointment.id;
+      setupPopupActions();
+    });
+
+    // Listener per la cancellazione
+    const deleteButton = appointmentBox.querySelector(".delete-appointment");
+    if (deleteButton) {
+      deleteButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        confirmDeleteAppointment(appointment.id, appointmentBox);
+      });
+    }
+  });
+}
+
+
+
+// function loadAppointmentsForDailyView() {
+//   // Supponiamo che currentDate sia la data corrente selezionata
+//   const formattedDate = currentDate.toISOString().split("T")[0];
+//   // Ottieni gli appuntamenti per quel giorno
+//   const appointmentsForDay = appointmentsData.appointments[formattedDate] || [];
+//   generateDailyAppointments(appointmentsForDay);
+// }
+
+
+// Funzione per abilitare il drag & drop sezione week
 function addDragAndDropEvents(appointmentBox) {
   appointmentBox.addEventListener("dragstart", (e) => {
       selectedAppointment = e.target;
@@ -582,6 +678,68 @@ function addDragAndDropEvents(appointmentBox) {
   });
 }
 
+// Funzione per abilitare il drag & drop sezione giorno
+function addDragAndDropEventsDaily(appointmentBox) {
+  appointmentBox.addEventListener("dragstart", (e) => {
+    selectedAppointment = e.target;
+    e.dataTransfer.setData("text/plain", selectedAppointment.dataset.id);
+    e.target.style.opacity = "0.5";
+  });
+
+  appointmentBox.addEventListener("dragend", () => {
+    if (selectedAppointment) {
+      selectedAppointment.style.opacity = "1";
+    }
+  });
+
+  // Aggiungi i listener per il drop alle celle del layout Giorno
+  document.querySelectorAll(".cellaDay").forEach(cell => {
+    cell.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      cell.classList.add("drag-over");
+    });
+
+    cell.addEventListener("dragleave", () => {
+      cell.classList.remove("drag-over");
+    });
+
+    cell.addEventListener("drop", (e) => {
+      e.preventDefault();
+      cell.classList.remove("drag-over");
+      if (!selectedAppointment) return;
+
+      const appointmentId = selectedAppointment.dataset.id;
+      if (!appointmentId) {
+        console.error("ID appuntamento mancante!");
+        return;
+      }
+
+      // Determina il nuovo orario basato sulla cella drop:
+      // Recupera la cella drop e il suo indice in riga
+      const row = cell.parentElement; // .row-for-ora-day
+      const cells = Array.from(row.querySelectorAll(".cellaDay"));
+      const colIndex = cells.indexOf(cell);
+      const newHour = 9 + colIndex; // se l'orario di partenza è 09:00
+      // Imposta i minuti a "00" (modifica solo l'ora)
+      const newTime = `${String(newHour).padStart(2, "0")}:00`;
+
+      // Aggiorna il testo visualizzato nel box
+      const tipologia = selectedAppointment.dataset.tipologia || "Sconosciuto";
+      selectedAppointment.querySelector("span").textContent = `${tipologia} - ${newTime}`;
+
+      // Aggiorna l'appuntamento nel backend: la data resta invariata (vista Giorno)
+      const formattedDate = currentDate.toISOString().split("T")[0];
+      updateAppointmentDate(appointmentId, formattedDate, newTime);
+
+      // Sposta l'elemento nella cella drop
+      cell.appendChild(selectedAppointment);
+      selectedAppointment.style.opacity = "1";
+      selectedAppointment = null;
+    });
+  });
+}
+
+
 /* SETTING MONTH LAYOUT */
 monthLayoutBtn.addEventListener("click", () => {
   weekLayoutBtn.classList.remove("active");
@@ -590,8 +748,8 @@ monthLayoutBtn.addEventListener("click", () => {
   headWeek.style.display = "none";
   weekLayout.style.display = "none";
 
-  headDay.style.display = "none";
-  dayLayout.style.display = "none";
+  dayHead.style.display = "none";
+  dayLayoutContainer.style.display = "none";
 
   resetMonthLayout();
 });
@@ -645,6 +803,7 @@ function loadAppointments() {
     );
 }
 
+/*  LOAD APPOINTMENTS FOR WEEKLY VIEW  */
 function loadAppointmentsForWeeklyView() {
   fetch("/get-appointments/")
     .then((response) => response.json())
@@ -659,6 +818,26 @@ function loadAppointmentsForWeeklyView() {
       console.error("❌ Errore nel caricamento degli appuntamenti (settimanale):", error)
     );
 }
+
+/* LOAD APPOINTMENTS FOR DAILY VIEW */
+function loadAppointmentsForDailyView() {
+  fetch("/get-appointments/")
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        appointmentsData = data; // Aggiorna i dati globali
+        const formattedDate = currentDate.toISOString().split("T")[0];
+        const dayAppointments = data.appointments[formattedDate] || [];
+        console.log("Appuntamenti per il giorno", formattedDate, dayAppointments);
+        generateDailyAppointments(dayAppointments);
+      } else {
+        console.error("Errore nel caricamento degli appuntamenti:", data.error);
+      }
+    })
+    .catch(err => console.error("Errore nella fetch degli appuntamenti per il giorno:", err));
+}
+
+
 
 // Funzione per formattare la data in YYYY-MM-DD per il backend
 function formatDateForBackend(date, day) {
@@ -1420,44 +1599,58 @@ document.addEventListener("DOMContentLoaded", () => {
   // NAVIGAZIONE CALENDARIO
   // -----------------------------
   btnPrev.addEventListener("click", () => {
-    currentDate.setMonth(currentDate.getMonth() - 1);
-    renderMonthCalendar();
-    // Se il layout settimanale è attivo, aggiorna anche la vista settimanale
-    if (weekLayoutBtn.classList.contains("active")) {
+    if (dayLayoutBtn && dayLayoutBtn.classList.contains("active")) {
+      // Se siamo in vista "Giorno", sottrai 1 giorno
+      currentDate.setDate(currentDate.getDate() - 1);
+      currentDataLabel.textContent = formatDayLabel(currentDate);
+      loadAppointmentsForDailyView();
+    } else if (weekLayoutBtn && weekLayoutBtn.classList.contains("active")) {
+      // Vista settimanale: comportamento già esistente
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      renderMonthCalendar();
       updateWeekView(currentDate);
     } else {
+      // Vista mensile: comportamento predefinito
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      renderMonthCalendar();
       loadAppointments();
     }
   });
   
   btnNext.addEventListener("click", () => {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-    renderMonthCalendar();
-    if (weekLayoutBtn.classList.contains("active")) {
+    if (dayLayoutBtn && dayLayoutBtn.classList.contains("active")) {
+      // Se siamo in vista "Giorno", aggiungi 1 giorno
+      currentDate.setDate(currentDate.getDate() + 1);
+      currentDataLabel.textContent = formatDayLabel(currentDate);
+      loadAppointmentsForDailyView();
+    } else if (weekLayoutBtn && weekLayoutBtn.classList.contains("active")) {
+      // Vista settimanale: comportamento già esistente
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      renderMonthCalendar();
       updateWeekView(currentDate);
     } else {
+      // Vista mensile: comportamento predefinito
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      renderMonthCalendar();
       loadAppointments();
     }
-  });
+  });  
   
   btnToday.addEventListener("click", () => {
     currentDate = new Date();
-    renderMonthCalendar();
+    renderMonthCalendar(); // se usi anche la vista mensile
     if (weekLayoutBtn.classList.contains("active")) {
       updateWeekView(currentDate);
+    } else if (dayLayoutBtn && dayLayoutBtn.classList.contains("active")) {
+      // Aggiorna il tag con la data formattata
+      if (currentDataLabel) {
+        currentDataLabel.textContent = formatDayLabel(currentDate);
+      }
+      loadAppointmentsForDailyView();
     } else {
       loadAppointments();
     }
-
-    // Se la vista "Giorno" è attiva, aggiorna il tag "currentDate"
-    if (dayLayoutBtn && dayLayoutBtn.classList.contains("active")) {
-      const currentDateTag = document.getElementById("currentDate");
-      currentDateTag.textContent = formatDayLabel(currentDate);
-      
-      // Eventualmente, aggiorna anche il contenuto specifico del layout giorno,
-      // per esempio, caricando gli appuntamenti relativi alla giornata corrente.
-    }
-  });
+  });  
   
   datePicker.addEventListener("change", (e) => {
     const val = e.target.value;
@@ -1527,10 +1720,11 @@ document.addEventListener("DOMContentLoaded", () => {
     dayLayoutContainer.style.display = "block";
     dayHead.style.display = "block";
 
-
-
     // Aggiorna il <p> "currentDate" con la data formattata
     currentDataLabel.textContent = formatDayLabel(currentDate);
+
+    // Carica gli appuntamenti per il giorno corrente
+    loadAppointmentsForDailyView();
   });
 
   // -----------------------------
