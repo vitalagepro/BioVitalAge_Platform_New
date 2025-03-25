@@ -362,3 +362,101 @@ select option:first-child {
 select option {
   text-align: left;
 }
+
+
+
+
+
+/* STYLE CARD*/
+.card-container{
+  width: 98%;
+  margin: auto;
+  border-radius: 8px;
+  background-color: var(--card-color);
+  margin-top: 1.5rem;
+  padding: 40px 20px;
+}
+.title-container{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+}
+.title-container img{
+  width: 40px;
+  height: 40px;
+  margin-top: -0.5rem;
+}
+.title-container h3{
+  color: var(--contrast-color);
+}
+.grid-container{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+.grid-container-special{
+  display: grid;
+  grid-template-columns: 60% 39.2%;
+  width: 98%;
+  margin: auto;
+  gap: 15px;
+}
+.grid-container-special .card-container{
+  width: 100%;
+}
+.infiammazione{
+  grid-template-columns: repeat(3,1fr);
+}
+
+
+
+
+
+
+
+
+/* TOOLKIT STYLE */
+.toolkit {
+  position: fixed;
+  bottom: 0.5rem;
+  right: 0rem;
+  background-color: var(--card-color);
+  width: 3rem;
+  height: 4rem;
+  border-radius: 8px 0px 0px 8px;
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+  gap: 10px;
+  opacity: 0.8;
+  transform: translateX(10px);
+  transition: width 0.4s ease-in-out, opacity 0.3s ease-in-out, transform 0.4s ease-in-out;
+}
+.toolkit img{
+  margin-right: -5.5rem;
+}
+.toolkit:hover {
+  width: 25rem;
+  opacity: 1;
+  transform: translateX(0); 
+}
+#genereReport,
+#modify {
+  height: 3rem;
+  opacity: 0;
+  border-radius: 8px !important;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+.toolkit:hover #genereReport,
+.toolkit:hover #modify {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
