@@ -79,16 +79,236 @@
             </div>
         </div>
 
+        <!-- DOMINIO COMPOSIZIONE CORPOREA -->
+        <div class="card-container">
+
+            <div class="title-container">
+                <img src="{% static 'includes/icone/composizione.png' %}" alt="">
+                <h3>Composizione Corporea</h3>
+            </div>
+
+            <div class="grid-container">
+            
+                <div class="field">
+                    <p>BMI:</p>
+                    <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
+                        {{ persona.bmi|default:"Inserisci valore" }}
+                    </p>
+                </div>
+    
+                <div class="field">
+                    <p>Grasso Corporeo:</p>
+                    <p id="grasso">{{ persona.grasso|default:"Inserisci valore" }}</p>
+                </div>
+    
+                <div class="field">
+                    <p>Acqua Corporea:</p>
+                    <p id="acqua">{{ persona.acqua|default:"Inserisci valore" }}</p>
+                </div>
+    
+                <div class="field">
+                    <p>Massa Muscolare:</p>
+                    <p id="massa_muscolare">{{ persona.massa_muscolare|default:"Inserisci valore" }}</p>
+                </div>
+    
+                <div class="field">
+                    <p>Bmr:</p>
+                    <p id="bmr">{{ persona.bmr|default:"Inserisci valore" }}</p>
+                </div>
+        
+                <div class="field">
+                    <p>WHR:</p>
+                    <p id="whr">{{ persona.whr|default:"Inserisci valore" }}</p>
+                </div>
+    
+                <div class="field">
+                    <p>WHTR:</p>
+                    <p id="whtr">{{ persona.whtr|default:"Inserisci valore" }}</p>
+                </div> 
+            </div>
+        </div>
+
+        <!-- DOMINIO PROFILO GLICEMICO E INSULINICO-->
+        <div class="card-container">
+
+            <div class="title-container">
+                <img src="{% static 'includes/icone/glicemia.png' %}" alt="">
+                <h3>Profilo glicemico e insulinico</h3>
+            </div>
+
+            <div class="grid-container">
+                <div class="field">
+                    <p>Glicemia a digiuno:</p>
+                    <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
+                        {{ persona.glicemia|default:"Inserisci valore" }}
+                    </p>
+                </div>
+    
+                <div class="field">
+                    <p>OGTT (Glicemia post-carico):</p>
+                    <p id="grasso">{{ persona.ogtt|default:"Inserisci valore" }}</p>
+                </div>
+    
+                <div class="field">
+                    <p>Emoglobina glicata (HbA1c)</p>
+                    <p id="acqua">{{ persona.emoglobina|default:"Inserisci valore" }}</p>
+                </div>
+                
+                <div class="field">
+                    <p>Insulina a digiuno:</p>
+                    <p id="whtr">{{ persona.whtr|default:"Inserisci valore" }}</p>
+                </div> 
+
+                <div class="field">
+                    <p>Curva insulinemica da carico orale:</p>
+                    <p id="massa_muscolare">{{ persona.massa_muscolare|default:"Inserisci valore" }}</p>
+                </div>
+    
+                <div class="field">
+                    <p>HOMA-IR:</p>
+                    <p id="bmr">{{ persona.bmr|default:"Inserisci valore" }}</p>
+                </div>
+        
+                <div class="field">
+                    <p style="font-size: 15px;">TyG index (Trigliceridi/HDL per insulino-resistenza)</p>
+                    <p id="whr">{{ persona.whr|default:"Inserisci valore" }}</p>
+                </div>     
+            </div>
+        </div>
+
+        <!-- DOMINIO PROFILO LIPIDICO -->
+        <div class="card-container">
+
+            <div class="title-container">
+                <img src="{% static 'includes/icone/lipidi.png' %}" alt="">
+                <h3>Profilo Lipidico</h3>
+            </div>
+
+            <div class="grid-container">
+            
+                <div class="field">
+                    <p>Colesterolo totale</p>
+                    <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
+                        {{ persona.bmi|default:"Inserisci valore" }}
+                    </p>
+                </div>
+    
+                <div class="field">
+                    <p>HDL:</p>
+                    <p id="grasso">{{ persona.grasso|default:"Inserisci valore" }}</p>
+                </div>
+    
+                <div class="field">
+                    <p>LDL:</p>
+                    <p id="acqua">{{ persona.acqua|default:"Inserisci valore" }}</p>
+                </div>
+    
+                <div class="field">
+                    <p>Trigliceridi:</p>
+                    <p id="massa_muscolare">{{ persona.massa_muscolare|default:"Inserisci valore" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOMINIO PROFILO METABOLICO EPATICO -->
+        <div class="card-container">
+
+            <div class="title-container">
+                <img src="{% static 'includes/icone/metabolismo.png' %}" alt="">
+                <h3>Profilo metabolico epatico</h3>
+            </div>
+
+            <div class="grid-container">
+            
+                <div class="field">
+                    <p>AST:</p>
+                    <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
+                        {{ persona.bmi|default:"Inserisci valore" }}
+                    </p>
+                </div>
+    
+                <div class="field">
+                    <p>ALT:</p>
+                    <p id="grasso">{{ persona.grasso|default:"Inserisci valore" }}</p>
+                </div>
+    
+                <div class="field">
+                    <p>GGT:</p>
+                    <p id="acqua">{{ persona.acqua|default:"Inserisci valore" }}</p>
+                </div>
+    
+                <div class="field">
+                    <p>Bilirubina totale e frazionata:</p>
+                    <p id="massa_muscolare">{{ persona.massa_muscolare|default:"Inserisci valore" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOMINIO STRESS E INFIAMMAZIONE -->
+        <div class="grid-container-special">
+            <!-- DOMINIO INFIAMMAZIONE -->
+            <div class="card-container">
+
+                <div class="title-container">
+                    <img src="{% static 'includes/icone/infiammazione.png' %}" alt="">
+                    <h3>Infiammazione</h3>
+                </div>
+
+                <div class="grid-container infiammazione">
+                
+                    <div class="field">
+                        <p>PCR:</p>
+                        <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
+                            {{ persona.bmi|default:"Inserisci valore" }}
+                        </p>
+                    </div>
+
+                    <div class="field">
+                        <p>HGS:</p>
+                        <p id="grasso">{{ persona.grasso|default:"Inserisci valore" }}</p>
+                    </div>
+
+                    <div class="field">
+                        <p>SII:</p>
+                        <p id="acqua">{{ persona.acqua|default:"Inserisci valore" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DOMINIO STRESS-->
+            <div class="card-container">
+
+                <div class="title-container">
+                    <img src="{% static 'includes/icone/stress.png' %}" alt="">
+                    <h3>Stress</h3>
+                </div>
+          
+                <div class="field" style="margin-top: 20px;">
+                    <p>PCR:</p>
+                    <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
+                        {{ persona.bmi|default:"Inserisci valore" }}
+                    </p>
+                </div>
+              
+            </div>
+
+        </div>
+
+        
+
+
+
+
+
+
         <!-- DATI ANAGRAFICI CON MASSA CORPOREA -->
         <div class="datiMassaCorporea-container">
             <div class="header-container-patient">
-                <h3>Dati Massa Corporea Paziente</h3>
-                <div class="icon-container">
-                    <a class="Btn-modify" title="Modifica">Edita 
-                        <svg class="svg" viewBox="0 0 512 512">
-                          <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path></svg>
-                    </a>
+                <div class="title-container">
+                    <img src="{% static 'includes/icone/avatar.png' %}" alt="">
+                    <h3>Dati Personali Composizione</h3>
                 </div>
+                
             </div>
             <div class="container_box">
                 <div class="info_container">
@@ -143,21 +363,13 @@
                     <div class="field">
                         <p>Altezza:</p>
                         <p id="altezza">{{ persona.height|default:"Inserisci valore" }}</p>
-                    </div>
-            
+                    </div>      
             
                     <div class="field">
                         <p>Peso corporeo:</p>
                         <p id="peso">{{ persona.weight|default:"Inserisci valore" }}</p>
                     </div>
-            
-                    <div class="field">
-                        <p>BMI:</p>
-                        <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
-                            {{ persona.bmi|default:"Inserisci valore" }}
-                        </p>
-                    </div>
-            
+                  
                     <div class="field">
                         <p>Data di rilevamento del BMI:</p>
                         <p id="bmi_detection_date" data-value="{{ persona.bmi_detection_date|default:'' }}">
@@ -202,31 +414,11 @@
                         <p>Genere:</p>
                         <p>{{ persona.gender }}</p>
                     </div>
-            
-                    <div class="field">
-                        <p>Grasso Corporeo:</p>
-                        <p id="grasso">{{ persona.grasso|default:"Inserisci valore" }}</p>
-                    </div>
-            
-                    <div class="field">
-                        <p>Acqua Corporea:</p>
-                        <p id="acqua">{{ persona.acqua|default:"Inserisci valore" }}</p>
-                    </div>
-            
+       
                     <div class="field">
                         <p>Massa Ossea:</p>
                         <p id="massa_ossea">{{ persona.massa_ossea|default:"Inserisci valore" }}</p>
-                    </div>
-            
-                    <div class="field">
-                        <p>Massa Muscolare:</p>
-                        <p id="massa_muscolare">{{ persona.massa_muscolare|default:"Inserisci valore" }}</p>
-                    </div>
-            
-                    <div class="field">
-                        <p>Bmr:</p>
-                        <p id="bmr">{{ persona.bmr|default:"Inserisci valore" }}</p>
-                    </div>
+                    </div>       
             
                     <div class="field">
                         <p>Età Metabolica:</p>
@@ -238,20 +430,12 @@
                         <p id="grasso_viscerale">{{ persona.grasso_viscerale|default:"Inserisci valore" }}</p>
                     </div>
             
-                    <div class="field">
-                        <p>WHR:</p>
-                        <p id="whr">{{ persona.whr|default:"Inserisci valore" }}</p>
-                    </div>
+                    
             
-                    <div class="field">
-                        <p>WHTR:</p>
-                        <p id="whtr">{{ persona.whtr|default:"Inserisci valore" }}</p>
-                    </div>
+                    
                 </div>
             </div>
         </div>  
-
-        
 
         <!-- CONTAINER GRAFICI MASSA CORPOREA -->
         <div class="container-grafici">
@@ -273,7 +457,11 @@
             </div>
         </div>
 
-        <div class="container-btn">
+
+
+        <div class="toolkit">
+            <img src="{% static 'includes/images/arrow.png' %}" alt="" style="width: 40px; height: 40px;">
+
             <button class="button" id="genereReport" data-referto-id="{{ referto.id }}" data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
                 <span class="button__icon-wrapper">
                     <svg
@@ -324,7 +512,15 @@
                 </span>
                 Genera PDF referto       
             </button>
+
+            <a class="Btn-modify" title="Modifica" id="modify">Edita 
+                <svg class="svg" viewBox="0 0 512 512">
+                  <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path></svg>
+            </a>
+            
         </div>
+
+
     </main>
 
     <!-- Import Js -->
