@@ -1,3 +1,35 @@
+/* FONT STYLE */
+* p,
+* input,
+* select{
+    font-family: 'Poppins', sans-serif !important;
+}
+* h3{
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 23px !important;
+    font-weight: 600 !important;
+}
+* span{
+    font-family: 'Montserrat', sans-serif !important;
+}
+.sottotitolo{
+    background-color: var(--contrast-color-shadow);
+    padding: 10px 10px;
+    border-radius: 8px;
+    color: var(--dark1);
+    font-weight: bold;
+    margin-top: 1rem;
+    text-align: center;
+    margin-bottom: 20px;  
+}
+.question h3{
+    padding-top: 10px;
+    color: var(--contrast-color) !important;
+}
+
+
+
+/* STYLE CARD QUIZ */
 .card-container{
     background-color: var(--card-color);
     width: 98%;
@@ -37,48 +69,10 @@
     font-size: 16px;
     cursor: pointer;
 }
-
-.field {
-    display: flex;
-    flex-direction: column;
-}
-.field p:first-of-type {
-    background-color: var(--contrast-color-shadow);
-    border-radius: 8px;
-    padding: 15px;
-    color: var(--dark2);
-    margin-bottom: -1rem;
-    font-weight: bold;
-    padding-bottom: 25px;
-}
-.field p:last-of-type {
-    border-bottom: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    padding: 15px;
-    padding-top: 15px;
-    border-radius: 8px;
-    font-size: 18px;
-    color: var(--dark1);
-    background-color: white;
-}
-.info_container{
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    height: 300px;
-    gap: 15px;
-    width: 100%;
-    background-color: white;
-    border-radius: 2px;
-    padding: 20px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
 #quiz-container{
     padding: 20px;
     height: auto;
 }
-
 .left-right-btn{
     height: 100%;
     display: flex;
@@ -90,6 +84,10 @@
     margin-top: 0rem;
     height: 3rem;
 }
+
+
+
+/* STYLE TABLE QUESTION */
 .tableAnswer{
     background-color: white;
     width: 100%;
@@ -114,8 +112,8 @@
     margin-top: 10px;
     width: 100%;
     text-align: center;
+    margin-bottom: 10px;
 }
-
 .question p{
     letter-spacing: 1px;
 }
@@ -128,20 +126,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-.tableInput{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 10rem;
-    border-bottom: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-}
-.tableInput input{
-    width: 30px;
-    height: 30px;
 }
 .tableRow{
     display: flex;
@@ -159,22 +143,8 @@
     width: 100%;
     height: 100%;
     padding: 20px;
-    border-left: 1px solid #ddd;
     margin-bottom: 0 !important;
 }
-
-.fs-5-3{
-    font-size: 1.13rem !important;
-}
-
-.smaller-text{
-    font-size: 10px !important;
-}
-
-.small-text{
-    font-size: 12.4px !important;
-}
-
 input[type="radio"] {
     appearance: none; 
     -webkit-appearance: none; 
@@ -187,12 +157,10 @@ input[type="radio"] {
 input[type="radio"]:checked {
     background-color: var(--contrast-color2);
 }
-
 input:disabled{
     background-color: inherit;
     cursor: not-allowed;
 }
-
 .tableRow p:first-of-type{
     border-left: none;
 }
@@ -202,7 +170,6 @@ input:disabled{
     justify-content: space-between;
     align-items: center;
 }
-
 .tableRow input:not([type="radio"]) {
     width: 100%;
     padding: 0px 20px;
@@ -212,6 +179,12 @@ input:disabled{
     height: 100%;
 }
 
+
+
+
+
+
+/* ADJUST FONT STYLE */
 #long-p{
     flex-direction: column;
 }
@@ -224,9 +197,15 @@ input:disabled{
     background: #232323;
     width: 100%;
 }
+.smaller-text{
+    font-size: 10px !important;
+}
+.small-text{
+    font-size: 12.4px !important;
+}
 
 
-
+/* PAGINATION STYLE */
 #pagination {
     display: flex;
     justify-content: flex-start;
@@ -235,7 +214,6 @@ input:disabled{
     width: 60%;
     height: 100%;
 }
-
 .pagination-btn {
     display: flex;
     justify-content: center;
@@ -250,16 +228,13 @@ input:disabled{
     color: white;
     transition: all 0.2s ease-in-out;
 }
-
 .pagination-btn:hover{
     background-color: var(--contrast-color2);
 }
-
 .pagination-btn.active {
     background-color: var(--contrast-color2);
     font-weight: bold;
 }
-
 .button:disabled{
     cursor: not-allowed;
     background-color: var(--contrast-color2);
@@ -268,11 +243,109 @@ input:disabled{
 .button:disabled:hover .button__icon-svg--copy{
     transform: translate(-150%, 150%);
 }
-
 .button:disabled:hover .button__icon-svg:first-child{
     transform: translate(0);
 }
-
 .button:disabled:hover .button__icon-wrapper{
     color: var(--contrast-color2);
+}
+
+
+
+
+
+
+/* DOMINIO COGNITIVO STYLE */
+.cognitivo_row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd ;
+    width: 100%;
+}
+.the_question{
+    width: 35%;
+    display: flex;
+    justify-content: flex-start !important;
+    align-items: center;
+    padding: 40px 20px;
+    border-right: 1px solid #ddd;
+    margin-top: 12px;
+    text-align: justify !important;
+}
+.radio-container{
+    width: 11.6%;   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.tableAnswer-header-cognitivo{
+    width: 100%;
+    background-color: var(--contrast-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.subtitle-cognitivo{
+    color: white;
+    font-size: 20px;
+    margin-top: 10px;
+    width: 11.6%;
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 15px 0px;
+}
+.subtitle-cognitivo:first-of-type{
+    width: 35%;
+}
+
+
+
+/* DOMINIO PSICOLOGICO STYLE */
+.psicologico p{
+    font-size: 15px !important;
+}
+.sensorialeRow{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd ;
+    width: 100%;
+}
+.radio-container2{
+    width: 10%;   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.tableAnswer-header-psicologico{
+    width: 100%;
+    background-color: var(--contrast-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0px;
+}
+.tableAnswer-header-psicologico p:first-of-type{
+    width: 35%;
+}
+.tableAnswer-header-psicologico p{
+    width: 10%;
+}
+
+
+
+/* CARICO ALLOSTATICO STYLE */
+.tableAnswer-container-allostatico{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tableAnswer-container-allostatico p{
+    width: 25%;
+}
+.tableAnswer-container-allostatico #long-p{
+    width: 30%;
 }

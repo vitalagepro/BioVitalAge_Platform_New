@@ -232,7 +232,7 @@
         <!-- CARD CLOCK -->
         <div class="container-indicatori containerStyle" style="margin-top: 0rem;">
             <div class="card card4" id="card-style">
-                <h3 class="section-tittle">Score organi e apparati</h3>
+                <h3 class="section-tittle" style="padding-top: 20px;">Indicatori di performance</h3>
 
                 <div class="score-clock-graph">
     
@@ -329,11 +329,11 @@
                             <circle class="progress-ring__progress" id="immuneClock" cx="70" cy="70" r="65"></circle>
                         </svg>
 
-                        <div class="percentage" id="immunePercentage"></div>
+                        <div class="percentage" id="immunePercentage" style="margin-top: 5px;"></div>
                      
                         <div class="descrizione-clock" style="margin-bottom: -10px;">
                             <img src="{% static 'includes/images/sistema.png' %}" alt="">
-                            <p style="max-width: 60%;">Salute del Sistema Immunitario</p>
+                            <p style="max-width: 60%; font-size: 14px;">Salute del Sistema Immunitario</p>
                         </div>
                     </div>
                 
@@ -351,12 +351,52 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="eta-container">
+                    <h3>Età Biologica</h3>
+                    <div class="lineaContainer">
+                        <p class="estremoInferiore">0</p>
+                        <div class="cronologic-age">
+                            <img src="{% static 'includes/icone/biologica.png' %}" alt="">
+                            <p>38 anni</p>
+                            <p class="linea">|</p>
+                        </div>
+                        <div class="barra-valore"></div>
+                        <div class="biologic-age">
+                            <img src="{% static 'includes/icone/cronologica.png' %}" alt="">
+                            <p>44 anni</p>
+                            <p class="linea">|</p>
+                        </div>
+                        <p class="estremoSuperiore">100</p>
+                    </div>
+
+                    <div class="legenda">
+                        <div class="subcontainer-legenda">
+                            <img src="{% static 'includes/icone/biologica.png' %}" alt="">
+                            <p>Età Biologica</p>
+                        </div>
+                      
+                        <div class="subcontainer-legenda">
+                            <img src="{% static 'includes/icone/cronologica.png' %}" alt="" >
+                            <p>Età Biologica</p>
+                        </div>
+
+                        <div class="subcontainer-legenda">
+                            <p class="quadrato neg"></p>
+                            <p>Valore Negativo</p>
+                        </div>
+                        <div class="subcontainer-legenda">
+                            <p class="quadrato pos"></p>
+                            <p>Valore Positivo</p>
+                        </div>
+                    </div>
+                </div>
                 
             </div>
         </div>
 
         <!-- CARD SEZIONI DATI BASE E COMPOSIZIONE CORPOREA -->
-        <div class="container-sezioniInterne containerStyle"  style="margin-top: -2rem;">
+        <div class="container-sezioniInterne containerStyle"  style="margin-top: -1rem;">
             <div class="cardDati">
 
              
@@ -378,7 +418,7 @@
 
             <div class="cardDati">
                 <div class="cartella-effect">
-                    <h3>Composizione Corporea Paziente</h3>
+                    <h3>Età Metabolica</h3>
                     <div class="space"></div>
                 </div>
                 <div class="card-content">
@@ -441,14 +481,14 @@
                     <img src="{% static 'includes/images/Resilienza.png' %}" alt="">
                     <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aspernatur exercitationem placeat impedit mollitia dolor est nesciunt enim in libero repellat temporibus voluptatum esse adipisci, maiores expedita eaque nulla architecto nihil!
                     </p>
-                    <a href="#">Vai alla sezione</a>
+                    <a href="{% url 'resilienza' persona.id %}">Vai alla sezione</a>
                 </div>
             </div>
 
             <!-- TERAPHY -->
             <div class="cardDati">
                 <div class="cartella-effect">
-                    <h3>BioVitalAge Therapy</h3>
+                    <h3>Piano Terapeutico</h3>
                     <div class="space"></div>
                 </div>
                 <div class="card-content">
@@ -460,12 +500,6 @@
             </div>
         </div>
         
-
-
-
-
-
-
 
         <!-- TABELLA ELENCO PRESCRIZIONI -->
 
@@ -522,7 +556,6 @@
         {% endif %}
 
         
-
         <div class="contenitore-tabella" style="margin-top: 0; ">
 
             <div class="recent-patients" id="card-style">
@@ -1105,8 +1138,6 @@
                 </div>
             </div>
         </div>
-
-        
 
     </main>
 

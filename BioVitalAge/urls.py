@@ -34,6 +34,7 @@ urlpatterns = [
     path("DatiBase/<int:id>/", views.DatiBaseView.as_view(), name="dati_base"),
     path("Patients/<int:id>/Composizione", views.ComposizioneView.as_view(), name="composizione"),
     path('Prescrizioni/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
+    path('Resilienza/<int:persona_id>/', views.ResilienzaView.as_view(), name='resilienza'),
     
     path("CartellaPaziente/Update/<int:persona_id>/<int:visite_id>/", DettagliPrescrizioni.as_view(), name="dettagli_prescrizioni"),
     path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
@@ -54,6 +55,9 @@ urlpatterns = [
     path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
 
     
+    # path('appointments_page/', views.AppointmentView.as_view(), name='appointments_page'),
+    # path('api/appointments/', views.appointment_view, name='appointment_api'),
+    # path('appointments/', views.appointments_list, name='appointments_list'),  
     path("api/appointments/<int:appointment_id>/approve/", views.ApproveAppointmentView.as_view(), name="approve_appointment"),
     path("api/appointments/<int:appointment_id>/delete/", views.DeleteAppointmentView.as_view(), name="delete_appointment"),
     path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>', views.StampaRefertoView.as_view(), name='download_pdf_vitale'),

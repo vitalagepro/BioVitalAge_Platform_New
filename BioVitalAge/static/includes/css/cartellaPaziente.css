@@ -369,7 +369,7 @@
 .container-indicatori {
   display: flex;
   flex-direction: column;
-  height: 450px;
+
 }
 .section-tittle {
   color: var(--contrast-color);
@@ -385,7 +385,7 @@
 
 
 
-
+/* STYLE INDICATORI DI PERFORMANCE */
 .score-clock-graph {
   width: 98%;
   margin: 2rem auto 0rem auto;
@@ -405,8 +405,6 @@
   align-items: center;
   justify-content: center;
 }
-
-
 .clock::after {
   content: "";
   position: absolute;
@@ -419,18 +417,15 @@
   transform: translate(-50%, -50%) rotate(var(--angle)) translate(50px); 
   transition: transform 0.5s ease-out;
 }
-
 .progress-ring {
   position: relative;
   transform: rotate(-90deg); /* Ruota il cerchio per far iniziare il riempimento dall'alto */
 }
-
 .progress-ring__background {
   fill: none;
   stroke: #e0e0e0; /* Colore di sfondo */
   stroke-width: 10;
 }
-
 .progress-ring__progress {
   fill: none;
   stroke: var(--contrast-color); /* Usa il colore del tema */
@@ -440,7 +435,6 @@
   stroke-dashoffset: 283; /* Nasconde inizialmente il cerchio */
   transition: stroke-dashoffset 1s ease-in-out; /* Effetto animazione */
 }
-
 .percentage {
   position: absolute;
   top: 50%;
@@ -451,9 +445,6 @@
   z-index: 2;
   color: var(--contrast-color);
 }
-
-
-
 .container-clock{
   width: 12.5%;
   height: 100%;
@@ -468,7 +459,6 @@
   position: relative;
   box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.1);
 }
-
 .descrizione-clock{
   width: 100%;
   display: flex;
@@ -484,11 +474,6 @@
   margin-top: 0.8rem;
   color: var(--contrast-color);
 }
-
-
-
-
-
 .inner {
   position: absolute;
   top: 10%;
@@ -499,7 +484,6 @@
   border-radius: 50%;
   z-index: 1;
 }
-
 .percentage {
   position: absolute;
   top: 35%;
@@ -510,6 +494,122 @@
   z-index: 2;
   color: var(--contrast-color);
 }
+
+
+
+/* Età Style */
+.eta-container{
+  background-color: white;
+  width: 98%;
+  margin: 1rem auto;
+  height: 16rem;
+  border-radius: 8px;
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.1);
+}
+.eta-container h3{
+  color: var(--contrast-color);
+  padding: 20px;
+}
+
+.lineaContainer{
+  background-color: var(--card-color);
+  width: 90%;
+  height: 1rem;
+  border-radius: 8px;
+  margin: 4rem auto;
+  border: 1px solid #ddd;
+  position: relative;
+}
+.cronologic-age{
+  position: absolute;
+  top: -4rem;
+  left: 30%;
+}
+.biologic-age{
+  position: absolute;
+  top: -4rem;
+  right: 40%;
+}
+
+.barra-valore{
+  position: absolute;
+  left: 31.9%;
+  width: 26.4%;
+  background-color: var(--negative-color-right);
+  height: 1rem;
+}
+
+.lineaContainer div img{
+  width: 30px;
+  height: 30px;
+}
+.lineaContainer div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.linea{
+  font-size: 40px;
+  margin-top: -1.5rem;
+}
+.legenda{
+  margin-top: -1rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 40px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+}
+.subcontainer-legenda{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.legenda div img{
+  width: 20px;
+  height: 20px;
+  margin-top: -0.8rem;
+}
+
+.quadrato{
+  width: 20px;
+  height: 20px;
+}
+.neg{
+  background-color: var(--negative-color-right);
+}
+.pos{
+  background-color: var(--positive-color);
+}
+.estremoInferiore{
+  position: absolute;
+  left: -3rem;
+  top: -0.3rem;
+  font-size: 18px;
+}
+.estremoSuperiore{
+  position: absolute;
+  right: -3rem;
+  top: -0.3rem;
+  font-size: 18px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
