@@ -73,7 +73,7 @@ const btnOpenModal = document.getElementById("openModal");
     MAPPING TIPOLOGIE
   --------------------------------------------------------------------------------------------------- */
 const mappingTipologie = {
-  Fisioestetica: [
+  "Fisioestetica": [
     { value: "Crioterapia", text: "Crioterapia", duration: [30] },
     {
       value: "Radiofrequenza medica",
@@ -187,6 +187,13 @@ const mappingTipologie = {
     },
   ],
 };
+
+// Mappa dei colori per ogni gruppo
+const boxColorMapping = [
+  { group: "Fisioestetica", color: "#2b124c" },
+  { group: "Fisioterapia e Riabilitazione", color: "#26425a" },
+  { group: "Fisioterapia Sportiva", color: "#00937a" }
+];
 
 
 
@@ -407,6 +414,19 @@ function generateWeeklyAppointments(appointmentsByDate) {
                   appointmentBox.dataset.tipologia = tipologia_visita;
                   appointmentBox.dataset.orario = orario;
                   appointmentBox.innerHTML = `<span style="flex: 1 1 0%">${tipologia_visita}</span><button class="delete-appointment" data-id="${id}">&times;</button>`;
+
+                  boxColorMapping.forEach((mapping) => {
+
+                    if (mapping.group === appointmentBox.dataset.tipologia) {
+                      appointmentBox.style.backgroundColor = mapping.color;
+                      if (mapping.text_color) {
+                        appointmentBox.style.color = mapping.text_color;
+                      }
+                    } else {
+                      console.log("Colori non assegnati per la tipologia:", mapping.group, appointmentBox.dataset.tipologia);
+                      appointmentBox.style.backgroundColor = "#3a255d";
+                    }
+                  })
   
                   // Aggiunge il box nella cella giusta
                   cell.appendChild(appointmentBox);
@@ -547,6 +567,18 @@ function generateDailyAppointments(appointmentsForDay) {
     appointmentBox.dataset.orario = appointment.orario;
     appointmentBox.innerHTML = `<span style="flex: 1;">${appointment.tipologia_visita}</span>
       <button class="delete-appointment" data-id="${appointment.id}">&times;</button>`;
+
+    boxColorMapping.forEach((mapping) => {
+
+      if (mapping.group === appointment.tipologia_visita) {
+        appointmentBox.style.backgroundColor = mapping.color;
+        if (mapping.text_color) {
+          appointmentBox.style.color = mapping.text_color;
+        }
+      } else {
+        appointmentBox.style.backgroundColor = "#3a255d";
+      }
+    })
 
     // Inserisci il box nella cella
     targetCell.appendChild(appointmentBox);
@@ -859,8 +891,6 @@ function loadAppointmentsForDailyView() {
     .catch(err => console.error("Errore nella fetch degli appuntamenti per il giorno:", err));
 }
 
-
-
 // Funzione per formattare la data in YYYY-MM-DD per il backend
 function formatDateForBackend(date, day) {
   const month = String(date.getMonth() + 1).padStart(2, "0"); // Mese in due cifre
@@ -909,7 +939,6 @@ document.addEventListener("click", (e) => {
   }
 });
 
-
 // Funzione per aggiungere un appuntamento alla cella
 function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
   const appointmentsContainer = cella.querySelector(".appointments-container");
@@ -945,6 +974,18 @@ function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
   appointmentBox.appendChild(textSpan);
   appointmentBox.appendChild(deleteButton);
   appointmentsContainer.appendChild(appointmentBox);
+
+  boxColorMapping.forEach((mapping) => {
+
+    if (mapping.group === tipologia) {
+      appointmentBox.style.backgroundColor = mapping.color;
+      if (mapping.text_color) {
+        appointmentBox.style.color = mapping.text_color;
+      }
+    } else {
+      console.log("Tipologia non trovata:", tipologia, mapping.group);
+    }
+  })
 
   // Event listener per il drag
   appointmentBox.addEventListener("dragstart", (e) => {
@@ -1000,6 +1041,7 @@ function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
   });  
 }
 
+// Funzione per ottenere il giorno italiano
 function getItalianDayName(dateObj) {
   const giorniItaliani = [
     "Domenica",
