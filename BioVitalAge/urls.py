@@ -35,7 +35,9 @@ urlpatterns = [
     path("Patients/<int:id>/Composizione", views.ComposizioneView.as_view(), name="composizione"),
     path('Prescrizioni/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
     path('Resilienza/<int:persona_id>/', views.ResilienzaView.as_view(), name='resilienza'),
-    
+    path('Valutazione_Muscolo_Scheletrica/<int:persona_id>/', views.ValutazioneMSView.as_view(), name='valutazione_m_s'), 
+
+
     path("CartellaPaziente/Update/<int:persona_id>/<int:visite_id>/", DettagliPrescrizioni.as_view(), name="dettagli_prescrizioni"),
     path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
 

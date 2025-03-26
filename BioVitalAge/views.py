@@ -2557,3 +2557,100 @@ class ResilienzaView(View):
             'successo': True
         }
         return render(request, "includes/Resilienza.html", context)
+    
+
+
+
+
+
+
+
+#VIEWS PER LA VALUTAZIONE MUSCOLO-SCHELETRICO
+class ValutazioneMSView(View):
+    def get(self, request, persona_id):
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        context = {
+            'persona': persona,
+            'dottore' : dottore,
+        }
+
+        return render(request, "includes/valutazioneMS.html", context)
+
+
+
+    def post(self, request, persona_id): 
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        try:
+            retrivedData = ValutazioneMS.objects.create(
+                paziente=persona,
+
+                # Attività fisica
+                frequenza_a_f=request.POST.get("frequenza_a_f"),
+                tipo_a_f=request.POST.get("tipo_a_f"),
+                stile_vita=request.POST.get("stile_vita"),
+
+                # Anamnesi muscolo-scheletrica
+                terapie_inf=request.POST.get("terapie_inf"),
+                diagnosi_t=request.POST.get("diagnosi_t"),
+                sintomi_t=request.POST.get("sintomi_t"),
+
+                # Esame Generale
+                palpazione=request.POST.get("palpazione"),
+                osservazione=request.POST.get("osservazione"),
+                m_attiva=request.POST.get("m_attiva"),
+                m_passiva=request.POST.get("m_passiva"),
+                dolorabilità=request.POST.get("dolorabilità"),
+                scala_v_a=request.POST.get("scala_v_a"),
+
+                # Esame muscolo-scheletrico
+                mo_attivo=request.POST.get("mo_attivo"),
+                mo_a_limitazioni=request.POST.get("mo_a_limitazioni"),
+                mo_passivo=request.POST.get("mo_passivo"),
+                mo_p_limitazioni=request.POST.get("mo_p_limitazioni"),
+                comparazioni_m=request.POST.get("comparazioni_m"),
+                circ_polp=request.POST.get("circ_polp"),
+                tono_m=request.POST.get("tono_m"),
+                scala_ashworth=request.POST.get("scala_ashworth"),
+
+                # Esame posturale
+                v_frontale=request.POST.get("v_frontale"),
+                v_laterale=request.POST.get("v_laterale"),
+                p_testa=request.POST.get("p_testa"),
+                spalle=request.POST.get("spalle"),
+                ombelico=request.POST.get("ombelico"),
+                a_inferiori=request.POST.get("a_inferiori"),
+                piedi=request.POST.get("piedi"),
+                colonna_v=request.POST.get("colonna_v"),
+                curvatura_c=request.POST.get("curvatura_c"),
+                curvatura_d=request.POST.get("curvatura_d"),
+                curvatura_l=request.POST.get("curvatura_l"),
+                posizione_b=request.POST.get("posizione_b"),
+                equilibrio_s=request.POST.get("equilibrio_s"),
+                equilibrio_d=request.POST.get("equilibrio_d"),
+                p_dolenti=request.POST.get("p_dolenti"),
+
+                # Valutazione funzionale
+                gravita_disfunzione_posturale=request.POST.get("gravita_disfunzione_posturale"),
+                rischio_infortuni=request.POST.get("rischio_infortuni"),
+                suggerimenti=request.POST.get("suggerimenti"),
+                considerazioni_finali=request.POST.get("considerazioni_finali"),
+            )
+
+            retrivedData.save()
+
+        except Exception as e:
+            print("Errore nel salvataggio del referto:", e)
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+            'successo': True
+        }
+        return render(request, "includes/valutazioneMS.html", context)
