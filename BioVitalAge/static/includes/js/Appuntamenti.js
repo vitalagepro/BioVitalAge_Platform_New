@@ -1,10 +1,15 @@
                                           /*  -----------------------------------------------------------------------------------------------
                                                                                     GLOBAL VARIABLE
                                           --------------------------------------------------------------------------------------------------- */
-// Dichiarazione globale
+// Gestione calendario
 let fromCalendar = false;
 let isEditing = false;
 let appointmentsData = {}; // Definita globalmente per contenere i dati caricati
+
+// gestione ricerca
+const searchInput = document.getElementById("searchInput");
+const resultsContainer = document.getElementById("searchResults");
+const searchModal = document.getElementById("searchModal");
 
 // gestione popup
 const popup = document.getElementById("appointment-actions-popup");
@@ -401,10 +406,7 @@ function generateWeeklyAppointments(appointmentsByDate) {
                   appointmentBox.dataset.id = id;
                   appointmentBox.dataset.tipologia = tipologia_visita;
                   appointmentBox.dataset.orario = orario;
-                  appointmentBox.innerHTML = `<span style="flex: 1 1 0%">${tipologia_visita} - ${orario.slice(
-                    0,
-                    5
-                  )}</span><button class="delete-appointment" data-id="${id}">&times;</button>`;
+                  appointmentBox.innerHTML = `<span style="flex: 1 1 0%">${tipologia_visita}</span><button class="delete-appointment" data-id="${id}">&times;</button>`;
   
                   // Aggiunge il box nella cella giusta
                   cell.appendChild(appointmentBox);
@@ -459,7 +461,7 @@ function generateWeeklyAppointments(appointmentsByDate) {
   
                     // Posiziona il popup vicino al box cliccato
                     const rect = appointmentBox.getBoundingClientRect();
-                    popup.style.top = `${rect.top + window.scrollY + 40}px`;
+                    popup.style.top = `${rect.top + window.scrollY + 27}px`;
                     popup.style.left = `${rect.left + window.scrollX}px`;
   
                     popup.classList.remove("hidden-popup");
@@ -543,7 +545,7 @@ function generateDailyAppointments(appointmentsForDay) {
     appointmentBox.dataset.id = appointment.id;
     appointmentBox.dataset.tipologia = appointment.tipologia_visita;
     appointmentBox.dataset.orario = appointment.orario;
-    appointmentBox.innerHTML = `<span style="flex: 1;">${appointment.tipologia_visita} - ${appointment.orario.slice(0, 5)}</span>
+    appointmentBox.innerHTML = `<span style="flex: 1;">${appointment.tipologia_visita}</span>
       <button class="delete-appointment" data-id="${appointment.id}">&times;</button>`;
 
     // Inserisci il box nella cella
@@ -557,7 +559,7 @@ function generateDailyAppointments(appointmentsForDay) {
       e.stopPropagation();
       const popup = document.getElementById("appointment-actions-popup");
       const rect = appointmentBox.getBoundingClientRect();
-      popup.style.top = `${rect.top + window.scrollY + 40}px`;
+      popup.style.top = `${rect.top + window.scrollY + 27}px`;
       popup.style.left = `${rect.left + window.scrollX}px`;
       popup.classList.remove("hidden-popup");
       gsap.set(popup, { opacity: 0 });
@@ -678,7 +680,7 @@ function addDragAndDropEvents(appointmentBox) {
           selectedAppointment.dataset.tipologia = tipologia;
 
           // ✅ **Aggiorna visivamente il box con i dati corretti**
-          selectedAppointment.querySelector("span").textContent = `${tipologia} - ${newTime}`;
+          selectedAppointment.querySelector("span").textContent = `${tipologia}`;
 
           // ✅ **Aggiorna l'appuntamento nel database**
           const formattedDate = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`;
@@ -736,7 +738,7 @@ function addDragAndDropEventsDaily(appointmentBox) {
 
       // Aggiorna il testo visualizzato nel box
       const tipologia = selectedAppointment.dataset.tipologia || "Sconosciuto";
-      selectedAppointment.querySelector("span").textContent = `${tipologia} - ${newTime}`;
+      selectedAppointment.querySelector("span").textContent = `${tipologia}`;
 
       // Aggiorna l'appuntamento nel backend: la data resta invariata (vista Giorno)
       const formattedDate = currentDate.toISOString().split("T")[0];
@@ -957,7 +959,7 @@ function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
   
     // Posiziona il popup vicino all'appuntamento box (stile uniforme)
     const rect = appointmentBox.getBoundingClientRect();
-    popup.style.top = `${rect.top + window.scrollY + 40}px`;
+    popup.style.top = `${rect.top + window.scrollY + 27}px`;
     popup.style.left = `${rect.left + window.scrollX}px`;
   
     popup.classList.remove("hidden-popup");
@@ -1658,6 +1660,8 @@ document.addEventListener("DOMContentLoaded", () => {
   
   btnToday.addEventListener("click", () => {
     currentDate = new Date();
+    datePicker.value = "";
+
     renderMonthCalendar(); // se usi anche la vista mensile
     if (weekLayoutBtn.classList.contains("active")) {
       updateWeekView(currentDate);
@@ -2487,4 +2491,117 @@ document.querySelectorAll(".input-container input").forEach((input) => {
       this.previousElementSibling.classList.remove("active-label");
     }
   });
+});
+
+/*  -----------------------------------------------------------------------------------------------
+    gestione ricerca e correlati
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function() {
+  // Listener sull'input con debounce
+  searchInput.addEventListener("input", function () {
+    const currentQuery = this.value.toLowerCase().trim();
+    // Svuota immediatamente i risultati
+    resultsContainer.innerHTML = "";
+    
+    if (currentQuery.length < 2) return; // Attendi almeno 2 caratteri
+
+    clearTimeout(this.searchTimeout);
+    this.searchTimeout = setTimeout(() => {
+      // Controlla se il valore corrente corrisponde al query catturato
+      if (this.value.toLowerCase().trim() !== currentQuery) return;
+      
+      // Svuota nuovamente il contenitore per sicurezza
+      resultsContainer.innerHTML = "";
+      
+      fetch(`/search-appointments/?q=${encodeURIComponent(currentQuery)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            if (data.appointments.length === 0) {
+              resultsContainer.innerHTML = "<p>Nessun appuntamento trovato</p>";
+              return;
+            }
+            data.appointments.forEach(app => {
+              const item = document.createElement("div");
+              item.classList.add("search-result-item");
+              // Crea un riepilogo dell'appuntamento
+              item.innerHTML = `
+                <span>${app.tipologia_visita} - ${app.orario.slice(0,5)}</span>
+                <div>
+                  <button class="action-btn view" title="Visualizza">👁️</button>
+                  <button class="action-btn edit" title="Modifica">✏️</button>
+                </div>
+              `;
+              // Listener per visualizzare i dettagli
+              item.querySelector(".view").addEventListener("click", () => {
+                viewAppointmentDetails(app.id);
+                closeSearchModal();
+              });
+              // Listener per aprire la modale di modifica
+              item.querySelector(".edit").addEventListener("click", () => {
+                openAppointmentModal(app.id);
+                closeSearchModal();
+              });
+              resultsContainer.appendChild(item);
+              
+              // Applica un'animazione GSAP per far apparire l'elemento
+              gsap.from(item, {
+                opacity: 0,
+                y: 20,
+                duration: 0.3,
+                ease: "power2.out"
+              });
+            });
+          } else {
+            resultsContainer.innerHTML = "<p>Nessun appuntamento trovato</p>";
+          }
+        })
+        .catch(err => {
+          console.error("Errore durante la ricerca:", err);
+          resultsContainer.innerHTML = "<p>Errore nella ricerca</p>";
+        });
+    }, 300);
+  });
+
+  // Funzione per resettare l'input e i risultati
+  function resetSearchModal() {
+    searchInput.value = "";
+    resultsContainer.innerHTML = "";
+  }
+
+  // Funzione per chiudere la modale di ricerca con effetto GSAP
+  function closeSearchModal() {
+    gsap.to(searchModal, {
+      opacity: 0,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () => {
+        searchModal.classList.add("hidden-modal-search");
+        gsap.set(searchModal, { opacity: 1 });
+        resetSearchModal();
+      }
+    });
+  }
+
+  // Listener per chiudere la modale cliccando fuori (se non clicchi sul pulsante di ricerca)
+  document.addEventListener("click", (e) => {
+    if (!searchModal.classList.contains("hidden-modal-search") &&
+        !searchModal.contains(e.target) &&
+        !e.target.classList.contains("search-button")) {
+      closeSearchModal();
+    }
+  });
+
+  // Listener per il pulsante di apertura della modale (classe "search-button")
+  const searchButton = document.querySelector(".search-button");
+  if (searchButton) {
+    searchButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      resetSearchModal(); // Pulisce eventuali risultati precedenti
+      searchModal.classList.remove("hidden-modal-search");
+      // Effetto GSAP per l'animazione dell'input (es. espansione in larghezza)
+      gsap.fromTo(searchInput, { width: 0 }, { width: "300px", duration: 0.5, ease: "power2.out" });
+      searchInput.focus();
+    });
+  }
 });

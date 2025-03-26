@@ -99,6 +99,55 @@ input[type='time'] {
 }
 
 
+/* Button search e modale correlata */
+.hidden-modal-search {
+    display: none;
+}
+
+#searchInput{
+    border: none;
+    padding: 0 5px;
+    outline: none;
+}
+
+.search-modal {
+    position: fixed;
+    top: 10px;
+    /* oppure dove vuoi posizionarla */
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--card-color);
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    z-index: 2000;
+}
+
+.search-results {
+    margin-top: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.search-result-item {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search-result-item button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+    transition: all 0.2s ease-in-out;
+}
+
+.search-result-item button:hover {
+    scale: 1.2;
+}
 
 
 
@@ -575,7 +624,7 @@ input[type='time'] {
     background-color: #3a255d;
     position: relative;
     color: #fff;
-    padding: 7px;
+    padding: 0 7px;
     margin-top: 5px;
     font-size: 0.7rem;
     border-radius: 4px;

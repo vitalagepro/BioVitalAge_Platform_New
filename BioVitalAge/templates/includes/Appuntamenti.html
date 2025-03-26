@@ -89,7 +89,8 @@
                     <button id="dayLayout">Giorno</button>
                 </div>
 
-                <button type="button" id="button-tools" class="button button-view-all">
+                <!-- Button search -->
+                <button type="button" id="button-tools" class="button button-view-all search-button">
                     <span class="button__icon-wrapper">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
                             <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></circle>
@@ -102,6 +103,15 @@
                         </svg>
                     </span>
                 </button>
+
+                <!-- Modale di ricerca nascosta (inserisci questo blocco nella pagina, ad esempio in fondo al body) -->
+                <div id="searchModal" class="search-modal hidden-modal-search">
+                    <div class="search-modal-content">
+                        <input type="text" id="searchInput" placeholder="Cerca appuntamenti...">
+                        <div id="searchResults" class="search-results"></div>
+                    </div>
+                </div>
+  
     
 
                 <!-- Modale per aggiungere un paziente -->

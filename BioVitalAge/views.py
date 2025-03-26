@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from django.utils.dateparse import parse_date, parse_time
 from django.http import HttpResponse, JsonResponse
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import now
 from django.views import View
@@ -2442,6 +2443,19 @@ class DeleteAppointmentView(View):
             return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+# VIEW SEARCH APPOINTMENTS
+class SearchAppointmentsView(View):
+    def get(self, request):
+        query = request.GET.get("q", "").lower().strip()
+        if query:
+            # Puoi estendere il filtro a più campi, ad esempio:
+            appointments = Appointment.objects.filter(
+                Q(nome_paziente__icontains=query) | Q(tipologia_visita__icontains=query)
+            )
+            results = list(appointments.values("id", "nome_paziente", "tipologia_visita", "orario"))
+            return JsonResponse({"success": True, "appointments": results})
+        return JsonResponse({"success": False, "error": "Nessuna query fornita"})
 
 
 #VIEW CREATE PATIENT FROM SECOND MODAL
