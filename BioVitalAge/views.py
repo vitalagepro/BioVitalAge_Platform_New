@@ -2456,6 +2456,8 @@ class SearchAppointmentsView(View):
             results = list(appointments.values("id", "nome_paziente", "tipologia_visita", "orario"))
             return JsonResponse({"success": True, "appointments": results})
         return JsonResponse({"success": False, "error": "Nessuna query fornita"})
+    
+
 
 
 #VIEW CREATE PATIENT FROM SECOND MODAL

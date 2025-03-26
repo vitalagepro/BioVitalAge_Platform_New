@@ -415,18 +415,19 @@ function generateWeeklyAppointments(appointmentsByDate) {
                   appointmentBox.dataset.orario = orario;
                   appointmentBox.innerHTML = `<span style="flex: 1 1 0%">${tipologia_visita}</span><button class="delete-appointment" data-id="${id}">&times;</button>`;
 
-                  boxColorMapping.forEach((mapping) => {
-
-                    if (mapping.group === appointmentBox.dataset.tipologia) {
-                      appointmentBox.style.backgroundColor = mapping.color;
-                      if (mapping.text_color) {
-                        appointmentBox.style.color = mapping.text_color;
-                      }
-                    } else {
-                      console.log("Colori non assegnati per la tipologia:", mapping.group, appointmentBox.dataset.tipologia);
-                      appointmentBox.style.backgroundColor = "#3a255d";
+                  // Imposta il colore del box basato sul tipo di visita
+                  const mapping = boxColorMapping.find(m => 
+                    m.group.toLowerCase() === tipologia_visita.toLowerCase()
+                  );
+                  if (mapping) {
+                    appointmentBox.style.backgroundColor = mapping.color;
+                    if (mapping.text_color) {
+                      appointmentBox.style.color = mapping.text_color;
                     }
-                  })
+                  } else {
+                    console.log("Mapping non trovato per:", tipologia_visita);
+                    appointmentBox.style.backgroundColor = "#3a255d"; // colore di default
+                  }
   
                   // Aggiunge il box nella cella giusta
                   cell.appendChild(appointmentBox);
@@ -579,6 +580,20 @@ function generateDailyAppointments(appointmentsForDay) {
         appointmentBox.style.backgroundColor = "#3a255d";
       }
     })
+
+    // Applica il colore basandoti sul mapping (ricerca case-insensitive)
+    const mapping = boxColorMapping.find(m => 
+      m.group.toLowerCase() === appointment.tipologia_visita.toLowerCase()
+    );
+    if (mapping) {
+      appointmentBox.style.backgroundColor = mapping.color;
+      if (mapping.text_color) {
+        appointmentBox.style.color = mapping.text_color;
+      }
+    } else {
+      console.log("Mapping non trovato per:", appointment.tipologia_visita);
+      appointmentBox.style.backgroundColor = "#3a255d"; // colore di default
+    }
 
     // Inserisci il box nella cella
     targetCell.appendChild(appointmentBox);
@@ -975,17 +990,17 @@ function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
   appointmentBox.appendChild(deleteButton);
   appointmentsContainer.appendChild(appointmentBox);
 
-  boxColorMapping.forEach((mapping) => {
-
-    if (mapping.group === tipologia) {
-      appointmentBox.style.backgroundColor = mapping.color;
-      if (mapping.text_color) {
-        appointmentBox.style.color = mapping.text_color;
-      }
-    } else {
-      console.log("Tipologia non trovata:", tipologia, mapping.group);
+  // Applica il colore basandoti sul mapping dei gruppi
+  const mapping = boxColorMapping.find(m => m.group.toLowerCase() === tipologia.toLowerCase());
+  if (mapping) {
+    appointmentBox.style.backgroundColor = mapping.color;
+    if (mapping.text_color) {
+      appointmentBox.style.color = mapping.text_color;
     }
-  })
+  } else {
+    console.log("Mapping non trovato per:", tipologia);
+    appointmentBox.style.backgroundColor = "#3a255d";
+  }
 
   // Event listener per il drag
   appointmentBox.addEventListener("dragstart", (e) => {
