@@ -323,7 +323,7 @@
                         </div>
                     </div>
                 
-                    <div class="container-clock" style="gap: 13px;">
+                    <div class="container-clock" style="gap: 15px;">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
                             <circle class="progress-ring__progress" id="immuneClock" cx="70" cy="70" r="65"></circle>
@@ -331,23 +331,25 @@
 
                         <div class="percentage" id="immunePercentage" style="margin-top: 5px;"></div>
                      
-                        <div class="descrizione-clock" style="margin-bottom: -10px;">
+                        <div class="descrizione-clock" style="margin-bottom: -14px;">
                             <img src="{% static 'includes/images/sistema.png' %}" alt="">
                             <p style="max-width: 60%; font-size: 14px;">Salute del Sistema Immunitario</p>
                         </div>
                     </div>
                 
-                    <div class="container-clock">
+                    <div class="container-clock" style="gap: 15px;">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
                             <circle class="progress-ring__progress" id="muscleClock" cx="70" cy="70" r="65"></circle>
                         </svg>
 
-                        <div class="percentage" id="musclePercentage"></div>
+                        <div class="percentage" id="musclePercentage" style="margin-top: 5px;"></div>
                    
-                        <div class="descrizione-clock">
+                        <div class="descrizione-clock" style="margin-bottom: -14px;">
                             <img src="{% static 'includes/images/muscolo.png' %}" alt="">
-                            <p>Salute Muscolare</p>
+                            <a href="{% url 'valutazione_m_s' persona.id %}" style="width: 60%; text-decoration: none;"> 
+                                <p style="font-size: 14px;">Salute Muscolo-scheletrica</p>
+                            </a>
                         </div>
                     </div>
                 </div>

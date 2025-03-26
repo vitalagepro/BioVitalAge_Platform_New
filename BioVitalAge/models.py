@@ -505,8 +505,7 @@ class Resilienza(models.Model):
         on_delete=models.CASCADE,
         related_name='resilienza'
     )
-
-    # Esempio di dati clinici associati al referto
+ 
     hrv = models.FloatField(null=True, blank=True)
     cortisolo = models.FloatField(null=True, blank=True)
     ros = models.FloatField(null=True, blank=True)
@@ -523,3 +522,67 @@ class Resilienza(models.Model):
 
     def __str__(self):
         return f"Referto - {self.paziente.name} {self.paziente.surname}"
+
+
+
+class ValutazioneMS(models.Model):
+    paziente = models.ForeignKey(
+        TabellaPazienti,
+        on_delete=models.CASCADE,
+        related_name='valutazioneMS'
+    )   
+
+     # Attività fisica
+    frequenza_a_f = models.CharField(max_length=50, blank=True, null=True)
+    tipo_a_f = models.CharField(max_length=100, blank=True, null=True)
+    stile_vita = models.CharField(max_length=100, blank=True, null=True)
+
+    # Anamnesi muscolo-scheletrica
+    terapie_inf = models.CharField(max_length=255, blank=True, null=True)
+    diagnosi_t = models.CharField(max_length=255, blank=True, null=True)
+    sintomi_t = models.TextField(blank=True, null=True)
+
+    # Esame Generale
+    palpazione = models.CharField(max_length=255, blank=True, null=True)
+    osservazione = models.CharField(max_length=255, blank=True, null=True)
+    m_attiva = models.CharField(max_length=255, blank=True, null=True)
+    m_passiva = models.CharField(max_length=255, blank=True, null=True)
+    dolorabilità = models.CharField(max_length=255, blank=True, null=True)
+    scala_v_a = models.CharField(max_length=50, blank=True, null=True)
+
+    # Esame muscolo-scheletrico
+    mo_attivo = models.CharField(max_length=255, blank=True, null=True)
+    mo_a_limitazioni = models.CharField(max_length=255, blank=True, null=True)
+    mo_passivo = models.CharField(max_length=255, blank=True, null=True)
+    mo_p_limitazioni = models.CharField(max_length=255, blank=True, null=True)
+    comparazioni_m = models.TextField(blank=True, null=True)
+    circ_polp = models.CharField(max_length=50, blank=True, null=True)
+    tono_m = models.CharField(max_length=50, blank=True, null=True)
+    scala_ashworth = models.CharField(max_length=100, blank=True, null=True)
+
+    # Esame posturale
+    v_frontale = models.CharField(max_length=255, blank=True, null=True)
+    v_laterale = models.CharField(max_length=255, blank=True, null=True)
+    p_testa = models.CharField(max_length=100, blank=True, null=True)
+    spalle = models.CharField(max_length=100, blank=True, null=True)
+    ombelico = models.CharField(max_length=100, blank=True, null=True)
+    a_inferiori = models.CharField(max_length=100, blank=True, null=True)
+    piedi = models.CharField(max_length=100, blank=True, null=True)
+    colonna_v = models.CharField(max_length=100, blank=True, null=True)
+    curvatura_c = models.CharField(max_length=100, blank=True, null=True)
+    curvatura_d = models.CharField(max_length=100, blank=True, null=True)
+    curvatura_l = models.CharField(max_length=100, blank=True, null=True)
+    posizione_b = models.CharField(max_length=100, blank=True, null=True)
+    equilibrio_s = models.CharField(max_length=100, blank=True, null=True)
+    equilibrio_d = models.CharField(max_length=100, blank=True, null=True)
+    p_dolenti = models.CharField(max_length=255, blank=True, null=True)
+
+    # Valutazione complessiva funzionale
+    gravita_disfunzione_posturale = models.CharField(max_length=100, blank=True, null=True)
+    rischio_infortuni = models.CharField(max_length=100, blank=True, null=True)
+    suggerimenti = models.CharField(max_length=255, blank=True, null=True)
+    considerazioni_finali = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"Referto - {self.paziente.name} {self.paziente.surname}"
+
