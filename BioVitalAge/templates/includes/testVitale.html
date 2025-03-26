@@ -37,6 +37,31 @@
     {% include 'components/navBarPatient.html' %}
 
 
+    {% if successo %}
+            
+        <div class="success_message" id="successMessage">
+            <p>Dati salvati correttamente!</p>
+            <button id="closeSuccess">x</button>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const closeBtn = document.getElementById('closeSuccess');
+                const successDiv = document.getElementById('successMessage');
+                
+                closeBtn.addEventListener('click', function () {
+                    successDiv.style.display = 'none';
+                });
+                
+                    setTimeout(function () {
+                    successDiv.style.display = 'none';
+                }, 4000); 
+            });
+        </script>
+
+    {% endif %}
+
+
     <main>
         <!-- MENU TRACE -->
         <div class="main-title-nav">
@@ -1304,7 +1329,6 @@
                                 <p class="subtitle">Mai</p>
                                 <p class="subtitle">A volte</p>
                                 <p class="subtitle">Spesso/Con ausili/Inabile</p>
-
                             </div>
 
                             <div class="tableAnswer-container" id="secondTypeTable">
