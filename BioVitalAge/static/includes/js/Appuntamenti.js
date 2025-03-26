@@ -599,16 +599,6 @@ function generateDailyAppointments(appointmentsForDay) {
 }
 
 
-
-// function loadAppointmentsForDailyView() {
-//   // Supponiamo che currentDate sia la data corrente selezionata
-//   const formattedDate = currentDate.toISOString().split("T")[0];
-//   // Ottieni gli appuntamenti per quel giorno
-//   const appointmentsForDay = appointmentsData.appointments[formattedDate] || [];
-//   generateDailyAppointments(appointmentsForDay);
-// }
-
-
 // Funzione per abilitare il drag & drop sezione week
 function addDragAndDropEvents(appointmentBox) {
   appointmentBox.addEventListener("dragstart", (e) => {
@@ -841,13 +831,22 @@ function loadAppointmentsForWeeklyView() {
 }
 
 /* LOAD APPOINTMENTS FOR DAILY VIEW */
+
+// Funzione per formattare la data in YYYY-MM-DD
+function getLocalDateString(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function loadAppointmentsForDailyView() {
   fetch("/get-appointments/")
     .then(response => response.json())
     .then(data => {
       if (data.success) {
         appointmentsData = data; // Aggiorna i dati globali
-        const formattedDate = currentDate.toISOString().split("T")[0];
+        const formattedDate = getLocalDateString(currentDate);
         const dayAppointments = data.appointments[formattedDate] || [];
         console.log("Appuntamenti per il giorno", formattedDate, dayAppointments);
         generateDailyAppointments(dayAppointments);

@@ -6,276 +6,159 @@ document.addEventListener("DOMContentLoaded", () => {
   const sidebarContent = document.getElementById("sidebar-content");
   const closeSidebar = document.getElementById("closeSidebar");
   const bgSidebar = document.querySelector(".bg-sidebar");
-
-  // Gestisci il click sulle icone
+  
   document.querySelectorAll(".sidebar-trigger").forEach((trigger) => {
-    trigger.addEventListener("click", (event) => {
-      event.preventDefault();
-      const section = trigger.getAttribute("data-section");
+      trigger.addEventListener("click", (event) => {
+          event.preventDefault();
+          const section = trigger.getAttribute("data-section");
+          sidebarTitle.textContent = section;
+          
+          switch (section) {
+            case "Notifiche":
+              sidebarContent.style.padding = "0px";
+              sidebarContent.innerHTML = notifications
+                .map(
+                  (notifica) => `
+                      <div class="alert alert-${notifica.type} notification">
+                          ${notifica.message} <button type="button" class="btn-close" onclick="removeNotification(this.parentElement)"></button>
+                      </div>
+                  `
+                )
+                .join("");
+              gsap.to(".notification", {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "power2.out",
+                stagger: 0.2,
+              });
+              break;
+            case "Email":
+              sidebarContent.style.padding = "0px";
+              sidebarContent.innerHTML = emails
+                .map(
+                  (email) => `
+                      <div class="alert alert-info notification">
+                          <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" style="text-decoration: none; color: inherit;">
+                              ${email.subject} - ${email.sender}
+                          </a>
+                      </div>
+                  `
+                )
+                .join("");
+              gsap.to(".notification", {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "power2.out",
+                stagger: 0.2,
+              });
+              break;
+            case "Update":
+              sidebarContent.style.padding = "0px";
+              sidebarContent.innerHTML = updates
+                .map(
+                  (update) => `
+                      <div class="alert alert-warning notification">
+                          ${update.version} - ${update.description}
+                      </div>
+                  `
+                )
+                .join("");
+              gsap.to(".notification", {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "power2.out",
+                stagger: 0.2,
+              });
+              break;
+            case "Configurazione":
+              sidebarContent.style.padding = "0px";
+              sidebarContent.innerHTML = configurations
+                .map(
+                  (config) => `
+                        <div class="alert alert-secondary notification">
+                            ${config.setting} - ${config.value}
+                        </div>
+                    `
+                )
+                .join("");
+              gsap.to(".notification", {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "power2.out",
+                stagger: 0.2,
+              });
+              break;
+            case "Funzionalità":
+              sidebarContent.style.padding = "0px";
+              sidebarContent.innerHTML = features
+                .map(
+                  (feature) => `
+                        <div class="alert alert-success notification">
+                            ${feature.name} - ${feature.description}
+                        </div>
+                    `
+                )
+                .join("");
+              gsap.to(".notification", {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "power2.out",
+                stagger: 0.2,
+              });
+              break;
+            default:
+              sidebarContent.style.padding = "0px";
+              sidebarContent.innerHTML = "<p>Contenuto non disponibile.</p>";
+          }
 
-      // Aggiorna contenuto della sidebar in base alla sezione
-      sidebarTitle.textContent = section;
-      switch (section) {
-        case "Notifiche":
-          sidebarContent.innerHTML = `
-            <div id="notification-list">
-              <h3 class="title-notice">Ultime Novità</h3>
-              <a href="#" class="blog-link" title="View Blog">
-                <div class="blog-container">
-                  <div class="container_img">
-                    <img
-                      src="../../static/includes/images/search-patients-item.webp"
-                      alt="img-blog"
-                    />
-                  </div>
-                  <div>
-                    <h3 class="blog-title">Blog 1</h3>
-                    <p class="blog-text">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Adipisci at veniam eum quo alias suscipit corrupti,
-                      commodi eveniet porro nulla magni a ipsum voluptate, totam
-                      rerum? Ducimus ipsum quibusdam quam.
-                    </p>
-                  </div>
-                </div>
-              </a>
-              <a href="#" class="blog-link" title="View Blog">
-                <div class="blog-container">
-                  <div class="container_img">
-                    <img
-                      src="../../static/includes/images/search-patients-item.webp"
-                      alt="img-blog"
-                    />
-                  </div>
-                  <div>
-                    <h3 class="blog-title">Blog 2</h3>
-                    <p class="blog-text">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Adipisci at veniam eum quo alias suscipit corrupti,
-                      commodi eveniet porro nulla magni a ipsum voluptate, totam
-                      rerum? Ducimus ipsum quibusdam quam.
-                    </p>
-                  </div>
-                </div>
-              </a>
-              <a href="#" class="blog-link" title="View Blog">
-                <div class="blog-container">
-                  <div class="container_img">
-                    <img
-                      src="../../static/includes/images/search-patients-item.webp"
-                      alt="img-blog"
-                    />
-                  </div>
-                  <div>
-                    <h3 class="blog-title">Blog 3</h3>
-                    <p class="blog-text">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Adipisci at veniam eum quo alias suscipit corrupti,
-                      commodi eveniet porro nulla magni a ipsum voluptate, totam
-                      rerum? Ducimus ipsum quibusdam quam.
-                    </p>
-                  </div>
-                </div>
-              </a>
-              <h3 class="title-notice">Altre Novità</h3>
-              <a href="#" class="blog-link" title="View Blog">
-                <div class="blog-container">
-                  <div class="container_img">
-                    <img
-                      src="../../static/includes/images/search-patients-item.webp"
-                      alt="img-blog"
-                    />
-                  </div>
-                  <div>
-                    <h3 class="blog-title">Blog 1</h3>
-                    <p class="blog-text">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Adipisci at veniam eum quo alias suscipit corrupti,
-                      commodi eveniet porro nulla magni a ipsum voluptate, totam
-                      rerum? Ducimus ipsum quibusdam quam.
-                    </p>
-                  </div>
-                </div>
-              </a>
-              <a href="#" class="blog-link" title="View Blog">
-                <div class="blog-container">
-                  <div class="container_img">
-                    <img
-                      src="../../static/includes/images/search-patients-item.webp"
-                      alt="img-blog"
-                    />
-                  </div>
-                  <div>
-                    <h3 class="blog-title">Blog 2</h3>
-                    <p class="blog-text">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Adipisci at veniam eum quo alias suscipit corrupti,
-                      commodi eveniet porro nulla magni a ipsum voluptate, totam
-                      rerum? Ducimus ipsum quibusdam quam.
-                    </p>
-                  </div>
-                </div>
-              </a>
-              <a href="#" class="blog-link" title="View Blog">
-                <div class="blog-container">
-                  <div class="container_img">
-                    <img
-                      src="../../static/includes/images/search-patients-item.webp"
-                      alt="img-blog"
-                    />
-                  </div>
-                  <div>
-                    <h3 class="blog-title">Blog 3</h3>
-                    <p class="blog-text">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Adipisci at veniam eum quo alias suscipit corrupti,
-                      commodi eveniet porro nulla magni a ipsum voluptate, totam
-                      rerum? Ducimus ipsum quibusdam quam.
-                    </p>
-                  </div>
-                </div>
-              </a>
-              <a href="#" class="blog-link" title="View Blog">
-                <div class="blog-container">
-                  <div class="container_img">
-                    <img
-                      src="../../static/includes/images/search-patients-item.webp"
-                      alt="img-blog"
-                    />
-                  </div>
-                  <div>
-                    <h3 class="blog-title">Blog 1</h3>
-                    <p class="blog-text">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Adipisci at veniam eum quo alias suscipit corrupti,
-                      commodi eveniet porro nulla magni a ipsum voluptate, totam
-                      rerum? Ducimus ipsum quibusdam quam.
-                    </p>
-                  </div>
-                </div>
-              </a>
-              <a href="#" class="blog-link" title="View Blog">
-                <div class="blog-container">
-                  <div class="container_img">
-                    <img
-                      src="../../static/includes/images/search-patients-item.webp"
-                      alt="img-blog"
-                    />
-                  </div>
-                  <div>
-                    <h3 class="blog-title">Blog 2</h3>
-                    <p class="blog-text">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Adipisci at veniam eum quo alias suscipit corrupti,
-                      commodi eveniet porro nulla magni a ipsum voluptate, totam
-                      rerum? Ducimus ipsum quibusdam quam.
-                    </p>
-                  </div>
-                </div>
-              </a>
-              <a href="#" class="blog-link" title="View Blog">
-                <div class="blog-container">
-                  <div class="container_img">
-                    <img
-                      src="../../static/includes/images/search-patients-item.webp"
-                      alt="img-blog"
-                    />
-                  </div>
-                  <div>
-                    <h3 class="blog-title">Blog 3</h3>
-                    <p class="blog-text">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Adipisci at veniam eum quo alias suscipit corrupti,
-                      commodi eveniet porro nulla magni a ipsum voluptate, totam
-                      rerum? Ducimus ipsum quibusdam quam.
-                    </p>
-                  </div>
-                </div>
-              </a>
-              <a href="#" class="blog-link" title="View Blog">
-                <div class="blog-container">
-                  <div class="container_img">
-                    <img
-                      src="../../static/includes/images/search-patients-item.webp"
-                      alt="img-blog"
-                    />
-                  </div>
-                  <div>
-                    <h3 class="blog-title">Blog 1</h3>
-                    <p class="blog-text">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Adipisci at veniam eum quo alias suscipit corrupti,
-                      commodi eveniet porro nulla magni a ipsum voluptate, totam
-                      rerum? Ducimus ipsum quibusdam quam.
-                    </p>
-                  </div>
-                </div>
-              </a>
-              <a href="#" class="blog-link" title="View Blog">
-                <div class="blog-container">
-                  <div class="container_img">
-                    <img
-                      src="../../static/includes/images/search-patients-item.webp"
-                      alt="img-blog"
-                    />
-                  </div>
-                  <div>
-                    <h3 class="blog-title">Blog 2</h3>
-                    <p class="blog-text">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Adipisci at veniam eum quo alias suscipit corrupti,
-                      commodi eveniet porro nulla magni a ipsum voluptate, totam
-                      rerum? Ducimus ipsum quibusdam quam.
-                    </p>
-                  </div>
-                </div>
-              </a>
-              <a href="#" class="blog-link" title="View Blog">
-                <div class="blog-container">
-                  <div class="container_img">
-                    <img
-                      src="../../static/includes/images/search-patients-item.webp"
-                      alt="img-blog"
-                    />
-                  </div>
-                  <div>
-                    <h3 class="blog-title">Blog 3</h3>
-                    <p class="blog-text">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Adipisci at veniam eum quo alias suscipit corrupti,
-                      commodi eveniet porro nulla magni a ipsum voluptate, totam
-                      rerum? Ducimus ipsum quibusdam quam.
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </div>
-            `;
-          break;
-        case "Email":
-          sidebarContent.innerHTML = "<p>Qui trovi tutte le email.</p>";
-          break;
-        case "Update":
-          sidebarContent.innerHTML = "<p>Qui trovi gli aggiornamenti.</p>";
-          break;
-        default:
-          sidebarContent.innerHTML = "<p>Contenuto non disponibile.</p>";
-      }
-
-      // Mostra la sidebar
-      document.body.classList.add("visible");
-    });
+          document.body.classList.add("visible");
+      });
   });
 
-  // Chiudi la sidebar
   bgSidebar.addEventListener("click", () => {
-    document.body.classList.remove("visible");
+      document.body.classList.remove("visible");
   });
-
   closeSidebar.addEventListener("click", () => {
-    document.body.classList.remove("visible");
+      document.body.classList.remove("visible");
   });
 });
+
+const notifications = [
+  { message: "Nuovo referto disponibile", type: "success" },
+  { message: "Appuntamento aggiornato", type: "info" },
+  { message: "Errore nella trasmissione dati", type: "danger" },
+  { message: "Promemoria: visita in scadenza", type: "warning" }
+];
+
+const emails = [
+  { subject: "Risultati laboratorio", sender: "Clinica Roma" },
+  { subject: "Nuova richiesta prenotazione", sender: "Segreteria" }
+];
+
+const updates = [
+  { version: "v1.2.3", description: "Correzione bug e miglioramenti UI" },
+  { version: "v1.3.0", description: "Nuove funzionalità di gestione appuntamenti" }
+];
+
+const configurations = [
+  { setting: "Lingua", value: "Italiano" },
+  { setting: "Tema", value: "Chiaro" }
+];
+
+const features = [
+  { name: "Gestione Appuntamenti", description: "Permette di pianificare e gestire appuntamenti con i pazienti." },
+  { name: "Monitoraggio Referti", description: "Consente di tenere traccia dei referti e delle analisi di laboratorio." }
+];
+
+function removeNotification(notification) {
+  gsap.to(notification, { opacity: 0, y: -20, duration: 0.5, ease: "power2.in", onComplete: () => notification.remove() });
+}
+
 
 /*  -----------------------------------------------------------------------------------------------
   Graphs and Charts

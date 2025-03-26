@@ -93,6 +93,7 @@ class HomePageRender(View):
                         
                             # Ottieni il referto più recente per ogni paziente
                             ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
+                            appuntamenti = Appointment.objects.all().order_by('-id')[:4]
 
                             # Ottieni i dati estesi associati al referto più recente di ciascun paziente
                             datiEstesi = DatiEstesiReferti.objects.filter(referto=Subquery(ultimo_referto.values('id')[:1]))
@@ -101,6 +102,7 @@ class HomePageRender(View):
                                 context = {
                                     'persone': persone,
                                     'dottore': dottore,
+                                    'appuntamenti': appuntamenti,
                                     'dati_estesi': datiEstesi,
                                 }
 
@@ -108,6 +110,7 @@ class HomePageRender(View):
                                 context = {
                                     'persone': persone,
                                     'dottore': dottore,
+                                    'appuntamenti': appuntamenti,
                                     'show_disclaimer': True
                                 }
 
