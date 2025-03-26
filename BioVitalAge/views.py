@@ -2451,7 +2451,7 @@ class SearchAppointmentsView(View):
         if query:
             # Puoi estendere il filtro a più campi, ad esempio:
             appointments = Appointment.objects.filter(
-                Q(nome_paziente__icontains=query) | Q(tipologia_visita__icontains=query)
+                Q(nome_paziente__icontains=query) | Q(tipologia_visita__icontains=query) | Q(orario__icontains=query)
             )
             results = list(appointments.values("id", "nome_paziente", "tipologia_visita", "orario"))
             return JsonResponse({"success": True, "appointments": results})

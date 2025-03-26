@@ -1620,6 +1620,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // -----------------------------
   // NAVIGAZIONE CALENDARIO
   // -----------------------------
+    
+  // Funzione per aggiornare il testo del pulsante "Oggi"
+  function updateTodayButtonText() {
+    if (dayLayoutBtn && dayLayoutBtn.classList.contains("active")) {
+      btnToday.textContent = "Oggi";
+    } else if (weekLayoutBtn && weekLayoutBtn.classList.contains("active")) {
+      btnToday.textContent = "Questa Settimana";
+    } else {
+      btnToday.textContent = "Questo Mese";
+    }
+  }
+
   btnPrev.addEventListener("click", () => {
     if (dayLayoutBtn && dayLayoutBtn.classList.contains("active")) {
       // Se siamo in vista "Giorno", sottrai 1 giorno
@@ -1657,7 +1669,7 @@ document.addEventListener("DOMContentLoaded", () => {
       loadAppointments();
     }
   });
-  
+
   btnToday.addEventListener("click", () => {
     currentDate = new Date();
     datePicker.value = "";
@@ -1678,6 +1690,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   datePicker.addEventListener("change", (e) => {
     const val = e.target.value;
+    
     if (val) {
       const [yyyy, mm, dd] = val.split("-");
       currentDate = new Date(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd));
@@ -1710,6 +1723,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     currentDataLabel.textContent = formatDateLabel(currentDate);
 
+    updateTodayButtonText();
     renderMonthCalendar();
     loadAppointments();
   });
@@ -1728,6 +1742,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     currentDataLabel.textContent = formatDateLabel(currentDate);
 
+    updateTodayButtonText();
     // Ricarica gli appuntamenti nella vista settimanale
     loadAppointmentsForWeeklyView();
   });
@@ -1747,6 +1762,7 @@ document.addEventListener("DOMContentLoaded", () => {
     dayHead.style.display = "block";
 
     // Aggiorna il <p> "currentDate" con la data formattata
+    updateTodayButtonText();
     currentDataLabel.textContent = formatDayLabel(currentDate);
 
     // Carica gli appuntamenti per il giorno corrente
@@ -2604,4 +2620,85 @@ document.addEventListener("DOMContentLoaded", function() {
       searchInput.focus();
     });
   }
+});
+
+
+/*  -----------------------------------------------------------------------------------------------
+  GESTIONE RENDERIZZAMENTO SU GOOGLE CALENDAR
+--------------------------------------------------------------------------------------------------- */
+// Converte una data dal formato "DD/MM/YYYY" a "YYYY-MM-DD"
+function parseLocalDate(dateStr) {
+  const parts = dateStr.split("/");
+  if (parts.length === 3) {
+    return `${parts[2]}-${parts[1].padStart(2, "0")}-${parts[0].padStart(2, "0")}`;
+  }
+  return dateStr;
+}
+
+function addToGoogleCalendar(appointment) {
+  // Se la data contiene "/" assumiamo formato "DD/MM/YYYY" e convertiamola
+  let formattedDate = appointment.data;
+  if (appointment.data.includes("/")) {
+    formattedDate = parseLocalDate(appointment.data);
+  }
+  
+  // Combina la data e l'orario per creare un oggetto Date
+  const startDateTime = new Date(`${formattedDate}T${appointment.orario}`);
+  
+  // Imposta una durata (default 30 minuti)
+  const duration = parseInt(appointment.durata) || 30;
+  const endDateTime = new Date(startDateTime.getTime() + duration * 60000);
+  
+  // Funzione helper per formattare la data nel formato richiesto da Google Calendar: YYYYMMDDTHHmmss
+  function formatDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${year}${month}${day}T${hours}${minutes}${seconds}`;
+  }
+  
+  const startStr = formatDateTime(startDateTime);
+  const endStr = formatDateTime(endDateTime);
+  
+  // Costruisci il titolo (ad esempio: "Tipologia con Nome Paziente")
+  const title = encodeURIComponent(`${appointment.tipologia_visita} con ${appointment.nome_paziente || ''}`);
+  // Note come dettagli
+  const details = encodeURIComponent(appointment.note || '');
+  // Posizione forzata
+  const location = encodeURIComponent("Via Nicola Tridente, 22, 70125 Bari BA, Italia");
+  
+  // Imposta il fuso orario (ad es. Europe/Rome)
+  const ctz = encodeURIComponent("Europe/Rome");
+  
+  // Costruisci la URL per Google Calendar
+  const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStr}/${endStr}&details=${details}&location=${location}&ctz=${ctz}`;
+  return calendarUrl;
+}
+
+// Listener per il pulsante di aggiunta a Google Calendar
+document.getElementById("googleCalendarBtn").addEventListener("click", function() {
+  // Raccogli i dati dall'interfaccia
+  // Per la data, controlla il contenuto del <span id="date-appointment"> e rimuovi virgole/spazi
+  const dateElem = document.getElementById("date-appointment");
+  let rawDate = dateElem.textContent.trim(); // es. ", 27/03/2025,"
+  rawDate = rawDate.replace(/,/g, "").trim();   // diventa "27/03/2025"
+  
+  // Raccogli gli altri dati
+  const appointment = {
+    // Usa il valore che hai ottenuto
+    data: rawDate, // atteso in formato "DD/MM/YYYY"
+    orario: document.getElementById("time-appointment").textContent.trim(), // es. "09:00"
+    tipologia_visita: document.getElementById("tipologia_visita").value,
+    durata: document.getElementById("time").value, // durata in minuti
+    // Se il select contiene "nome|id", prendi solo il nome
+    nome_paziente: document.getElementById("paziente-select").value.split("|")[0],
+    note: document.getElementById("note").value,
+    numero_studio: document.getElementById("studio").value
+  };
+  
+  const calendarUrl = addToGoogleCalendar(appointment);
+  window.open(calendarUrl, '_blank');
 });
