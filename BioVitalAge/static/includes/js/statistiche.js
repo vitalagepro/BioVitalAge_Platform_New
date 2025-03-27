@@ -143,7 +143,8 @@ const emails = [
 const updates = [
   { version: "v3.15.1", description: "Correzione bug e miglioramenti UI Home Page" },
   { version: "v3.15.1", description: "Aggiunta numeri dinamici nelle caselle oppurtune della Home Page" },
-  { version: "v3.15.1", description: "Sezione appuntamenti completata" }
+  { version: "v3.15.1", description: "Sezione appuntamenti completata" },
+  { version: "v3.15.1", description: "..." }
 ];
 
 const configurations = [
@@ -152,8 +153,10 @@ const configurations = [
 ];
 
 const features = [
-  { name: "Gestione Appuntamenti", description: "Permette di pianificare e gestire appuntamenti con i pazienti." },
-  { name: "Monitoraggio Referti", description: "Consente di tenere traccia dei referti e delle analisi di laboratorio." }
+  { name: "Sezione Appuntamenti", description: "Permette di pianificare e gestire appuntamenti con i pazienti e anche di aggiungere, eventualmente, l'appuntamento su Google Calendar" },
+  { name: "Sezione Promemoria", description: "Permette di aggiungere dei promemoria e ti consente di visualizzare tutti gli appuntamenti in scadenza e quelli più importanti" },
+  { name: "Sezione Pazienti", description: "Mostra una barra di ricerca che ti consente di ricercare il paziente per Nome, Cognome, Dottore Associato e Codice Fiscale" },
+  { name: "Sezione Aggiungi Pazienti", description: "Ti consente di aggiungere dei pazienti completando i campi con i dati necessari" },
 ];
 
 function removeNotification(notification) {

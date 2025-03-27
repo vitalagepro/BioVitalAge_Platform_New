@@ -172,163 +172,233 @@ document.addEventListener("DOMContentLoaded", function () {
 /*  -----------------------------------------------------------------------------------------------
   JS SIDEBAR
 --------------------------------------------------------------------------------------------------- */
+// 🔹 Gestisci il click sulle icone
 document.addEventListener("DOMContentLoaded", () => {
   const sidebarTitle = document.getElementById("sidebar-title");
   const sidebarContent = document.getElementById("sidebar-content");
   const closeSidebar = document.getElementById("closeSidebar");
   const bgSidebar = document.querySelector(".bg-sidebar");
-  
-  document.querySelectorAll(".sidebar-trigger").forEach((trigger) => {
-      trigger.addEventListener("click", (event) => {
-          event.preventDefault();
-          const section = trigger.getAttribute("data-section");
-          sidebarTitle.textContent = section;
-          
-          switch (section) {
-            case "Notifiche":
-              sidebarContent.style.padding = "0px";
-              sidebarContent.innerHTML = notifications
-                .map(
-                  (notifica) => `
-                      <div class="alert alert-${notifica.type} notification">
-                          ${notifica.message} <button type="button" class="btn-close" onclick="removeNotification(this.parentElement)"></button>
-                      </div>
-                  `
-                )
-                .join("");
-              gsap.to(".notification", {
-                opacity: 1,
-                y: 0,
-                duration: 0.5,
-                ease: "power2.out",
-                stagger: 0.2,
-              });
-              break;
-            case "Email":
-              sidebarContent.style.padding = "0px";
-              sidebarContent.innerHTML = emails
-                .map(
-                  (email) => `
-                      <div class="alert alert-info notification">
-                          <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" style="text-decoration: none; color: inherit;">
-                              ${email.subject} - ${email.sender}
-                          </a>
-                      </div>
-                  `
-                )
-                .join("");
-              gsap.to(".notification", {
-                opacity: 1,
-                y: 0,
-                duration: 0.5,
-                ease: "power2.out",
-                stagger: 0.2,
-              });
-              break;
-            case "Update":
-              sidebarContent.style.padding = "0px";
-              sidebarContent.innerHTML = updates
-                .map(
-                  (update) => `
-                      <div class="alert alert-warning notification">
-                          ${update.version} - ${update.description}
-                      </div>
-                  `
-                )
-                .join("");
-              gsap.to(".notification", {
-                opacity: 1,
-                y: 0,
-                duration: 0.5,
-                ease: "power2.out",
-                stagger: 0.2,
-              });
-              break;
-            case "Configurazione":
-              sidebarContent.style.padding = "0px";
-              sidebarContent.innerHTML = configurations
-                .map(
-                  (config) => `
-                        <div class="alert alert-secondary notification">
-                            ${config.setting} - ${config.value}
-                        </div>
-                    `
-                )
-                .join("");
-              gsap.to(".notification", {
-                opacity: 1,
-                y: 0,
-                duration: 0.5,
-                ease: "power2.out",
-                stagger: 0.2,
-              });
-              break;
-            case "Funzionalità":
-              sidebarContent.style.padding = "0px";
-              sidebarContent.innerHTML = features
-                .map(
-                  (feature) => `
-                        <div class="alert alert-success notification">
-                            ${feature.name} - ${feature.description}
-                        </div>
-                    `
-                )
-                .join("");
-              gsap.to(".notification", {
-                opacity: 1,
-                y: 0,
-                duration: 0.5,
-                ease: "power2.out",
-                stagger: 0.2,
-              });
-              break;
-            default:
-              sidebarContent.style.padding = "0px";
-              sidebarContent.innerHTML = "<p>Contenuto non disponibile.</p>";
-          }
 
-          document.body.classList.add("visible");
-      });
+  // Aggiungi badge per Notifiche ed Email
+  document.querySelectorAll(".sidebar-trigger").forEach((trigger) => {
+    const section = trigger.getAttribute("data-section");
+    if (section === "Notifiche") {
+      let badge = document.createElement("span");
+      badge.classList.add("badge-count");
+      badge.textContent = notifications.length; // iniziale, basato sulla lunghezza dell'array
+      trigger.appendChild(badge);
+    } else if (section === "Email") {
+      let badge = document.createElement("span");
+      badge.classList.add("badge-count");
+      badge.textContent = emails.length;
+      trigger.appendChild(badge);
+    }
+
+    // Aggiungi il listener per il click (come già presente nel tuo codice)
+    trigger.addEventListener("click", (event) => {
+      event.preventDefault();
+      const section = trigger.getAttribute("data-section");
+      sidebarTitle.textContent = section;
+
+      switch (section) {
+        case "Notifiche":
+          sidebarContent.style.padding = "0px";
+          sidebarContent.innerHTML = notifications
+            .map(
+              (notifica, index) => `
+                  <div class="alert alert-${notifica.type} notification" data-index="${index}">
+                      ${notifica.message} 
+                      <button type="button" class="btn-close" onclick="removeNotification(this.parentElement)"></button>
+                  </div>
+              `
+            )
+            .join("");
+          gsap.to(".notification", {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: "power2.out",
+            stagger: 0.2,
+          });
+          break;
+        case "Email":
+          sidebarContent.style.padding = "0px";
+          sidebarContent.innerHTML = emails
+            .map(
+              (email) => `
+                  <div class="alert alert-info notification">
+                      <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" style="text-decoration: none; color: inherit;">
+                          ${email.subject} - ${email.sender}
+                      </a>
+                  </div>
+              `
+            )
+            .join("");
+          gsap.to(".notification", {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: "power2.out",
+            stagger: 0.2,
+          });
+          break;
+        case "Update":
+          sidebarContent.style.padding = "0px";
+          sidebarContent.innerHTML = updates
+            .map(
+              (update, index) => `
+                    <div class="alert alert-warning notification" data-index="${index}">
+                        ${update.version} - ${update.description}
+                    </div>
+                `
+            )
+            .join("");
+          gsap.to(".notification", {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: "power2.out",
+            stagger: 0.2,
+          });
+          break;
+        case "Configurazione":
+          sidebarContent.style.padding = "0px";
+          sidebarContent.innerHTML = configurations
+            .map(
+              (config, index) => `
+                      <div class="alert alert-secondary notification" data-index="${index}">
+                          ${config.setting} - ${config.value}
+                      </div>
+                  `
+            )
+            .join("");
+          gsap.to(".notification", {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: "power2.out",
+            stagger: 0.2,
+          });
+          break;
+        case "Funzionalità":
+          sidebarContent.style.padding = "0px";
+          sidebarContent.innerHTML = features
+            .map(
+              (feature, index) => `
+                      <div class="alert alert-success notification" data-index="${index}">
+                          ${feature.name} - ${feature.description}
+                      </div>
+                  `
+            )
+            .join("");
+          gsap.to(".notification", {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: "power2.out",
+            stagger: 0.2,
+          });
+          break;
+        default:
+          sidebarContent.style.padding = "0px";
+          sidebarContent.innerHTML = "<p>Contenuto non disponibile.</p>";
+      }
+      document.body.classList.add("visible");
+    });
   });
 
   bgSidebar.addEventListener("click", () => {
-      document.body.classList.remove("visible");
+    document.body.classList.remove("visible");
   });
   closeSidebar.addEventListener("click", () => {
-      document.body.classList.remove("visible");
+    document.body.classList.remove("visible");
   });
 });
 
-const notifications = [
+// Oggetto con le notifiche statiche
+let notifications = [
   { message: "Nuovo referto disponibile", type: "success" },
   { message: "Appuntamento aggiornato", type: "info" },
   { message: "Errore nella trasmissione dati", type: "danger" },
   { message: "Promemoria: visita in scadenza", type: "warning" }
 ];
 
-const emails = [
+// Oggetto con le email statiche
+let emails = [
   { subject: "Risultati laboratorio", sender: "Clinica Roma" },
   { subject: "Nuova richiesta prenotazione", sender: "Segreteria" }
 ];
 
+// Oggetto con le aggiornamenti statici
 const updates = [
   { version: "v3.15.1", description: "Correzione bug e miglioramenti UI Home Page" },
   { version: "v3.15.1", description: "Aggiunta numeri dinamici nelle caselle oppurtune della Home Page" },
-  { version: "v3.15.1", description: "Sezione appuntamenti completata" }
+  { version: "v3.15.1", description: "Sezione appuntamenti completata" },
+  { version: "v3.15.1", description: "..." }
 ];
 
+// Oggetto con le configurazioni statiche
 const configurations = [
   { setting: "Lingua", value: "Italiano" },
   { setting: "Account", value: "Segreteria" }
 ];
 
+// Oggetto con le funzionalità statiche
 const features = [
-  { name: "Gestione Appuntamenti", description: "Permette di pianificare e gestire appuntamenti con i pazienti." },
-  { name: "Monitoraggio Referti", description: "Consente di tenere traccia dei referti e delle analisi di laboratorio." }
+  { name: "Sezione Appuntamenti", description: "Permette di pianificare e gestire appuntamenti con i pazienti e anche di aggiungere, eventualmente, l'appuntamento su Google Calendar" },
+  { name: "Sezione Promemoria", description: "Permette di aggiungere dei promemoria e ti consente di visualizzare tutti gli appuntamenti in scadenza e quelli più importanti" },
+  { name: "Sezione Pazienti", description: "Mostra una barra di ricerca che ti consente di ricercare il paziente per Nome, Cognome, Dottore Associato e Codice Fiscale" },
+  { name: "Sezione Aggiungi Pazienti", description: "Ti consente di aggiungere dei pazienti completando i campi con i dati necessari" },
 ];
 
-function removeNotification(notification) {
-  gsap.to(notification, { opacity: 0, y: -20, duration: 0.5, ease: "power2.in", onComplete: () => notification.remove() });
+// Funzione per rimuovere una notifica
+function removeNotification(notificationElement) {
+  // Recupera l'indice della notifica dal data-index
+  const index = parseInt(notificationElement.getAttribute('data-index'), 10);
+  
+  gsap.to(notificationElement, {
+    opacity: 0,
+    y: -20,
+    duration: 0.5,
+    ease: "power2.in",
+    onComplete: () => {
+      // Rimuove l'elemento dal DOM
+      notificationElement.remove();
+      // Rimuove la notifica dall'array
+      removeNotificationFromArray(index);
+      // Aggiorna il badge delle notifiche
+      updateNotificationsBadge();
+    }
+  });
+}
+
+// Funzione per rimuovere una notifica dall'array
+function removeNotificationFromArray(index) {
+  // Rimuove l'elemento in posizione 'index' dall'array
+  notifications.splice(index, 1);
+  // Facoltativo: se vuoi aggiornare gli attributi data-index degli elementi attualmente nel DOM,
+  // puoi ricostruire la lista oppure iterare sui rimanenti e aggiornare l'attributo.
+}
+
+// Aggiorna il badge delle notifiche
+function updateNotificationsBadge() {
+  // Conta quanti elementi con la classe "alert notification" sono rimasti nella sidebar
+  const remaining = document.querySelectorAll('.alert.notification').length;
+  // Seleziona il trigger per le notifiche (presupponendo che abbia data-section="Notifiche")
+  const trigger = document.querySelector('.sidebar-trigger[data-section="Notifiche"]');
+  if (trigger) {
+    // Cerca all'interno del trigger l'elemento badge (con classe badge-count)
+    const badge = trigger.querySelector('.badge-count');
+    if (badge) {
+      badge.textContent = remaining;
+      // Se non ci sono notifiche, nascondi il badge (oppure rimuovilo)
+      if (remaining === 0) {
+        badge.style.display = "none";
+      } else {
+        badge.style.display = "flex";
+      }
+    }
+  }
 }
 
 
