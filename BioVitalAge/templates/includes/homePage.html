@@ -187,75 +187,78 @@
         </div>
       </div>
 
-      <div class="reminders">
-        <div class="button-container">
-          <h3>Promemoria</h3>
-          <button class="button">
-            <span class="button__icon-wrapper">
-              <svg
-                viewBox="0 0 14 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                class="button__icon-svg"
-                width="10"
-              >
-                <path
-                  d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
-                  fill="currentColor"
-                ></path>
-              </svg>
-
-              <svg
-                viewBox="0 0 14 15"
-                fill="none"
-                width="10"
-                xmlns="http://www.w3.org/2000/svg"
-                class="button__icon-svg button__icon-svg--copy"
-              >
-                <path
-                  d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
-                  fill="currentColor"
-                ></path>
-              </svg>
-            </span>
-            Vedi Tutti
-          </button>
+      <div class="container-work-in-progress">
+        <p id="work-in-progress">⚠️WORK IN PROGRESS...</p>
+        <div class="reminders hidden-promemoria">
+          <div class="button-container">
+            <h3>Promemoria</h3>
+            <button class="button">
+              <span class="button__icon-wrapper">
+                <svg
+                  viewBox="0 0 14 15"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="button__icon-svg"
+                  width="10"
+                >
+                  <path
+                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+                    fill="currentColor"
+                  ></path>
+                </svg>
+  
+                <svg
+                  viewBox="0 0 14 15"
+                  fill="none"
+                  width="10"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="button__icon-svg button__icon-svg--copy"
+                >
+                  <path
+                    d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+                    fill="currentColor"
+                  ></path>
+                </svg>
+              </span>
+              Vedi Tutti
+            </button>
+          </div>
+          <ul class="reminder-list">
+            <li>
+              <div class="reminder-text">
+                <span>-</span> Controllare i risultati di laboratorio del paziente William Mathews.
+              </div>
+              <span class="urgency-badge high">Priorità alta</span>
+              <div class="reminder-time">Due: 10:00 AM</div>
+              <div class="reminder-actions">
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </div>
+            </li>
+            <li>
+              <div class="reminder-text">
+                <span>-</span> Preparare le note di consultazione per Adam Bradley.
+              </div>
+              <span class="urgency-badge medium">Priorità media</span>
+              <div class="reminder-time">Due: 2:30 PM</div>
+              <div class="reminder-actions">
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </div>
+            </li>
+            <li>
+              <div class="reminder-text">
+                <span>-</span> Fissare un appuntamento di follow-up con Kathy Atkinson.
+              </div>
+              <span class="urgency-badge low">Priorità Bassa</span>
+              <div class="reminder-time">Due: Domani</div>
+              <div class="reminder-actions">
+                <button class="action-btn approve">✔</button>
+                <button class="action-btn delete">✖</button>
+              </div>
+            </li>
+          </ul>
         </div>
-        <ul class="reminder-list">
-          <li>
-            <div class="reminder-text">
-              <span>-</span> Controllare i risultati di laboratorio del paziente William Mathews.
-            </div>
-            <span class="urgency-badge high">Priorità alta</span>
-            <div class="reminder-time">Due: 10:00 AM</div>
-            <div class="reminder-actions">
-              <button class="action-btn approve">✔</button>
-              <button class="action-btn delete">✖</button>
-            </div>
-          </li>
-          <li>
-            <div class="reminder-text">
-              <span>-</span> Preparare le note di consultazione per Adam Bradley.
-            </div>
-            <span class="urgency-badge medium">Priorità media</span>
-            <div class="reminder-time">Due: 2:30 PM</div>
-            <div class="reminder-actions">
-              <button class="action-btn approve">✔</button>
-              <button class="action-btn delete">✖</button>
-            </div>
-          </li>
-          <li>
-            <div class="reminder-text">
-              <span>-</span> Fissare un appuntamento di follow-up con Kathy Atkinson.
-            </div>
-            <span class="urgency-badge low">Priorità Bassa</span>
-            <div class="reminder-time">Due: Domani</div>
-            <div class="reminder-actions">
-              <button class="action-btn approve">✔</button>
-              <button class="action-btn delete">✖</button>
-            </div>
-          </li>
-        </ul>
       </div>
     </div>
 
