@@ -183,6 +183,75 @@ input:disabled{
 
 
 
+/* STYLE CONTAINER TITOLO CARD */
+.title-container{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.title-subtitle{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 30%;
+} 
+
+/* PAGINATION STYLE */
+#pagination {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+    gap: 10px;
+    right: 2.5rem;
+}
+.pagination-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    width: 20%;
+    height: 3rem;
+    background: none;
+    border-radius: 8px;
+    background-color: var(--contrast-color2); 
+    position: relative;
+    color: white;
+    transition: all 0.2s ease-in-out;
+}
+.pagination-btn:hover{
+    background-color: var(--contrast-color);
+}
+.pagination-btn.active {
+    background-color: var(--contrast-color);
+    font-weight: bold;
+}
+.button:disabled{
+    cursor: not-allowed;
+    background-color: var(--contrast-color2);
+    opacity: 0.7;
+}
+.button:disabled:hover .button__icon-svg--copy{
+    transform: translate(-150%, 150%);
+}
+.button:disabled:hover .button__icon-svg:first-child{
+    transform: translate(0);
+}
+.button:disabled:hover .button__icon-wrapper{
+    color: var(--contrast-color2);
+}
+
+
+
+
+
+
+
+
+
 
 /* ADJUST FONT STYLE */
 #long-p{
@@ -205,50 +274,6 @@ input:disabled{
 }
 
 
-/* PAGINATION STYLE */
-#pagination {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 8px;
-    width: 60%;
-    height: 100%;
-}
-.pagination-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    border: none;
-    border-radius: 100px;
-    width: 35px;
-    height: 35px;
-    background-color: var(--contrast-color);
-    position: relative;
-    color: white;
-    transition: all 0.2s ease-in-out;
-}
-.pagination-btn:hover{
-    background-color: var(--contrast-color2);
-}
-.pagination-btn.active {
-    background-color: var(--contrast-color2);
-    font-weight: bold;
-}
-.button:disabled{
-    cursor: not-allowed;
-    background-color: var(--contrast-color2);
-    opacity: 0.7;
-}
-.button:disabled:hover .button__icon-svg--copy{
-    transform: translate(-150%, 150%);
-}
-.button:disabled:hover .button__icon-svg:first-child{
-    transform: translate(0);
-}
-.button:disabled:hover .button__icon-wrapper{
-    color: var(--contrast-color2);
-}
 
 
 

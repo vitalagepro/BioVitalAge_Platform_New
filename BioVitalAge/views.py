@@ -1849,7 +1849,7 @@ class EtaVitaleView(View):
 class TestEtaVitaleView(View):
 
     def get(self,request, id):
-           
+
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         ultimo_referto = persona.referti.order_by('-data_referto').first()
@@ -2068,7 +2068,9 @@ class TestEtaVitaleView(View):
             }    
 
             return render(request, "includes/testVitale.html", context)
-      
+
+
+
 class RefertoQuizView(View):
     def get(self, request, persona_id, referto_id):
 
@@ -2140,6 +2142,45 @@ class RefertoQuizView(View):
         }
 
         return render(request, "includes/RefertoQuiz.html", context)
+
+
+class QuizEtaVitaleUpdateView(View):
+
+    def get(self, request, id):
+        
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        ultimo_referto = persona.referti.order_by('-data_referto').first()
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+
+        dati_estesi = None
+        if ultimo_referto:
+            dati_estesi = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+
+        card_to_show = request.GET.get('card_name')
+
+        context = {
+            'persona': persona,
+            'dati_estesi': dati_estesi,
+            'dottore' : dottore,
+            'referti_test_recenti': referti_test_recenti,
+            'card_to_show': card_to_show
+        }
+
+        return render(request, 'includes/testVitale.html', context)
+    
+    def post(self, request, id):
+        return 
+
+
+
+
+
+
+
+
+
 
 
 

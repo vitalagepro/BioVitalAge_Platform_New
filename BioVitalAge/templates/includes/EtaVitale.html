@@ -80,7 +80,6 @@
         </div>
 
         <!-- MODALE RISULTATO -->
-
         <script>
             function closeModal(){
                 document.getElementById('ModalRisultato').style.display = 'none'
@@ -133,12 +132,12 @@
                     </p>
                     <p>
                         Il test si compone di 5 domini:
-                    <ul style="margin-top: 1rem; margin-bottom: 1rem;">
-                        <li>Dominio cognitivo;</li>
-                        <li>Dominio psicologico;</li>
-                        <li>Dominio sensoriale;</li>
-                        <li>Dominio della vitalità;</li>
-                        <li>Dominio della locomozione.</li>
+                    <ul style="margin-top: 1rem; margin-bottom: 1rem;" id="lista_domini">
+                        <li><a href="{% url 'updateTestEtaVitale' persona.id %}?card_name=cognitivo">Dominio cognitivo;</a></li>
+                        <li><a href="{% url 'updateTestEtaVitale' persona.id %}?card_name=psicologico">Dominio psicologico;</a></li>
+                        <li><a href="{% url 'updateTestEtaVitale' persona.id %}?card_name=sensoriale">Dominio sensoriale;</a></li>
+                        <li><a href="{% url 'updateTestEtaVitale' persona.id %}?card_name=vitalità">Dominio della vitalità;</a></li>
+                        <li><a href="{% url 'updateTestEtaVitale' persona.id %}?card_name=locomozione">Dominio della locomozione.</a></li>
                     </ul>
                         <p style="margin-top: 2rem;">
                             Il punteggio viene calcolato dai risultati dei test per ciascun dominio, complementati dall’analisi di biomarcatori

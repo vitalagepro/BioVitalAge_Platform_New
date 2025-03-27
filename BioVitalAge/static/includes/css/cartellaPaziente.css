@@ -28,7 +28,6 @@
   color: var(--contrast-color);
   font-size: 25px;
 }
-
 .button-grid {
   display: flex;
   justify-content: center;
@@ -38,7 +37,6 @@
   border-radius: 8px;
   padding: 5px 10px;
 }
-
 .container_box {
   display: flex;
   flex-direction: column;
@@ -50,7 +48,6 @@
   gap: 10px;
   transition: all 0.3s ease-in-out;
 }
-
 .info_container {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -59,19 +56,16 @@
   row-gap: 5px;
   width: 100%;
 }
-
 .hidden-row-grid{
   border: none;
   height: 0 !important;
   padding: 0 !important;
   margin-top: 0 !important;
 }
-
 .other_container {
   display: flex;
   justify-content: space-between;
 }
-
 .subCard-container {
   width: 100%;
   display: flex;
@@ -79,7 +73,6 @@
   align-items: center;
   gap: 5px;
 }
-
 .Contact-Container {
   width: 30%;
   display: flex;
@@ -87,12 +80,10 @@
   align-items: center;
   gap: 5px;
 }
-
 .flex-hidden-grid{
   justify-content: flex-start !important;
   margin-left: 25px !important;
 }
-
 .card-subcard {
   display: flex;
   justify-content: center;
@@ -101,28 +92,23 @@
   gap: 15px;
   width: 15rem;
 }
-
 .card-subcard p {
   margin: 0 !important;
 }
-
 .card-subcard span {
   display: block;
   color: var(--contrast-color);
   font-weight: bold;
 }
-
 .img-circle-container {
   border: 2px solid var(--contrast-color2);
   padding: 10px 10px 10px 10px;
   border-radius: 50px;
 }
-
 .img-circle-container img {
   width: 30px;
   height: 30px;
 }
-
 #capInput,
 #provinceInput,
 #emailInput,
@@ -137,7 +123,6 @@
   width: 90%;
   padding: 0 20px;
 }
-
 .alert {
   min-width: 250px;
   max-width: 400px;
@@ -146,7 +131,6 @@
   /* Default nascosto */
   transition: opacity 0.5s ease-in-out;
 }
-
 .alert.show {
   opacity: 1;
   /* Mostra la notifica */
@@ -223,7 +207,6 @@
   left: 2rem;
   max-width: 50%;
 }
-
 .card-content a {
   position: absolute;
   top: 12rem;
@@ -234,13 +217,11 @@
   font-size: 20px;
   transition: transform 0.3s ease-in-out;
 }
-
 .card-content a::after {
   content: '➜';
   font-size: 20px;
   margin-left: 10px;
 }
-
 .card-content a:hover {
   transform: translate(20px, 0px);
 }
@@ -359,13 +340,10 @@
 
 
 /* CARD CLOCK STYLE*/
-
-
 .container-indicatori .card{
   border-radius: 8px;
   padding-bottom: 20px;
 }
-
 .container-indicatori {
   display: flex;
   flex-direction: column;
@@ -497,23 +475,31 @@
 
 
 
-/* Età Style */
-.eta-container{
-  background-color: white;
+.container-second-row{
   width: 98%;
   margin: 1rem auto;
-  height: 16rem;
-  border-radius: 8px;
-  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.1);
+  height: 20rem;
+  display: flex;
+  gap: 8px;
 }
-.eta-container h3{
+
+
+/* Età Style */
+.eta-container{
+  width: 50.5%;
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: white;
+}
+.eta-container h3,
+.capacita_vitale h3,
+.resilienza h3{
   color: var(--contrast-color);
   padding: 20px;
 }
-
 .lineaContainer{
   background-color: var(--card-color);
-  width: 90%;
+  width: 85%;
   height: 1rem;
   border-radius: 8px;
   margin: 4rem auto;
@@ -530,15 +516,13 @@
   top: -4rem;
   right: 40%;
 }
-
 .barra-valore{
   position: absolute;
-  left: 31.9%;
-  width: 26.4%;
+  left: 34%;
+  width: 22%;
   background-color: var(--negative-color-right);
   height: 1rem;
 }
-
 .lineaContainer div img{
   width: 30px;
   height: 30px;
@@ -573,7 +557,6 @@
   height: 20px;
   margin-top: -0.8rem;
 }
-
 .quadrato{
   width: 20px;
   height: 20px;
@@ -601,15 +584,62 @@
 
 
 
+/* Capacità Vitale */
+.capacita_vitale,
+.resilienza{
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: white;
+  width: 25%;
+}
 
 
 
-
-
-
-
-
-
+.card-polmone {
+  width: 50%;
+  height: 65%;
+  border-radius: 8px;
+  margin: auto;
+  display: flex;
+  border: 1px solid whitesmoke;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  margin-top: -20px;
+  margin-bottom: 20px;
+}
+.backdrop-riempimento {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background-color: var(--contrast-color);
+  z-index: 1;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.ondina {
+  position: absolute;
+  top: -10px;
+  background-color: white;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 2;
+}
+.card-polmone img{
+  z-index: 1;
+}
+.ondina path {
+  fill: var(--contrast-color);
+}
+.descrizione-vitale{
+  padding: 0px 20px;
+}
 
 
 
