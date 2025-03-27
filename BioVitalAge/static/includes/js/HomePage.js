@@ -472,3 +472,54 @@ document.addEventListener("DOMContentLoaded", function () {
     return csrfToken;
   }
 });
+
+// 🔹 Anima i numeri che calolano il totale
+document.addEventListener('DOMContentLoaded', function(){
+  // Funzione per animare il conteggio di un elemento
+  const animateNumber = (selector, duration = 2) => {
+    const element = document.querySelector(selector);
+    if (!element) return;
+    const target = parseInt(element.textContent, 10);
+    // Inizializza un oggetto con count = 0
+    const obj = { count: 0 };
+    gsap.to(obj, {
+      duration: duration,
+      count: target,
+      ease: "power1.out",
+      roundProps: "count",  // Arrotonda il numero durante l'animazione
+      onUpdate: () => {
+        element.textContent = obj.count;
+      }
+    });
+  };
+  
+  // Anima i numeri
+  animateNumber("#total-pazienti");
+  animateNumber("#total-biological-age");
+});
+
+/*  -----------------------------------------------------------------------------------------------
+    ANIMAZIONE NUMERI DELLE CARD DEI REPORT
+--------------------------------------------------------------------------------------------------- */
+// Registra ScrollTrigger in GSAP
+gsap.registerPlugin(ScrollTrigger);
+
+// Seleziona tutti gli elementi che hanno la classe "animate-num"
+document.querySelectorAll('.animate-num').forEach(function(elem) {
+  var target = parseFloat(elem.getAttribute('data-target')) || 0;
+  var obj = { value: 0 };
+
+  gsap.to(obj, {
+    value: target,
+    duration: 2,
+    ease: "power1.out",
+    scrollTrigger: {
+      trigger: elem,
+      start: "top 80%",
+      once: true
+    },
+    onUpdate: function() {
+      elem.textContent = Math.round(obj.value);
+    }
+  });
+});

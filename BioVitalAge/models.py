@@ -1,4 +1,5 @@
-from datetime import datetime, timezone
+from datetime import datetime
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -51,7 +52,8 @@ class TabellaPazienti(models.Model):
     associate_staff = models.CharField(max_length=100, null=True, blank=True)
     lastVisit = models.DateField(null=True, blank=True)
     upcomingVisit = models.DateField(null=True, blank=True)
-
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    
     # Dati Composizione corporea
     grasso = models.CharField(max_length=100, null=True, blank=True)
     acqua = models.CharField(max_length=100, null=True, blank=True)

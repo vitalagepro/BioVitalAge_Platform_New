@@ -1,6 +1,8 @@
-from datetime import date, datetime
-from django.utils.dateparse import parse_date, parse_time
-from django.http import HttpResponse, JsonResponse
+from datetime import datetime, timedelta
+from django.utils import timezone as dj_timezone
+from django.db.models import Avg, Min, Max
+from django.http import JsonResponse
+from django.db.models import Count
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import now
@@ -55,18 +57,79 @@ class HomePageRender(View):
 
     def get(self, request):
         persone = TabellaPazienti.objects.all().order_by('-id')[:5]
-        appuntamenti = Appointment.objects.all().order_by('-id')[:4]
+        appuntamenti = Appointment.objects.all().order_by('data')[:4]
+
+        total_biological_age_count = DatiEstesiReferti.objects.aggregate(total=Count('biological_age'))['total']
         total_pazienti = TabellaPazienti.objects.count()  # Conta tutti i pazienti
+        # Calcola il minimo e il massimo dell'età cronologica
+        min_age = TabellaPazienti.objects.aggregate(min_age=Min('chronological_age'))['min_age']
+        max_age = TabellaPazienti.objects.aggregate(max_age=Max('chronological_age'))['max_age']
+        avg_age = TabellaPazienti.objects.aggregate(avg_age=Avg('chronological_age'))['avg_age']
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
         persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
-        # Se vuoi il conteggio dei confermati in tutti gli appuntamenti
+                # --- Calcolo per il report "Totale Pazienti" ---
+        # Assumiamo che il modello TabellaPazienti abbia un campo 'created_at'
+        today = dj_timezone.now().date()
+        # Calcola l'inizio della settimana corrente (supponiamo lunedì come inizio)
+        start_of_week = today - timedelta(days=today.weekday())
+        # La settimana precedente va dal lunedì della settimana scorsa fino a domenica (un giorno prima dell'inizio della settimana corrente)
+        start_of_last_week = start_of_week - timedelta(days=7)
+        end_of_last_week = start_of_week - timedelta(days=1)
+
+        # Conta i pazienti creati nella settimana corrente e in quella precedente
+        current_week_patients = TabellaPazienti.objects.filter(created_at__gte=start_of_week).count()
+        last_week_patients = TabellaPazienti.objects.filter(created_at__gte=start_of_last_week, created_at__lte=end_of_last_week).count()
+
+        # Calcola la differenza e la percentuale
+        difference = current_week_patients - last_week_patients
+        if last_week_patients > 0:
+            percentage_increase = (difference / last_week_patients) * 100
+        else:
+            # Se la settimana precedente non ha record, possiamo definire il 100% se ce ne sono ora, oppure 0 se non ce ne sono
+            percentage_increase = 100 if current_week_patients > 0 else 0
+
+                # --- Calcolo per il report "Totale Prescrizioni" ---
+        # Utilizza il campo data_referto per filtrare i referti
+        current_week_referti = ArchivioReferti.objects.filter(data_referto__gte=start_of_week).count()
+        last_week_referti = ArchivioReferti.objects.filter(data_referto__gte=start_of_last_week,
+                                                           data_referto__lte=end_of_last_week).count()
+
+        difference_referti = current_week_referti - last_week_referti
+        abs_difference_referti = abs(difference_referti)
+
+        # Calcola la percentuale come valore assoluto
+        if last_week_referti > 0:
+            percentage_increase_referti = abs(difference_referti) / last_week_referti * 100
+        else:
+            # Se la settimana precedente era 0, se ci sono referti adesso consideriamo 100%, altrimenti 0
+            percentage_increase_referti = 100 if current_week_referti > 0 else 0
+
+        # Calcola la percentuale media delle età cronologiche
+        if min_age is not None and max_age is not None and max_age != min_age:
+            relative_position = (avg_age - min_age) / (max_age - min_age)  # valore fra 0 e 1
+            media_percentage = relative_position * 100
+        else:
+            media_percentage = 0
 
         if dottore.cookie == "SI":
             context = {
             'persone': persone,
             'total_pazienti': total_pazienti,
+            'total_biological_age': total_biological_age_count,
             'appuntamenti': appuntamenti,
+            'current_week_patients': current_week_patients,
+            'last_week_patients': last_week_patients,
+            'difference': difference,
+            'percentage_increase': percentage_increase,
+            'current_week_referti': current_week_referti,
+            'last_week_referti': last_week_referti,
+            'difference_referti': difference_referti,
+            'percentage_increase_referti': percentage_increase_referti,
+            'abs_difference_referti': abs_difference_referti,
+            'min_age': min_age,
+            'max_age': max_age,
+            'media_percentage': media_percentage,
             'dottore': dottore,
         }
 
