@@ -317,7 +317,20 @@
                           <td>{{ appointment.numero_studio }}</td>
                           <td>
                               <span
-                                  class="badge {% if appointment.tipologia_visita == 'Generale' %}general{% else %}consulting{% endif %}">
+                                  class="badge
+                                  {% if appointment.tipologia_visita == 'Generale' %}
+                                    general
+                                  {% elif appointment.tipologia_visita == 'Riabilitazione' %}
+                                    rehab
+                                  {% elif appointment.tipologia_visita == 'Fisioterapia e Riabilitazione' %}
+                                    physio-ria
+                                  {% elif appointment.tipologia_visita == 'Fisioterapia Sportiva' %}
+                                    physio-spo
+                                  {% elif appointment.tipologia_visita == 'Fisioestetica' %}
+                                    physio-est
+                                  {% else %}
+                                    other
+                                  {% endif %}">
                                   {{ appointment.tipologia_visita }}
                               </span>
                           </td>

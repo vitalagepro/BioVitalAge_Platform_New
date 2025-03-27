@@ -419,9 +419,25 @@ tbody tr:hover {
   background-color: var(--neutral-range-color);
 }
 
-.badge.consulting {
+.badge.rehab {
   background-color: var(--contrast-color-shadow);
   color: var(--dark2);
+}
+
+.badge.physio-ria {
+  background-color: #26425a;
+}
+
+.badge.physio-spo {
+  background-color: #00937a;
+}
+
+.badge.physio-est {
+  background-color: #2b124c;
+}
+
+.badge.other {
+  background-color: #7f8c8d;
 }
 
 .action-btn {

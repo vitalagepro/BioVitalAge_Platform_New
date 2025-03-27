@@ -141,13 +141,14 @@ const emails = [
 ];
 
 const updates = [
-  { version: "v1.2.3", description: "Correzione bug e miglioramenti UI" },
-  { version: "v1.3.0", description: "Nuove funzionalità di gestione appuntamenti" }
+  { version: "v3.15.1", description: "Correzione bug e miglioramenti UI Home Page" },
+  { version: "v3.15.1", description: "Aggiunta numeri dinamici nelle caselle oppurtune della Home Page" },
+  { version: "v3.15.1", description: "Sezione appuntamenti completata" }
 ];
 
 const configurations = [
   { setting: "Lingua", value: "Italiano" },
-  { setting: "Tema", value: "Chiaro" }
+  { setting: "Account", value: "Segreteria" }
 ];
 
 const features = [

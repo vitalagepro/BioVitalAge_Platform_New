@@ -319,7 +319,7 @@ const updates = [
 
 const configurations = [
   { setting: "Lingua", value: "Italiano" },
-  { setting: "Tema", value: "Chiaro" }
+  { setting: "Account", value: "Segreteria" }
 ];
 
 const features = [
@@ -474,6 +474,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+
+/*  -----------------------------------------------------------------------------------------------
+    ANIMAZIONE NUMERI
+--------------------------------------------------------------------------------------------------- */
 // 🔹 Anima i numeri che calolano il totale
 document.addEventListener('DOMContentLoaded', function(){
   // Funzione per animare il conteggio di un elemento
