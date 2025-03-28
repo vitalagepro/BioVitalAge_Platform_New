@@ -1147,9 +1147,6 @@ class RisultatiRender(View):
 
         return render(request, "includes/risultati.html", context)
 
-
-
-
 #VIEW PER ULTIMO REFERTO ETA' VITALE
 class PersonaDetailView(View):
     def get(self, request, persona_id):
@@ -1181,11 +1178,6 @@ class PersonaDetailView(View):
             'dottore': dottore,
         }
         return render(request, "includes/Referto.html", context)
-
-
-
-
-
 
 class ScaricaReferto(View):
     def get(self, request, persona_id, visite_id):
@@ -1366,6 +1358,10 @@ class ElencoRefertiView(View):
 
         return render(request, "includes/elencoReferti.html", context)
 
+
+
+
+# VIEWS PER SEZIONE DATI BASE
 class DatiBaseView(View):
 
     def get(self, request, id):
@@ -1381,78 +1377,116 @@ class DatiBaseView(View):
         return render(request, "includes/dati_base.html", context)
     
     def post(self, request, id):
-            persona = get_object_or_404(TabellaPazienti, id=id)
 
-            # Aggiornamento dei dati ricevuti dal form
-            # Identifica il form che ha inviato i dati
-            form_id = request.POST.get('form_id')
+        print(request.POST)
 
-            # Gestione dei dati in base al form_id
-            if form_id == 'datiBaseForm1':
-                # Aggiorna i dati relativi alla terza tabella
-                persona.alcol = request.POST.get('alcol')
-                persona.alcol_type = request.POST.get('alcol_type')
-                persona.data_alcol = request.POST.get('data_alcol') or None
-                persona.alcol_frequency = request.POST.get('alcol_frequency')
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
-            elif form_id == 'datiBaseForm2':
-                # Aggiorna i dati relativi alla quarta tabella
-                persona.smoke = request.POST.get('smoke')
-                persona.smoke_frequency = request.POST.get('smoke_frequency')
-                persona.reduced_intake = request.POST.get('reduced_intake')
-
-            elif form_id == 'datiBaseForm3':
-                # Aggiorna i dati relativi alla quinta tabella
-                persona.sport = request.POST.get('sport')
-                persona.sport_livello = request.POST.get('sport_livello')
-                persona.sport_frequency = request.POST.get('sport_frequency')
-
-            elif form_id == 'datiBaseForm4':
-                # Aggiorna i dati relativi alla quinta tabella
-                persona.attivita_sedentaria = request.POST.get('attivita_sedentaria')
-                persona.livello_sedentarieta = request.POST.get('livello_sedentarieta')
-                persona.sedentarieta_nota = request.POST.get('sedentarieta_nota')
-
-            # Salva le modifiche solo se c'è un form valido
-            if form_id:
-                persona.save()
-            else:
-                print("Errore: form_id non ricevuto o non valido")
-
-            return redirect('dati_base', id=persona.id)
-
-# Blood Group view
-@method_decorator(csrf_exempt, name='dispatch')
-class UpdateBloodDataView(View):
-
-    def post(self, request, id):
         try:
-            # Estrai i dati dalla richiesta JSON
-            data = json.loads(request.body)
-            blood_group = data.get("blood_group", "N/A")
-            rh_factor = data.get("rh_factor", "N/A")
-            pressure_min = data.get("pressure_min", "Inserisci i valori")
-            pressure_max = data.get("pressure_max", "Inserisci i valori")
-            heart_rate = data.get("heart_rate", "Inserisci i valori")
+            
+           # Informazioni occupazione
+            persona.professione = request.POST.get("professione")
+            persona.pensionato = request.POST.get("pensionato")
 
-            # Recupera il paziente corrispondente
-            persona = get_object_or_404(TabellaPazienti, id=id)
+            # Stile di vita - Alcol
+            persona.alcol = request.POST.get("alcol")
+            persona.alcol_type = request.POST.get("alcol_type")
+            persona.data_alcol = request.POST.get("data_alcol") or None
+            persona.alcol_frequency = request.POST.get("alcol_frequency")
 
-            # Aggiorna i dati
-            persona.blood_group = blood_group
-            persona.rh_factor = rh_factor
-            persona.pressure_min = pressure_min
-            persona.pressure_max = pressure_max
-            persona.heart_rate = heart_rate
+            # Stile di vita - Fumo
+            persona.smoke = request.POST.get("smoke")
+            persona.smoke_frequency = request.POST.get("smoke_frequency")
+            persona.reduced_intake = request.POST.get("reduced_intake")
+
+            # Stile di vita - Sport
+            persona.sport = request.POST.get("sport")
+            persona.sport_livello = request.POST.get("sport_livello")
+            persona.sport_frequency = request.POST.get("sport_frequency")
+
+            # Stile di vita - Sedentarietà
+            persona.attivita_sedentaria = request.POST.get("attivita_sedentaria")
+            persona.livello_sedentarieta = request.POST.get("livello_sedentarieta")
+            persona.sedentarieta_nota = request.POST.get("sedentarieta_nota")
+
+            # Anamnesi
+            persona.m_cardiache = request.POST.get("m_cardiache_fam")
+            persona.diabete_m = request.POST.get("diabete_m")
+            persona.ipertensione = request.POST.get("ipertensione")
+            persona.obesita = request.POST.get("obesita")
+            persona.epilessia = request.POST.get("epilessia")
+            persona.m_tiroidee = request.POST.get("m_tiroidee")
+            persona.m_polmonari = request.POST.get("m_polmonari")
+            persona.tumori = request.POST.get("tumori")
+            persona.allergie = request.POST.get("allergie")
+            persona.m_psichiatriche = request.POST.get("m_psichiatriche")
+            persona.patologie = request.POST.get("patologie")
+            persona.p_p_altro = request.POST.get("p_p_altro")
+            persona.t_farmaco = request.POST.get("t_farmaco")
+            persona.t_dosaggio = request.POST.get("t_dosaggio")
+            persona.t_durata = request.POST.get("t_durata")
+
+            # Esame Obiettivo
+            persona.a_genarale = request.POST.get("a_generale")
+            persona.psiche = request.POST.get("psiche")
+            persona.r_ambiente = request.POST.get("r_ambiente")
+            persona.s_emotivo = request.POST.get("s_emotivo")
+            persona.costituzione = request.POST.get("costituzione")
+            persona.statura = request.POST.get("statura")
+            persona.s_nutrizionale = request.POST.get("s_nutrizionale")
+            persona.eloquio = request.POST.get("eloquio")
+
+            # Informazioni del sangue
+            persona.pressure_min = request.POST.get("pressure_min")
+            persona.pressure_max = request.POST.get("pressure_max")
+            persona.heart_rate = request.POST.get("heart_rate")
+            persona.blood_group = request.POST.get("blood_group")
+            persona.rh_factor = request.POST.get("rh_factor")
+
             persona.save()
 
-            return JsonResponse({"status": "success", "message": "Dati aggiornati correttamente"})
-
-        except json.JSONDecodeError:
-            return JsonResponse({"status": "error", "message": "Formato JSON non valido"}, status=400)
+            context = {
+                'persona': persona,
+                'dottore': dottore,
+                'success': 'I dati sono stati aggiornati correttamente' 
+            }
 
         except Exception as e:
-            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+            context = {
+                'persona': persona,
+                'dottore': dottore,
+                'errore': f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
+            }
+    
+
+        return render(request, "includes/dati_base.html", context)  
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1651,18 +1685,6 @@ class InserisciPazienteView(View):
         except Exception as e:
             context["errore"] = f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova."
             return render(request, "includes/InserisciPaziente.html", context)
-
-
-
-
-
-
-
-
-
-
-
-
 
 class ComposizioneView(View):
 
@@ -2069,8 +2091,6 @@ class TestEtaVitaleView(View):
 
             return render(request, "includes/testVitale.html", context)
 
-
-
 class RefertoQuizView(View):
     def get(self, request, persona_id, referto_id):
 
@@ -2143,7 +2163,6 @@ class RefertoQuizView(View):
 
         return render(request, "includes/RefertoQuiz.html", context)
 
-
 class QuizEtaVitaleUpdateView(View):
 
     def get(self, request, id):
@@ -2172,17 +2191,6 @@ class QuizEtaVitaleUpdateView(View):
     
     def post(self, request, id):
         return 
-
-
-
-
-
-
-
-
-
-
-
 
 class StampaRefertoView(View):
     def get(self, request, persona_id, referto_id):
@@ -2254,7 +2262,6 @@ class StampaRefertoView(View):
         }
 
         return render(request, "includes/EtaVitale.html", context)
-
 
 
 # Referto View
@@ -2473,7 +2480,7 @@ class ApproveAppointmentView(View):
         return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
 
 # VIEWS DELETE APPOINTMENT
-@method_decorator(csrf_exempt, name='dispatch')  # 👈 Disabilita CSRF per questa view
+@method_decorator(csrf_exempt, name='dispatch')
 class DeleteAppointmentView(View):
     def delete(self, request, appointment_id):
         try:
@@ -2546,9 +2553,6 @@ class CreaPazienteView(View):
 
 
 
-
-
-
 #VIEWS PER SEZIONE RESILIENZA 
 class ResilienzaView(View):
     def get(self, request, persona_id):
@@ -2597,12 +2601,6 @@ class ResilienzaView(View):
         }
         return render(request, "includes/Resilienza.html", context)
     
-
-
-
-
-
-
 
 #VIEWS PER LA VALUTAZIONE MUSCOLO-SCHELETRICO
 class ValutazioneMSView(View):
