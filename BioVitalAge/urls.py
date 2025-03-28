@@ -35,7 +35,12 @@ urlpatterns = [
     # URL PER LA CARTELLA DEL PAZIENTE
     path("CartellaPaziente/<int:id>/", views.CartellaPazienteView.as_view(), name="cartella_paziente"),
     path("ElencoReferti/<int:id>/", views.ElencoRefertiView.as_view(), name="elenco_referti"),
+
+
+    # URL PER DATI BASE
     path("DatiBase/<int:id>/", views.DatiBaseView.as_view(), name="dati_base"),
+
+
     path("Patients/<int:id>/Composizione", views.ComposizioneView.as_view(), name="composizione"),
     path('Prescrizioni/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
     path('Resilienza/<int:persona_id>/', views.ResilienzaView.as_view(), name='resilienza'),
@@ -45,18 +50,22 @@ urlpatterns = [
     path("CartellaPaziente/Update/<int:persona_id>/<int:visite_id>/", DettagliPrescrizioni.as_view(), name="dettagli_prescrizioni"),
     path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
 
-    path("api/update_blood_data/<int:id>/", UpdateBloodDataView.as_view(), name="update_blood_data"),
     path('update-persona-composizione/<int:id>/', views.UpdatePersonaComposizioneView.as_view(), name='update_persona_composizione'),
     path('update-persona/<int:id>/', views.UpdatePersonaContactView.as_view(), name='update_persona_contact'),
+
 
     # URL PER IL TEST DELLA CAPACITA' VITALE
     path('EtaVitale/<int:id>/', views.EtaVitaleView.as_view(), name='etaVitale'),
     path('TestVitale/<int:id>/', views.TestEtaVitaleView.as_view(), name='TestetaVitale'),
     path('RefertoTest/<int:persona_id>/<int:referto_id>/', views.RefertoQuizView.as_view(), name='referto_test'),
+    path('UpdateTestVitale/<int:id>/', views.QuizEtaVitaleUpdateView.as_view(), name='updateTestEtaVitale'), 
+
+    
+
+
 
     
     path('Prescrizioni/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
-    path("api/update_blood_data/<int:id>/", UpdateBloodDataView.as_view(), name="update_blood_data"),
     path("CartellaPaziente/Update/<int:persona_id>/<int:visite_id>/", DettagliPrescrizioni.as_view(), name="dettagli_prescrizioni"),
     path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
 

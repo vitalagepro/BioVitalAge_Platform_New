@@ -228,7 +228,6 @@
 
         </div>
 
-
         <!-- CARD CLOCK -->
         <div class="container-indicatori containerStyle" style="margin-top: 0rem;">
             <div class="card card4" id="card-style">
@@ -354,46 +353,89 @@
                     </div>
                 </div>
 
-                <div class="eta-container">
-                    <h3>Età Biologica</h3>
-                    <div class="lineaContainer">
-                        <p class="estremoInferiore">0</p>
-                        <div class="cronologic-age">
-                            <img src="{% static 'includes/icone/biologica.png' %}" alt="">
-                            <p>38 anni</p>
-                            <p class="linea">|</p>
-                        </div>
-                        <div class="barra-valore"></div>
-                        <div class="biologic-age">
-                            <img src="{% static 'includes/icone/cronologica.png' %}" alt="">
-                            <p>44 anni</p>
-                            <p class="linea">|</p>
-                        </div>
-                        <p class="estremoSuperiore">100</p>
-                    </div>
+                <div class="container-second-row">
 
-                    <div class="legenda">
-                        <div class="subcontainer-legenda">
-                            <img src="{% static 'includes/icone/biologica.png' %}" alt="">
-                            <p>Età Biologica</p>
-                        </div>
-                      
-                        <div class="subcontainer-legenda">
-                            <img src="{% static 'includes/icone/cronologica.png' %}" alt="" >
-                            <p>Età Biologica</p>
+                    <div class="eta-container">
+                        <h3>Età Biologica</h3>
+                        <div class="lineaContainer">
+                            <p class="estremoInferiore">0</p>
+                            <div class="cronologic-age">
+                                <img src="{% static 'includes/icone/biologica.png' %}" alt="">
+                                <p>38 anni</p>
+                                <p class="linea">|</p>
+                            </div>
+                            <div class="barra-valore"></div>
+                            <div class="biologic-age">
+                                <img src="{% static 'includes/icone/cronologica.png' %}" alt="">
+                                <p>44 anni</p>
+                                <p class="linea">|</p>
+                            </div>
+                            <p class="estremoSuperiore">100</p>
                         </div>
 
-                        <div class="subcontainer-legenda">
-                            <p class="quadrato neg"></p>
-                            <p>Valore Negativo</p>
-                        </div>
-                        <div class="subcontainer-legenda">
-                            <p class="quadrato pos"></p>
-                            <p>Valore Positivo</p>
+                        <div class="legenda">
+                            <div class="subcontainer-legenda">
+                                <img src="{% static 'includes/icone/biologica.png' %}" alt="">
+                                <p>Età Biologica</p>
+                            </div>
+                        
+                            <div class="subcontainer-legenda">
+                                <img src="{% static 'includes/icone/cronologica.png' %}" alt="" >
+                                <p>Età Biologica</p>
+                            </div>
+
+                            <div class="subcontainer-legenda">
+                                <p class="quadrato neg"></p>
+                                <p>Valore Negativo</p>
+                            </div>
+                            <div class="subcontainer-legenda">
+                                <p class="quadrato pos"></p>
+                                <p>Valore Positivo</p>
+                            </div>
                         </div>
                     </div>
+
+                    <div class="capacita_vitale">
+                        <h3>Capacità Vitale</h3>
+
+                        
+                        <div class="card-polmone">
+                            <div class="backdrop-riempimento">
+                                <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
+                                    <path id="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                </svg>
+                            </div>
+                            
+                            <img src="{% static 'includes/icone/polmone.png' %}" alt="" width="180px" height="180px">
+                        </div>
+                          
+                        <p class="descrizione-vitale"><span style="font-weight: bold;">Punteggio:</span> 5.56</p>
+
+                    </div>
+
+                    <div class="capacita_vitale">
+                        <h3>Resilienza</h3>
+ 
+                        <div class="card-polmone">
+                            <div class="backdrop-riempimento">
+                                <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
+                                    <path id="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                </svg>
+                            </div>
+                            
+                            <img src="{% static 'includes/icone/germoglio.png' %}" alt="" width="180px" height="180px">
+                        </div>
+                          
+                        <p class="descrizione-vitale"><span style="font-weight: bold;">Punteggio:</span> not available</p>
+
+                    </div>
+
+
                 </div>
-                
+
+
+               
+
             </div>
         </div>
 
@@ -1160,6 +1202,36 @@
         });
     </script>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const wavePath = document.getElementById("wavePath");
+        const backdrop = document.querySelector(".backdrop-riempimento");
+
+        // Onda più visibile
+        const wave1 = "M0,40 C150,100 350,-20 500,60 L500,100 L0,100 Z";
+        const wave2 = "M0,60 C150,40 350,120 500,30 L500,100 L0,100 Z";
+
+        // Attiva ondina animata
+        gsap.to(wavePath, {
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        attr: { d: wave2 }
+        });
+
+        // Animazione iniziale di riempimento (da height 0% a 50%)
+        gsap.to(backdrop, {
+        duration: 1.8,
+        height: "50%",
+        ease: "power2.out"
+        });
+    });
+    </script>
+
+
+
 
     <script src="{% static 'includes/js/cartellaPaziente.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
