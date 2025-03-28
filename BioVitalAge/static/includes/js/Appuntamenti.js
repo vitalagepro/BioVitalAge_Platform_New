@@ -1696,9 +1696,11 @@ document.addEventListener("DOMContentLoaded", () => {
       currentDataLabel.textContent = formatDayLabel(currentDate);
       loadAppointmentsForDailyView();
     } else if (weekLayoutBtn && weekLayoutBtn.classList.contains("active")) {
-      // Vista settimanale: comportamento già esistente
-      currentDate.setMonth(currentDate.getMonth() - 1);
-      renderMonthCalendar();
+      // Vista settimana: sottrai 7 giorni
+      currentDate.setDate(currentDate.getDate() - 7);
+      // Aggiorna il tag che mostra la data (puoi usare lo stesso formato oppure, se preferisci, mostrare il range della settimana)
+      currentDataLabel.textContent = formatDateLabel(currentDate);
+      // Aggiorna la vista settimanale
       updateWeekView(currentDate);
     } else {
       // Vista mensile: comportamento predefinito
@@ -1715,9 +1717,9 @@ document.addEventListener("DOMContentLoaded", () => {
       currentDataLabel.textContent = formatDayLabel(currentDate);
       loadAppointmentsForDailyView();
     } else if (weekLayoutBtn && weekLayoutBtn.classList.contains("active")) {
-      // Vista settimanale: comportamento già esistente
-      currentDate.setMonth(currentDate.getMonth() + 1);
-      renderMonthCalendar();
+      // Vista settimana: aggiungi 7 giorni
+      currentDate.setDate(currentDate.getDate() + 7);
+      currentDataLabel.textContent = formatDateLabel(currentDate);
       updateWeekView(currentDate);
     } else {
       // Vista mensile: comportamento predefinito
