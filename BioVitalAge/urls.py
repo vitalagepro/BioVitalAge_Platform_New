@@ -14,6 +14,10 @@ urlpatterns = [
     # URL HOME PAGE / STATISTICHE
     path("Home_Page/Statistiche", views.StatisticheView.as_view(), name="statistiche"),
 
+    #URL SIDEBAR
+    path('api/appointment-notifications/', AppointmentNotificationsView.as_view(), name='appointment-notifications'),
+    path('api/medical-news-notifications/', MedicalNewsNotificationsView.as_view(), name='medical-news-notifications'),
+
     # URL PER CALCOLATORE
     path("Calcolatore_Page", views.CalcolatoreRender.as_view(), name='Calcolatore'),
 

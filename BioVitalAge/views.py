@@ -1,3 +1,4 @@
+import requests
 from datetime import datetime, timedelta
 from django.utils import timezone as dj_timezone
 from django.db.models import Avg, Min, Max
@@ -30,6 +31,7 @@ class LoginRenderingPage(View):
         response.delete_cookie('disclaimer_accepted', path='/')
         return response
 
+# VIEW PER LA GESTIONE DELLA PRIVACY POLICY
 class PrivacyPolicyRenderingPage(View):
     def get(self, request, id):
         dottore_id = request.session.get('dottore_id')
@@ -43,6 +45,7 @@ class PrivacyPolicyRenderingPage(View):
 
         return render(request, 'includes/privacyPolicy.html', context)
 
+# VIEW PER LA GESTIONE DEL LOGOUT
 class LogOutRender(View):
     def get(self, request):
 
@@ -53,6 +56,7 @@ class LogOutRender(View):
 
         return render(request, 'includes/login.html')
 
+# VIEW PER LA GESTIONE DELLA HOME PAGE
 class HomePageRender(View):
 
     def get(self, request):
@@ -267,7 +271,66 @@ class HomePageRender(View):
 
         return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
 
+# VIEW PER LE NOTIFICHE
+class AppointmentNotificationsView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            # Usa il fuso orario locale (modifica se usi timezone aware)
+            now = timezone.localtime(timezone.now())
+            today = now.date()
+            tomorrow = today + timedelta(days=1)
+            
+            notifications = []
+            
+            # Appuntamenti di oggi
+            todays_appts = Appointment.objects.filter(data=today)
+            for appt in todays_appts:
+                # Formatta l'orario, se presente
+                appt_time = appt.orario.strftime('%H:%M') if appt.orario else ""
+                message = f"Oggi alle {appt_time} hai un appuntamento con {appt.nome_paziente} {appt.cognome_paziente}"
+                notifications.append({"message": message, "type": "info"})
+            
+            # Appuntamenti di domani
+            tomorrows_appts = Appointment.objects.filter(data=tomorrow)
+            count_tomorrow = tomorrows_appts.count()
+            if count_tomorrow > 0:
+                message = f"Domani hai {count_tomorrow} appuntamenti in programma, vai nella sezione appuntamenti per visionarli."
+                notifications.append({"message": message, "type": "warning"})
+            
+            return JsonResponse({"success": True, "notifications": notifications})
+        except Exception as e:
+            # In caso di errore restituisce un JSON con lo status 500
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
 
+# VIEW PER LE NOTIFICHE MEDICAL NEWS
+class MedicalNewsNotificationsView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            api_key = "2626c84001fd4317bae40517af281479"
+            url = f"https://newsapi.org/v2/everything?q=health&from=2025-02-28&sortBy=publishedAt&apiKey={api_key}"
+            response = requests.get(url)
+            data = response.json()
+            news = []
+            if data.get("status") == "ok":
+                articles = data.get("articles", [])
+                for article in articles[:2]:
+                    title = article.get("title", "Notizia medica")
+                    description = article.get("description", "")
+                    published_at = article.get("publishedAt", "")[:10]  # solo la data
+                    link = article.get("url", "#")
+
+                    # Invia i dati raw al frontend per essere formattati dal JS
+                    news.append({
+                        "title": title,
+                        "description": description,
+                        "published_at": published_at,
+                        "link": link,
+                        "type": "info",
+                        "origin": "medical"
+                    })
+            return JsonResponse({"success": True, "news": news})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
 
 # VIEW PER ACCETTARE IL DISCLAIMER
 class AcceptDisclaimerView(View):
@@ -286,7 +349,6 @@ class AcceptDisclaimerView(View):
 
         return response
 
-
 # VIEW PER LA SEZIONE STATISTICHE
 class StatisticheView(View):
     def get(self, request):
@@ -299,8 +361,6 @@ class StatisticheView(View):
         }
 
         return render(request, "includes/statistiche.html", context)
-    
-
 
 # VIEW PER IL CALCOLO DELL'ETA' BIOLOGICA
 def safe_float(data, key, default=0.0):
@@ -309,6 +369,7 @@ def safe_float(data, key, default=0.0):
     except (ValueError, TypeError):
         return default
 
+# VIEW RENDERIZZATA PER CALCOLATORE
 class CalcolatoreRender(View):
     
     def get(self, request):
@@ -1266,7 +1327,6 @@ class CalcolatoreRender(View):
                 "dettaglio": error_message 
             }
             return render(request, "includes/calcolatore.html", context)
-
 
 
 # VIEW PER SEZIONE RICERCA PAZIENTI

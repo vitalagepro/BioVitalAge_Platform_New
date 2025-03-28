@@ -185,7 +185,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 300px;
+  height: 312px;
   padding: 10px;
   padding-left: 30px;
   flex: 1;
@@ -261,7 +261,8 @@
   border-radius: 8px;
 }
 
-/* #work-in-progress {
+/* 
+#work-in-progress {
   display: none;
 } */
 
@@ -721,6 +722,7 @@ tbody tr:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,.05);
   position: absolute;
   top: -3px;
   right: 10px;
@@ -785,6 +787,13 @@ tbody tr:hover {
   opacity: 0;
   display: flex;
   justify-content: space-between;
+}
+
+.text-truncate-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
 }
 
 .risultati-ricerca {
