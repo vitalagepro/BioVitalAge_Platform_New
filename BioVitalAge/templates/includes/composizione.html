@@ -28,6 +28,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
     <script src="{% static 'includes/js/pdfComposizione.js' %}" defer></script>
+    <script src="{% static 'includes/js/dati_base.js' %}" defer></script>
 </head>
 
 <body>
@@ -79,492 +80,527 @@
             </div>
         </div>
 
-        <!-- DOMINIO COMPOSIZIONE CORPOREA -->
-        <div class="card-container">
+        <!-- MESSAGGIO DI SUCCESSO -->
+        {% if success %}
+        <div class="successMessage" id="success">
 
-            <div class="title-container">
-                <img src="{% static 'includes/icone/composizione.png' %}" alt="">
-                <h3>Composizione Corporea</h3>
+            <p>{{ success }}</p>
+            <div class="progressBarContainerSuccess">
+            <div class="progressBar" id="progressSuccess"></div>
             </div>
 
-            <div class="grid-container">
-            
-                <div class="field">
-                    <p>BMI:</p>
-                    <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
-                        {{ persona.bmi|default:"Inserisci valore" }}
-                    </p>
-                </div>
-    
-                <div class="field">
-                    <p>Grasso Corporeo:</p>
-                    <p id="grasso">{{ persona.grasso|default:"Inserisci valore" }}</p>
-                </div>
-    
-                <div class="field">
-                    <p>Acqua Corporea:</p>
-                    <p id="acqua">{{ persona.acqua|default:"Inserisci valore" }}</p>
-                </div>
-    
-                <div class="field">
-                    <p>Massa Muscolare:</p>
-                    <p id="massa_muscolare">{{ persona.massa_muscolare|default:"Inserisci valore" }}</p>
-                </div>
-    
-                <div class="field">
-                    <p>Bmr:</p>
-                    <p id="bmr">{{ persona.bmr|default:"Inserisci valore" }}</p>
-                </div>
-        
-                <div class="field">
-                    <p>WHR:</p>
-                    <p id="whr">{{ persona.whr|default:"Inserisci valore" }}</p>
-                </div>
-    
-                <div class="field">
-                    <p>WHTR:</p>
-                    <p id="whtr">{{ persona.whtr|default:"Inserisci valore" }}</p>
-                </div> 
-            </div>
+            <script>
+            const messaggios = document.getElementById('success');
+            const progressBars = document.getElementById('progressSuccess');
+            const durationSuccess = 6000; 
+            const intervalSuccess = 50; 
+
+            if (messaggios) {
+                let elapsedTimeSuccess = 0; 
+
+                const timerSuccess = setInterval(() => {
+                elapsedTimeSuccess += intervalSuccess;
+                const percentage = ((durationSuccess - elapsedTimeSuccess) / durationSuccess) * 100;
+                progressBars.style.width = `${percentage}%`;
+
+                if (elapsedTimeSuccess >= durationSuccess) {
+                    clearInterval(timerSuccess); 
+                    messaggios.style.display = 'No'; 
+                }
+                }, intervalSuccess);
+            }
+            </script>
+
         </div>
-
-        <!-- DOMINIO PROFILO GLICEMICO E INSULINICO-->
-        <div class="card-container">
-
-            <div class="title-container">
-                <img src="{% static 'includes/icone/glicemia.png' %}" alt="">
-                <h3>Profilo glicemico e insulinico</h3>
+        {% else %}
+        {% if errore %}
+        <div class="errorSystemContainer" id="error">
+            <p>{{ errore }}</p>
+            <div class="progressBarContainer">
+            <div class="progressBar" id="progress"></div>
             </div>
 
-            <div class="grid-container">
-                <div class="field">
-                    <p>Glicemia a digiuno:</p>
-                    <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
-                        {{ persona.glicemia|default:"Inserisci valore" }}
-                    </p>
-                </div>
-    
-                <div class="field">
-                    <p>OGTT (Glicemia post-carico):</p>
-                    <p id="grasso">{{ persona.ogtt|default:"Inserisci valore" }}</p>
-                </div>
-    
-                <div class="field">
-                    <p>Emoglobina glicata (HbA1c)</p>
-                    <p id="acqua">{{ persona.emoglobina|default:"Inserisci valore" }}</p>
-                </div>
-                
-                <div class="field">
-                    <p>Insulina a digiuno:</p>
-                    <p id="whtr">{{ persona.whtr|default:"Inserisci valore" }}</p>
-                </div> 
+            <script>
+            const messaggio = document.getElementById('error');
+            const progressBar = document.getElementById('progress');
+            const durationError = 6000; 
+            const intervalError = 50;
 
-                <div class="field">
-                    <p>Curva insulinemica da carico orale:</p>
-                    <p id="massa_muscolare">{{ persona.massa_muscolare|default:"Inserisci valore" }}</p>
-                </div>
-    
-                <div class="field">
-                    <p>HOMA-IR:</p>
-                    <p id="bmr">{{ persona.bmr|default:"Inserisci valore" }}</p>
-                </div>
-        
-                <div class="field">
-                    <p style="font-size: 15px;">TyG index (Trigliceridi/HDL per insulino-resistenza)</p>
-                    <p id="whr">{{ persona.whr|default:"Inserisci valore" }}</p>
-                </div>     
-            </div>
+            if (messaggio) {
+                let elapsedTimeError = 0; 
+
+                const timerError = setInterval(() => {
+                elapsedTimeError += intervalError;
+                const percentage = ((durationError - elapsedTimeError) / durationError) * 100;
+                progressBar.style.width = `${percentage}%`;
+
+                if (elapsedTimeError >= durationError) {
+                    clearInterval(timerError); 
+                    messaggio.style.display = 'none'; 
+                }
+                }, intervalError);
+            }
+            </script>
+
         </div>
+        {% endif %}
+        {% endif %}
 
-        <!-- DOMINIO PROFILO LIPIDICO -->
-        <div class="card-container">
+        <form method="POST" action="{% url 'composizione' persona.id %}">
+            {% csrf_token %}
 
-            <div class="title-container">
-                <img src="{% static 'includes/icone/lipidi.png' %}" alt="">
-                <h3>Profilo Lipidico</h3>
-            </div>
-
-            <div class="grid-container">
-            
-                <div class="field">
-                    <p>Colesterolo totale</p>
-                    <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
-                        {{ persona.bmi|default:"Inserisci valore" }}
-                    </p>
-                </div>
-    
-                <div class="field">
-                    <p>HDL:</p>
-                    <p id="grasso">{{ persona.grasso|default:"Inserisci valore" }}</p>
-                </div>
-    
-                <div class="field">
-                    <p>LDL:</p>
-                    <p id="acqua">{{ persona.acqua|default:"Inserisci valore" }}</p>
-                </div>
-    
-                <div class="field">
-                    <p>Trigliceridi:</p>
-                    <p id="massa_muscolare">{{ persona.massa_muscolare|default:"Inserisci valore" }}</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- DOMINIO PROFILO METABOLICO EPATICO -->
-        <div class="card-container">
-
-            <div class="title-container">
-                <img src="{% static 'includes/icone/metabolismo.png' %}" alt="">
-                <h3>Profilo metabolico epatico</h3>
-            </div>
-
-            <div class="grid-container">
-            
-                <div class="field">
-                    <p>AST:</p>
-                    <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
-                        {{ persona.bmi|default:"Inserisci valore" }}
-                    </p>
-                </div>
-    
-                <div class="field">
-                    <p>ALT:</p>
-                    <p id="grasso">{{ persona.grasso|default:"Inserisci valore" }}</p>
-                </div>
-    
-                <div class="field">
-                    <p>GGT:</p>
-                    <p id="acqua">{{ persona.acqua|default:"Inserisci valore" }}</p>
-                </div>
-    
-                <div class="field">
-                    <p>Bilirubina totale e frazionata:</p>
-                    <p id="massa_muscolare">{{ persona.massa_muscolare|default:"Inserisci valore" }}</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- DOMINIO STRESS E INFIAMMAZIONE -->
-        <div class="grid-container-special">
-            <!-- DOMINIO INFIAMMAZIONE -->
+            <!-- DOMINIO COMPOSIZIONE CORPOREA -->
             <div class="card-container">
 
                 <div class="title-container">
-                    <img src="{% static 'includes/icone/infiammazione.png' %}" alt="">
-                    <h3>Infiammazione</h3>
+                    <img src="{% static 'includes/icone/composizione.png' %}" alt="">
+                    <h3>Composizione Corporea</h3>
                 </div>
 
-                <div class="grid-container infiammazione">
-                
+                <div class="grid-container">
+                    
                     <div class="field">
-                        <p>PCR:</p>
-                        <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
-                            {{ persona.bmi|default:"Inserisci valore" }}
-                        </p>
+                        <p class="field-title">BMI:</p>
+                        <input class="input-disabled" type="text" name="bmi" value="{{ persona.bmi }}" placeholder="inserisci il valore" disabled>
                     </div>
 
                     <div class="field">
-                        <p>HGS:</p>
-                        <p id="grasso">{{ persona.grasso|default:"Inserisci valore" }}</p>
+                        <p class="field-title">Grasso Corporeo:</p>
+                        <input class="input-disabled" type="text" name="grasso" value="{{ persona.grasso }}" placeholder="inserisci il valore" disabled>
+                    </div>
+        
+                    <div class="field">
+                        <p class="field-title">Acqua Corporea:</p>
+                        <input class="input-disabled" type="text" name="acqua" value="{{ persona.acqua }}" placeholder="inserisci il valore" disabled>
                     </div>
 
                     <div class="field">
-                        <p>SII:</p>
-                        <p id="acqua">{{ persona.acqua|default:"Inserisci valore" }}</p>
+                        <p class="field-title">Massa Muscolare:</p>
+                        <input class="input-disabled" type="text" name="massa_muscolare" value="{{ persona.massa_muscolare }}" placeholder="inserisci il valore" disabled>
+                    </div>
+
+                    <div class="field">
+                        <p class="field-title">BMR:</p>
+                        <input class="input-disabled" type="text" name="bmr" value="{{ persona.bmr }}"  placeholder="inserisci il valore" disabled>
+                    </div>
+        
+                    <div class="field">
+                        <p class="field-title">WHR:</p>
+                        <input class="input-disabled" type="text" name="whr" value="{{ persona.whr }}" placeholder="inserisci il valore" disabled>
+                    </div>
+        
+                    <div class="field">
+                        <p class="field-title">WHTR:</p>
+                        <input class="input-disabled" type="text" name="whtr" value="{{ persona.whtr }}" placeholder="inserisci il valore" disabled>
                     </div>
                 </div>
-            </div>
+            </div>  
 
-            <!-- DOMINIO STRESS-->
+            <!-- DOMINIO PROFILO GLICEMICO E INSULINICO-->
             <div class="card-container">
 
                 <div class="title-container">
-                    <img src="{% static 'includes/icone/stress.png' %}" alt="">
-                    <h3>Stress</h3>
+                    <img src="{% static 'includes/icone/glicemia.png' %}" alt="">
+                    <h3>Profilo glicemico e insulinico</h3>
                 </div>
-          
-                <div class="field" style="margin-top: 20px;">
-                    <p>PCR:</p>
-                    <p id="bmi" data-value="{{ persona.bmi|default:'' }}">
-                        {{ persona.bmi|default:"Inserisci valore" }}
-                    </p>
+
+                <div class="grid-container">
+
+                    <div class="field">
+                        <p class="field-title">Glicemia a digiuno:</p>
+                        <input class="input-disabled" type="text" name="glicemia" value="{{ persona.glicemia }}" placeholder="inserisci il valore" disabled>
+                    </div>
+
+                    <div class="field">
+                        <p class="field-title">OGTT (Glicemia post-carico):</p>
+                        <input class="input-disabled" type="text" name="ogtt" value="{{ persona.ogtt }}" placeholder="inserisci il valore" disabled>
+                    </div>
+
+                    <div class="field">
+                        <p class="field-title">Emoglobina glicata (HbA1c):</p>
+                        <input class="input-disabled" type="text" name="emoglobina_g" value="{{ persona.emoglobina_g }}" placeholder="inserisci il valore" disabled>
+                    </div>
+
+                    <div class="field">
+                        <p class="field-title">Insulina a digiuno:</p>
+                        <input class="input-disabled" type="text" name="insulina_d" value="{{ persona.insulina_d }}" placeholder="inserisci il valore" disabled>
+                    </div>
+
+                    <div class="field">
+                        <p class="field-title">Curva insulinemica da carico orale:</p>
+                        <input class="input-disabled" type="text" name="curva_i" value="{{ persona.curva_i }}" placeholder="inserisci il valore" disabled>
+                    </div>
+
+                    <div class="field">
+                        <p class="field-title">HOMA-IR:</p>
+                        <input class="input-disabled" type="text" name="homa_ir" value="{{ persona.homa_ir }}" placeholder="inserisci il valore" disabled>
+                    </div>
+
+                    <div class="field">
+                        <p class="field-title" style="font-size: 15px;">TyG index (Trigliceridi/HDL per insulino-resistenza)</p>
+                        <input class="input-disabled" type="text" name="tyg" value="{{ persona.tyg }}" placeholder="inserisci il valore" disabled>
+                    </div>   
                 </div>
-              
             </div>
 
-        </div>
+            <!-- DOMINIO PROFILO LIPIDICO -->
+            <div class="card-container">
 
-        
-
-
-
-
-
-
-        <!-- DATI ANAGRAFICI CON MASSA CORPOREA -->
-        <div class="datiMassaCorporea-container">
-            <div class="header-container-patient">
                 <div class="title-container">
-                    <img src="{% static 'includes/icone/avatar.png' %}" alt="">
-                    <h3>Dati Personali Composizione</h3>
+                    <img src="{% static 'includes/icone/lipidi.png' %}" alt="">
+                    <h3>Profilo Lipidico</h3>
                 </div>
-                
+
+                <div class="grid-container">
+
+                    <div class="field">
+                        <p class="field-title">Colesterolo totale:</p>
+                        <input class="input-disabled" type="text" name="c_tot" value="{{ persona.c_tot }}" placeholder="inserisci il valore" disabled>
+                    </div>
+
+                    <div class="field">
+                        <p class="field-title">HDL:</p>
+                        <input class="input-disabled" type="text" name="hdl" value="{{ persona.hdl }}" placeholder="inserisci il valore" disabled>
+                    </div>
+
+                    <div class="field">
+                        <p class="field-title">LDL:</p>
+                        <input class="input-disabled" type="text" name="ldl" value="{{ persona.ldl }}" placeholder="inserisci il valore" disabled>
+                    </div>
+                    
+                    <div class="field">
+                        <p class="field-title">Trigliceridi:</p>
+                        <input class="input-disabled" type="text" name="trigliceridi" value="{{ persona.trigliceridi }}" placeholder="inserisci il valore" disabled>
+                    </div>
+        
+                </div>
             </div>
-            <div class="container_box">
-                <div class="info_container">
-                    <div id="userData" data-gender="{{ persona.gender }}" data-name="{{ persona.name }}" data-surname="{{ persona.surname }}"
-                        data-dob="{{ persona.dob }}" data-cf="{{ persona.codice_fiscale }}"
-                        data-place_birth="{{ persona.place_birth }}" data-chronological_age="{{ persona.chronological_age }}" data-acqua="{{ persona.acqua }}"
-                        data-massa-muscolare="{{ persona.massa_muscolare }}" data-massa-ossea="{{ persona.massa_ossea }}"
-                        data-grasso="{{ persona.grasso }}" data-punteggio-fisico="{{ persona.punteggio_fisico }}"
-                        hidden>
+
+            <!-- DOMINIO PROFILO METABOLICO EPATICO -->
+            <div class="card-container">
+
+                <div class="title-container">
+                    <img src="{% static 'includes/icone/metabolismo.png' %}" alt="">
+                    <h3>Profilo metabolico epatico</h3>
+                </div>
+
+                <div class="grid-container">
+                    
+                    <div class="field">
+                        <p class="field-title">AST:</p>
+                        <input class="input-disabled" type="text" name="ast" value="{{ persona.ast }}" placeholder="inserisci il valore" disabled>
+                    </div>
+
+                    <div class="field">
+                        <p class="field-title">ALT:</p>
+                        <input class="input-disabled" type="text" name="alt" value="{{ persona.alt }}" placeholder="inserisci il valore" disabled>
+                    </div>
+                    
+                    <div class="field">
+                        <p class="field-title">GGT:</p>
+                        <input class="input-disabled" type="text" name="ggt" value="{{ persona.ggt }}" placeholder="inserisci il valore" disabled>
+                    </div>
+        
+                    <div class="field">
+                        <p class="field-title">Bilirubina totale e frazionata:</p>
+                        <input class="input-disabled" type="text" name="bili_t" value="{{ persona.bili_t }}" placeholder="inserisci il valore" disabled>
+                    </div>
+        
+                    
+                </div>
+            </div>
+
+            <!-- DOMINIO STRESS E INFIAMMAZIONE -->
+            <div class="grid-container-special">
+                <!-- DOMINIO INFIAMMAZIONE -->
+                <div class="card-container">
+
+                    <div class="title-container">
+                        <img src="{% static 'includes/icone/infiammazione.png' %}" alt="">
+                        <h3>Infiammazione</h3>
+                    </div>
+
+                    <div class="grid-container infiammazione">
+                        
+                        <div class="field">
+                            <p class="field-title">PCR:</p>
+                            <input class="input-disabled" type="text" name="pcr" value="{{ persona.pcr }}" placeholder="inserisci il valore" disabled>
+                        </div>
+
+                        <div class="field">
+                            <p class="field-title">HGS:</p>
+                            <input class="input-disabled" type="text" name="c_tot" value="{{ persona.hgs }}" placeholder="inserisci il valore" disabled>
+                        </div>
+
+                        <div class="field">
+                            <p class="field-title">SII:</p>
+                            <input class="input-disabled" type="text" name="sii" value="{{ persona.sii }}" placeholder="inserisci il valore" disabled>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- DOMINIO STRESS-->
+                <div class="card-container">
+
+                    <div class="title-container">
+                        <img src="{% static 'includes/icone/stress.png' %}" alt="">
+                        <h3>Stress</h3>
+                    </div>  
+
+                    <div class="field" style="margin-top: 20px;">
+                        <p class="field-title">Colesterolo plasmatico:</p>
+                        <input class="input-disabled" type="text" name="c_plasmatico" value="{{ persona.c_plasmatico }}" placeholder="inserisci il valore" disabled>
                     </div>
             
-                    <div class="field">
-                        <p>Punteggio Fisico</p>
-                        <!-- Modale di Conferma -->
-                        <div id="confirm-reset-modal" class="custom-modal-overlay hidden-modal-custom">
-                            <div class="custom-modal-content">
-                                <p id="confirm-modal-message">Sei sicuro di voler resettare lo storico dei punteggi?</p>
-                                <button id="confirm-reset-btn" class="custom-button">Conferma</button>
-                                <button id="cancel-reset-btn" class="custom-button cancel-btn">Annulla</button>
+                </div>
+            </div>
+
+            <!-- DATI ANAGRAFICI CON MASSA CORPOREA -->
+            <div class="datiMassaCorporea-container">
+
+                <div class="header-container-patient">
+                    <div class="title-container">
+                        <img src="{% static 'includes/icone/avatar.png' %}" alt="">
+                        <h3>Informazioni generali composizione</h3>
+                    </div>
+                    
+                </div>
+
+                <div class="container_box">
+                    <div class="info_container">
+                       <!--  <div id="userData" data-gender="{{ persona.gender }}" data-name="{{ persona.name }}" data-surname="{{ persona.surname }}"
+                            data-dob="{{ persona.dob }}" data-cf="{{ persona.codice_fiscale }}"
+                            data-place_birth="{{ persona.place_birth }}" data-chronological_age="{{ persona.chronological_age }}" data-acqua="{{ persona.acqua }}"
+                            data-massa-muscolare="{{ persona.massa_muscolare }}" data-massa-ossea="{{ persona.massa_ossea }}"
+                            data-grasso="{{ persona.grasso }}" data-punteggio-fisico="{{ persona.punteggio_fisico }}"
+                            hidden>
+                        </div>
+                
+                        <div class="field">
+                            <p>Punteggio Fisico</p>
+                           
+                            <div id="confirm-reset-modal" class="custom-modal-overlay hidden-modal-custom">
+                                <div class="custom-modal-content">
+                                    <p id="confirm-modal-message">Sei sicuro di voler resettare lo storico dei punteggi?</p>
+                                    <button id="confirm-reset-btn" class="custom-button">Conferma</button>
+                                    <button id="cancel-reset-btn" class="custom-button cancel-btn">Annulla</button>
+                                </div>
+                            </div>
+                            
+                        
+                            <p id="punteggio_fisico_container">
+                                <select id="punteggio_fisico" name="punteggio_fisico" required>
+                                    <option value="">-- Seleziona Punteggio --</option>
+                                    <option value="1" {% if persona.punteggio_fisico == "1" %}selected{% endif %}>Obeso Latente</option>
+                                    <option value="2" {% if persona.punteggio_fisico == "2" %}selected{% endif %}>Obeso</option>
+                                    <option value="3" {% if persona.punteggio_fisico == "3" %}selected{% endif %}>Struttura robusta
+                                    </option>
+                                    <option value="4" {% if persona.punteggio_fisico == "4" %}selected{% endif %}>Insufficientemente
+                                        allenati</option>
+                                    <option value="5" {% if persona.punteggio_fisico == "5" %}selected{% endif %}>Regolare</option>
+                                    <option value="6" {% if persona.punteggio_fisico == "6" %}selected{% endif %}>Regolare e muscoloso
+                                    </option>
+                                    <option value="7" {% if persona.punteggio_fisico == "7" %}selected{% endif %}>Magro</option>
+                                    <option value="8" {% if persona.punteggio_fisico == "8" %}selected{% endif %}>Magro e muscoloso
+                                    </option>
+                                    <option value="9" {% if persona.punteggio_fisico == "9" %}selected{% endif %}>Molto muscoloso</option>
+                                </select>
+                                <button class="button" id="reset-score">Reset</button>
+                            </p>
+                        </div>
+                
+                        <div class="vignetta-container" id="vignetta-container" style="display: none;">
+                            <div class="vignetta" id="vignetta">
+                                <span class="close-btn" onclick="chiudiVignetta()">&times;</span>
+                                <span id="vignetta-content"></span>
                             </div>
                         </div>
-                        
-                    
-                        <p id="punteggio_fisico_container">
-                            <select id="punteggio_fisico" name="punteggio_fisico" required>
-                                <option value="">-- Seleziona Punteggio --</option>
-                                <option value="1" {% if persona.punteggio_fisico == "1" %}selected{% endif %}>Obeso Latente</option>
-                                <option value="2" {% if persona.punteggio_fisico == "2" %}selected{% endif %}>Obeso</option>
-                                <option value="3" {% if persona.punteggio_fisico == "3" %}selected{% endif %}>Struttura robusta
-                                </option>
-                                <option value="4" {% if persona.punteggio_fisico == "4" %}selected{% endif %}>Insufficientemente
-                                    allenati</option>
-                                <option value="5" {% if persona.punteggio_fisico == "5" %}selected{% endif %}>Regolare</option>
-                                <option value="6" {% if persona.punteggio_fisico == "6" %}selected{% endif %}>Regolare e muscoloso
-                                </option>
-                                <option value="7" {% if persona.punteggio_fisico == "7" %}selected{% endif %}>Magro</option>
-                                <option value="8" {% if persona.punteggio_fisico == "8" %}selected{% endif %}>Magro e muscoloso
-                                </option>
-                                <option value="9" {% if persona.punteggio_fisico == "9" %}selected{% endif %}>Molto muscoloso</option>
-                            </select>
-                            <button class="button" id="reset-score">Reset</button>
-                        </p>
-                    </div>
-            
-                    <div class="vignetta-container" id="vignetta-container" style="display: none;">
-                        <div class="vignetta" id="vignetta">
-                            <span class="close-btn" onclick="chiudiVignetta()">&times;</span>
-                            <span id="vignetta-content"></span>
+                 -->
+
+                        <div class="field" style="margin-top: 20px;">
+                            <p class="field-title">Altezza:</p>
+                            <input class="input-disabled" type="text" name="altezza" value="{{ persona.altezza }}" placeholder="inserisci il valore" disabled>
+                        </div>  
+
+                        <div class="field" style="margin-top: 20px;">
+                            <p class="field-title">Peso corporeo:</p>
+                            <input class="input-disabled" type="text" name="weight" value="{{ persona.weight }}" placeholder="inserisci il valore" disabled>
                         </div>
+
+                        <div class="field" style="margin-top: 20px;">
+                            <p class="field-title">Data di rilevamento del Bmi:</p>
+                            <input class="input-disabled" type="date" name="bmi_detection_date" value="{{ persona.bmi_detection_date|date:'Y-m-d' }}" placeholder="inserisci il valore" disabled>
+                        </div>
+
+                        <div class="field" style="margin-top: 20px;">
+                            <p class="field-title">Circonferenza Addominale:</p>
+                            <input class="input-disabled" type="text" name="girth_value" value="{{ persona.girth_value }}" placeholder="inserisci il valore" disabled>
+                        </div>
+                        
+                        <div class="field" style="margin-top: 20px;">
+                            <p class="field-title">Data di misurazione addominale:</p>
+                            <input class="input-disabled" type="date" name="girth_date" value="{{ persona.girth_date|date:'Y-m-d' }}" placeholder="inserisci il valore" disabled>
+                        </div>
+                        
+                        <div class="field" style="margin-top: 20px;">
+                            <p class="field-title">Note sull'addome:</p>
+                            <input class="input-disabled" type="text" name="note_addominali" value="{{ persona.girth_notes }}" placeholder="inserisci il valore" disabled>
+                        </div>
+                            
+                        {% if persona.sport_frequency %}
+                            <div class="field" style="margin-top: 20px;">
+                                <p class="field-title">Frequenza attività fisica:</p>
+                                <input class="input-disabled" type="text" name="sport_frequency" value="{{ persona.sport_frequency }}" placeholder="inserisci il valore" disabled>
+                            </div>
+                        {% endif %}
+                
+                        {% if persona.livello_sedentarieta %}
+                            <div class="field" style="margin-top: 20px;">
+                                <p class="field-title">Sedentarietà:</p>
+                                <input class="input-disabled" type="text" name="livello_sedentarieta" value="{{ persona.livello_sedentarieta }}" placeholder="inserisci il valore" disabled>
+                            </div>
+                        {% endif %}
+                
+                        <div class="field">
+                            <div class="field" style="margin-top: 20px;">
+                                <p class="field-title">Genere:</p>
+                                <input class="input-disabled" type="text" name="c_plasmatico" value="{{ persona.gender }}" placeholder="inserisci il valore" disabled>
+                            </div>
+                        </div>
+
+                        <div class="field" style="margin-top: 20px;">
+                            <p class="field-title">Massa Ossea:</p>
+                            <input class="input-disabled" type="text" name="c_plasmatico" value="{{ persona.c_plasmatico }}" placeholder="inserisci il valore" disabled>
+                        </div>
+
+                        <div class="field" style="margin-top: 20px;">
+                            <p class="field-title">Età Metabolica:</p>
+                            <input class="input-disabled" type="text" name="c_plasmatico" value="{{ persona.c_plasmatico }}" placeholder="inserisci il valore" disabled>
+                        </div>      
+                
+                        <div class="field" style="margin-top: 20px;">
+                            <p class="field-title">Grasso Viscerale:</p>
+                            <input class="input-disabled" type="text" name="c_plasmatico" value="{{ persona.c_plasmatico }}" placeholder="inserisci il valore" disabled>
+                        </div>            
                     </div>
-            
-                    <div class="field">
-                        <p>Altezza:</p>
-                        <p id="altezza">{{ persona.height|default:"Inserisci valore" }}</p>
-                    </div>      
-            
-                    <div class="field">
-                        <p>Peso corporeo:</p>
-                        <p id="peso">{{ persona.weight|default:"Inserisci valore" }}</p>
-                    </div>
-                  
-                    <div class="field">
-                        <p>Data di rilevamento del BMI:</p>
-                        <p id="bmi_detection_date" data-value="{{ persona.bmi_detection_date|default:'' }}">
-                            {{ persona.bmi_detection_date|default:"Inserisci valore"|date:"d/m/Y" }}
-                        </p>
-                    </div>
-            
-                    <div class="field">
-                        <p>Circonferenza Addominale:</p>
-                        <p id="girth_value">{{ persona.girth_value|default:"Inserisci valore" }}</p>
-                    </div>
-            
-                    <div class="field">
-                        <p>Data di misurazione Addominale:</p>
-                        <p id="girth_date" data-value="{{ persona.girth_date|default:'' }}">
-                            {{ persona.girth_date|default:"Inserisci valore"|date:"d/m/Y" }}
-                        </p>
-                    </div>
-            
-                    <div class="field">
-                        <p>Note sull'addome:</p>
-                        <p id="girth_notes" data-value="{{ persona.girth_notes|default_if_none:'Inserisci valore' }}">
-                            {{ persona.girth_notes|default_if_none:'Inserisci valore' }}
-                        </p>
-                    </div>
-            
-                    {% if persona.sport_frequency %}
-                    <div class="field">
-                        <p>Frequenza Attività fisica:</p>
-                        <p id="sport_frequency">{{ persona.sport_frequency|default:"Inserisci valore" }}</p>
-                    </div>
-                    {% endif %}
-            
-                    {% if persona.livello_sedentarieta %}
-                    <div class="field">
-                        <p>Sedentarietà:</p>
-                        <p id="livello_sedentarieta">{{ persona.livello_sedentarieta|default:"Inserisci valore" }}</p>
-                    </div>
-                    {% endif %}
-            
-                    <div class="field">
-                        <p>Genere:</p>
-                        <p>{{ persona.gender }}</p>
-                    </div>
-       
-                    <div class="field">
-                        <p>Massa Ossea:</p>
-                        <p id="massa_ossea">{{ persona.massa_ossea|default:"Inserisci valore" }}</p>
-                    </div>       
-            
-                    <div class="field">
-                        <p>Età Metabolica:</p>
-                        <p id="eta_metabolica">{{ persona.eta_metabolica|default:"Inserisci valore" }}</p>
-                    </div>
-            
-                    <div class="field">
-                        <p>Grasso Viscerale:</p>
-                        <p id="grasso_viscerale">{{ persona.grasso_viscerale|default:"Inserisci valore" }}</p>
-                    </div>
-            
-                    
-            
-                    
+                </div>
+            </div>  
+
+            <!-- CONTAINER GRAFICI MASSA CORPOREA -->
+            <div class="container-grafici">
+                <div class="card-grafico">
+                    <h3>Punteggio Fisico</h3>
+                    <canvas id="GraficoPunteggio"></canvas>
+                </div>
+                <div class="card-grafico">
+                    <h3>Composizione Corporea</h3>
+                    <canvas id="composizioneChart"></canvas>
+                </div>
+                <div class="card-grafico">
+                    <h3>Acqua Corporea</h3>
+                    <canvas id="acquaChart"></canvas>
+                </div>
+                <div class="card-grafico">
+                    <h3>BMI</h3>
+                    <canvas id="bmiChart"></canvas>
                 </div>
             </div>
-        </div>  
 
-        <!-- CONTAINER GRAFICI MASSA CORPOREA -->
-        <div class="container-grafici">
-            <div class="card-grafico">
-                <h3>Punteggio Fisico</h3>
-                <canvas id="GraficoPunteggio"></canvas>
+            <div class="toolkit">
+                <img src="{% static 'includes/images/arrow.png' %}" alt="" style="width: 40px; height: 40px;">
+
+                <button class="button" id="genereReport" data-referto-id="{{ referto.id }}" data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
+                    <span class="button__icon-wrapper">
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        width="18"
+                        class="button__icon-svg"
+                        >
+                        <path
+                            d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        ></path>
+                        <path
+                            d="M14 2V6H18"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        ></path>
+                        </svg>
+                        
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        width="18"
+                        class="button__icon-svg button__icon-svg--copy"
+                        >
+                        <path
+                            d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        ></path>
+                        <path
+                            d="M14 2V6H18"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        ></path>
+                        </svg>
+                    </span>
+                    Genera PDF referto       
+                </button>
+
+                <a class="button" id="btn_blood_group">
+                    <span class="button__icon-wrapper" id="modifica">
+                        <svg viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14">
+                            <path d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        
+                        <svg viewBox="0 0 14 15" fill="none" width="14" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg button__icon-svg--copy">
+                            <path d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span> 
+
+                    <span class="button__icon-wrapper" id="indietro-modifica" style="display: none;">
+                        <svg viewBox="0 0 24 24" fill="none" width="14" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" >
+                          <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        
+                        <svg viewBox="0 0 24 24" fill="none" width="14" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg button__icon-svg--copy">
+                          <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                      
+
+                    Modifica Dati
+                </a>
+        
+                <a class="button" id="btn_save_changes" style="display: none;">
+                    <span class="button__icon-wrapper">
+                    💾
+                    </span>
+                    Salva Modifiche
+                </a>
+                
             </div>
-            <div class="card-grafico">
-                <h3>Composizione Corporea</h3>
-                <canvas id="composizioneChart"></canvas>
-            </div>
-            <div class="card-grafico">
-                <h3>Acqua Corporea</h3>
-                <canvas id="acquaChart"></canvas>
-            </div>
-            <div class="card-grafico">
-                <h3>BMI</h3>
-                <canvas id="bmiChart"></canvas>
-            </div>
-        </div>
-
-
-
-        <div class="toolkit">
-            <img src="{% static 'includes/images/arrow.png' %}" alt="" style="width: 40px; height: 40px;">
-
-            <button class="button" id="genereReport" data-referto-id="{{ referto.id }}" data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
-                <span class="button__icon-wrapper">
-                    <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    width="18"
-                    class="button__icon-svg"
-                    >
-                    <path
-                        d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    ></path>
-                    <path
-                        d="M14 2V6H18"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    ></path>
-                    </svg>
-                    
-                    <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    width="18"
-                    class="button__icon-svg button__icon-svg--copy"
-                    >
-                    <path
-                        d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    ></path>
-                    <path
-                        d="M14 2V6H18"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    ></path>
-                    </svg>
-                </span>
-                Genera PDF referto       
-            </button>
-
-            <a class="Btn-modify" title="Modifica" id="modify">Edita 
-                <svg class="svg" viewBox="0 0 512 512">
-                  <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path></svg>
-            </a>
-            
-        </div>
-
+        
+        </form>
 
     </main>
 
-    <!-- Import Js -->
 
-    <script>
-
-        const updatePersonaComposizioneUrl = "{% url 'update_persona_composizione' persona.id %}";
-
-        /*  -----------------------------------------------------------------------------------------------
-        function to transform the first letter of a string to uppercase
-        --------------------------------------------------------------------------------------------------- */
-        document.addEventListener("DOMContentLoaded", function () {
-        // Seleziona tutti gli elementi con la classe 'field'
-        let fields = document.querySelectorAll(".info_container .field");
-
-        fields.forEach((field) => {
-            let label = field.querySelector("p:first-of-type"); // Prende il primo <p> (etichetta)
-            let valueP = field.querySelector("p:nth-of-type(2)"); // Prende il secondo <p> (valore)
-
-            if (label && valueP) {
-            let labelText = label.innerText.trim();
-
-            // Controlla se il campo è "Nome:" o "Cognome:"
-            if (labelText === "Nome:" || labelText === "Cognome:") {
-                let text = valueP.innerText.trim();
-                if (text.length > 0) {
-                // Converte la prima lettera in maiuscolo di ogni parola se la parola è tutta in minuscolo
-                let formattedText = text
-                    .split(" ") // Divide il testo in parole
-                    .map((word) =>
-                    word === word.toLowerCase()
-                        ? word.charAt(0).toUpperCase() + word.slice(1)
-                        : word
-                    ) // Se è minuscola, la corregge
-                    .join(" "); // Ricompone la stringa
-
-                valueP.innerText = formattedText;
-                }
-            }
-            }
-        });
-        });
-    </script>
-    <script src="{% static 'includes/js/chartComposizione.js' %}"></script>
+    <!-- <script src="{% static 'includes/js/chartComposizione.js' %}"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>  
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

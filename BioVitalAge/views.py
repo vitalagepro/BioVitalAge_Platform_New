@@ -1590,64 +1590,72 @@ class DatiBaseView(View):
 
         try:
             
-           # Informazioni occupazione
-            persona.professione = request.POST.get("professione")
-            persona.pensionato = request.POST.get("pensionato")
+            #Informazioni occupazione
+            persona.professione = request.POST.get("professione") or "No"
+            persona.pensionato = request.POST.get("pensionato") or "No"
+
+            #Per la donna
+            persona.menarca = request.POST.get('menarca') or "No"
+            persona.ciclo = request.POST.get('ciclo') or "No"
+            persona.sintomi = request.POST.get('sintomi') or "No"
+            persona.esordio = request.POST.get('esordio') or "No"
+            persona.parto = request.POST.get('parto') or "No"
+            persona.post_parto = request.POST.get('post_parto') or "No"
+            persona.aborto = request.POST.get('aborto') or "No"
 
             # Stile di vita - Alcol
-            persona.alcol = request.POST.get("alcol")
-            persona.alcol_type = request.POST.get("alcol_type")
-            persona.data_alcol = request.POST.get("data_alcol") or None
-            persona.alcol_frequency = request.POST.get("alcol_frequency")
+            persona.alcol = request.POST.get("alcol") or "No"
+            persona.alcol_type = request.POST.get("alcol_type") or "No"
+            persona.data_alcol = request.POST.get("data_alcol")
+            persona.alcol_frequency = request.POST.get("alcol_frequency") or "No"
 
             # Stile di vita - Fumo
-            persona.smoke = request.POST.get("smoke")
-            persona.smoke_frequency = request.POST.get("smoke_frequency")
-            persona.reduced_intake = request.POST.get("reduced_intake")
+            persona.smoke = request.POST.get("smoke") or "No"
+            persona.smoke_frequency = request.POST.get("smoke_frequency") or "No"
+            persona.reduced_intake = request.POST.get("reduced_intake") or "No"
 
             # Stile di vita - Sport
-            persona.sport = request.POST.get("sport")
-            persona.sport_livello = request.POST.get("sport_livello")
-            persona.sport_frequency = request.POST.get("sport_frequency")
+            persona.sport = request.POST.get("sport") or "No"
+            persona.sport_livello = request.POST.get("sport_livello") or "No"
+            persona.sport_frequency = request.POST.get("sport_frequency") or "No"
 
             # Stile di vita - Sedentarietà
-            persona.attivita_sedentaria = request.POST.get("attivita_sedentaria")
-            persona.livello_sedentarieta = request.POST.get("livello_sedentarieta")
-            persona.sedentarieta_nota = request.POST.get("sedentarieta_nota")
+            persona.attivita_sedentaria = request.POST.get("attivita_sedentaria") or "No"
+            persona.livello_sedentarieta = request.POST.get("livello_sedentarieta") or "No"
+            persona.sedentarieta_nota = request.POST.get("sedentarieta_nota") or "No"
 
             # Anamnesi
-            persona.m_cardiache = request.POST.get("m_cardiache_fam")
-            persona.diabete_m = request.POST.get("diabete_m")
-            persona.ipertensione = request.POST.get("ipertensione")
-            persona.obesita = request.POST.get("obesita")
-            persona.epilessia = request.POST.get("epilessia")
-            persona.m_tiroidee = request.POST.get("m_tiroidee")
-            persona.m_polmonari = request.POST.get("m_polmonari")
-            persona.tumori = request.POST.get("tumori")
-            persona.allergie = request.POST.get("allergie")
-            persona.m_psichiatriche = request.POST.get("m_psichiatriche")
-            persona.patologie = request.POST.get("patologie")
-            persona.p_p_altro = request.POST.get("p_p_altro")
-            persona.t_farmaco = request.POST.get("t_farmaco")
-            persona.t_dosaggio = request.POST.get("t_dosaggio")
-            persona.t_durata = request.POST.get("t_durata")
+            persona.m_cardiache = request.POST.get("m_cardiache_fam") or "No"
+            persona.diabete_m = request.POST.get("diabete_m") or "No"
+            persona.ipertensione = request.POST.get("ipertensione") or "No"
+            persona.obesita = request.POST.get("obesita") or "No"
+            persona.m_tiroidee = request.POST.get("m_tiroidee") or "No"
+            persona.m_polmonari = request.POST.get("m_polmonari") or "No"
+            persona.tumori = request.POST.get("tumori") or "No"
+            persona.allergie = request.POST.get("allergie") or "No"
+            persona.m_psichiatriche = request.POST.get("m_psichiatriche") or "No"
+            persona.patologie = request.POST.get("patologie") or "No"
+            persona.p_p_altro = request.POST.get("p_p_altro") or "No"
+            persona.t_farmaco = request.POST.get("t_farmaco") or "No"
+            persona.t_dosaggio = request.POST.get("t_dosaggio") or "No"
+            persona.t_durata = request.POST.get("t_durata") or "No"
 
             # Esame Obiettivo
-            persona.a_genarale = request.POST.get("a_generale")
-            persona.psiche = request.POST.get("psiche")
-            persona.r_ambiente = request.POST.get("r_ambiente")
-            persona.s_emotivo = request.POST.get("s_emotivo")
-            persona.costituzione = request.POST.get("costituzione")
-            persona.statura = request.POST.get("statura")
-            persona.s_nutrizionale = request.POST.get("s_nutrizionale")
-            persona.eloquio = request.POST.get("eloquio")
+            persona.a_genarale = request.POST.get("a_generale") or "No"
+            persona.psiche = request.POST.get("psiche") or "No"
+            persona.r_ambiente = request.POST.get("r_ambiente") or "No"
+            persona.s_emotivo = request.POST.get("s_emotivo") or "No"
+            persona.costituzione = request.POST.get("costituzione") or "No"
+            persona.statura = request.POST.get("statura") or "No"
+            persona.s_nutrizionale = request.POST.get("s_nutrizionale") or "No"
+            persona.eloquio = request.POST.get("eloquio") or "No"
 
             # Informazioni del sangue
-            persona.pressure_min = request.POST.get("pressure_min")
-            persona.pressure_max = request.POST.get("pressure_max")
-            persona.heart_rate = request.POST.get("heart_rate")
-            persona.blood_group = request.POST.get("blood_group")
-            persona.rh_factor = request.POST.get("rh_factor")
+            persona.pressure_min = request.POST.get("pressure_min") or "No"
+            persona.pressure_max = request.POST.get("pressure_max") or "No"
+            persona.heart_rate = request.POST.get("heart_rate") or "No"
+            persona.blood_group = request.POST.get("blood_group") or "No"
+            persona.rh_factor = request.POST.get("rh_factor") or "No"
 
             persona.save()
 
@@ -1667,25 +1675,6 @@ class DatiBaseView(View):
 
         return render(request, "includes/dati_base.html", context)  
             
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1890,6 +1879,9 @@ class InserisciPazienteView(View):
             context["errore"] = f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova."
             return render(request, "includes/InserisciPaziente.html", context)
 
+
+
+# VIEWS PER SEZIONE ETA METABOLICA
 class ComposizioneView(View):
 
     def get(self, request, id):
@@ -1906,8 +1898,104 @@ class ComposizioneView(View):
 
         return render(request, "includes/composizione.html", context)
 
+
+    def post(self, request, id):       
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        try:
+
+            persona.bmi = request.POST.get("bmi")
+            persona.grasso = request.POST.get("grasso")
+            persona.acqua = request.POST.get("acqua")
+            persona.massa_muscolare = request.POST.get("massa_muscolare")
+            persona.bmr = request.POST.get("bmr")
+            persona.whr = request.POST.get("whr")
+            persona.whtr = request.POST.get("whtr")
+
+            # Profilo glicemico e insulinico
+            persona.glicemia = request.POST.get("glicemia")
+            persona.ogtt = request.POST.get("ogtt")
+            persona.emoglobina_g = request.POST.get("emoglobina_g")
+            persona.insulina_d = request.POST.get("insulina_d")
+            persona.curva_i = request.POST.get("curva_i")
+            persona.homa_ir = request.POST.get("homa_ir")
+            persona.tyg = request.POST.get("tyg")
+
+            # Profilo lipidico
+            persona.c_tot = request.POST.get("c_tot")
+            persona.hdl = request.POST.get("hdl")
+            persona.ldl = request.POST.get("ldl")
+            persona.trigliceridi = request.POST.get("trigliceridi")
+
+            # Profilo epatico
+            persona.ast = request.POST.get("ast")
+            persona.alt = request.POST.get("alt")
+            persona.ggt = request.POST.get("ggt")
+            persona.bili_t = request.POST.get("bili_t") 
+
+            # Infiammazione
+            persona.pcr = request.POST.get("pcr")
+            persona.hgs = request.POST.get("hgs")
+            persona.sii = request.POST.get("sii")
+
+            # Stress e antropometria
+            persona.c_plasmatico = request.POST.get("c_plasmatico")
+            persona.massa_ossea = request.POST.get("massa_ossea")
+            persona.eta_metabolica = request.POST.get("eta_metabolica")
+            persona.grasso_viscerale = request.POST.get("grasso_viscerale")
+
+            # Dati anagrafici e misurazioni
+            persona.height = request.POST.get("altezza")
+            persona.weight = request.POST.get("peso_corporeo")
+            persona.punteggio_fisico = request.POST.get("punteggio_fisico")
+            persona.girth_value = request.POST.get("circonferenza_addominale")
+            persona.girth_notes = request.POST.get("note_addominali")
+
+            # Conversione date (se presenti)
+            from datetime import datetime
+            bmi_date = request.POST.get("bmi_detection_date")
+            if bmi_date:
+                persona.bmi_detection_date = datetime.strptime(bmi_date, "%Y-%m-%d").date()
+
+            girth_date = request.POST.get("girth_date")
+            if girth_date:
+                persona.girth_date = datetime.strptime(girth_date, "%Y-%m-%d").date()
+
+            # Salva tutto
+            persona.save()
+
+            context = {
+            'persona': persona,
+            'dottore' : dottore,
+            'success': 'i dati sono stati aggiornati correttamente'
+            }
+
+        except Exception as e:
+            context = {
+                'persona': persona,
+                'dottore': dottore,
+                'errore': f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
+            }
+
+    
+        return render(request, "includes/composizione.html", context)
+
+
+
+
+
+
+
+
+
 class UpdatePersonaContactView(View):
+
     def post(self, request, id):
+        
         if request.method == "POST":
             try:
                 # Estrai il corpo della richiesta
@@ -1947,107 +2035,6 @@ class UpdatePersonaContactView(View):
                 return JsonResponse({"success": False, "error": str(e)})
         else:
             return JsonResponse({"success": False, "error": "Metodo non valido"})
-
-# Funzione per aggiornare i dati di una persona in composizione corpo
-class UpdatePersonaComposizioneView(View):
-    def get(self, request, id):
-        try:
-            persona = TabellaPazienti.objects.get(id=id)
-        except TabellaPazienti.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Persona non trovata"}, status=404)
-
-        if request.method == "GET":
-            # ✅ Manteniamo tutti i dati della persona
-            data = {
-                "success": True,
-                "personaComposizione": {
-                    "height": persona.height,
-                    "weight": persona.weight,
-                    "bmi": persona.bmi,
-                    "bmi_detection_date": persona.bmi_detection_date,
-                    "girth_value": persona.girth_value,
-                    "girth_notes": persona.girth_notes,
-                    "girth_date": persona.girth_date,
-                    "sport_frequency": persona.sport_frequency,
-                    "livello_sedentarieta": persona.livello_sedentarieta,
-                    "grasso": persona.grasso,
-                    "acqua": persona.acqua,
-                    "massa_ossea": persona.massa_ossea,
-                    "massa_muscolare": persona.massa_muscolare,
-                    "bmr": persona.bmr,
-                    "eta_metabolica": persona.eta_metabolica,
-                    "grasso_viscerale": persona.grasso_viscerale,
-                    "whr": persona.whr,
-                    "whtr": persona.whtr,
-                    "punteggio_fisico": persona.punteggio_fisico,
-                    "storico_punteggi": persona.storico_punteggi or [],  # ✅ Restituiamo anche lo storico
-                },
-            }
-            return JsonResponse(data)
-
-        elif request.method == "POST":
-            try:
-                data = json.loads(request.body)
-                campi_da_aggiornare = []
-
-                # ✅ Controllo per il reset dello storico punteggi
-                if data.get("reset_storico_punteggi", False):
-                    persona.storico_punteggi = []  # ✅ Resetta lo storico
-                    persona.punteggio_fisico = None  # ✅ Reset del punteggio attuale
-                    persona.save(update_fields=["storico_punteggi", "punteggio_fisico"])
-                    return JsonResponse({"success": True})
-
-                # ✅ Aggiorna tutti gli altri campi se presenti
-                for field in [
-                    "height", "weight", "bmi", "bmi_detection_date",
-                    "girth_value", "girth_notes", "girth_date", "sport_frequency",
-                    "livello_sedentarieta", "grasso", "acqua", "massa_ossea",
-                    "massa_muscolare", "bmr", "eta_metabolica", "grasso_viscerale",
-                    "whr", "whtr"
-                ]:
-                    if field in data:
-                        setattr(persona, field, data[field])
-                        campi_da_aggiornare.append(field)
-
-                # ✅ Gestione del punteggio fisico
-                if "punteggio_fisico" in data:
-                    try:
-                        nuovo_punteggio = int(data["punteggio_fisico"])  # ✅ Conversione a int
-                    except ValueError:
-                        return JsonResponse({"success": False, "error": "Punteggio non valido"}, status=400)
-
-                    if not (1 <= nuovo_punteggio <= 9):
-                        return JsonResponse({"success": False, "error": "Punteggio fuori range"}, status=400)
-
-                    # ✅ Se il punteggio è cambiato, aggiorniamo lo storico
-                    if persona.punteggio_fisico != nuovo_punteggio:
-                        if not isinstance(persona.storico_punteggi, list):
-                            persona.storico_punteggi = []  # ✅ Inizializza se non esiste
-
-                        # ✅ Aggiunge il nuovo punteggio con data
-                        persona.storico_punteggi.append({
-                            "punteggio": nuovo_punteggio,
-                            "data": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        })
-
-                        # ✅ Aggiorniamo il punteggio attuale
-                        persona.punteggio_fisico = nuovo_punteggio
-                        campi_da_aggiornare.append("punteggio_fisico")
-                        campi_da_aggiornare.append("storico_punteggi")
-
-                # ✅ Salva solo i campi aggiornati
-                if campi_da_aggiornare:
-                    persona.save(update_fields=campi_da_aggiornare)
-
-                return JsonResponse({"success": True})
-
-            except json.JSONDecodeError:
-                return JsonResponse({"success": False, "error": "JSON non valido"}, status=400)
-            except Exception as e:
-                return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-        else:
-            return JsonResponse({"success": False, "error": "Metodo non valido"}, status=405)
 
 
 # VIEWS PER CALCOLO CAPACITA', SEZIONE CAPACITA' VITALE
