@@ -205,7 +205,7 @@ canvas {
   width: 100%;
 }
 
-.field {
+/* .field {
   display: flex;
   flex-direction: column;
 }
@@ -230,12 +230,12 @@ canvas {
   font-size: 18px;
   color: var(--dark1);
   background-color: white;
-}
+} */
 
-.field input {
+/* .field input {
   border: 1px solid rgba(63, 63, 63, 0.212);
   padding: 0 10px;
-}
+} */
 
 #punteggio_fisico_container {
   padding: 6.5px 20px;
@@ -440,12 +440,12 @@ select option {
   margin-right: -5.5rem;
 }
 .toolkit:hover {
-  width: 25rem;
+  width: 50rem;
   opacity: 1;
   transform: translateX(0); 
 }
 #genereReport,
-#modify {
+#btn_blood_group {
   height: 3rem;
   opacity: 0;
   border-radius: 8px !important;
@@ -454,9 +454,89 @@ select option {
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 .toolkit:hover #genereReport,
-.toolkit:hover #modify {
+.toolkit:hover #btn_blood_group {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
+
+
+
+
+
+/* STILE FIELD */
+.container_data {
+  width: 98%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  color: #0c214b;
+  gap: 20px;
+  padding: 20px 20px;
+  font-size: 1.1rem;
+  background: var(--card-color);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+}
+.riga-container p:first-of-type{
+  border-left: none;
+}
+.field-title {
+  background-color: var(--contrast-color-shadow);
+  border-radius: 8px;
+  padding: 15px;
+  color: var(--dark2);
+  margin-bottom: -1rem;
+  font-weight: bold;
+  padding-bottom: 25px;
+}
+.field input{
+  border-bottom: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-top: none;
+  padding: 15px;
+  padding-top: 15px;
+  border-radius: 8px;
+  font-size: 18px;
+  color: var(--dark1);
+  background-color: white;
+}
+.input-disabled:disabled {
+  background-color: #f5f5f5;
+  color: #666;
+  border: 1px solid #ccc;
+  opacity: 1;
+  cursor: not-allowed;
+}
+.input-disabled.editing {
+  background-color: #fff;
+  border: 1px solid var(--contrast-color);
+  color: #000;
+  cursor: text;
+}
+.input-disabled{
+  background-color: white;
+  cursor: not-allowed;
+  outline: none;
+}
+
+
+
+
+
+
+/* STYLE FIX BUTTON MODIFICA DATI */
+#modifica,
+#indietro-modifica {
+  min-width: 28px;
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

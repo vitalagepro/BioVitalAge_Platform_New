@@ -36,21 +36,20 @@ urlpatterns = [
     path("CartellaPaziente/<int:id>/", views.CartellaPazienteView.as_view(), name="cartella_paziente"),
     path("ElencoReferti/<int:id>/", views.ElencoRefertiView.as_view(), name="elenco_referti"),
 
-
     # URL PER DATI BASE
     path("DatiBase/<int:id>/", views.DatiBaseView.as_view(), name="dati_base"),
 
-
+    # URL SEZIONE ETA' METABOLICA
     path("Patients/<int:id>/Composizione", views.ComposizioneView.as_view(), name="composizione"),
+
+
     path('Prescrizioni/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
     path('Resilienza/<int:persona_id>/', views.ResilienzaView.as_view(), name='resilienza'),
     path('Valutazione_Muscolo_Scheletrica/<int:persona_id>/', views.ValutazioneMSView.as_view(), name='valutazione_m_s'), 
 
-
     path("CartellaPaziente/Update/<int:persona_id>/<int:visite_id>/", DettagliPrescrizioni.as_view(), name="dettagli_prescrizioni"),
     path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
 
-    path('update-persona-composizione/<int:id>/', views.UpdatePersonaComposizioneView.as_view(), name='update_persona_composizione'),
     path('update-persona/<int:id>/', views.UpdatePersonaContactView.as_view(), name='update_persona_contact'),
 
 
