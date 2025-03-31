@@ -1,8 +1,10 @@
 import requests
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 from datetime import datetime, timedelta
 from django.utils import timezone as dj_timezone
 from django.db.models import Avg, Min, Max
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.db.models import Count
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
@@ -20,6 +22,7 @@ from django.conf import settings
 from django.utils.decorators import method_decorator
 import traceback
 from django.shortcuts import redirect
+import jwt  # Assicurati di avere PyJWT installato (pip install PyJWT)
 import logging
 
 logger = logging.getLogger(__name__)
@@ -307,7 +310,7 @@ class MedicalNewsNotificationsView(View):
     def get(self, request, *args, **kwargs):
         try:
             api_key = "2626c84001fd4317bae40517af281479"
-            url = f"https://newsapi.org/v2/everything?q=health&from=2025-02-28&sortBy=publishedAt&apiKey={api_key}"
+            url = f"https://newsapi.org/v2/everything?q=hospital&from=2025-02-28&sortBy=publishedAt&apiKey={api_key}"
             response = requests.get(url)
             data = response.json()
             news = []
@@ -331,6 +334,58 @@ class MedicalNewsNotificationsView(View):
             return JsonResponse({"success": True, "news": news})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
+
+# VIEW PER I TOKEN
+class OAuth2CallbackView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            id_token = data.get('id_token')
+            
+            if not id_token:
+                return HttpResponseBadRequest("Token mancante")
+            
+            # Decodifica il token ID (senza verificare la firma in sviluppo)
+            decoded = jwt.decode(id_token, options={"verify_signature": False})
+            user_email = decoded.get("email")
+            
+            if not user_email:
+                return HttpResponseBadRequest("Email non trovata nel token")
+            
+            request.session['user_email'] = user_email
+            return JsonResponse({'success': True, 'email': user_email})
+            
+        except Exception as e:
+            return HttpResponseBadRequest(str(e))
+
+# VIEW PER LE EMAIL
+class FetchEmailsView(View):
+    def get(self, request, *args, **kwargs):
+        access_token = request.session.get('access_token')
+        if not access_token:
+            return JsonResponse({'success': False, 'error': 'Access token non trovato'}, status=400)
+
+        # Configura le credenziali (in un flusso completo avresti anche client_id, client_secret, ecc.)
+        creds = Credentials(token=access_token)
+        try:
+            service = build('gmail', 'v1', credentials=creds)
+            # Recupera la lista dei messaggi (maxResults=2)
+            results = service.users().messages().list(userId='me', maxResults=2).execute()
+            messages = results.get('messages', [])
+            emails_data = []
+            for msg in messages:
+                message = service.users().messages().get(userId='me', id=msg['id'], format='full').execute()
+                headers = message.get('payload', {}).get('headers', [])
+                subject = next((h['value'] for h in headers if h['name'] == 'Subject'), 'No Subject')
+                sender = next((h['value'] for h in headers if h['name'] == 'From'), 'Unknown')
+                emails_data.append({'subject': subject, 'sender': sender})
+            return JsonResponse({'success': True, 'emails': emails_data})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 # VIEW PER ACCETTARE IL DISCLAIMER
 class AcceptDisclaimerView(View):

@@ -32,7 +32,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+    const currentUser = "{{ dottore|escapejs }}";
+  </script>
+  <script src="{%  static 'includes/js/components/sidebar.js' %}"></script>
 
   <!-- Chart Import -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1/dist/chart.umd.min.js"></script>
@@ -543,9 +547,6 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-      const currentUser = "{{ dottore|escapejs }}";
-  </script>
 </body>
 
 </html>

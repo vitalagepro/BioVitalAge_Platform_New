@@ -27,6 +27,11 @@
   <!-- Js Import -->
   <script src="{% static 'includes/js/statistiche.js' %}" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script>
+    const currentUser = "{{ dottore|escapejs }}";
+  </script>
+  <script src="{%  static 'includes/js/components/sidebar.js' %}"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <!-- Chart Import -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1/dist/chart.umd.min.js"></script>

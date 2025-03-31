@@ -669,6 +669,7 @@ tbody tr:hover {
   position: sticky;
   top: 0;
   left: 0;
+  z-index: 5 !important;
   padding: 15px;
   background-color: #3a255d;
   color: white;
@@ -787,6 +788,8 @@ tbody tr:hover {
   opacity: 0;
   display: flex;
   justify-content: space-between;
+  position: relative;
+  z-index: 4 !important;
 }
 
 .text-truncate-3 {
