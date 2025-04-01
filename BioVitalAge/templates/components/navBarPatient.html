@@ -18,11 +18,11 @@
             </a>
             <a href="{% url 'dati_base' persona.id %}"
                 class="{% if request.resolver_match.url_name == 'Risultati' %}active-link{% endif %}">
-                Dati Base - Stile di Vita
+                Dati Base
             </a>
             <a href="{% url 'composizione' persona.id %}"
                 class="{% if request.resolver_match.url_name == 'Calcolatore' %}active-link{% endif %}">
-                Composizione Corporea
+                Età Metabolica
             </a>
             <a href="{% url 'etaVitale' persona.id %}"
                 class="{% if request.resolver_match.url_name == 'Calcolatore' %}active-link{% endif %}">

@@ -40,8 +40,6 @@ editButton.addEventListener("click", function (e) {
   editButton.lastChild.textContent = isEditing ? "Indietro" : "Modifica Dati";
 });
 
-
-
 saveButton.addEventListener("click", function (e) {
   e.preventDefault();
 

@@ -1674,15 +1674,7 @@ class DatiBaseView(View):
     
 
         return render(request, "includes/dati_base.html", context)  
-            
-
-
-
-
-
-
-
-
+        
 class InserisciPazienteView(View):
 
     def get(self, request):
@@ -1881,6 +1873,19 @@ class InserisciPazienteView(View):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 # VIEWS PER SEZIONE ETA METABOLICA
 class ComposizioneView(View):
 
@@ -1891,98 +1896,153 @@ class ComposizioneView(View):
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
+        ultimo_referto = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto').first()
+
+
         context = {
             'persona': persona,
-            'dottore' : dottore
+            'dottore' : dottore,
+            'ultimo_referto': ultimo_referto
         }
 
-        return render(request, "includes/composizione.html", context)
-
+        return render(request, "eta_metabolica/etaMetabolica.html", context)
 
     def post(self, request, id):       
-
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
         try:
-
-            persona.bmi = request.POST.get("bmi")
-            persona.grasso = request.POST.get("grasso")
-            persona.acqua = request.POST.get("acqua")
-            persona.massa_muscolare = request.POST.get("massa_muscolare")
-            persona.bmr = request.POST.get("bmr")
-            persona.whr = request.POST.get("whr")
-            persona.whtr = request.POST.get("whtr")
-
-            # Profilo glicemico e insulinico
-            persona.glicemia = request.POST.get("glicemia")
-            persona.ogtt = request.POST.get("ogtt")
-            persona.emoglobina_g = request.POST.get("emoglobina_g")
-            persona.insulina_d = request.POST.get("insulina_d")
-            persona.curva_i = request.POST.get("curva_i")
-            persona.homa_ir = request.POST.get("homa_ir")
-            persona.tyg = request.POST.get("tyg")
-
-            # Profilo lipidico
-            persona.c_tot = request.POST.get("c_tot")
-            persona.hdl = request.POST.get("hdl")
-            persona.ldl = request.POST.get("ldl")
-            persona.trigliceridi = request.POST.get("trigliceridi")
-
-            # Profilo epatico
-            persona.ast = request.POST.get("ast")
-            persona.alt = request.POST.get("alt")
-            persona.ggt = request.POST.get("ggt")
-            persona.bili_t = request.POST.get("bili_t") 
-
-            # Infiammazione
-            persona.pcr = request.POST.get("pcr")
-            persona.hgs = request.POST.get("hgs")
-            persona.sii = request.POST.get("sii")
-
-            # Stress e antropometria
-            persona.c_plasmatico = request.POST.get("c_plasmatico")
-            persona.massa_ossea = request.POST.get("massa_ossea")
-            persona.eta_metabolica = request.POST.get("eta_metabolica")
-            persona.grasso_viscerale = request.POST.get("grasso_viscerale")
-
-            # Dati anagrafici e misurazioni
-            persona.height = request.POST.get("altezza")
-            persona.weight = request.POST.get("peso_corporeo")
-            persona.punteggio_fisico = request.POST.get("punteggio_fisico")
-            persona.girth_value = request.POST.get("circonferenza_addominale")
-            persona.girth_notes = request.POST.get("note_addominali")
-
             # Conversione date (se presenti)
-            from datetime import datetime
             bmi_date = request.POST.get("bmi_detection_date")
-            if bmi_date:
-                persona.bmi_detection_date = datetime.strptime(bmi_date, "%Y-%m-%d").date()
-
             girth_date = request.POST.get("girth_date")
-            if girth_date:
-                persona.girth_date = datetime.strptime(girth_date, "%Y-%m-%d").date()
+            bmi_detection_date = datetime.strptime(bmi_date, "%Y-%m-%d").date() if bmi_date else None
+            girth_detection_date = datetime.strptime(girth_date, "%Y-%m-%d").date() if girth_date else None
 
-            # Salva tutto
-            persona.save()
+            # Salva nella tabella RefertiEtaMetabolica
+            RefertiEtaMetabolica.objects.create(
+                dottore=dottore,
+                paziente=persona,
+
+                # Composizione corporea
+                bmi=request.POST.get("bmi"),
+                grasso=request.POST.get("grasso"),
+                acqua=request.POST.get("acqua"),
+                massa_muscolare=request.POST.get("massa_muscolare"),
+                bmr=request.POST.get("bmr"),
+                whr=request.POST.get("whr"),
+                whtr=request.POST.get("whtr"),
+
+                # Profilo glicemico e insulinico
+                glicemia=request.POST.get("glicemia"),
+                ogtt=request.POST.get("ogtt"),
+                emoglobina_g=request.POST.get("emoglobina_g"),
+                insulina_d=request.POST.get("insulina_d"),
+                curva_i=request.POST.get("curva_i"),
+                homa_ir=request.POST.get("homa_ir"),
+                tyg=request.POST.get("tyg"),
+
+                # Profilo lipidico
+                c_tot=request.POST.get("c_tot"),
+                hdl=request.POST.get("hdl"),
+                ldl=request.POST.get("ldl"),
+                trigliceridi=request.POST.get("trigliceridi"),
+
+                # Profilo epatico
+                ast=request.POST.get("ast"),
+                alt=request.POST.get("alt"),
+                ggt=request.POST.get("ggt"),
+                bili_t=request.POST.get("bili_t"),
+
+                # Infiammazione
+                pcr=request.POST.get("pcr"),
+                hgs=request.POST.get("hgs"),
+                sii=request.POST.get("sii"),
+
+                # Stress e antropometria
+                c_plasmatico=request.POST.get("c_plasmatico"),
+                massa_ossea=request.POST.get("massa_ossea"),
+                eta_metabolica=request.POST.get("eta_metabolica"),
+                grasso_viscerale=request.POST.get("grasso_viscerale"),
+
+                # Dati anagrafici e misurazioni
+                height=request.POST.get("altezza"),
+                weight=request.POST.get("weight"),
+                p_fisico=request.POST.get("p_fisico"),
+                girth_value=request.POST.get("girth_value"),
+                girth_notes=request.POST.get("note_addominali"),
+                bmi_detection_date=bmi_detection_date,
+                girth_date=girth_detection_date
+            )
+
+            ultimo_referto = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto').first()
 
             context = {
-            'persona': persona,
-            'dottore' : dottore,
-            'success': 'i dati sono stati aggiornati correttamente'
+                'persona': persona,
+                'dottore': dottore,
+                'success': 'I dati sono stati aggiornati correttamente nel referto',
+                'ultimo_referto': ultimo_referto
             }
 
         except Exception as e:
             context = {
                 'persona': persona,
                 'dottore': dottore,
-                'errore': f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
+                'errore': f"Errore di sistema: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
             }
 
-    
-        return render(request, "includes/composizione.html", context)
+        return render(request, "eta_metabolica/etaMetabolica.html", context)
+
+
+class ComposizioneChartView(View):
+    def get(self, request, id):
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+                'persona': persona,
+                'dottore': dottore,
+        }
+
+        return render (request, 'eta_metabolica/grafici.html', context)
+
+
+class RefertiComposizioneView(View):
+    def get(self, request, id):
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        referti = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto')
+
+
+        context = {
+                'persona': persona,
+                'dottore': dottore,
+                'referti': referti,
+        }
+
+        return render (request, 'eta_metabolica/elencoReferti.html', context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

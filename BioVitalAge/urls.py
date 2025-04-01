@@ -7,46 +7,68 @@ urlpatterns = [
     # URL PER LOGIN
     path("", views.LoginRenderingPage.as_view(), name='loginPage'),
     path("PrivacyPolicy/<int:id>/", views.PrivacyPolicyRenderingPage.as_view(), name='PrivacyPolicy'),
-    path("Home_Page", HomePageRender.as_view(), name='HomePage'),
     path("Login",LogOutRender.as_view(), name="logout"),
     path('accept-disclaimer/', AcceptDisclaimerView.as_view(), name='accept_disclaimer'),
-    
-    # URL HOME PAGE / STATISTICHE
-    path("Home_Page/Statistiche", views.StatisticheView.as_view(), name="statistiche"),
 
-    #URL SIDEBAR
+
+    # -- URL HOME PAGE --
+    path("Home_Page", HomePageRender.as_view(), name='HomePage'),
+
+
+    ## URL SIDEBAR
     path('api/appointment-notifications/', AppointmentNotificationsView.as_view(), name='appointment-notifications'),
     path('api/medical-news-notifications/', MedicalNewsNotificationsView.as_view(), name='medical-news-notifications'),
 
-    # URL PER CALCOLATORE
+
+    ## URL HOME PAGE / STATISTICHE
+    path("Home_Page/Statistiche", views.StatisticheView.as_view(), name="statistiche"),
+
+
+    # -- URL PER CALCOLATORE --
     path("Calcolatore_Page", views.CalcolatoreRender.as_view(), name='Calcolatore'),
 
-    # URL PER LA RICECA
-    path("Risultati_Page", views.RisultatiRender.as_view(), name='Risultati'),
 
-    # URL INSERISCI PAZIENTE
-    path("AggiungiPaziente/", views.InserisciPazienteView.as_view(), name="inserisci_paziente"),
-    path("aggiungi-paziente/", views.CreaPazienteView.as_view(), name="aggiungi_paziente"),
-
-    # URL PER VEDERE IL REFERTO DEL CALCOLO DELL'ETA' BIOLOGICA
+    ## URL PER VEDERE IL REFERTO DEL CALCOLO DELL'ETA' BIOLOGICA
     path("persona/<int:persona_id>/", views.PersonaDetailView.as_view(), name="persona_detail"),
     path("persona/<int:persona_id>/<int:referto_id>/", views.PersonaDetailView.as_view(), name="persona_detail"),
 
-    # URL PER LA CARTELLA DEL PAZIENTE
+
+    # -- URL PER LA SEZIONE RICERCA PAZIENTE --
+    path("Risultati_Page", views.RisultatiRender.as_view(), name='Risultati'),
+
+
+    ## URL INSERISCI PAZIENTE
+    path("AggiungiPaziente/", views.InserisciPazienteView.as_view(), name="inserisci_paziente"),
+    path("aggiungi-paziente/", views.CreaPazienteView.as_view(), name="aggiungi_paziente"),
+
+
+    # -- URL PER LA CARTELLA DEL PAZIENTE --
     path("CartellaPaziente/<int:id>/", views.CartellaPazienteView.as_view(), name="cartella_paziente"),
     path("ElencoReferti/<int:id>/", views.ElencoRefertiView.as_view(), name="elenco_referti"),
 
-    # URL PER DATI BASE
+
+    ## -- URL PER DATI BASE --
     path("DatiBase/<int:id>/", views.DatiBaseView.as_view(), name="dati_base"),
 
-    # URL SEZIONE ETA' METABOLICA
+
+    ## -- URL SEZIONE ETA' METABOLICA --
     path("Patients/<int:id>/Composizione", views.ComposizioneView.as_view(), name="composizione"),
+    path("Patients/<int:id>/Composizione/Chart", views.ComposizioneChartView.as_view(), name="grafici_composizione"),
+    path("Patients/<int:id>/Composizione/Referti", views.RefertiComposizioneView.as_view(), name="referti_composizione"),
+    
+
+    
 
 
-    path('Prescrizioni/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
+
+
+    ## -- URL SEZIONE RESILIENZA -- 
     path('Resilienza/<int:persona_id>/', views.ResilienzaView.as_view(), name='resilienza'),
     path('Valutazione_Muscolo_Scheletrica/<int:persona_id>/', views.ValutazioneMSView.as_view(), name='valutazione_m_s'), 
 
+
+    ## -- URL SEZIONE PRESCRIZIONI --
+    path('Prescrizioni/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
     path("CartellaPaziente/Update/<int:persona_id>/<int:visite_id>/", DettagliPrescrizioni.as_view(), name="dettagli_prescrizioni"),
     path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
 
@@ -58,11 +80,6 @@ urlpatterns = [
     path('TestVitale/<int:id>/', views.TestEtaVitaleView.as_view(), name='TestetaVitale'),
     path('RefertoTest/<int:persona_id>/<int:referto_id>/', views.RefertoQuizView.as_view(), name='referto_test'),
     path('UpdateTestVitale/<int:id>/', views.QuizEtaVitaleUpdateView.as_view(), name='updateTestEtaVitale'), 
-
-    
-
-
-
     
     path('Prescrizioni/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
     path("CartellaPaziente/Update/<int:persona_id>/<int:visite_id>/", DettagliPrescrizioni.as_view(), name="dettagli_prescrizioni"),
