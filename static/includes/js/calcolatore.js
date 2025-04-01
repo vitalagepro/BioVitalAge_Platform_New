@@ -4,9 +4,7 @@
 const ContainerIndicatori = document.querySelectorAll(".indicator-container");
 
 ContainerIndicatori.forEach((element) => {
-  try {
-    console.log("Elaborazione elemento:", element);
-
+  try { 
     const indicatorContainer = element.querySelector(".indicator-content-container");
     const indicator = element.querySelector(".indicatore");
     const valoreEsame = parseFloat(indicator?.getAttribute("data-value") || 0);
@@ -18,7 +16,7 @@ ContainerIndicatori.forEach((element) => {
 
     // Gestione del valore ">0"
     if (minPositive === ">0") {
-      minPositive = 0.1; // Sostituisci con un valore numerico appropriato
+      minPositive = 0.1; 
     }
 
     // Converti in numeri per i calcoli
@@ -33,44 +31,29 @@ ContainerIndicatori.forEach((element) => {
     );
 
     if (isNaN(valoreEsame) || isNaN(minPositive) || isNaN(maxPositive)) {
-      console.warn("Dati mancanti o non validi:", {
-        valoreEsame,
-        minPositive,
-        maxPositive,
-        rangeNegativeIndicator,
-        extremeRightRangeIndicator,
-      });
+      
       return;
     }
-
-    console.log("Valori iniziali:", {
-      valoreEsame,
-      minPositive,
-      maxPositive,
-      rangeNegativeIndicator,
-      extremeRightRangeIndicator,
-    });
 
     if (
       valoreEsame >= minPositive &&
       valoreEsame <= maxPositive
     ) {
-      console.log("Caso 1: Dentro l'intervallo positivo");
+   
       const percentuale = ((valoreEsame - minPositive) / (maxPositive - minPositive)) * 30 + 26;
       indicator.style.left = `${Math.round(percentuale)}%`;
     } else if (valoreEsame < minPositive) {
-      console.log("Caso 2: Fuori range, sotto il minimo positivo");
+     
       const percentuale = ((valoreEsame - rangeNegativeIndicator) / (minPositive - rangeNegativeIndicator)) * 30 - 4;
       indicator.style.left = `${Math.max(Math.round(percentuale), 0)}%`;
     } else if (valoreEsame > maxPositive) {
-      console.log("Caso 3: Fuori range, sopra il massimo positivo");
+ 
       const percentuale = ((valoreEsame - maxPositive) / (extremeRightRangeIndicator - maxPositive)) * 30 + 66;
       indicator.style.left = `${Math.min(Math.round(percentuale), 100)}%`;
     } else {
       console.warn("Caso non gestito per valoreEsame:", valoreEsame);
     }
 
-    console.log("Posizione indicatore:", indicator.style.left);
   } catch (error) {
     console.error("Errore durante l'elaborazione:", error, element);
   }
@@ -80,42 +63,55 @@ ContainerIndicatori.forEach((element) => {
 /*  -----------------------------------------------------------------------------------------------
   Function for section toggles
 --------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".btn-selected").forEach(button => {
+      button.addEventListener("click", function () {
+          const buttonId = this.id;
+          const contentId = buttonId.replace("-show", "Content");
+          const content = document.getElementById(contentId);
+          const card = this.closest(".card-indices");
+          const allCards = document.querySelectorAll(".card-indices");
 
-// Add event listener to toggle buttons
-function setupSectionToggle() {
-  document.querySelectorAll(".btn-selected").forEach((button) => {
-    button.addEventListener("click", toggleSection);
+          // Chiude tutte le altre sezioni aperte
+          document.querySelectorAll(".card-indices_content").forEach(section => {
+              if (section !== content) {
+                  section.classList.remove("open");
+                  section.style.maxHeight = "0";
+              }
+          });
+
+          // Rimuove la classe full_width da tutte le card
+          allCards.forEach(card => card.classList.remove("full_width"));
+
+          document.querySelectorAll(".btn-selected svg polyline").forEach(svg => {
+              svg.setAttribute("points", "6 9 12 15 18 9");
+          });
+
+          if (content.classList.contains("open")) {
+              content.classList.remove("open");
+              content.style.maxHeight = "0";
+              this.querySelector("svg polyline").setAttribute("points", "6 9 12 15 18 9");
+          } else {
+              content.classList.add("open");
+              content.style.maxHeight = content.scrollHeight + "px";
+              this.querySelector("svg polyline").setAttribute("points", "18 15 12 9 6 15");
+
+              // Trova la posizione della card nell'elenco
+              const index = Array.from(allCards).indexOf(card) + 1; // Indice 1-based
+
+              if (index % 2 !== 0 && index > 1) { // Se è dispari (1, 3, 5...) ed esiste un precedente
+                  allCards[index - 2]?.classList.add("full_width"); // Aggiunge la classe alla precedente
+              }
+          }
+      });
   });
+});
 
-  // Add event listener to the section itself
-  document.querySelectorAll(".header-section-exam").forEach((section) => {
-    section.addEventListener("click", function (e) {
-      // Prevent toggle if the button inside the section is clicked
-      if (e.target.closest("button")) {
-        return;
-      }
-      toggleSection.call(section.querySelector(".btn-selected"));
-    });
-  });
-}
 
-function toggleSection() {
-  const container = this.closest(".section");
-  const buttonIcon = this.querySelector("svg");
 
-  container.classList.toggle("hidden-exam");
 
-  if (container.classList.contains("hidden-exam")) {
-    this.setAttribute("title", "Apri Sezione");
-    buttonIcon.style.transform = "rotate(0deg)"; // Reset rotation
-  } else {
-    this.setAttribute("title", "Chiudi Sezione");
-    buttonIcon.style.transform = "rotate(180deg)"; // Rotate arrow
-  }
-}
 
-// Initialize the toggle functionality
-document.addEventListener("DOMContentLoaded", setupSectionToggle);
+
 /*  -----------------------------------------------------------------------------------------------
 Function for gender selection
 --------------------------------------------------------------------------------------------------- */

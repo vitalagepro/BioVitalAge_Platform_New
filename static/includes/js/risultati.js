@@ -221,6 +221,8 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   searchInput.addEventListener("input", function () {
+    filterRows(); // Esegue la ricerca mentre digiti
+
     if (!searchInput.value.trim()) {
       currentPage = 1;
       showPage(currentPage);
@@ -233,6 +235,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
+
 });
 
 /* Avvio della paginazione */

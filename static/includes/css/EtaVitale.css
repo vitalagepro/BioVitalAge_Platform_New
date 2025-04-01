@@ -59,6 +59,13 @@
     letter-spacing: 1px;
     margin-bottom: 10px;
 }
+#lista_domini li a{
+    text-decoration: none;
+    color: var(--contrast-color);
+}
+#lista_domini li a:hover{
+    font-weight: bold;
+}
 
 .containerCard-test {
     display: flex;
@@ -226,3 +233,15 @@
     font-size: 25px;
     margin-bottom: 20px;
 }
+
+
+
+
+
+
+
+
+
+
+
+

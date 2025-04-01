@@ -1,9 +1,22 @@
 /*********** ! RESET CSS ************/
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
+}
+
+* h3 {
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 23px !important;
+  font-weight: 600 !important;
+}
+
+* span{
+  font-family: 'Montserrat', sans-serif !important;
 }
 
 body {
@@ -907,26 +920,13 @@ main {
   border-radius: 100%;
   transition: all 0.2s cubic-bezier(.215, .61, .355, 1);
 }
-
 .pagination-controls button:hover{
   background-color: var(--contrast-color2);
 }
-
 .pagination-controls .active{
   background-color: var(--contrast-color2) !important;
   font-weight: bold !important;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -944,7 +944,6 @@ main {
   margin-top: 15px;
   margin-bottom: 5px;
 }
-
 .successMessage {
   color: rgb(255, 255, 255);
   background-color: rgb(0, 76, 0);
@@ -957,7 +956,6 @@ main {
   margin-top: 15px;
   margin-bottom: 5px;
 }
-
 .progressBarContainer {
   position: relative;
   width: 100%;
@@ -967,7 +965,6 @@ main {
   border-radius: 8px;
   overflow: hidden;
 }
-
 .progressBar {
   position: absolute;
   top: 0;
@@ -976,7 +973,6 @@ main {
   height: 100%;
   background-color: #721c24;
 }
-
 .progressBarContainerSuccess {
   position: relative;
   width: 100%;
@@ -986,7 +982,6 @@ main {
   border-radius: 8px;
   overflow: hidden;
 }
-
 #progressSuccess {
   position: absolute;
   top: 0;
@@ -995,3 +990,9 @@ main {
   height: 100%;
   background-color: #1b602b;
 }
+
+
+
+
+
+

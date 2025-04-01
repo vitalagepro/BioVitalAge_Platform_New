@@ -165,8 +165,8 @@
 .banner {
   color: var(--card-color);
   padding: 20px 20px 0 20px;
-  display: flex;
-  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
   flex-wrap: wrap;
   align-items: center;
@@ -176,7 +176,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  width: 52%;
+  width: 100%;
   background: var(--contrast-color);
   background-image: var(--banner-bg);
   background-position: right;
@@ -185,7 +185,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 300px;
+  height: 312px;
   padding: 10px;
   padding-left: 30px;
   flex: 1;
@@ -250,11 +250,42 @@
 
 
 /* PROMEMORIA */
+.container-work-in-progress{
+  position: relative;
+}
+
 .reminders {
   background-color: var(--card-color);
   padding: 23px 20px;
-  width: 48%;
+  width: 100%;
   border-radius: 8px;
+}
+
+/* 
+#work-in-progress {
+  display: none;
+} */
+
+#work-in-progress {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  text-align: center;
+  font-size: 20px;
+  color: var(--contrast-color);
+  font-weight: bold;
+  background-color: var(--card-color);
+  border-radius: 8px;
+  padding: 0 10px;
+}
+
+
+.hidden-promemoria{
+  pointer-events: none;
+  opacity: 0.5;
+  filter: blur(5px);
 }
 
 .button-container {
@@ -419,9 +450,25 @@ tbody tr:hover {
   background-color: var(--neutral-range-color);
 }
 
-.badge.consulting {
+.badge.rehab {
   background-color: var(--contrast-color-shadow);
   color: var(--dark2);
+}
+
+.badge.physio-ria {
+  background-color: #26425a;
+}
+
+.badge.physio-spo {
+  background-color: #00937a;
+}
+
+.badge.physio-est {
+  background-color: #2b124c;
+}
+
+.badge.other {
+  background-color: #7f8c8d;
 }
 
 .action-btn {
@@ -442,6 +489,16 @@ tbody tr:hover {
 .action-btn.approve:hover {
   background-color: var(--contrast-color2);
   color: var(--tittle1);
+}
+
+.action-btn-approved {
+  color: white !important;
+  background-color: var(--contrast-color2);
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .action-btn.delete {
@@ -617,6 +674,10 @@ tbody tr:hover {
   color: white;
 }
 
+.sidebar-trigger{
+  position: relative;
+}
+
 #closeSidebar {
   background: none;
   border: none;
@@ -648,6 +709,23 @@ tbody tr:hover {
 .hidden {
   visibility: hidden;
   opacity: 0;
+}
+
+.badge-count {
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 100%;
+  padding: 5px;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,.05);
+  position: absolute;
+  top: -3px;
+  right: 10px;
 }
 
 
@@ -709,6 +787,13 @@ tbody tr:hover {
   opacity: 0;
   display: flex;
   justify-content: space-between;
+}
+
+.text-truncate-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
 }
 
 .risultati-ricerca {

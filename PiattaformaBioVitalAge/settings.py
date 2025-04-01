@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1-exzg2a%&(t%r6^7*u+732h)8^z96-72gr!fk@$-ev25-zx7)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Recupera i valori delle variabili d'ambiente
 elastic_beanstalk_domain = os.getenv('ELASTIC_BEANSTALK_DOMAIN')
@@ -37,7 +37,6 @@ load_balancer_dns = os.getenv('LOAD_BALANCER_DNS')
 # Imposta ALLOWED_HOSTS in base alle variabili d'ambiente
 ALLOWED_HOSTS = [elastic_beanstalk_domain, load_balancer_dns, 'localhost', '127.0.0.1']
 ALLOWED_HOSTS = ['*']
-
 
 
 # Application definition
