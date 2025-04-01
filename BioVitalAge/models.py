@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# Tabella dottori con credenziali
+# Tabella DOTTORI registrati
 class UtentiRegistratiCredenziali(models.Model):
     nome = models.CharField(max_length=100)
     cognome = models.CharField(max_length=100)
@@ -16,8 +16,9 @@ class UtentiRegistratiCredenziali(models.Model):
         return f'{self.nome} {self.cognome}'
 
 
-# Tabella pazienti associata a ogni dottore
+# tabella DATI PAZIENTI associati al dottore
 class TabellaPazienti(models.Model):
+
     dottore = models.ForeignKey(
         UtentiRegistratiCredenziali, 
         on_delete=models.CASCADE, 
@@ -50,72 +51,6 @@ class TabellaPazienti(models.Model):
     upcomingVisit = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     
-    # --- DATI ETA' METABOLICA ---
-    ## DOMINIO COMPOSIZIONE CORPOREA
-    bmi = models.CharField(max_length=100, null=True, blank=True) 
-    grasso = models.CharField(max_length=100, null=True, blank=True)
-    acqua = models.CharField(max_length=100, null=True, blank=True)
-    massa_muscolare = models.CharField(max_length=100, null=True, blank=True)
-    bmr = models.CharField(max_length=100, null=True, blank=True)
-    whr = models.CharField(max_length=100, null=True, blank=True)
-    whtr = models.CharField(max_length=100, null=True, blank=True)
-
-    ## DOMINIO PROFILO GLICEMICO
-    glicemia = models.CharField(max_length=100, null=True, blank=True)
-    ogtt = models.CharField(max_length=100, null=True, blank=True)
-    emoglobina_g = models.CharField(max_length=100, null=True, blank=True)
-    insulina_d = models.CharField(max_length=100, null=True, blank=True)
-    curva_i = models.CharField(max_length=100, null=True, blank=True)    
-    homa_ir = models.CharField(max_length=100, null=True, blank=True)
-    tyg = models.CharField(max_length=100, null=True, blank=True)
-
-    ## DOMINIO PROFILO LIPIDICO
-    c_tot = models.CharField(max_length=100, null=True, blank=True)
-    hdl = models.CharField(max_length=100, null=True, blank=True)
-    ldl = models.CharField(max_length=100, null=True, blank=True)
-    trigliceridi = models.CharField(max_length=100, null=True, blank=True)
-
-    ## DOMINIO PROFILO METABOLICO EPATICO
-    ast = models.CharField(max_length=100, null=True, blank=True)
-    alt = models.CharField(max_length=100, null=True, blank=True)
-    ggt = models.CharField(max_length=100, null=True, blank=True)
-    bili_t = models.CharField(max_length=100, null=True, blank=True)
-
-
-    ## DOMINIO INFIAMMAZIONE
-    pcr = models.CharField(max_length=100, null=True, blank=True)
-    hgs = models.CharField(max_length=100, null=True, blank=True)
-    sii = models.CharField(max_length=100, null=True, blank=True)
-    
-    ## DOMINIO STRESS
-    c_plasmatico = models.CharField(max_length=100, null=True, blank=True)
-    
-
-    ## OTHER TO DEFINE
-    massa_ossea = models.CharField(max_length=100, null=True, blank=True)
-    eta_metabolica = models.CharField(max_length=100, null=True, blank=True)
-    grasso_viscerale = models.CharField(max_length=100, null=True, blank=True)
-    punteggio_fisico = models.CharField(max_length=100, null=True, blank=True)
-    storico_punteggi = models.JSONField(default=list, blank=True)
-
-    def aggiungi_punteggio(self, nuovo_punteggio):
-        """Aggiunge un nuovo punteggio allo storico e aggiorna il punteggio attuale."""
-        self.storico_punteggi.append({"punteggio": nuovo_punteggio, "data": str(models.DateTimeField(auto_now_add=True))})
-        self.punteggio_fisico = nuovo_punteggio
-        self.save(update_fields=["punteggio_fisico", "storico_punteggi"])
-
-    # Dati antropometrici
-    height = models.CharField(max_length=255, null=True, blank=True) 
-    weight = models.CharField(max_length=255, null=True, blank=True) 
-    
-    bmi_detection_date = models.DateField( null=True, blank=True)
-
-    # Circonferenza addominale
-    girth_value = models.CharField(max_length=255, null=True, blank=True)
-    girth_notes = models.TextField(blank=True, null=True)
-    girth_date = models.DateField(null=True, blank=True)
-
-
     # --- DATI BASE ---
     ## DOMINIO OCCUPAZIONE
     professione = models.CharField(max_length=100, null=True, blank=True)
@@ -197,11 +132,100 @@ class TabellaPazienti(models.Model):
     pressure_min = models.CharField(max_length=100, null=True, blank=True)
     pressure_max = models.CharField(max_length=100, null=True, blank=True)
 
-
-
-
     def __str__(self):
         return f"Paziente: {self.name} {self.surname}"
+
+
+
+# tabella REFERTI ETA' METABOLICA
+class RefertiEtaMetabolica(models.Model):
+    dottore = models.ForeignKey(
+        UtentiRegistratiCredenziali,
+        on_delete=models.CASCADE,
+        related_name='referti_eta_metabolica', 
+        null=True
+    )
+
+    paziente = models.ForeignKey(
+        TabellaPazienti,
+        on_delete=models.CASCADE,
+        related_name='referti_eta_metabolica'
+    )
+
+    data_referto = models.DateTimeField(default=timezone.now)
+
+    # --- DOMINI CLINICI ---
+    # COMPOSIZIONE CORPOREA
+    bmi = models.CharField(max_length=100, null=True, blank=True) 
+    grasso = models.CharField(max_length=100, null=True, blank=True)
+    acqua = models.CharField(max_length=100, null=True, blank=True)
+    massa_muscolare = models.CharField(max_length=100, null=True, blank=True)
+    bmr = models.CharField(max_length=100, null=True, blank=True)
+    whr = models.CharField(max_length=100, null=True, blank=True)
+    whtr = models.CharField(max_length=100, null=True, blank=True)
+
+    # GLICEMICO
+    glicemia = models.CharField(max_length=100, null=True, blank=True)
+    ogtt = models.CharField(max_length=100, null=True, blank=True)
+    emoglobina_g = models.CharField(max_length=100, null=True, blank=True)
+    insulina_d = models.CharField(max_length=100, null=True, blank=True)
+    curva_i = models.CharField(max_length=100, null=True, blank=True)
+    homa_ir = models.CharField(max_length=100, null=True, blank=True)
+    tyg = models.CharField(max_length=100, null=True, blank=True)
+
+    # LIPIDICO
+    c_tot = models.CharField(max_length=100, null=True, blank=True)
+    hdl = models.CharField(max_length=100, null=True, blank=True)
+    ldl = models.CharField(max_length=100, null=True, blank=True)
+    trigliceridi = models.CharField(max_length=100, null=True, blank=True)
+
+    # METABOLICO EPATICO
+    ast = models.CharField(max_length=100, null=True, blank=True)
+    alt = models.CharField(max_length=100, null=True, blank=True)
+    ggt = models.CharField(max_length=100, null=True, blank=True)
+    bili_t = models.CharField(max_length=100, null=True, blank=True)
+
+    # INFIAMMAZIONE
+    pcr = models.CharField(max_length=100, null=True, blank=True)
+    hgs = models.CharField(max_length=100, null=True, blank=True)
+    sii = models.CharField(max_length=100, null=True, blank=True)
+
+    # STRESS
+    c_plasmatico = models.CharField(max_length=100, null=True, blank=True)
+
+    # ALTRI DATI
+    massa_ossea = models.CharField(max_length=100, null=True, blank=True)
+    eta_metabolica = models.CharField(max_length=100, null=True, blank=True)
+    grasso_viscerale = models.CharField(max_length=100, null=True, blank=True)
+    p_fisico = models.CharField(max_length=100, null=True, blank=True)
+    storico_punteggi = models.JSONField(default=list, blank=True)
+
+    # DATI ANTROPOMETRICI
+    height = models.CharField(max_length=255, null=True, blank=True)
+    weight = models.CharField(max_length=255, null=True, blank=True)
+    bmi_detection_date = models.DateField(null=True, blank=True)
+
+    # CIRCONFERENZA ADDOMINALE
+    girth_value = models.CharField(max_length=255, null=True, blank=True)
+    girth_notes = models.TextField(blank=True, null=True)
+    girth_date = models.DateField(null=True, blank=True)
+
+    def aggiungi_punteggio(self, nuovo_punteggio):
+        self.storico_punteggi.append({
+            "punteggio": nuovo_punteggio,
+            "data": timezone.now().isoformat()
+        })
+        self.punteggio_fisico = nuovo_punteggio
+        self.save(update_fields=["punteggio_fisico", "storico_punteggi"])
+
+    def __str__(self):
+        return f"Referto {self.id} - {self.paziente.name} {self.paziente.surname} - {self.data_referto.date()}"
+
+
+
+
+
+
 
 
 
@@ -227,7 +251,6 @@ class ArchivioReferti(models.Model):
     documento = models.FileField(upload_to='referti/', null=True, blank=True)
 
     def __str__(self):
-        print(f"Referto ID: {self.id} - Paziente: {self.paziente.name} {self.paziente.surname}")
         return f"Referto ID: {self.id} - Paziente: {self.paziente.name} {self.paziente.surname}"
 
 
