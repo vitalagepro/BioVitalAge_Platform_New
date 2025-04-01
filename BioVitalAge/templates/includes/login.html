@@ -16,36 +16,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- js import -->
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script src="{% static 'includes/js/login.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script>
-        function handleCredentialResponse(response) {
-            console.log("Google Token:", response.credential);
-            fetch("/oauth2callback/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id_token: response.credential })
-            }).then(r => r.json()).then(console.log);
-        }
-
-        // Inizializza solo quando l'elemento esiste
-        document.addEventListener("DOMContentLoaded", () => {
-            const buttonDiv = document.getElementById("google-login-button");
-            if (!buttonDiv) return;
-
-            google.accounts.id.initialize({
-                client_id: "596437252615-q9l0g5e3nf6s39q7jvup43jc4netcmv0.apps.googleusercontent.com", // <-- Usa il nuovo ID
-                callback: handleCredentialResponse
-            });
-
-            google.accounts.id.renderButton(buttonDiv, {
-                theme: "outline",
-                size: "large"
-            });
-        });
-    </script>
 
     <!-- Font Import  -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -94,7 +65,7 @@
 
                     <div class="col-md-12 d-flex justify-content-center align-items-center button-container"  style="margin-top: 2rem;">
                         <button type="submit" class="button-login">Login Piattaforma</button>
-                        <button type="submit" class="button-login" id="google-login-button"></button>
+                        <!-- <button type="submit" class="button-login" id="google-login-button"></button> -->
                     </div>
                 </form>
 

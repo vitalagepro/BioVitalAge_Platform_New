@@ -17,8 +17,6 @@ urlpatterns = [
     #URL SIDEBAR
     path('api/appointment-notifications/', AppointmentNotificationsView.as_view(), name='appointment-notifications'),
     path('api/medical-news-notifications/', MedicalNewsNotificationsView.as_view(), name='medical-news-notifications'),
-    path('oauth2callback/', OAuth2CallbackView.as_view(), name='oauth2callback'),
-    path('fetch_emails/', FetchEmailsView.as_view(), name='fetch_emails'),
 
     # URL PER CALCOLATORE
     path("Calcolatore_Page", views.CalcolatoreRender.as_view(), name='Calcolatore'),

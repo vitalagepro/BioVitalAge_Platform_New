@@ -29,6 +29,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script>
     const currentUser = "{{ dottore|escapejs }}";
+    // Passa l'utente dal backend
+    window.currentUser = "{{ dottore|escapejs }}" || 'guest';
+    
+    // Listener per logout
+    document.getElementById('logout-btn')?.addEventListener('click', () => {
+      localStorage.setItem('pendingLogout', 'true');
+    });
   </script>
   <script src="{%  static 'includes/js/components/sidebar.js' %}"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>

@@ -715,20 +715,22 @@ tbody tr:hover {
 .badge-count {
   background-color: #e74c3c;
   color: white;
-  border-radius: 100%;
-  padding: 5px;
+  border-radius: 50%;
   width: 20px;
   height: 20px;
   font-size: 12px;
-  display: flex;
   justify-content: center;
   align-items: center;
   box-shadow: 0 5px 20px rgba(0,0,0,.05);
   position: absolute;
   top: -3px;
   right: 10px;
+  /* Rimuovi il padding e usa flex per centrare */
+  padding: 0;
+  margin: 0;
+  line-height: 20px;
+  text-align: center;
 }
-
 
 /* ! CSS NOTIFY */
 .blog-container {
@@ -790,6 +792,10 @@ tbody tr:hover {
   justify-content: space-between;
   position: relative;
   z-index: 4 !important;
+}
+
+.default-text-notification{
+  padding: 15px;
 }
 
 .text-truncate-3 {

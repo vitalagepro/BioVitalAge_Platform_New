@@ -17,7 +17,9 @@ class UtentiRegistratiCredenziali(models.Model):
 
 
 # Tabella pazienti associata a ogni dottore
+# tabella DATI PAZIENTI associati al dottore
 class TabellaPazienti(models.Model):
+
     dottore = models.ForeignKey(
         UtentiRegistratiCredenziali, 
         on_delete=models.CASCADE, 
@@ -32,7 +34,7 @@ class TabellaPazienti(models.Model):
             models.UniqueConstraint(fields=['dottore', 'codice_fiscale'], name='unique_paziente_per_dottore')
     ]
         
-    # Dati personali
+    # DATI PERSONALI
     name = models.CharField(max_length=50, null=True, blank=True)
     surname = models.CharField(max_length=50, null=True, blank=True)
     email = models.CharField(max_length=100, null=True, blank=True)
@@ -44,120 +46,180 @@ class TabellaPazienti(models.Model):
     province = models.CharField(max_length=100, null=True, blank=True)
     place_of_birth = models.CharField(max_length=100, null=True, blank=True)
     chronological_age = models.IntegerField(null=True, blank=True)
-    blood_group = models.CharField(max_length=3, null=True, blank=True)
-    rh_factor = models.CharField(max_length=3, null=True, blank=True)
-    pressure_min = models.CharField(max_length=100, null=True, blank=True)
-    pressure_max = models.CharField(max_length=100, null=True, blank=True)
     heart_rate = models.CharField(max_length=100, null=True, blank=True)
     associate_staff = models.CharField(max_length=100, null=True, blank=True)
     lastVisit = models.DateField(null=True, blank=True)
     upcomingVisit = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     
-    # Dati Composizione corporea
-    grasso = models.CharField(max_length=100, null=True, blank=True)
-    acqua = models.CharField(max_length=100, null=True, blank=True)
-    massa_muscolare = models.CharField(max_length=100, null=True, blank=True)
-    massa_ossea = models.CharField(max_length=100, null=True, blank=True)
-    bmr = models.CharField(max_length=100, null=True, blank=True)
-    eta_metabolica = models.CharField(max_length=100, null=True, blank=True)
-    grasso_viscerale = models.CharField(max_length=100, null=True, blank=True)
-    whr = models.CharField(max_length=100, null=True, blank=True)
-    whtr = models.CharField(max_length=100, null=True, blank=True)
-    punteggio_fisico = models.CharField(max_length=100, null=True, blank=True)
-    storico_punteggi = models.JSONField(default=list)
+    # --- DATI BASE ---
+    ## DOMINIO OCCUPAZIONE
+    professione = models.CharField(max_length=100, null=True, blank=True)
+    pensionato = models.CharField(max_length=100, null=True, blank=True)
 
-    def aggiungi_punteggio(self, nuovo_punteggio):
-        """Aggiunge un nuovo punteggio allo storico e aggiorna il punteggio attuale."""
-        self.storico_punteggi.append({"punteggio": nuovo_punteggio, "data": str(models.DateTimeField(auto_now_add=True))})
-        self.punteggio_fisico = nuovo_punteggio
-        self.save(update_fields=["punteggio_fisico", "storico_punteggi"])
-
-    # Dati antropometrici
-    height = models.FloatField(help_text="Height in cm", null=True) 
-    weight = models.FloatField(help_text="Weight in kg", null=True) 
-    bmi = models.FloatField(help_text="Body Mass Index", null=True) 
-    bmi_detection_date = models.DateField( null=True)
-
-    # Circonferenza addominale
-    girth_value = models.FloatField(help_text="Girth value in cm", null=True)
-    girth_notes = models.TextField(blank=True, null=True)
-    girth_date = models.DateField( null=True)
-
-    # Alcol
-    alcol = models.IntegerField(null=True, blank=True)
+    ## DOMINIO DONNA
+    menarca = models.CharField(max_length=100, null=True, blank=True)
+    ciclo = models.CharField(max_length=100, null=True, blank=True)
+    sintomi = models.CharField(max_length=100, null=True, blank=True)
+    esordio = models.CharField(max_length=100, null=True, blank=True)
+    parto = models.CharField(max_length=100, null=True, blank=True)
+    post_parto = models.CharField(max_length=100, null=True, blank=True)
+    aborto = models.CharField(max_length=100, null=True, blank=True)
+    
+    ## DOMINIO STILE DI VITA
+    ### Alcol
+    alcol = models.CharField(max_length=255, null=True, blank=True)
     alcol_type = models.CharField(max_length=255, null=True, blank=True)
     data_alcol = models.DateField(null=True, blank=True)
     alcol_frequency = models.CharField(max_length=255, null=True, blank=True)
 
-    # Fumo
-    smoke = models.IntegerField(null=True, blank=True)
+    ### Fumo
+    smoke = models.CharField(max_length=255, null=True, blank=True)
     smoke_frequency = models.CharField(max_length=100, blank=True, null=True)
     reduced_intake = models.CharField(max_length=100, blank=True, null=True)
 
-    # Sport
-    sport = models.CharField(default=False, max_length=100, null=True)
+    ### Sport
+    sport = models.CharField(default=False, max_length=100, null=True, blank=True)
     sport_livello = models.CharField(max_length=100, blank=True, null=True)
     sport_frequency = models.CharField(max_length=100, blank=True, null=True)
 
-    # Sedentarietà
-    attivita_sedentaria = models.CharField(default=False, max_length=100, null=True)
+    ### SedentarietÃ 
+    attivita_sedentaria = models.CharField(default=False, max_length=100, null=True, blank=True)
     livello_sedentarieta = models.CharField(max_length=100, blank=True, null=True)
     sedentarieta_nota = models.TextField(blank=True, null=True)
 
-    professione = models.CharField(max_length=100, null=True)
-    pensionato = models.CharField(max_length=100, null=True)
+    ## DOMINIO ANAMNESI FAMILIARE
+    m_cardiache = models.CharField(max_length=100, null=True, blank=True)
+    diabete_m = models.CharField(max_length=100, null=True, blank=True)
+    obesita = models.CharField(max_length=100, null=True, blank=True)
+    epilessia = models.CharField(max_length=100, null=True, blank=True)
+    ipertensione = models.CharField(max_length=100, null=True, blank=True)
+    m_tiroidee = models.CharField(max_length=100, null=True, blank=True)
+    m_polmonari = models.CharField(max_length=100, null=True, blank=True)
+    tumori = models.CharField(max_length=100, null=True, blank=True)
+    allergie = models.CharField(max_length=100, null=True, blank=True)
+    m_psichiatriche = models.CharField(max_length=100, null=True, blank=True)
 
-    #SOLO DONNA---
-    menarca = models.CharField(max_length=100, null=True)
-    ciclo = models.CharField(max_length=100, null=True)
-    sintomi = models.CharField(max_length=100, null=True)
-    esordio = models.CharField(max_length=100, null=True)
-    parto = models.CharField(max_length=100, null=True)
-    post_parto = models.CharField(max_length=100, null=True)
-    aborto = models.CharField(max_length=100, null=True)
+    patologie = models.CharField(max_length=100, null=True, blank=True)
+    p_p_altro = models.CharField(max_length=100, null=True, blank=True)
+    t_farmaco = models.CharField(max_length=100, null=True, blank=True)
+    t_dosaggio = models.CharField(max_length=100, null=True, blank=True)
+    t_durata = models.CharField(max_length=100, null=True, blank=True)
+
+    ## DOMINIO ANAMNESI PATOLOGICA REMOTA
+    p_cardiovascolari = models.CharField(max_length=100, null=True, blank=True)
+    m_metabolica = models.CharField(max_length=100, null=True, blank=True)
+    p_respiratori_cronici = models.CharField(max_length=100, null=True, blank=True)
+    m_neurologica = models.CharField(max_length=100, null=True, blank=True)
+    m_endocrina = models.CharField(max_length=100, null=True, blank=True)
+    m_autoimmune = models.CharField(max_length=100, null=True, blank=True)
+    p_epatici = models.CharField(max_length=100, null=True, blank=True)
+    m_renale = models.CharField(max_length=100, null=True, blank=True)
+    d_gastrointestinali = models.CharField(max_length=100, null=True, blank=True)
     
-    #ANAMNESI FAMILIARE---
-    m_cardiache = models.CharField(max_length=100, null=True)
-    diabete_m = models.CharField(max_length=100, null=True)
-    obesita = models.CharField(max_length=100, null=True)
-    epilessia = models.CharField(max_length=100, null=True)
-    ipertensione = models.CharField(max_length=100, null=True)
-    m_tiroidee = models.CharField(max_length=100, null=True)
-    m_polmonari = models.CharField(max_length=100, null=True)
-    tumori = models.CharField(max_length=100, null=True)
-    allergie = models.CharField(max_length=100, null=True)
-    m_psichiatriche = models.CharField(max_length=100, null=True)
+    ## DOMINIO ESAME OBBIETTIVO
+    eloquio = models.CharField(max_length=100, null=True, blank=True)
+    s_nutrizionale = models.CharField(max_length=100, null=True, blank=True)
+    a_genarale = models.CharField(max_length=100, null=True, blank=True)
+    psiche = models.CharField(max_length=100, null=True, blank=True)
+    r_ambiente = models.CharField(max_length=100, null=True, blank=True)
+    s_emotivo = models.CharField(max_length=100, null=True, blank=True)
+    costituzione = models.CharField(max_length=100, null=True, blank=True)
+    statura = models.CharField(max_length=100, null=True, blank=True)
 
-    patologie = models.CharField(max_length=100, null=True)
-    p_p_altro = models.CharField(max_length=100, null=True)
-    t_farmaco = models.CharField(max_length=100, null=True)
-    t_dosaggio = models.CharField(max_length=100, null=True)
-    t_durata = models.CharField(max_length=100, null=True)
-
-    #ANAMNESI PATOLOGICA REMOTA---
-    p_cardiovascolari = models.CharField(max_length=100, null=True)
-    m_metabolica = models.CharField(max_length=100, null=True)
-    p_respiratori_cronici = models.CharField(max_length=100, null=True)
-    m_neurologica = models.CharField(max_length=100, null=True)
-    m_endocrina = models.CharField(max_length=100, null=True)
-    m_autoimmune = models.CharField(max_length=100, null=True)
-    p_epatici = models.CharField(max_length=100, null=True)
-    m_renale = models.CharField(max_length=100, null=True)
-    d_gastrointestinali = models.CharField(max_length=100, null=True)
-    
-    #ESAME OBBIETTIVO
-    eloquio = models.CharField(max_length=100, null=True)
-    s_nutrizionale = models.CharField(max_length=100, null=True)
-    a_genarale = models.CharField(max_length=100, null=True)
-    psiche = models.CharField(max_length=100, null=True)
-    r_ambiente = models.CharField(max_length=100, null=True)
-    s_emotivo = models.CharField(max_length=100, null=True)
-    costituzione = models.CharField(max_length=100, null=True)
-    statura = models.CharField(max_length=100, null=True)
+    ## DOMINIO INFORMAZIONE DEL SANGUE
+    blood_group = models.CharField(max_length=3, null=True, blank=True)
+    rh_factor = models.CharField(max_length=3, null=True, blank=True)
+    pressure_min = models.CharField(max_length=100, null=True, blank=True)
+    pressure_max = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f"Paziente: {self.name} {self.surname}"
+
+# tabella REFERTI ETA' METABOLICA
+class RefertiEtaMetabolica(models.Model):
+    dottore = models.ForeignKey(
+        UtentiRegistratiCredenziali,
+        on_delete=models.CASCADE,
+        related_name='referti_eta_metabolica', 
+        null=True
+    )
+
+    paziente = models.ForeignKey(
+        TabellaPazienti,
+        on_delete=models.CASCADE,
+        related_name='referti_eta_metabolica'
+    )
+
+    data_referto = models.DateTimeField(default=timezone.now)
+
+    # --- DOMINI CLINICI ---
+    # COMPOSIZIONE CORPOREA
+    bmi = models.CharField(max_length=100, null=True, blank=True) 
+    grasso = models.CharField(max_length=100, null=True, blank=True)
+    acqua = models.CharField(max_length=100, null=True, blank=True)
+    massa_muscolare = models.CharField(max_length=100, null=True, blank=True)
+    bmr = models.CharField(max_length=100, null=True, blank=True)
+    whr = models.CharField(max_length=100, null=True, blank=True)
+    whtr = models.CharField(max_length=100, null=True, blank=True)
+
+    # GLICEMICO
+    glicemia = models.CharField(max_length=100, null=True, blank=True)
+    ogtt = models.CharField(max_length=100, null=True, blank=True)
+    emoglobina_g = models.CharField(max_length=100, null=True, blank=True)
+    insulina_d = models.CharField(max_length=100, null=True, blank=True)
+    curva_i = models.CharField(max_length=100, null=True, blank=True)
+    homa_ir = models.CharField(max_length=100, null=True, blank=True)
+    tyg = models.CharField(max_length=100, null=True, blank=True)
+
+    # LIPIDICO
+    c_tot = models.CharField(max_length=100, null=True, blank=True)
+    hdl = models.CharField(max_length=100, null=True, blank=True)
+    ldl = models.CharField(max_length=100, null=True, blank=True)
+    trigliceridi = models.CharField(max_length=100, null=True, blank=True)
+
+    # METABOLICO EPATICO
+    ast = models.CharField(max_length=100, null=True, blank=True)
+    alt = models.CharField(max_length=100, null=True, blank=True)
+    ggt = models.CharField(max_length=100, null=True, blank=True)
+    bili_t = models.CharField(max_length=100, null=True, blank=True)
+
+    # INFIAMMAZIONE
+    pcr = models.CharField(max_length=100, null=True, blank=True)
+    hgs = models.CharField(max_length=100, null=True, blank=True)
+    sii = models.CharField(max_length=100, null=True, blank=True)
+
+    # STRESS
+    c_plasmatico = models.CharField(max_length=100, null=True, blank=True)
+
+    # ALTRI DATI
+    massa_ossea = models.CharField(max_length=100, null=True, blank=True)
+    eta_metabolica = models.CharField(max_length=100, null=True, blank=True)
+    grasso_viscerale = models.CharField(max_length=100, null=True, blank=True)
+    punteggio_fisico = models.CharField(max_length=100, null=True, blank=True)
+    storico_punteggi = models.JSONField(default=list, blank=True)
+
+    # DATI ANTROPOMETRICI
+    height = models.CharField(max_length=255, null=True, blank=True)
+    weight = models.CharField(max_length=255, null=True, blank=True)
+    bmi_detection_date = models.DateField(null=True, blank=True)
+
+    # CIRCONFERENZA ADDOMINALE
+    girth_value = models.CharField(max_length=255, null=True, blank=True)
+    girth_notes = models.TextField(blank=True, null=True)
+    girth_date = models.DateField(null=True, blank=True)
+
+    def aggiungi_punteggio(self, nuovo_punteggio):
+        self.storico_punteggi.append({
+            "punteggio": nuovo_punteggio,
+            "data": timezone.now().isoformat()
+        })
+        self.punteggio_fisico = nuovo_punteggio
+        self.save(update_fields=["punteggio_fisico", "storico_punteggi"])
+
+    def __str__(self):
+        return f"Referto {self.id} - {self.paziente.name} {self.paziente.surname} - {self.data_referto.date()}"
+
 
 # Tabella archivio referti associata ai pazienti
 class ArchivioReferti(models.Model):
@@ -479,7 +541,7 @@ class EsameVisita(models.Model):
 
 # TABELLA APPUNTAMENTI
 class Appointment(models.Model):
-    dottore = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    dottore = models.ForeignKey(UtentiRegistratiCredenziali, on_delete=models.CASCADE, null=True, blank=True)
     cognome_paziente = models.CharField(max_length=255, blank=True, null=True)
     nome_paziente = models.CharField(max_length=255, blank=True, null=True)
     tipologia_visita = models.CharField(max_length=100, choices=[('Fisioterapia Sportiva', 'Fisioterapia Sportiva'), ('Fisioterapia e Riabilitazione', 'Fisioterapia e Riabilitazione'), ('Fisioestetica', 'Fisioestetica')], blank=True, null=True)

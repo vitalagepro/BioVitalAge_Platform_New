@@ -100,6 +100,7 @@ function deleteAppointment(appointmentId, confirmAlert) {
     });
 }
 
+// 🔹 Aggiungo l'evento al caricamento del DOM
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".action-btn").forEach((button) => {
     button.addEventListener("click", function () {

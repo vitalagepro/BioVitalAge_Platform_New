@@ -1,6 +1,4 @@
 import requests
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
 from datetime import datetime, timedelta
 from django.utils import timezone as dj_timezone
 from django.db.models import Avg, Min, Max
@@ -22,7 +20,6 @@ from django.conf import settings
 from django.utils.decorators import method_decorator
 import traceback
 from django.shortcuts import redirect
-import jwt  # Assicurati di avere PyJWT installato (pip install PyJWT)
 import logging
 
 logger = logging.getLogger(__name__)
@@ -66,14 +63,23 @@ class HomePageRender(View):
         persone = TabellaPazienti.objects.all().order_by('-id')[:5]
         appuntamenti = Appointment.objects.all().order_by('data')[:4]
 
-        total_biological_age_count = DatiEstesiReferti.objects.aggregate(total=Count('biological_age'))['total']
-        total_pazienti = TabellaPazienti.objects.count()  # Conta tutti i pazienti
-        # Calcola il minimo e il massimo dell'età cronologica
-        min_age = TabellaPazienti.objects.aggregate(min_age=Min('chronological_age'))['min_age']
-        max_age = TabellaPazienti.objects.aggregate(max_age=Max('chronological_age'))['max_age']
-        avg_age = TabellaPazienti.objects.aggregate(avg_age=Avg('chronological_age'))['avg_age']
+
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        # Calcola il totale "biological_age" solo per i referti associati ai pazienti di questo dottore
+        total_biological_age_count = DatiEstesiReferti.objects.filter(referto__paziente__dottore=dottore).aggregate(total=Count('biological_age'))['total']
+        total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
+
+        # Calcola min, max e media dell'età cronologica solo per i pazienti del dottore
+        agg_age = TabellaPazienti.objects.filter(dottore=dottore).aggregate(
+            min_age=Min('chronological_age'),
+            max_age=Max('chronological_age'),
+            avg_age=Avg('chronological_age')
+        )
+        min_age = agg_age['min_age']
+        max_age = agg_age['max_age']
+        avg_age = agg_age['avg_age']
+        appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('data')
         persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
                 # --- Calcolo per il report "Totale Pazienti" ---
         # Assumiamo che il modello TabellaPazienti abbia un campo 'created_at'
@@ -85,36 +91,38 @@ class HomePageRender(View):
         end_of_last_week = start_of_week - timedelta(days=1)
 
         # Conta i pazienti creati nella settimana corrente e in quella precedente
-        current_week_patients = TabellaPazienti.objects.filter(created_at__gte=start_of_week).count()
-        last_week_patients = TabellaPazienti.objects.filter(created_at__gte=start_of_last_week, created_at__lte=end_of_last_week).count()
+        current_week_patients = TabellaPazienti.objects.filter(
+            dottore=dottore, created_at__gte=start_of_week
+        ).count()
+        last_week_patients = TabellaPazienti.objects.filter(
+            dottore=dottore, created_at__gte=start_of_last_week, created_at__lte=end_of_last_week
+        ).count()
 
         # Calcola la differenza e la percentuale
         difference = current_week_patients - last_week_patients
         if last_week_patients > 0:
             percentage_increase = (difference / last_week_patients) * 100
         else:
-            # Se la settimana precedente non ha record, possiamo definire il 100% se ce ne sono ora, oppure 0 se non ce ne sono
             percentage_increase = 100 if current_week_patients > 0 else 0
 
-                # --- Calcolo per il report "Totale Prescrizioni" ---
-        # Utilizza il campo data_referto per filtrare i referti
-        current_week_referti = ArchivioReferti.objects.filter(data_referto__gte=start_of_week).count()
-        last_week_referti = ArchivioReferti.objects.filter(data_referto__gte=start_of_last_week,
-                                                           data_referto__lte=end_of_last_week).count()
+        # Calcolo dei referti (prescrizioni) associati ai pazienti del dottore
+        current_week_referti = ArchivioReferti.objects.filter(
+            paziente__dottore=dottore, data_referto__gte=start_of_week
+        ).count()
+        last_week_referti = ArchivioReferti.objects.filter(
+            paziente__dottore=dottore, data_referto__gte=start_of_last_week, data_referto__lte=end_of_last_week
+        ).count()
 
         difference_referti = current_week_referti - last_week_referti
         abs_difference_referti = abs(difference_referti)
-
-        # Calcola la percentuale come valore assoluto
         if last_week_referti > 0:
             percentage_increase_referti = abs(difference_referti) / last_week_referti * 100
         else:
-            # Se la settimana precedente era 0, se ci sono referti adesso consideriamo 100%, altrimenti 0
             percentage_increase_referti = 100 if current_week_referti > 0 else 0
 
-        # Calcola la percentuale media delle età cronologiche
+        # Calcola la percentuale media delle età cronologiche, se i valori sono validi
         if min_age is not None and max_age is not None and max_age != min_age:
-            relative_position = (avg_age - min_age) / (max_age - min_age)  # valore fra 0 e 1
+            relative_position = (avg_age - min_age) / (max_age - min_age)
             media_percentage = relative_position * 100
         else:
             media_percentage = 0
@@ -164,16 +172,24 @@ class HomePageRender(View):
                         
                             # Ottieni il referto più recente per ogni paziente
                             ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
-                            appuntamenti = Appointment.objects.all().order_by('data')[:4]
-
-                            total_biological_age_count = DatiEstesiReferti.objects.aggregate(total=Count('biological_age'))['total']
-                            total_pazienti = TabellaPazienti.objects.count()  # Conta tutti i pazienti
-                            # Calcola il minimo e il massimo dell'età cronologica
-                            min_age = TabellaPazienti.objects.aggregate(min_age=Min('chronological_age'))['min_age']
-                            max_age = TabellaPazienti.objects.aggregate(max_age=Max('chronological_age'))['max_age']
-                            avg_age = TabellaPazienti.objects.aggregate(avg_age=Avg('chronological_age'))['avg_age']
                             dottore_id = request.session.get('dottore_id')
                             dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+                            # Calcola il totale "biological_age" solo per i referti associati ai pazienti di questo dottore
+                            total_biological_age_count = DatiEstesiReferti.objects.filter(referto__paziente__dottore=dottore).aggregate(total=Count('biological_age'))['total']
+                            total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
+                            # Ottieni gli appuntamenti del dottore
+                            appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('data')[:4]
+                                    # --- Calcolo per il report "Totale Pazienti" ---
+                            # Calcola min, max e media dell'età cronologica solo per i pazienti del dottore
+                            agg_age = TabellaPazienti.objects.filter(dottore=dottore).aggregate(
+                                min_age=Min('chronological_age'),
+                                max_age=Max('chronological_age'),
+                                avg_age=Avg('chronological_age')
+                            )
+                            min_age = agg_age['min_age']
+                            max_age = agg_age['max_age']
+                            avg_age = agg_age['avg_age']
+                            appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('data')
                             persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
                                     # --- Calcolo per il report "Totale Pazienti" ---
                             # Assumiamo che il modello TabellaPazienti abbia un campo 'created_at'
@@ -185,36 +201,38 @@ class HomePageRender(View):
                             end_of_last_week = start_of_week - timedelta(days=1)
 
                             # Conta i pazienti creati nella settimana corrente e in quella precedente
-                            current_week_patients = TabellaPazienti.objects.filter(created_at__gte=start_of_week).count()
-                            last_week_patients = TabellaPazienti.objects.filter(created_at__gte=start_of_last_week, created_at__lte=end_of_last_week).count()
+                            current_week_patients = TabellaPazienti.objects.filter(
+                                dottore=dottore, created_at__gte=start_of_week
+                            ).count()
+                            last_week_patients = TabellaPazienti.objects.filter(
+                                dottore=dottore, created_at__gte=start_of_last_week, created_at__lte=end_of_last_week
+                            ).count()
 
                             # Calcola la differenza e la percentuale
                             difference = current_week_patients - last_week_patients
                             if last_week_patients > 0:
                                 percentage_increase = (difference / last_week_patients) * 100
                             else:
-                                # Se la settimana precedente non ha record, possiamo definire il 100% se ce ne sono ora, oppure 0 se non ce ne sono
                                 percentage_increase = 100 if current_week_patients > 0 else 0
 
-                                    # --- Calcolo per il report "Totale Prescrizioni" ---
-                            # Utilizza il campo data_referto per filtrare i referti
-                            current_week_referti = ArchivioReferti.objects.filter(data_referto__gte=start_of_week).count()
-                            last_week_referti = ArchivioReferti.objects.filter(data_referto__gte=start_of_last_week,
-                                                                            data_referto__lte=end_of_last_week).count()
+                            # Calcolo dei referti (prescrizioni) associati ai pazienti del dottore
+                            current_week_referti = ArchivioReferti.objects.filter(
+                                paziente__dottore=dottore, data_referto__gte=start_of_week
+                            ).count()
+                            last_week_referti = ArchivioReferti.objects.filter(
+                                paziente__dottore=dottore, data_referto__gte=start_of_last_week, data_referto__lte=end_of_last_week
+                            ).count()
 
                             difference_referti = current_week_referti - last_week_referti
                             abs_difference_referti = abs(difference_referti)
-
-                            # Calcola la percentuale come valore assoluto
                             if last_week_referti > 0:
                                 percentage_increase_referti = abs(difference_referti) / last_week_referti * 100
                             else:
-                                # Se la settimana precedente era 0, se ci sono referti adesso consideriamo 100%, altrimenti 0
                                 percentage_increase_referti = 100 if current_week_referti > 0 else 0
 
-                            # Calcola la percentuale media delle età cronologiche
+                            # Calcola la percentuale media delle età cronologiche, se i valori sono validi
                             if min_age is not None and max_age is not None and max_age != min_age:
-                                relative_position = (avg_age - min_age) / (max_age - min_age)  # valore fra 0 e 1
+                                relative_position = (avg_age - min_age) / (max_age - min_age)
                                 media_percentage = relative_position * 100
                             else:
                                 media_percentage = 0
@@ -278,23 +296,28 @@ class HomePageRender(View):
 class AppointmentNotificationsView(View):
     def get(self, request, *args, **kwargs):
         try:
+            # Recupera l'id del dottore dalla sessione
+            dottore_id = request.session.get('dottore_id')
+            if not dottore_id:
+                return JsonResponse({"success": False, "error": "Utente non autenticato"}, status=403)
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+            
             # Usa il fuso orario locale (modifica se usi timezone aware)
-            now = timezone.localtime(timezone.now())
-            today = now.date()
+            now_local = timezone.localtime(timezone.now())
+            today = now_local.date()
             tomorrow = today + timedelta(days=1)
             
             notifications = []
             
-            # Appuntamenti di oggi
-            todays_appts = Appointment.objects.filter(data=today)
+            # Appuntamenti di oggi per il dottore loggato
+            todays_appts = Appointment.objects.filter(data=today, dottore=dottore)
             for appt in todays_appts:
-                # Formatta l'orario, se presente
                 appt_time = appt.orario.strftime('%H:%M') if appt.orario else ""
                 message = f"Oggi alle {appt_time} hai un appuntamento con {appt.nome_paziente} {appt.cognome_paziente}"
                 notifications.append({"message": message, "type": "info"})
             
-            # Appuntamenti di domani
-            tomorrows_appts = Appointment.objects.filter(data=tomorrow)
+            # Appuntamenti di domani per il dottore loggato
+            tomorrows_appts = Appointment.objects.filter(data=tomorrow, dottore=dottore)
             count_tomorrow = tomorrows_appts.count()
             if count_tomorrow > 0:
                 message = f"Domani hai {count_tomorrow} appuntamenti in programma, vai nella sezione appuntamenti per visionarli."
@@ -302,7 +325,6 @@ class AppointmentNotificationsView(View):
             
             return JsonResponse({"success": True, "notifications": notifications})
         except Exception as e:
-            # In caso di errore restituisce un JSON con lo status 500
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 # VIEW PER LE NOTIFICHE MEDICAL NEWS
@@ -334,58 +356,6 @@ class MedicalNewsNotificationsView(View):
             return JsonResponse({"success": True, "news": news})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
-
-# VIEW PER I TOKEN
-class OAuth2CallbackView(View):
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        try:
-            data = json.loads(request.body)
-            id_token = data.get('id_token')
-            
-            if not id_token:
-                return HttpResponseBadRequest("Token mancante")
-            
-            # Decodifica il token ID (senza verificare la firma in sviluppo)
-            decoded = jwt.decode(id_token, options={"verify_signature": False})
-            user_email = decoded.get("email")
-            
-            if not user_email:
-                return HttpResponseBadRequest("Email non trovata nel token")
-            
-            request.session['user_email'] = user_email
-            return JsonResponse({'success': True, 'email': user_email})
-            
-        except Exception as e:
-            return HttpResponseBadRequest(str(e))
-
-# VIEW PER LE EMAIL
-class FetchEmailsView(View):
-    def get(self, request, *args, **kwargs):
-        access_token = request.session.get('access_token')
-        if not access_token:
-            return JsonResponse({'success': False, 'error': 'Access token non trovato'}, status=400)
-
-        # Configura le credenziali (in un flusso completo avresti anche client_id, client_secret, ecc.)
-        creds = Credentials(token=access_token)
-        try:
-            service = build('gmail', 'v1', credentials=creds)
-            # Recupera la lista dei messaggi (maxResults=2)
-            results = service.users().messages().list(userId='me', maxResults=2).execute()
-            messages = results.get('messages', [])
-            emails_data = []
-            for msg in messages:
-                message = service.users().messages().get(userId='me', id=msg['id'], format='full').execute()
-                headers = message.get('payload', {}).get('headers', [])
-                subject = next((h['value'] for h in headers if h['name'] == 'Subject'), 'No Subject')
-                sender = next((h['value'] for h in headers if h['name'] == 'From'), 'Unknown')
-                emails_data.append({'subject': subject, 'sender': sender})
-            return JsonResponse({'success': True, 'emails': emails_data})
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 # VIEW PER ACCETTARE IL DISCLAIMER
 class AcceptDisclaimerView(View):
@@ -2571,9 +2541,8 @@ class PrescrizioniView(View):
 class AppuntamentiView(View):
     def get(self, request):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
-        persone = TabellaPazienti.objects.all().order_by('-id')
-        appuntamenti = Appointment.objects.all().order_by('-id')
-
+        persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')
+        appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('-id')
 
         # Ottieni le opzioni definite nei choices
         tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
@@ -2590,6 +2559,7 @@ class AppuntamentiView(View):
         }
 
         return render(request, 'includes/Appuntamenti.html', context)
+
     
 # VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
 class AppuntamentiSalvaView(View):
@@ -2597,10 +2567,9 @@ class AppuntamentiSalvaView(View):
         if request.method == "POST":
             try:
                 body_raw = request.body.decode('utf-8')
-
                 data = json.loads(body_raw)
 
-                # Recuperiamo i dati, facendo attenzione ai valori mancanti
+                # Recuperiamo i dati inviati
                 giorno = data.get("giorno", "").strip()
                 data_appointment = data.get("data", "").strip()
                 time_appointment = data.get("orario", "").strip()
@@ -2610,7 +2579,13 @@ class AppuntamentiSalvaView(View):
                 if not time_appointment:
                     print("❌ ERRORE: Il campo 'orario' è mancante o vuoto!")
 
-                # Creazione dell'appuntamento
+                # Recupera il dottore dalla sessione
+                dottore_id = request.session.get('dottore_id')
+                if not dottore_id:
+                    return JsonResponse({"success": False, "error": "Utente non autenticato"}, status=403)
+                dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+                # Creazione dell'appuntamento associando il dottore
                 Appointment.objects.create(
                     tipologia_visita=data.get("tipologia_visita"),
                     nome_paziente=data.get("nome_paziente"),
@@ -2620,11 +2595,12 @@ class AppuntamentiSalvaView(View):
                     giorno=giorno,
                     data=data_appointment,
                     orario=time_appointment,
-                    voce_prezzario=voce_prezzario,  # 🔹 Ora viene salvato
-                    durata=durata,  # 🔹 Ora viene salvata
+                    voce_prezzario=voce_prezzario,
+                    durata=durata,
+                    dottore=dottore  # ASSOCIA IL DOTTORE QUI
                 )
 
-                return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!", 'clear_form': True})
+                return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!", "clear_form": True})
 
             except json.JSONDecodeError as e:
                 print(f"❌ ERRORE JSON: {str(e)}")
@@ -2666,21 +2642,25 @@ class GetSingleAppointmentView(View):
 # VIEWS GET ALL APPOINTMENTS
 class AppuntamentiGetView(View):
     def get(self, request):
-        """Recupera gli appuntamenti futuri ed elimina quelli passati"""
-        
-        # 📌 1. Ottenere la data di oggi senza ore/minuti/secondi
+        # Recupera l'id del dottore dalla sessione
+        dottore_id = request.session.get('dottore_id')
+        if not dottore_id:
+            return JsonResponse({"success": False, "error": "Utente non autenticato"}, status=403)
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        # 📌 1. Ottenere la data di oggi
         today = now().date()
 
         # 📌 2. Eliminare gli appuntamenti con data precedente a oggi
-        deleted_count, _ = Appointment.objects.filter(data__lt=today).delete()  # Cambiato "date" in "data"
+        deleted_count, _ = Appointment.objects.filter(data__lt=today, dottore=dottore).delete()
 
-        # 📌 3. Recuperare solo gli appuntamenti futuri o di oggi
-        future_appointments = Appointment.objects.filter(data__gte=today)  # Cambiato "date" in "data"
+        # 📌 3. Recuperare solo gli appuntamenti futuri o di oggi per il dottore
+        future_appointments = Appointment.objects.filter(data__gte=today, dottore=dottore)
 
         # 📌 4. Costruire il dizionario degli appuntamenti organizzati per data
         appointments_by_date = {}
         for appointment in future_appointments:
-            date_str = appointment.data.strftime("%Y-%m-%d")  # Formattazione YYYY-MM-DD
+            date_str = appointment.data.strftime("%Y-%m-%d")
             if date_str not in appointments_by_date:
                 appointments_by_date[date_str] = []
             appointments_by_date[date_str].append({
