@@ -1,5 +1,5 @@
 /*  -----------------------------------------------------------------------------------------------
-  GLOBAL VARIABLES
+   GLOBAL VARIABLES
 --------------------------------------------------------------------------------------------------- */
 let notifications = [];
 let appUser = window.currentUser || 'guest'; // Usiamo appUser invece di currentUser per evitare conflitti
@@ -27,12 +27,12 @@ const updates = [
   {
     version: "v3.15.2",
     description:
-      "Abilitate le notifiche nella Home Page ache per le news del mondo medico.",
+      "Abilitate le notifiche nella Home Page anche per le news del mondo medico.",
   },
   {
     version: "v3.15.2",
     description:
-      "Impostato un layou adatto alle news con link che porta a quella news.",
+      "Impostato un layout adatto alle news con link che porta a quella news.",
   },
   {
     version: "v3.15.2",
@@ -72,23 +72,23 @@ const features = [
   },
 ];
 
-/*  -----------------------------------------------------------------------------------------------
-  USER MANAGEMENT
---------------------------------------------------------------------------------------------------- */
 
+/*  -----------------------------------------------------------------------------------------------
+   USER MANAGEMENT
+--------------------------------------------------------------------------------------------------- */
 function checkUserChange() {
   // 1. Recupera l'utente corrente dal template
   const templateUser = window.currentUser || 'guest';
-  
+
   // 2. Recupera l'utente memorizzato
   const storedUser = localStorage.getItem('appUser') || 'guest';
-  
+
   // 3. Se l'utente è cambiato
   if (templateUser !== storedUser) {
     console.log(`Rilevato cambio utente da ${storedUser} a ${templateUser}`);
     handleUserChange(templateUser);
   }
-  
+
   // 4. Aggiorna lo storage con l'utente corrente
   localStorage.setItem('appUser', templateUser);
   appUser = templateUser;
@@ -97,7 +97,7 @@ function checkUserChange() {
 function handleUserChange(newUser) {
   // 1. Imposta l'utente precedente
   previousUser = appUser;
-  
+
   // 2. Imposta il nuovo utente
   appUser = newUser || 'guest';
   console.log(`Cambio utente da ${previousUser} a ${appUser}`);
@@ -105,26 +105,25 @@ function handleUserChange(newUser) {
   // 3. Resetta le notifiche
   notifications = [];
   dismissedNotifications = [];
-  
+
   // 4. Carica le notifiche per il nuovo utente
   initUserNotifications();
-  
+
   // 5. Scarica nuove notifiche
   fetchNotifications();
 }
 
 
 /*  -----------------------------------------------------------------------------------------------
-  INITIALIZATION
+   INITIALIZATION
 --------------------------------------------------------------------------------------------------- */
-
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Verifica il cambio utente
   checkUserChange();
-  
+
   // 3. Configura intervallo di aggiornamento
   setInterval(fetchNotifications, 3600000);
-  
+
   // 4. Listener per logout
   document.getElementById('logout-btn')?.addEventListener('click', () => {
     localStorage.setItem('pendingLogout', 'true');
@@ -133,14 +132,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+
 /*  -----------------------------------------------------------------------------------------------
-  SIDEBAR HANDLER
+   SIDEBAR HANDLER
 --------------------------------------------------------------------------------------------------- */
 // Funzione per il fetch delle notifiche
 async function fetchNotifications() {
   await fetchAppointmentNotifications();
-  await fetchMedicalNewsNotifications(); 
-  updateNotificationsBadge(); 
+  await fetchMedicalNewsNotifications();
+  updateNotificationsBadge();
   localStorage.setItem(`notifications_${appUser}`, JSON.stringify(notifications));
   console.log("Notifiche aggiornate...");
 }
@@ -163,6 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const sidebarContent = document.getElementById("sidebar-content");
   const closeSidebar = document.getElementById("closeSidebar");
   const bgSidebar = document.querySelector(".bg-sidebar");
+
   // Inizializza con l'utente corrente
   handleUserChange(typeof currentUser !== 'undefined' ? currentUser : 'guest');
 
@@ -191,20 +192,22 @@ document.addEventListener("DOMContentLoaded", () => {
           renderNotifications();
           break;
         case "Email":
-          sidebarContent.innerHTML = emails.map((email, index) => `
+          sidebarContent.innerHTML = emails
+            .map((email, index) => `
               <div class="alert alert-warning notification" data-index="${index}">
                   ${email.subject} - ${email.sender}
               </div>
-            `
-          ).join("");
+            `)
+            .join("");
           break;
         case "Update":
-          sidebarContent.innerHTML = updates.map((update, index) => `
+          sidebarContent.innerHTML = updates
+            .map((update, index) => `
               <div class="alert alert-warning notification" data-index="${index}">
                   ${update.version} - ${update.description}
               </div>
-            `
-          ).join("");
+            `)
+            .join("");
           break;
         case "Configurazione":
           sidebarContent.innerHTML = configurations
@@ -266,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Listener per il pulsante di logout
   if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {          
+    logoutBtn.addEventListener("click", () => {
       // Al logout (esempio)
       handleUserChange('guest');
     });
@@ -276,7 +279,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('login-btn')?.addEventListener('click', () => {
     handleUserChange(currentUser); // Sostituisci con l'utente reale
   });
-
 
   // Avvia i fetch
   fetchAppointmentNotifications();
@@ -292,21 +294,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 60000);
 });
 
-/*  -----------------------------------------------------------------------------------------------
-  NOTIFICATION MANAGEMENT
---------------------------------------------------------------------------------------------------- */
 
+/*  -----------------------------------------------------------------------------------------------
+   NOTIFICATION MANAGEMENT
+--------------------------------------------------------------------------------------------------- */
 // Inizializzazione con pulizia
 function initUserNotifications() {
   const userKey = `notifications_${appUser}`;
   const dismissedKey = `dismissedNotifications_${appUser}`;
-  
+
   notifications = JSON.parse(localStorage.getItem(userKey)) || [];
   dismissedNotifications = JSON.parse(localStorage.getItem(dismissedKey)) || [];
-  
+
   // Filtra ID non validi
   dismissedNotifications = dismissedNotifications.filter(id => id && id !== 'undefined');
-  
+
   console.log(`Notifiche caricate per ${appUser}: ${notifications.length}`);
   updateNotificationsBadge();
 }
@@ -314,7 +316,7 @@ function initUserNotifications() {
 function saveUserNotifications() {
   const userKey = `notifications_${appUser}`;
   const dismissedKey = `dismissedNotifications_${appUser}`;
-  
+
   localStorage.setItem(userKey, JSON.stringify(notifications));
   localStorage.setItem(dismissedKey, JSON.stringify(dismissedNotifications));
 }
@@ -328,7 +330,7 @@ function removeNotification(notificationElement) {
   if (!id) return;
 
   const dismissedKey = `dismissedNotifications_${appUser}`;
-  
+
   if (!dismissedNotifications.includes(id)) {
     dismissedNotifications.push(id);
     localStorage.setItem(dismissedKey, JSON.stringify(dismissedNotifications));
@@ -350,21 +352,17 @@ function removeNotification(notificationElement) {
 
 // Aggiornamento badge garantito
 function updateNotificationsBadge() {
-  const trigger = document.querySelector(
-    '.sidebar-trigger[data-section="Notifiche"]'
-  );
+  const trigger = document.querySelector('.sidebar-trigger[data-section="Notifiche"]');
   if (!trigger) return;
 
-  let badge =
-    trigger.querySelector(".badge-count") || document.createElement("span");
+  let badge = trigger.querySelector(".badge-count") || document.createElement("span");
   badge.className = "badge-count";
 
   const activeNotifications = notifications.filter(
     (n) => n.id && !dismissedNotifications.includes(n.id)
   );
 
-  badge.textContent =
-    activeNotifications.length > 0 ? activeNotifications.length : "";
+  badge.textContent = activeNotifications.length > 0 ? activeNotifications.length : "";
   badge.style.display = activeNotifications.length > 0 ? "flex" : "none";
 
   if (!trigger.contains(badge)) {
@@ -373,14 +371,13 @@ function updateNotificationsBadge() {
 }
 
 // Modifica la funzione fetchMedicalNewsNotifications
-
 // Funzione per generare l'HTML delle news
 function generateNewsHTML(news) {
   // Crea un oggetto Date a partire dalla stringa ricevuta
   const date = new Date(news.published_at);
   // Format della data in italiano, puoi personalizzare le opzioni se necessario
   const formattedDate = new Intl.DateTimeFormat('it-IT', { dateStyle: 'long' }).format(date);
-  
+
   return `
     <div class="news-notification">
       <div class="news-date text-muted mb-1">${formattedDate}</div>

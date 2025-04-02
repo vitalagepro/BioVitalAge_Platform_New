@@ -1,11 +1,9 @@
-/* ! Calendario */
+/* =============== CALENDARIO =============== */
 .Calendario-container {
     background-color: var(--card-color);
     width: 98%;
-    margin: auto;
-    margin-top: 1rem;
+    margin: 1rem auto 20px;
     border-radius: 4px;
-    margin-bottom: 20px;
     padding-bottom: 5px;
 }
 
@@ -32,7 +30,7 @@
 
 
 
-/* Filtri container */
+/* =============== FILTRI =============== */
 .filtri-container {
     display: flex;
     justify-content: flex-start;
@@ -75,8 +73,6 @@ input[type='time'] {
     color: var(--contrast-color);
 }
 
-
-
 #currentData {
     padding: 8px 20px;
     margin-top: 1rem;
@@ -91,19 +87,66 @@ input[type='time'] {
 
 
 
-/* ! Button 'Appuntamento' */
-.button{
+
+
+
+
+
+
+
+/* =============== BUTTONS =============== */
+.button {
     border-radius: 5px;
     padding: 0.5rem 1.5rem;
 }
 
+.Btn-modify {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    padding: 0px 20px;
+    background-color: var(--contrast-color2);
+    color: white;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 50px;
+    transition-duration: .3s;
+}
 
-/* Button search e modale correlata */
+.button-view-all {
+    padding: 0.48rem 1.4rem;
+    width: max-content;
+    border-radius: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =============== SEARCH MODAL =============== */
 .hidden-modal-search {
     display: none;
 }
 
-#searchInput{
+#searchInput {
     border: none;
     padding: 0 5px;
     outline: none;
@@ -112,7 +155,6 @@ input[type='time'] {
 .search-modal {
     position: fixed;
     top: 10px;
-    /* oppure dove vuoi posizionarla */
     left: 50%;
     transform: translateX(-50%);
     background: var(--card-color);
@@ -151,7 +193,17 @@ input[type='time'] {
 
 
 
-/* Modale */
+
+
+
+
+
+
+
+
+
+
+/* =============== APPOINTMENT MODAL =============== */
 .modal-appointments {
     display: none;
     position: fixed;
@@ -164,7 +216,7 @@ input[type='time'] {
     backdrop-filter: blur(3px);
 }
 
-.modal-section{
+.modal-section {
     margin-top: 5%;
 }
 
@@ -177,7 +229,7 @@ input[type='time'] {
     position: relative;
 }
 
-.header-modal-appointments{
+.header-modal-appointments {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -188,12 +240,12 @@ input[type='time'] {
     margin-bottom: 20px;
 }
 
-.header-modal-appointments h3{
+.header-modal-appointments h3 {
     margin-top: 12px;
     margin-bottom: 0;
 }
 
-.icon-container-appointment{
+.icon-container-appointment {
     width: 60px;
     height: 60px;
     display: flex;
@@ -204,7 +256,7 @@ input[type='time'] {
     padding: 10px;
 }
 
-.icon-container-appointment img{
+.icon-container-appointment img {
     width: 100%;
     height: 100%;
 }
@@ -215,56 +267,56 @@ input[type='time'] {
     cursor: pointer;
 }
 
-.close:hover{
+.close:hover {
     color: red;
 }
 
-.button-modal-appointments{
+.button-modal-appointments {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
 }
 
-.button-modal-appointments .btn-secondary{
+.button-modal-appointments .btn-secondary {
     background-color: var(--card-color);
     color: var(--contrast-color);
     border: 2px solid var(--contrast-color2);
 }
 
-.button-modal-appointments .btn-secondary:hover{
+.button-modal-appointments .btn-secondary:hover {
     background-color: var(--contrast-color2);
     color: white;
 }
 
-.icon-form-appointment img{
+.icon-form-appointment img {
     cursor: pointer;
     width: 20px;
     height: 20px;
     transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
 }
 
-.icon-form-appointment img:hover{
+.icon-form-appointment img:hover {
     transform: scale(1.2);
 }
 
-.form-appointment{
+.form-appointment {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.form-appointment span{
+.form-appointment span {
     color: var(--contrast-color);
 }
 
-#edit-date-container{
+#edit-date-container {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-top: 10px;
 }
 
-.input-typology{
+.input-typology {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
@@ -274,7 +326,7 @@ input[type='time'] {
     margin-top: 10px;
 }
 
-.form-select-appointment{
+.form-select-appointment {
     border: none;
     border-bottom: 1px solid var(--contrast-color);
     color: var(--contrast-color);
@@ -290,9 +342,22 @@ input[type='time'] {
     cursor: auto;
 }
 
-/* ! input time */
 
-#input-time{
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =============== INPUT TIME =============== */
+#input-time {
     display: grid;
     align-items: end;
     grid-template-columns: 1fr 1fr 1fr;
@@ -302,7 +367,7 @@ input[type='time'] {
     margin-top: 10px;
 }
 
-#voce-prezzario{
+#voce-prezzario {
     border: none;
     border-bottom: 1px solid var(--contrast-color);
     color: var(--contrast-color);
@@ -311,7 +376,7 @@ input[type='time'] {
     outline: none;
 }
 
-#time{
+#time {
     border: none;
     border-bottom: 1px solid var(--contrast-color);
     color: var(--contrast-color);
@@ -321,11 +386,11 @@ input[type='time'] {
     width: 100%;
 }
 
-#time:first-child{
+#time:first-child {
     opacity: 0.5;
 }
 
-#studio{
+#studio {
     border: none;
     border-bottom: 1px solid var(--contrast-color);
     color: var(--contrast-color);
@@ -335,22 +400,22 @@ input[type='time'] {
     width: 100%;
 }
 
-.container-first-select{
+.container-first-select {
     width: max-content;
 }
 
-.container-first-select span{
+.container-first-select span {
     width: max-content;
 }
 
-.icon_add_paient img{
+.icon_add_paient img {
     cursor: pointer;
     width: 30px;
     height: 30px;
     transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
 }
 
-.icon_add_paient img:hover{
+.icon_add_paient img:hover {
     transform: scale(1.2);
 }
 
@@ -371,171 +436,158 @@ input[type='time'] {
 
 
 
+/* =============== USER MODAL =============== */
+.custom-select {
+    position: relative;
+    width: 200px;
+    cursor: pointer;
+    user-select: none;
+}
 
+.selected-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    border: none;
+    border-bottom: 1px solid var(--contrast-color);
+    background-color: white;
+}
 
- /* Stile per la seconda modale */
+.selected-option img {
+    width: 30px;
+    margin-right: 8px;
+}
 
- /* Stile per il selettore dei prefissi */
- .custom-select {
-     position: relative;
-     width: 200px;
-     cursor: pointer;
-     user-select: none;
- }
+.options-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #ddd;
+    padding-left: 0 !important;
+    display: none;
+    z-index: 10;
+}
 
- .selected-option {
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     padding: 0 10px;
-     border: none;
-     border-bottom: 1px solid var(--contrast-color);
-     background-color: white;
- }
+.options-list li {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    padding-left: 10px;
+    transition: background 0.2s;
+}
 
- .selected-option img {
-     width: 30px;
-     margin-right: 8px;
- }
+.options-list li:hover {
+    background: #f0f0f0;
+}
 
- .options-list {
-     position: absolute;
-     top: 100%;
-     left: 0;
-     width: 100%;
-     background: white;
-     border: 1px solid #ddd;
-     padding-left: 0 !important;
-     display: none;
-     z-index: 10;
- }
+.options-list img {
+    width: 30px;
+    margin-right: 8px;
+}
 
- .options-list li {
-     display: flex;
-     align-items: center;
-     padding: 8px;
-     cursor: pointer;
-     padding-left: 10px;
-     transition: background 0.2s;
- }
+.input-container {
+    position: relative;
+    width: 100%;
+}
 
- .options-list li:hover {
-     background: #f0f0f0;
- }
+.input-container input {
+    width: 100%;
+    font-size: 16px;
+    transition: border 0.3s;
+    background-color: transparent;
+}
 
- .options-list img {
-     width: 30px;
-     margin-right: 8px;
- }
+.floating-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--contrast-color);
+    pointer-events: none;
+    transition: all 0.2s ease-in-out;
+}
 
- /* Contenitore dell'input */
- .input-container {
-     position: relative;
-     width: 100%;
- }
+.active-label {
+    top: 0px !important;
+    font-weight: bold;
+    color: var(--contrast-color2);
+    font-size: 12px;
+}
 
- /* Input standard */
- .input-container input {
-     width: 100%;
-     font-size: 16px;
-     transition: border 0.3s;
-     background-color: transparent;
- }
+.input-container input:focus {
+    border-color: #6200ea;
+}
 
- /* Floating Label (inizialmente all'interno dell'input) */
- .floating-label {
-     position: absolute;
-     top: 50%;
-     transform: translateY(-50%);
-     font-size: 16px;
-     color: var(--contrast-color);
-     pointer-events: none;
-     transition: all 0.2s ease-in-out;
- }
+#newName,
+#newSurname,
+#newCell,
+#newEmail,
+#prefisso {
+    border: none;
+    border-bottom: 1px solid var(--contrast-color);
+    color: var(--contrast-color);
+    padding: 5px;
+    cursor: auto;
+    outline: none;
+    width: 100%;
+}
 
- /* Quando l'input è attivo o contiene un valore, il label si solleva */
- .active-label {
-     top: 0px !important;
-     font-weight: bold;
-     color: var(--contrast-color2);
-     font-size: 12px;
- }
+#first-input-user {
+    display: grid;
+    gap: 3%;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 20px;
+}
 
- /* Bordo evidenziato quando l'input è attivo */
- .input-container input:focus {
-     border-color: #6200ea;
- }
+#second-input-user {
+    display: grid;
+    gap: 3%;
+    grid-template-columns: 2fr 1fr 2fr;
+    align-items: end;
+    margin-bottom: 20px;
+}
 
-/* Stile per l'input */
- #newName,
- #newSurname,
- #newCell,
- #newEmail,
- #prefisso {
-     border: none;
-     border-bottom: 1px solid var(--contrast-color);
-     color: var(--contrast-color);
-     padding: 5px;
-     cursor: auto;
-     outline: none;
-     width: 100%;
- }
-
- #first-input-user {
-     display: grid;
-     gap: 3%;
-     grid-template-columns: 1fr 1fr;
-     margin-bottom: 20px;
- }
-
- #second-input-user {
-     display: grid;
-     gap: 3%;
-     grid-template-columns: 2fr 1fr 2fr;
-     align-items: end;
-     margin-bottom: 20px;
- }
-
-
- #addUserForm{
+#addUserForm {
     margin-top: 7%;
- }
- /* Stile per la modale */
- .modal-overlay-user {
-     position: fixed;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%;
-     background: rgba(0, 0, 0, 0.5);
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     z-index: 2000;
-     /* Deve essere sopra la prima modale */
- }
+}
 
- .modal-content-user {
-     background: white;
-     padding: 20px;
-     border-radius: 8px;
-     width: 50%;
-     position: relative;
-     z-index: 3000;
-     /* Ancora più in alto */
- }
+.modal-overlay-user {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
 
- .hidden-user-modal {
-     display: none;
- }
+.modal-content-user {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 50%;
+    position: relative;
+    z-index: 3000;
+}
 
- .close-btn {
-     position: absolute;
-     top: 10px;
-     right: 15px;
-     font-size: 20px;
-     cursor: pointer;
- }
+.hidden-user-modal {
+    display: none;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+}
 
 
 
@@ -553,7 +605,14 @@ input[type='time'] {
 
 
 
-/* ! Tools container */
+
+
+
+
+
+
+
+/* =============== TOOLS CONTAINER =============== */
 .tools-container {
     display: flex;
     justify-content: center;
@@ -589,34 +648,61 @@ input[type='time'] {
     background-color: var(--contrast-color2);
     color: white;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =============== CELL STYLES =============== */
 .cella {
     overflow: auto;
-    /* Firefox */
     scrollbar-width: thin;
     scrollbar-color: #888 #f1f1f1;
+    border: 1px solid #ddd;
+    min-height: 80px;
+    padding: 10px;
+    position: relative;
 }
 
-/* Chrome, Safari, Edge */
 .cella::-webkit-scrollbar {
     width: 8px;
-    /* Larghezza della scrollbar */
 }
 
 .cella::-webkit-scrollbar-track {
     background: #f1f1f1;
-    /* Colore del tracciato */
     border-radius: 4px;
 }
 
 .cella::-webkit-scrollbar-thumb {
     background: #888;
-    /* Colore della thumb */
     border-radius: 4px;
 }
 
 .cella::-webkit-scrollbar-thumb:hover {
     background: #555;
-    /* Colore della thumb al passaggio del mouse */
 }
 
 .appointment-box {
@@ -638,9 +724,62 @@ input[type='time'] {
     cursor: grabbing;
 }
 
-.delete-appointment
+.appointment-box.dragging {
+    opacity: 1 !important;
+    transform: scale(1.1);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
 
-/* ! Action menu */
+.appointment-box.hold {
+    opacity: 1 !important;
+}
+
+.cella.drag-over {
+    background-color: #f1f1f1;
+    border: 2px dashed #3a255d;
+}
+
+.delete-appointment {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 2px;
+    transition: color 0.2s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.delete-appointment:hover {
+    color: #ff6961;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =============== ACTION MENUS =============== */
 .action-menu {
     position: absolute;
     background: white;
@@ -664,7 +803,6 @@ input[type='time'] {
     transform: scale(1.2);
 }
 
-/* !  Popup actions */
 .popup-actions {
     position: absolute;
     background: white;
@@ -693,7 +831,45 @@ input[type='time'] {
     transform: scale(1.2);
 }
 
-/* Overlay */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =============== DETAILS MODAL =============== */
+#appointmentDetails {
+    width: 100%;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+#appointmentDetails p {
+    margin: 0.5em 0;
+    padding: 0;
+    word-break: break-word;
+}
+
 .custom-modal-overlay {
     position: fixed;
     top: 0;
@@ -712,7 +888,6 @@ input[type='time'] {
     display: none;
 }
 
-/* Modale */
 .custom-modal-content {
     background: #fff;
     border-radius: 12px;
@@ -725,7 +900,6 @@ input[type='time'] {
     opacity: 0;
 }
 
-/* Chiudi */
 .custom-close {
     position: absolute;
     top: 12px;
@@ -739,12 +913,10 @@ input[type='time'] {
     color: #ff6961;
 }
 
-/* Contenuto */
 .custom-details-content p {
     margin: 10px 0;
     font-size: 16px;
 }
-  
 
 
 
@@ -756,7 +928,21 @@ input[type='time'] {
 
 
 
-/* Content style */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =============== CONTENT STYLES =============== */
 .header-rowTrace {
     width: 100%;
     display: flex;
@@ -790,7 +976,20 @@ input[type='time'] {
 
 
 
-/* STYLE MONTH LAYOUT */
+
+
+
+
+
+
+
+
+
+
+
+
+/* =============== LAYOUT STYLES =============== */
+/* MONTH LAYOUT */
 .container-content-table {
     margin-top: 10px;
     display: grid;
@@ -806,25 +1005,24 @@ input[type='time'] {
 .cella {
     padding: 30px;
     text-align: center;
-    border: 1px solid #ddd;
     height: 150px;
     position: relative;
     cursor: pointer;
 }
 
-.holiday-day{
+.holiday-day {
     background-color: #8B0000;
 }
 
-.present-day{
+.present-day {
     background-color: #ddd;
 }
 
-.past-day p{
+.past-day p {
     color: rgba(0, 0, 0, 0.418);
 }
 
-.past-day .appointment-box{
+.past-day .appointment-box {
     background-color: var(--neutral-range-color) !important;
     opacity: 0.5;
 }
@@ -844,64 +1042,7 @@ input[type='time'] {
     background-color: var(--contrast-color-shadow);
 }
 
-/* STYLE WEEK LAYOUT */
-.appointment-box.dragging {
-    opacity: 1 !important;
-    /* Mantiene l'opacità */
-    transform: scale(1.1);
-    /* Effetto di ingrandimento */
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    /* Effetto sollevamento */
-}
-
-.appointment-box.hold {
-    opacity: 1 !important;
-    /* Impedisce la trasparenza */
-}
-
-.cella {
-    border: 1px solid #ddd;
-    min-height: 80px;
-    padding: 10px;
-    position: relative;
-}
-
-.cella.drag-over {
-    background-color: #f1f1f1;
-    /* Evidenzia la cella di destinazione */
-    border: 2px dashed #3a255d;
-}
-
-.delete-appointment {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    padding: 2px;
-    transition: color 0.2s ease-in-out;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.delete-appointment:hover {
-    color: #ff6961;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* STYLE WEEK LAYOUT */
+/* WEEK LAYOUT */
 .week-layout-content {
     display: flex;
     justify-content: center;
@@ -958,65 +1099,48 @@ input[type='time'] {
     height: 100px;
 }
 
-
-
-
-
-
-
-
-
-/* DAY LAYOUT STYLE */
-.day-layout-content{
+/* DAY LAYOUT */
+.day-layout-content {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 1rem;
 }
 
-.header-day{
+.header-day {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.row-day{
+.row-day {
     display: flex;
     flex-direction: column;
     height: 1400px;
     width: 100%;
 }
 
-.row-for-ora-day{
+.row-for-ora-day {
     display: grid;
     grid-template-columns: repeat(11, 1fr);
     height: 150px;
 }
 
-.row-for-ora-day p{
+.row-for-ora-day p {
     text-align: center;
     padding-top: 20px;
 }
 
-.cellaDay{
+.cellaDay {
     border-right: 1px solid #ddd;
     border-left: 1px solid #ddd;
     font-size: 16px;
     padding: 15px;
 }
 
-
-
-
-
-
-/* ACTIVE LAYOUT STYLE */
+/* LAYOUT VISIBILITY */
 #week-head,
-#week-layout {
-    display: none;
-}
-
-/* ACTIVE LAYOUT STYLE DAILY */
+#week-layout,
 #day-layout {
     display: none;
 }
@@ -1027,32 +1151,19 @@ input[type='time'] {
 
 
 
-/* ! Button modify */
-/* From Uiverse.io by vinodjangid07 */
-.Btn-modify {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border: none;
-    padding: 0px 20px;
-    background-color: var(--contrast-color2);
-    color: white;
-    font-weight: 500;
-    text-decoration: none;
-    cursor: pointer;
-    border-radius: 50px;
-    transition-duration: .3s;
-}
 
-.button-view-all {
-    padding: 0.48rem 1.4rem;
-    width: max-content;
-    border-radius: 10px;
-}
 
+
+
+
+
+
+
+
+
+
+
+/* =============== SVG/ICONS =============== */
 .svg {
     width: 15px;
     position: absolute;
@@ -1062,10 +1173,6 @@ input[type='time'] {
 
 .save-icon {
     width: 20px !important;
-}
-
-.Btn-modify:hover {
-    color: transparent;
 }
 
 .Btn-modify:hover svg {

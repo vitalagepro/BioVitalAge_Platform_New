@@ -1,6 +1,6 @@
-                                          /*  -----------------------------------------------------------------------------------------------
-                                                                                    GLOBAL VARIABLE
-                                          --------------------------------------------------------------------------------------------------- */
+/*  -----------------------------------------------------------------------------------------------
+   GLOBAL VARIABLE
+--------------------------------------------------------------------------------------------------- */
 // Gestione calendario
 let fromCalendar = false;
 let isEditing = false;
@@ -25,7 +25,7 @@ const monthWeek = document.getElementById("month-head");
 const monthLayout = document.getElementById("month-layout");
 
 /*  -----------------------------------------------------------------------------------------------
-                                    DYNAMIC CALENDAR & MODAL APPEARS
+   DYNAMIC CALENDAR & MODAL APPEARS
 --------------------------------------------------------------------------------------------------- */
 // Riferimenti ai <span> e agli input nascosti
 const daySpan = document.getElementById("day-appointment");
@@ -69,9 +69,10 @@ const iconCloseModal = document.getElementById("closeModal");
 
 // Pulsante "Appuntamento"
 const btnOpenModal = document.getElementById("openModal");
+
 /*  -----------------------------------------------------------------------------------------------
-    MAPPING TIPOLOGIE
-  --------------------------------------------------------------------------------------------------- */
+   MAPPING TIPOLOGIE
+--------------------------------------------------------------------------------------------------- */
 const mappingTipologie = {
   "Fisioestetica": [
     { value: "Crioterapia", text: "Crioterapia", duration: [30] },
@@ -195,21 +196,9 @@ const boxColorMapping = [
   { group: "Fisioterapia Sportiva", color: "#00937a" }
 ];
 
-
-
-
-
-
-
-
-
-
-
-
-                                                        /*  -----------------------------------------------------------------------------------------------
-                                                                                         GLOBAL FUNCTION
-                                                        --------------------------------------------------------------------------------------------------- */
-
+/*  -----------------------------------------------------------------------------------------------
+   GLOBAL FUNCTION
+--------------------------------------------------------------------------------------------------- */
 // Funzione per ottenere i giorni della settimana a partire dalla data di riferimento
 function getWeekDates(baseDate) {
   let startDate = new Date(baseDate);
@@ -252,12 +241,12 @@ function formatDayLabel(dateObj) {
     "Novembre",
     "Dicembre"
   ];
-  
+
   const nomeGiorno = giorniItaliani[dateObj.getDay()];
   const giorno = dateObj.getDate();
   const mese = mesiItaliani[dateObj.getMonth()];
   const anno = dateObj.getFullYear();
-  
+
   return `${nomeGiorno}, ${giorno} ${mese} ${anno}`;
 }
 
@@ -295,7 +284,9 @@ function viewAppointmentDetails(appointmentId) {
 
         // Popola i dettagli nella modale
         content.innerHTML = `
-          <p><strong>🧑 Paziente:</strong> ${data.nome_paziente} ${data.cognome_paziente}</p>
+          <p><strong>🧑 Paziente:</strong> ${data.nome_paziente} ${
+          data.cognome_paziente
+        }</p>
           <p><strong>📅 Data:</strong> ${italianDate}</p>
           <p><strong>⏰ Orario:</strong> ${data.orario.slice(0, 5)}</p>
           <p><strong>💬 Tipologia:</strong> ${data.tipologia_visita}</p>
@@ -320,6 +311,23 @@ function viewAppointmentDetails(appointmentId) {
         );
       }
     });
+
+  document.getElementById("closeDetailsModal").addEventListener("click", () => {
+    const modal = document.getElementById("detailsModal");
+    const content = modal.querySelector(".custom-modal-content");
+    document.body.style.overflow = "auto";
+
+    gsap.to(content, {
+      opacity: 0,
+      scale: 0.8,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () => {
+        modal.classList.add("hidden-details");
+        gsap.set(content, { opacity: 1, scale: 1 }); // Reset per la prossima apertura
+      },
+    });
+  });
 }
 
 // Funzione per gestire le azioni del popup
@@ -388,128 +396,120 @@ function generateWeeklyAppointments(appointmentsByDate) {
 
   // Scorri tutti gli appuntamenti e posizionali nella vista settimanale
   Object.entries(appointmentsByDate.appointments).forEach(([date, appointments]) => {
-      // Filtra solo gli appuntamenti che rientrano nella settimana visualizzata
-      appointments.forEach(appointment => {
-          const { orario, tipologia_visita, id } = appointment;
+    // Filtra solo gli appuntamenti che rientrano nella settimana visualizzata
+    appointments.forEach(appointment => {
+      const { orario, tipologia_visita, id } = appointment;
 
-          // Ottieni ora e calcola la posizione nella griglia settimanale
-          const hour = parseInt(orario.split(":")[0], 10);
-          const rowIndex = hour - 9; // Supponendo che il calendario inizi alle 09:00
+      // Ottieni ora e calcola la posizione nella griglia settimanale
+      const hour = parseInt(orario.split(":")[0], 10);
+      const rowIndex = hour - 9; // Supponendo che il calendario inizi alle 09:00
 
-            // Domenica=0 → colonna=6, Lunedì=1 → colonna=0, ...
-            const realWeekDay = new Date(date).getDay(); 
-            const colIndex = (realWeekDay + 6) % 7;
+      // Domenica=0 → colonna=6, Lunedì=1 → colonna=0, ...
+      const realWeekDay = new Date(date).getDay();
+      const colIndex = (realWeekDay + 6) % 7;
 
-            const cellIndex = rowIndex * 7 + colIndex;
+      const cellIndex = rowIndex * 7 + colIndex;
 
-          if (rowIndex >= 0 && rowIndex < weekCells.length / 7) {
-              if (cellIndex >= 0 && cellIndex < weekCells.length) {
-                  const cell = weekCells[cellIndex];
+      if (rowIndex >= 0 && rowIndex < weekCells.length / 7) {
+        if (cellIndex >= 0 && cellIndex < weekCells.length) {
+          const cell = weekCells[cellIndex];
 
-                  // Crea un nuovo box appuntamento
-                  const appointmentBox = document.createElement("div");
-                  appointmentBox.classList.add("appointment-box");
-                  appointmentBox.setAttribute("draggable", "true");
-                  appointmentBox.dataset.id = id;
-                  appointmentBox.dataset.tipologia = tipologia_visita;
-                  appointmentBox.dataset.orario = orario;
-                  appointmentBox.innerHTML = `<span style="flex: 1 1 0%">${tipologia_visita}</span><button class="delete-appointment" data-id="${id}">&times;</button>`;
+          // Crea un nuovo box appuntamento
+          const appointmentBox = document.createElement("div");
+          appointmentBox.classList.add("appointment-box");
+          appointmentBox.setAttribute("draggable", "true");
+          appointmentBox.dataset.id = id;
+          appointmentBox.dataset.tipologia = tipologia_visita;
+          appointmentBox.dataset.orario = orario;
+          appointmentBox.innerHTML = `<span style="flex: 1 1 0%">${tipologia_visita}</span><button class="delete-appointment" data-id="${id}">&times;</button>`;
 
-                  // Imposta il colore del box basato sul tipo di visita
-                  const mapping = boxColorMapping.find(m => 
-                    m.group.toLowerCase() === tipologia_visita.toLowerCase()
-                  );
-                  if (mapping) {
-                    appointmentBox.style.backgroundColor = mapping.color;
-                    if (mapping.text_color) {
-                      appointmentBox.style.color = mapping.text_color;
-                    }
-                  } else {
-                    console.log("Mapping non trovato per:", tipologia_visita);
-                    appointmentBox.style.backgroundColor = "#3a255d"; // colore di default
-                  }
-  
-                  // Aggiunge il box nella cella giusta
-                  cell.appendChild(appointmentBox);
-  
-                  // Abilita il click sul pulsante di eliminazione
-                  const deleteButton = appointmentBox.querySelector(
-                    ".delete-appointment"
-                  );
-                  if (deleteButton) {
-                    deleteButton.addEventListener("click", (event) => {
-                      event.stopPropagation(); // evita apertura modale
-                      confirmDeleteAppointment(id, appointmentBox); // usa la tua funzione esistente
-                    });
-                  }               
-  
-                  // 🔹 Listener per chiudere la modale
-                  document.getElementById("closeDetailsModal").addEventListener("click", () => {
-                      const modal = document.getElementById("detailsModal");
-                      const content = modal.querySelector(
-                        ".custom-modal-content"
-                      );
-                      document.body.style.overflow = "auto";
-  
-                      gsap.to(content, {
-                        opacity: 0,
-                        scale: 0.8,
-                        duration: 0.3,
-                        ease: "power2.in",
-                        onComplete: () => {
-                          modal.classList.add("hidden-details");
-                          gsap.set(content, { opacity: 1, scale: 1 }); // Reset per la prossima apertura
-                        },
-                      });
-                  });
-                  // Chiudi il popup se clicchi fuori
-                  document.addEventListener("click", (e) => {
-                    const popup = document.getElementById(
-                      "appointment-actions-popup"
-                    );
-                    if (!popup.contains(e.target)) {
-                      popup.classList.add("hidden-popup");
-                    }
-                  });
-  
-                  // 🔹 Listener per apertura modale al click sull'appuntamento
-                  appointmentBox.addEventListener("click", (e) => {
-                    e.stopPropagation();
-  
-                    const popup = document.getElementById(
-                      "appointment-actions-popup"
-                    );
-  
-                    // Posiziona il popup vicino al box cliccato
-                    const rect = appointmentBox.getBoundingClientRect();
-                    popup.style.top = `${rect.top + window.scrollY + 27}px`;
-                    popup.style.left = `${rect.left + window.scrollX}px`;
-  
-                    popup.classList.remove("hidden-popup");
-  
-                    // Reset opacità e scala prima dell'animazione
-                    // ✅ Resetto eventuali animazioni precedenti
-                    gsap.set(popup, { opacity: 0 });
-  
-                    // 🔥 Animazione GSAP di comparsa fluida
-                    gsap.to(popup, {
-                      opacity: 1,
-                      duration: 0.2,
-                      ease: "power2.out",
-                    });
-  
-                    // Salva l'id dell'appuntamento selezionato
-                    popup.dataset.id = id;
-  
-                    setupPopupActions();
-                  });
-  
-                  // Abilita il drag & drop
-                  addDragAndDropEvents(appointmentBox);
-                }
+          // Imposta il colore del box basato sul tipo di visita
+          const mapping = boxColorMapping.find(m =>
+            m.group.toLowerCase() === tipologia_visita.toLowerCase()
+          );
+          if (mapping) {
+            appointmentBox.style.backgroundColor = mapping.color;
+            if (mapping.text_color) {
+              appointmentBox.style.color = mapping.text_color;
             }
-        });
+          } else {
+            console.log("Mapping non trovato per:", tipologia_visita);
+            appointmentBox.style.backgroundColor = "#3a255d"; // colore di default
+          }
+
+          // Aggiunge il box nella cella giusta
+          cell.appendChild(appointmentBox);
+
+          // Abilita il click sul pulsante di eliminazione
+          const deleteButton = appointmentBox.querySelector(".delete-appointment");
+          if (deleteButton) {
+            deleteButton.addEventListener("click", (event) => {
+              event.stopPropagation(); // evita apertura modale
+              confirmDeleteAppointment(id, appointmentBox); // usa la tua funzione esistente
+            });
+          }
+
+          // 🔹 Listener per chiudere la modale
+          document.getElementById("closeDetailsModal").addEventListener("click", () => {
+            const modal = document.getElementById("detailsModal");
+            const content = modal.querySelector(".custom-modal-content");
+            document.body.style.overflow = "auto";
+
+            gsap.to(content, {
+              opacity: 0,
+              scale: 0.8,
+              duration: 0.3,
+              ease: "power2.in",
+              onComplete: () => {
+                modal.classList.add("hidden-details");
+                gsap.set(content, { opacity: 1, scale: 1 }); // Reset per la prossima apertura
+              },
+            });
+          });
+          // Chiudi il popup se clicchi fuori
+          document.addEventListener("click", (e) => {
+            const popup = document.getElementById("appointment-actions-popup");
+            if (!popup.contains(e.target)) {
+              popup.classList.add("hidden-popup");
+            }
+          });
+
+          // 🔹 Listener per apertura modale al click sull'appuntamento
+          appointmentBox.addEventListener("click", (e) => {
+            e.stopPropagation();
+
+            const popup = document.getElementById("appointment-actions-popup");
+
+            // Posiziona il popup vicino al box cliccato
+            const rect = appointmentBox.getBoundingClientRect();
+            popup.style.top = `${rect.top + window.scrollY + 27}px`;
+            popup.style.left = `${rect.left + window.scrollX}px`;
+
+            popup.classList.remove("hidden-popup");
+
+            // Reset opacità e scala prima dell'animazione
+            // ✅ Resetto eventuali animazioni precedenti
+            gsap.set(popup, { opacity: 0 });
+
+            // 🔥 Animazione GSAP di comparsa fluida
+            gsap.to(popup, {
+              opacity: 1,
+              duration: 0.2,
+              ease: "power2.out",
+            });
+
+            // Salva l'id dell'appuntamento selezionato
+            popup.dataset.id = id;
+
+            setupPopupActions();
+          });
+
+          // Abilita il drag & drop
+          addDragAndDropEvents(appointmentBox);
+        }
+      }
     });
+  });
 }
 
 // Funzione per generare la vista Giorno
@@ -570,7 +570,6 @@ function generateDailyAppointments(appointmentsForDay) {
       <button class="delete-appointment" data-id="${appointment.id}">&times;</button>`;
 
     boxColorMapping.forEach((mapping) => {
-
       if (mapping.group === appointment.tipologia_visita) {
         appointmentBox.style.backgroundColor = mapping.color;
         if (mapping.text_color) {
@@ -579,10 +578,10 @@ function generateDailyAppointments(appointmentsForDay) {
       } else {
         appointmentBox.style.backgroundColor = "#3a255d";
       }
-    })
+    });
 
     // Applica il colore basandoti sul mapping (ricerca case-insensitive)
-    const mapping = boxColorMapping.find(m => 
+    const mapping = boxColorMapping.find(m =>
       m.group.toLowerCase() === appointment.tipologia_visita.toLowerCase()
     );
     if (mapping) {
@@ -647,94 +646,92 @@ function generateDailyAppointments(appointmentsForDay) {
   });
 }
 
-
 // Funzione per abilitare il drag & drop sezione week
 function addDragAndDropEvents(appointmentBox) {
   appointmentBox.addEventListener("dragstart", (e) => {
-      selectedAppointment = e.target;
-      e.dataTransfer.setData("text/plain", selectedAppointment.dataset.id);
-      e.target.style.opacity = "0.5";
+    selectedAppointment = e.target;
+    e.dataTransfer.setData("text/plain", selectedAppointment.dataset.id);
+    e.target.style.opacity = "0.5";
   });
 
   appointmentBox.addEventListener("dragend", () => {
-      if (selectedAppointment) {
-          selectedAppointment.style.opacity = "1";
-      }
+    if (selectedAppointment) {
+      selectedAppointment.style.opacity = "1";
+    }
   });
 
   document.querySelectorAll(".cellaWeek").forEach(cell => {
-      cell.addEventListener("dragover", (e) => {
-          e.preventDefault();
-          cell.classList.add("drag-over");
-      });
+    cell.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      cell.classList.add("drag-over");
+    });
 
-      cell.addEventListener("dragleave", () => {
-          cell.classList.remove("drag-over");
-      });
+    cell.addEventListener("dragleave", () => {
+      cell.classList.remove("drag-over");
+    });
 
-      cell.addEventListener("drop", (e) => {
-          e.preventDefault();
-          cell.classList.remove("drag-over");
+    cell.addEventListener("drop", (e) => {
+      e.preventDefault();
+      cell.classList.remove("drag-over");
 
-          if (!selectedAppointment) return;
+      if (!selectedAppointment) return;
 
-          const appointmentId = selectedAppointment.dataset.id;
-          const tipologia = selectedAppointment.dataset.tipologia || "Sconosciuto";
+      const appointmentId = selectedAppointment.dataset.id;
+      const tipologia = selectedAppointment.dataset.tipologia || "Sconosciuto";
 
-          if (!appointmentId) {
-              console.error("❌ Errore: ID appuntamento mancante!");
-              return;
-          }
+      if (!appointmentId) {
+        console.error("❌ Errore: ID appuntamento mancante!");
+        return;
+      }
 
-          // ✅ **Trova il primo giorno della settimana (lunedì)**
-          let weekStart = new Date(currentDate);
-          let dayOfWeek = weekStart.getDay(); // 0 = Domenica, ..., 6 = Sabato
-          let mondayOffset = (dayOfWeek === 0) ? -6 : 1 - dayOfWeek;
-          weekStart.setDate(weekStart.getDate() + mondayOffset);
+      // ✅ **Trova il primo giorno della settimana (lunedì)**
+      let weekStart = new Date(currentDate);
+      let dayOfWeek = weekStart.getDay(); // 0 = Domenica, ..., 6 = Sabato
+      let mondayOffset = (dayOfWeek === 0) ? -6 : 1 - dayOfWeek;
+      weekStart.setDate(weekStart.getDate() + mondayOffset);
 
-          // ✅ **Trova il giorno della settimana e l'orario**
-          // Prendi TUTTE le celle della griglia settimanale
-          const allWeekCells = [...document.querySelectorAll(".cellaWeek")];
-          // Calcola l'indice globale di quella cella
-          const cellIndex = allWeekCells.indexOf(cell);
+      // ✅ **Trova il giorno della settimana e l'orario**
+      // Prendi TUTTE le celle della griglia settimanale
+      const allWeekCells = [...document.querySelectorAll(".cellaWeek")];
+      // Calcola l'indice globale di quella cella
+      const cellIndex = allWeekCells.indexOf(cell);
 
-          const dayOffset = cellIndex % 7;
-          const hourIndex = Math.floor(cellIndex / 7);
+      const dayOffset = cellIndex % 7;
+      const hourIndex = Math.floor(cellIndex / 7);
 
+      let newDate = new Date(weekStart);
+      newDate.setDate(newDate.getDate() + dayOffset);
+      newDate.setHours(0, 0, 0, 0);
 
-          let newDate = new Date(weekStart);
-          newDate.setDate(newDate.getDate() + dayOffset);
-          newDate.setHours(0, 0, 0, 0);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
+      // ✅ **Blocca i giorni passati, compresa la domenica**
+      if (newDate < today) {
+        showAlert("danger", "❌ Non puoi spostare un appuntamento in un giorno passato!");
+        selectedAppointment.style.opacity = "1";
+        return;
+      }
 
-          // ✅ **Blocca i giorni passati, compresa la domenica**
-          if (newDate < today) {
-              showAlert("danger", "❌ Non puoi spostare un appuntamento in un giorno passato!");
-              selectedAppointment.style.opacity = "1";
-              return;
-          }
+      // ✅ **Calcola il nuovo orario basato sulla riga nella griglia**
+      const newTime = `${String(9 + hourIndex).padStart(2, "0")}:00`;
 
-          // ✅ **Calcola il nuovo orario basato sulla riga nella griglia**
-          const newTime = `${String(9 + hourIndex).padStart(2, "0")}:00`;
+      // ✅ **Sposta l'elemento senza duplicarlo**
+      cell.appendChild(selectedAppointment);
+      selectedAppointment.style.opacity = "1";
 
-          // ✅ **Sposta l'elemento senza duplicarlo**
-          cell.appendChild(selectedAppointment);
-          selectedAppointment.style.opacity = "1";
+      // ✅ **Aggiorna il dataset con la tipologia corretta**
+      selectedAppointment.dataset.tipologia = tipologia;
 
-          // ✅ **Aggiorna il dataset con la tipologia corretta**
-          selectedAppointment.dataset.tipologia = tipologia;
+      // ✅ **Aggiorna visivamente il box con i dati corretti**
+      selectedAppointment.querySelector("span").textContent = `${tipologia}`;
 
-          // ✅ **Aggiorna visivamente il box con i dati corretti**
-          selectedAppointment.querySelector("span").textContent = `${tipologia}`;
+      // ✅ **Aggiorna l'appuntamento nel database**
+      const formattedDate = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`;
+      updateAppointmentDate(appointmentId, formattedDate, newTime);
 
-          // ✅ **Aggiorna l'appuntamento nel database**
-          const formattedDate = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`;
-          updateAppointmentDate(appointmentId, formattedDate, newTime);
-
-          selectedAppointment = null;
-      });
+      selectedAppointment = null;
+    });
   });
 }
 
@@ -799,7 +796,6 @@ function addDragAndDropEventsDaily(appointmentBox) {
   });
 }
 
-
 /* SETTING MONTH LAYOUT */
 monthLayoutBtn.addEventListener("click", () => {
   weekLayoutBtn.classList.remove("active");
@@ -821,39 +817,32 @@ function loadAppointments() {
     .then((data) => {
       if (data.success) {
         console.log("📢 Appuntamenti ricevuti dal backend:", data);
-  
+
         document.querySelectorAll(".cella").forEach((cell) => {
           const cellDay = cell.dataset.day;
           const cellMonth = cell.dataset.month;
           const cellYear = cell.dataset.year;
-  
+
           if (!cellDay || !cellMonth || !cellYear) return;
-  
-          const formattedDate = `${cellYear}-${String(cellMonth).padStart(
-            2,
-            "0"
-          )}-${String(cellDay).padStart(2, "0")}`;
-  
-          const appointmentsContainer = cell.querySelector(
-            ".appointments-container"
-          );
+
+          const formattedDate = `${cellYear}-${String(cellMonth).padStart(2, "0")}-${String(cellDay).padStart(2, "0")}`;
+
+          const appointmentsContainer = cell.querySelector(".appointments-container");
           appointmentsContainer.innerHTML = "";
-  
+
           if (data.appointments[formattedDate]) {
-            data.appointments[formattedDate].forEach(
-              (appointment) => {
-                if (!appointment.id || appointment.id === "") {
-                  console.error("❌ Errore: Appuntamento senza ID!", appointment);
-                } else {
-                  addAppointmentToCell(
-                    cell,
-                    appointment.tipologia_visita,
-                    appointment.orario,
-                    appointment.id
-                  );
-                }
+            data.appointments[formattedDate].forEach((appointment) => {
+              if (!appointment.id || appointment.id === "") {
+                console.error("❌ Errore: Appuntamento senza ID!", appointment);
+              } else {
+                addAppointmentToCell(
+                  cell,
+                  appointment.tipologia_visita,
+                  appointment.orario,
+                  appointment.id
+                );
               }
-            );
+            });
           }
         });
       }
@@ -880,7 +869,6 @@ function loadAppointmentsForWeeklyView() {
 }
 
 /* LOAD APPOINTMENTS FOR DAILY VIEW */
-
 // Funzione per formattare la data in YYYY-MM-DD
 function getLocalDateString(date) {
   const year = date.getFullYear();
@@ -917,33 +905,33 @@ function formatDateForBackend(date, day) {
 // Aggiorna la data di un appuntamento nel backend
 function updateAppointmentDate(appointmentId, newDate, newTime) {
   if (!appointmentId || !newDate) {
-      console.error("❌ Errore: appointmentId, newDate o newTime non valido!", {
-          appointmentId,
-          newDate,
-          newTime,
-      });
-      return;
+    console.error("❌ Errore: appointmentId, newDate o newTime non valido!", {
+      appointmentId,
+      newDate,
+      newTime,
+    });
+    return;
   }
 
   const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "";
 
   fetch(`/update-appointment/${appointmentId}/`, {
-      method: "PATCH",
-      headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken,
-      },
-      body: JSON.stringify({ new_date: newDate, new_time: newTime }),
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken,
+    },
+    body: JSON.stringify({ new_date: newDate, new_time: newTime }),
   })
-  .then((response) => response.json())
-  .then((data) => {
+    .then((response) => response.json())
+    .then((data) => {
       if (data.success) {
-          console.log("✅ Appuntamento aggiornato con successo!");
+        console.log("✅ Appuntamento aggiornato con successo!");
       } else {
-          showAlert("danger", `Errore nello spostamento dell'appuntamento: ${data.error}`);
+        showAlert("danger", `Errore nello spostamento dell'appuntamento: ${data.error}`);
       }
-  })
-  .catch((error) => console.error("❌ Errore nella richiesta:", error));
+    })
+    .catch((error) => console.error("❌ Errore nella richiesta:", error));
 }
 
 // Nascondi il popup cliccando altrove
@@ -1010,26 +998,26 @@ function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
   appointmentBox.addEventListener("click", (e) => {
     e.stopPropagation();
     const appointmentId = appointmentBox.dataset.id;
-  
+
     const popup = document.getElementById("appointment-actions-popup");
-  
+
     // Posiziona il popup vicino all'appuntamento box (stile uniforme)
     const rect = appointmentBox.getBoundingClientRect();
     popup.style.top = `${rect.top + window.scrollY + 27}px`;
     popup.style.left = `${rect.left + window.scrollX}px`;
-  
+
     popup.classList.remove("hidden-popup");
-  
+
     // Reset opacità e scala per animazione GSAP
     gsap.set(popup, { opacity: 0, scale: 0.95 });
-  
+
     // Effetto GSAP fluido
     gsap.to(popup, {
       opacity: 1,
       duration: 0.2,
       ease: "power2.out"
     });
-  
+
     popup.dataset.id = appointmentId; // memorizza ID per i bottoni 👁️ e ✏️
 
     // 🔹 Listener per chiudere la modale
@@ -1053,7 +1041,7 @@ function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
     });
 
     setupPopupActions();
-  });  
+  });
 }
 
 // Funzione per ottenere il giorno italiano
@@ -1080,7 +1068,6 @@ function openAppointmentModal(appointmentId) {
       console.log("Dati ricevuti dal backend:", data);
 
       if (data.success) {
-        
         // **SETTAGGIO TIPOLOGIA VISITA**
         let tipologiaSelect = document.getElementById("tipologia_visita");
         tipologiaSelect.value = data.tipologia_visita || "";
@@ -1155,13 +1142,9 @@ function openAppointmentModal(appointmentId) {
         // Popola gli altri campi della modale
         const dateParts = data.data.split("-");
         const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-        document.getElementById(
-          "date-appointment"
-        ).textContent = `, ${formattedDate}, `;
-        document.getElementById("time-appointment").textContent =
-          data.orario.slice(0, 5);
-        document.getElementById("tipologia_visita").value =
-          data.tipologia_visita || "";
+        document.getElementById("date-appointment").textContent = `, ${formattedDate}, `;
+        document.getElementById("time-appointment").textContent = data.orario.slice(0, 5);
+        document.getElementById("tipologia_visita").value = data.tipologia_visita || "";
 
         function normalizeString(str) {
           // Sostituisce spazi multipli, elimina spazi iniziali/finali e trasforma in minuscolo
@@ -1169,9 +1152,7 @@ function openAppointmentModal(appointmentId) {
         }
 
         let pazienteSelect = document.getElementById("paziente-select");
-        let nomeCompletoBackend = normalizeString(
-          `${data.nome_paziente} ${data.cognome_paziente}`
-        );
+        let nomeCompletoBackend = normalizeString(`${data.nome_paziente} ${data.cognome_paziente}`);
 
         let pazienteOption = [...pazienteSelect.options].find((opt) => {
           if (!opt.value) return false;
@@ -1196,8 +1177,7 @@ function openAppointmentModal(appointmentId) {
         let vocePrezzarioSelect = document.getElementById("voce-prezzario");
         let voceOption = [...vocePrezzarioSelect.options].find(
           (option) =>
-            option.value.trim().toLowerCase() ===
-            data.voce_prezzario?.toLowerCase()
+            option.value.trim().toLowerCase() === data.voce_prezzario?.toLowerCase()
         );
         if (voceOption) {
           vocePrezzarioSelect.value = voceOption.value;
@@ -1227,11 +1207,7 @@ function openAppointmentModal(appointmentId) {
         }
 
         let studioSelect = document.getElementById("studio");
-        if (
-          [...studioSelect.options].some(
-            (option) => option.value === data.numero_studio
-          )
-        ) {
+        if ([...studioSelect.options].some((option) => option.value === data.numero_studio)) {
           studioSelect.value = data.numero_studio;
         } else {
           studioSelect.selectedIndex = 0;
@@ -1269,9 +1245,7 @@ function saveAppointmentChanges() {
 
   // Raccogli i dati dal form
   const updatedTipologia = document.getElementById("tipologia_visita").value;
-  const updatedOrario = document
-    .getElementById("time-appointment")
-    .textContent.trim();
+  const updatedOrario = document.getElementById("time-appointment").textContent.trim();
   const updatedPaziente = document.getElementById("paziente-select").value;
   const updatedVocePrezzario = document.getElementById("voce-prezzario").value;
   const updatedDurata = document.getElementById("time").value;
@@ -1317,10 +1291,7 @@ function saveAppointmentChanges() {
             if (textSpan) {
               // Aggiorna il contenuto con i nuovi dati
               // Ad esempio, se vuoi visualizzare "tipologia - orario":
-              textSpan.textContent = `${updatedTipologia} - ${updatedOrario.slice(
-                0,
-                5
-              )}`;
+              textSpan.textContent = `${updatedTipologia} - ${updatedOrario.slice(0, 5)}`;
             }
           }
           // Puoi anche aggiornare altri elementi del box se necessario
@@ -1380,7 +1351,7 @@ function deleteAppointment(appointmentId, appointmentBox, confirmAlert) {
     });
 }
 
-// Funzione per confermare l'eliminazione di un appuntamento tramite modale bootstrap// Funzione per confermare l'eliminazione di un appuntamento tramite modale bootstrap con GSAP
+// Funzione per confermare l'eliminazione di un appuntamento tramite modale bootstrap con GSAP
 function confirmDeleteAppointment(appointmentId, appointmentBox) {
   // Controllo se c'è già un alert visibile
   let existingAlert = document.getElementById("delete-alert");
@@ -1492,7 +1463,6 @@ function showAlert(type, message) {
 }
 
 /////////////////////////////////////////////////////////////////////// FUNZIONE PRINCIPALE ////////////////////////////////////////////////////////////////////////////////////////////
-
 document.addEventListener("DOMContentLoaded", () => {
   /***********************************************************************
    * SEZIONE 1: LOGICA DEL CALENDARIO
@@ -1588,7 +1558,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Controlla se la data della cella è una festività
       const formattedCellDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       if (holidays.includes(formattedCellDate)) {
-          cella.classList.add("holiday-day");
+        cella.classList.add("holiday-day");
       }
 
       // Aggiungi listener per drag & drop e per il click solo se la cella non è passata
@@ -1600,9 +1570,7 @@ document.addEventListener("DOMContentLoaded", () => {
         cella.addEventListener("drop", (e) => {
           e.preventDefault();
           if (selectedAppointment) {
-            const appointmentsContainer = cella.querySelector(
-              ".appointments-container"
-            );
+            const appointmentsContainer = cella.querySelector(".appointments-container");
             if (!appointmentsContainer.contains(selectedAppointment)) {
               appointmentsContainer.appendChild(selectedAppointment);
 
@@ -1611,10 +1579,7 @@ document.addEventListener("DOMContentLoaded", () => {
               const newMonth = cella.dataset.month;
               const newYear = cella.dataset.year;
               if (newDay && newMonth && newYear) {
-                const newDate = `${newYear}-${String(newMonth).padStart(
-                  2,
-                  "0"
-                )}-${String(newDay).padStart(2, "0")}`;
+                const newDate = `${newYear}-${String(newMonth).padStart(2, "0")}-${String(newDay).padStart(2, "0")}`;
                 updateAppointmentDate(selectedAppointment.dataset.id, newDate);
               }
               selectedAppointment = null;
@@ -1624,9 +1589,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         function clearModal() {
           // Rimuove l'attributo usato per indicare che la modale è in "edit mode"
-          document
-            .getElementById("date-appointment-form")
-            .removeAttribute("data-id");
+          document.getElementById("date-appointment-form").removeAttribute("data-id");
           // Richiama la funzione che resetta i campi (assicurati che resetti tutti i campi che non vuoi mantenere)
           resetFormFields();
         }
@@ -1677,7 +1640,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // -----------------------------
   // NAVIGAZIONE CALENDARIO
   // -----------------------------
-    
   // Funzione per aggiornare il testo del pulsante "Oggi"
   function updateTodayButtonText() {
     if (dayLayoutBtn && dayLayoutBtn.classList.contains("active")) {
@@ -1698,9 +1660,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (weekLayoutBtn && weekLayoutBtn.classList.contains("active")) {
       // Vista settimana: sottrai 7 giorni
       currentDate.setDate(currentDate.getDate() - 7);
-      // Aggiorna il tag che mostra la data (puoi usare lo stesso formato oppure, se preferisci, mostrare il range della settimana)
       currentDataLabel.textContent = formatDateLabel(currentDate);
-      // Aggiorna la vista settimanale
       updateWeekView(currentDate);
     } else {
       // Vista mensile: comportamento predefinito
@@ -1709,7 +1669,7 @@ document.addEventListener("DOMContentLoaded", () => {
       loadAppointments();
     }
   });
-  
+
   btnNext.addEventListener("click", () => {
     if (dayLayoutBtn && dayLayoutBtn.classList.contains("active")) {
       // Se siamo in vista "Giorno", aggiungi 1 giorno
@@ -1737,7 +1697,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (weekLayoutBtn.classList.contains("active")) {
       updateWeekView(currentDate);
     } else if (dayLayoutBtn && dayLayoutBtn.classList.contains("active")) {
-      // Aggiorna il tag con la data formattata
       if (currentDataLabel) {
         currentDataLabel.textContent = formatDayLabel(currentDate);
       }
@@ -1746,10 +1705,9 @@ document.addEventListener("DOMContentLoaded", () => {
       loadAppointments();
     }
   });
-  
+
   datePicker.addEventListener("change", (e) => {
     const val = e.target.value;
-    
     if (val) {
       const [yyyy, mm, dd] = val.split("-");
       currentDate = new Date(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd));
@@ -1802,7 +1760,6 @@ document.addEventListener("DOMContentLoaded", () => {
     currentDataLabel.textContent = formatDateLabel(currentDate);
 
     updateTodayButtonText();
-    // Ricarica gli appuntamenti nella vista settimanale
     loadAppointmentsForWeeklyView();
   });
 
@@ -1811,8 +1768,6 @@ document.addEventListener("DOMContentLoaded", () => {
     monthLayoutBtn.classList.remove("active");
     weekLayoutBtn.classList.remove("active");
 
-    // dayHead.style.display = "block";
-    // dayLayoutContainer.style.display = "block";
     monthHead.style.display = "none";
     monthLayoutContainer.style.display = "none";
     weekHead.style.display = "none";
@@ -1820,11 +1775,9 @@ document.addEventListener("DOMContentLoaded", () => {
     dayLayoutContainer.style.display = "block";
     dayHead.style.display = "block";
 
-    // Aggiorna il <p> "currentDate" con la data formattata
     updateTodayButtonText();
     currentDataLabel.textContent = formatDayLabel(currentDate);
 
-    // Carica gli appuntamenti per il giorno corrente
     loadAppointmentsForDailyView();
   });
 
@@ -1902,8 +1855,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // -----------------------------
   function showAppointmentPreview(cella) {
     let preview = document.createElement("div");
-    preview.classList.add("appointment-box");
-    preview.classList.add("appointment-preview");
+    preview.classList.add("appointment-box", "appointment-preview");
     preview.textContent = "Anteprima - 00:00";
     cella.appendChild(preview);
   }
@@ -1979,14 +1931,13 @@ document.addEventListener("DOMContentLoaded", () => {
    * Al secondo click → salvo, nascondo input, passo a "Edita"
    ***********************************************************************/
   // HTML da mostrare quando siamo in modalità "Edita"
-  // (cioè la tua icona e testo)
   const editHTML = `
   <svg class="svg" viewBox="0 0 512 512">
     <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path>
   </svg>
-`;
+  `;
 
-  // HTML da mostrare quando siamo in modalità "Salva" (icona a tua scelta)
+  // HTML da mostrare quando siamo in modalità "Salva"
   const saveHTML = ` 
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -1999,7 +1950,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 d="M22,15.04C22,17.23 20.24,19 18.07,19H5.93C3.76,19 2,17.23 2,15.04C2,13.07 3.43,11.44 5.31,11.14C5.28,11 5.27,10.86 5.27,10.71C5.27,9.33 6.38,8.2 7.76,8.2C8.37,8.2 8.94,8.43 9.37,8.8C10.14,7.05 11.13,5.44 13.91,5.44C17.28,5.44 18.87,8.06 18.87,10.83C18.87,10.94 18.87,11.06 18.86,11.17C20.65,11.54 22,13.13 22,15.04Z"
               ></path>
             </svg>
-`;
+  `;
 
   editDateBtn.innerHTML = editHTML; // di default è la modalità "Edita"
 
@@ -2053,8 +2004,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (timeSpan.textContent.includes(":")) {
           const [hh, mm] = timeSpan.textContent.split(":");
           if (hh && mm) {
-            editTimeInput.value =
-              hh.padStart(2, "0") + ":" + mm.padStart(2, "0");
+            editTimeInput.value = hh.padStart(2, "0") + ":" + mm.padStart(2, "0");
           }
         }
       } else {
@@ -2074,7 +2024,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Al caricamento della pagina, collega i listener agli elementi
 document.addEventListener("DOMContentLoaded", function () {
   const tipologiaSelect = document.getElementById("tipologia_visita");
   const vocePrezzarioSelect = document.getElementById("voce-prezzario");
@@ -2109,8 +2058,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Quando cambia il select "voce prezzario", aggiorna il select "durata"
   vocePrezzarioSelect.addEventListener("change", function () {
-    const selectedOption =
-      vocePrezzarioSelect.options[vocePrezzarioSelect.selectedIndex];
+    const selectedOption = vocePrezzarioSelect.options[vocePrezzarioSelect.selectedIndex];
     durataSelect.innerHTML = "";
 
     // Opzione default per la durata
@@ -2133,18 +2081,14 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /*  -----------------------------------------------------------------------------------------------
-                              Saving form data
+   Saving form data
 --------------------------------------------------------------------------------------------------- */
-
 // Funzione per convertire la data da "DD/MM/YYYY" a "YYYY-MM-DD"
 function convertDateFormat(dateString) {
   if (!dateString) return "";
   const parts = dateString.replace(/[^0-9\/]/g, "").split("/"); // Rimuove caratteri extra e split su "/"
   if (parts.length === 3) {
-    return `${parts[2]}-${parts[1].padStart(2, "0")}-${parts[0].padStart(
-      2,
-      "0"
-    )}`; // Converte DD/MM/YYYY → YYYY-MM-DD
+    return `${parts[2]}-${parts[1].padStart(2, "0")}-${parts[0].padStart(2, "0")}`; // Converte DD/MM/YYYY → YYYY-MM-DD
   }
   return dateString; // Ritorna la stringa originale se il formato è già corretto
 }
@@ -2199,163 +2143,139 @@ function removeAppointmentPreview(cella) {
 
 // Listener per il pulsante "Salva"
 document.querySelector(".btn-primary").addEventListener("click", function (event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    // Recupera il form e verifica se è presente un data-id
-    const formElement = document.getElementById("date-appointment-form");
-    const appointmentId = formElement.getAttribute("data-id");
+  // Recupera il form e verifica se è presente un data-id
+  const formElement = document.getElementById("date-appointment-form");
+  const appointmentId = formElement.getAttribute("data-id");
 
-    if (appointmentId) {
-      // Se c'è un data-id, significa che stiamo modificando un appuntamento esistente:
-      saveAppointmentChanges();
-      return; // Esci dal listener per evitare ulteriori esecuzioni
-    }
+  if (appointmentId) {
+    // Se c'è un data-id, significa che stiamo modificando un appuntamento esistente:
+    saveAppointmentChanges();
+    return; // Esci dal listener per evitare ulteriori esecuzioni
+  }
 
-    // Altrimenti, è un nuovo appuntamento e procede con il salvataggio via POST
+  // Altrimenti, è un nuovo appuntamento e procede con il salvataggio via POST
 
-    // Validazione dei campi obbligatori
-    const tipologia = document.getElementById("tipologia_visita").value.trim();
-    const pazienteSelect = document.getElementById("paziente-select");
-    const pazienteValue =
-      pazienteSelect.options[pazienteSelect.selectedIndex].value.trim();
+  // Validazione dei campi obbligatori
+  const tipologia = document.getElementById("tipologia_visita").value.trim();
+  const pazienteSelect = document.getElementById("paziente-select");
+  const pazienteValue = pazienteSelect.options[pazienteSelect.selectedIndex].value.trim();
 
-    if (!tipologia || !pazienteValue) {
-      showAlert(
-        "danger",
-        "Compila tutti i campi obbligatori prima di salvare."
-      );
-      return;
-    }
+  if (!tipologia || !pazienteValue) {
+    showAlert("danger", "Compila tutti i campi obbligatori prima di salvare.");
+    return;
+  }
 
-    // Raccogli i dati dal form per la creazione
-    const nomeCompleto = pazienteSelect.selectedOptions[0]?.text.trim() || "";
-    const nomeArray = nomeCompleto.split(" ");
-    const nome_paziente = nomeArray[0];
-    const cognome_paziente = nomeArray.slice(1).join(" ");
-    const vocePrezzarioElement = document.getElementById("voce-prezzario");
-    const voce_prezzario = vocePrezzarioElement
-      ? vocePrezzarioElement.options[
-          vocePrezzarioElement.selectedIndex
-        ].value.trim()
-      : "";
-    const durataElement = document.getElementById("time");
-    const durata = durataElement
-      ? durataElement.options[durataElement.selectedIndex].value.trim()
-      : "";
+  // Raccogli i dati dal form per la creazione
+  const nomeCompleto = pazienteSelect.selectedOptions[0]?.text.trim() || "";
+  const nomeArray = nomeCompleto.split(" ");
+  const nome_paziente = nomeArray[0];
+  const cognome_paziente = nomeArray.slice(1).join(" ");
+  const vocePrezzarioElement = document.getElementById("voce-prezzario");
+  const voce_prezzario = vocePrezzarioElement
+    ? vocePrezzarioElement.options[vocePrezzarioElement.selectedIndex].value.trim()
+    : "";
+  const durataElement = document.getElementById("time");
+  const durata = durataElement
+    ? durataElement.options[durataElement.selectedIndex].value.trim()
+    : "";
 
-    const tipologia_visita = tipologia;
-    const numero_studio = document.getElementById("studio")?.value.trim() || "";
-    const note = document.getElementById("note")?.value.trim() || "";
+  const tipologia_visita = tipologia;
+  const numero_studio = document.getElementById("studio")?.value.trim() || "";
+  const note = document.getElementById("note")?.value.trim() || "";
 
-    const raw_data_appointment =
-      document.getElementById("date-appointment")?.textContent.trim() || "";
-    const data_appointment = convertDateFormat(raw_data_appointment);
-    const time_appointment =
-      document.getElementById("time-appointment")?.textContent.trim() || "";
+  const raw_data_appointment = document.getElementById("date-appointment")?.textContent.trim() || "";
+  const data_appointment = convertDateFormat(raw_data_appointment);
+  const time_appointment = document.getElementById("time-appointment")?.textContent.trim() || "";
 
-    const appointmentData = {
-      tipologia_visita,
-      nome_paziente,
-      cognome_paziente,
-      numero_studio,
-      note,
-      voce_prezzario,
-      durata,
-      data: data_appointment,
-      orario: time_appointment,
-      csrfmiddlewaretoken:
-        document.querySelector("input[name='csrfmiddlewaretoken']")?.value ||
-        "",
-    };
+  const appointmentData = {
+    tipologia_visita,
+    nome_paziente,
+    cognome_paziente,
+    numero_studio,
+    note,
+    voce_prezzario,
+    durata,
+    data: data_appointment,
+    orario: time_appointment,
+    csrfmiddlewaretoken:
+      document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "",
+  };
 
-    console.log("📢 Dati inviati (POST):", appointmentData);
+  console.log("📢 Dati inviati (POST):", appointmentData);
 
-    // Invio dei dati al backend Django tramite POST
-    fetch("/salva-appuntamento/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": appointmentData.csrfmiddlewaretoken,
-      },
-      body: JSON.stringify(appointmentData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("📢 Risposta dal server (POST):", data);
-        if (data.success) {
-          showAlert("success", "Appuntamento salvato con successo!");
-          // Rimuove le anteprime e resetta il form
-          document
-            .querySelectorAll(".appointment-preview")
-            .forEach((el) => el.remove());
-          if (selectedDayCell) {
-            removeAppointmentPreview(selectedDayCell);
-            selectedDayCell = null;
-          }
-          resetFormFields();
-          loadAppointments();
-          closeModalWithGSAP();
-        } else {
-          showAlert(
-            "danger",
-            "Errore nel salvataggio dell'appuntamento: " + data.error
-          );
+  // Invio dei dati al backend Django tramite POST
+  fetch("/salva-appuntamento/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": appointmentData.csrfmiddlewaretoken,
+    },
+    body: JSON.stringify(appointmentData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("📢 Risposta dal server (POST):", data);
+      if (data.success) {
+        showAlert("success", "Appuntamento salvato con successo!");
+        // Rimuove le anteprime e resetta il form
+        document.querySelectorAll(".appointment-preview").forEach((el) => el.remove());
+        if (selectedDayCell) {
+          removeAppointmentPreview(selectedDayCell);
+          selectedDayCell = null;
         }
-      })
-      .catch((error) => {
-        console.error("❌ Errore durante il salvataggio (POST):", error);
-        showAlert("danger", "Si è verificato un errore inaspettato.");
-      });
+        resetFormFields();
+        loadAppointments();
+        closeModalWithGSAP();
+      } else {
+        showAlert("danger", "Errore nel salvataggio dell'appuntamento: " + data.error);
+      }
+    })
+    .catch((error) => {
+      console.error("❌ Errore durante il salvataggio (POST):", error);
+      showAlert("danger", "Si è verificato un errore inaspettato.");
+    });
 });
 
-// GESTIONE SECONDA MODALE
 /*  -----------------------------------------------------------------------------------------------
-    evento per aprire la seconda modale
+   GESTIONE SECONDA MODALE
 --------------------------------------------------------------------------------------------------- */
 // Selezioniamo il pulsante "add-user"
 document.querySelectorAll('[title="add-user"]').forEach((btn) => {
   btn.addEventListener("click", function (e) {
     e.stopPropagation(); // Evita chiusure accidentali della modale principale
-    
+
     // 1. Mostra l'overlay subito (senza animazioni)
     let addUserModal = document.getElementById("addUserModal");
     addUserModal.classList.remove("hidden-user-modal");
-    
+
     // 2. Anima solo il contenuto interno con GSAP
     gsap.fromTo(
       ".modal-content-user",
-      { opacity: 0, y: -50 },   // stato iniziale
-      { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" } // stato finale
+      { opacity: 0, y: -50 },
+      { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }
     );
-    
+
     // Disabilita la modale principale finché è aperta la "seconda" modale
     document.getElementById("appointmentModal").style.pointerEvents = "none";
   });
 });
 
-
 // Chiudi la seconda modale senza chiudere la principale
 document.getElementById("closeAddUserModal").addEventListener("click", function () {
-    // Prima animiamo il contenuto .modal-content-user con GSAP
-    gsap.to(".modal-content-user", {
-      opacity: 0,
-      y: -50,
-      duration: 0.3,
-      ease: "power2.out",
-      onComplete: () => {
-        // Al termine dell'animazione, aggiungi la classe che nasconde la modale
-        let addUserModal = document.getElementById("addUserModal");
-        addUserModal.classList.add("hidden-user-modal");
-        
-        // Riattiva la modale principale
-        document.getElementById("appointmentModal").style.pointerEvents = "auto";
-
-        // Facoltativo: se vuoi che, alla prossima apertura,
-        // la modal parta di nuovo da opacity:0, y:-50,
-        // reimposta subito questi valori:
-        gsap.set(".modal-content-user", { opacity: 1, y: 0 });
-      }
-    });
+  gsap.to(".modal-content-user", {
+    opacity: 0,
+    y: -50,
+    duration: 0.3,
+    ease: "power2.out",
+    onComplete: () => {
+      let addUserModal = document.getElementById("addUserModal");
+      addUserModal.classList.add("hidden-user-modal");
+      document.getElementById("appointmentModal").style.pointerEvents = "auto";
+      gsap.set(".modal-content-user", { opacity: 1, y: 0 });
+    }
+  });
 });
 
 // Impedisce la chiusura della modale principale quando si clicca dentro la seconda
@@ -2364,7 +2284,7 @@ document.getElementById("addUserModal").addEventListener("click", function (e) {
 });
 
 /*  -----------------------------------------------------------------------------------------------
-    evento per aggiungere un paziente
+   evento per aggiungere un paziente
 --------------------------------------------------------------------------------------------------- */
 document.getElementById("addUserForm").addEventListener("submit", function (e) {
   e.preventDefault();
@@ -2376,9 +2296,7 @@ document.getElementById("addUserForm").addEventListener("submit", function (e) {
 
   // 🔹 Recupera il token CSRF
   function getCSRFToken() {
-    let csrfTokenElement = document.querySelector(
-      "input[name='csrfmiddlewaretoken']"
-    );
+    let csrfTokenElement = document.querySelector("input[name='csrfmiddlewaretoken']");
     return csrfTokenElement ? csrfTokenElement.value : null;
   }
 
@@ -2394,9 +2312,9 @@ document.getElementById("addUserForm").addEventListener("submit", function (e) {
 
   let csrfToken = getCSRFToken();
   if (!csrfToken) {
-      console.error("Errore: token CSRF non trovato nel DOM.");
-      showAlert("danger", "Errore di sicurezza: impossibile procedere. Ricarica la pagina e riprova.");
-      return;
+    console.error("Errore: token CSRF non trovato nel DOM.");
+    showAlert("danger", "Errore di sicurezza: impossibile procedere. Ricarica la pagina e riprova.");
+    return;
   }
 
   fetch("/aggiungi-paziente/", {
@@ -2417,21 +2335,17 @@ document.getElementById("addUserForm").addEventListener("submit", function (e) {
       if (data.success) {
         showAlert("success", "Paziente aggiunto con successo!");
         // **AGGIORNAMENTO DINAMICO DEL SELECT**
-        let selectPazienti = document.getElementById("paziente-select"); // Assicurati che l'ID del select sia corretto
+        let selectPazienti = document.getElementById("paziente-select");
         if (selectPazienti) {
           let newOption = document.createElement("option");
-          newOption.value = `${newName} ${newSurname}`; // Puoi anche usare un ID se il backend lo restituisce
+          newOption.value = `${newName} ${newSurname}`;
           newOption.textContent = `${newName} ${newSurname}`;
           selectPazienti.appendChild(newOption);
         }
-
         // **Chiudi la modale senza ricaricare la pagina**
         let addUserModal = document.getElementById("addUserModal");
         addUserModal.classList.add("hidden-user-modal");
-
-        // Riattiva la modale principale
         document.getElementById("appointmentModal").style.pointerEvents = "auto";
-
         // **Svuota i campi del form**
         newName.value = "";
         newSurname.value = "";
@@ -2445,9 +2359,8 @@ document.getElementById("addUserForm").addEventListener("submit", function (e) {
 });
 
 /*  -----------------------------------------------------------------------------------------------
-    gestione input animati
+   gestione input animati
 --------------------------------------------------------------------------------------------------- */
-
 // gestione input prefissi
 document.addEventListener("DOMContentLoaded", function () {
   // Lista di prefissi con bandiere
@@ -2498,9 +2411,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // **1️⃣ Rileva la posizione dell'utente e imposta il prefisso corretto**
   async function setUserCountryPrefix() {
     try {
-      const response = await fetch(
-        "https://ipapi.co/json/"
-      );
+      const response = await fetch("https://ipapi.co/json/");
       const data = await response.json();
       console.log("📍 Nazione rilevata:", data.country);
 
@@ -2520,7 +2431,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <img src="${prefisso.flag}" alt="${prefisso.country}" class="flag-icon">
           <span id="selected-prefix">${prefisso.value}</span>
       `;
-    hiddenInput.value = prefisso.value; // Aggiorna il campo nascosto
+    hiddenInput.value = prefisso.value;
   }
 
   // **3️⃣ Popola la lista delle opzioni dinamicamente**
@@ -2532,15 +2443,14 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
     li.addEventListener("click", () => {
       updateSelectedPrefix(prefisso);
-      optionsList.style.display = "none"; // Chiude il menu
+      optionsList.style.display = "none";
     });
     optionsList.appendChild(li);
   });
 
   // **4️⃣ Mostra/Nasconde il menu delle opzioni**
   selectedOption.addEventListener("click", () => {
-    optionsList.style.display =
-      optionsList.style.display === "block" ? "none" : "block";
+    optionsList.style.display = optionsList.style.display === "block" ? "none" : "block";
     optionsList.paddingLeft = "0px";
   });
 
@@ -2569,7 +2479,7 @@ document.querySelectorAll(".input-container input").forEach((input) => {
 });
 
 /*  -----------------------------------------------------------------------------------------------
-    gestione ricerca e correlati
+   gestione ricerca e correlati
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", function() {
   // Listener sull'input con debounce
@@ -2578,14 +2488,11 @@ document.addEventListener("DOMContentLoaded", function() {
     // Svuota immediatamente i risultati
     resultsContainer.innerHTML = "";
     
-    if (currentQuery.length < 2) return; // Attendi almeno 2 caratteri
+    if (currentQuery.length < 2) return;
 
     clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
-      // Controlla se il valore corrente corrisponde al query catturato
       if (this.value.toLowerCase().trim() !== currentQuery) return;
-      
-      // Svuota nuovamente il contenitore per sicurezza
       resultsContainer.innerHTML = "";
       
       fetch(`/search-appointments/?q=${encodeURIComponent(currentQuery)}`)
@@ -2599,7 +2506,6 @@ document.addEventListener("DOMContentLoaded", function() {
             data.appointments.forEach(app => {
               const item = document.createElement("div");
               item.classList.add("search-result-item");
-              // Crea un riepilogo dell'appuntamento
               item.innerHTML = `
                 <span>${app.tipologia_visita} - ${app.orario.slice(0,5)}</span>
                 <div>
@@ -2607,19 +2513,15 @@ document.addEventListener("DOMContentLoaded", function() {
                   <button class="action-btn edit" title="Modifica">✏️</button>
                 </div>
               `;
-              // Listener per visualizzare i dettagli
               item.querySelector(".view").addEventListener("click", () => {
                 viewAppointmentDetails(app.id);
                 closeSearchModal();
               });
-              // Listener per aprire la modale di modifica
               item.querySelector(".edit").addEventListener("click", () => {
                 openAppointmentModal(app.id);
                 closeSearchModal();
               });
               resultsContainer.appendChild(item);
-              
-              // Applica un'animazione GSAP per far apparire l'elemento
               gsap.from(item, {
                 opacity: 0,
                 y: 20,
@@ -2638,13 +2540,11 @@ document.addEventListener("DOMContentLoaded", function() {
     }, 300);
   });
 
-  // Funzione per resettare l'input e i risultati
   function resetSearchModal() {
     searchInput.value = "";
     resultsContainer.innerHTML = "";
   }
 
-  // Funzione per chiudere la modale di ricerca con effetto GSAP
   function closeSearchModal() {
     gsap.to(searchModal, {
       opacity: 0,
@@ -2658,7 +2558,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  // Listener per chiudere la modale cliccando fuori (se non clicchi sul pulsante di ricerca)
   document.addEventListener("click", (e) => {
     if (!searchModal.classList.contains("hidden-modal-search") &&
         !searchModal.contains(e.target) &&
@@ -2667,23 +2566,20 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  // Listener per il pulsante di apertura della modale (classe "search-button")
   const searchButton = document.querySelector(".search-button");
   if (searchButton) {
     searchButton.addEventListener("click", (e) => {
       e.stopPropagation();
-      resetSearchModal(); // Pulisce eventuali risultati precedenti
+      resetSearchModal();
       searchModal.classList.remove("hidden-modal-search");
-      // Effetto GSAP per l'animazione dell'input (es. espansione in larghezza)
       gsap.fromTo(searchInput, { width: 0 }, { width: "300px", duration: 0.5, ease: "power2.out" });
       searchInput.focus();
     });
   }
 });
 
-
 /*  -----------------------------------------------------------------------------------------------
-  GESTIONE RENDERIZZAMENTO SU GOOGLE CALENDAR
+   GESTIONE RENDERIZZAMENTO SU GOOGLE CALENDAR
 --------------------------------------------------------------------------------------------------- */
 // Converte una data dal formato "DD/MM/YYYY" a "YYYY-MM-DD"
 function parseLocalDate(dateStr) {
@@ -2695,20 +2591,13 @@ function parseLocalDate(dateStr) {
 }
 
 function addToGoogleCalendar(appointment) {
-  // Se la data contiene "/" assumiamo formato "DD/MM/YYYY" e convertiamola
   let formattedDate = appointment.data;
   if (appointment.data.includes("/")) {
     formattedDate = parseLocalDate(appointment.data);
   }
-  
-  // Combina la data e l'orario per creare un oggetto Date
   const startDateTime = new Date(`${formattedDate}T${appointment.orario}`);
-  
-  // Imposta una durata (default 30 minuti)
   const duration = parseInt(appointment.durata) || 30;
   const endDateTime = new Date(startDateTime.getTime() + duration * 60000);
-  
-  // Funzione helper per formattare la data nel formato richiesto da Google Calendar: YYYYMMDDTHHmmss
   function formatDateTime(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -2718,46 +2607,29 @@ function addToGoogleCalendar(appointment) {
     const seconds = String(date.getSeconds()).padStart(2, "0");
     return `${year}${month}${day}T${hours}${minutes}${seconds}`;
   }
-  
   const startStr = formatDateTime(startDateTime);
   const endStr = formatDateTime(endDateTime);
-  
-  // Costruisci il titolo (ad esempio: "Tipologia con Nome Paziente")
   const title = encodeURIComponent(`${appointment.tipologia_visita} con ${appointment.nome_paziente || ''}`);
-  // Note come dettagli
   const details = encodeURIComponent(appointment.note || '');
-  // Posizione forzata
   const location = encodeURIComponent("Via Nicola Tridente, 22, 70125 Bari BA, Italia");
-  
-  // Imposta il fuso orario (ad es. Europe/Rome)
   const ctz = encodeURIComponent("Europe/Rome");
-  
-  // Costruisci la URL per Google Calendar
   const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStr}/${endStr}&details=${details}&location=${location}&ctz=${ctz}`;
   return calendarUrl;
 }
 
-// Listener per il pulsante di aggiunta a Google Calendar
 document.getElementById("googleCalendarBtn").addEventListener("click", function() {
-  // Raccogli i dati dall'interfaccia
-  // Per la data, controlla il contenuto del <span id="date-appointment"> e rimuovi virgole/spazi
   const dateElem = document.getElementById("date-appointment");
-  let rawDate = dateElem.textContent.trim(); // es. ", 27/03/2025,"
-  rawDate = rawDate.replace(/,/g, "").trim();   // diventa "27/03/2025"
-  
-  // Raccogli gli altri dati
+  let rawDate = dateElem.textContent.trim();
+  rawDate = rawDate.replace(/,/g, "").trim();
   const appointment = {
-    // Usa il valore che hai ottenuto
-    data: rawDate, // atteso in formato "DD/MM/YYYY"
-    orario: document.getElementById("time-appointment").textContent.trim(), // es. "09:00"
+    data: rawDate,
+    orario: document.getElementById("time-appointment").textContent.trim(),
     tipologia_visita: document.getElementById("tipologia_visita").value,
-    durata: document.getElementById("time").value, // durata in minuti
-    // Se il select contiene "nome|id", prendi solo il nome
+    durata: document.getElementById("time").value,
     nome_paziente: document.getElementById("paziente-select").value.split("|")[0],
     note: document.getElementById("note").value,
     numero_studio: document.getElementById("studio").value
   };
-  
   const calendarUrl = addToGoogleCalendar(appointment);
   window.open(calendarUrl, '_blank');
 });
