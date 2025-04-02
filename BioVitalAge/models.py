@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# Tabella dottori con credenziali
+# Tabella DOTTORI registrati
 class UtentiRegistratiCredenziali(models.Model):
     nome = models.CharField(max_length=100)
     cognome = models.CharField(max_length=100)
@@ -16,7 +16,6 @@ class UtentiRegistratiCredenziali(models.Model):
         return f'{self.nome} {self.cognome}'
 
 
-# Tabella pazienti associata a ogni dottore
 # tabella DATI PAZIENTI associati al dottore
 class TabellaPazienti(models.Model):
 
@@ -83,7 +82,7 @@ class TabellaPazienti(models.Model):
     sport_livello = models.CharField(max_length=100, blank=True, null=True)
     sport_frequency = models.CharField(max_length=100, blank=True, null=True)
 
-    ### SedentarietÃ 
+    ### Sedentarietà
     attivita_sedentaria = models.CharField(default=False, max_length=100, null=True, blank=True)
     livello_sedentarieta = models.CharField(max_length=100, blank=True, null=True)
     sedentarieta_nota = models.TextField(blank=True, null=True)
@@ -135,6 +134,8 @@ class TabellaPazienti(models.Model):
 
     def __str__(self):
         return f"Paziente: {self.name} {self.surname}"
+
+
 
 # tabella REFERTI ETA' METABOLICA
 class RefertiEtaMetabolica(models.Model):
@@ -196,7 +197,7 @@ class RefertiEtaMetabolica(models.Model):
     massa_ossea = models.CharField(max_length=100, null=True, blank=True)
     eta_metabolica = models.CharField(max_length=100, null=True, blank=True)
     grasso_viscerale = models.CharField(max_length=100, null=True, blank=True)
-    punteggio_fisico = models.CharField(max_length=100, null=True, blank=True)
+    p_fisico = models.CharField(max_length=100, null=True, blank=True)
     storico_punteggi = models.JSONField(default=list, blank=True)
 
     # DATI ANTROPOMETRICI
@@ -221,6 +222,22 @@ class RefertiEtaMetabolica(models.Model):
         return f"Referto {self.id} - {self.paziente.name} {self.paziente.surname} - {self.data_referto.date()}"
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Tabella archivio referti associata ai pazienti
 class ArchivioReferti(models.Model):
     paziente = models.ForeignKey(
@@ -234,7 +251,6 @@ class ArchivioReferti(models.Model):
     documento = models.FileField(upload_to='referti/', null=True, blank=True)
 
     def __str__(self):
-        print(f"Referto ID: {self.id} - Paziente: {self.paziente.name} {self.paziente.surname}")
         return f"Referto ID: {self.id} - Paziente: {self.paziente.name} {self.paziente.surname}"
 
 

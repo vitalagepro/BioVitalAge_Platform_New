@@ -28,7 +28,6 @@
   color: var(--contrast-color);
   font-size: 25px;
 }
-
 .button-grid {
   display: flex;
   justify-content: center;
@@ -38,7 +37,6 @@
   border-radius: 8px;
   padding: 5px 10px;
 }
-
 .container_box {
   display: flex;
   flex-direction: column;
@@ -50,7 +48,6 @@
   gap: 10px;
   transition: all 0.3s ease-in-out;
 }
-
 .info_container {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -59,19 +56,16 @@
   row-gap: 5px;
   width: 100%;
 }
-
 .hidden-row-grid{
   border: none;
   height: 0 !important;
   padding: 0 !important;
   margin-top: 0 !important;
 }
-
 .other_container {
   display: flex;
   justify-content: space-between;
 }
-
 .subCard-container {
   width: 100%;
   display: flex;
@@ -79,7 +73,6 @@
   align-items: center;
   gap: 5px;
 }
-
 .Contact-Container {
   width: 30%;
   display: flex;
@@ -87,12 +80,10 @@
   align-items: center;
   gap: 5px;
 }
-
 .flex-hidden-grid{
   justify-content: flex-start !important;
   margin-left: 25px !important;
 }
-
 .card-subcard {
   display: flex;
   justify-content: center;
@@ -101,28 +92,25 @@
   gap: 15px;
   width: 15rem;
 }
-
 .card-subcard p {
   margin: 0 !important;
 }
-
 .card-subcard span {
   display: block;
   color: var(--contrast-color);
   font-weight: bold;
 }
-
 .img-circle-container {
   border: 2px solid var(--contrast-color2);
   padding: 10px 10px 10px 10px;
   border-radius: 50px;
 }
-
 .img-circle-container img {
   width: 30px;
   height: 30px;
 }
-
+#capInput,
+#provinceInput,
 #emailInput,
 #phoneInput,
 #associateStaffInput,
@@ -135,7 +123,6 @@
   width: 90%;
   padding: 0 20px;
 }
-
 .alert {
   min-width: 250px;
   max-width: 400px;
@@ -144,7 +131,6 @@
   /* Default nascosto */
   transition: opacity 0.5s ease-in-out;
 }
-
 .alert.show {
   opacity: 1;
   /* Mostra la notifica */
@@ -221,7 +207,6 @@
   left: 2rem;
   max-width: 50%;
 }
-
 .card-content a {
   position: absolute;
   top: 12rem;
@@ -232,13 +217,11 @@
   font-size: 20px;
   transition: transform 0.3s ease-in-out;
 }
-
 .card-content a::after {
   content: '➜';
   font-size: 20px;
   margin-left: 10px;
 }
-
 .card-content a:hover {
   transform: translate(20px, 0px);
 }
@@ -357,60 +340,79 @@
 
 
 /* CARD CLOCK STYLE*/
-.container-indicatori #card-style {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .container-indicatori .card{
-  border-radius: 10px;
+  border-radius: 8px;
+  padding-bottom: 20px;
 }
-
 .container-indicatori {
-  margin-top: -1rem;
-  display: grid;
-  grid-template-columns: 100%;
-  gap: 20px;
-  height: 490px;
-}
+  display: flex;
+  flex-direction: column;
 
+}
 .section-tittle {
   color: var(--contrast-color);
   font-size: 25px;
-  padding: 20px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  background-color: var(--contrast-color-shadow);
+  padding-top: 10px;
+  border-bottom: 2px solid #505050;
 }
 
+
+
+
+
+/* STYLE INDICATORI DI PERFORMANCE */
 .score-clock-graph {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  width: 95%;
-  height: 21rem;
+  width: 98%;
+  margin: 2rem auto 0rem auto;
+  height: 17rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 5px;
 }
-
 .clock {
   position: relative;
-  width: 13%;
-  height: 68%;
+  width: 60%;
+  height: 55%;
   border-radius: 50%;
-  margin: 16px;
   background: conic-gradient(black 0%, #e0e0e0 0%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
-.inner {
+.clock::after {
+  content: "";
   position: absolute;
-  top: 10%;
-  left: 10%;
-  width: 80%;
-  height: 80%;
-  background-color: white;
+  width: 12px; 
+  height: 12px;
+  background-color: black; 
   border-radius: 50%;
-  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(var(--angle)) translate(50px); 
+  transition: transform 0.5s ease-out;
 }
-
+.progress-ring {
+  position: relative;
+  transform: rotate(-90deg); /* Ruota il cerchio per far iniziare il riempimento dall'alto */
+}
+.progress-ring__background {
+  fill: none;
+  stroke: #e0e0e0; /* Colore di sfondo */
+  stroke-width: 10;
+}
+.progress-ring__progress {
+  fill: none;
+  stroke: var(--contrast-color); /* Usa il colore del tema */
+  stroke-width: 10;
+  stroke-linecap: round; /* Arrotonda le estremità */
+  stroke-dasharray: 283; /* Lunghezza massima del cerchio */
+  stroke-dashoffset: 283; /* Nasconde inizialmente il cerchio */
+  transition: stroke-dashoffset 1s ease-in-out; /* Effetto animazione */
+}
 .percentage {
   position: absolute;
   top: 50%;
@@ -421,16 +423,225 @@
   z-index: 2;
   color: var(--contrast-color);
 }
-
-#clock-description {
-  position: absolute;
-  top: 110%;
-  text-align: center;
-  font-size: 18px;
-  width: 105%;
-  color: var(--dark2);
-  padding-bottom: 10px;
+.container-clock{
+  width: 12.5%;
+  height: 100%;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  background-color: white;
+  position: relative;
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.1);
 }
+.descrizione-clock{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.descrizione-clock img{
+  width: 30px;
+  height: 30px;
+}
+.descrizione-clock p {
+  margin-top: 0.8rem;
+  color: var(--contrast-color);
+}
+.inner {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  background-color: white;
+  border-radius: 50%;
+  z-index: 1;
+}
+.percentage {
+  position: absolute;
+  top: 35%;
+  left: 52%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  font-weight: bold;
+  z-index: 2;
+  color: var(--contrast-color);
+}
+
+
+
+.container-second-row{
+  width: 98%;
+  margin: 1rem auto;
+  height: 20rem;
+  display: flex;
+  gap: 8px;
+}
+
+
+/* Età Style */
+.eta-container{
+  width: 50.5%;
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: white;
+}
+.eta-container h3,
+.capacita_vitale h3,
+.resilienza h3{
+  color: var(--contrast-color);
+  padding: 20px;
+}
+.lineaContainer{
+  background-color: var(--card-color);
+  width: 85%;
+  height: 1rem;
+  border-radius: 8px;
+  margin: 4rem auto;
+  border: 1px solid #ddd;
+  position: relative;
+}
+.cronologic-age{
+  position: absolute;
+  top: -4rem;
+  left: 30%;
+}
+.biologic-age{
+  position: absolute;
+  top: -4rem;
+  right: 40%;
+}
+.barra-valore{
+  position: absolute;
+  left: 34%;
+  width: 22%;
+  background-color: var(--negative-color-right);
+  height: 1rem;
+}
+.lineaContainer div img{
+  width: 30px;
+  height: 30px;
+}
+.lineaContainer div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.linea{
+  font-size: 40px;
+  margin-top: -1.5rem;
+}
+.legenda{
+  margin-top: -1rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 40px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+}
+.subcontainer-legenda{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.legenda div img{
+  width: 20px;
+  height: 20px;
+  margin-top: -0.8rem;
+}
+.quadrato{
+  width: 20px;
+  height: 20px;
+}
+.neg{
+  background-color: var(--negative-color-right);
+}
+.pos{
+  background-color: var(--positive-color);
+}
+.estremoInferiore{
+  position: absolute;
+  left: -3rem;
+  top: -0.3rem;
+  font-size: 18px;
+}
+.estremoSuperiore{
+  position: absolute;
+  right: -3rem;
+  top: -0.3rem;
+  font-size: 18px;
+}
+
+
+
+
+
+/* Capacità Vitale */
+.capacita_vitale,
+.resilienza{
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: white;
+  width: 25%;
+}
+
+
+
+.card-polmone {
+  width: 50%;
+  height: 65%;
+  border-radius: 8px;
+  margin: auto;
+  display: flex;
+  border: 1px solid whitesmoke;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  margin-top: -20px;
+  margin-bottom: 20px;
+}
+.backdrop-riempimento {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background-color: var(--contrast-color);
+  z-index: 1;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.ondina {
+  position: absolute;
+  top: -10px;
+  background-color: white;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 2;
+}
+.card-polmone img{
+  z-index: 1;
+}
+.ondina path {
+  fill: var(--contrast-color);
+}
+.descrizione-vitale{
+  padding: 0px 20px;
+}
+
+
 
 /* ANALISI REPOPRT */
 .card5 {

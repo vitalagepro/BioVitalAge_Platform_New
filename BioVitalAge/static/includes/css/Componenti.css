@@ -920,26 +920,13 @@ main {
   border-radius: 100%;
   transition: all 0.2s cubic-bezier(.215, .61, .355, 1);
 }
-
 .pagination-controls button:hover{
   background-color: var(--contrast-color2);
 }
-
 .pagination-controls .active{
   background-color: var(--contrast-color2) !important;
   font-weight: bold !important;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -957,7 +944,6 @@ main {
   margin-top: 15px;
   margin-bottom: 5px;
 }
-
 .successMessage {
   color: rgb(255, 255, 255);
   background-color: rgb(0, 76, 0);
@@ -970,7 +956,6 @@ main {
   margin-top: 15px;
   margin-bottom: 5px;
 }
-
 .progressBarContainer {
   position: relative;
   width: 100%;
@@ -980,7 +965,6 @@ main {
   border-radius: 8px;
   overflow: hidden;
 }
-
 .progressBar {
   position: absolute;
   top: 0;
@@ -989,7 +973,6 @@ main {
   height: 100%;
   background-color: #721c24;
 }
-
 .progressBarContainerSuccess {
   position: relative;
   width: 100%;
@@ -999,7 +982,6 @@ main {
   border-radius: 8px;
   overflow: hidden;
 }
-
 #progressSuccess {
   position: absolute;
   top: 0;
@@ -1008,3 +990,9 @@ main {
   height: 100%;
   background-color: #1b602b;
 }
+
+
+
+
+
+

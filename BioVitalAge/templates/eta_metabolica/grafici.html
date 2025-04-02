@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+    
+    <title>Composizione Corporea</title>
+
+    <!-- Css Import -->
+    <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}">
+    <link rel="stylesheet" href="{% static 'includes/css/eta_metabolica/etaMetabolica.css' %}">
+    <link rel="stylesheet" href="{% static 'includes/css/eta_metabolica/grafici.css' %}">
+
+    <!-- Bootstrap import -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Font Import  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+
+    <!--- JS Import --->
+    <!-- CDN import -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>  
+    
+    <!-- script js creati -->
+    <!-- <script src="{% static 'includes/js/pdfComposizione.js' %}" defer></script> -->
+    <script src="{% static 'includes/js/ModifyInput.js' %}" defer></script>
+</head>
+
+<body>
+    <!-- LOADER -->
+    {% include 'components/loader.html' %}
+
+    <!-- NAVBAR -->
+    {% include 'components/navBarPatient.html' %}
+
+    <main>
+
+        <!-- MAIN MENU TRACE -->
+        <div class="main-title-nav">
+            <div class="back-tittle">
+                <a id="back" href="{% url 'composizione' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}"></a>
+                <h2 class="main-welcome-title">
+                    <span>{{ persona.surname|title }}</span>
+                    <span>{{ persona.name|title }}</span> |
+                    <span>Età: {{ persona.chronological_age }}</span>
+                    {% if persona.phone and persona.email %}
+                    |
+                      <span class="phone_span">
+                        <img src="{% static 'includes/icone/phone.png' %}" width="20px" height="20px">
+                        Telefono: {{ persona.phone }}
+                      </span> |
+                      <span class="email_span">
+                        <img src="{% static 'includes/icone/emailNew.png' %}" width="20px" height="20px">
+                        Email: {{ persona.email }}
+                      </span>
+                    {% endif %}
+                </h2>
+            </div>
+           
+            <div class="main-menu-trace">
+                <a href="{% url 'HomePage' %}">
+                    <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+                </a>                    
+                <p>»</p>
+                <p>
+                    <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
+                </p>
+               
+                <p>»</p>
+                <a href="{% url 'composizione' persona.id %}">Età Metabolica</a>
+                <p>»</p>
+                <p>Grafici Andamento</p>
+            </div>
+        </div>
+
+        <!-- CONTAINER GRAFICI MASSA CORPOREA -->
+        <div class="container-grafici">
+            <div class="card-grafico">
+                <h3>Punteggio Fisico</h3>
+                <canvas id="GraficoPunteggio"></canvas>
+            </div>
+            <div class="card-grafico">
+                <h3>Composizione Corporea</h3>
+                <canvas id="composizioneChart"></canvas>
+            </div>
+            <div class="card-grafico">
+                <h3>Acqua Corporea</h3>
+                <canvas id="acquaChart"></canvas>
+            </div>
+            <div class="card-grafico">
+                <h3>BMI</h3>
+                <canvas id="bmiChart"></canvas>
+            </div>
+        </div>
+    
+    </main>
+
+    <!-- Import CDN js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Import js script -->
+    <script src="{% static 'includes/js/etaMetabolica/chart.js' %}"></script>
+</body>
+</html>

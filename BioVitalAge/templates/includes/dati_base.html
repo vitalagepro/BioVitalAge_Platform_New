@@ -27,7 +27,7 @@
     
 
     <!-- JS import -->
-    <script src="{% static 'includes/js/dati_base.js' %}" defer></script>
+    <script src="{% static 'includes/js/ModifyInput.js' %}" defer></script>
 
   </head>
   <body>
@@ -97,7 +97,7 @@
 
               if (elapsedTimeSuccess >= durationSuccess) {
                 clearInterval(timerSuccess); 
-                messaggios.style.display = 'none'; 
+                messaggios.style.display = 'No'; 
               }
             }, intervalSuccess);
           }
@@ -160,94 +160,7 @@
               <input class="input-disabled" type="text" name="pensionato" value="{{ persona.pensionato }}" disabled>
             </div>
           </div>
-        </div>
-      
-        <!-- STILE DI VITA -->
-        <section class="container_data table_data">
-          <div class="header-container">
-            <div class="title-card">
-              <img src="{% static 'includes/icone/piantina.png' %}" alt="">
-              <h3>Stile di vita</h3>
-            </div>
-          </div>
-          <div id="datiBaseForm1" style="margin-top: -10px;">
-            <p class="table-title">Alcol</p>
-            <div class="table-container">
-              <div class="table-header">
-                <p>Quantità di cc al giorno</p>
-                <p>Assunzione di alcol</p>
-                <p>Data</p>
-                <p>Note</p>
-              </div>
-              <div class="table-content">
-                <div class="riga-container">
-                  <p> <input class="input-disabled" name="alcol" type="text" value="{{ persona.alcol|default:'N/A' }}" disabled> </p>
-                  <p> <input class="input-disabled" name="alcol_type" type="text" value="{{ persona.alcol_type|default:'N/A' }}" disabled> </p>
-                  <p> <input class="input-disabled" name="data_alcol" type="date" value="{{ persona.data_alcol|date:'Y-m-d' }}" disabled> </p>
-                  <p> <input class="input-disabled" name="alcol_frequency" type="text" value="{{ persona.alcol_frequency|default:'N/A' }}" disabled></p>
-                  <input type="hidden" name="form_id_1" value="datiBaseForm1">
-                </div>
-              </div>
-            </div>
-          </div>
-      
-          <div id="datiBaseForm2">
-            <p class="table-title">Fumo</p>
-            <div class="table-container">
-              <div class="table-header">
-                <p>Quantità giornaliera</p>
-                <p>Giorni</p>
-                <p>Note</p>
-              </div>
-              <div class="table-content">
-                <div class="riga-container">
-                  <p> <input class="input-disabled" name="smoke" type="text" value="{{ persona.smoke|default:'N/A' }}" disabled> </p>
-                  <p> <input class="input-disabled" name="smoke_frequency" type="text" value="{{ persona.smoke_frequency|default:'N/A' }}" disabled> </p>
-                  <p> <input class="input-disabled" name="reduced_intake" type="text" value="{{ persona.reduced_intake|default:'N/A' }}" disabled> </p>
-                  <input class="input-disabled" type="hidden" name="form_id_2" value="datiBaseForm2">
-                </div>
-              </div>
-            </div>
-          </div>
-      
-          <div id="datiBaseForm3">
-            <p class="table-title">Sport</p>
-            <div class="table-container">
-              <div class="table-header">
-                <p>Attività Fisica</p>
-                <p>Livello</p>
-                <p>Frequenza</p>
-              </div>
-              <div class="table-content">
-                <div class="riga-container">
-                  <p> <input class="input-disabled" name="sport" type="text" value="{{ persona.sport|default:'N/A' }}" disabled> </p>
-                  <p> <input class="input-disabled" name="sport_livello" type="text" value="{{ persona.sport_livello|default:'N/A' }}" disabled> </p>
-                  <p> <input class="input-disabled" name="sport_frequency" type="text" value="{{ persona.sport_frequency|default:'N/A' }}" disabled> </p>
-                  <input class="input-disabled" type="hidden" name="form_id_3" value="datiBaseForm3">
-                </div>
-              </div>
-            </div>
-          </div>
-      
-          <div id="datiBaseForm4">
-            <p class="table-title">Sedentarietà</p>
-            <div class="table-container">
-              <div class="table-header">
-                <p>Attività Sedentaria</p>
-                <p>Livello</p>
-                <p>Note</p>
-              </div>
-              <div class="table-content">
-                <div class="riga-container">
-                  <p> <input class="input-disabled" name="attivita_sedentaria" type="text" value="{{ persona.attivita_sedentaria|default:'N/A' }}" disabled> </p>
-                  <p> <input class="input-disabled" name="livello_sedentarieta" type="text" value="{{ persona.livello_sedentarieta|default:'N/A' }}" disabled> </p>
-                  <p> <input class="input-disabled" name="sedentarieta_nota" type="text" value="{{ persona.sedentarieta_nota|default:'N/A' }}" disabled> </p>
-                  <input class="input-disabled" type="hidden" name="form_id_4" value="datiBaseForm4">
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        </div>  
 
         <!-- SEZIONE PER LE DONNE -->
         {% if persona.gender == 'F' %}
@@ -267,19 +180,38 @@
             <div class="container-content-donna" style="margin-top: 10px;">
 
               <div class="sub-container-card">
+      
+                <div class="grid-layout">
+
+                  <div class="field">
+                    <p class="field-title">Età del menarca in anni:</p>
+                    <input class="input-disabled" type="text" name="menarca" value="{{ persona.esordio }}" disabled>
+                  </div>
+
+                  <div class="field">
+                    <p class="field-title">Ciclo:</p>
+                    <input class="input-disabled" type="text" name="ciclo" value="{{ persona.ciclo }}" disabled>
+                  </div>
+ 
+                </div>
+              </div>
+
+              <div class="sub-container-card">
 
                 <p class="table-title" style="width: 15rem; margin-bottom: 30px; margin-top: 0px;">Menopausa:</p>
       
                 <div class="grid-layout">
 
                   <div class="field">
-                    <p>Età del menarca in anni:</p>
-                    <p id="whtr">{{ persona.esordio }}</p>
+                    <p class="field-title">Manifestazioni e sintomi:</p>
+                    <input class="input-disabled" type="text" name="sintomi" value="{{ persona.sintomi }}" disabled>
                   </div>
+
                   <div class="field">
-                    <p>Ciclo:</p>
-                    <p id="whtr"> {{ persona.ciclo }}</p>
-                  </div>   
+                    <p class="field-title">Età dell'esordio:</p>
+                    <input class="input-disabled" type="text" name="esordio" value="{{ persona.esordio }}" disabled>
+                  </div>
+ 
                 </div>
               </div>
 
@@ -288,88 +220,182 @@
                 <p class="table-title" style="width: 15rem; margin-bottom: 30px; margin-top: 0px;">Gravidanze:</p>
       
                 <div class="grid-layout">
+
                   <div class="field">
-                    <p>Tipo di parto:</p>
-                    <p id="whtr"> {{ persona.parto }} </p>
+                    <p class="field-title">Tipo di parto:</p>
+                    <input class="input-disabled" type="text" name="parto" value="{{ persona.parto }}" disabled>
                   </div>
+
                   <div class="field">
-                    <p>Diabete mellito:</p>
-                    <p id="whtr"> {{ persona.post_parto }} </p>
+                    <p class="field-title">Post parto:</p>
+                    <input class="input-disabled" type="text" name="post_parto" value="{{ persona.post_parto }}" disabled>
                   </div>
+
                   <div class="field">
-                    <p>Ipertensione:</p>
-                    <p id="whtr">{{ persona.aborto }}</p>
-                  </div>   
+                    <p class="field-title">Aborto:</p>
+                    <input class="input-disabled" type="text" name="aborto" value="{{ persona.aborto }}" disabled>
+                  </div>  
                 </div>
-      
               </div>
-
             </div>
-
         </div>
 
         {% endif %}
 
+        <!-- STILE DI VITA -->
+        <section class="container_data table_data">
+
+          <div class="header-container">
+            <div class="title-card">
+              <img src="{% static 'includes/icone/piantina.png' %}" alt="">
+              <h3>Stile di vita</h3>
+            </div>
+          </div>
+
+          <div id="datiBaseForm1" style="margin-top: -10px;">
+            <p class="table-title">Alcol</p>
+            <div class="table-container">
+              <div class="table-header">
+                <p>Quantità di cc al giorno</p>
+                <p>Assunzione di alcol</p>
+                <p>Data</p>
+                <p>Note</p>
+              </div>
+              <div class="table-content">
+                <div class="riga-container">
+                  <p> <input class="input-disabled" name="alcol" type="text" value="{{ persona.alcol }}" placeholder="inserisci valore" disabled> </p>
+                  <p> <input class="input-disabled" name="alcol_type" type="text" value="{{ persona.alcol_type }}" placeholder="inserisci valore" disabled> </p>
+                  <p> <input class="input-disabled" name="data_alcol" type="date" value="{{ persona.data_alcol|date:'Y-m-d' }}" placeholder="inserisci la data" disabled> </p>
+                  <p> <input class="input-disabled" name="alcol_frequency" type="text" value="{{ persona.alcol_frequency }}" placeholder="inserisci valore" disabled></p>
+                  <input type="hidden" name="form_id_1" value="datiBaseForm1">
+                </div>
+              </div>
+            </div>
+          </div>
+      
+          <div id="datiBaseForm2">
+            <p class="table-title">Fumo</p>
+            <div class="table-container">
+              <div class="table-header">
+                <p>Quantità giornaliera</p>
+                <p>Giorni</p>
+                <p>Note</p>
+              </div>
+              <div class="table-content">
+                <div class="riga-container">
+                  <p> <input class="input-disabled" name="smoke" type="text" value="{{ persona.smoke }}" placeholder="inserisci valore" disabled> </p>
+                  <p> <input class="input-disabled" name="smoke_frequency" type="text" value="{{ persona.smoke_frequency }}" placeholder="inserisci valore" disabled> </p>
+                  <p> <input class="input-disabled" name="reduced_intake" type="text" value="{{ persona.reduced_intake }}" placeholder="inserisci valore" disabled> </p>
+                  <input class="input-disabled" type="hidden" name="form_id_2" value="datiBaseForm2">
+                </div>
+              </div>
+            </div>
+          </div>
+      
+          <div id="datiBaseForm3">
+            <p class="table-title">Sport</p>
+            <div class="table-container">
+              <div class="table-header">
+                <p>Attività Fisica</p>
+                <p>Livello</p>
+                <p>Frequenza</p>
+              </div>
+              <div class="table-content">
+                <div class="riga-container">
+                  <p> <input class="input-disabled" name="sport" type="text" value="{{ persona.sport }}" placeholder="inserisci valore" disabled> </p>
+                  <p> <input class="input-disabled" name="sport_livello" type="text" value="{{ persona.sport_livello }}" placeholder="inserisci valore" disabled> </p>
+                  <p> <input class="input-disabled" name="sport_frequency" type="text" value="{{ persona.sport_frequency }}" placeholder="inserisci valore" disabled> </p>
+                  <input class="input-disabled" type="hidden" name="form_id_3" value="datiBaseForm3">
+                </div>
+              </div>
+            </div>
+          </div>
+      
+          <div id="datiBaseForm4">
+            <p class="table-title">Sedentarietà</p>
+            <div class="table-container">
+              <div class="table-header">
+                <p>Attività Sedentaria</p>
+                <p>Livello</p>
+                <p>Note</p>
+              </div>
+              <div class="table-content">
+                <div class="riga-container">
+                  <p> <input class="input-disabled" name="attivita_sedentaria" type="text" value="{{ persona.attivita_sedentaria }}" placeholder="inserisci valore" disabled> </p>
+                  <p> <input class="input-disabled" name="livello_sedentarieta" type="text" value="{{ persona.livello_sedentarieta }}" placeholder="inserisci valore" disabled> </p>
+                  <p> <input class="input-disabled" name="sedentarieta_nota" type="text" value="{{ persona.sedentarieta_nota }}" placeholder="inserisci valore" disabled> </p>
+                  <input class="input-disabled" type="hidden" name="form_id_4" value="datiBaseForm4">
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- ANAMNESI  -->
         <div class="container-informazioni-personali">
+
           <div class="header-container">
             <div class="title-card">
               <img src="{% static 'includes/icone/anamnesi.png' %}" alt="">
               <h3>Anamnesi</h3>
             </div>
           </div>
+
           <div class="container-content" style="margin-top: 20px;">
+
             <div class="sub-container-card">
               <p class="table-title" style="width: 15rem; margin-bottom: 30px; margin-top: 0px;">Anamnesi Familiare:</p>
               <div class="grid-layout">
                 <div class="field">
                   <p class="field-title">Malattie cardiache:</p>
-                  <input class="input-disabled" type="text" name="m_cardiache_fam" value="{{ persona.m_cardiache }}" disabled>
+                  <input class="input-disabled" type="text" name="m_cardiache_fam" value="{{ persona.m_cardiache }}"  placeholder="inserisci valore" disabled>
                 </div>
                 <div class="field">
                   <p class="field-title">Diabete mellito:</p>
-                  <input class="input-disabled" type="text" name="diabete_m" value="{{ persona.diabete_m }}" disabled>
+                  <input class="input-disabled" type="text" name="diabete_m" value="{{ persona.diabete_m }}"  placeholder="inserisci valore" disabled>
                 </div>
                 <div class="field">
                   <p class="field-title">Ipertensione:</p>
-                  <input class="input-disabled" type="text" name="ipertensione" value="{{ persona.ipertensione }}" disabled>
+                  <input class="input-disabled" type="text" name="ipertensione" value="{{ persona.ipertensione }}" placeholder="inserisci valore" disabled>
                 </div>
                 <div class="field">
                   <p class="field-title">Obesità:</p>
-                  <input class="input-disabled" type="text" name="obesita" value="{{ persona.obesita }}" disabled>
+                  <input class="input-disabled" type="text" name="obesita" value="{{ persona.obesita }}"  placeholder="inserisci valore" disabled>
                 </div>
                 <div class="field">
                   <p class="field-title">Epilessia:</p>
-                  <input class="input-disabled" type="text" name="epilessia" value="{{ persona.epilessia }}" disabled>
+                  <input class="input-disabled" type="text" name="epilessia" value="{{ persona.epilessia }}" placeholder="inserisci valore" disabled>
                 </div>
                 <div class="field">
                   <p class="field-title">Malattie tiroidee:</p>
-                  <input class="input-disabled" type="text" name="m_tiroidee" value="{{ persona.m_tiroidee }}" disabled>
+                  <input class="input-disabled" type="text" name="m_tiroidee" value="{{ persona.m_tiroidee }}" placeholder="inserisci valore" disabled>
                 </div>
                 <div class="field">
                   <p class="field-title">Malattie polmonari:</p>
-                  <input class="input-disabled" type="text" name="m_polmonari" value="{{ persona.m_polmonari }}" disabled>
+                  <input class="input-disabled" type="text" name="m_polmonari" value="{{ persona.m_polmonari }}" placeholder="inserisci valore" disabled>
                 </div>
                 <div class="field">
                   <p class="field-title">Tumori:</p>
-                  <input class="input-disabled" type="text" name="tumori" value="{{ persona.tumori }}" disabled>
+                  <input class="input-disabled" type="text" name="tumori" value="{{ persona.tumori }}" placeholder="inserisci valore" disabled>
                 </div>
                 <div class="field">
                   <p class="field-title">Asma/allergie:</p>
-                  <input class="input-disabled" type="text" name="allergie" value="{{ persona.allergie }}" disabled>
+                  <input class="input-disabled" type="text" name="allergie" value="{{ persona.allergie }}" placeholder="inserisci valore" disabled>
                 </div>
                 <div class="field">
                   <p class="field-title">Malattie psichiatriche:</p>
-                  <input class="input-disabled" type="text" name="m_psichiatriche" value="{{ persona.m_psichiatriche }}" disabled>
+                  <input class="input-disabled" type="text" name="m_psichiatriche" value="{{ persona.m_psichiatriche }}" placeholder="inserisci valore" disabled>
                 </div>
               </div>
             </div>
         
             <div class="sub-container-card" style="margin-top: 20px;">
               <div class="flex-container">
+
                 <div class="container-celle-design">
                   <p class="subtitle" style="width: 18rem;">Anamnesi patologica prossima: </p>
                   <select name="patologie">
+                    <option value="">Nessuna</option>
                     <option value="">Malattie infettive</option>
                     <option value="">Neoplasie (tumori)</option>
                     <option value="">Malattie del sangue e degli organi ematopoietici</option>
@@ -392,10 +418,12 @@
                     <option value="">Lesioni, avvelenamenti e altre conseguenze di cause esterne</option>
                   </select>
                 </div>
+
                 <div class="container-celle-design">
                   <p class="subtitle">Altro:</p>
-                  <input class="input-disabled" name="p_p_altro" type="text" value="{{ persona.p_p_altro }}" disabled>
+                  <input class="input-disabled" name="p_p_altro" type="text" value="{{ persona.p_p_altro }}" placeholder="inserisci valore" disabled>
                 </div>
+
               </div>
             </div>
         
@@ -404,18 +432,19 @@
               <div class="grid-layout">
                 <div class="field">
                   <p class="field-title">Farmaco:</p>
-                  <input class="input-disabled" name="t_farmaco" type="text" value="{{ persona.t_farmaco }}" disabled>
+                  <input class="input-disabled" name="t_farmaco" type="text" value="{{ persona.t_farmaco }}" placeholder="inserisci valore" disabled>
                 </div>
                 <div class="field">
                   <p class="field-title">Dosaggio:</p>
-                  <input class="input-disabled" name="t_dosaggio" type="text" value="{{ persona.t_dosaggio }}" disabled>
+                  <input class="input-disabled" name="t_dosaggio" type="text" value="{{ persona.t_dosaggio }}" placeholder="inserisci valore" disabled>
                 </div>
                 <div class="field">
                   <p class="field-title">Durata della terapia:</p>
-                  <input class="input-disabled" name="t_durata" type="text" value="{{ persona.t_durata }}" disabled>
+                  <input class="input-disabled" name="t_durata" type="text" value="{{ persona.t_durata }}" placeholder="inserisci valore" disabled>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 
@@ -431,35 +460,35 @@
             <div class="grid-layout">
               <div class="field">
                 <p class="field-title">Aspetto generale:</p>
-                <input class="input-disabled" type="text" name="a_generale" value="{{ persona.a_genarale }}" disabled>
+                <input class="input-disabled" type="text" name="a_generale" value="{{ persona.a_genarale }}" placeholder="inserisci valore" disabled>
               </div>
               <div class="field">
                 <p class="field-title">Psiche:</p>
-                <input class="input-disabled" type="text" name="psiche" value="{{ persona.psiche }}" disabled>
+                <input class="input-disabled" type="text" name="psiche" value="{{ persona.psiche }}" placeholder="inserisci valore" disabled>
               </div>
               <div class="field">
                 <p class="field-title">Relazione con l’ambiente:</p>
-                <input class="input-disabled" type="text" name="r_ambiente" value="{{ persona.r_ambiente }}" disabled>
+                <input class="input-disabled" type="text" name="r_ambiente" value="{{ persona.r_ambiente }}" placeholder="inserisci valore" disabled>
               </div>
               <div class="field">
                 <p class="field-title">Stato emotivo:</p>
-                <input class="input-disabled" type="text" name="s_emotivo" value="{{ persona.s_emotivo }}" disabled>
+                <input class="input-disabled" type="text" name="s_emotivo" value="{{ persona.s_emotivo }}" placeholder="inserisci valore" disabled>
               </div>
               <div class="field">
                 <p class="field-title">Costituzione:</p>
-                <input class="input-disabled" type="text" name="costituzione" value="{{ persona.costituzione }}" disabled>
+                <input class="input-disabled" type="text" name="costituzione" value="{{ persona.costituzione }}" placeholder="inserisci valore" disabled>
               </div>
               <div class="field">
                 <p class="field-title">Statura:</p>
-                <input class="input-disabled" type="text" name="statura" value="{{ persona.statura }}" disabled>
+                <input class="input-disabled" type="text" name="statura" value="{{ persona.statura }}" placeholder="inserisci valore" disabled>
               </div>
               <div class="field">
                 <p class="field-title">Stato nutrizionale:</p>
-                <input class="input-disabled" type="text" name="s_nutrizionale" value="{{ persona.s_nutrizionale }}" disabled>
+                <input class="input-disabled" type="text" name="s_nutrizionale" value="{{ persona.s_nutrizionale }}" placeholder="inserisci valore" disabled>
               </div>
               <div class="field">
                 <p class="field-title">Eloquio:</p>
-                <input class="input-disabled" type="text" name="eloquio" value="{{ persona.eloquio }}" disabled>
+                <input class="input-disabled" type="text" name="eloquio" value="{{ persona.eloquio }}" placeholder="inserisci valore" disabled>
               </div>
             </div>
           </div>
@@ -481,25 +510,25 @@
                 <div class="container-pressure d-flex">
                   <div class="val-min">
                     <span>min</span>
-                    <input class="input-disabled w-100" name="pressure_min" type="text" placeholder="Inserisci valori minimi" id="pressure_min" value="{{ persona.pressure_min|default:'' }}" disabled />
+                    <input class="input-disabled w-100" name="pressure_min" type="text" placeholder="Inserisci valori minimi" id="pressure_min" value="{{ persona.pressure_min }}" placeholder="inserisci valore" disabled />
                   </div>
                   <div class="val-max">
                     <span>max</span>
-                    <input class="input-disabled w-100" name="pressure_max" type="text" placeholder="Inserisci valori massimi" id="pressure_max" value="{{ persona.pressure_max|default:'' }}" disabled />
+                    <input class="input-disabled w-100" name="pressure_max" type="text" placeholder="Inserisci valori massimi" id="pressure_max" value="{{ persona.pressure_max }}" placeholder="inserisci valore" disabled />
                   </div>
                 </div>
               </div>
               <div class="celle-blood">
                 <p class="celle-blod-title">Frequenza Cardiaca:</p>
-                <input class="input-disabled" type="text" name="heart_rate" placeholder="Inserisci valori" id="heart_rate" value="{{ persona.heart_rate|default:'' }}" disabled />
+                <input class="input-disabled" type="text" name="heart_rate" placeholder="Inserisci valori" id="heart_rate" value="{{ persona.heart_rate }}" placeholder="inserisci valore" disabled />
               </div>
               <div class="celle-blood">
                 <p class="celle-blod-title">Gruppo Sanguigno:</p>
-                <input class="input-disabled" type="text" name="blood_group" placeholder="Inserisci valori" id="blood_group" value="{{ persona.blood_group|default:'' }}" disabled />
+                <input class="input-disabled" type="text" name="blood_group" placeholder="Inserisci valori" id="blood_group" value="{{ persona.blood_group }}" placeholder="inserisci valore" disabled />
               </div>
               <div class="celle-blood">
                 <p class="celle-blod-title">Fattore rh:</p>
-                <input class="input-disabled" type="text" name="rh_factor" placeholder="Inserisci valori" id="rh" value="{{ persona.rh_factor|default:'' }}" disabled />
+                <input class="input-disabled" type="text" name="rh_factor" placeholder="Inserisci valori" id="rh" value="{{ persona.rh_factor }}" placeholder="inserisci valore" disabled />
               </div>
             </div>
           </div>
