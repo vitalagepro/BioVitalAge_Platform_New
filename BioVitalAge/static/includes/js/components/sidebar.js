@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
   checkUserChange();
   
   // 3. Configura intervallo di aggiornamento
-  setInterval(fetchNotifications, 60000);
+  setInterval(fetchNotifications, 3600000);
   
   // 4. Listener per logout
   document.getElementById('logout-btn')?.addEventListener('click', () => {
@@ -138,9 +138,11 @@ document.addEventListener("DOMContentLoaded", () => {
 --------------------------------------------------------------------------------------------------- */
 // Funzione per il fetch delle notifiche
 async function fetchNotifications() {
-  await fetchAppointmentNotifications(); // Mantenuta originale
-  await fetchMedicalNewsNotifications(); // Mantenuta originale
-  localStorage.setItem(`notifications_${appUser}`, JSON.stringify(notifications)); // Modificato salvataggio
+  await fetchAppointmentNotifications();
+  await fetchMedicalNewsNotifications(); 
+  updateNotificationsBadge(); 
+  localStorage.setItem(`notifications_${appUser}`, JSON.stringify(notifications));
+  console.log("Notifiche aggiornate...");
 }
 
 // Se ci sono notifiche memorizzate, le usi, altrimenti fai il fetch
@@ -164,6 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Inizializza con l'utente corrente
   handleUserChange(typeof currentUser !== 'undefined' ? currentUser : 'guest');
 
+  // Listener per le notifiche
   document.querySelectorAll(".sidebar-trigger").forEach((trigger) => {
     const section = trigger.getAttribute("data-section");
     if (section === "Notifiche" && notifications.length > 0) {
@@ -248,15 +251,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Listener per chiudere lo sfondo della sidebar
   bgSidebar.addEventListener("click", () => {
     document.body.classList.remove("visible");
   });
 
+  // Listener per chiudere la sidebar
   closeSidebar.addEventListener("click", () => {
     document.body.classList.remove("visible");
   });
 
+  // Listener per il pulsante di logout
   const logoutBtn = document.getElementById("nav-bar-user-modal-btn");
+
+  // Listener per il pulsante di logout
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {          
       // Al logout (esempio)
@@ -264,10 +272,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-    // Al login (esempio)
-    document.getElementById('login-btn')?.addEventListener('click', () => {
-      handleUserChange(currentUser); // Sostituisci con l'utente reale
-    });
+  // Listener per il pulsante di login
+  document.getElementById('login-btn')?.addEventListener('click', () => {
+    handleUserChange(currentUser); // Sostituisci con l'utente reale
+  });
 
 
   // Avvia i fetch
@@ -368,12 +376,17 @@ function updateNotificationsBadge() {
 
 // Funzione per generare l'HTML delle news
 function generateNewsHTML(news) {
+  // Crea un oggetto Date a partire dalla stringa ricevuta
+  const date = new Date(news.published_at);
+  // Format della data in italiano, puoi personalizzare le opzioni se necessario
+  const formattedDate = new Intl.DateTimeFormat('it-IT', { dateStyle: 'long' }).format(date);
+  
   return `
     <div class="news-notification">
-      <h5>${news.title}</h5>
-      <p class="news-description">${news.description}</p>
-      <a class="button-read-more" href="${news.link}" target="_blank">Leggi di più</a>
-      <small>${news.published_at}</small>
+      <div class="news-date text-muted mb-1">${formattedDate}</div>
+      <div class="news-title fw-bold">${news.title}</div>
+      <div class="news-description text-muted text-truncate-3">${news.description}</div>
+      <a href="${news.link}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">Leggi di più</a>
     </div>
   `;
 }
@@ -383,34 +396,36 @@ async function fetchMedicalNewsNotifications() {
   try {
     const response = await fetch("/api/medical-news-notifications/");
     const data = await response.json();
-    console.log("Fetch news response:", data);
-    
+    console.log(data);
     if (data.success) {
-      let freshNews;
-      if (appUser === 'guest') {
-        // Per l'utente guest, non filtrare in base ai dismissedNotifications
-        freshNews = data.news.slice(0, 2);
-      } else {
-        // Per utenti autenticati, mantieni il filtro (in questo caso, assicurati che le news abbiano un id)
-        freshNews = data.news.filter(news => news.id && !dismissedNotifications.includes(news.id)).slice(0, 2);
-      }
-      
-      notifications = notifications.filter(n => n.origin !== 'news');
-      notifications.push(...freshNews.map(news => ({
-        id: news.id || news.title, // se manca l'id, usa il titolo (ma meglio avere un id univoco)
+      const freshNews = (appUser === 'guest'
+        ? data.news.slice(0, 2)
+        : data.news.filter(news => news.id && !dismissedNotifications.includes(news.id)).slice(0, 2)
+      );
+
+      const newsNotifications = freshNews.map(news => ({
+        id: news.id,
         type: 'info',
         message: generateNewsHTML(news),
         origin: 'news'
-      })));
-      
-      saveUserNotifications();
-      updateNotificationsBadge();
+      }));
+
+      // Confronta gli ID attuali delle notifiche di news con quelli delle nuove notifiche
+      const currentNewsIds = notifications.filter(n => n.origin === 'news').map(n => n.id);
+      const newNewsIds = newsNotifications.map(n => n.id);
+      if (JSON.stringify(currentNewsIds) !== JSON.stringify(newNewsIds)) {
+        notifications = notifications.filter(n => n.origin !== 'news');
+        notifications = notifications.concat(newsNotifications);
+        saveUserNotifications();
+        updateNotificationsBadge();
+      }
     }
   } catch (error) {
     console.error("Fetch news error:", error);
   }
 }
 
+// Funzione per il fetch delle notifiche di appuntamenti
 async function fetchAppointmentNotifications() {
   try {
     const response = await fetch("/api/appointment-notifications/");

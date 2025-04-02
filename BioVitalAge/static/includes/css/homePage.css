@@ -679,11 +679,17 @@ tbody tr:hover {
   position: relative;
 }
 
+.news-notification{
+  position: relative;
+  z-index: 0;
+}
+
 .news-description{
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
+  margin-bottom: 5px !important;
 }
 
 #closeSidebar {

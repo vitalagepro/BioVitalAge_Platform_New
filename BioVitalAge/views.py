@@ -60,7 +60,6 @@ class LogOutRender(View):
 
 # VIEW PER LA GESTIONE DELLA HOME PAGE
 class HomePageRender(View):
-
     def get(self, request):
         persone = TabellaPazienti.objects.all().order_by('-id')[:5]
         appuntamenti = Appointment.objects.all().order_by('data')[:4]
@@ -338,18 +337,22 @@ class MedicalNewsNotificationsView(View):
             if cached_news:
                 return JsonResponse({"success": True, "news": cached_news})
             
-            api_key = "pub_77686f53b634e9bd2e9f03af285ad8dcebd8a"
-            url = f"https://newsdata.io/api/1/news?apikey={api_key}&language=it&q=salute"
+            api_key = "80734c3bf8e34cf58beedc44db417a73"
+            url = f"https://newsapi.org/v2/everything?q=medicina&language=it&apiKey={api_key}"
             response = requests.get(url)
             data = response.json()
             news = []
-            if data.get("status") == "success":
-                articles = data.get("results", [])
+            # Controlla se lo status della risposta è "ok"
+            if data.get("status") == "ok":
+                # Usa la chiave "articles" per ottenere gli articoli
+                articles = data.get("articles", [])
                 for article in articles[:2]:
                     title = article.get("title", "Notizia medica")
                     description = article.get("description", "")
-                    published_at = article.get("pubDate", "")[:10]
-                    link = article.get("link", "#")
+                    # Usa "publishedAt" per la data e prendi solo la parte della data
+                    published_at = article.get("publishedAt", "")[:10]
+                    # Usa "url" per ottenere il link
+                    link = article.get("url", "#")
                     news.append({
                         "id": str(uuid.uuid4()),
                         "title": title,
@@ -364,6 +367,7 @@ class MedicalNewsNotificationsView(View):
             return JsonResponse({"success": True, "news": news})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
+
 # VIEW PER ACCETTARE IL DISCLAIMER
 class AcceptDisclaimerView(View):
     def post(self, request):
@@ -2591,6 +2595,7 @@ class PrescrizioniView(View):
 
         return redirect('cartella_paziente', persona_id)
 
+
 #VIEWS APPUNTAMENTI
 class AppuntamentiView(View):
     def get(self, request):
@@ -2797,9 +2802,6 @@ class SearchAppointmentsView(View):
             results = list(appointments.values("id", "nome_paziente", "tipologia_visita", "orario"))
             return JsonResponse({"success": True, "appointments": results})
         return JsonResponse({"success": False, "error": "Nessuna query fornita"})
-    
-
-
 
 #VIEW CREATE PATIENT FROM SECOND MODAL
 class CreaPazienteView(View):
