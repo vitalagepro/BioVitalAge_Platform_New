@@ -13,20 +13,23 @@
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}">
-    <link rel="stylesheet" href="{% static 'includes/css/Prescrizione.css' %}">
+    <link rel="stylesheet" href="{% static 'includes/css/prescrizioni/Prescrizione.css' %}">
     <link rel="stylesheet" href="{% static 'includes/css/homePage.css' %}">
 
     <!-- Bootstrap import -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Font Import  -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 
+
+    
     <!-- JS IMPORT -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script type="module" src="{% static 'includes/js/Prescrizioni.js' %}"></script>
+    <script type="module" src="{% static 'includes/js/prescrizioni/Prescrizioni.js' %}"></script>
 </head>
 
 <body>
@@ -88,7 +91,6 @@
                 <p>Prescrizioni Paziente</p>
             </div>
         </div>
-
 
         <!-- Tabella Prescrizione -->
         <div id="backdropModale"></div>
@@ -185,6 +187,10 @@
                 <!-- DINAMICAMENTE POPOLATO CON JAVASCRIPT -->
             </div>
                     
+        </div>
+
+        <div id="ModalePacchettiEsami">
+
         </div>
 
         <!-- MODALE MESSAGE -->
@@ -330,7 +336,27 @@
                     </button>
                 </div>
 
-                <button title="Add Patient" class="button" onclick="openModal()">
+                <div class="container-button-prescrizionie">
+
+                  <button title="Add Patient" class="button" onclick="openModal()">
+                      <span class="button__icon-wrapper">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14"
+                          height="14">
+                          <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        </svg>
+                    
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                          class="button__icon-svg button__icon-svg--copy" width="14" height="14">
+                          <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        </svg>
+                    
+                      </span>
+                      Prescrizioni
+                  </button>
+
+                  <button title="Add Patient" class="button" onclick="openModalPacchetti()">
                     <span class="button__icon-wrapper">
                       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14"
                         height="14">
@@ -345,8 +371,10 @@
                       </svg>
                   
                     </span>
-                    Aggiungi Prescrizione
-                </button>
+                    Pacchetti
+                  </button> 
+
+                </div>
                 
         </div>
                 
@@ -397,7 +425,7 @@
 
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

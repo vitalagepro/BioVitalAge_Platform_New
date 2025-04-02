@@ -26,7 +26,6 @@ async function populateDropdown() {
     menuTendinaModale.appendChild(option);
   });
 }
-
 async function populateResults(filteredData = null) {
   if (!filteredData) {
       const data = await renderingRisultati();
@@ -46,8 +45,8 @@ async function populateResults(filteredData = null) {
       let rowContent = `
           <div class="colModale">${item.CODICE_UNIVOCO_ESAME_PIATTAFORMA || ""}</div>
           <div class="colModale nomeEsame">${item.DESCRIZIONE_ESAME || ""}</div>
-          <div class="colModale">${item.COD_ASL ? `${item.COD_ASL} <span> (cod. asl) </span>` : ""}</div>
-          <div class="colModale">${item.COD_REG ? `${item.COD_REG}<span> (cod. reg)</span>` : ""}</div>
+          <div class="colModale codici">${item.COD_ASL ? `${item.COD_ASL} <span> (cod. asl) </span>` : ""}</div>
+          <div class="colModale codici">${item.COD_REG ? `${item.COD_REG}<span> (cod. reg)</span>` : ""}</div>
           <div class="colModale metodica">${item.METODICA || ""}</div>
           <div class="colModale apparato">${(item.APPARATO_or_I_SISTEMI || "").slice(0, 25)}</div>
           <div class="colModale">
@@ -90,14 +89,14 @@ async function populateResults(filteredData = null) {
 
           // Creazione della riga per la tabella
           const tableRow = document.createElement("div");
-          tableRow.classList.add("rowModale", "coda-item"); // Mantiene le tue classi originali
+          tableRow.classList.add("rowModale", "coda-item"); 
           tableRow.setAttribute("data-id", esameId);
           tableRow.innerHTML = `
               <div class="colModale" name="codiceEsame">${esameCodice}</div>
               <input type="hidden" id="codiceEsameInput" name="codiceEsame" value="${esameCodice}">
               <div class="colModale nomeEsame">${esameNome}</div>
-              <div class="colModale">${esameAsl ? `${esameAsl} (cod. asl)` : ""}</div>
-              <div class="colModale">${esameReg ? `${esameReg} (cod. reg)` : ""}</div>
+              <div class="colModale codici">${esameAsl ? `${esameAsl} (cod. asl)` : ""}</div>
+              <div class="colModale codici">${esameReg ? `${esameReg} (cod. reg)` : ""}</div>
               <div class="colModale metodica">${esameMetodica}</div>
               <div class="colModale apparati">${esameMetodica}</div>
               <div class="colModale">
@@ -119,8 +118,6 @@ async function populateResults(filteredData = null) {
 
   updatePagination();
 }
-
-
 function filterResults() {
   console.log("Filtraggio in corso...");
 
@@ -194,7 +191,6 @@ function filterResults() {
 
   populateResults(filteredData);
 }
-
 function selectSingleResult() {
   const selectedValue = document.getElementById(
     "menu_tendina_prescrizioni"
@@ -216,7 +212,6 @@ document.getElementById("menu_tendina_prescrizioni").addEventListener("change", 
 
 populateDropdown();
 populateResults();
-
 
 
 /* RICERCA PRESCRIZIONI TABELLA RISULTATI */
@@ -353,12 +348,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-
-
-
-/*  -----------------------------------------------------------------------------------------------
-  Funzione di paginazione con controllo di tabelle con la stessa classe
---------------------------------------------------------------------------------------------------- */
+/*  FUNZIONE DI PAGINAZIONE DELLA TABELLA */
 function updatePagination() {
   const tableContainer = document.querySelector(".table-content");
   const paginationContainer = document.getElementById("pagination_download");
