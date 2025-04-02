@@ -4,10 +4,10 @@
 let notifications = [];
 let appUser = window.currentUser || 'guest'; // Usiamo appUser invece di currentUser per evitare conflitti
 let previousUser = null;
-let storedNotifications =
-  JSON.parse(localStorage.getItem("notifications")) || [];
-let dismissedNotifications =
-  JSON.parse(localStorage.getItem("dismissedNotifications")) || [];
+// let storedNotifications =
+//   JSON.parse(localStorage.getItem("notifications")) || [];
+// let dismissedNotifications =
+//   JSON.parse(localStorage.getItem("dismissedNotifications")) || [];
 
 let emails = [
   { subject: "Risultati laboratorio", sender: "Clinica Roma" },
@@ -144,15 +144,16 @@ async function fetchNotifications() {
 }
 
 // Se ci sono notifiche memorizzate, le usi, altrimenti fai il fetch
-if (storedNotifications.length > 0) {
-  // Usa solo le notifiche non eliminate (filtrando per id)
-  notifications = storedNotifications.filter(
-    (n) => !dismissedNotifications.includes(n.id)
-  );
-  updateNotificationsBadge();
-} else {
-  fetchNotifications();
-}
+// if (storedNotifications.length > 0) {
+//   // Usa solo le notifiche non eliminate (filtrando per id)
+//   notifications = storedNotifications.filter(
+//     (n) => !dismissedNotifications.includes(n.id)
+//   );
+//   updateNotificationsBadge();
+// } else {
+// }
+initUserNotifications();
+fetchNotifications();
 
 // Funzione per renderizzare le notifiche
 document.addEventListener("DOMContentLoaded", () => {
@@ -303,8 +304,11 @@ function initUserNotifications() {
 }
 
 function saveUserNotifications() {
-  localStorage.setItem(`notifications_${appUser}`, JSON.stringify(notifications));
-  localStorage.setItem(`dismissedNotifications_${appUser}`, JSON.stringify(dismissedNotifications));
+  const userKey = `notifications_${appUser}`;
+  const dismissedKey = `dismissedNotifications_${appUser}`;
+  
+  localStorage.setItem(userKey, JSON.stringify(notifications));
+  localStorage.setItem(dismissedKey, JSON.stringify(dismissedNotifications));
 }
 
 // Chiama all'inizio
@@ -361,23 +365,39 @@ function updateNotificationsBadge() {
 }
 
 // Modifica la funzione fetchMedicalNewsNotifications
+
+// Funzione per generare l'HTML delle news
+function generateNewsHTML(news) {
+  return `
+    <div class="news-notification">
+      <h5>${news.title}</h5>
+      <p class="news-description">${news.description}</p>
+      <a class="button-read-more" href="${news.link}" target="_blank">Leggi di più</a>
+      <small>${news.published_at}</small>
+    </div>
+  `;
+}
+
+// Funzione per il fetch delle news
 async function fetchMedicalNewsNotifications() {
   try {
     const response = await fetch("/api/medical-news-notifications/");
     const data = await response.json();
+    console.log("Fetch news response:", data);
     
     if (data.success) {
-      // Filtra le notizie già eliminate da questo utente
-      const freshNews = data.news.filter(news => 
-        news.id && !dismissedNotifications.includes(news.id)
-      ).slice(0, 2);
+      let freshNews;
+      if (appUser === 'guest') {
+        // Per l'utente guest, non filtrare in base ai dismissedNotifications
+        freshNews = data.news.slice(0, 2);
+      } else {
+        // Per utenti autenticati, mantieni il filtro (in questo caso, assicurati che le news abbiano un id)
+        freshNews = data.news.filter(news => news.id && !dismissedNotifications.includes(news.id)).slice(0, 2);
+      }
       
-      // Rimuovi le vecchie notizie
       notifications = notifications.filter(n => n.origin !== 'news');
-      
-      // Aggiungi le nuove
       notifications.push(...freshNews.map(news => ({
-        id: news.id,
+        id: news.id || news.title, // se manca l'id, usa il titolo (ma meglio avere un id univoco)
         type: 'info',
         message: generateNewsHTML(news),
         origin: 'news'

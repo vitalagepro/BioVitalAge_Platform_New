@@ -1,4 +1,6 @@
 import requests
+import uuid
+from django.core.cache import cache
 from datetime import datetime, timedelta
 from django.utils import timezone as dj_timezone
 from django.db.models import Avg, Min, Max
@@ -331,21 +333,25 @@ class AppointmentNotificationsView(View):
 class MedicalNewsNotificationsView(View):
     def get(self, request, *args, **kwargs):
         try:
-            api_key = "2626c84001fd4317bae40517af281479"
-            url = f"https://newsapi.org/v2/everything?q=hospital&from=2025-02-28&sortBy=publishedAt&apiKey={api_key}"
+            # Controlla se i dati sono già in cache
+            cached_news = cache.get('medical_news')
+            if cached_news:
+                return JsonResponse({"success": True, "news": cached_news})
+            
+            api_key = "pub_77686f53b634e9bd2e9f03af285ad8dcebd8a"
+            url = f"https://newsdata.io/api/1/news?apikey={api_key}&language=it&q=salute"
             response = requests.get(url)
             data = response.json()
             news = []
-            if data.get("status") == "ok":
-                articles = data.get("articles", [])
+            if data.get("status") == "success":
+                articles = data.get("results", [])
                 for article in articles[:2]:
                     title = article.get("title", "Notizia medica")
                     description = article.get("description", "")
-                    published_at = article.get("publishedAt", "")[:10]  # solo la data
-                    link = article.get("url", "#")
-
-                    # Invia i dati raw al frontend per essere formattati dal JS
+                    published_at = article.get("pubDate", "")[:10]
+                    link = article.get("link", "#")
                     news.append({
+                        "id": str(uuid.uuid4()),
                         "title": title,
                         "description": description,
                         "published_at": published_at,
@@ -353,10 +359,11 @@ class MedicalNewsNotificationsView(View):
                         "type": "info",
                         "origin": "medical"
                     })
+                # Salva in cache per 30 minuti (1800 secondi)
+                cache.set('medical_news', news, 1800)
             return JsonResponse({"success": True, "news": news})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
-
 # VIEW PER ACCETTARE IL DISCLAIMER
 class AcceptDisclaimerView(View):
     def post(self, request):
