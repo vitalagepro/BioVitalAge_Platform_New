@@ -77,6 +77,8 @@ span{
     border-radius: 8px;
 }
 
+
+
 /* Tabella contenuto */
 .tabella-prescrizioni{
     width: 98%;
@@ -214,13 +216,6 @@ span{
 
 
 
-
-
-
-
-
-
-
 /* Paginazione Tabella prescrizioni */
 .pagination-download{
     width: 100%;
@@ -233,7 +228,6 @@ span{
     background-color: white;
     border-radius: 0px 0px 8px 8px;
 }
-
 #btnPdfGeneralPrescrizioni{
     border-radius: 50px;
     width: 65px;
@@ -242,15 +236,6 @@ span{
 .pagination-controls{
     width: 50%;
 }
-
-
-
-
-
-
-
-
-
 
 
 /* Stile Modale */
@@ -413,5 +398,124 @@ span{
 
 
 
+/* STYLE MODALE PACCHETTI */
+#ModalePacchettiEsami{
+    display: none; 
+    background-color: var(--card-color);
+    border-radius: 8px;
+    width: 1000px;
+    height: 580px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    padding: 20px;
+}
+#ModalePacchettiEsami .title-header-container h3{
+    color: var(--contrast-color);
+}
+.content-modale-pacchetti{
+    background-color: white;
+    width: 100%;
+    height: 420px;
+}
+.content-modale-pacchetti .rowModale{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+
+}
+.button-container-pacchetti{
+    width: 30%;
+    gap: 40px;
+}
+.button-container-pacchetti button:last-of-type{
+    background: none;
+    border: none;
+}
+.button-container-pacchetti button:first-of-type{
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+}
+.colModale.nomePacchetto{
+    width: 50%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
 
 
+
+
+
+
+#modaleDettagliPacchetto {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vw;
+    max-width: 800px;
+    max-height: 80vh;
+    background-color: #ffffff;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    z-index: 9999;
+    padding: 1rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    display: none;
+    overflow: hidden;
+} 
+#modaleDettagliPacchetto .title-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+#modaleDettagliPacchetto .content-modale-pacchetti {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+#modaleDettagliPacchetto .rowModale {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+} 
+#backdropSecondario {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.4);
+    z-index: 9998;
+}
+.button-container-prescrizioni{
+    height: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    width: 20rem;
+}
+.button-container-prescrizioni button{
+    border-radius: 8px !important;
+}
+.button-container-prescrizioni button:last-of-type{
+    width: 14rem !important;
+}
+.button-container-prescrizioni button:first-of-type{
+    background-color: var(--contrast-color);
+}
+.button-container-prescrizioni button:first-of-type:hover{
+    background-color: var(--contrast-color2);
+}

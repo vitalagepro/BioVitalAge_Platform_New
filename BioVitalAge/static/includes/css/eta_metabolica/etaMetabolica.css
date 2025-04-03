@@ -262,6 +262,19 @@
 
 
 
+/* CARD GRAFICI CONTAINER */
+.card_grafico{
+  background-color: var(--card-color);
+  width: 98%;
+  margin: auto;
+  border-radius: 8px;
+  margin-top: 1rem;
+  padding: 20px;
+}
+.card_grafico h3{
+  color: var(--contrast-color);
+}
+
 
 
 

@@ -54,8 +54,8 @@
 
     <main>  
 
-        <!-- MENU TRACE -->
-        <div class="main-title-nav">
+      <!-- MENU TRACE -->
+      <div class="main-title-nav">
             <div class="back-tittle">
               <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}"
                   alt=""></a>
@@ -90,112 +90,12 @@
                 <p>»</p>
                 <p>Prescrizioni Paziente</p>
             </div>
-        </div>
+      </div>
 
-        <!-- Tabella Prescrizione -->
-        <div id="backdropModale"></div>
 
-        <div id="ModaleInserimento">
-            <div class="title-header-container">
-                <h3>Aggiungi Prescrizione</h3>
-                <button class="close" onclick="closeModal()">X</button>
-            </div>
-            
-            <div class="ModaleHeader">
-
-                <select name="filtri" id="filtri">
-                    <option value="0">Tutti</option>
-                    <option value="1">Descrizione Esame crescente</option>
-                    <option value="2">Descrizione Esame decrescente</option>
-                    <option value="3">Metodica</option>
-                    <option value="4">Codice Asl</option>
-                    <option value="5">Codice Regione</option>
-                    <option value="6">Apparato / Sistemi</option>
-                </select>
-
-                <div class="barra-ricercaModale">
-                    <input type="text" class="input" id="Email" name="inputField" placeholder="Type name here" required>
-                    <button class="button button--submit" type="submit">
-                      
-                        <span class="button__icon-wrapper">
-
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          width="15"
-                          class="button__icon-svg"
-                        >
-                          <circle
-                            cx="11"
-                            cy="11"
-                            r="7"
-                            stroke="currentColor"
-                            stroke-width="2"
-                          ></circle>
-                          <line
-                            x1="16"
-                            y1="16"
-                            x2="21"
-                            y2="21"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                          ></line>
-                        </svg>
-            
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          width="15"
-                          class="button__icon-svg button__icon-svg--copy"
-                        >
-                          <circle
-                            cx="11"
-                            cy="11"
-                            r="7"
-                            stroke="currentColor"
-                            stroke-width="2"
-                          ></circle>
-                          <line
-                            x1="16"
-                            y1="16"
-                            x2="21"
-                            y2="21"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                          ></line>
-                        </svg>
-
-                        </span>
-                     
-                      Search
-                    </button>
-
-                    
-                </div>
-
-                <select name="" id="menu_tendina_prescrizioni" class="tendinaPrescrizioni">
-                    <!-- DINAMICAMENTE POPOLATO CON JAVASCRIPT -->
-                </select>  
-
-            </div>
-
-            <div class="Modale-Result-content">
-                <!-- DINAMICAMENTE POPOLATO CON JAVASCRIPT -->
-            </div>
-                    
-        </div>
-
-        <div id="ModalePacchettiEsami">
-
-        </div>
-
-        <!-- MODALE MESSAGE -->
-        {% if success %}
-            <div class="successMessage" id="success">
+      <!-- MODALE MESSAGE -->
+      {% if success %}
+        <div class="successMessage" id="success">
 
                 <p>{{ success }}</p>
                 <div class="progressBarContainerSuccess">
@@ -224,45 +124,225 @@
                 }
                 </script>
 
-            </div>
-        {% else %}
-            {% if errore %}
-                <div class="errorSystemContainer" id="error">
-                    <p>{{ errore }}</p>
-                    <div class="progressBarContainer">
-                    <div class="progressBar" id="progress"></div>
-                    </div>
+        </div>
+      {% else %}
+        {% if errore %}
+          <div class="errorSystemContainer" id="error">
+                      <p>{{ errore }}</p>
+                      <div class="progressBarContainer">
+                      <div class="progressBar" id="progress"></div>
+                      </div>
 
-                    <script>
-                    const messaggio = document.getElementById('error');
-                    const progressBar = document.getElementById('progress');
-                    const durationError = 6000; 
-                    const intervalError = 50;
+                      <script>
+                      const messaggio = document.getElementById('error');
+                      const progressBar = document.getElementById('progress');
+                      const durationError = 6000; 
+                      const intervalError = 50;
 
-                    if (messaggio) {
-                        let elapsedTimeError = 0; 
+                      if (messaggio) {
+                          let elapsedTimeError = 0; 
 
-                        const timerError = setInterval(() => {
-                        elapsedTimeError += intervalError;
-                        const percentage = ((durationError - elapsedTimeError) / durationError) * 100;
-                        progressBar.style.width = `${percentage}%`;
+                          const timerError = setInterval(() => {
+                          elapsedTimeError += intervalError;
+                          const percentage = ((durationError - elapsedTimeError) / durationError) * 100;
+                          progressBar.style.width = `${percentage}%`;
 
-                        if (elapsedTimeError >= durationError) {
-                            clearInterval(timerError); 
-                            messaggio.style.display = 'none'; 
-                        }
-                        }, intervalError);
-                    }
-                    </script>
+                          if (elapsedTimeError >= durationError) {
+                              clearInterval(timerError); 
+                              messaggio.style.display = 'none'; 
+                          }
+                          }, intervalError);
+                      }
+                      </script>
 
-                </div>
-            {% endif %}
+          </div>
         {% endif %}
+      {% endif %}
 
 
+      <!-- Tabella Prescrizione Modale -->
+      <div id="backdropModale"></div>
 
-        <!-- TABELLA RISULTATI -->    
-        <div class="header-tools">
+      <div id="ModaleInserimento">
+             <div class="title-header-container">
+                 <h3>Aggiungi Prescrizione</h3>
+                 <button class="close" onclick="closeModal()" style=" margin-top: -0.5rem;" >X</button>
+             </div>
+             
+             <div class="ModaleHeader">
+ 
+                 <select name="filtri" id="filtri">
+                     <option value="0">Tutti</option>
+                     <option value="1">Descrizione Esame crescente</option>
+                     <option value="2">Descrizione Esame decrescente</option>
+                     <option value="3">Metodica</option>
+                     <option value="4">Codice Asl</option>
+                     <option value="5">Codice Regione</option>
+                     <option value="6">Apparato / Sistemi</option>
+                 </select>
+ 
+                 <div class="barra-ricercaModale">
+                     <input type="text" class="input" id="Email" name="inputField" placeholder="Type name here" required>
+                     <button class="button button--submit" type="submit">
+                       
+                         <span class="button__icon-wrapper">
+ 
+                         <svg
+                           xmlns="http://www.w3.org/2000/svg"
+                           viewBox="0 0 24 24"
+                           fill="none"
+                           width="15"
+                           class="button__icon-svg"
+                         >
+                           <circle
+                             cx="11"
+                             cy="11"
+                             r="7"
+                             stroke="currentColor"
+                             stroke-width="2"
+                           ></circle>
+                           <line
+                             x1="16"
+                             y1="16"
+                             x2="21"
+                             y2="21"
+                             stroke="currentColor"
+                             stroke-width="2"
+                             stroke-linecap="round"
+                           ></line>
+                         </svg>
+             
+                         <svg
+                           xmlns="http://www.w3.org/2000/svg"
+                           viewBox="0 0 24 24"
+                           fill="none"
+                           width="15"
+                           class="button__icon-svg button__icon-svg--copy"
+                         >
+                           <circle
+                             cx="11"
+                             cy="11"
+                             r="7"
+                             stroke="currentColor"
+                             stroke-width="2"
+                           ></circle>
+                           <line
+                             x1="16"
+                             y1="16"
+                             x2="21"
+                             y2="21"
+                             stroke="currentColor"
+                             stroke-width="2"
+                             stroke-linecap="round"
+                           ></line>
+                         </svg>
+ 
+                         </span>
+                      
+                       Search
+                     </button>
+ 
+                     
+                 </div>
+ 
+                 <select name="" id="menu_tendina_prescrizioni" class="tendinaPrescrizioni">
+                     <!-- DINAMICAMENTE POPOLATO CON JAVASCRIPT -->
+                 </select>  
+ 
+             </div>
+ 
+             <div class="Modale-Result-content">
+                 <!-- DINAMICAMENTE POPOLATO CON JAVASCRIPT -->
+             </div>         
+      </div>
+ 
+      
+      <!-- Dettagli Esami Pacchetto Modale -->
+      <div id="backdropSecondario" style="display:none;"></div>
+
+      <div id="modaleDettagliPacchetto" style="display:none;">
+
+          <div class="title-header-container">
+            <h3>Esami del Pacchetto Checkup Completo Donna</h3>
+            <button class="close" onclick="closeModalDettagli()" style="margin-right: 0rem; margin-top: -0.5rem;" >X</button>
+          </div>
+
+          <div class="content-modale-pacchetti" id="dettagliEsamiPacchetto">
+            <!-- Lista dinamica -->
+          </div>
+
+      </div>
+
+
+      <!-- Pacchetti Prescrizione Modale -->
+      <script>
+
+        function openModalPacchetti(){
+
+            const modalePacchetti = document.getElementById('ModalePacchettiEsami');
+            modalePacchetti.style.display = 'block';
+
+            const backdropModale = document.getElementById('backdropModale');
+            backdropModale.style.display = 'block';
+
+            caricaTuttiIPacchetti();
+            
+        }
+
+        function closeModalPacchetti(){
+
+            const modalePacchetti = document.getElementById('ModalePacchettiEsami');
+            modalePacchetti.style.display = 'none';
+
+            const backdropModale = document.getElementById('backdropModale');
+            backdropModale.style.display = 'none';
+
+        }
+        
+        document.addEventListener("DOMContentLoaded", () => {
+          const deleteButton = document.getElementById("deleteButton");
+          if (deleteButton) {
+            deleteButton.addEventListener("click", () => {
+              if (confirm("Sei sicuro di voler rimuovere tutte le prescrizioni?")) {
+                // Svuota la tabella
+                const container = document.querySelector(".tabella-prescrizioni .table-content");
+                container.innerHTML = "";
+
+                // Rimuove la paginazione se esiste
+                const pagination = document.querySelector(".pagination-controls");
+                if (pagination) {
+                  pagination.remove();
+                }
+
+                // Aggiorna la paginazione se esiste una funzione dedicata
+                if (typeof updatePagination === "function") {
+                  updatePagination();
+                }
+              }
+            });
+          }
+        });
+
+      </script>
+
+      <div id="ModalePacchettiEsami">
+
+          <div class="title-header-container">
+              <h3>Aggiungi Pacchetti Prescrizioni</h3>
+              <button class="close" onclick="closeModalPacchetti()" style="margin-right: 0rem; margin-top: -0.5rem;" >X</button>
+          </div>
+
+          <p style="margin-top: 2rem;">Elenco Pacchetti Prescrizioni</p>
+          <div class="content-modale-pacchetti" id="modalePacchettiContainer">
+            <!-- POPOLARE DINAMICAMENTE -->
+
+
+          </div>
+      </div>
+ 
+
+      <!-- TABELLA CODA PRESCRIZIONI -->    
+      <div class="header-tools">
 
                 <select name="filtriTabellaResult" id="filtriTabellaResult">
                     <option value="0">Tutti</option>
@@ -374,11 +454,12 @@
                     Pacchetti
                   </button> 
 
-                </div>
-                
-        </div>
-                
-        <div class="tabella-prescrizioni">
+                </div> 
+      </div>
+              
+
+      <div class="tabella-prescrizioni">
+
             <div class="header-table">
                 <p>Codice Univoco Esame</p>
                 <p>Descrizione Esame</p>
@@ -401,7 +482,33 @@
                 <div class="pagination-download" id="pagination_download">
 
                     <input type="hidden" name="codici_esami" id="codiciEsamiInput">
-                    <button class="button" id="btnPdfGeneralPrescrizioni"> 
+
+                    <div class="button-container-prescrizioni">
+                      
+                      <button class="button" type="button" id="deleteButton">  
+                        <span class="button__icon-wrapper">
+
+                          <svg viewBox="0 0 24 24" fill="none" width="18" height="18" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg">
+                            <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M19 6L18.5 19C18.5 20.1 17.6 21 16.5 21H7.5C6.4 21 5.5 20.1 5.5 19L5 6" stroke="currentColor" stroke-width="2"/>
+                            <path d="M10 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M9 6V4C9 3.4 9.4 3 10 3H14C14.6 3 15 3.4 15 4V6" stroke="currentColor" stroke-width="2"/>
+                          </svg>
+
+
+                          <svg viewBox="0 0 24 24" fill="none" width="18" height="18" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg button__icon-svg--copy">
+                            <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M19 6L18.5 19C18.5 20.1 17.6 21 16.5 21H7.5C6.4 21 5.5 20.1 5.5 19L5 6" stroke="currentColor" stroke-width="2"/>
+                            <path d="M10 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M9 6V4C9 3.4 9.4 3 10 3H14C14.6 3 15 3.4 15 4V6" stroke="currentColor" stroke-width="2"/>
+                          </svg>                          
+
+                        </span>
+                      </button>
+
+                      <button class="button" id="btnPdfGeneralPrescrizioni"> 
                             <span class="button__icon-wrapper">
 
                                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14" height="14">
@@ -417,11 +524,14 @@
                                 </svg>                            
 
                             </span>
-                    </button>
-                    
+
+                            Salva Prescrizioni
+                      </button>
+                    </div>
+                   
                 </div>
             </form>
-        </div>
+      </div>
 
     </main>
 

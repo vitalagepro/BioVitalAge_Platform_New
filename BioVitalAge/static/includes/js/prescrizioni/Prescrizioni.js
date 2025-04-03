@@ -438,3 +438,166 @@ document.getElementById("btnPdfGeneralPrescrizioni").addEventListener("click", f
 
 
 
+
+
+
+/* FUNZIONE PER I PACCHETTI DELLE PRESCRIZIONI */
+const pacchettiPrescrizioni = {
+  "PACCHETTO CHECKUP COMPLETO DONNA": [
+    "EMOCROMO", "SIDEREMIA", "FERRITINA", "TRANSFERRINA", "AZOTEMIA", "CREATININA", "URICEMIA",
+    "COLESTEROLO TOTALE", "COLESTEROLO LDL", "COLESTEROLO HDL", "TRIGLICERIDI", "GLICEMIA",
+    "INSULINA", "TRANSAMINASI (GOT)", "TRANSAMINASI (GPT)", "GAMMA GT", "FOSFATASI ALCALINA",
+    "BILIRUBINA TOTALE", "BILIRUBINA DIRETTA", "BILIRUBINA INDIRETTA", "PCR",
+    "ELETTROFORESI DELLE SIEROPROTEINE", "SODIO", "POTASSIO", "MAGNESIO", "CALCIO", "FOSFORO",
+    "VITAMINA D", "TSH", "ESAME DELLE URINE"
+  ],
+  "PACCHETTO CHECKUP COMPLETO UOMO": [
+    "EMOCROMO", "SIDEREMIA", "FERRITINA", "TRANSFERRINA", "AZOTEMIA", "CREATININA", "URICEMIA",
+    "COLESTEROLO TOTALE", "COLESTEROLO LDL", "COLESTEROLO HDL", "TRIGLICERIDI", "GLICEMIA",
+    "INSULINA", "TRANSAMINASI (GOT)", "TRANSAMINASI (GPT)", "GAMMA GT", "FOSFATASI ALCALINA",
+    "BILIRUBINA TOTALE", "BILIRUBINA DIRETTA", "BILIRUBINA INDIRETTA", "PCR",
+    "ELETTROFORESI DELLE SIEROPROTEINE", "SODIO", "POTASSIO", "MAGNESIO", "CALCIO", "FOSFORO",
+    "PSA III GENERAZIONE", "TSH", "ESAME DELLE URINE"
+  ]
+};
+
+window.datiPacchettiEsami = {};
+
+let datiFiltratiCheckup = [];
+
+async function caricaTuttiIPacchetti() {
+  try {
+    const response = await fetch("/static/includes/json/ArchivioEsami.json");
+    const data = await response.json();
+    const archivio = data.Foglio1;
+
+    const container = document.getElementById("modalePacchettiContainer");
+    container.innerHTML = "";
+
+    for (let nomePacchetto in pacchettiPrescrizioni) {
+      const esami = pacchettiPrescrizioni[nomePacchetto];
+
+      const datiFiltrati = archivio.filter((item) =>
+        esami.some((esame) =>
+          item.DESCRIZIONE_ESAME.toUpperCase().includes(esame.toUpperCase())
+        )
+      );
+
+      creaBoxPacchetto(nomePacchetto, datiFiltrati);
+    }
+  } catch (error) {
+    console.error("Errore nel caricamento:", error);
+  }
+}
+
+function creaBoxPacchetto(nomePacchetto, datiEsami) {
+  const container = document.getElementById("modalePacchettiContainer");
+  const idPacchetto = nomePacchetto.replaceAll(" ", "_");
+
+  // ✅ Salva gli esami in memoria globale
+  window.datiPacchettiEsami[idPacchetto] = datiEsami;
+
+  const box = document.createElement("div");
+  box.classList.add("rowModale");
+
+  box.innerHTML = `
+    <div class="colModale nomePacchetto">${nomePacchetto}</div>
+    <div class="colModale button-container-pacchetti">
+      <button onclick='mostraDettagliPacchetto("${idPacchetto}")'>📋 Mostra Esami</button>
+      <button onclick='aggiungiTuttiGliEsami("${idPacchetto}")'>➕</button>
+    </div>
+  `;
+
+  container.appendChild(box);
+}
+
+function mostraDettagliPacchetto(idPacchetto) {
+  const dettagli = document.getElementById("dettagliEsamiPacchetto");
+  dettagli.innerHTML = "";
+
+  const datiEsami = window.datiPacchettiEsami[idPacchetto];
+  if (!datiEsami) {
+    console.error("Pacchetto non trovato:", idPacchetto);
+    return;
+  }
+
+  // ✅ Titolo dinamico
+  document.querySelector("#modaleDettagliPacchetto h3").textContent = `Esami del ${idPacchetto.replaceAll("_", " ")}`;
+
+  datiEsami.forEach((item) => {
+    const row = document.createElement("div");
+    row.classList.add("rowModale");
+    row.innerHTML = `
+      <div class="colModale">${item.CODICE_UNIVOCO_ESAME_PIATTAFORMA || ""}</div>
+      <div class="colModale nomeEsame">${item.DESCRIZIONE_ESAME || ""}</div>
+      <div class="colModale codici">${item.COD_ASL ? `${item.COD_ASL} <span>(cod. asl)</span>` : ""}</div>
+      <div class="colModale codici">${item.COD_REG ? `${item.COD_REG}<span>(cod. reg)</span>` : ""}</div>
+      <div class="colModale metodica">${item.METODICA || ""}</div>
+      <div class="colModale apparato">${(item.APPARATO_or_I_SISTEMI || "").slice(0, 25)}</div>
+    `;
+    dettagli.appendChild(row);
+  });
+
+  document.getElementById("modaleDettagliPacchetto").style.display = "block";
+  document.getElementById("backdropSecondario").style.display = "block";
+}
+
+function closeModalDettagli() {
+  document.getElementById("modaleDettagliPacchetto").style.display = "none";
+  document.getElementById("backdropSecondario").style.display = "none";
+}
+
+function aggiungiTuttiGliEsami(idPacchetto) {
+  const datiEsami = window.datiPacchettiEsami[idPacchetto];
+
+  if (!datiEsami) {
+    console.error(`❌ Nessun esame trovato per il pacchetto: ${idPacchetto}`);
+    return;
+  }
+
+  const tabella = document.querySelector(".tabella-prescrizioni .table-content");
+
+  // ✅ Verifica se almeno 1 esame del pacchetto è già presente
+  const esisteGia = datiEsami.some(item => {
+    const codice = item.CODICE_UNIVOCO_ESAME_PIATTAFORMA || "";
+    return Array.from(tabella.children).some(row =>
+      row.querySelector('[name="codiceEsame"]')?.textContent === codice
+    );
+  });
+
+  if (esisteGia) {
+    alert("⚠️ Questo pacchetto contiene esami già presenti nella tabella.\nRimuovili prima di aggiungerlo.");
+    return;
+  }
+
+  // ✅ Se nessun esame esiste già → li aggiunge tutti
+  datiEsami.forEach((item) => {
+    const codice = item.CODICE_UNIVOCO_ESAME_PIATTAFORMA || "";
+
+    const row = document.createElement("div");
+    row.classList.add("rowModale");
+    row.innerHTML = `
+      <div class="colModale" name="codiceEsame">${codice}</div>
+      <input type="hidden" name="codiceEsame" value="${codice}">
+      <div class="colModale nomeEsame">${item.DESCRIZIONE_ESAME || ""}</div>
+      <div class="colModale codici">${item.COD_ASL ? `${item.COD_ASL} (cod. asl)` : ""}</div>
+      <div class="colModale codici">${item.COD_REG ? `${item.COD_REG} (cod. reg)` : ""}</div>
+      <div class="colModale metodica">${item.METODICA || ""}</div>
+      <div class="colModale apparato">${(item.APPARATO_or_I_SISTEMI || "").slice(0, 25)}</div>
+      <div class="colModale"><button class="remove-btn">❌</button></div>
+    `;
+    tabella.appendChild(row);
+
+    row.querySelector(".remove-btn").addEventListener("click", () => row.remove());
+  });
+
+  updatePagination();
+  closeModalDettagli();
+}
+
+
+
+window.caricaTuttiIPacchetti = caricaTuttiIPacchetti;
+window.mostraDettagliPacchetto = mostraDettagliPacchetto;
+window.aggiungiTuttiGliEsami = aggiungiTuttiGliEsami;
+window.closeModalDettagli = closeModalDettagli;

@@ -83,24 +83,135 @@
             </div>
         </div>
 
-        <!-- CONTAINER GRAFICI MASSA CORPOREA -->
+        <!-- CONTAINER GRAFICO COMPOSIZIONE CORPOREA-->
+        <div class="card_grafico">  
+            <h3>Composizione Corporea</h3>
+
+            <canvas id="composizioneChart"></canvas>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+           
+            <script>
+                const ctx = document.getElementById('composizioneChart').getContext('2d');
+                const composizioneChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giug', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'], 
+                        datasets: [
+                            {
+                                label: 'BMI',
+                                data: [23.5, 23.1, 22.8, 22.5, 23.5, 23.1, 22.8, 22.5, 23.5, 23.1, 22.8, 22.5],
+                                borderColor: '#6a2dcc',
+                                fill: false
+                            },
+                            {
+                                label: 'Massa Muscolare (%)',
+                                data: [40, 41, 42, 42.5, 40, 41, 42, 42.5, 40, 41, 42, 42.5],
+                                borderColor: '#2ac670',
+                                fill: false
+                            },
+                            {
+                                label: 'Grasso (%)',
+                                data: [28, 27.5, 26, 25.2, 28, 27.5, 26, 25.2, 28, 27.5, 26, 25.2],
+                                borderColor: '#c74b5b',
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom' // 👈 questo sposta la legenda sotto
+                            },
+                            title: {
+                                display: true,
+                                text: 'Andamento Composizione Corporea'
+                            }
+                        }
+                    }
+                });
+            </script>
+                
+        </div>
+
+        <div class="card_grafico">  
+            <h3>Profilo Glicemico e Insulinico</h3>
+
+            <canvas id="profiloGlicemicoSemplificato"></canvas>
+
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+            const ctxx = document.getElementById('profiloGlicemicoSemplificato').getContext('2d');
+            
+            const profiloChart = new Chart(ctxx, {
+              type: 'line',
+              data: {
+                labels: ['Gen', 'Feb', 'Mar', 'Apr'], // 📅 Date dei referti
+                datasets: [
+                  {
+                    label: 'Glicemia a digiuno (mg/dl)',
+                    data: [90, 95, 92, 88],
+                    borderColor: '#4b7bec',
+                    backgroundColor: '#4b7bec30',
+                    fill: false
+                  },
+                  {
+                    label: 'HbA1c (%)',
+                    data: [5.8, 5.7, 5.6, 5.5],
+                    borderColor: '#8854d0',
+                    backgroundColor: '#8854d030',
+                    fill: false
+                  },
+                  {
+                    label: 'Insulina a digiuno (µU/mL)',
+                    data: [15, 13, 12, 11],
+                    borderColor: '#fc5c65',
+                    backgroundColor: '#fc5c6530',
+                    fill: false
+                  }
+                ]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: 'bottom' // ⬇️ Legenda sotto il grafico
+                  },
+                  title: {
+                    display: true,
+                    text: 'Andamento Profilo Glicemico e Insulinico'
+                  }
+                },
+                scales: {
+                  y: {
+                    beginAtZero: false,
+                    title: {
+                      display: true,
+                      text: 'Valori Clinici'
+                    }
+                  }
+                }
+              }
+            });
+            </script>
+            
+
+                
+        </div>
+
+
         <div class="container-grafici">
+
             <div class="card-grafico">
                 <h3>Punteggio Fisico</h3>
                 <canvas id="GraficoPunteggio"></canvas>
             </div>
-            <div class="card-grafico">
-                <h3>Composizione Corporea</h3>
-                <canvas id="composizioneChart"></canvas>
-            </div>
+
             <div class="card-grafico">
                 <h3>Acqua Corporea</h3>
                 <canvas id="acquaChart"></canvas>
             </div>
-            <div class="card-grafico">
-                <h3>BMI</h3>
-                <canvas id="bmiChart"></canvas>
-            </div>
+
         </div>
     
     </main>
