@@ -10,6 +10,8 @@ urlpatterns = [
     path("Login",LogOutRender.as_view(), name="logout"),
     path('accept-disclaimer/', AcceptDisclaimerView.as_view(), name='accept_disclaimer'),
 
+    # URL NAVBAR
+    path('profile/', ProfileView.as_view(), name='profile'),
 
     # -- URL HOME PAGE --
     path("Home_Page", HomePageRender.as_view(), name='HomePage'),

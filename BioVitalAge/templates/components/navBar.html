@@ -18,15 +18,15 @@
         </div>
 
         <!-- User Section -->
-        <div class="col-md-2 nav-bar-user">
-               
+        <div class="col-md-2 nav-bar-user" id="userContainer">
             <h3>Dott. {{ dottore }}</h3>
             
             <div class="img-container-user-nav-bar">
                 <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user">
             </div>
             <div class="nav-bar-user-modal" id="userModal">
-                <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn" onclick="window.location.href='{% url 'logout' %}'">Disconnettiti</button> <!-- @ts-ignore  -->
+                <button id="profileBtn" class="nav-bar-user-modal-btn" onclick="window.location.href='{% url 'profile' %}'">Profilo</button>
+                <button id="logoutBtn" class="nav-bar-user-modal-btn" onclick="window.location.href='{% url 'logout' %}'">Disconnettiti</button>
             </div>
         </div>
     </nav>
@@ -36,20 +36,15 @@
 <script>
     /*  -----------------------------------------------------------------------------------------------
         Modal User
---------------------------------------------------------------------------------------------------- */
-    const userImg = document.getElementById("userImg");
+    --------------------------------------------------------------------------------------------------- */
+    const userContainer = document.getElementById("userContainer");
     const userModal = document.getElementById("userModal");
-    const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
 
-    function showModal() {
+    userContainer.addEventListener("mouseenter", () => {
         userModal.classList.add("show");
-    }
-
-    userImg.addEventListener("mouseover", showModal);
-
-    userModal.addEventListener("mouseout", () => {
-        userModal.classList.remove("show");
     });
 
-    userModalBtn.addEventListener("mouseover", showModal);
+    userContainer.addEventListener("mouseleave", () => {
+        userModal.classList.remove("show");
+    });
 </script>

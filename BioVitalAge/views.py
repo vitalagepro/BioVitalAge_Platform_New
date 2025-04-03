@@ -129,25 +129,46 @@ class HomePageRender(View):
             media_percentage = 0
 
         if dottore.cookie == "SI":
-            context = {
-            'persone': persone,
-            'total_pazienti': total_pazienti,
-            'total_biological_age': total_biological_age_count,
-            'appuntamenti': appuntamenti,
-            'current_week_patients': current_week_patients,
-            'last_week_patients': last_week_patients,
-            'difference': difference,
-            'percentage_increase': percentage_increase,
-            'current_week_referti': current_week_referti,
-            'last_week_referti': last_week_referti,
-            'difference_referti': difference_referti,
-            'percentage_increase_referti': percentage_increase_referti,
-            'abs_difference_referti': abs_difference_referti,
-            'min_age': min_age,
-            'max_age': max_age,
-            'media_percentage': media_percentage,
-            'dottore': dottore,
-        }
+                context = {
+                    'persone': persone,
+                    'total_pazienti': total_pazienti,
+                    'total_biological_age': total_biological_age_count,
+                    'appuntamenti': appuntamenti,
+                    'current_week_patients': current_week_patients,
+                    'last_week_patients': last_week_patients,
+                    'difference': difference,
+                    'percentage_increase': percentage_increase,
+                    'current_week_referti': current_week_referti,
+                    'last_week_referti': last_week_referti,
+                    'difference_referti': difference_referti,
+                    'percentage_increase_referti': percentage_increase_referti,
+                    'abs_difference_referti': abs_difference_referti,
+                    'min_age': min_age,
+                    'max_age': max_age,
+                    'media_percentage': media_percentage,
+                    'dottore': dottore,
+                }
+        else:
+                context = {
+                    'persone': persone,
+                    'total_pazienti': total_pazienti,
+                    'total_biological_age': total_biological_age_count,
+                    'appuntamenti': appuntamenti,
+                    'current_week_patients': current_week_patients,
+                    'last_week_patients': last_week_patients,
+                    'difference': difference,
+                    'percentage_increase': percentage_increase,
+                    'current_week_referti': current_week_referti,
+                    'last_week_referti': last_week_referti,
+                    'difference_referti': difference_referti,
+                    'percentage_increase_referti': percentage_increase_referti,
+                    'abs_difference_referti': abs_difference_referti,
+                    'min_age': min_age,
+                    'max_age': max_age,
+                    'media_percentage': media_percentage,
+                    'dottore': dottore,
+                    'show_disclaimer': True  # ad esempio, un flag per mostrare un messaggio
+                }
 
         return render(request, "includes/homePage.html", context)
 
@@ -367,6 +388,49 @@ class MedicalNewsNotificationsView(View):
             return JsonResponse({"success": True, "news": news})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
+
+# VIEW PER LA SEZIONE PROFILO
+class ProfileView(View):
+    def get(self, request, *args, **kwargs):
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        context = {
+            'dottore': dottore,
+            'email_dottore': dottore.email,
+            'nome_dottore': dottore.nome,
+            'password_dottore': dottore.password,
+            'gmail_linked': True if dottore.cookie == 'SI' else False,  # aggiorna qui
+        }
+        return render(request, 'includes/profile.html', context)
+
+    def post(self, request, *args, **kwargs):
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        # Recupera i dati dal form
+        nome = request.POST.get('name')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        # La checkbox invia 'SI' se spuntata, altrimenti None
+        check_value = request.POST.get('check')
+
+        if nome:
+            dottore.nome = nome
+        if email:
+            dottore.email = email
+        if password:
+            dottore.password = password  # Nota: in produzione usa l'hashing della password
+
+        # Salva lo stato della checkbox nel campo 'cookie'
+        dottore.cookie = "SI" if check_value else ""  # aggiorna qui
+
+        dottore.save()
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'status': 'success'})
+
+        return redirect('profile')
 
 # VIEW PER ACCETTARE IL DISCLAIMER
 class AcceptDisclaimerView(View):
