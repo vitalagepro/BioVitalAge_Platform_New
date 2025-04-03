@@ -24,28 +24,19 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# VIEW PER GESTIONE LOGIN PIATTAFORMA E IL RENDERING DELLA HOME PAGE
+
+
+
+# -- SEZIONE LOGIN - HOME PAGE VIEW --
+## VIEW LOGIN RENDER
 class LoginRenderingPage(View):
     def get(self, request):
         response = render(request, 'includes/login.html')
         response.delete_cookie('disclaimer_accepted', path='/')
         return response
 
-# VIEW PER LA GESTIONE DELLA PRIVACY POLICY
-class PrivacyPolicyRenderingPage(View):
-    def get(self, request, id):
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, id=id)
 
-        context = {
-            'persona' : persona,
-            'dottore' : dottore
-        }
-
-        return render(request, 'includes/privacyPolicy.html', context)
-
-# VIEW PER LA GESTIONE DEL LOGOUT
+## VIEW LOGOUT
 class LogOutRender(View):
     def get(self, request):
 
@@ -56,7 +47,26 @@ class LogOutRender(View):
 
         return render(request, 'includes/login.html')
 
-# VIEW PER LA GESTIONE DELLA HOME PAGE
+
+## VIEW PER ACCETTARE IL DISCLAIMER
+class AcceptDisclaimerView(View):
+    def post(self, request):
+        
+        response = JsonResponse({"success": True})
+        
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        if dottore_id:  
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+            
+            dottore.cookie = "SI"
+            dottore.save() 
+
+        return response
+
+
+## VIEW PER LOGIN FORM - HOME PAGE RENDER
 class HomePageRender(View):
 
     def get(self, request):
@@ -271,7 +281,8 @@ class HomePageRender(View):
 
         return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
 
-# VIEW PER LE NOTIFICHE
+
+## VIEW PER LE NOTIFICHE
 class AppointmentNotificationsView(View):
     def get(self, request, *args, **kwargs):
         try:
@@ -302,7 +313,8 @@ class AppointmentNotificationsView(View):
             # In caso di errore restituisce un JSON con lo status 500
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-# VIEW PER LE NOTIFICHE MEDICAL NEWS
+
+## VIEW PER LE NOTIFICHE MEDICAL NEWS
 class MedicalNewsNotificationsView(View):
     def get(self, request, *args, **kwargs):
         try:
@@ -332,24 +344,8 @@ class MedicalNewsNotificationsView(View):
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
 
-# VIEW PER ACCETTARE IL DISCLAIMER
-class AcceptDisclaimerView(View):
-    def post(self, request):
-        
-        response = JsonResponse({"success": True})
-        
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
-        if dottore_id:  
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-            
-            dottore.cookie = "SI"
-            dottore.save() 
-
-        return response
-
-# VIEW PER LA SEZIONE STATISTICHE
+## VIEW PER LA SEZIONE STATISTICHE
 class StatisticheView(View):
     def get(self, request):
 
@@ -362,14 +358,1206 @@ class StatisticheView(View):
 
         return render(request, "includes/statistiche.html", context)
 
-# VIEW PER IL CALCOLO DELL'ETA' BIOLOGICA
+
+
+
+## SEZIONE APPUNTAMENTI
+### VIEWS APPUNTAMENTI
+class AppuntamentiView(View):
+    def get(self, request):
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+        persone = TabellaPazienti.objects.all().order_by('-id')
+        appuntamenti = Appointment.objects.all().order_by('-id')
+
+
+        # Ottieni le opzioni definite nei choices
+        tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
+        numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
+        voce_prezzario = Appointment._meta.get_field('voce_prezzario').choices
+
+        context = {
+            'dottore': dottore,
+            'persone': persone,
+            'appuntamenti': appuntamenti,
+            'tipologia_appuntamenti': tipologia_appuntamenti,
+            'voce_prezzario': voce_prezzario,
+            'numero_studio': numero_studio,
+        }
+
+        return render(request, 'includes/Appuntamenti.html', context)
+    
+### VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
+class AppuntamentiSalvaView(View):
+    def post(self, request):
+        if request.method == "POST":
+            try:
+                body_raw = request.body.decode('utf-8')
+
+                data = json.loads(body_raw)
+
+                # Recuperiamo i dati, facendo attenzione ai valori mancanti
+                giorno = data.get("giorno", "").strip()
+                data_appointment = data.get("data", "").strip()
+                time_appointment = data.get("orario", "").strip()
+                voce_prezzario = data.get("voce_prezzario", "").strip()
+                durata = data.get("durata", "").strip()
+
+                if not time_appointment:
+                    print("❌ ERRORE: Il campo 'orario' è mancante o vuoto!")
+
+                # Creazione dell'appuntamento
+                Appointment.objects.create(
+                    tipologia_visita=data.get("tipologia_visita"),
+                    nome_paziente=data.get("nome_paziente"),
+                    cognome_paziente=data.get("cognome_paziente"),
+                    numero_studio=data.get("numero_studio"),
+                    note=data.get("note"),
+                    giorno=giorno,
+                    data=data_appointment,
+                    orario=time_appointment,
+                    voce_prezzario=voce_prezzario,  # 🔹 Ora viene salvato
+                    durata=durata,  # 🔹 Ora viene salvata
+                )
+
+                return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!", 'clear_form': True})
+
+            except json.JSONDecodeError as e:
+                print(f"❌ ERRORE JSON: {str(e)}")
+                return JsonResponse({"success": False, "error": "Formato JSON non valido"}, status=400)
+            except Exception as e:
+                print(f"❌ ERRORE GENERICO: {str(e)}")
+                return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+        return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
+
+### VIEWS SINGLE APPOINTMENT
+class GetSingleAppointmentView(View):
+    def get(self, request, appointment_id):
+        """Recupera i dettagli di un singolo appuntamento"""
+        try:
+            appointment = Appointment.objects.get(id=appointment_id)
+
+            response_data = {
+                "success": True,
+                "id": appointment.id,
+                "nome_paziente": appointment.nome_paziente,
+                "cognome_paziente": appointment.cognome_paziente,
+                "giorno": appointment.giorno,
+                "data": appointment.data.strftime("%Y-%m-%d"),
+                "numero_studio": appointment.numero_studio or "",  # Se è null, assegna ""
+                "note": appointment.note or "",  # Se è null, assegna ""
+                "voce_prezzario": appointment.voce_prezzario or "",  # Se è null, assegna ""
+                "tipologia_visita": appointment.tipologia_visita or "",  # Se è null, assegna ""
+                "orario": str(appointment.orario)[:5],  # Formattato in HH:mm
+                "durata": appointment.durata or "",  # Se è null, assegna ""
+            }
+
+            return JsonResponse(response_data)
+        except Appointment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+### VIEWS GET ALL APPOINTMENTS
+class AppuntamentiGetView(View):
+    def get(self, request):
+        """Recupera gli appuntamenti futuri ed elimina quelli passati"""
+        
+        # 📌 1. Ottenere la data di oggi senza ore/minuti/secondi
+        today = now().date()
+
+        # 📌 2. Eliminare gli appuntamenti con data precedente a oggi
+        deleted_count, _ = Appointment.objects.filter(data__lt=today).delete()  # Cambiato "date" in "data"
+
+        # 📌 3. Recuperare solo gli appuntamenti futuri o di oggi
+        future_appointments = Appointment.objects.filter(data__gte=today)  # Cambiato "date" in "data"
+
+        # 📌 4. Costruire il dizionario degli appuntamenti organizzati per data
+        appointments_by_date = {}
+        for appointment in future_appointments:
+            date_str = appointment.data.strftime("%Y-%m-%d")  # Formattazione YYYY-MM-DD
+            if date_str not in appointments_by_date:
+                appointments_by_date[date_str] = []
+            appointments_by_date[date_str].append({
+                "id": appointment.id,
+                "nome_paziente": appointment.nome_paziente,
+                "cognome_paziente": appointment.cognome_paziente,
+                "giorno": appointment.giorno,
+                "data": appointment.data,
+                "numero_studio": appointment.numero_studio,
+                "note": appointment.note,
+                "voce_prezzario": appointment.voce_prezzario,
+                "tipologia_visita": appointment.tipologia_visita,
+                "orario": appointment.orario,
+            })
+
+        return JsonResponse({"success": True, "deleted": deleted_count, "appointments": appointments_by_date})
+
+### VIEWS UPDATE APPOINTMENT
+class UpdateAppointmentView(View):
+    def patch(self, request, appointment_id):
+        try:
+            data = json.loads(request.body)
+            appointment = Appointment.objects.get(id=appointment_id)
+            
+            # Aggiorna solo se i valori sono presenti e non vuoti nel payload
+            if data.get("new_date"):
+                appointment.data = data["new_date"]
+            if data.get("new_time"):
+                appointment.orario = data["new_time"]
+            if data.get("nome_paziente"):
+                appointment.nome_paziente = data["nome_paziente"]
+            if data.get("cognome_paziente"):
+                appointment.cognome_paziente = data["cognome_paziente"]
+            if data.get("tipologia_visita"):
+                appointment.tipologia_visita = data["tipologia_visita"]
+            if data.get("numero_studio"):
+                appointment.numero_studio = data["numero_studio"]
+            if data.get("voce_prezzario"):
+                appointment.voce_prezzario = data["voce_prezzario"]
+            if "note" in data:  # anche se è vuota, la nota verrà aggiornato
+                appointment.note = data["note"]
+            
+            appointment.save()
+            return JsonResponse({"success": True, "message": "Appuntamento aggiornato!"})
+        except Appointment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+### VIEWS APPROVE APPOINTMENT
+class ApproveAppointmentView(View):
+    def post(self, request, appointment_id):
+        appointment = get_object_or_404(Appointment, id=appointment_id)
+        appointment.confermato = True  # Segna l'appuntamento come confermato
+        appointment.save()
+        return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
+
+### VIEWS DELETE APPOINTMENT
+@method_decorator(csrf_exempt, name='dispatch')
+class DeleteAppointmentView(View):
+    def delete(self, request, appointment_id):
+        try:
+            appointment = Appointment.objects.get(id=appointment_id)
+            appointment.delete()
+            return JsonResponse({"success": True, "message": "Appuntamento eliminato con successo!"})
+        except Appointment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+### VIEW SEARCH APPOINTMENTS
+class SearchAppointmentsView(View):
+    def get(self, request):
+        query = request.GET.get("q", "").lower().strip()
+        if query:
+            # Puoi estendere il filtro a più campi, ad esempio:
+            appointments = Appointment.objects.filter(
+                Q(nome_paziente__icontains=query) | Q(tipologia_visita__icontains=query) | Q(orario__icontains=query)
+            )
+            results = list(appointments.values("id", "nome_paziente", "tipologia_visita", "orario"))
+            return JsonResponse({"success": True, "appointments": results})
+        return JsonResponse({"success": False, "error": "Nessuna query fornita"})
+    
+### VIEW CREATE PATIENT FROM SECOND MODAL
+class CreaPazienteView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            print("📥 Dati ricevuti dal frontend:", data)  # DEBUG
+
+            name = data.get("name", "").strip()
+            surname = data.get("surname", "").strip()
+            phone = data.get("phone", "").strip()
+            email = data.get("email", "").strip()  # Assumendo che tu abbia il campo email nel modello
+            dottore_id = request.session.get('dottore_id')
+
+            if not name or not surname:
+                print("⚠ Errore: Nome e cognome obbligatori")  # DEBUG
+                return JsonResponse({"success": False, "error": "Nome e cognome sono obbligatori!"}, status=400)
+
+            if not dottore_id:
+                print("⚠ Errore: dottore_id mancante!")  # DEBUG
+                return JsonResponse({"success": False, "error": "Devi essere autenticato per aggiungere un paziente."}, status=403)
+
+            # Creazione paziente
+            paziente = TabellaPazienti.objects.create(
+                name=name,
+                surname=surname,
+                phone=phone,
+                email=email  # Assumendo che email esista nel modello
+            )
+            print(f"✅ Paziente {paziente.id} salvato: {paziente.name} {paziente.surname}, {paziente.email}")  # DEBUG
+
+            return JsonResponse({
+                "success": True,
+                "message": "Paziente aggiunto con successo!",
+                "id": paziente.id,
+                "full_name": f"{paziente.name} {paziente.surname}"
+            })
+
+        except json.JSONDecodeError:
+            print("❌ Errore JSON ricevuto nel backend!")  # DEBUG
+            return JsonResponse({"success": False, "error": "Formato JSON non valido."}, status=400)
+
+        except Exception as e:
+            print(f"❌ Errore nel backend: {e}")  # DEBUG
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+
+
+
+# -- SEZIONE RICERCA PAZIENTE --
+## VIEW PER SEZIONE RICERCA PAZIENTI
+class RisultatiRender(View):
+    def get(self, request):
+          
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persone = TabellaPazienti.objects.filter(dottore=dottore)
+ 
+        # Ottieni il referto più recente per ogni paziente
+        ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
+
+        # Ottieni i dati estesi associati al referto più recente di ciascun paziente
+        datiEstesi = DatiEstesiReferti.objects.filter(referto=Subquery(ultimo_referto.values('id')[:1]))
+
+        context = {
+            'persone': persone,
+            'datiEstesi': datiEstesi,
+            'dottore' : dottore
+        }
+
+        return render(request, "includes/risultati.html", context)
+
+class InserisciPazienteView(View):
+
+    def get(self, request):
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'dottore' : dottore
+        }
+
+        return render(request, "includes/InserisciPaziente.html", context)
+    
+
+    def post(self, request):
+        try:
+            success = None
+            errore = None
+            codice_fiscale = request.POST.get('codice_fiscale')
+            dottore_id = request.session.get('dottore_id')
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+            context = {'dottore': dottore}
+
+            def parse_date(date_str):
+                return date_str if date_str else None
+
+            paziente = TabellaPazienti.objects.filter(dottore=dottore, codice_fiscale=codice_fiscale).first()
+
+            if paziente:
+                dati_modificati = False
+                for field in TabellaPazienti._meta.get_fields():
+                    if not (hasattr(field, 'attname') and field.attname):
+                        continue
+                    field_name = field.attname
+                    if field_name in ['id', 'dottore', 'codice_fiscale', 'created_at']:
+                        continue
+
+                    val = request.POST.get(field_name)
+                    if val is not None:
+                        current_val = getattr(paziente, field_name)
+                        new_val = parse_date(val) if isinstance(field, models.DateField) else val
+                        if str(current_val) != str(new_val):
+                            setattr(paziente, field_name, new_val)
+                            dati_modificati = True
+
+                if dati_modificati:
+                    paziente.save()
+                    success = "I dati del paziente sono stati aggiornati con successo!"
+                else:
+                    errore = "⚠️ Il paziente esiste già e non sono stati forniti nuovi dati da aggiornare."
+            else:
+                paziente = TabellaPazienti(
+                    dottore=dottore,
+                    codice_fiscale=codice_fiscale,
+                    name=request.POST.get('name'),
+                    surname=request.POST.get('surname'),
+                    dob=parse_date(request.POST.get('dob')),
+                    gender=request.POST.get('gender'),
+                    cap=request.POST.get('cap'),
+                    province=request.POST.get('province'),
+                    place_of_birth=request.POST.get('place_of_birth'),
+                    chronological_age=request.POST.get('chronological_age')
+                )
+
+                for field in TabellaPazienti._meta.get_fields():
+                    if not (hasattr(field, 'attname') and field.attname):
+                        continue
+                    field_name = field.attname
+                    if field_name in ['id', 'dottore', 'codice_fiscale', 'created_at', 'name', 'surname', 'dob', 'gender', 'cap', 'province', 'place_of_birth', 'chronological_age']:
+                        continue
+
+                    val = request.POST.get(field_name)
+                    if val:
+                        setattr(paziente, field_name, parse_date(val) if isinstance(field, models.DateField) else val)
+
+                paziente.save()
+                success = "Nuovo paziente salvato con successo!"
+
+            # 🔽 CREAZIONE REFERTI ETA' METABOLICA SE PRESENTI
+            referto_fields = [
+                f.attname for f in RefertiEtaMetabolica._meta.get_fields()
+                if hasattr(f, 'attname') and f.attname not in ['id', 'dottore', 'paziente', 'data_referto', 'storico_punteggi']
+            ]
+
+            if any(request.POST.get(field) for field in referto_fields):
+                nuovo_referto = RefertiEtaMetabolica(
+                    dottore=dottore,
+                    paziente=paziente,
+                )
+
+                for field in referto_fields:
+                    val = request.POST.get(field)
+                    if val:
+                        field_obj = RefertiEtaMetabolica._meta.get_field(field)
+                        if isinstance(field_obj, models.DateField):
+                            setattr(nuovo_referto, field, parse_date(val))
+                        elif isinstance(field_obj, models.JSONField):
+                            try:
+                                setattr(nuovo_referto, field, json.loads(val))
+                            except:
+                                setattr(nuovo_referto, field, []) 
+                        else:
+                            setattr(nuovo_referto, field, val)
+
+                nuovo_referto.save()
+                success = (success or "") + "Aggiunto nuovo paziente e generato il primo referto metabolico con successo!"
+
+            if success:
+                context["success"] = success
+            if errore:
+                context["errore"] = errore
+
+            return render(request, "includes/InserisciPaziente.html", context)
+
+        except Exception as e:
+            context["errore"] = f"Errore di sistema: {str(e)}. Verifica i campi e riprova."
+            return render(request, "includes/InserisciPaziente.html", context)
+
+
+
+
+
+# -- SEZIONE CARTELLA PAZIENTE --
+## VIEW CARTELLA PAZIENTE
+class CartellaPazienteView(View):
+
+    def get(self, request, id):
+        
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        
+        #DATI REFERTI ETA' BIOLOGICA
+        referti_recenti = persona.referti.all().order_by('-data_referto')
+        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+        ultimo_referto = referti_recenti.first() if referti_recenti else None
+        
+        dati_estesi_ultimo_referto = None
+        if ultimo_referto:
+            dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+
+
+        visite = ElencoVisitePaziente.objects.filter(paziente_id=id)
+
+        context = {
+            'persona': persona,
+            'referti_recenti': referti_recenti,
+            'dati_estesi': dati_estesi,
+            'ultimo_referto': ultimo_referto,
+            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
+            'dottore' : dottore,
+            'visite': visite,
+            #'elencoPrescrizioni': elencoPrescrizioni,
+        }
+
+        return render(request, "includes/cartellaPaziente.html", context)
+
+
+## SEZIONE MUSCOLO
+class ValutazioneMSView(View):
+
+    def get(self, request, persona_id):
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        context = {
+            'persona': persona,
+            'dottore' : dottore,
+        }
+
+        return render(request, "includes/valutazioneMS.html", context)
+
+    def post(self, request, persona_id):     
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        try:
+            retrivedData = ValutazioneMS.objects.create(
+                paziente=persona,
+
+                # Attività fisica
+                frequenza_a_f=request.POST.get("frequenza_a_f"),
+                tipo_a_f=request.POST.get("tipo_a_f"),
+                stile_vita=request.POST.get("stile_vita"),
+
+                # Anamnesi muscolo-scheletrica
+                terapie_inf=request.POST.get("terapie_inf"),
+                diagnosi_t=request.POST.get("diagnosi_t"),
+                sintomi_t=request.POST.get("sintomi_t"),
+
+                # Esame Generale
+                palpazione=request.POST.get("palpazione"),
+                osservazione=request.POST.get("osservazione"),
+                m_attiva=request.POST.get("m_attiva"),
+                m_passiva=request.POST.get("m_passiva"),
+                dolorabilità=request.POST.get("dolorabilità"),
+                scala_v_a=request.POST.get("scala_v_a"),
+
+                # Esame muscolo-scheletrico
+                mo_attivo=request.POST.get("mo_attivo"),
+                mo_a_limitazioni=request.POST.get("mo_a_limitazioni"),
+                mo_passivo=request.POST.get("mo_passivo"),
+                mo_p_limitazioni=request.POST.get("mo_p_limitazioni"),
+                comparazioni_m=request.POST.get("comparazioni_m"),
+                circ_polp=request.POST.get("circ_polp"),
+                tono_m=request.POST.get("tono_m"),
+                scala_ashworth=request.POST.get("scala_ashworth"),
+
+                # Esame posturale
+                v_frontale=request.POST.get("v_frontale"),
+                v_laterale=request.POST.get("v_laterale"),
+                p_testa=request.POST.get("p_testa"),
+                spalle=request.POST.get("spalle"),
+                ombelico=request.POST.get("ombelico"),
+                a_inferiori=request.POST.get("a_inferiori"),
+                piedi=request.POST.get("piedi"),
+                colonna_v=request.POST.get("colonna_v"),
+                curvatura_c=request.POST.get("curvatura_c"),
+                curvatura_d=request.POST.get("curvatura_d"),
+                curvatura_l=request.POST.get("curvatura_l"),
+                posizione_b=request.POST.get("posizione_b"),
+                equilibrio_s=request.POST.get("equilibrio_s"),
+                equilibrio_d=request.POST.get("equilibrio_d"),
+                p_dolenti=request.POST.get("p_dolenti"),
+
+                # Valutazione funzionale
+                gravita_disfunzione_posturale=request.POST.get("gravita_disfunzione_posturale"),
+                rischio_infortuni=request.POST.get("rischio_infortuni"),
+                suggerimenti=request.POST.get("suggerimenti"),
+                considerazioni_finali=request.POST.get("considerazioni_finali"),
+            )
+
+            retrivedData.save()
+
+        except Exception as e:
+            print("Errore nel salvataggio del referto:", e)
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+            'successo': True
+        }
+        return render(request, "includes/valutazioneMS.html", context)
+
+
+## SEZIONE DATI BASE
+class DatiBaseView(View):
+
+    def get(self, request, id):
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'persona': persona,
+            'dottore' : dottore
+        }
+        return render(request, "includes/dati_base.html", context)
+    
+    def post(self, request, id):
+
+        print(request.POST)
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        try:
+            
+            #Informazioni occupazione
+            persona.professione = request.POST.get("professione") or "No"
+            persona.pensionato = request.POST.get("pensionato") or "No"
+
+            #Per la donna
+            persona.menarca = request.POST.get('menarca') or "No"
+            persona.ciclo = request.POST.get('ciclo') or "No"
+            persona.sintomi = request.POST.get('sintomi') or "No"
+            persona.esordio = request.POST.get('esordio') or "No"
+            persona.parto = request.POST.get('parto') or "No"
+            persona.post_parto = request.POST.get('post_parto') or "No"
+            persona.aborto = request.POST.get('aborto') or "No"
+
+            # Stile di vita - Alcol
+            persona.alcol = request.POST.get("alcol") or "No"
+            persona.alcol_type = request.POST.get("alcol_type") or "No"
+            persona.data_alcol = request.POST.get("data_alcol")
+            persona.alcol_frequency = request.POST.get("alcol_frequency") or "No"
+
+            # Stile di vita - Fumo
+            persona.smoke = request.POST.get("smoke") or "No"
+            persona.smoke_frequency = request.POST.get("smoke_frequency") or "No"
+            persona.reduced_intake = request.POST.get("reduced_intake") or "No"
+
+            # Stile di vita - Sport
+            persona.sport = request.POST.get("sport") or "No"
+            persona.sport_livello = request.POST.get("sport_livello") or "No"
+            persona.sport_frequency = request.POST.get("sport_frequency") or "No"
+
+            # Stile di vita - Sedentarietà
+            persona.attivita_sedentaria = request.POST.get("attivita_sedentaria") or "No"
+            persona.livello_sedentarieta = request.POST.get("livello_sedentarieta") or "No"
+            persona.sedentarieta_nota = request.POST.get("sedentarieta_nota") or "No"
+
+            # Anamnesi
+            persona.m_cardiache = request.POST.get("m_cardiache_fam") or "No"
+            persona.diabete_m = request.POST.get("diabete_m") or "No"
+            persona.ipertensione = request.POST.get("ipertensione") or "No"
+            persona.obesita = request.POST.get("obesita") or "No"
+            persona.m_tiroidee = request.POST.get("m_tiroidee") or "No"
+            persona.m_polmonari = request.POST.get("m_polmonari") or "No"
+            persona.tumori = request.POST.get("tumori") or "No"
+            persona.allergie = request.POST.get("allergie") or "No"
+            persona.m_psichiatriche = request.POST.get("m_psichiatriche") or "No"
+            persona.patologie = request.POST.get("patologie") or "No"
+            persona.p_p_altro = request.POST.get("p_p_altro") or "No"
+            persona.t_farmaco = request.POST.get("t_farmaco") or "No"
+            persona.t_dosaggio = request.POST.get("t_dosaggio") or "No"
+            persona.t_durata = request.POST.get("t_durata") or "No"
+
+            # Esame Obiettivo
+            persona.a_genarale = request.POST.get("a_generale") or "No"
+            persona.psiche = request.POST.get("psiche") or "No"
+            persona.r_ambiente = request.POST.get("r_ambiente") or "No"
+            persona.s_emotivo = request.POST.get("s_emotivo") or "No"
+            persona.costituzione = request.POST.get("costituzione") or "No"
+            persona.statura = request.POST.get("statura") or "No"
+            persona.s_nutrizionale = request.POST.get("s_nutrizionale") or "No"
+            persona.eloquio = request.POST.get("eloquio") or "No"
+
+            # Informazioni del sangue
+            persona.pressure_min = request.POST.get("pressure_min") or "No"
+            persona.pressure_max = request.POST.get("pressure_max") or "No"
+            persona.heart_rate = request.POST.get("heart_rate") or "No"
+            persona.blood_group = request.POST.get("blood_group") or "No"
+            persona.rh_factor = request.POST.get("rh_factor") or "No"
+
+            persona.save()
+
+            context = {
+                'persona': persona,
+                'dottore': dottore,
+                'success': 'I dati sono stati aggiornati correttamente' 
+            }
+
+        except Exception as e:
+            context = {
+                'persona': persona,
+                'dottore': dottore,
+                'errore': f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
+            }
+    
+
+        return render(request, "includes/dati_base.html", context)  
+
+
+## SEZIONE ETA' METABOLICA
+class ComposizioneView(View):
+
+    def get(self, request, id):
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        ultimo_referto = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto').first()
+
+
+        context = {
+            'persona': persona,
+            'dottore' : dottore,
+            'ultimo_referto': ultimo_referto
+        }
+
+        return render(request, "eta_metabolica/etaMetabolica.html", context)
+
+    def post(self, request, id):       
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        try:
+            # Conversione date (se presenti)
+            bmi_date = request.POST.get("bmi_detection_date")
+            girth_date = request.POST.get("girth_date")
+            bmi_detection_date = datetime.strptime(bmi_date, "%Y-%m-%d").date() if bmi_date else None
+            girth_detection_date = datetime.strptime(girth_date, "%Y-%m-%d").date() if girth_date else None
+
+            # Salva nella tabella RefertiEtaMetabolica
+            RefertiEtaMetabolica.objects.create(
+                dottore=dottore,
+                paziente=persona,
+
+                # Composizione corporea
+                bmi=request.POST.get("bmi"),
+                grasso=request.POST.get("grasso"),
+                acqua=request.POST.get("acqua"),
+                massa_muscolare=request.POST.get("massa_muscolare"),
+                bmr=request.POST.get("bmr"),
+                whr=request.POST.get("whr"),
+                whtr=request.POST.get("whtr"),
+
+                # Profilo glicemico e insulinico
+                glicemia=request.POST.get("glicemia"),
+                ogtt=request.POST.get("ogtt"),
+                emoglobina_g=request.POST.get("emoglobina_g"),
+                insulina_d=request.POST.get("insulina_d"),
+                curva_i=request.POST.get("curva_i"),
+                homa_ir=request.POST.get("homa_ir"),
+                tyg=request.POST.get("tyg"),
+
+                # Profilo lipidico
+                c_tot=request.POST.get("c_tot"),
+                hdl=request.POST.get("hdl"),
+                ldl=request.POST.get("ldl"),
+                trigliceridi=request.POST.get("trigliceridi"),
+
+                # Profilo epatico
+                ast=request.POST.get("ast"),
+                alt=request.POST.get("alt"),
+                ggt=request.POST.get("ggt"),
+                bili_t=request.POST.get("bili_t"),
+
+                # Infiammazione
+                pcr=request.POST.get("pcr"),
+                hgs=request.POST.get("hgs"),
+                sii=request.POST.get("sii"),
+
+                # Stress e antropometria
+                c_plasmatico=request.POST.get("c_plasmatico"),
+                massa_ossea=request.POST.get("massa_ossea"),
+                eta_metabolica=request.POST.get("eta_metabolica"),
+                grasso_viscerale=request.POST.get("grasso_viscerale"),
+
+                # Dati anagrafici e misurazioni
+                height=request.POST.get("altezza"),
+                weight=request.POST.get("weight"),
+                p_fisico=request.POST.get("p_fisico"),
+                girth_value=request.POST.get("girth_value"),
+                girth_notes=request.POST.get("note_addominali"),
+                bmi_detection_date=bmi_detection_date,
+                girth_date=girth_detection_date
+            )
+
+            ultimo_referto = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto').first()
+
+            context = {
+                'persona': persona,
+                'dottore': dottore,
+                'success': 'I dati sono stati aggiornati correttamente nel referto',
+                'ultimo_referto': ultimo_referto
+            }
+
+        except Exception as e:
+            context = {
+                'persona': persona,
+                'dottore': dottore,
+                'errore': f"Errore di sistema: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
+            }
+
+        return render(request, "eta_metabolica/etaMetabolica.html", context)
+
+class ComposizioneChartView(View):
+    def get(self, request, id):
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+                'persona': persona,
+                'dottore': dottore,
+        }
+
+        return render (request, 'eta_metabolica/grafici.html', context)
+
+class RefertiComposizioneView(View):
+    def get(self, request, id):
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        referti = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto')
+
+
+        context = {
+                'persona': persona,
+                'dottore': dottore,
+                'referti': referti,
+        }
+
+        return render (request, 'eta_metabolica/elencoReferti.html', context)
+
+
+## SEZIONE CAPACITA' VITALE
+class EtaVitaleView(View):
+
+    def get(self, request, id):
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+  
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+
+        context = {
+            'persona': persona,
+            'referti_test_recenti': referti_test_recenti,
+            'dottore': dottore
+        }
+
+        return render(request, "includes/EtaVitale.html", context)
+    
+    def post(self):
+        return
+    
+class TestEtaVitaleView(View):
+
+    def get(self,request, id):
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        ultimo_referto = persona.referti.order_by('-data_referto').first()
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+
+        dati_estesi = None
+        if ultimo_referto:
+            dati_estesi = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+        
+        context = {
+            'persona': persona,
+            'dati_estesi': dati_estesi,
+            'dottore' : dottore,
+            'referti_test_recenti': referti_test_recenti
+        }
+
+        return render(request, "includes/testVitale.html", context)
+ 
+    def post(self, request, id):
+
+        try:
+            persona = get_object_or_404(TabellaPazienti, id=id)
+            data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
+            referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+
+            Somma_MMSE = (
+                int(data.get('doc_1', 0)) +
+                int(data.get('doc_2', 0)) +
+                int(data.get('doc_3', 0)) +
+                int(data.get('doc_4', 0)) +
+                int(data.get('doc_5', 0)) +
+                int(data.get('doc_6', 0)) +
+                int(data.get('doc_7', 0)) +
+                int(data.get('doc_8', 0)) +
+                int(data.get('doc_9', 0)) +
+                int(data.get('doc_10', 0)) +
+                int(data.get('doc_11', 0)) 
+            )
+
+            Somma_GDS = (
+                int(data.get('dop_1', 0)) +
+                int(data.get('dop_2', 0)) +
+                int(data.get('dop_3', 0)) +
+                int(data.get('dop_4', 0)) +
+                int(data.get('dop_5', 0)) +
+                int(data.get('dop_6', 0)) +
+                int(data.get('dop_7', 0)) +
+                int(data.get('dop_8', 0)) +
+                int(data.get('dop_9', 0)) +
+                int(data.get('dop_10', 0)) +
+                int(data.get('dop_11', 0)) +
+                int(data.get('dop_12', 0)) +
+                int(data.get('dop_13', 0)) +
+                int(data.get('dop_14', 0)) +
+                int(data.get('dop_15', 0)) 
+            )
+
+            Somma_LOC = (
+                int(data.get('loc_1', 0)) +
+                int(data.get('loc_2', 0)) +
+                int(data.get('loc_3', 0)) +
+                int(data.get('loc_4', 0)) +
+                int(data.get('loc_5', 0)) +
+                int(data.get('loc_6', 0)) +
+                int(data.get('loc_7', 0)) +
+                int(data.get('loc_8', 0)) 
+            )
+
+            Somma_Vista = (
+                int(data.get('dos_1', 0)) +
+                int(data.get('dos_2', 0))
+            )
+
+            Somma_Udito =  int(data.get('dos_3', 0)) 
+
+            Somma_HGS = str(data.get('dodv', None))
+
+            Fss_Somma = (
+                int(data.get('fss_1', 0)) +
+                int(data.get('fss_2', 0)) +
+                int(data.get('fss_3', 0)) +
+                int(data.get('fss_4', 0)) +
+                int(data.get('fss_5', 0)) +
+                int(data.get('fss_6', 0)) +
+                int(data.get('fss_7', 0)) +
+                int(data.get('fss_8', 0))
+            )
+
+            Sarc_f_Somma = (
+                int(data.get('Sarc_f_1', 0)) +
+                int(data.get('Sarc_f_2', 0)) +
+                int(data.get('Sarc_f_3', 0)) +
+                int(data.get('Sarc_f_4', 0)) +
+                int(data.get('Sarc_f_5', 0)) 
+            )
+          
+            PFT = int(data.get('pft-1', '0') or 0)
+         
+            ISQ = (
+                int(data.get('SiIm_1', 0)) +
+                int(data.get('SiIm_2', 0)) +
+                int(data.get('SiIm_3', 0)) +
+                int(data.get('SiIm_4', 0)) +
+                int(data.get('SiIm_5', 0)) +
+                int(data.get('SiIm_6', 0)) +
+                int(data.get('SiIm_7', 0))
+            )   
+    
+            BMI = float(data.get('bmi-1', 0) or 0)
+            CDP = float(data.get('Cir_Pol', 0) or 0)
+            WHR = float(data.get('WHip', 0) or 0)
+            WHR_Ratio = str(data.get('Whei', None))
+
+            CST = int(data.get('numero_rip', 0) or 0) / int(data.get('tot_secondi', 0) or 1)
+           
+            GS = int(data.get('distanza', 0) or 0) / int(data.get('tempo_s', 0) or 1)
+       
+            PPT = int(data.get('tempo_s_pick', 0) or 1)
+    
+            punteggioFinale = CalcoloPunteggioCapacitaVitale(
+                                Somma_MMSE, Somma_GDS, Somma_LOC,
+                                Somma_Vista, Somma_Udito, Somma_HGS, PFT,
+                                ISQ, BMI, CDP, WHR, WHR_Ratio, CST, 
+                                GS, PPT, Sarc_f_Somma, persona.gender )
+
+
+            referto = ArchivioRefertiTest(
+                paziente = persona,
+                punteggio = punteggioFinale,
+                #documento = request.FILES.get('documento')
+            )
+            referto.save()
+
+
+            datiEstesi = DatiEstesiRefertiTest(
+                referto = referto,
+
+                #DOMINIO COGNITIVO 
+                MMSE = Somma_MMSE,
+
+                #DOMINIO PSICOLOGICO
+                GDS = Somma_GDS,
+                LOC = Somma_LOC,
+
+                #DOMINIO SENSORIALE
+                Vista = Somma_Vista,
+                Udito = Somma_Udito,
+
+                #DOMINIO DELLA VITALITA'
+                HGS = Somma_HGS,
+                PFT = PFT,
+
+                #SISTEMA IMMUNITARIO
+                ISQ = ISQ,
+                BMI = BMI,
+                CDP = CDP,
+                WHR = WHR,
+                WHR_Ratio = WHR_Ratio,
+
+                #DOMINIO DELLA LOCOMOZIONE
+                CST = CST,
+                GS = GS,
+                PPT = PPT,
+                SARC_F = Sarc_f_Somma,
+                FSS = Fss_Somma,
+
+                #BIOMARCATORI CIRCOLANTI DEL METABOLISMO
+                Glic = safe_float(data, 'Glic'),
+                Emog = safe_float(data, 'Emog'),
+                Insu = safe_float(data, 'Insu'),
+                Pept_c = safe_float(data, 'Pept_c'),
+                Col_tot = safe_float(data, 'Col_tot'),
+                Col_ldl = safe_float(data, 'Col_ldl'),
+                Col_hdl = safe_float(data, 'Col_hdl'),
+                Trigl = safe_float(data, 'Trigl'),
+                albumina = safe_float(data, 'albumina'),
+                clearance_urea = safe_float(data, 'clearance_urea'),
+                igf_1 = safe_float(data, 'ifg_1'),
+
+
+                #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
+                Lymph = safe_float(data, 'Lymph'),
+                Lymph_el = safe_float(data, 'Lymph_el'),
+                wbc = safe_float(data, 'wbc'),
+                Proteins_c = safe_float(data, 'Proteins_c'),
+                Inter_6 = safe_float(data, 'Inter_6'),
+                Tnf = safe_float(data, 'Tnf'),
+                Mono = safe_float(data, 'Mono'),
+                Mono_el = safe_float(data, 'Mono_el'),    
+            )
+
+            datiEstesi.save()
+
+            context = {
+            'persona': persona,
+            'modal' : True,
+            'Referto': referto,
+            'referti_test_recenti': referti_test_recenti,
+            'dottore': dottore
+            }
+
+            return render(request, "includes/EtaVitale.html", context)
+
+
+        except Exception as e:
+            print(e)
+
+            context = {
+                'persona': persona,
+                'modal': False,
+                'errore': "Qualcosa è andato storto, controlla di inserire i valori corretti e riprova",
+                'referti_test_recenti': referti_test_recenti,
+                'dottore': dottore
+            }    
+
+            return render(request, "includes/testVitale.html", context)
+
+class RefertoQuizView(View):
+    def get(self, request, persona_id, referto_id):
+
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        referto = get_object_or_404(ArchivioRefertiTest, id=referto_id)
+
+        ultimo_referto = persona.referti.order_by('-data_referto')
+        
+        datiEstesi = None
+        if referto:
+            datiEstesi = DatiEstesiRefertiTest.objects.filter(referto=referto).first()
+
+        testo_risultato = ''
+
+        if float(referto.punteggio) >= 0 and float(referto.punteggio) <= 2.59:
+            testo_risultato = """
+                                Ottima capacità vitale: Stato di salute eccellente sia a livello
+                                fisico che mentale. La forza muscolare, la funzionalità
+                                respiratoria e la mobilità sono ottimali. Il soggetto mostra
+                                un’ottima capacità cognitiva, un buon benessere psicologico e
+                                una bassa vulnerabilità allo stress. Il rischio di declino
+                                funzionale e mentale è minimo.
+                            """
+
+        elif float(referto.punteggio) >= 2.60 and float(referto.punteggio) <= 5.09:
+            testo_risultato = """
+                                Buona capacità vitale: Buono stato di salute con lievi segni di
+                                riduzione della forza muscolare o della resistenza fisica.
+                                Possibile lieve declino cognitivo o stati emotivi fluttuanti, come
+                                stress occasionale o lieve ansia. Il soggetto è autonomo, ma
+                                potrebbe beneficiare di interventi per mantenere le capacità
+                                motorie e il benessere mentale.
+                            """
+
+        elif float(referto.punteggio) >= 5.10 and float(referto.punteggio) <= 7.59:
+            testo_risultato ="""
+                                Capacità vitale compromessa: Si evidenziano difficoltà motorie
+                                moderate, minore forza muscolare e resistenza. Potrebbero
+                                esserci segni di declino cognitivo o un aumento di ansia e
+                                stress, con possibili difficoltà nella gestione emotiva. Il rischio
+                                di cadute, affaticamento mentale e riduzione dell’autonomia
+                                cresce. È consigliato un supporto medico e strategie di
+                                miglioramento.
+                            """
+
+        elif float(referto.punteggio) >= 7.60 and float(referto.punteggio) <= 10:
+            testo_risultato ="""
+                                Capacità vitale gravemente compromessa: Mobilità e
+                                resistenza fisica sono compromesse, con elevato rischio di
+                                fragilità e perdita di autonomia. Il declino cognitivo può
+                                manifestarsi con difficoltà di concentrazione, memoria e
+                                orientamento. Sul piano psicologico, possono essere presenti
+                                ansia significativa, depressione o distress emotivo. È necessario
+                                un intervento mirato per migliorare la qualità della vita.
+                            """
+
+
+        context = {
+            'persona': persona,
+            'ultimo_referto': ultimo_referto,
+            'datiEstesi': datiEstesi,
+            'dottore' : dottore,
+            'referto' : referto,
+            'testo_risultato': testo_risultato,
+        }
+
+        return render(request, "includes/RefertoQuiz.html", context)
+
+class QuizEtaVitaleUpdateView(View):
+
+    def get(self, request, id):
+        
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        ultimo_referto = persona.referti.order_by('-data_referto').first()
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+
+        dati_estesi = None
+        if ultimo_referto:
+            dati_estesi = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+
+        card_to_show = request.GET.get('card_name')
+
+        context = {
+            'persona': persona,
+            'dati_estesi': dati_estesi,
+            'dottore' : dottore,
+            'referti_test_recenti': referti_test_recenti,
+            'card_to_show': card_to_show
+        }
+
+        return render(request, 'includes/testVitale.html', context)
+    
+    def post(self, request, id):
+        return 
+
+class StampaRefertoView(View):
+    def get(self, request, persona_id, referto_id):
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
+        referto = get_object_or_404(ArchivioRefertiTest, id=referto_id)
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+        ultimo_referto = persona.referti.order_by('-data_referto')
+        
+        datiEstesi = None
+        if referto:
+            datiEstesi = DatiEstesiRefertiTest.objects.filter(referto=referto).first()
+
+        testo_risultato = ''
+
+        if float(referto.punteggio) >= 0 and float(referto.punteggio) <= 2.59:
+            testo_risultato = """
+                                Ottima capacità vitale: Stato di salute eccellente sia a livello
+                                fisico che mentale. La forza muscolare, la funzionalità
+                                respiratoria e la mobilità sono ottimali. Il soggetto mostra
+                                un’ottima capacità cognitiva, un buon benessere psicologico e
+                                una bassa vulnerabilità allo stress. Il rischio di declino
+                                funzionale e mentale è minimo.
+                            """
+
+        elif float(referto.punteggio) >= 2.60 and float(referto.punteggio) <= 5.09:
+            testo_risultato = """
+                                Buona capacità vitale: Buono stato di salute con lievi segni di
+                                riduzione della forza muscolare o della resistenza fisica.
+                                Possibile lieve declino cognitivo o stati emotivi fluttuanti, come
+                                stress occasionale o lieve ansia. Il soggetto è autonomo, ma
+                                potrebbe beneficiare di interventi per mantenere le capacità
+                                motorie e il benessere mentale.
+                            """
+
+        elif float(referto.punteggio) >= 5.10 and float(referto.punteggio) <= 7.59:
+            testo_risultato ="""
+                                Capacità vitale compromessa: Si evidenziano difficoltà motorie
+                                moderate, minore forza muscolare e resistenza. Potrebbero
+                                esserci segni di declino cognitivo o un aumento di ansia e
+                                stress, con possibili difficoltà nella gestione emotiva. Il rischio
+                                di cadute, affaticamento mentale e riduzione dell’autonomia
+                                cresce. È consigliato un supporto medico e strategie di
+                                miglioramento.
+                            """
+
+        elif float(referto.punteggio) >= 7.60 and float(referto.punteggio) <= 10:
+            testo_risultato ="""
+                                Capacità vitale gravemente compromessa: Mobilità e
+                                resistenza fisica sono compromesse, con elevato rischio di
+                                fragilità e perdita di autonomia. Il declino cognitivo può
+                                manifestarsi con difficoltà di concentrazione, memoria e
+                                orientamento. Sul piano psicologico, possono essere presenti
+                                ansia significativa, depressione o distress emotivo. È necessario
+                                un intervento mirato per migliorare la qualità della vita.
+                            """
+
+        context = {
+            'scarica' : True,
+            'persona': persona,
+            'ultimo_referto': ultimo_referto,
+            'datiEstesi': datiEstesi,
+            'referti_test_recenti': referti_test_recenti,
+            'dottore' : dottore,
+            'referto' : referto,
+            'testo_risultato': testo_risultato,
+        }
+
+        return render(request, "includes/EtaVitale.html", context)
+
+
+## SEZIONE ETA' BIOLOGICA
 def safe_float(data, key, default=0.0):
     try:
         return float(data.get(key, default))
     except (ValueError, TypeError):
         return default
 
-# VIEW RENDERIZZATA PER CALCOLATORE
 class CalcolatoreRender(View):
     
     def get(self, request):
@@ -1328,30 +2516,32 @@ class CalcolatoreRender(View):
             }
             return render(request, "includes/calcolatore.html", context)
 
-
-# VIEW PER SEZIONE RICERCA PAZIENTI
-class RisultatiRender(View):
-    def get(self, request):
-          
+class ElencoRefertiView(View):
+    def get(self, request, id):
+        
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persone = TabellaPazienti.objects.filter(dottore=dottore)
- 
-        # Ottieni il referto più recente per ogni paziente
-        ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        
+        #DATI REFERTI ETA' BIOLOGICA
+        referti_recenti = persona.referti.all().order_by('-data_referto')
+        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+        
+        dati_estesi_ultimo_referto = None
 
-        # Ottieni i dati estesi associati al referto più recente di ciascun paziente
-        datiEstesi = DatiEstesiReferti.objects.filter(referto=Subquery(ultimo_referto.values('id')[:1]))
+        visite = ElencoVisitePaziente.objects.all()
 
         context = {
-            'persone': persone,
-            'datiEstesi': datiEstesi,
-            'dottore' : dottore
+            'persona': persona,
+            'referti_recenti': referti_recenti,
+            'dati_estesi': dati_estesi,
+            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
+            'dottore' : dottore,
+            'visite': visite,
         }
 
-        return render(request, "includes/risultati.html", context)
+        return render(request, "includes/elencoReferti.html", context)
 
-#VIEW PER ULTIMO REFERTO ETA' VITALE
 class PersonaDetailView(View):
     def get(self, request, persona_id):
 
@@ -1446,6 +2636,94 @@ class ScaricaReferto(View):
 
         return render(request, "includes/cartellaPaziente.html", context)
 
+
+## SEZIONE RESILIENZA
+class ResilienzaView(View):
+    def get(self, request, persona_id):
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        context = {
+            'persona': persona,
+            'dottore' : dottore,
+        }
+
+        return render(request, "includes/Resilienza.html", context)
+    
+    def post(self, request, persona_id): 
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        # Estrai i dati dal form (con gestione errori base)
+        try:
+            retrivedData = Resilienza.objects.create(
+                paziente=persona,
+                hrv=request.POST.get("hrv"),
+                cortisolo=request.POST.get("cortisolo"),
+                ros=request.POST.get("ros"),
+                osi=request.POST.get("osi"),
+                droms=request.POST.get("dRoms"),
+                pcr=request.POST.get("pcr"),
+                nlr=request.POST.get("nlr"),
+                homa=request.POST.get("homa_t"),
+                ir=request.POST.get("ir_t"),
+                omega_3=request.POST.get("omega_3"),
+                vo2max=request.POST.get("vo2"),
+            )
+            retrivedData.save()
+
+        except Exception as e:
+            print("Errore nel salvataggio del referto:", e)
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+            'successo': True
+        }
+        return render(request, "includes/Resilienza.html", context)
+    
+
+## SEZIONE PRESCRIZIONI
+class PrescrizioniView(View):
+
+    def get(self, request, persona_id):
+
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+        }
+
+        return render(request, "prescrizioni/prescrizioni.html", context)
+
+
+    def post(self, request, persona_id):
+
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+        
+        listaCodici = request.POST.get('codici_esami')
+        data_list = json.loads(listaCodici)
+        numeri = [x for x in data_list if x.isdigit()]
+
+        nuova_visita = ElencoVisitePaziente.objects.create(
+            paziente = persona,
+        )
+
+        for i in range(0, len(numeri)):
+            EsameVisita.objects.create(
+                visita=nuova_visita,
+                codice_esame=numeri[i],
+            )
+
+        return redirect('cartella_paziente', persona_id)
+
 class DettagliPrescrizioni(View):
     def get(self, request, persona_id, visite_id):
 
@@ -1502,556 +2780,19 @@ class DettagliPrescrizioni(View):
 
         return render(request, "includes/cartellaPaziente.html", context)
 
-class CartellaPazienteView(View):
+class RefertoView(View):
+    def get(self, request, referto_id):
+        referto = ArchivioReferti.objects.get(id=referto_id)
+        return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
 
-    def get(self, request, id):
-        
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, id=id)
 
-        
-        #DATI REFERTI ETA' BIOLOGICA
-        referti_recenti = persona.referti.all().order_by('-data_referto')
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
-        ultimo_referto = referti_recenti.first() if referti_recenti else None
-        
-        dati_estesi_ultimo_referto = None
-        if ultimo_referto:
-            dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
 
 
-        visite = ElencoVisitePaziente.objects.filter(paziente_id=id)
 
-        context = {
-            'persona': persona,
-            'referti_recenti': referti_recenti,
-            'dati_estesi': dati_estesi,
-            'ultimo_referto': ultimo_referto,
-            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
-            'dottore' : dottore,
-            'visite': visite,
-            #'elencoPrescrizioni': elencoPrescrizioni,
-        }
 
-        return render(request, "includes/cartellaPaziente.html", context)
 
-class ElencoRefertiView(View):
-    def get(self, request, id):
-        
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, id=id)
-        
-        #DATI REFERTI ETA' BIOLOGICA
-        referti_recenti = persona.referti.all().order_by('-data_referto')
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
-        
-        dati_estesi_ultimo_referto = None
 
-        visite = ElencoVisitePaziente.objects.all()
-
-        context = {
-            'persona': persona,
-            'referti_recenti': referti_recenti,
-            'dati_estesi': dati_estesi,
-            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
-            'dottore' : dottore,
-            'visite': visite,
-        }
-
-        return render(request, "includes/elencoReferti.html", context)
-
-
-
-
-# VIEWS PER SEZIONE DATI BASE
-class DatiBaseView(View):
-
-    def get(self, request, id):
-        persona = get_object_or_404(TabellaPazienti, id=id)
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        context = {
-            'persona': persona,
-            'dottore' : dottore
-        }
-        return render(request, "includes/dati_base.html", context)
-    
-    def post(self, request, id):
-
-        print(request.POST)
-
-        persona = get_object_or_404(TabellaPazienti, id=id)
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        try:
-            
-            #Informazioni occupazione
-            persona.professione = request.POST.get("professione") or "No"
-            persona.pensionato = request.POST.get("pensionato") or "No"
-
-            #Per la donna
-            persona.menarca = request.POST.get('menarca') or "No"
-            persona.ciclo = request.POST.get('ciclo') or "No"
-            persona.sintomi = request.POST.get('sintomi') or "No"
-            persona.esordio = request.POST.get('esordio') or "No"
-            persona.parto = request.POST.get('parto') or "No"
-            persona.post_parto = request.POST.get('post_parto') or "No"
-            persona.aborto = request.POST.get('aborto') or "No"
-
-            # Stile di vita - Alcol
-            persona.alcol = request.POST.get("alcol") or "No"
-            persona.alcol_type = request.POST.get("alcol_type") or "No"
-            persona.data_alcol = request.POST.get("data_alcol")
-            persona.alcol_frequency = request.POST.get("alcol_frequency") or "No"
-
-            # Stile di vita - Fumo
-            persona.smoke = request.POST.get("smoke") or "No"
-            persona.smoke_frequency = request.POST.get("smoke_frequency") or "No"
-            persona.reduced_intake = request.POST.get("reduced_intake") or "No"
-
-            # Stile di vita - Sport
-            persona.sport = request.POST.get("sport") or "No"
-            persona.sport_livello = request.POST.get("sport_livello") or "No"
-            persona.sport_frequency = request.POST.get("sport_frequency") or "No"
-
-            # Stile di vita - Sedentarietà
-            persona.attivita_sedentaria = request.POST.get("attivita_sedentaria") or "No"
-            persona.livello_sedentarieta = request.POST.get("livello_sedentarieta") or "No"
-            persona.sedentarieta_nota = request.POST.get("sedentarieta_nota") or "No"
-
-            # Anamnesi
-            persona.m_cardiache = request.POST.get("m_cardiache_fam") or "No"
-            persona.diabete_m = request.POST.get("diabete_m") or "No"
-            persona.ipertensione = request.POST.get("ipertensione") or "No"
-            persona.obesita = request.POST.get("obesita") or "No"
-            persona.m_tiroidee = request.POST.get("m_tiroidee") or "No"
-            persona.m_polmonari = request.POST.get("m_polmonari") or "No"
-            persona.tumori = request.POST.get("tumori") or "No"
-            persona.allergie = request.POST.get("allergie") or "No"
-            persona.m_psichiatriche = request.POST.get("m_psichiatriche") or "No"
-            persona.patologie = request.POST.get("patologie") or "No"
-            persona.p_p_altro = request.POST.get("p_p_altro") or "No"
-            persona.t_farmaco = request.POST.get("t_farmaco") or "No"
-            persona.t_dosaggio = request.POST.get("t_dosaggio") or "No"
-            persona.t_durata = request.POST.get("t_durata") or "No"
-
-            # Esame Obiettivo
-            persona.a_genarale = request.POST.get("a_generale") or "No"
-            persona.psiche = request.POST.get("psiche") or "No"
-            persona.r_ambiente = request.POST.get("r_ambiente") or "No"
-            persona.s_emotivo = request.POST.get("s_emotivo") or "No"
-            persona.costituzione = request.POST.get("costituzione") or "No"
-            persona.statura = request.POST.get("statura") or "No"
-            persona.s_nutrizionale = request.POST.get("s_nutrizionale") or "No"
-            persona.eloquio = request.POST.get("eloquio") or "No"
-
-            # Informazioni del sangue
-            persona.pressure_min = request.POST.get("pressure_min") or "No"
-            persona.pressure_max = request.POST.get("pressure_max") or "No"
-            persona.heart_rate = request.POST.get("heart_rate") or "No"
-            persona.blood_group = request.POST.get("blood_group") or "No"
-            persona.rh_factor = request.POST.get("rh_factor") or "No"
-
-            persona.save()
-
-            context = {
-                'persona': persona,
-                'dottore': dottore,
-                'success': 'I dati sono stati aggiornati correttamente' 
-            }
-
-        except Exception as e:
-            context = {
-                'persona': persona,
-                'dottore': dottore,
-                'errore': f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
-            }
-    
-
-        return render(request, "includes/dati_base.html", context)  
-        
-class InserisciPazienteView(View):
-
-    def get(self, request):
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        context = {
-            'dottore' : dottore
-        }
-
-        return render(request, "includes/InserisciPaziente.html", context)
-    
-
-    def post(self, request):
-        try:
-            print(request.POST)
-            success = None 
-            dottore = request.user.utentiregistraticredenziali if hasattr(request.user, 'utentiregistraticredenziali') else None
-            codice_fiscale = request.POST.get('codice_fiscale')
-
-            dottore_id = request.session.get('dottore_id')
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-           
-            paziente_esistente = TabellaPazienti.objects.filter(dottore=dottore, codice_fiscale=codice_fiscale).first()
-          
-            def parse_date(date_str):
-                return date_str if date_str else None
-
-            context = {'dottore': dottore}
-
-            if paziente_esistente:
-                campi_opzionali = [
-                    'residence', 'province', 'cap', 'email', 'phone',
-                    'associate_staff', 'height', 'weight', 'bmi', 'bmi_detection_date',
-                    'girth_value', 'girth_notes', 'girth_date',
-                    'alcol', 'alcol_type', 'data_alcol', 'alcol_frequency',
-                    'smoke', 'smoke_frequency', 'reduced_intake',
-                    'sport', 'sport_livello', 'sport_frequency',
-                    'attivita_sedentaria', 'livello_sedentarieta', 'sedentarieta_nota', 'blood_group'
-                ]
-
-                if any(request.POST.get(campo) for campo in campi_opzionali):
-                    paziente_esistente.residence = request.POST.get('residence') or None
-                    paziente_esistente.email = request.POST.get('email') or None
-                    paziente_esistente.phone = request.POST.get('phone') or None
-                    paziente_esistente.cap = request.POST.get('cap') or None
-                    paziente_esistente.province = request.POST.get('province') or None
-                    paziente_esistente.associate_staff = request.POST.get('associate_staff') or None
-                    paziente_esistente.height = request.POST.get('height') or None
-                    paziente_esistente.weight = request.POST.get('weight') or None
-                    paziente_esistente.bmi = request.POST.get('bmi') or None
-                    paziente_esistente.bmi_detection_date = parse_date(request.POST.get('bmi_detection_date')) or None
-                    paziente_esistente.girth_value = request.POST.get('girth_value') or None
-                    paziente_esistente.girth_notes = request.POST.get('girth_notes') or None
-                    paziente_esistente.girth_date = parse_date(request.POST.get('girth_date')) or None
-                    paziente_esistente.alcol = request.POST.get('alcol') or None
-                    paziente_esistente.alcol_type = request.POST.get('alcol_type') or None
-                    paziente_esistente.data_alcol = parse_date(request.POST.get('data_alcol')) or None
-                    paziente_esistente.alcol_frequency = request.POST.get('alcol_frequency') or None
-                    paziente_esistente.smoke = request.POST.get('smoke') or None
-                    paziente_esistente.smoke_frequency = request.POST.get('smoke_frequency') or None
-                    paziente_esistente.reduced_intake = request.POST.get('reduced_intake') or None
-                    paziente_esistente.sport = request.POST.get('sport') or None
-                    paziente_esistente.sport_livello = request.POST.get('sport_livello') or None
-                    paziente_esistente.sport_frequency = request.POST.get('sport_frequency') or None
-                    paziente_esistente.attivita_sedentaria = request.POST.get('attivita_sedentaria') or None
-                    paziente_esistente.livello_sedentarieta = request.POST.get('livello_sedentarieta') or None
-                    paziente_esistente.sedentarieta_nota = request.POST.get('sedentarieta_nota') or None
-                    paziente_esistente.blood_group = request.POST.get('blood_group') or None
-
-                    paziente_esistente.save()
-                    success = "I dati del paziente sono stati aggiornati con successo!"
-                
-                else:
-                    errore = "Operazione non andata a buon fine: 'Un Utente con questo Codice Fiscale è gia presente all'interno del database'."
-                    context['errore'] = errore
-            
-            else:
-                campi_opzionali = [
-                    'residence', 'email', 'password', 'blood_group', 'associate_staff', 'height',
-                    'weight', 'bmi','bmi_detection_date', 'girth_value', 'girth_notes',
-                    'girth_notes','girth_date', 'alcol',  'alcol_type', 'data_alcol',
-                    'alcol_frequency','smoke', 'smoke_frequency', 'reduced_intake',
-                    'sport', 'sport_livello', 'sport_frequency', 'attivita_sedentaria',
-                    'livello_sedentarieta', 'sedentarieta_nota'
-                ]
-
-                if any(request.POST.get(campo) for campo in campi_opzionali):
-
-                        TabellaPazienti.objects.create(
-                            dottore=dottore,
-                            name=request.POST.get('name'),
-                            surname=request.POST.get('surname'),
-                            residence=request.POST.get('residence'),
-                            email=request.POST.get('email') or None,
-                            phone=request.POST.get('phone') or None,
-                            dob=parse_date(request.POST.get('dob')),
-                            gender=request.POST.get('gender'),
-                            cap=request.POST.get('cap'),
-                            province=request.POST.get('province'),
-                            place_of_birth=request.POST.get('place_of_birth'),
-                            codice_fiscale=codice_fiscale,
-                            chronological_age=request.POST.get('chronological_age'),
-                            blood_group=request.POST.get('blood_group') or None,
-                            associate_staff=request.POST.get('associate_staff') or None,
-                            height=request.POST.get('height') or None,
-                            weight=request.POST.get('weight') or None,
-                            bmi=request.POST.get('bmi') or None,
-                            bmi_detection_date=parse_date(request.POST.get('bmi_detection_date')) or None,
-                            girth_value=request.POST.get('girth_value') or None,
-                            girth_notes=request.POST.get('girth_notes') or None,
-                            girth_date=parse_date(request.POST.get('girth_date')) or None,
-                            alcol=request.POST.get('alcol') == 'on' or None,
-                            alcol_type=request.POST.get('alcol_type') or None,
-                            data_alcol=parse_date(request.POST.get('data_alcol')) or None,
-                            alcol_frequency=request.POST.get('alcol_frequency') or None,
-                            smoke=request.POST.get('smoke') == 'on' or None,
-                            smoke_frequency=request.POST.get('smoke_frequency') or None,
-                            reduced_intake=request.POST.get('reduced_intake') or None,
-                            sport=request.POST.get('sport') == 'on' or None,
-                            sport_livello=request.POST.get('sport_livello') or None,
-                            sport_frequency=request.POST.get('sport_frequency') or None,
-                            attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on' or None,
-                            livello_sedentarieta=request.POST.get('livello_sedentarieta') or None,
-                            sedentarieta_nota=request.POST.get('sedentarieta_nota') or None,
-                            
-                            professione = request.POST.get('professione') or None,
-                            pensionato = request.POST.get('pensionato') or None,
-                            menarca = request.POST.get('menarca') or None,
-                            ciclo = request.POST.get('ciclo') or None,
-                            sintomi = request.POST.get('sintomi') or None,
-                            esordio = request.POST.get('esordio') or None,
-                            parto = request.POST.get('parto') or None,
-                            post_parto = request.POST.get('post_parto') or None,
-                            aborto = request.POST.get('aborto') or None,
-                            m_cardiache = request.POST.get('m_cardiache') or None,
-                            diabete_m = request.POST.get('diabete_m') or None,
-                            obesita = request.POST.get('obesita') or None,
-                            epilessia = request.POST.get('epilessia') or None,
-                            ipertensione = request.POST.get('ipertensione') or None,
-                            m_tiroidee = request.POST.get('m_tiroidee') or None,
-                            m_polmonari = request.POST.get('m_polmonari') or None,
-                            tumori = request.POST.get('tumori') or None,
-                            allergie = request.POST.get('allergie') or None,
-                            m_psichiatriche = request.POST.get('m_psichiatriche') or None,
-                            patologie = request.POST.get('patologie') or None,
-                            p_p_altro = request.POST.get('p_p_altro') or None,
-                            t_farmaco = request.POST.get('t_farmaco') or None,
-                            t_dosaggio = request.POST.get('t_dosaggio') or None,
-                            t_durata = request.POST.get('t_durata') or None,
-                            p_cardiovascolari = request.POST.get('p_cardiovascolari') or None,
-                            m_metabolica = request.POST.get('m_metabolica') or None,
-                            p_respiratori_cronici = request.POST.get('p_respiratori_cronici') or None,
-                            m_neurologica = request.POST.get('m_neurologica') or None,
-                            m_endocrina = request.POST.get('m_endocrina') or None,
-                            m_autoimmune = request.POST.get('m_autoimmune') or None,
-                            p_epatici = request.POST.get('p_epatici') or None,
-                            m_renale = request.POST.get('m_renale') or None,
-                            d_gastrointestinali = request.POST.get('d_gastrointestinali') or None,
-                            eloquio = request.POST.get('eloquio') or None,
-                            s_nutrizionale = request.POST.get('s_nutrizionale') or None,
-                            a_genarale = request.POST.get('a_genarale') or None,
-                            psiche = request.POST.get('psiche') or None,
-                            r_ambiente = request.POST.get('r_ambiente') or None,
-                            s_emotivo = request.POST.get('s_emotivo') or None,
-                            costituzione = request.POST.get('costituzione') or None,
-                            statura = request.POST.get('statura') or None,
-                        )
-                        success = "Nuovo paziente salvato con successo!"
-
-                else:
-                        TabellaPazienti.objects.create(
-                            dottore=dottore,
-                            name=request.POST.get('name'),
-                            surname=request.POST.get('surname'),
-                            dob=parse_date(request.POST.get('dob')),
-                            gender=request.POST.get('gender'),
-                            cap=request.POST.get('cap'),
-                            province=request.POST.get('province'),
-                            place_of_birth=request.POST.get('place_of_birth'),
-                            codice_fiscale=codice_fiscale,
-                            chronological_age=request.POST.get('chronological_age'),
-                            
-                        )
-                        success = "Nuovo paziente salvato con successo!"
-
-            if success:
-                context["success"] = success
-
-            return render(request, "includes/InserisciPaziente.html", context)
-
-        except Exception as e:
-            context["errore"] = f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova."
-            return render(request, "includes/InserisciPaziente.html", context)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# VIEWS PER SEZIONE ETA METABOLICA
-class ComposizioneView(View):
-
-    def get(self, request, id):
-
-        persona = get_object_or_404(TabellaPazienti, id=id)
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        ultimo_referto = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto').first()
-
-
-        context = {
-            'persona': persona,
-            'dottore' : dottore,
-            'ultimo_referto': ultimo_referto
-        }
-
-        return render(request, "eta_metabolica/etaMetabolica.html", context)
-
-    def post(self, request, id):       
-        persona = get_object_or_404(TabellaPazienti, id=id)
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        try:
-            # Conversione date (se presenti)
-            bmi_date = request.POST.get("bmi_detection_date")
-            girth_date = request.POST.get("girth_date")
-            bmi_detection_date = datetime.strptime(bmi_date, "%Y-%m-%d").date() if bmi_date else None
-            girth_detection_date = datetime.strptime(girth_date, "%Y-%m-%d").date() if girth_date else None
-
-            # Salva nella tabella RefertiEtaMetabolica
-            RefertiEtaMetabolica.objects.create(
-                dottore=dottore,
-                paziente=persona,
-
-                # Composizione corporea
-                bmi=request.POST.get("bmi"),
-                grasso=request.POST.get("grasso"),
-                acqua=request.POST.get("acqua"),
-                massa_muscolare=request.POST.get("massa_muscolare"),
-                bmr=request.POST.get("bmr"),
-                whr=request.POST.get("whr"),
-                whtr=request.POST.get("whtr"),
-
-                # Profilo glicemico e insulinico
-                glicemia=request.POST.get("glicemia"),
-                ogtt=request.POST.get("ogtt"),
-                emoglobina_g=request.POST.get("emoglobina_g"),
-                insulina_d=request.POST.get("insulina_d"),
-                curva_i=request.POST.get("curva_i"),
-                homa_ir=request.POST.get("homa_ir"),
-                tyg=request.POST.get("tyg"),
-
-                # Profilo lipidico
-                c_tot=request.POST.get("c_tot"),
-                hdl=request.POST.get("hdl"),
-                ldl=request.POST.get("ldl"),
-                trigliceridi=request.POST.get("trigliceridi"),
-
-                # Profilo epatico
-                ast=request.POST.get("ast"),
-                alt=request.POST.get("alt"),
-                ggt=request.POST.get("ggt"),
-                bili_t=request.POST.get("bili_t"),
-
-                # Infiammazione
-                pcr=request.POST.get("pcr"),
-                hgs=request.POST.get("hgs"),
-                sii=request.POST.get("sii"),
-
-                # Stress e antropometria
-                c_plasmatico=request.POST.get("c_plasmatico"),
-                massa_ossea=request.POST.get("massa_ossea"),
-                eta_metabolica=request.POST.get("eta_metabolica"),
-                grasso_viscerale=request.POST.get("grasso_viscerale"),
-
-                # Dati anagrafici e misurazioni
-                height=request.POST.get("altezza"),
-                weight=request.POST.get("weight"),
-                p_fisico=request.POST.get("p_fisico"),
-                girth_value=request.POST.get("girth_value"),
-                girth_notes=request.POST.get("note_addominali"),
-                bmi_detection_date=bmi_detection_date,
-                girth_date=girth_detection_date
-            )
-
-            ultimo_referto = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto').first()
-
-            context = {
-                'persona': persona,
-                'dottore': dottore,
-                'success': 'I dati sono stati aggiornati correttamente nel referto',
-                'ultimo_referto': ultimo_referto
-            }
-
-        except Exception as e:
-            context = {
-                'persona': persona,
-                'dottore': dottore,
-                'errore': f"Errore di sistema: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
-            }
-
-        return render(request, "eta_metabolica/etaMetabolica.html", context)
-
-
-class ComposizioneChartView(View):
-    def get(self, request, id):
-
-        persona = get_object_or_404(TabellaPazienti, id=id)
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        context = {
-                'persona': persona,
-                'dottore': dottore,
-        }
-
-        return render (request, 'eta_metabolica/grafici.html', context)
-
-
-class RefertiComposizioneView(View):
-    def get(self, request, id):
-
-        persona = get_object_or_404(TabellaPazienti, id=id)
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        referti = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto')
-
-
-        context = {
-                'persona': persona,
-                'dottore': dottore,
-                'referti': referti,
-        }
-
-        return render (request, 'eta_metabolica/elencoReferti.html', context)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# TO DEFINE
 class UpdatePersonaContactView(View):
 
     def post(self, request, id):
@@ -2097,850 +2838,14 @@ class UpdatePersonaContactView(View):
             return JsonResponse({"success": False, "error": "Metodo non valido"})
 
 
-# VIEWS PER CALCOLO CAPACITA', SEZIONE CAPACITA' VITALE
-class EtaVitaleView(View):
 
-    def get(self, request, id):
 
-        persona = get_object_or_404(TabellaPazienti, id=id)
-  
-        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
 
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
 
-        context = {
-            'persona': persona,
-            'referti_test_recenti': referti_test_recenti,
-            'dottore': dottore
-        }
 
-        return render(request, "includes/EtaVitale.html", context)
-    
-    def post(self):
-        return
-    
-class TestEtaVitaleView(View):
 
-    def get(self,request, id):
 
-        persona = get_object_or_404(TabellaPazienti, id=id)
 
-        ultimo_referto = persona.referti.order_by('-data_referto').first()
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
-        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
 
-        dati_estesi = None
-        if ultimo_referto:
-            dati_estesi = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
-        
-        context = {
-            'persona': persona,
-            'dati_estesi': dati_estesi,
-            'dottore' : dottore,
-            'referti_test_recenti': referti_test_recenti
-        }
 
-        return render(request, "includes/testVitale.html", context)
- 
-    def post(self, request, id):
 
-        try:
-            persona = get_object_or_404(TabellaPazienti, id=id)
-            data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
-            referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
-
-            Somma_MMSE = (
-                int(data.get('doc_1', 0)) +
-                int(data.get('doc_2', 0)) +
-                int(data.get('doc_3', 0)) +
-                int(data.get('doc_4', 0)) +
-                int(data.get('doc_5', 0)) +
-                int(data.get('doc_6', 0)) +
-                int(data.get('doc_7', 0)) +
-                int(data.get('doc_8', 0)) +
-                int(data.get('doc_9', 0)) +
-                int(data.get('doc_10', 0)) +
-                int(data.get('doc_11', 0)) 
-            )
-
-            Somma_GDS = (
-                int(data.get('dop_1', 0)) +
-                int(data.get('dop_2', 0)) +
-                int(data.get('dop_3', 0)) +
-                int(data.get('dop_4', 0)) +
-                int(data.get('dop_5', 0)) +
-                int(data.get('dop_6', 0)) +
-                int(data.get('dop_7', 0)) +
-                int(data.get('dop_8', 0)) +
-                int(data.get('dop_9', 0)) +
-                int(data.get('dop_10', 0)) +
-                int(data.get('dop_11', 0)) +
-                int(data.get('dop_12', 0)) +
-                int(data.get('dop_13', 0)) +
-                int(data.get('dop_14', 0)) +
-                int(data.get('dop_15', 0)) 
-            )
-
-            Somma_LOC = (
-                int(data.get('loc_1', 0)) +
-                int(data.get('loc_2', 0)) +
-                int(data.get('loc_3', 0)) +
-                int(data.get('loc_4', 0)) +
-                int(data.get('loc_5', 0)) +
-                int(data.get('loc_6', 0)) +
-                int(data.get('loc_7', 0)) +
-                int(data.get('loc_8', 0)) 
-            )
-
-            Somma_Vista = (
-                int(data.get('dos_1', 0)) +
-                int(data.get('dos_2', 0))
-            )
-
-            Somma_Udito =  int(data.get('dos_3', 0)) 
-
-            Somma_HGS = str(data.get('dodv', None))
-
-            Fss_Somma = (
-                int(data.get('fss_1', 0)) +
-                int(data.get('fss_2', 0)) +
-                int(data.get('fss_3', 0)) +
-                int(data.get('fss_4', 0)) +
-                int(data.get('fss_5', 0)) +
-                int(data.get('fss_6', 0)) +
-                int(data.get('fss_7', 0)) +
-                int(data.get('fss_8', 0))
-            )
-
-            Sarc_f_Somma = (
-                int(data.get('Sarc_f_1', 0)) +
-                int(data.get('Sarc_f_2', 0)) +
-                int(data.get('Sarc_f_3', 0)) +
-                int(data.get('Sarc_f_4', 0)) +
-                int(data.get('Sarc_f_5', 0)) 
-            )
-          
-            PFT = int(data.get('pft-1', '0') or 0)
-         
-            ISQ = (
-                int(data.get('SiIm_1', 0)) +
-                int(data.get('SiIm_2', 0)) +
-                int(data.get('SiIm_3', 0)) +
-                int(data.get('SiIm_4', 0)) +
-                int(data.get('SiIm_5', 0)) +
-                int(data.get('SiIm_6', 0)) +
-                int(data.get('SiIm_7', 0))
-            )   
-    
-            BMI = float(data.get('bmi-1', 0) or 0)
-            CDP = float(data.get('Cir_Pol', 0) or 0)
-            WHR = float(data.get('WHip', 0) or 0)
-            WHR_Ratio = str(data.get('Whei', None))
-
-            CST = int(data.get('numero_rip', 0) or 0) / int(data.get('tot_secondi', 0) or 1)
-           
-            GS = int(data.get('distanza', 0) or 0) / int(data.get('tempo_s', 0) or 1)
-       
-            PPT = int(data.get('tempo_s_pick', 0) or 1)
-    
-            punteggioFinale = CalcoloPunteggioCapacitaVitale(
-                                Somma_MMSE, Somma_GDS, Somma_LOC,
-                                Somma_Vista, Somma_Udito, Somma_HGS, PFT,
-                                ISQ, BMI, CDP, WHR, WHR_Ratio, CST, 
-                                GS, PPT, Sarc_f_Somma, persona.gender )
-
-
-            referto = ArchivioRefertiTest(
-                paziente = persona,
-                punteggio = punteggioFinale,
-                #documento = request.FILES.get('documento')
-            )
-            referto.save()
-
-
-            datiEstesi = DatiEstesiRefertiTest(
-                referto = referto,
-
-                #DOMINIO COGNITIVO 
-                MMSE = Somma_MMSE,
-
-                #DOMINIO PSICOLOGICO
-                GDS = Somma_GDS,
-                LOC = Somma_LOC,
-
-                #DOMINIO SENSORIALE
-                Vista = Somma_Vista,
-                Udito = Somma_Udito,
-
-                #DOMINIO DELLA VITALITA'
-                HGS = Somma_HGS,
-                PFT = PFT,
-
-                #SISTEMA IMMUNITARIO
-                ISQ = ISQ,
-                BMI = BMI,
-                CDP = CDP,
-                WHR = WHR,
-                WHR_Ratio = WHR_Ratio,
-
-                #DOMINIO DELLA LOCOMOZIONE
-                CST = CST,
-                GS = GS,
-                PPT = PPT,
-                SARC_F = Sarc_f_Somma,
-                FSS = Fss_Somma,
-
-                #BIOMARCATORI CIRCOLANTI DEL METABOLISMO
-                Glic = safe_float(data, 'Glic'),
-                Emog = safe_float(data, 'Emog'),
-                Insu = safe_float(data, 'Insu'),
-                Pept_c = safe_float(data, 'Pept_c'),
-                Col_tot = safe_float(data, 'Col_tot'),
-                Col_ldl = safe_float(data, 'Col_ldl'),
-                Col_hdl = safe_float(data, 'Col_hdl'),
-                Trigl = safe_float(data, 'Trigl'),
-                albumina = safe_float(data, 'albumina'),
-                clearance_urea = safe_float(data, 'clearance_urea'),
-                igf_1 = safe_float(data, 'ifg_1'),
-
-
-                #BIOMARCATORI CIRCOLANTI DELL'INFIAMMAZIONE
-                Lymph = safe_float(data, 'Lymph'),
-                Lymph_el = safe_float(data, 'Lymph_el'),
-                wbc = safe_float(data, 'wbc'),
-                Proteins_c = safe_float(data, 'Proteins_c'),
-                Inter_6 = safe_float(data, 'Inter_6'),
-                Tnf = safe_float(data, 'Tnf'),
-                Mono = safe_float(data, 'Mono'),
-                Mono_el = safe_float(data, 'Mono_el'),    
-            )
-
-            datiEstesi.save()
-
-            context = {
-            'persona': persona,
-            'modal' : True,
-            'Referto': referto,
-            'referti_test_recenti': referti_test_recenti,
-            'dottore': dottore
-            }
-
-            return render(request, "includes/EtaVitale.html", context)
-
-
-        except Exception as e:
-            print(e)
-
-            context = {
-                'persona': persona,
-                'modal': False,
-                'errore': "Qualcosa è andato storto, controlla di inserire i valori corretti e riprova",
-                'referti_test_recenti': referti_test_recenti,
-                'dottore': dottore
-            }    
-
-            return render(request, "includes/testVitale.html", context)
-
-class RefertoQuizView(View):
-    def get(self, request, persona_id, referto_id):
-
-        persona = get_object_or_404(TabellaPazienti, id=persona_id)
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        referto = get_object_or_404(ArchivioRefertiTest, id=referto_id)
-
-        ultimo_referto = persona.referti.order_by('-data_referto')
-        
-        datiEstesi = None
-        if referto:
-            datiEstesi = DatiEstesiRefertiTest.objects.filter(referto=referto).first()
-
-        testo_risultato = ''
-
-        if float(referto.punteggio) >= 0 and float(referto.punteggio) <= 2.59:
-            testo_risultato = """
-                                Ottima capacità vitale: Stato di salute eccellente sia a livello
-                                fisico che mentale. La forza muscolare, la funzionalità
-                                respiratoria e la mobilità sono ottimali. Il soggetto mostra
-                                un’ottima capacità cognitiva, un buon benessere psicologico e
-                                una bassa vulnerabilità allo stress. Il rischio di declino
-                                funzionale e mentale è minimo.
-                            """
-
-        elif float(referto.punteggio) >= 2.60 and float(referto.punteggio) <= 5.09:
-            testo_risultato = """
-                                Buona capacità vitale: Buono stato di salute con lievi segni di
-                                riduzione della forza muscolare o della resistenza fisica.
-                                Possibile lieve declino cognitivo o stati emotivi fluttuanti, come
-                                stress occasionale o lieve ansia. Il soggetto è autonomo, ma
-                                potrebbe beneficiare di interventi per mantenere le capacità
-                                motorie e il benessere mentale.
-                            """
-
-        elif float(referto.punteggio) >= 5.10 and float(referto.punteggio) <= 7.59:
-            testo_risultato ="""
-                                Capacità vitale compromessa: Si evidenziano difficoltà motorie
-                                moderate, minore forza muscolare e resistenza. Potrebbero
-                                esserci segni di declino cognitivo o un aumento di ansia e
-                                stress, con possibili difficoltà nella gestione emotiva. Il rischio
-                                di cadute, affaticamento mentale e riduzione dell’autonomia
-                                cresce. È consigliato un supporto medico e strategie di
-                                miglioramento.
-                            """
-
-        elif float(referto.punteggio) >= 7.60 and float(referto.punteggio) <= 10:
-            testo_risultato ="""
-                                Capacità vitale gravemente compromessa: Mobilità e
-                                resistenza fisica sono compromesse, con elevato rischio di
-                                fragilità e perdita di autonomia. Il declino cognitivo può
-                                manifestarsi con difficoltà di concentrazione, memoria e
-                                orientamento. Sul piano psicologico, possono essere presenti
-                                ansia significativa, depressione o distress emotivo. È necessario
-                                un intervento mirato per migliorare la qualità della vita.
-                            """
-
-
-        context = {
-            'persona': persona,
-            'ultimo_referto': ultimo_referto,
-            'datiEstesi': datiEstesi,
-            'dottore' : dottore,
-            'referto' : referto,
-            'testo_risultato': testo_risultato,
-        }
-
-        return render(request, "includes/RefertoQuiz.html", context)
-
-class QuizEtaVitaleUpdateView(View):
-
-    def get(self, request, id):
-        
-        persona = get_object_or_404(TabellaPazienti, id=id)
-
-        ultimo_referto = persona.referti.order_by('-data_referto').first()
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
-        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
-
-        dati_estesi = None
-        if ultimo_referto:
-            dati_estesi = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
-
-        card_to_show = request.GET.get('card_name')
-
-        context = {
-            'persona': persona,
-            'dati_estesi': dati_estesi,
-            'dottore' : dottore,
-            'referti_test_recenti': referti_test_recenti,
-            'card_to_show': card_to_show
-        }
-
-        return render(request, 'includes/testVitale.html', context)
-    
-    def post(self, request, id):
-        return 
-
-class StampaRefertoView(View):
-    def get(self, request, persona_id, referto_id):
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
-        referto = get_object_or_404(ArchivioRefertiTest, id=referto_id)
-        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
-        ultimo_referto = persona.referti.order_by('-data_referto')
-        
-        datiEstesi = None
-        if referto:
-            datiEstesi = DatiEstesiRefertiTest.objects.filter(referto=referto).first()
-
-        testo_risultato = ''
-
-        if float(referto.punteggio) >= 0 and float(referto.punteggio) <= 2.59:
-            testo_risultato = """
-                                Ottima capacità vitale: Stato di salute eccellente sia a livello
-                                fisico che mentale. La forza muscolare, la funzionalità
-                                respiratoria e la mobilità sono ottimali. Il soggetto mostra
-                                un’ottima capacità cognitiva, un buon benessere psicologico e
-                                una bassa vulnerabilità allo stress. Il rischio di declino
-                                funzionale e mentale è minimo.
-                            """
-
-        elif float(referto.punteggio) >= 2.60 and float(referto.punteggio) <= 5.09:
-            testo_risultato = """
-                                Buona capacità vitale: Buono stato di salute con lievi segni di
-                                riduzione della forza muscolare o della resistenza fisica.
-                                Possibile lieve declino cognitivo o stati emotivi fluttuanti, come
-                                stress occasionale o lieve ansia. Il soggetto è autonomo, ma
-                                potrebbe beneficiare di interventi per mantenere le capacità
-                                motorie e il benessere mentale.
-                            """
-
-        elif float(referto.punteggio) >= 5.10 and float(referto.punteggio) <= 7.59:
-            testo_risultato ="""
-                                Capacità vitale compromessa: Si evidenziano difficoltà motorie
-                                moderate, minore forza muscolare e resistenza. Potrebbero
-                                esserci segni di declino cognitivo o un aumento di ansia e
-                                stress, con possibili difficoltà nella gestione emotiva. Il rischio
-                                di cadute, affaticamento mentale e riduzione dell’autonomia
-                                cresce. È consigliato un supporto medico e strategie di
-                                miglioramento.
-                            """
-
-        elif float(referto.punteggio) >= 7.60 and float(referto.punteggio) <= 10:
-            testo_risultato ="""
-                                Capacità vitale gravemente compromessa: Mobilità e
-                                resistenza fisica sono compromesse, con elevato rischio di
-                                fragilità e perdita di autonomia. Il declino cognitivo può
-                                manifestarsi con difficoltà di concentrazione, memoria e
-                                orientamento. Sul piano psicologico, possono essere presenti
-                                ansia significativa, depressione o distress emotivo. È necessario
-                                un intervento mirato per migliorare la qualità della vita.
-                            """
-
-        context = {
-            'scarica' : True,
-            'persona': persona,
-            'ultimo_referto': ultimo_referto,
-            'datiEstesi': datiEstesi,
-            'referti_test_recenti': referti_test_recenti,
-            'dottore' : dottore,
-            'referto' : referto,
-            'testo_risultato': testo_risultato,
-        }
-
-        return render(request, "includes/EtaVitale.html", context)
-
-
-# Referto View
-class RefertoView(View):
-    def get(self, request, referto_id):
-        referto = ArchivioReferti.objects.get(id=referto_id)
-        return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
-
-#PRESCRIZIONI VIEW
-class PrescrizioniView(View):
-
-    def get(self, request, persona_id):
-
-        persona = get_object_or_404(TabellaPazienti, id=persona_id)
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        context = {
-            'persona': persona,
-            'dottore': dottore,
-        }
-
-        return render(request, "includes/prescrizioni.html", context)
-
-
-    def post(self, request, persona_id):
-
-        persona = get_object_or_404(TabellaPazienti, id=persona_id)
-        
-        listaCodici = request.POST.get('codici_esami')
-        data_list = json.loads(listaCodici)
-        numeri = [x for x in data_list if x.isdigit()]
-
-        nuova_visita = ElencoVisitePaziente.objects.create(
-            paziente = persona,
-        )
-
-        for i in range(0, len(numeri)):
-            EsameVisita.objects.create(
-                visita=nuova_visita,
-                codice_esame=numeri[i],
-            )
-
-        return redirect('cartella_paziente', persona_id)
-
-#VIEWS APPUNTAMENTI
-class AppuntamentiView(View):
-    def get(self, request):
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
-        persone = TabellaPazienti.objects.all().order_by('-id')
-        appuntamenti = Appointment.objects.all().order_by('-id')
-
-
-        # Ottieni le opzioni definite nei choices
-        tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
-        numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
-        voce_prezzario = Appointment._meta.get_field('voce_prezzario').choices
-
-        context = {
-            'dottore': dottore,
-            'persone': persone,
-            'appuntamenti': appuntamenti,
-            'tipologia_appuntamenti': tipologia_appuntamenti,
-            'voce_prezzario': voce_prezzario,
-            'numero_studio': numero_studio,
-        }
-
-        return render(request, 'includes/Appuntamenti.html', context)
-    
-# VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
-class AppuntamentiSalvaView(View):
-    def post(self, request):
-        if request.method == "POST":
-            try:
-                body_raw = request.body.decode('utf-8')
-
-                data = json.loads(body_raw)
-
-                # Recuperiamo i dati, facendo attenzione ai valori mancanti
-                giorno = data.get("giorno", "").strip()
-                data_appointment = data.get("data", "").strip()
-                time_appointment = data.get("orario", "").strip()
-                voce_prezzario = data.get("voce_prezzario", "").strip()
-                durata = data.get("durata", "").strip()
-
-                if not time_appointment:
-                    print("❌ ERRORE: Il campo 'orario' è mancante o vuoto!")
-
-                # Creazione dell'appuntamento
-                Appointment.objects.create(
-                    tipologia_visita=data.get("tipologia_visita"),
-                    nome_paziente=data.get("nome_paziente"),
-                    cognome_paziente=data.get("cognome_paziente"),
-                    numero_studio=data.get("numero_studio"),
-                    note=data.get("note"),
-                    giorno=giorno,
-                    data=data_appointment,
-                    orario=time_appointment,
-                    voce_prezzario=voce_prezzario,  # 🔹 Ora viene salvato
-                    durata=durata,  # 🔹 Ora viene salvata
-                )
-
-                return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!", 'clear_form': True})
-
-            except json.JSONDecodeError as e:
-                print(f"❌ ERRORE JSON: {str(e)}")
-                return JsonResponse({"success": False, "error": "Formato JSON non valido"}, status=400)
-            except Exception as e:
-                print(f"❌ ERRORE GENERICO: {str(e)}")
-                return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-        return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
-
-# VIEWS SINGLE APPOINTMENT
-class GetSingleAppointmentView(View):
-    def get(self, request, appointment_id):
-        """Recupera i dettagli di un singolo appuntamento"""
-        try:
-            appointment = Appointment.objects.get(id=appointment_id)
-
-            response_data = {
-                "success": True,
-                "id": appointment.id,
-                "nome_paziente": appointment.nome_paziente,
-                "cognome_paziente": appointment.cognome_paziente,
-                "giorno": appointment.giorno,
-                "data": appointment.data.strftime("%Y-%m-%d"),
-                "numero_studio": appointment.numero_studio or "",  # Se è null, assegna ""
-                "note": appointment.note or "",  # Se è null, assegna ""
-                "voce_prezzario": appointment.voce_prezzario or "",  # Se è null, assegna ""
-                "tipologia_visita": appointment.tipologia_visita or "",  # Se è null, assegna ""
-                "orario": str(appointment.orario)[:5],  # Formattato in HH:mm
-                "durata": appointment.durata or "",  # Se è null, assegna ""
-            }
-
-            return JsonResponse(response_data)
-        except Appointment.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-# VIEWS GET ALL APPOINTMENTS
-class AppuntamentiGetView(View):
-    def get(self, request):
-        """Recupera gli appuntamenti futuri ed elimina quelli passati"""
-        
-        # 📌 1. Ottenere la data di oggi senza ore/minuti/secondi
-        today = now().date()
-
-        # 📌 2. Eliminare gli appuntamenti con data precedente a oggi
-        deleted_count, _ = Appointment.objects.filter(data__lt=today).delete()  # Cambiato "date" in "data"
-
-        # 📌 3. Recuperare solo gli appuntamenti futuri o di oggi
-        future_appointments = Appointment.objects.filter(data__gte=today)  # Cambiato "date" in "data"
-
-        # 📌 4. Costruire il dizionario degli appuntamenti organizzati per data
-        appointments_by_date = {}
-        for appointment in future_appointments:
-            date_str = appointment.data.strftime("%Y-%m-%d")  # Formattazione YYYY-MM-DD
-            if date_str not in appointments_by_date:
-                appointments_by_date[date_str] = []
-            appointments_by_date[date_str].append({
-                "id": appointment.id,
-                "nome_paziente": appointment.nome_paziente,
-                "cognome_paziente": appointment.cognome_paziente,
-                "giorno": appointment.giorno,
-                "data": appointment.data,
-                "numero_studio": appointment.numero_studio,
-                "note": appointment.note,
-                "voce_prezzario": appointment.voce_prezzario,
-                "tipologia_visita": appointment.tipologia_visita,
-                "orario": appointment.orario,
-            })
-
-        return JsonResponse({"success": True, "deleted": deleted_count, "appointments": appointments_by_date})
-
-# VIEWS UPDATE APPOINTMENT
-class UpdateAppointmentView(View):
-    def patch(self, request, appointment_id):
-        try:
-            data = json.loads(request.body)
-            appointment = Appointment.objects.get(id=appointment_id)
-            
-            # Aggiorna solo se i valori sono presenti e non vuoti nel payload
-            if data.get("new_date"):
-                appointment.data = data["new_date"]
-            if data.get("new_time"):
-                appointment.orario = data["new_time"]
-            if data.get("nome_paziente"):
-                appointment.nome_paziente = data["nome_paziente"]
-            if data.get("cognome_paziente"):
-                appointment.cognome_paziente = data["cognome_paziente"]
-            if data.get("tipologia_visita"):
-                appointment.tipologia_visita = data["tipologia_visita"]
-            if data.get("numero_studio"):
-                appointment.numero_studio = data["numero_studio"]
-            if data.get("voce_prezzario"):
-                appointment.voce_prezzario = data["voce_prezzario"]
-            if "note" in data:  # anche se è vuota, la nota verrà aggiornato
-                appointment.note = data["note"]
-            
-            appointment.save()
-            return JsonResponse({"success": True, "message": "Appuntamento aggiornato!"})
-        except Appointment.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-# VIEWS APPROVE APPOINTMENT
-class ApproveAppointmentView(View):
-    def post(self, request, appointment_id):
-        appointment = get_object_or_404(Appointment, id=appointment_id)
-        appointment.confermato = True  # Segna l'appuntamento come confermato
-        appointment.save()
-        return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
-
-# VIEWS DELETE APPOINTMENT
-@method_decorator(csrf_exempt, name='dispatch')
-class DeleteAppointmentView(View):
-    def delete(self, request, appointment_id):
-        try:
-            appointment = Appointment.objects.get(id=appointment_id)
-            appointment.delete()
-            return JsonResponse({"success": True, "message": "Appuntamento eliminato con successo!"})
-        except Appointment.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-# VIEW SEARCH APPOINTMENTS
-class SearchAppointmentsView(View):
-    def get(self, request):
-        query = request.GET.get("q", "").lower().strip()
-        if query:
-            # Puoi estendere il filtro a più campi, ad esempio:
-            appointments = Appointment.objects.filter(
-                Q(nome_paziente__icontains=query) | Q(tipologia_visita__icontains=query) | Q(orario__icontains=query)
-            )
-            results = list(appointments.values("id", "nome_paziente", "tipologia_visita", "orario"))
-            return JsonResponse({"success": True, "appointments": results})
-        return JsonResponse({"success": False, "error": "Nessuna query fornita"})
-    
-
-
-
-#VIEW CREATE PATIENT FROM SECOND MODAL
-class CreaPazienteView(View):
-    def post(self, request, *args, **kwargs):
-        try:
-            data = json.loads(request.body)
-            print("📥 Dati ricevuti dal frontend:", data)  # DEBUG
-
-            name = data.get("name", "").strip()
-            surname = data.get("surname", "").strip()
-            phone = data.get("phone", "").strip()
-            email = data.get("email", "").strip()  # Assumendo che tu abbia il campo email nel modello
-            dottore_id = request.session.get('dottore_id')
-
-            if not name or not surname:
-                print("⚠ Errore: Nome e cognome obbligatori")  # DEBUG
-                return JsonResponse({"success": False, "error": "Nome e cognome sono obbligatori!"}, status=400)
-
-            if not dottore_id:
-                print("⚠ Errore: dottore_id mancante!")  # DEBUG
-                return JsonResponse({"success": False, "error": "Devi essere autenticato per aggiungere un paziente."}, status=403)
-
-            # Creazione paziente
-            paziente = TabellaPazienti.objects.create(
-                name=name,
-                surname=surname,
-                phone=phone,
-                email=email  # Assumendo che email esista nel modello
-            )
-            print(f"✅ Paziente {paziente.id} salvato: {paziente.name} {paziente.surname}, {paziente.email}")  # DEBUG
-
-            return JsonResponse({
-                "success": True,
-                "message": "Paziente aggiunto con successo!",
-                "id": paziente.id,
-                "full_name": f"{paziente.name} {paziente.surname}"
-            })
-
-        except json.JSONDecodeError:
-            print("❌ Errore JSON ricevuto nel backend!")  # DEBUG
-            return JsonResponse({"success": False, "error": "Formato JSON non valido."}, status=400)
-
-        except Exception as e:
-            print(f"❌ Errore nel backend: {e}")  # DEBUG
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-
-
-#VIEWS PER SEZIONE RESILIENZA 
-class ResilienzaView(View):
-    def get(self, request, persona_id):
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, id=persona_id)
-
-        context = {
-            'persona': persona,
-            'dottore' : dottore,
-        }
-
-        return render(request, "includes/Resilienza.html", context)
-    
-    def post(self, request, persona_id): 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, id=persona_id)
-
-        # Estrai i dati dal form (con gestione errori base)
-        try:
-            retrivedData = Resilienza.objects.create(
-                paziente=persona,
-                hrv=request.POST.get("hrv"),
-                cortisolo=request.POST.get("cortisolo"),
-                ros=request.POST.get("ros"),
-                osi=request.POST.get("osi"),
-                droms=request.POST.get("dRoms"),
-                pcr=request.POST.get("pcr"),
-                nlr=request.POST.get("nlr"),
-                homa=request.POST.get("homa_t"),
-                ir=request.POST.get("ir_t"),
-                omega_3=request.POST.get("omega_3"),
-                vo2max=request.POST.get("vo2"),
-            )
-            retrivedData.save()
-
-        except Exception as e:
-            print("Errore nel salvataggio del referto:", e)
-
-        context = {
-            'persona': persona,
-            'dottore': dottore,
-            'successo': True
-        }
-        return render(request, "includes/Resilienza.html", context)
-    
-
-#VIEWS PER LA VALUTAZIONE MUSCOLO-SCHELETRICO
-class ValutazioneMSView(View):
-    def get(self, request, persona_id):
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, id=persona_id)
-
-        context = {
-            'persona': persona,
-            'dottore' : dottore,
-        }
-
-        return render(request, "includes/valutazioneMS.html", context)
-
-
-
-    def post(self, request, persona_id): 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, id=persona_id)
-
-        try:
-            retrivedData = ValutazioneMS.objects.create(
-                paziente=persona,
-
-                # Attività fisica
-                frequenza_a_f=request.POST.get("frequenza_a_f"),
-                tipo_a_f=request.POST.get("tipo_a_f"),
-                stile_vita=request.POST.get("stile_vita"),
-
-                # Anamnesi muscolo-scheletrica
-                terapie_inf=request.POST.get("terapie_inf"),
-                diagnosi_t=request.POST.get("diagnosi_t"),
-                sintomi_t=request.POST.get("sintomi_t"),
-
-                # Esame Generale
-                palpazione=request.POST.get("palpazione"),
-                osservazione=request.POST.get("osservazione"),
-                m_attiva=request.POST.get("m_attiva"),
-                m_passiva=request.POST.get("m_passiva"),
-                dolorabilità=request.POST.get("dolorabilità"),
-                scala_v_a=request.POST.get("scala_v_a"),
-
-                # Esame muscolo-scheletrico
-                mo_attivo=request.POST.get("mo_attivo"),
-                mo_a_limitazioni=request.POST.get("mo_a_limitazioni"),
-                mo_passivo=request.POST.get("mo_passivo"),
-                mo_p_limitazioni=request.POST.get("mo_p_limitazioni"),
-                comparazioni_m=request.POST.get("comparazioni_m"),
-                circ_polp=request.POST.get("circ_polp"),
-                tono_m=request.POST.get("tono_m"),
-                scala_ashworth=request.POST.get("scala_ashworth"),
-
-                # Esame posturale
-                v_frontale=request.POST.get("v_frontale"),
-                v_laterale=request.POST.get("v_laterale"),
-                p_testa=request.POST.get("p_testa"),
-                spalle=request.POST.get("spalle"),
-                ombelico=request.POST.get("ombelico"),
-                a_inferiori=request.POST.get("a_inferiori"),
-                piedi=request.POST.get("piedi"),
-                colonna_v=request.POST.get("colonna_v"),
-                curvatura_c=request.POST.get("curvatura_c"),
-                curvatura_d=request.POST.get("curvatura_d"),
-                curvatura_l=request.POST.get("curvatura_l"),
-                posizione_b=request.POST.get("posizione_b"),
-                equilibrio_s=request.POST.get("equilibrio_s"),
-                equilibrio_d=request.POST.get("equilibrio_d"),
-                p_dolenti=request.POST.get("p_dolenti"),
-
-                # Valutazione funzionale
-                gravita_disfunzione_posturale=request.POST.get("gravita_disfunzione_posturale"),
-                rischio_infortuni=request.POST.get("rischio_infortuni"),
-                suggerimenti=request.POST.get("suggerimenti"),
-                considerazioni_finali=request.POST.get("considerazioni_finali"),
-            )
-
-            retrivedData.save()
-
-        except Exception as e:
-            print("Errore nel salvataggio del referto:", e)
-
-        context = {
-            'persona': persona,
-            'dottore': dottore,
-            'successo': True
-        }
-        return render(request, "includes/valutazioneMS.html", context)

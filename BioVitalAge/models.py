@@ -223,21 +223,6 @@ class RefertiEtaMetabolica(models.Model):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Tabella archivio referti associata ai pazienti
 class ArchivioReferti(models.Model):
     paziente = models.ForeignKey(
