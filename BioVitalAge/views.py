@@ -774,7 +774,10 @@ class CartellaPazienteView(View):
 
 
         visite = ElencoVisitePaziente.objects.filter(paziente_id=id)
+        ultimo_referto = persona.referti_test.order_by('data_ora_creazione').first()
 
+        print(ultimo_referto.punteggio)
+                
         context = {
             'persona': persona,
             'referti_recenti': referti_recenti,
@@ -783,6 +786,7 @@ class CartellaPazienteView(View):
             'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
             'dottore' : dottore,
             'visite': visite,
+            'referti_test_recenti': ultimo_referto,
             #'elencoPrescrizioni': elencoPrescrizioni,
         }
 
@@ -1141,7 +1145,7 @@ class EtaVitaleView(View):
         persona = get_object_or_404(TabellaPazienti, id=id)
   
         referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
-
+    
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
 
         context = {

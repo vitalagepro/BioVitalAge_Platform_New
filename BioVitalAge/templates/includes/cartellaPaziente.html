@@ -355,45 +355,71 @@
 
                 <div class="container-second-row">
 
+                    
+
                     <div class="eta-container">
-                        <h3>Età Biologica</h3>
+                        <h3>Età Biologica</h3>  
+                        <p class="subTitle">Linea della vita</p>
+                 
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                const crono = document.getElementById('crono');
+                                const biologica = document.getElementById('biologica');
+                            
+                                if (crono && biologica) {
+                                    const percentuale_crono = parseInt(crono.textContent);
+                                    const percentuale_biologica = parseInt(biologica.textContent); 
+                            
+                                    const div_crono = document.querySelector('.cronologic-age');
+                                    const div_biologica = document.querySelector('.biologic-age');
+                            
+                                    div_crono.style.left = `${percentuale_crono}%`;
+                                    div_biologica.style.left = `${percentuale_biologica}%`;
+                            
+                                  
+                                    if (percentuale_biologica < percentuale_crono) {
+                                        div_biologica.classList.add('freccia-up');
+                                    } else if (percentuale_biologica > percentuale_crono) {
+                                        div_biologica.classList.add('freccia-down');
+                                    } else {
+                                        div_biologica.classList.add('freccia-equal');
+                                    }
+                                } else {
+                                    console.warn("Elemento 'crono' o 'biologica' non trovato nel DOM.");
+                                }
+                            });
+                        </script>
+                                
                         <div class="lineaContainer">
-                            <p class="estremoInferiore">0</p>
+                           <p class="estremoInferiore">0</p>
+
                             <div class="cronologic-age">
-                                <img src="{% static 'includes/icone/biologica.png' %}" alt="">
-                                <p>38 anni</p>
-                                <p class="linea">|</p>
+                                <img src="{% static 'includes/icone/età_crono.png' %}" alt="">
+                                <p id="crono">{{ persona.chronological_age }}</p>      
                             </div>
-                            <div class="barra-valore"></div>
+                            
                             <div class="biologic-age">
-                                <img src="{% static 'includes/icone/cronologica.png' %}" alt="">
-                                <p>44 anni</p>
-                                <p class="linea">|</p>
+                                <img src="{% static 'includes/icone/eta_biologica.png' %}" alt="" style="margin-top: 15px;"> 
+                                <p id="biologica" style="margin-top: 5px; margin-bottom: 0px;">{{ dati_estesi_ultimo_referto.biological_age }}</p>
                             </div>
+
                             <p class="estremoSuperiore">100</p>
                         </div>
 
                         <div class="legenda">
                             <div class="subcontainer-legenda">
-                                <img src="{% static 'includes/icone/biologica.png' %}" alt="">
+                                <img src="{% static 'includes/icone/eta_biologica.png' %}" alt="">
                                 <p>Età Biologica</p>
                             </div>
                         
                             <div class="subcontainer-legenda">
-                                <img src="{% static 'includes/icone/cronologica.png' %}" alt="" >
-                                <p>Età Biologica</p>
-                            </div>
-
-                            <div class="subcontainer-legenda">
-                                <p class="quadrato neg"></p>
-                                <p>Valore Negativo</p>
-                            </div>
-                            <div class="subcontainer-legenda">
-                                <p class="quadrato pos"></p>
-                                <p>Valore Positivo</p>
+                                <img src="{% static 'includes/icone/età_crono.png' %}" alt="" >
+                                <p>Età Cronologica</p>
                             </div>
                         </div>
-                    </div>
+                    </div> 
+
+                
 
                     <div class="capacita_vitale">
                         <h3>Capacità Vitale</h3>
@@ -409,7 +435,7 @@
                             <img src="{% static 'includes/icone/polmone.png' %}" alt="" width="180px" height="180px">
                         </div>
                           
-                        <p class="descrizione-vitale"><span style="font-weight: bold;">Punteggio:</span> 5.56</p>
+                        <p class="descrizione-vitale"><span style="font-weight: bold;">Punteggio: &nbsp; </span>{{ referti_test_recenti.punteggio }} / 10</p>
 
                     </div>
 
@@ -794,9 +820,9 @@
                         dob: "{{ persona.dob }}"
                     };
 
-                    alignRight(Sig.ra/Sig. ${persona.name} ${persona.surname}, 640);
-                    alignRight(Città di nascita: ${persona.pob}, 615);
-                    alignRight(Data di nascita: ${persona.dob}, 590);
+                    alignRight(`Sig.ra/Sig. ${persona.name} ${persona.surname}`, 640);
+                    alignRight(`Città di nascita: ${persona.pob}`, 615);
+                    alignRight(`Data di nascita: ${persona.dob}`, 590);
 
 
                     firstPage.drawText("Si prescrivono i seguenti esami:", { x: 50, y: 560, size: fontSize, font: font });
@@ -805,7 +831,7 @@
                     const today = new Date();
                     const formattedDate = today.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-                    firstPage.drawText(Bari, ${formattedDate}, { x: 50, y: 200, size: fontSize, font: font });
+                    firstPage.drawText(`Bari, ${formattedDate}`, { x: 50, y: 200, size: fontSize, font: font });
 
                     const text = "Dott. Luigi Aprile:";
                     const textWidth = font.widthOfTextAtSize(text, fontSize);
@@ -819,7 +845,7 @@
 
                     const link = document.createElement("a");
                     link.href = URL.createObjectURL(blob);
-                    link.download = ${persona.name} ${persona.surname};
+                    link.download = `${persona.name}_${persona.surname}.pdf`;
                     link.click();
 
                 }
@@ -832,7 +858,16 @@
             downloadButton.addEventListener("click", generatePDF);
 
 
-        </script>
+        </script> 
+
+
+
+          
+
+
+
+
+        
 
 
         {% if pdf_url %}
@@ -1095,8 +1130,15 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
    
-   <script>
+    <!-- SCRIPT CAPACITA' VITALE -->
+    <script>
         document.addEventListener("DOMContentLoaded", () => {
+
+            const punteggio = {{ referti_test_recenti.punteggio |default:"10"}};  /* @ts-ignore */
+            const percentuale = (punteggio / 10) * 100;
+
+            console.log(percentuale)
+
             const wavePath = document.getElementById("wavePath");
             const backdrop = document.querySelector(".backdrop-riempimento");
 
@@ -1116,7 +1158,7 @@
             // Animazione iniziale di riempimento (da height 0% a 50%)
             gsap.to(backdrop, {
             duration: 1.8,
-            height: "50%",
+            height: `${percentuale}%`,
             ease: "power2.out"
             });
         });

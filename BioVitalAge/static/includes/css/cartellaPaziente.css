@@ -1,3 +1,26 @@
+/* FONT SYLE */
+* p,
+* input,
+* select{
+    font-family: 'Poppins', sans-serif !important;
+}
+* h3{
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 23px !important;
+    font-weight: 600 !important;
+}
+* span{
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+
+
+
+
+
+
+
+
 .main-menu-trace {
   width: 50%;
 }
@@ -367,7 +390,7 @@
 .score-clock-graph {
   width: 98%;
   margin: 2rem auto 0rem auto;
-  height: 17rem;
+  height: 18rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -478,7 +501,7 @@
 .container-second-row{
   width: 98%;
   margin: 1rem auto;
-  height: 20rem;
+  height: 22rem;
   display: flex;
   gap: 8px;
 }
@@ -490,38 +513,74 @@
   box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   background-color: white;
+  position: relative;
 }
 .eta-container h3,
 .capacita_vitale h3,
 .resilienza h3{
   color: var(--contrast-color);
-  padding: 20px;
+  padding: 20px 20px 0px 20px;
+}
+.subTitle{
+  text-align: center;
+  padding-bottom: 30px;
 }
 .lineaContainer{
   background-color: var(--card-color);
   width: 85%;
-  height: 1rem;
+  height: 0.5rem;
   border-radius: 8px;
   margin: 4rem auto;
   border: 1px solid #ddd;
   position: relative;
 }
+.estremoInferiore{
+  position: absolute;
+  left: -3rem;
+  top: -0.5rem;
+  font-size: 18px;
+}
+.estremoSuperiore{
+  position: absolute;
+  right: -3rem;
+  top: -0.5rem;
+  font-size: 18px;
+}
+
+
+
+
+
+
 .cronologic-age{
   position: absolute;
-  top: -4rem;
-  left: 30%;
+  top: -5rem;
 }
 .biologic-age{
   position: absolute;
-  top: -4rem;
-  right: 40%;
+  top: 0.5rem;
+  padding-top: 0px !important;
+  border-radius: 50% 50% 10px 10px !important;
 }
+
+
+
+
 .barra-valore{
   position: absolute;
   left: 34%;
   width: 22%;
   background-color: var(--negative-color-right);
   height: 1rem;
+}
+
+
+.lineaContainer div{
+  background-color: white;
+  border: 1px solid #ddd;
+  padding-top: 5px;
+  border-radius: 10px 10px 50% 50%;
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.05);
 }
 .lineaContainer div img{
   width: 30px;
@@ -538,47 +597,66 @@
   margin-top: -1.5rem;
 }
 .legenda{
-  margin-top: -1rem;
+  position: absolute;
+  bottom: 0.5rem;
+  width: 100%;
+  margin-top: 2rem;
+  height: 2rem;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  gap: 40px;
-  padding-bottom: 20px;
-  padding-left: 20px;
+  gap: 50px;
+  padding-bottom: 10px;
 }
 .subcontainer-legenda{
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 }
 .legenda div img{
   width: 20px;
   height: 20px;
-  margin-top: -0.8rem;
+  margin-top: -1rem;
 }
 .quadrato{
   width: 20px;
   height: 20px;
 }
-.neg{
-  background-color: var(--negative-color-right);
-}
-.pos{
-  background-color: var(--positive-color);
-}
-.estremoInferiore{
+
+
+
+
+.biologic-age::before {
   position: absolute;
-  left: -3rem;
-  top: -0.3rem;
-  font-size: 18px;
+  right: -25px;
+  top: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
 }
-.estremoSuperiore{
-  position: absolute;
-  right: -3rem;
-  top: -0.3rem;
-  font-size: 18px;
+.biologic-age.freccia-up::before {
+  content: '↓';
+  color: green;
 }
+.biologic-age.freccia-down::before {
+  content: '↑';
+  color: red;
+}
+.biologic-age.freccia-equal::before {
+  content: '↔';
+  color: lightskyblue;
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -592,9 +670,10 @@
   background-color: white;
   width: 25%;
 }
-
-
-
+.capacita_vitale h3,
+.resilienza h3{
+  padding-bottom: 20px;
+}
 .card-polmone {
   width: 50%;
   height: 65%;
@@ -639,6 +718,7 @@
 }
 .descrizione-vitale{
   padding: 0px 20px;
+  text-align: center;
 }
 
 
@@ -647,7 +727,6 @@
 .card5 {
   background-color: var(--card-color) !important;
 }
-
 .card5 h2 {
   font-size: 25px;
   font-weight: bold;
@@ -656,39 +735,32 @@
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
-
 .blood-container div,
 .exam-container div {
   display: flex;
   justify-content: space-between;
   gap: 20px;
 }
-
 .blood-container div img,
 .exam-container div img {
   width: 40px;
   margin-right: 1rem;
 }
-
 .blood-container div p,
 .exam-container div p {
   font-size: 18px;
 }
-
 .blood-container div img,
 .exam-container div img {
   transition: transform 0.3s ease-in-out;
 }
-
 .blood-container div img:hover,
 .exam-container div img:hover {
   transform: scale(1.1);
 }
-
 .card {
   overflow: hidden;
 }
-
 #adjust::after {
   content: '➜';
 }
@@ -713,7 +785,6 @@
   padding: 20px;
   margin-top: -1rem;
 }
-
 .cardChart {
   background: #fff;
   border-radius: 10px;
@@ -723,23 +794,19 @@
   overflow: hidden;
   height: 400px;
 }
-
 .cardChart h3 {
   font-size: 1.2rem;
   margin-bottom: 10px;
 }
-
 .container-chart-dashboard2 {
   width: 100%;
   overflow: hidden;
   height: 295px;
 }
-
 .cardChart canvas {
   width: 100%;
   object-fit: cover;
 }
-
 .cardChart h2 {
   font-size: 25px;
   font-weight: bold;
@@ -748,15 +815,12 @@
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   padding: 20px;
 }
-
 .contenitore-tabella {
   margin: 15px 0;
 }
-
 .recent-patients{
   margin-bottom: 0 !important;
 }
-
 .recent-patients h2 {
   font-size: 25px;
   padding: 20px 0;
@@ -1136,3 +1200,6 @@ strong {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--contrast-color2); 
 }
+
+
+
