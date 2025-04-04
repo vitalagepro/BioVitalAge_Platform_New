@@ -200,6 +200,12 @@ form {
   margin-left: 16px;
 }
 
+/* Gmail */
+#gmail-feedback.text-success {
+  font-weight: 500;
+  font-size: 14px;
+}
+
 .toggle {
   isolation: isolate;
   position: relative;

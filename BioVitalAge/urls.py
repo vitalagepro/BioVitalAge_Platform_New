@@ -11,11 +11,11 @@ urlpatterns = [
     path('accept-disclaimer/', AcceptDisclaimerView.as_view(), name='accept_disclaimer'),
 
     # URL NAVBAR
-    path('profile/', ProfileView.as_view(), name='profile'),
+    path('accounts/profile/', ProfileView.as_view(), name='profile'),
+    path('api/fetch-emails/', FetchEmailsView.as_view(), name='fetch_emails'),
 
     # -- URL HOME PAGE --
     path("Home_Page", HomePageRender.as_view(), name='HomePage'),
-
 
     ## URL SIDEBAR
     path('api/appointment-notifications/', AppointmentNotificationsView.as_view(), name='appointment-notifications'),

@@ -4,7 +4,7 @@ from django.core.cache import cache
 from datetime import datetime, timedelta
 from django.utils import timezone as dj_timezone
 from django.db.models import Avg, Min, Max
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse
 from django.db.models import Count
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
@@ -23,6 +23,11 @@ from django.utils.decorators import method_decorator
 import traceback
 from django.shortcuts import redirect
 import logging
+from social_django.models import UserSocialAuth
+from BioVitalAge.models import UtentiRegistratiCredenziali
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 logger = logging.getLogger(__name__)
 
@@ -389,6 +394,50 @@ class MedicalNewsNotificationsView(View):
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
 
+# VIEW PER LE EMAIL
+class FetchEmailsView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        try:
+            logger.info(f"[FetchEmailsView] Utente loggato: {request.user}")
+
+            # 1. Verifica che l'account Google sia collegato
+            user_social = UserSocialAuth.objects.filter(user=request.user, provider='google-oauth2').first()
+            if not user_social:
+                logger.warning("[FetchEmailsView] Account Google non collegato")
+                return JsonResponse({"success": False, "error": "Account Google non collegato"}, status=400)
+
+            logger.info(f"[FetchEmailsView] Extra data: {user_social.extra_data}")
+
+            # 2. Recupera l'access token
+            access_token = user_social.extra_data.get("access_token")
+            if not access_token:
+                logger.warning("[FetchEmailsView] Access token mancante")
+                return JsonResponse({"success": False, "error": "Token non trovato"}, status=400)
+
+            # 3. Crea le credenziali Google
+            credentials = Credentials(token=access_token)
+
+            # 4. Costruisci il servizio Gmail
+            service = build("gmail", "v1", credentials=credentials)
+            results = service.users().messages().list(userId='me', maxResults=2).execute()
+            messages = results.get('messages', [])
+
+            logger.info(f"[FetchEmailsView] Trovati {len(messages)} messaggi")
+
+            emails = []
+            for msg in messages:
+                msg_data = service.users().messages().get(userId='me', id=msg['id'], format='metadata').execute()
+                headers = msg_data.get('payload', {}).get('headers', [])
+                subject = next((h['value'] for h in headers if h['name'] == 'Subject'), 'No Subject')
+                sender = next((h['value'] for h in headers if h['name'] == 'From'), 'No Sender')
+                emails.append({"subject": subject, "sender": sender})
+
+            return JsonResponse({"success": True, "emails": emails})
+
+        except Exception as e:
+            logger.error(f"[FetchEmailsView] Errore: {str(e)}")
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
 # VIEW PER LA SEZIONE PROFILO
 class ProfileView(View):
     def get(self, request, *args, **kwargs):
@@ -400,19 +449,28 @@ class ProfileView(View):
             'email_dottore': dottore.email,
             'nome_dottore': dottore.nome,
             'password_dottore': dottore.password,
-            'gmail_linked': True if dottore.cookie == 'SI' else False,  # aggiorna qui
+            'gmail_linked': True if dottore.cookie == 'SI' else False,
         }
         return render(request, 'includes/profile.html', context)
 
     def post(self, request, *args, **kwargs):
         dottore_id = request.session.get('dottore_id')
+        if not dottore_id:
+            return JsonResponse({'status': 'error', 'message': 'Sessione scaduta o utente disconnesso'}, status=401)
+
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        # Solo ora, se serve, puoi verificare se ha un account Google collegato
+        try:
+            social_account = UserSocialAuth.objects.get(user=dottore.user, provider='google-oauth2')
+        except Exception as e:
+            social_account = None
 
         # Recupera i dati dal form
         nome = request.POST.get('name')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        # La checkbox invia 'SI' se spuntata, altrimenti None
+        # La checkbox invia "SI" se spuntata, altrimenti None
         check_value = request.POST.get('check')
 
         if nome:
@@ -422,14 +480,23 @@ class ProfileView(View):
         if password:
             dottore.password = password  # Nota: in produzione usa l'hashing della password
 
-        # Salva lo stato della checkbox nel campo 'cookie'
-        dottore.cookie = "SI" if check_value else ""  # aggiorna qui
-
+        # Aggiorna lo stato della checkbox nel campo "cookie"
+        dottore.cookie = "SI" if check_value else ""
         dottore.save()
 
+        # Se la richiesta è AJAX, restituisci una risposta JSON
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            if not check_value:
+                # Se la checkbox viene disattivata, elimina l'associazione Google senza fare logout dal profilo.
+                try:
+                    social_account = UserSocialAuth.objects.get(user=request.user, provider='google-oauth2')
+                    social_account.delete()
+                except UserSocialAuth.DoesNotExist:
+                    pass
+                return JsonResponse({'status': 'disconnected'})
             return JsonResponse({'status': 'success'})
 
+        # Se non è AJAX, puoi reindirizzare alla pagina profilo (o a una pagina di conferma)
         return redirect('profile')
 
 # VIEW PER ACCETTARE IL DISCLAIMER

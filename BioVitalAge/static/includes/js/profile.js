@@ -18,12 +18,12 @@ function togglePasswordVisibility() {
     FUNZIONE SHOW ALERT
 --------------------------------------------------------------------------------------------------- */
 function showAlert(type, message) {
-  // Controllo se esiste già un alert visibile
-  let existingAlert = document.getElementById("global-alert");
-  if (existingAlert) existingAlert.remove();
+  // Rimuovi alert esistenti
+  const existing = document.getElementById("global-alert");
+  if (existing) existing.remove();
 
-  // Creazione del div per l'alert Bootstrap
-  let alertDiv = document.createElement("div");
+  // Crea l'alert
+  const alertDiv = document.createElement("div");
   alertDiv.id = "global-alert";
   alertDiv.classList.add("alert", `alert-${type}`, "fade", "show");
   alertDiv.style.position = "fixed";
@@ -31,37 +31,30 @@ function showAlert(type, message) {
   alertDiv.style.left = "50%";
   alertDiv.style.transform = "translateX(-50%)";
   alertDiv.style.zIndex = "1050";
-  alertDiv.style.width = "auto";
+  alertDiv.style.padding = "12px 18px";
+  alertDiv.style.borderRadius = "8px";
+  alertDiv.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
   alertDiv.style.maxWidth = "400px";
-  alertDiv.style.display = "flex";
-  alertDiv.style.justifyContent = "space-between";
-  alertDiv.style.alignItems = "center";
-  alertDiv.style.padding = "10px 15px";
-  alertDiv.style.borderRadius = "6px";
-  alertDiv.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
-  alertDiv.style.opacity = "0"; // Inizialmente nascosto
+  alertDiv.style.textAlign = "center";
+  alertDiv.style.opacity = "0";
 
-  // Contenuto dell'alert
-  alertDiv.innerHTML = `
-        <span>${message}</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    `;
+  // Inserisci messaggio
+  alertDiv.innerHTML = `<span class="fw-semibold">${message}</span>`;
 
-  // Aggiunge l'alert al DOM
   document.body.appendChild(alertDiv);
 
-  // Effetto di comparsa con GSAP
-  gsap.to(alertDiv, { opacity: 1, duration: 0.3, ease: "power2.out" });
+  // Animazione di entrata
+  gsap.to(alertDiv, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
 
-  // Rimuove automaticamente l'alert dopo 5 secondi con un fade-out
+  // Rimozione automatica
   setTimeout(() => {
     gsap.to(alertDiv, {
       opacity: 0,
       duration: 0.3,
       ease: "power2.in",
-      onComplete: () => alertDiv.remove(),
+      onComplete: () => alertDiv.remove()
     });
-  }, 5000);
+  }, 4000);
 }
 
 /*  -----------------------------------------------------------------------------------------------
@@ -90,6 +83,10 @@ document.addEventListener("DOMContentLoaded", function () {
   if (profileForm) {
     profileForm.addEventListener("submit", function (e) {
       e.preventDefault(); // previene il submit classico
+      if (!window.currentUser || window.currentUser === "guest") {
+        console.warn("Utente non autenticato, annullo richiesta");
+        return; // blocca la fetch
+      }
       const formData = new FormData(profileForm);
 
       // Invia la richiesta POST via fetch
@@ -127,25 +124,28 @@ document.addEventListener("DOMContentLoaded", function () {
         method: "POST",
         headers: {
           "X-Requested-With": "XMLHttpRequest",
-          "X-CSRFToken": getCookie("csrftoken")
+          "X-CSRFToken": getCookie("csrftoken"),
         },
         body: formData,
       })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status === "success") {
-          showAlert("success", "Stato Gmail aggiornato in tempo reale");
-          // Se la checkbox è spuntata, dopo 400ms reindirizza al flusso OAuth di Google
-          if (gmailCheckbox.checked) {
-            setTimeout(function() {
-              window.location.href = '/auth/google-oauth2/';
-            }, 400);
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.status === "success") {
+            showAlert("info", "Renderizzamento in corso...");
+            // Se la checkbox è spuntata, dopo 400ms reindirizza al flusso OAuth di Google
+            if (gmailCheckbox.checked) {
+              setTimeout(function () {
+                window.location.href =
+                  "/auth/login/google-oauth2/?prompt=consent&access_type=offline";
+              }, 400);
+            }
+          } else if (data.status === "disconnected") {
+            showAlert("info", "Account Gmail disconnesso con successo");
+          } else {
+            showAlert("danger", "Errore nell'aggiornamento dello stato Gmail");
           }
-        } else {
-          showAlert("danger", "Errore nell'aggiornamento dello stato Gmail");
-        }
-      })
-      .catch((error) => console.error("Errore:", error));
+        })
+        .catch((error) => console.error("Errore:", error));
     });
   }
 });

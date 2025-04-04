@@ -1,6 +1,7 @@
 /*  -----------------------------------------------------------------------------------------------
    GLOBAL VARIABLES
 --------------------------------------------------------------------------------------------------- */
+let emails = [];
 let notifications = [];
 let appUser = window.currentUser || 'guest'; // Usiamo appUser invece di currentUser per evitare conflitti
 let previousUser = null;
@@ -8,12 +9,6 @@ let previousUser = null;
 //   JSON.parse(localStorage.getItem("notifications")) || [];
 // let dismissedNotifications =
 //   JSON.parse(localStorage.getItem("dismissedNotifications")) || [];
-
-let emails = [
-  { subject: "Risultati laboratorio", sender: "Clinica Roma" },
-  { subject: "Nuova richiesta prenotazione", sender: "Segreteria" },
-];
-
 const updates = [
   {
     version: "v3.15.2",
@@ -111,7 +106,16 @@ function handleUserChange(newUser) {
 
   // 5. Scarica nuove notifiche
   fetchNotifications();
+
+  // 6. Carica le email
+  fetchEmails();
+
+  updateAllBadges();
 }
+
+/*  -----------------------------------------------------------------------------------------------
+   EMAIL FETCHING
+--------------------------------------------------------------------------------------------------- */
 
 
 /*  -----------------------------------------------------------------------------------------------
@@ -121,9 +125,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. Verifica il cambio utente
   checkUserChange();
 
+  // 2. Configura intervallo di aggiornamento
+  setInterval(fetchEmails, 60000);
+  
   // 3. Configura intervallo di aggiornamento
   setInterval(fetchNotifications, 3600000);
 
+  fetchEmails();
+
+  updateAllBadges();
   // 4. Listener per logout
   document.getElementById('logout-btn')?.addEventListener('click', () => {
     localStorage.setItem('pendingLogout', 'true');
@@ -141,11 +151,12 @@ async function fetchNotifications() {
   await fetchAppointmentNotifications();
   await fetchMedicalNewsNotifications();
   updateNotificationsBadge();
+  updateAllBadges(); // <--- QUI
   localStorage.setItem(`notifications_${appUser}`, JSON.stringify(notifications));
   console.log("Notifiche aggiornate...");
 }
 
-// Se ci sono notifiche memorizzate, le usi, altrimenti fai il fetch
+// // Se ci sono notifiche memorizzate, le usi, altrimenti fai il fetch
 // if (storedNotifications.length > 0) {
 //   // Usa solo le notifiche non eliminate (filtrando per id)
 //   notifications = storedNotifications.filter(
@@ -154,6 +165,7 @@ async function fetchNotifications() {
 //   updateNotificationsBadge();
 // } else {
 // }
+updateAllBadges();
 initUserNotifications();
 fetchNotifications();
 
@@ -169,19 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Listener per le notifiche
   document.querySelectorAll(".sidebar-trigger").forEach((trigger) => {
-    const section = trigger.getAttribute("data-section");
-    if (section === "Notifiche" && notifications.length > 0) {
-      let badge = document.createElement("span");
-      badge.classList.add("badge-count");
-      badge.textContent = notifications.length;
-      trigger.appendChild(badge);
-    } else if (section === "Email") {
-      let badge = document.createElement("span");
-      badge.classList.add("badge-count");
-      badge.textContent = emails.length;
-      trigger.appendChild(badge);
-    }
-
     trigger.addEventListener("click", (event) => {
       event.preventDefault();
       const section = trigger.getAttribute("data-section");
@@ -192,13 +191,10 @@ document.addEventListener("DOMContentLoaded", () => {
           renderNotifications();
           break;
         case "Email":
-          sidebarContent.innerHTML = emails
-            .map((email, index) => `
-              <div class="alert alert-warning notification" data-index="${index}">
-                  ${email.subject} - ${email.sender}
-              </div>
-            `)
-            .join("");
+          // Ricarica le email al momento del click
+          renderEmails();
+          break;
+        case "Appuntamenti":
           break;
         case "Update":
           sidebarContent.innerHTML = updates
@@ -370,6 +366,36 @@ function updateNotificationsBadge() {
   }
 }
 
+// Aggiorna tutti i badge
+function updateAllBadges() {
+  // Badge Notifiche
+  const notifTrigger = document.querySelector('.sidebar-trigger[data-section="Notifiche"]');
+  if (notifTrigger) {
+    let badge = notifTrigger.querySelector(".badge-count");
+    const activeNotifications = notifications.filter(n => n.id && !dismissedNotifications.includes(n.id));
+    if (!badge) {
+      badge = document.createElement("span");
+      badge.className = "badge-count";
+      notifTrigger.appendChild(badge);
+    }
+    badge.textContent = activeNotifications.length;
+    badge.style.display = activeNotifications.length > 0 ? "flex" : "none";
+  }
+
+  // Badge Email
+  const emailTrigger = document.querySelector('.sidebar-trigger[data-section="Email"]');
+  if (emailTrigger) {
+    let badge = emailTrigger.querySelector(".badge-count");
+    if (!badge) {
+      badge = document.createElement("span");
+      badge.className = "badge-count";
+      emailTrigger.appendChild(badge);
+    }
+    badge.textContent = emails.length;
+    badge.style.display = emails.length > 0 ? "flex" : "none";
+  }
+}
+
 // Modifica la funzione fetchMedicalNewsNotifications
 // Funzione per generare l'HTML delle news
 function generateNewsHTML(news) {
@@ -449,6 +475,23 @@ async function fetchAppointmentNotifications() {
   }
 }
 
+// Funzione per il fetch delle email
+async function fetchEmails() {
+  try {
+    const response = await fetch("/api/fetch-emails/");
+    const data = await response.json();
+    if (data.success) {
+      emails = data.emails;
+      console.log("Emails fetched:", emails);
+      updateAllBadges(); // <--- QUI FUNZIONA SE CHIAMATO DOPO
+    } else {
+      console.error("Errore nel fetching delle email");
+    }
+  } catch (error) {
+    console.error("Fetch emails error:", error);
+  }
+}
+
 // Modifica renderNotifications per usare data-id corretti
 function renderNotifications() {
   const sidebarContent = document.getElementById("sidebar-content");
@@ -466,4 +509,16 @@ function renderNotifications() {
     : `<p class="default-text-notification">Attualmente non hai notifiche.</p>`;
 
   gsap.to(".notification", { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 });
+}
+
+// Funzione per renderizzare le email
+function renderEmails() {
+  const sidebarContent = document.getElementById("sidebar-content");
+  sidebarContent.innerHTML = emails.length > 0
+    ? emails.map((email, index) => `
+        <a href="/email/${index}" target="_blank" class="alert alert-warning notification d-block text-decoration-none" data-index="${index}">
+          <strong>${email.subject}</strong> - ${email.sender}
+        </a>
+      `).join("")
+    : `<p class="default-text-notification">Nessuna email disponibile.</p>`;
 }
