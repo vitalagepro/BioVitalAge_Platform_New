@@ -775,8 +775,6 @@ class CartellaPazienteView(View):
 
         visite = ElencoVisitePaziente.objects.filter(paziente_id=id)
         ultimo_referto = persona.referti_test.order_by('data_ora_creazione').first()
-
-        print(ultimo_referto.punteggio)
                 
         context = {
             'persona': persona,
