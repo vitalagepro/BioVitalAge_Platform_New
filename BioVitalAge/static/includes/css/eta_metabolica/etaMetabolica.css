@@ -94,6 +94,11 @@
 .title-container h3{
   color: var(--contrast-color);
 }
+.title{
+  color: var(--dark2);
+  padding-bottom: 20px;
+  text-align: center;
+}
 .grid-container{
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -103,8 +108,7 @@
 .grid-container-special{
   display: grid;
   grid-template-columns: 60% 39.2%;
-  width: 98%;
-  margin: auto;
+  width: 100%;
   gap: 15px;
 }
 .grid-container-special .card-container{

@@ -12,7 +12,7 @@
 
         <!-- Links Section -->
         <div class="col-md-8 nav-bar-linkage">
-            <a href="{% url 'Calcolatore' %}?parametro={{ persona.codice_fiscale|urlencode }}"
+            <a href="{% url 'Calcolatore' persona.id %}?parametro={{ persona.codice_fiscale|urlencode }}"
                 class="{% if request.resolver_match.url_name == 'Risultati' %}active-link{% endif %}">
                 Età Biologica
             </a>

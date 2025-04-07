@@ -39,7 +39,12 @@
 
     <main>
       <div class="main-title-nav">
-        <h2 class="main-welcome-title">Calendario Appuntamenti</h2>
+        <div class="back-tittle">
+            <a id="back" href="{% url 'HomePage' %}"><img src="{% static 'includes/icone/arrowBack.png' %}"></a>
+            <h2 class="main-welcome-title">
+                Calendario Appuntamenti
+            </h2>
+        </div>
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
             <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />

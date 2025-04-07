@@ -68,7 +68,7 @@ urlpatterns = [
     
 
     # URL PER CALCOLATORE 
-    path("Calcolatore_Page", views.CalcolatoreRender.as_view(), name='Calcolatore'),
+    path("Calcolatore_Page/<int:id>/", views.CalcolatoreRender.as_view(), name='Calcolatore'),
     path("persona/<int:persona_id>/", views.PersonaDetailView.as_view(), name="persona_detail"),
     path("persona/<int:persona_id>/<int:referto_id>/", views.PersonaDetailView.as_view(), name="persona_detail"),
 

@@ -16,7 +16,7 @@
 
 
 .container-grafici {
-    padding: 20px;
+    padding: 40px 20px;
     width: 100%;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -25,17 +25,17 @@
 .container-grafici h3 {
     padding: 20px;
 }
-.card-grafico {
-    width: 100%;
+.card_grafico {
+    width: 98%;
     background-color: var(--card-color);
     height: 400px;
+    margin: 1rem auto;
     border-radius: 8px;
 }
-.card-grafico h3 {
+.card_grafico h3 {
     color: var(--dark2);
     font-weight: bold;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding: 10px 20px 20px 20px;
 } 
 canvas {
     max-height: 320px;

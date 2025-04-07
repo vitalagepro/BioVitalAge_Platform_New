@@ -31,9 +31,6 @@
     <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>  
     
-    <!-- script js creati -->
-    <!-- <script src="{% static 'includes/js/pdfComposizione.js' %}" defer></script> -->
-    <script src="{% static 'includes/js/ModifyInput.js' %}" defer></script>
 </head>
 
 <body>
@@ -106,22 +103,27 @@
                             {
                                 label: 'Massa Muscolare (%)',
                                 data: [40, 41, 42, 42.5, 40, 41, 42, 42.5, 40, 41, 42, 42.5],
-                                borderColor: '#2ac670',
+                                borderColor: '#9b59b6',
                                 fill: false
                             },
                             {
                                 label: 'Grasso (%)',
                                 data: [28, 27.5, 26, 25.2, 28, 27.5, 26, 25.2, 28, 27.5, 26, 25.2],
-                                borderColor: '#c74b5b',
+                                borderColor: '#3a255d',
                                 fill: false
                             }
                         ]
                     },
                     options: {
                         responsive: true,
+                        layout: {
+                            padding: {
+                                bottom: 30
+                            }
+                        },
                         plugins: {
                             legend: {
-                                position: 'bottom' // 👈 questo sposta la legenda sotto
+                                position: 'bottom'
                             },
                             title: {
                                 display: true,
@@ -129,11 +131,13 @@
                             }
                         }
                     }
+
                 });
             </script>
                 
         </div>
 
+        <!-- CONTAINER GRAFICO PROFILO GLICEMICO E INSULINICO -->
         <div class="card_grafico">  
             <h3>Profilo Glicemico e Insulinico</h3>
 
@@ -146,33 +150,38 @@
             const profiloChart = new Chart(ctxx, {
               type: 'line',
               data: {
-                labels: ['Gen', 'Feb', 'Mar', 'Apr'], // 📅 Date dei referti
+                labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giug', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'], // 📅 Date dei referti
                 datasets: [
                   {
                     label: 'Glicemia a digiuno (mg/dl)',
-                    data: [90, 95, 92, 88],
-                    borderColor: '#4b7bec',
-                    backgroundColor: '#4b7bec30',
+                    data: [90, 95, 92, 88, 90, 95, 92, 88, 90, 95, 92, 88],
+                    borderColor: '#6a2dcc',
+                    backgroundColor: '#6a2dcc',
                     fill: false
                   },
                   {
                     label: 'HbA1c (%)',
-                    data: [5.8, 5.7, 5.6, 5.5],
-                    borderColor: '#8854d0',
-                    backgroundColor: '#8854d030',
+                    data: [5.8, 5.7, 5.6, 5.5, 5.8, 5.7, 5.6, 5.5, 5.8, 5.7, 5.6, 5.5, ],
+                    borderColor: '#9b59b6',
+                    backgroundColor: '#9b59b6',
                     fill: false
                   },
                   {
                     label: 'Insulina a digiuno (µU/mL)',
-                    data: [15, 13, 12, 11],
-                    borderColor: '#fc5c65',
-                    backgroundColor: '#fc5c6530',
+                    data: [15, 13, 12, 11,15, 13, 12, 11,15, 13, 12, 11],
+                    borderColor: '#3a255d ',
+                    backgroundColor: '#3a255d ',
                     fill: false
                   }
                 ]
               },
               options: {
                 responsive: true,
+                layout: {
+                            padding: {
+                                bottom: 30
+                            }
+                        },
                 plugins: {
                   legend: {
                     position: 'bottom' // ⬇️ Legenda sotto il grafico
@@ -199,21 +208,203 @@
                 
         </div>
 
-
-        <div class="container-grafici">
-
-            <div class="card-grafico">
-                <h3>Punteggio Fisico</h3>
-                <canvas id="GraficoPunteggio"></canvas>
-            </div>
-
-            <div class="card-grafico">
-                <h3>Acqua Corporea</h3>
-                <canvas id="acquaChart"></canvas>
-            </div>
-
+        <!-- PROFILO LIPIDICO  -->
+        <div class="card_grafico">  
+          <h3>Profilo Lipidico</h3>
+        
+          <canvas id="profiloLipidicoChart"></canvas>
+        
+          <script>
+            const ctxLipidi = document.getElementById('profiloLipidicoChart').getContext('2d');
+        
+            new Chart(ctxLipidi, {
+              type: 'bar',
+              data: {
+                labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giug', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'], // 📅 Date referti
+                datasets: [
+                  {
+                    label: 'Colesterolo Totale',
+                    data: [210, 205, 198, 202, 210, 205, 198, 202, 210, 205, 198, 202],
+                    backgroundColor: '#3a255d'  /* viola scuro */
+                  },
+                  {
+                    label: 'HDL',
+                    data: [55, 50, 52, 54, 55, 50, 52, 54, 55, 50, 52, 54],
+                    backgroundColor: '#6a2dcc'  /* viola medio  */
+                  },
+                  {
+                    label: 'LDL',
+                    data: [130, 125, 120, 123, 130, 125, 120, 123, 130, 125, 120, 123],
+                    backgroundColor: '#9b59b6' /* viola medio-chiaro */
+                  },
+                  {
+                    label: 'Trigliceridi',
+                    data: [160, 150, 140, 145, 160, 150, 140, 145, 160, 150, 140, 145],
+                    backgroundColor: '#a29bfe' /* viola chiaro */
+                  }
+                ]
+              },
+              options: {
+                responsive: true,
+                layout: {
+                            padding: {
+                                bottom: 30
+                            }
+                        },
+                plugins: {
+                  legend: {
+                    position: 'bottom'
+                  },
+                  title: {
+                    display: true,
+                    text: 'Andamento del Profilo Lipidico'
+                  }
+                },
+                scales: {
+                  y: {
+                    beginAtZero: false,
+                    title: {
+                      display: true,
+                      text: 'mg/dL'
+                    }
+                  }
+                }
+              }
+            });
+          </script>
         </div>
-    
+        
+        <!-- PROFILO METABOLICO EPATICO -->
+        <div class="card_grafico">  
+          <h3>Profilo Metabolico Epatìco</h3>
+        
+          <canvas id="profiloEpaticoChart"></canvas>
+        
+          <script>
+            const ctxFegato = document.getElementById('profiloEpaticoChart').getContext('2d');
+        
+            new Chart(ctxFegato, {
+              type: 'bar',
+              data: {
+                labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giug', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'], // 📅 Date referti
+                datasets: [
+                  {
+                    label: 'AST (U/L)',
+                    data: [25, 28, 30, 27,25, 28, 30, 27, 25, 28, 30, 27],
+                    backgroundColor: '#6a2dcc'
+                  },
+                  {
+                    label: 'ALT (U/L)',
+                    data: [32, 35, 37, 33, 32, 35, 37, 33, 32, 35, 37, 33],
+                    backgroundColor: '#9b59b6'
+                  },
+                  {
+                    label: 'GGT (U/L)',
+                    data: [20, 18, 22, 19, 20, 18, 22, 19, 20, 18, 22, 19],
+                    backgroundColor: '#3a255d'
+                  },
+                  {
+                    label: 'Bilirubina Totale (mg/dL)',
+                    data: [1.0, 1.1, 1.2, 1.0, 1.0, 1.1, 1.2, 1.0, 1.0, 1.1, 1.2, 1.0],
+                    backgroundColor: '#a29bfe'
+                  }
+                ]
+              },
+              options: {
+                responsive: true,
+                layout: {
+                            padding: {
+                                bottom: 30
+                            }
+                        },
+                plugins: {
+                  legend: {
+                    position: 'bottom'
+                  },
+                  title: {
+                    display: true,
+                    text: 'Andamento Profilo Metabolico Epatìco'
+                  }
+                },
+                scales: {
+                  y: {
+                    beginAtZero: false,
+                    title: {
+                      display: true,
+                      text: 'Valori Clinici'
+                    }
+                  }
+                }
+              }
+            });
+          </script>
+        </div>
+        
+        <!-- INFIAMMAZIONE E STRESS -->
+        <div class="card_grafico">  
+          <h3>Infiammazione & Stress</h3>
+        
+          <canvas id="infiammazioneStressChart"></canvas>
+        
+          <script>
+            const ctxInfiammazione = document.getElementById('infiammazioneStressChart').getContext('2d');
+        
+            new Chart(ctxInfiammazione, {
+              type: 'bar',
+              data: {
+                labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giug', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'], // 📅 Mesi dei referti
+                datasets: [
+                  {
+                    label: 'PCR (mg/L)',
+                    data: [1.2, 1.5, 1.3, 1.1,1.2, 1.5, 1.3, 1.1,1.2, 1.5, 1.3, 1.1],
+                    backgroundColor: '#6a2dcc'
+                  },
+                  {
+                    label: 'HGS',
+                    data: [80, 78, 76, 79,80, 78, 76, 79,80, 78, 76, 79],
+                    backgroundColor: '#9b59b6'
+                  },
+                  {
+                    label: 'SII',
+                    data: [420, 390, 400, 410,420, 390, 400, 410, 420, 390, 400, 410],
+                    backgroundColor: '#3a255d'
+                  },
+                  {
+                    label: 'Colesterolo Plasmatico',
+                    data: [190, 195, 192, 188,190, 195, 192, 188,190, 195, 192, 188],
+                    backgroundColor: '#a29bfe'
+                  }
+                ]
+              },
+              options: {
+                responsive: true,
+                layout: {
+                            padding: {
+                                bottom: 30
+                            }
+                        },
+                plugins: {
+                  legend: {
+                    position: 'bottom'
+                  },
+                  title: {
+                    display: true,
+                    text: 'Andamento Infiammazione e Stress'
+                  }
+                },
+                scales: {
+                  y: {
+                    beginAtZero: false,
+                    title: {
+                      display: true,
+                      text: 'Valori Clinici'
+                    }
+                  }
+                }
+              }
+            });
+          </script>
+        </div>
     </main>
 
     <!-- Import CDN js -->
