@@ -74,7 +74,8 @@ class HomePageRender(View):
         appuntamenti = Appointment.objects.all().order_by('data')[:4]
 
         total_biological_age_count = DatiEstesiReferti.objects.aggregate(total=Count('biological_age'))['total']
-        total_pazienti = TabellaPazienti.objects.count()  # Conta tutti i pazienti
+        total_pazienti = TabellaPazienti.objects.count() 
+        
         # Calcola il minimo e il massimo dell'età cronologica
         min_age = TabellaPazienti.objects.aggregate(min_age=Min('chronological_age'))['min_age']
         max_age = TabellaPazienti.objects.aggregate(max_age=Max('chronological_age'))['max_age']
@@ -82,12 +83,10 @@ class HomePageRender(View):
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
         persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
-                # --- Calcolo per il report "Totale Pazienti" ---
-        # Assumiamo che il modello TabellaPazienti abbia un campo 'created_at'
+                
+        # --- Calcolo per il report "Totale Pazienti" ---
         today = dj_timezone.now().date()
-        # Calcola l'inizio della settimana corrente (supponiamo lunedì come inizio)
         start_of_week = today - timedelta(days=today.weekday())
-        # La settimana precedente va dal lunedì della settimana scorsa fino a domenica (un giorno prima dell'inizio della settimana corrente)
         start_of_last_week = start_of_week - timedelta(days=7)
         end_of_last_week = start_of_week - timedelta(days=1)
 
@@ -100,28 +99,22 @@ class HomePageRender(View):
         if last_week_patients > 0:
             percentage_increase = (difference / last_week_patients) * 100
         else:
-            # Se la settimana precedente non ha record, possiamo definire il 100% se ce ne sono ora, oppure 0 se non ce ne sono
             percentage_increase = 100 if current_week_patients > 0 else 0
 
-                # --- Calcolo per il report "Totale Prescrizioni" ---
-        # Utilizza il campo data_referto per filtrare i referti
+        # --- Calcolo per il report "Totale Prescrizioni" ---
         current_week_referti = ArchivioReferti.objects.filter(data_referto__gte=start_of_week).count()
         last_week_referti = ArchivioReferti.objects.filter(data_referto__gte=start_of_last_week,
                                                            data_referto__lte=end_of_last_week).count()
-
         difference_referti = current_week_referti - last_week_referti
         abs_difference_referti = abs(difference_referti)
 
-        # Calcola la percentuale come valore assoluto
         if last_week_referti > 0:
             percentage_increase_referti = abs(difference_referti) / last_week_referti * 100
         else:
-            # Se la settimana precedente era 0, se ci sono referti adesso consideriamo 100%, altrimenti 0
             percentage_increase_referti = 100 if current_week_referti > 0 else 0
 
-        # Calcola la percentuale media delle età cronologiche
         if min_age is not None and max_age is not None and max_age != min_age:
-            relative_position = (avg_age - min_age) / (max_age - min_age)  # valore fra 0 e 1
+            relative_position = (avg_age - min_age) / (max_age - min_age)  
             media_percentage = relative_position * 100
         else:
             media_percentage = 0
@@ -1562,13 +1555,16 @@ def safe_float(data, key, default=0.0):
 
 class CalcolatoreRender(View):
     
-    def get(self, request):
+    def get(self, request, id):
 
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
         context = {
-            'dottore' : dottore
+            'dottore' : dottore,
+            'persona': persona,
         }
 
         codice_fiscale = request.GET.get('parametro')
@@ -2518,6 +2514,7 @@ class CalcolatoreRender(View):
             }
             return render(request, "includes/calcolatore.html", context)
 
+
 class ElencoRefertiView(View):
     def get(self, request, id):
         
@@ -2786,11 +2783,6 @@ class RefertoView(View):
     def get(self, request, referto_id):
         referto = ArchivioReferti.objects.get(id=referto_id)
         return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
-
-
-
-
-
 
 
 
