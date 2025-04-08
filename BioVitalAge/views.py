@@ -1,29 +1,44 @@
-import requests
+# --- IMPORT DJANGO VARI ---
+import requests, calendar, json, os, traceback, logging # type: ignore
+
 from datetime import datetime, timedelta
-from django.utils import timezone as dj_timezone
-from django.db.models import Avg, Min, Max
-from django.http import JsonResponse
-from django.db.models import Count
-from django.db.models import Q
-from django.shortcuts import render, get_object_or_404, redirect
-from django.utils.timezone import now
-from django.views import View
+from collections import defaultdict
+
+## HTTP
+from django.http import JsonResponse # type: ignore
+
+## HTTP
+from django.views import View # type: ignore
+from django.views.decorators.csrf import csrf_exempt # type: ignore
+
+## SHORTCUTS
+from django.shortcuts import render, get_object_or_404, redirect # type: ignore
+from django.shortcuts import redirect # type: ignore
+
+## CONFIG
+from django.conf import settings # type: ignore
+
+# -- FILE CREATI DA NOI IMPORT ---
+## UTILS
+from django.utils import timezone as dj_timezone # type: ignore
+from django.utils.decorators import method_decorator # type: ignore
+from django.utils.timezone import now # type: ignore
+from django.utils.timezone import localtime # type: ignore
+from .utils import *
+
+## CALCOLO ETA METABOLICA
+from .calcoloMetabolica import *
+
+## MODELS
 from .models import *
-from .utils import calculate_biological_age, CalcoloPunteggioCapacitaVitale
-import json
-from django.db.models import OuterRef, Subquery
-from django.views.decorators.csrf import csrf_exempt
-from .models import TabellaPazienti, ArchivioReferti
-import os
-from django.http import JsonResponse
-from django.conf import settings
-from django.utils.decorators import method_decorator
-import traceback
-from django.shortcuts import redirect
-import logging
+from django.db.models import OuterRef, Subquery # type: ignore
+from django.db.models import Count # type: ignore
+from django.db.models import Q # type: ignore
+from django.db.models import Avg, Min, Max # type: ignore
+
+
 
 logger = logging.getLogger(__name__)
-
 
 
 
@@ -1006,23 +1021,66 @@ class ComposizioneView(View):
 
         return render(request, "eta_metabolica/etaMetabolica.html", context)
 
-    def post(self, request, id):       
-        persona = get_object_or_404(TabellaPazienti, id=id)
+    def post(self, request, id):
 
+        success = False
+        punteggio = False
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
         try:
-            # Conversione date (se presenti)
             bmi_date = request.POST.get("bmi_detection_date")
             girth_date = request.POST.get("girth_date")
             bmi_detection_date = datetime.strptime(bmi_date, "%Y-%m-%d").date() if bmi_date else None
             girth_detection_date = datetime.strptime(girth_date, "%Y-%m-%d").date() if girth_date else None
 
-            # Salva nella tabella RefertiEtaMetabolica
+            # PREPARAZIONE DEI DATI PER IL CALCOLO DELL'ETÀ METABOLICA
+            dati_calcolo = {
+                'eta': persona.chronological_age,  
+                'sesso': persona.gender,  
+                'BMI': float(request.POST.get("bmi")) if request.POST.get("bmi") else None,
+                'grasso_percento': float(request.POST.get("grasso")) if request.POST.get("grasso") else None,
+                'acqua_percento': float(request.POST.get("acqua")) if request.POST.get("acqua") else None,
+                'massa_muscolare_percento': float(request.POST.get("massa_muscolare")) if request.POST.get("massa_muscolare") else None,
+                'WHR': float(request.POST.get("whr")) if request.POST.get("whr") else None,
+                'glicemia': float(request.POST.get("glicemia")) if request.POST.get("glicemia") else None,
+                'HbA1c': float(request.POST.get("emoglobina_g")) if request.POST.get("emoglobina_g") else None,
+                'HOMA_IR': float(request.POST.get("homa_ir")) if request.POST.get("homa_ir") else None,
+                'TyG': float(request.POST.get("tyg")) if request.POST.get("tyg") else None,
+                'HDL': float(request.POST.get("hdl")) if request.POST.get("hdl") else None,
+                'LDL': float(request.POST.get("ldl")) if request.POST.get("ldl") else None,
+                'trigliceridi': float(request.POST.get("trigliceridi")) if request.POST.get("trigliceridi") else None,
+                'AST': float(request.POST.get("ast")) if request.POST.get("ast") else None,
+                'ALT': float(request.POST.get("alt")) if request.POST.get("alt") else None,
+                'GGT': float(request.POST.get("ggt")) if request.POST.get("ggt") else None,
+                'bilirubina': float(request.POST.get("bili_t")) if request.POST.get("bili_t") else None,
+                'SII': float(request.POST.get("sii")) if request.POST.get("sii") else None,
+                'HGS': float(request.POST.get("hgs")) if request.POST.get("hgs") else None,
+                'cortisolo': float(request.POST.get("c_plasmatico")) if request.POST.get("c_plasmatico") else None,
+            }
+
+
+            # Controlla se tutti i dati necessari sono presenti
+            if all(dati_calcolo.values()):
+                eta_metabolica_calcolata = calcola_eta_metabolica(dati_calcolo)
+
+                # AGGIUNGI MODALE PER PUNTEGGIO E SUCCESSO
+
+                punteggio = eta_metabolica_calcolata
+
+            else:
+                print("sono qui")
+                # AGGIUNGI MODALE PER INSUCCESSO 
+                success = True
+
+            # Salva il referto nella tabella RefertiEtaMetabolica
             RefertiEtaMetabolica.objects.create(
                 dottore=dottore,
                 paziente=persona,
+
+                punteggio_finale = eta_metabolica_calcolata,
 
                 # Composizione corporea
                 bmi=request.POST.get("bmi"),
@@ -1080,11 +1138,13 @@ class ComposizioneView(View):
             context = {
                 'persona': persona,
                 'dottore': dottore,
-                'success': 'I dati sono stati aggiornati correttamente nel referto',
+                'success': success,
+                'punteggio': punteggio,
                 'ultimo_referto': ultimo_referto
             }
 
         except Exception as e:
+
             context = {
                 'persona': persona,
                 'dottore': dottore,
@@ -1094,19 +1154,198 @@ class ComposizioneView(View):
         return render(request, "eta_metabolica/etaMetabolica.html", context)
 
 class ComposizioneChartView(View):
+
     def get(self, request, id):
+        paziente = get_object_or_404(TabellaPazienti, id=id)
+        referti = RefertiEtaMetabolica.objects.filter(paziente=paziente).order_by('data_referto')
 
-        persona = get_object_or_404(TabellaPazienti, id=id)
+        mesi = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giug', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic']
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        # --- 1) COMPOSIZIONE CORPOREA ---
+        dati_bmi = {m: [] for m in mesi}
+        dati_muscolo = {m: [] for m in mesi}
+        dati_grasso = {m: [] for m in mesi}
 
+        # --- 2) GLICEMICO ---
+        dati_glicemia = {m: [] for m in mesi}
+        dati_emoglobina = {m: [] for m in mesi}
+        dati_insulina = {m: [] for m in mesi}
+
+        # --- 3) LIPIDICO ---
+        dati_c_tot = {m: [] for m in mesi}
+        dati_hdl = {m: [] for m in mesi}
+        dati_ldl = {m: [] for m in mesi}
+        dati_trigliceridi = {m: [] for m in mesi}
+
+        # --- 4) EPATICO ---
+        dati_ast = {m: [] for m in mesi}
+        dati_alt = {m: [] for m in mesi}
+        dati_ggt = {m: [] for m in mesi}
+        dati_bili_t = {m: [] for m in mesi}
+
+        # --- 5) INFIAMMAZIONE & STRESS (PCR, HGS, SII, c_plasmatico)
+        dati_pcr = {m: [] for m in mesi}
+        dati_hgs = {m: [] for m in mesi}
+        dati_sii = {m: [] for m in mesi}
+        dati_c_plasmatico = {m: [] for m in mesi}
+
+        # --- LOOP SU TUTTI I REFERTI ---
+        for r in referti:
+            mese_index = localtime(r.data_referto).month - 1
+            mese_nome = mesi[mese_index]
+
+            # COMPOSIZIONE
+            try:
+                bmi_val = float(r.bmi.replace(',', '.')) if r.bmi else None
+                muscolo_val = float(r.massa_muscolare.replace(',', '.')) if r.massa_muscolare else None
+                grasso_val = float(r.grasso.replace(',', '.')) if r.grasso else None
+            except:
+                bmi_val = muscolo_val = grasso_val = None
+
+            if bmi_val is not None:
+                dati_bmi[mese_nome].append(bmi_val)
+            if muscolo_val is not None:
+                dati_muscolo[mese_nome].append(muscolo_val)
+            if grasso_val is not None:
+                dati_grasso[mese_nome].append(grasso_val)
+
+            # GLICEMICO
+            try:
+                glic_val = float(r.glicemia.replace(',', '.')) if r.glicemia else None
+                hba1c_val = float(r.emoglobina_g.replace(',', '.')) if r.emoglobina_g else None
+                ins_val = float(r.insulina_d.replace(',', '.')) if r.insulina_d else None
+            except:
+                glic_val = hba1c_val = ins_val = None
+
+            if glic_val is not None:
+                dati_glicemia[mese_nome].append(glic_val)
+            if hba1c_val is not None:
+                dati_emoglobina[mese_nome].append(hba1c_val)
+            if ins_val is not None:
+                dati_insulina[mese_nome].append(ins_val)
+
+            # LIPIDICO
+            try:
+                ctot_val = float(r.c_tot.replace(',', '.')) if r.c_tot else None
+                hdl_val = float(r.hdl.replace(',', '.')) if r.hdl else None
+                ldl_val = float(r.ldl.replace(',', '.')) if r.ldl else None
+                trig_val = float(r.trigliceridi.replace(',', '.')) if r.trigliceridi else None
+            except:
+                ctot_val = hdl_val = ldl_val = trig_val = None
+
+            if ctot_val is not None:
+                dati_c_tot[mese_nome].append(ctot_val)
+            if hdl_val is not None:
+                dati_hdl[mese_nome].append(hdl_val)
+            if ldl_val is not None:
+                dati_ldl[mese_nome].append(ldl_val)
+            if trig_val is not None:
+                dati_trigliceridi[mese_nome].append(trig_val)
+
+            # EPATICO
+            try:
+                ast_val = float(r.ast.replace(',', '.')) if r.ast else None
+                alt_val = float(r.alt.replace(',', '.')) if r.alt else None
+                ggt_val = float(r.ggt.replace(',', '.')) if r.ggt else None
+                bili_val = float(r.bili_t.replace(',', '.')) if r.bili_t else None
+            except:
+                ast_val = alt_val = ggt_val = bili_val = None
+
+            if ast_val is not None:
+                dati_ast[mese_nome].append(ast_val)
+            if alt_val is not None:
+                dati_alt[mese_nome].append(alt_val)
+            if ggt_val is not None:
+                dati_ggt[mese_nome].append(ggt_val)
+            if bili_val is not None:
+                dati_bili_t[mese_nome].append(bili_val)
+
+            # INFIAMMAZIONE & STRESS
+            try:
+                pcr_val = float(r.pcr.replace(',', '.')) if r.pcr else None
+                hgs_val = float(r.hgs.replace(',', '.')) if r.hgs else None
+                sii_val = float(r.sii.replace(',', '.')) if r.sii else None
+                cplas_val = float(r.c_plasmatico.replace(',', '.')) if r.c_plasmatico else None
+            except:
+                pcr_val = hgs_val = sii_val = cplas_val = None
+
+            if pcr_val is not None:
+                dati_pcr[mese_nome].append(pcr_val)
+            if hgs_val is not None:
+                dati_hgs[mese_nome].append(hgs_val)
+            if sii_val is not None:
+                dati_sii[mese_nome].append(sii_val)
+            if cplas_val is not None:
+                dati_c_plasmatico[mese_nome].append(cplas_val)
+
+        # Funzione per calcolare le medie e avere 12 valori
+        def calcola_medie(diz):
+            return [
+                round(sum(diz[m]) / len(diz[m]), 2) if diz[m] else None
+                for m in mesi
+            ]
+
+        # COMPOSIZIONE
+        bmi_values = calcola_medie(dati_bmi)
+        muscolo_values = calcola_medie(dati_muscolo)
+        grasso_values = calcola_medie(dati_grasso)
+
+        # GLICEMICO
+        glicemia_values = calcola_medie(dati_glicemia)
+        hba1c_values = calcola_medie(dati_emoglobina)
+        insulina_values = calcola_medie(dati_insulina)
+
+        # LIPIDICO
+        c_tot_values = calcola_medie(dati_c_tot)
+        hdl_values = calcola_medie(dati_hdl)
+        ldl_values = calcola_medie(dati_ldl)
+        trigliceridi_values = calcola_medie(dati_trigliceridi)
+
+        # EPATICO
+        ast_values = calcola_medie(dati_ast)
+        alt_values = calcola_medie(dati_alt)
+        ggt_values = calcola_medie(dati_ggt)
+        bili_values = calcola_medie(dati_bili_t)
+
+        # INFIAMMAZIONE & STRESS
+        pcr_values = calcola_medie(dati_pcr)
+        hgs_values = calcola_medie(dati_hgs)
+        sii_values = calcola_medie(dati_sii)
+        cplas_values = calcola_medie(dati_c_plasmatico)
+
+        # Passiamo tutto in JSON
         context = {
-                'persona': persona,
-                'dottore': dottore,
-        }
+            'persona': paziente,
 
-        return render (request, 'eta_metabolica/grafici.html', context)
+            # Composizione
+            'bmi': json.dumps(bmi_values),
+            'massa_muscolare': json.dumps(muscolo_values),
+            'grasso': json.dumps(grasso_values),
+
+            # Glicemico
+            'glicemia': json.dumps(glicemia_values),
+            'hba1c': json.dumps(hba1c_values),
+            'insulina': json.dumps(insulina_values),
+
+            # Lipidico
+            'col_tot': json.dumps(c_tot_values),
+            'hdl': json.dumps(hdl_values),
+            'ldl': json.dumps(ldl_values),
+            'trigliceridi': json.dumps(trigliceridi_values),
+
+            # Epatico
+            'ast': json.dumps(ast_values),
+            'alt': json.dumps(alt_values),
+            'ggt': json.dumps(ggt_values),
+            'bili_t': json.dumps(bili_values),
+
+            # Infiammazione & Stress
+            'pcr': json.dumps(pcr_values),
+            'hgs': json.dumps(hgs_values),
+            'sii': json.dumps(sii_values),
+            'cplas': json.dumps(cplas_values),
+        }
+        return render(request, 'eta_metabolica/grafici.html', context)
 
 class RefertiComposizioneView(View):
     def get(self, request, id):

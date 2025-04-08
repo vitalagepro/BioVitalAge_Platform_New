@@ -46,5 +46,22 @@ canvas {
     display: flex;
     justify-content: space-between;
 }
-  
+#grafico-vuoto-overlay,
+#overlay-glicemico,
+#overlay-lipidico,
+#overlay-epatico,
+#overlay-infiammazione{
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.3); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    text-align: center; 
+    font-size: 18px; 
+    color: #fff; 
+    z-index: 999;
+    display: none;
+}
 
