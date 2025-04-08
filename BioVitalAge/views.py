@@ -1,5 +1,6 @@
 import requests
 import uuid
+import time
 from django.core.cache import cache
 from datetime import datetime, timedelta
 from django.utils import timezone as dj_timezone
@@ -27,7 +28,9 @@ from social_django.models import UserSocialAuth
 from BioVitalAge.models import UtentiRegistratiCredenziali
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-from django.contrib.auth.mixins import LoginRequiredMixin
+# from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import AccessMixin
 
 logger = logging.getLogger(__name__)
 
@@ -394,49 +397,132 @@ class MedicalNewsNotificationsView(View):
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
 
-# VIEW PER LE EMAIL
-class FetchEmailsView(LoginRequiredMixin, View):
+# VIEW PER AJAX
+class AjaxLoginRequiredMixin(AccessMixin):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return JsonResponse({"success": False, "error": "Autenticazione richiesta"}, status=401)
+        return super().dispatch(request, *args, **kwargs)
+
+
+# VIEW PER LE EMAIL GMAIL
+class FetchEmailsView(AjaxLoginRequiredMixin, View):
+    @method_decorator(login_required(login_url=None))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         try:
-            logger.info(f"[FetchEmailsView] Utente loggato: {request.user}")
+            # Debug avanzato
+            logger.info(f"FetchEmailsView - User: {request.user.id} ({request.user})")
+            logger.info(f"Session key: {request.session.session_key}")
+            auth_backend = request.session.get('_auth_user_backend', 'Nessun backend trovato')
+            logger.info(f"Auth backend: {auth_backend}")
 
-            # 1. Verifica che l'account Google sia collegato
-            user_social = UserSocialAuth.objects.filter(user=request.user, provider='google-oauth2').first()
-            if not user_social:
-                logger.warning("[FetchEmailsView] Account Google non collegato")
-                return JsonResponse({"success": False, "error": "Account Google non collegato"}, status=400)
+            # 1. Verifica esplicita dell'autenticazione
+            if not request.user.is_authenticated:
+                logger.warning("Utente non autenticato")
+                return JsonResponse(
+                    {"success": False, "error": "Autenticazione richiesta"}, 
+                    status=401
+                )
 
-            logger.info(f"[FetchEmailsView] Extra data: {user_social.extra_data}")
+            # 2. Ottieni il record UserSocialAuth
+            try:
+                user_social = UserSocialAuth.objects.get(
+                    user=request.user,
+                    provider='google-oauth2'
+                )
+                logger.info(f"Trovato UserSocialAuth: {user_social.id}")
+            except UserSocialAuth.DoesNotExist:
+                logger.warning("Account Google non collegato")
+                return JsonResponse(
+                    {"success": False, "error": "Account Google non collegato"},
+                    status=400
+                )
 
-            # 2. Recupera l'access token
-            access_token = user_social.extra_data.get("access_token")
-            if not access_token:
-                logger.warning("[FetchEmailsView] Access token mancante")
-                return JsonResponse({"success": False, "error": "Token non trovato"}, status=400)
+            # 3. Prepara le credenziali con tutti i parametri necessari
+            extra_data = user_social.extra_data
+            credentials_data = {
+                'token': extra_data.get('access_token'),
+                'refresh_token': extra_data.get('refresh_token'),
+                'token_uri': 'https://oauth2.googleapis.com/token',
+                'client_id': extra_data.get('client_id'),
+                'client_secret': extra_data.get('client_secret'),
+                'scopes': ['https://www.googleapis.com/auth/gmail.readonly']
+            }
+            
+            # 4. Crea e valida le credenziali
+            credentials = Credentials(**credentials_data)
+            
+            # 5. Gestione refresh token (doppio strato)
+            try:
+                if extra_data.get('auth_time', 0) + 3600 < int(time.time()):
+                    logger.info("Refresh token via python-social-auth")
+                    strategy = load_strategy()
+                    user_social.refresh_token(strategy)
+                    credentials.token = user_social.extra_data['access_token']
+                
+                if not credentials.valid:
+                    logger.info("Refresh token via Google API")
+                    credentials.refresh(GoogleRequest())
+                    user_social.extra_data['access_token'] = credentials.token
+                    user_social.save()
+                    
+            except Exception as refresh_error:
+                logger.error(f"Errore refresh token: {str(refresh_error)}")
+                return JsonResponse(
+                    {"success": False, "error": "Errore durante l'aggiornamento del token"},
+                    status=400
+                )
 
-            # 3. Crea le credenziali Google
-            credentials = Credentials(token=access_token)
-
-            # 4. Costruisci il servizio Gmail
-            service = build("gmail", "v1", credentials=credentials)
-            results = service.users().messages().list(userId='me', maxResults=2).execute()
-            messages = results.get('messages', [])
-
-            logger.info(f"[FetchEmailsView] Trovati {len(messages)} messaggi")
-
-            emails = []
-            for msg in messages:
-                msg_data = service.users().messages().get(userId='me', id=msg['id'], format='metadata').execute()
-                headers = msg_data.get('payload', {}).get('headers', [])
-                subject = next((h['value'] for h in headers if h['name'] == 'Subject'), 'No Subject')
-                sender = next((h['value'] for h in headers if h['name'] == 'From'), 'No Sender')
-                emails.append({"subject": subject, "sender": sender})
-
-            return JsonResponse({"success": True, "emails": emails})
-
+            # 6. Crea il servizio Gmail
+            try:
+                service = build('gmail', 'v1', 
+                              credentials=credentials,
+                              static_discovery=False)
+                
+                # 7. Recupera le email
+                results = service.users().messages().list(
+                    userId='me',
+                    maxResults=5,
+                    q='is:unread'
+                ).execute()
+                
+                messages = results.get('messages', [])
+                emails = []
+                
+                for msg in messages:
+                    msg_data = service.users().messages().get(
+                        userId='me',
+                        id=msg['id'],
+                        format='metadata'
+                    ).execute()
+                    
+                    headers = msg_data.get('payload', {}).get('headers', [])
+                    email_data = {
+                        'subject': next((h['value'] for h in headers if h['name'] == 'Subject'), 'No Subject'),
+                        'from': next((h['value'] for h in headers if h['name'] == 'From'), 'No Sender'),
+                        'date': next((h['value'] for h in headers if h['name'] == 'Date'), 'No Date')
+                    }
+                    emails.append(email_data)
+                
+                logger.info(f"Email recuperate con successo: {len(emails)}")
+                return JsonResponse({'success': True, 'emails': emails})
+                
+            except HttpError as e:
+                logger.error(f"Errore Gmail API: {str(e)}")
+                return JsonResponse(
+                    {"success": False, "error": f"Errore Gmail API: {str(e)}"},
+                    status=500
+                )
+                
         except Exception as e:
-            logger.error(f"[FetchEmailsView] Errore: {str(e)}")
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
+            logger.error(f"Errore generico: {str(e)}", exc_info=True)
+            return JsonResponse(
+                {"success": False, "error": "Errore interno del server"},
+                status=500
+            )
 
 # VIEW PER LA SEZIONE PROFILO
 class ProfileView(View):

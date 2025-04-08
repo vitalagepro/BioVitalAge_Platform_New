@@ -158,6 +158,11 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "596437252615-8o49l67l9jeuciqbjeh5djcdgsb5tmdv.a
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/gmail.readonly']
 SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
+SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
+    'access_type': 'offline',
+    'prompt': 'consent'
+}
+SOCIAL_AUTH_REVOKE_TOKENS_ON_DISCONNECT = True
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
@@ -170,3 +175,9 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 )
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = False  # Necessario per leggere il token via JS
+# SESSION_COOKIE_SECURE = True  # Se usi HTTPS
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://biovitalageplatformdeployed-env.eba-exhbgdpt.us-east-1.elasticbeanstalk.com']  # I tuoi domini
+CORS_ALLOW_CREDENTIALS = True

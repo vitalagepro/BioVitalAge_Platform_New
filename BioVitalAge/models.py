@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 # Tabella DOTTORI registrati
 class UtentiRegistratiCredenziali(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     nome = models.CharField(max_length=100)
     cognome = models.CharField(max_length=100)
     email = models.CharField(max_length=100, null=True)

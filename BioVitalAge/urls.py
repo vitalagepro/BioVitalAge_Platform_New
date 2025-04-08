@@ -7,7 +7,7 @@ urlpatterns = [
     # URL PER LOGIN
     path("", views.LoginRenderingPage.as_view(), name='loginPage'),
     path("PrivacyPolicy/<int:id>/", views.PrivacyPolicyRenderingPage.as_view(), name='PrivacyPolicy'),
-    path("Login",LogOutRender.as_view(), name="logout"),
+    path("logout", LogOutRender.as_view(), name="logout"),
     path('accept-disclaimer/', AcceptDisclaimerView.as_view(), name='accept_disclaimer'),
 
     # URL NAVBAR

@@ -71,46 +71,48 @@ const features = [
 /*  -----------------------------------------------------------------------------------------------
    USER MANAGEMENT
 --------------------------------------------------------------------------------------------------- */
-function checkUserChange() {
-  // 1. Recupera l'utente corrente dal template
-  const templateUser = window.currentUser || 'guest';
+let userCheckInProgress = false;
 
-  // 2. Recupera l'utente memorizzato
+function checkUserChange() {
+  if (userCheckInProgress) return;
+  userCheckInProgress = true;
+  
+  const templateUser = window.currentUser || 'guest';
   const storedUser = localStorage.getItem('appUser') || 'guest';
 
-  // 3. Se l'utente è cambiato
   if (templateUser !== storedUser) {
-    console.log(`Rilevato cambio utente da ${storedUser} a ${templateUser}`);
+    console.log(`Cambio utente rilevato: ${storedUser} → ${templateUser}`);
     handleUserChange(templateUser);
   }
 
-  // 4. Aggiorna lo storage con l'utente corrente
   localStorage.setItem('appUser', templateUser);
   appUser = templateUser;
+  userCheckInProgress = false;
 }
 
-function handleUserChange(newUser) {
-  // 1. Imposta l'utente precedente
+async function handleUserChange(newUser) {
+  if (newUser === appUser) return;
+
   previousUser = appUser;
-
-  // 2. Imposta il nuovo utente
   appUser = newUser || 'guest';
-  console.log(`Cambio utente da ${previousUser} a ${appUser}`);
-
-  // 3. Resetta le notifiche
+  
+  console.log(`Gestione cambio utente: ${previousUser} → ${appUser}`);
+  
+  // Resetta solo lo stato frontend
   notifications = [];
   dismissedNotifications = [];
-
-  // 4. Carica le notifiche per il nuovo utente
-  initUserNotifications();
-
-  // 5. Scarica nuove notifiche
-  fetchNotifications();
-
-  // 6. Carica le email
-  fetchEmails();
-
-  updateAllBadges();
+  
+  // Carica i dati per il nuovo utente
+  try {
+    await Promise.all([
+      initUserNotifications(),
+      fetchNotifications(),
+      fetchEmails()
+    ]);
+    updateAllBadges();
+  } catch (error) {
+    console.error("Errore durante il cambio utente:", error);
+  }
 }
 
 /*  -----------------------------------------------------------------------------------------------
@@ -130,8 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // 3. Configura intervallo di aggiornamento
   setInterval(fetchNotifications, 3600000);
-
-  fetchEmails();
 
   updateAllBadges();
   // 4. Listener per logout
@@ -274,6 +274,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Listener per il pulsante di login
   document.getElementById('login-btn')?.addEventListener('click', () => {
     handleUserChange(currentUser); // Sostituisci con l'utente reale
+
+    console.log("Login effettuato: attendo 500ms per la propagazione dei cookie...");
+    setTimeout(() => {
+      fetchEmails();
+    }, 500);
   });
 
   // Avvia i fetch
@@ -476,16 +481,52 @@ async function fetchAppointmentNotifications() {
 }
 
 // Funzione per il fetch delle email
+/* EMAIL FETCHING */
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      // Verifica se questo cookie inizia con il nome cercato
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
 async function fetchEmails() {
+  // Solo per utenti loggati
+  if (appUser === 'guest') {
+    emails = [];
+    updateAllBadges();
+    return;
+  }
+
   try {
-    const response = await fetch("/api/fetch-emails/");
+    const response = await fetch("/api/fetch-emails/", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": getCookie('csrftoken')
+      },
+      cache: 'no-store'
+    });
+
+    if (response.status === 401) {
+      window.location.reload();
+      return;
+    }
+
     const data = await response.json();
     if (data.success) {
       emails = data.emails;
-      console.log("Emails fetched:", emails);
-      updateAllBadges(); // <--- QUI FUNZIONA SE CHIAMATO DOPO
-    } else {
-      console.error("Errore nel fetching delle email");
+      console.log("Email aggiornate per", appUser);
+      updateAllBadges();
     }
   } catch (error) {
     console.error("Fetch emails error:", error);
