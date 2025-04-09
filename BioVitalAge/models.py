@@ -153,6 +153,7 @@ class RefertiEtaMetabolica(models.Model):
         related_name='referti_eta_metabolica'
     )
 
+    punteggio_finale = models.CharField(max_length=100, null=True, blank=True) 
     data_referto = models.DateTimeField(default=timezone.now)
 
     # --- DOMINI CLINICI ---
@@ -221,19 +222,6 @@ class RefertiEtaMetabolica(models.Model):
 
     def __str__(self):
         return f"Referto {self.id} - {self.paziente.name} {self.paziente.surname} - {self.data_referto.date()}"
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

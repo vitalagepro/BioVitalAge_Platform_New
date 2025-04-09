@@ -59,10 +59,13 @@ body {
 }
 
 
-
-
-
-
+/* 
+COLORI GRAFICI
+#6a2dcc   
+#9b59b6
+#3a255d   
+#a29bfe
+ */
 
 
 
@@ -671,12 +674,13 @@ main {
   padding-left: 20px;
   padding-right: 20px;
   margin-bottom: -1rem;
+  gap: 15px;
 }
 
 .main-welcome-title {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: var(--light1);
-  font-size: 21px;
+  font-size: 18px;
   padding-top: 22px;
 }
 

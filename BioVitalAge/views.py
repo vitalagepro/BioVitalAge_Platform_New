@@ -1,16 +1,35 @@
-import requests
-import uuid
-import time
+# --- IMPORT DJANGO VARI ---
 from django.core.cache import cache
-from datetime import datetime, timedelta
-from django.utils import timezone as dj_timezone
-from django.db.models import Avg, Min, Max
-from django.http import JsonResponse
-from django.db.models import Count
-from django.db.models import Q
-from django.shortcuts import render, get_object_or_404, redirect
-from django.utils.timezone import now
-from django.views import View
+import requests
+from datetime import timedelta
+import logging
+import uuid
+
+## HTTP
+from django.http import JsonResponse # type: ignore
+
+## HTTP
+from django.views import View # type: ignore
+from django.views.decorators.csrf import csrf_exempt # type: ignore
+
+## SHORTCUTS
+from django.shortcuts import render, get_object_or_404, redirect # type: ignore
+from django.shortcuts import redirect # type: ignore
+
+## CONFIG
+from django.conf import settings # type: ignore
+
+# -- FILE CREATI DA NOI IMPORT ---
+## UTILS
+from django.utils import timezone as dj_timezone # type: ignore
+from django.utils.decorators import method_decorator # type: ignore
+from django.utils.timezone import now # type: ignore
+from .utils import *
+
+## CALCOLO ETA METABOLICA
+from .calcoloMetabolica import *
+
+## MODELS
 from .models import *
 from .utils import calculate_biological_age, CalcoloPunteggioCapacitaVitale
 import json
@@ -18,41 +37,29 @@ from django.db.models import OuterRef, Subquery
 from django.views.decorators.csrf import csrf_exempt
 from .models import TabellaPazienti, ArchivioReferti
 import os
+from django.db.models import Q
+from django.db.models import Count
 from django.http import JsonResponse
 from django.conf import settings
 from django.utils.decorators import method_decorator
 import traceback
 from django.shortcuts import redirect
-import logging
-from BioVitalAge.models import UtentiRegistratiCredenziali
-from .utils import get_gmail_emails_for_user  # oppure il path corretto
-from social_django.models import UserSocialAuth
-from django.contrib.auth import login
+from django.db.models import Avg, Min, Max
 
 logger = logging.getLogger(__name__)
 
-# VIEW PER GESTIONE LOGIN PIATTAFORMA E IL RENDERING DELLA HOME PAGE
+
+
+# -- SEZIONE LOGIN - HOME PAGE VIEW --
+## VIEW LOGIN RENDER
 class LoginRenderingPage(View):
     def get(self, request):
         response = render(request, 'includes/login.html')
         response.delete_cookie('disclaimer_accepted', path='/')
         return response
 
-# VIEW PER LA GESTIONE DELLA PRIVACY POLICY
-class PrivacyPolicyRenderingPage(View):
-    def get(self, request, id):
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, id=id)
 
-        context = {
-            'persona' : persona,
-            'dottore' : dottore
-        }
-
-        return render(request, 'includes/privacyPolicy.html', context)
-
-# VIEW PER LA GESTIONE DEL LOGOUT
+## VIEW LOGOUT
 class LogOutRender(View):
     def get(self, request):
 
@@ -63,13 +70,37 @@ class LogOutRender(View):
 
         return render(request, 'includes/login.html')
 
-# VIEW PER LA GESTIONE DELLA HOME PAGE
+
+## VIEW PER ACCETTARE IL DISCLAIMER
+class AcceptDisclaimerView(View):
+    def post(self, request):
+        
+        response = JsonResponse({"success": True})
+        
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        if dottore_id:  
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+            
+            dottore.cookie = "SI"
+            dottore.save() 
+
+        return response
+
+
+## VIEW PER LOGIN FORM - HOME PAGE RENDER
 class HomePageRender(View):
     def get(self, request):
         persone = TabellaPazienti.objects.all().order_by('-id')[:5]
         appuntamenti = Appointment.objects.all().order_by('data')[:4]
 
-
+        total_biological_age_count = DatiEstesiReferti.objects.aggregate(total=Count('biological_age'))['total']
+        total_pazienti = TabellaPazienti.objects.count()  # Conta tutti i pazienti
+        # Calcola il minimo e il massimo dell'età cronologica
+        min_age = TabellaPazienti.objects.aggregate(min_age=Min('chronological_age'))['min_age']
+        max_age = TabellaPazienti.objects.aggregate(max_age=Max('chronological_age'))['max_age']
+        avg_age = TabellaPazienti.objects.aggregate(avg_age=Avg('chronological_age'))['avg_age']
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
         # Calcola il totale "biological_age" solo per i referti associati ai pazienti di questo dottore
@@ -87,12 +118,10 @@ class HomePageRender(View):
         avg_age = agg_age['avg_age']
         appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('data')
         persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
-                # --- Calcolo per il report "Totale Pazienti" ---
-        # Assumiamo che il modello TabellaPazienti abbia un campo 'created_at'
+                
+        # --- Calcolo per il report "Totale Pazienti" ---
         today = dj_timezone.now().date()
-        # Calcola l'inizio della settimana corrente (supponiamo lunedì come inizio)
         start_of_week = today - timedelta(days=today.weekday())
-        # La settimana precedente va dal lunedì della settimana scorsa fino a domenica (un giorno prima dell'inizio della settimana corrente)
         start_of_last_week = start_of_week - timedelta(days=7)
         end_of_last_week = start_of_week - timedelta(days=1)
 
@@ -111,24 +140,24 @@ class HomePageRender(View):
         else:
             percentage_increase = 100 if current_week_patients > 0 else 0
 
-        # Calcolo dei referti (prescrizioni) associati ai pazienti del dottore
-        current_week_referti = ArchivioReferti.objects.filter(
-            paziente__dottore=dottore, data_referto__gte=start_of_week
-        ).count()
-        last_week_referti = ArchivioReferti.objects.filter(
-            paziente__dottore=dottore, data_referto__gte=start_of_last_week, data_referto__lte=end_of_last_week
-        ).count()
+                # --- Calcolo per il report "Totale Prescrizioni" ---
+        # Utilizza il campo data_referto per filtrare i referti
+        current_week_referti = ArchivioReferti.objects.filter(data_referto__gte=start_of_week).count()
+        last_week_referti = ArchivioReferti.objects.filter(data_referto__gte=start_of_last_week,
+                                                           data_referto__lte=end_of_last_week).count()
 
         difference_referti = current_week_referti - last_week_referti
         abs_difference_referti = abs(difference_referti)
+
+        # Calcola la percentuale come valore assoluto
         if last_week_referti > 0:
             percentage_increase_referti = abs(difference_referti) / last_week_referti * 100
         else:
             percentage_increase_referti = 100 if current_week_referti > 0 else 0
 
-        # Calcola la percentuale media delle età cronologiche, se i valori sono validi
+        # Calcola la percentuale media delle età cronologiche
         if min_age is not None and max_age is not None and max_age != min_age:
-            relative_position = (avg_age - min_age) / (max_age - min_age)
+            relative_position = (avg_age - min_age) / (max_age - min_age)  # valore fra 0 e 1
             media_percentage = relative_position * 100
         else:
             media_percentage = 0
@@ -340,81 +369,6 @@ class HomePageRender(View):
 
         return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
 
-# VIEW PER LE NOTIFICHE
-class AppointmentNotificationsView(View):
-    def get(self, request, *args, **kwargs):
-        try:
-            # Recupera l'id del dottore dalla sessione
-            dottore_id = request.session.get('dottore_id')
-            if not dottore_id:
-                return JsonResponse({"success": False, "error": "Utente non autenticato"}, status=403)
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-            
-            # Usa il fuso orario locale (modifica se usi timezone aware)
-            now_local = timezone.localtime(timezone.now())
-            today = now_local.date()
-            tomorrow = today + timedelta(days=1)
-            
-            notifications = []
-            
-            # Appuntamenti di oggi per il dottore loggato
-            todays_appts = Appointment.objects.filter(data=today, dottore=dottore)
-            for appt in todays_appts:
-                appt_time = appt.orario.strftime('%H:%M') if appt.orario else ""
-                message = f"Oggi alle {appt_time} hai un appuntamento con {appt.nome_paziente} {appt.cognome_paziente}"
-                notifications.append({"message": message, "type": "info"})
-            
-            # Appuntamenti di domani per il dottore loggato
-            tomorrows_appts = Appointment.objects.filter(data=tomorrow, dottore=dottore)
-            count_tomorrow = tomorrows_appts.count()
-            if count_tomorrow > 0:
-                message = f"Domani hai {count_tomorrow} appuntamenti in programma, vai nella sezione appuntamenti per visionarli."
-                notifications.append({"message": message, "type": "warning"})
-            
-            return JsonResponse({"success": True, "notifications": notifications})
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-# VIEW PER LE NOTIFICHE MEDICAL NEWS
-class MedicalNewsNotificationsView(View):
-    def get(self, request, *args, **kwargs):
-        try:
-            # Controlla se i dati sono già in cache
-            cached_news = cache.get('medical_news')
-            if cached_news:
-                return JsonResponse({"success": True, "news": cached_news})
-            
-            api_key = "80734c3bf8e34cf58beedc44db417a73"
-            url = f"https://newsapi.org/v2/everything?q=medicina&language=it&apiKey={api_key}"
-            response = requests.get(url)
-            data = response.json()
-            news = []
-            # Controlla se lo status della risposta è "ok"
-            if data.get("status") == "ok":
-                # Usa la chiave "articles" per ottenere gli articoli
-                articles = data.get("articles", [])
-                for article in articles[:2]:
-                    title = article.get("title", "Notizia medica")
-                    description = article.get("description", "")
-                    # Usa "publishedAt" per la data e prendi solo la parte della data
-                    published_at = article.get("publishedAt", "")[:10]
-                    # Usa "url" per ottenere il link
-                    link = article.get("url", "#")
-                    news.append({
-                        "id": str(uuid.uuid4()),
-                        "title": title,
-                        "description": description,
-                        "published_at": published_at,
-                        "link": link,
-                        "type": "info",
-                        "origin": "medical"
-                    })
-                # Salva in cache per 30 minuti (1800 secondi)
-                cache.set('medical_news', news, 1800)
-            return JsonResponse({"success": True, "news": news})
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
-
 # VIEW PER LA SEZIONE PROFILO
 class ProfileView(View):
     def get(self, request, *args, **kwargs):
@@ -476,23 +430,6 @@ class ProfileView(View):
         # Se non è AJAX, puoi reindirizzare alla pagina profilo (o a una pagina di conferma)
         return redirect('profile')
 
-# VIEW PER ACCETTARE IL DISCLAIMER
-class AcceptDisclaimerView(View):
-    def post(self, request):
-        
-        response = JsonResponse({"success": True})
-        
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        if dottore_id:  
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-            
-            dottore.cookie = "SI"
-            dottore.save() 
-
-        return response
-
 # VIEW PER LA SEZIONE STATISTICHE
 class StatisticheView(View):
     def get(self, request):
@@ -515,16 +452,371 @@ class StatisticheView(View):
         context["emails"] = emails  # ← questo è il campo letto nel template da: <script id="emails-data">
         return render(request, "includes/statistiche.html", context)
 
-# VIEW PER IL CALCOLO DELL'ETA' BIOLOGICA
-def safe_float(data, key, default=0.0):
-    try:
-        return float(data.get(key, default))
-    except (ValueError, TypeError):
-        return default
+## VIEW PER LE NOTIFICHE
+class AppointmentNotificationsView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            # Recupera l'id del dottore dalla sessione
+            dottore_id = request.session.get('dottore_id')
+            if not dottore_id:
+                return JsonResponse({"success": False, "error": "Utente non autenticato"}, status=403)
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+            
+            # Usa il fuso orario locale (modifica se usi timezone aware)
+            now_local = timezone.localtime(timezone.now())
+            today = now_local.date()
+            tomorrow = today + timedelta(days=1)
+            
+            notifications = []
+            
+            # Appuntamenti di oggi per il dottore loggato
+            todays_appts = Appointment.objects.filter(data=today, dottore=dottore)
+            for appt in todays_appts:
+                appt_time = appt.orario.strftime('%H:%M') if appt.orario else ""
+                message = f"Oggi alle {appt_time} hai un appuntamento con {appt.nome_paziente} {appt.cognome_paziente}"
+                notifications.append({"message": message, "type": "info"})
+            
+            # Appuntamenti di domani per il dottore loggato
+            tomorrows_appts = Appointment.objects.filter(data=tomorrow, dottore=dottore)
+            count_tomorrow = tomorrows_appts.count()
+            if count_tomorrow > 0:
+                message = f"Domani hai {count_tomorrow} appuntamenti in programma, vai nella sezione appuntamenti per visionarli."
+                notifications.append({"message": message, "type": "warning"})
+            
+            return JsonResponse({"success": True, "notifications": notifications})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-# VIEW RENDERIZZATA PER CALCOLATORE
-class CalcolatoreRender(View):
+
+## VIEW PER LE NOTIFICHE MEDICAL NEWS
+class MedicalNewsNotificationsView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            # Controlla se i dati sono già in cache
+            cached_news = cache.get('medical_news')
+            if cached_news:
+                return JsonResponse({"success": True, "news": cached_news})
+            
+            api_key = "80734c3bf8e34cf58beedc44db417a73"
+            url = f"https://newsapi.org/v2/everything?q=medicina&language=it&apiKey={api_key}"
+            response = requests.get(url)
+            data = response.json()
+            news = []
+            # Controlla se lo status della risposta è "ok"
+            if data.get("status") == "ok":
+                # Usa la chiave "articles" per ottenere gli articoli
+                articles = data.get("articles", [])
+                for article in articles[:2]:
+                    title = article.get("title", "Notizia medica")
+                    description = article.get("description", "")
+                    # Usa "publishedAt" per la data e prendi solo la parte della data
+                    published_at = article.get("publishedAt", "")[:10]
+                    # Usa "url" per ottenere il link
+                    link = article.get("url", "#")
+                    news.append({
+                        "id": str(uuid.uuid4()),
+                        "title": title,
+                        "description": description,
+                        "published_at": published_at,
+                        "link": link,
+                        "type": "info",
+                        "origin": "medical"
+                    })
+                # Salva in cache per 30 minuti (1800 secondi)
+                cache.set('medical_news', news, 1800)
+            return JsonResponse({"success": True, "news": news})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+# VIEW PER ACCETTARE IL DISCLAIMER
+class AcceptDisclaimerView(View):
+    def post(self, request):
+        
+        response = JsonResponse({"success": True})
+        
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'dottore' : dottore
+        }
+
+        return render(request, "includes/statistiche.html", context)
+
+
+
+
+## SEZIONE APPUNTAMENTI
+### VIEWS APPUNTAMENTI
+class AppuntamentiView(View):
+    def get(self, request):
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+        persone = TabellaPazienti.objects.all().order_by('-id')
+        appuntamenti = Appointment.objects.all().order_by('-id')
+
+
+        # Ottieni le opzioni definite nei choices
+        tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
+        numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
+        voce_prezzario = Appointment._meta.get_field('voce_prezzario').choices
+
+        context = {
+            'dottore': dottore,
+            'persone': persone,
+            'appuntamenti': appuntamenti,
+            'tipologia_appuntamenti': tipologia_appuntamenti,
+            'voce_prezzario': voce_prezzario,
+            'numero_studio': numero_studio,
+        }
+
+        return render(request, 'includes/Appuntamenti.html', context)
     
+### VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
+class AppuntamentiSalvaView(View):
+    def post(self, request):
+        if request.method == "POST":
+            try:
+                body_raw = request.body.decode('utf-8')
+
+                data = json.loads(body_raw)
+
+                # Recuperiamo i dati, facendo attenzione ai valori mancanti
+                giorno = data.get("giorno", "").strip()
+                data_appointment = data.get("data", "").strip()
+                time_appointment = data.get("orario", "").strip()
+                voce_prezzario = data.get("voce_prezzario", "").strip()
+                durata = data.get("durata", "").strip()
+
+                if not time_appointment:
+                    print("❌ ERRORE: Il campo 'orario' è mancante o vuoto!")
+
+                # Creazione dell'appuntamento
+                Appointment.objects.create(
+                    tipologia_visita=data.get("tipologia_visita"),
+                    nome_paziente=data.get("nome_paziente"),
+                    cognome_paziente=data.get("cognome_paziente"),
+                    numero_studio=data.get("numero_studio"),
+                    note=data.get("note"),
+                    giorno=giorno,
+                    data=data_appointment,
+                    orario=time_appointment,
+                    voce_prezzario=voce_prezzario,  # 🔹 Ora viene salvato
+                    durata=durata,  # 🔹 Ora viene salvata
+                )
+
+                return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!", 'clear_form': True})
+
+            except json.JSONDecodeError as e:
+                print(f"❌ ERRORE JSON: {str(e)}")
+                return JsonResponse({"success": False, "error": "Formato JSON non valido"}, status=400)
+            except Exception as e:
+                print(f"❌ ERRORE GENERICO: {str(e)}")
+                return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+        return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
+
+### VIEWS SINGLE APPOINTMENT
+class GetSingleAppointmentView(View):
+    def get(self, request, appointment_id):
+        """Recupera i dettagli di un singolo appuntamento"""
+        try:
+            appointment = Appointment.objects.get(id=appointment_id)
+
+            response_data = {
+                "success": True,
+                "id": appointment.id,
+                "nome_paziente": appointment.nome_paziente,
+                "cognome_paziente": appointment.cognome_paziente,
+                "giorno": appointment.giorno,
+                "data": appointment.data.strftime("%Y-%m-%d"),
+                "numero_studio": appointment.numero_studio or "",  # Se è null, assegna ""
+                "note": appointment.note or "",  # Se è null, assegna ""
+                "voce_prezzario": appointment.voce_prezzario or "",  # Se è null, assegna ""
+                "tipologia_visita": appointment.tipologia_visita or "",  # Se è null, assegna ""
+                "orario": str(appointment.orario)[:5],  # Formattato in HH:mm
+                "durata": appointment.durata or "",  # Se è null, assegna ""
+            }
+
+            return JsonResponse(response_data)
+        except Appointment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+### VIEWS GET ALL APPOINTMENTS
+class AppuntamentiGetView(View):
+    def get(self, request):
+        """Recupera gli appuntamenti futuri ed elimina quelli passati"""
+        
+        # 📌 1. Ottenere la data di oggi senza ore/minuti/secondi
+        today = now().date()
+
+        # 📌 2. Eliminare gli appuntamenti con data precedente a oggi
+        deleted_count, _ = Appointment.objects.filter(data__lt=today).delete()  # Cambiato "date" in "data"
+
+        # 📌 3. Recuperare solo gli appuntamenti futuri o di oggi
+        future_appointments = Appointment.objects.filter(data__gte=today)  # Cambiato "date" in "data"
+
+        # 📌 4. Costruire il dizionario degli appuntamenti organizzati per data
+        appointments_by_date = {}
+        for appointment in future_appointments:
+            date_str = appointment.data.strftime("%Y-%m-%d")  # Formattazione YYYY-MM-DD
+            if date_str not in appointments_by_date:
+                appointments_by_date[date_str] = []
+            appointments_by_date[date_str].append({
+                "id": appointment.id,
+                "nome_paziente": appointment.nome_paziente,
+                "cognome_paziente": appointment.cognome_paziente,
+                "giorno": appointment.giorno,
+                "data": appointment.data,
+                "numero_studio": appointment.numero_studio,
+                "note": appointment.note,
+                "voce_prezzario": appointment.voce_prezzario,
+                "tipologia_visita": appointment.tipologia_visita,
+                "orario": appointment.orario,
+            })
+
+        return JsonResponse({"success": True, "deleted": deleted_count, "appointments": appointments_by_date})
+
+### VIEWS UPDATE APPOINTMENT
+class UpdateAppointmentView(View):
+    def patch(self, request, appointment_id):
+        try:
+            data = json.loads(request.body)
+            appointment = Appointment.objects.get(id=appointment_id)
+            
+            # Aggiorna solo se i valori sono presenti e non vuoti nel payload
+            if data.get("new_date"):
+                appointment.data = data["new_date"]
+            if data.get("new_time"):
+                appointment.orario = data["new_time"]
+            if data.get("nome_paziente"):
+                appointment.nome_paziente = data["nome_paziente"]
+            if data.get("cognome_paziente"):
+                appointment.cognome_paziente = data["cognome_paziente"]
+            if data.get("tipologia_visita"):
+                appointment.tipologia_visita = data["tipologia_visita"]
+            if data.get("numero_studio"):
+                appointment.numero_studio = data["numero_studio"]
+            if data.get("voce_prezzario"):
+                appointment.voce_prezzario = data["voce_prezzario"]
+            if "note" in data:  # anche se è vuota, la nota verrà aggiornato
+                appointment.note = data["note"]
+            
+            appointment.save()
+            return JsonResponse({"success": True, "message": "Appuntamento aggiornato!"})
+        except Appointment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+### VIEWS APPROVE APPOINTMENT
+class ApproveAppointmentView(View):
+    def post(self, request, appointment_id):
+        appointment = get_object_or_404(Appointment, id=appointment_id)
+        appointment.confermato = True  # Segna l'appuntamento come confermato
+        appointment.save()
+        return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
+
+### VIEWS DELETE APPOINTMENT
+@method_decorator(csrf_exempt, name='dispatch')
+class DeleteAppointmentView(View):
+    def delete(self, request, appointment_id):
+        try:
+            appointment = Appointment.objects.get(id=appointment_id)
+            appointment.delete()
+            return JsonResponse({"success": True, "message": "Appuntamento eliminato con successo!"})
+        except Appointment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+### VIEW SEARCH APPOINTMENTS
+class SearchAppointmentsView(View):
+    def get(self, request):
+        query = request.GET.get("q", "").lower().strip()
+        if query:
+            # Puoi estendere il filtro a più campi, ad esempio:
+            appointments = Appointment.objects.filter(
+                Q(nome_paziente__icontains=query) | Q(tipologia_visita__icontains=query) | Q(orario__icontains=query)
+            )
+            results = list(appointments.values("id", "nome_paziente", "tipologia_visita", "orario"))
+            return JsonResponse({"success": True, "appointments": results})
+        return JsonResponse({"success": False, "error": "Nessuna query fornita"})
+    
+### VIEW CREATE PATIENT FROM SECOND MODAL
+class CreaPazienteView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            print("📥 Dati ricevuti dal frontend:", data)  # DEBUG
+
+            name = data.get("name", "").strip()
+            surname = data.get("surname", "").strip()
+            phone = data.get("phone", "").strip()
+            email = data.get("email", "").strip()  # Assumendo che tu abbia il campo email nel modello
+            dottore_id = request.session.get('dottore_id')
+
+            if not name or not surname:
+                print("⚠ Errore: Nome e cognome obbligatori")  # DEBUG
+                return JsonResponse({"success": False, "error": "Nome e cognome sono obbligatori!"}, status=400)
+
+            if not dottore_id:
+                print("⚠ Errore: dottore_id mancante!")  # DEBUG
+                return JsonResponse({"success": False, "error": "Devi essere autenticato per aggiungere un paziente."}, status=403)
+
+            # Creazione paziente
+            paziente = TabellaPazienti.objects.create(
+                name=name,
+                surname=surname,
+                phone=phone,
+                email=email  # Assumendo che email esista nel modello
+            )
+            print(f"✅ Paziente {paziente.id} salvato: {paziente.name} {paziente.surname}, {paziente.email}")  # DEBUG
+
+            return JsonResponse({
+                "success": True,
+                "message": "Paziente aggiunto con successo!",
+                "id": paziente.id,
+                "full_name": f"{paziente.name} {paziente.surname}"
+            })
+
+        except json.JSONDecodeError:
+            print("❌ Errore JSON ricevuto nel backend!")  # DEBUG
+            return JsonResponse({"success": False, "error": "Formato JSON non valido."}, status=400)
+
+        except Exception as e:
+            print(f"❌ Errore nel backend: {e}")  # DEBUG
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+
+
+
+# -- SEZIONE RICERCA PAZIENTE --
+## VIEW PER SEZIONE RICERCA PAZIENTI
+class RisultatiRender(View):
+    def get(self, request):
+          
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persone = TabellaPazienti.objects.filter(dottore=dottore)
+ 
+        # Ottieni il referto più recente per ogni paziente
+        ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
+
+        # Ottieni i dati estesi associati al referto più recente di ciascun paziente
+        datiEstesi = DatiEstesiReferti.objects.filter(referto=Subquery(ultimo_referto.values('id')[:1]))
+
+        context = {
+            'persone': persone,
+            'datiEstesi': datiEstesi,
+            'dottore' : dottore
+        }
+
+        return render(request, "includes/risultati.html", context)
+
+class InserisciPazienteView(View):
+
     def get(self, request):
 
         dottore_id = request.session.get('dottore_id')
@@ -532,6 +824,29 @@ class CalcolatoreRender(View):
 
         context = {
             'dottore' : dottore
+        }
+
+        return render(request, "includes/statistiche.html", context)
+
+# VIEW PER IL CALCOLO DELL'ETA' BIOLOGICA
+def safe_float(data, key, default=0.0):
+    try:
+        return float(data.get(key, default))
+    except (ValueError, TypeError):
+        return default
+
+class CalcolatoreRender(View):
+    
+    def get(self, request, id):
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        context = {
+            'dottore' : dottore,
+            'persona': persona,
         }
 
         codice_fiscale = request.GET.get('parametro')
@@ -1482,29 +1797,32 @@ class CalcolatoreRender(View):
             return render(request, "includes/calcolatore.html", context)
 
 
-# VIEW PER SEZIONE RICERCA PAZIENTI
-class RisultatiRender(View):
-    def get(self, request):
-          
+class ElencoRefertiView(View):
+    def get(self, request, id):
+        
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persone = TabellaPazienti.objects.filter(dottore=dottore)
- 
-        # Ottieni il referto più recente per ogni paziente
-        ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        
+        #DATI REFERTI ETA' BIOLOGICA
+        referti_recenti = persona.referti.all().order_by('-data_referto')
+        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+        
+        dati_estesi_ultimo_referto = None
 
-        # Ottieni i dati estesi associati al referto più recente di ciascun paziente
-        datiEstesi = DatiEstesiReferti.objects.filter(referto=Subquery(ultimo_referto.values('id')[:1]))
+        visite = ElencoVisitePaziente.objects.all()
 
         context = {
-            'persone': persone,
-            'datiEstesi': datiEstesi,
-            'dottore' : dottore
+            'persona': persona,
+            'referti_recenti': referti_recenti,
+            'dati_estesi': dati_estesi,
+            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
+            'dottore' : dottore,
+            'visite': visite,
         }
 
-        return render(request, "includes/risultati.html", context)
+        return render(request, "includes/elencoReferti.html", context)
 
-#VIEW PER ULTIMO REFERTO ETA' VITALE
 class PersonaDetailView(View):
     def get(self, request, persona_id):
 
@@ -1599,6 +1917,94 @@ class ScaricaReferto(View):
 
         return render(request, "includes/cartellaPaziente.html", context)
 
+
+## SEZIONE RESILIENZA
+class ResilienzaView(View):
+    def get(self, request, persona_id):
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        context = {
+            'persona': persona,
+            'dottore' : dottore,
+        }
+
+        return render(request, "includes/Resilienza.html", context)
+    
+    def post(self, request, persona_id): 
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        # Estrai i dati dal form (con gestione errori base)
+        try:
+            retrivedData = Resilienza.objects.create(
+                paziente=persona,
+                hrv=request.POST.get("hrv"),
+                cortisolo=request.POST.get("cortisolo"),
+                ros=request.POST.get("ros"),
+                osi=request.POST.get("osi"),
+                droms=request.POST.get("dRoms"),
+                pcr=request.POST.get("pcr"),
+                nlr=request.POST.get("nlr"),
+                homa=request.POST.get("homa_t"),
+                ir=request.POST.get("ir_t"),
+                omega_3=request.POST.get("omega_3"),
+                vo2max=request.POST.get("vo2"),
+            )
+            retrivedData.save()
+
+        except Exception as e:
+            print("Errore nel salvataggio del referto:", e)
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+            'successo': True
+        }
+        return render(request, "includes/Resilienza.html", context)
+    
+
+## SEZIONE PRESCRIZIONI
+class PrescrizioniView(View):
+
+    def get(self, request, persona_id):
+
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+        }
+
+        return render(request, "prescrizioni/prescrizioni.html", context)
+
+
+    def post(self, request, persona_id):
+
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+        
+        listaCodici = request.POST.get('codici_esami')
+        data_list = json.loads(listaCodici)
+        numeri = [x for x in data_list if x.isdigit()]
+
+        nuova_visita = ElencoVisitePaziente.objects.create(
+            paziente = persona,
+        )
+
+        for i in range(0, len(numeri)):
+            EsameVisita.objects.create(
+                visita=nuova_visita,
+                codice_esame=numeri[i],
+            )
+
+        return redirect('cartella_paziente', persona_id)
+
 class DettagliPrescrizioni(View):
     def get(self, request, persona_id, visite_id):
 
@@ -1655,556 +2061,14 @@ class DettagliPrescrizioni(View):
 
         return render(request, "includes/cartellaPaziente.html", context)
 
-class CartellaPazienteView(View):
+class RefertoView(View):
+    def get(self, request, referto_id):
+        referto = ArchivioReferti.objects.get(id=referto_id)
+        return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
 
-    def get(self, request, id):
-        
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, id=id)
 
-        
-        #DATI REFERTI ETA' BIOLOGICA
-        referti_recenti = persona.referti.all().order_by('-data_referto')
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
-        ultimo_referto = referti_recenti.first() if referti_recenti else None
-        
-        dati_estesi_ultimo_referto = None
-        if ultimo_referto:
-            dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
 
-
-        visite = ElencoVisitePaziente.objects.filter(paziente_id=id)
-
-        context = {
-            'persona': persona,
-            'referti_recenti': referti_recenti,
-            'dati_estesi': dati_estesi,
-            'ultimo_referto': ultimo_referto,
-            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
-            'dottore' : dottore,
-            'visite': visite,
-            #'elencoPrescrizioni': elencoPrescrizioni,
-        }
-
-        return render(request, "includes/cartellaPaziente.html", context)
-
-class ElencoRefertiView(View):
-    def get(self, request, id):
-        
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, id=id)
-        
-        #DATI REFERTI ETA' BIOLOGICA
-        referti_recenti = persona.referti.all().order_by('-data_referto')
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
-        
-        dati_estesi_ultimo_referto = None
-
-        visite = ElencoVisitePaziente.objects.all()
-
-        context = {
-            'persona': persona,
-            'referti_recenti': referti_recenti,
-            'dati_estesi': dati_estesi,
-            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
-            'dottore' : dottore,
-            'visite': visite,
-        }
-
-        return render(request, "includes/elencoReferti.html", context)
-
-
-
-
-# VIEWS PER SEZIONE DATI BASE
-class DatiBaseView(View):
-
-    def get(self, request, id):
-        persona = get_object_or_404(TabellaPazienti, id=id)
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        context = {
-            'persona': persona,
-            'dottore' : dottore
-        }
-        return render(request, "includes/dati_base.html", context)
-    
-    def post(self, request, id):
-
-        print(request.POST)
-
-        persona = get_object_or_404(TabellaPazienti, id=id)
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        try:
-            
-            #Informazioni occupazione
-            persona.professione = request.POST.get("professione") or "No"
-            persona.pensionato = request.POST.get("pensionato") or "No"
-
-            #Per la donna
-            persona.menarca = request.POST.get('menarca') or "No"
-            persona.ciclo = request.POST.get('ciclo') or "No"
-            persona.sintomi = request.POST.get('sintomi') or "No"
-            persona.esordio = request.POST.get('esordio') or "No"
-            persona.parto = request.POST.get('parto') or "No"
-            persona.post_parto = request.POST.get('post_parto') or "No"
-            persona.aborto = request.POST.get('aborto') or "No"
-
-            # Stile di vita - Alcol
-            persona.alcol = request.POST.get("alcol") or "No"
-            persona.alcol_type = request.POST.get("alcol_type") or "No"
-            persona.data_alcol = request.POST.get("data_alcol")
-            persona.alcol_frequency = request.POST.get("alcol_frequency") or "No"
-
-            # Stile di vita - Fumo
-            persona.smoke = request.POST.get("smoke") or "No"
-            persona.smoke_frequency = request.POST.get("smoke_frequency") or "No"
-            persona.reduced_intake = request.POST.get("reduced_intake") or "No"
-
-            # Stile di vita - Sport
-            persona.sport = request.POST.get("sport") or "No"
-            persona.sport_livello = request.POST.get("sport_livello") or "No"
-            persona.sport_frequency = request.POST.get("sport_frequency") or "No"
-
-            # Stile di vita - Sedentarietà
-            persona.attivita_sedentaria = request.POST.get("attivita_sedentaria") or "No"
-            persona.livello_sedentarieta = request.POST.get("livello_sedentarieta") or "No"
-            persona.sedentarieta_nota = request.POST.get("sedentarieta_nota") or "No"
-
-            # Anamnesi
-            persona.m_cardiache = request.POST.get("m_cardiache_fam") or "No"
-            persona.diabete_m = request.POST.get("diabete_m") or "No"
-            persona.ipertensione = request.POST.get("ipertensione") or "No"
-            persona.obesita = request.POST.get("obesita") or "No"
-            persona.m_tiroidee = request.POST.get("m_tiroidee") or "No"
-            persona.m_polmonari = request.POST.get("m_polmonari") or "No"
-            persona.tumori = request.POST.get("tumori") or "No"
-            persona.allergie = request.POST.get("allergie") or "No"
-            persona.m_psichiatriche = request.POST.get("m_psichiatriche") or "No"
-            persona.patologie = request.POST.get("patologie") or "No"
-            persona.p_p_altro = request.POST.get("p_p_altro") or "No"
-            persona.t_farmaco = request.POST.get("t_farmaco") or "No"
-            persona.t_dosaggio = request.POST.get("t_dosaggio") or "No"
-            persona.t_durata = request.POST.get("t_durata") or "No"
-
-            # Esame Obiettivo
-            persona.a_genarale = request.POST.get("a_generale") or "No"
-            persona.psiche = request.POST.get("psiche") or "No"
-            persona.r_ambiente = request.POST.get("r_ambiente") or "No"
-            persona.s_emotivo = request.POST.get("s_emotivo") or "No"
-            persona.costituzione = request.POST.get("costituzione") or "No"
-            persona.statura = request.POST.get("statura") or "No"
-            persona.s_nutrizionale = request.POST.get("s_nutrizionale") or "No"
-            persona.eloquio = request.POST.get("eloquio") or "No"
-
-            # Informazioni del sangue
-            persona.pressure_min = request.POST.get("pressure_min") or "No"
-            persona.pressure_max = request.POST.get("pressure_max") or "No"
-            persona.heart_rate = request.POST.get("heart_rate") or "No"
-            persona.blood_group = request.POST.get("blood_group") or "No"
-            persona.rh_factor = request.POST.get("rh_factor") or "No"
-
-            persona.save()
-
-            context = {
-                'persona': persona,
-                'dottore': dottore,
-                'success': 'I dati sono stati aggiornati correttamente' 
-            }
-
-        except Exception as e:
-            context = {
-                'persona': persona,
-                'dottore': dottore,
-                'errore': f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
-            }
-    
-
-        return render(request, "includes/dati_base.html", context)  
-        
-class InserisciPazienteView(View):
-
-    def get(self, request):
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        context = {
-            'dottore' : dottore
-        }
-
-        return render(request, "includes/InserisciPaziente.html", context)
-    
-
-    def post(self, request):
-        try:
-            print(request.POST)
-            success = None 
-            dottore = request.user.utentiregistraticredenziali if hasattr(request.user, 'utentiregistraticredenziali') else None
-            codice_fiscale = request.POST.get('codice_fiscale')
-
-            dottore_id = request.session.get('dottore_id')
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-           
-            paziente_esistente = TabellaPazienti.objects.filter(dottore=dottore, codice_fiscale=codice_fiscale).first()
-          
-            def parse_date(date_str):
-                return date_str if date_str else None
-
-            context = {'dottore': dottore}
-
-            if paziente_esistente:
-                campi_opzionali = [
-                    'residence', 'province', 'cap', 'email', 'phone',
-                    'associate_staff', 'height', 'weight', 'bmi', 'bmi_detection_date',
-                    'girth_value', 'girth_notes', 'girth_date',
-                    'alcol', 'alcol_type', 'data_alcol', 'alcol_frequency',
-                    'smoke', 'smoke_frequency', 'reduced_intake',
-                    'sport', 'sport_livello', 'sport_frequency',
-                    'attivita_sedentaria', 'livello_sedentarieta', 'sedentarieta_nota', 'blood_group'
-                ]
-
-                if any(request.POST.get(campo) for campo in campi_opzionali):
-                    paziente_esistente.residence = request.POST.get('residence') or None
-                    paziente_esistente.email = request.POST.get('email') or None
-                    paziente_esistente.phone = request.POST.get('phone') or None
-                    paziente_esistente.cap = request.POST.get('cap') or None
-                    paziente_esistente.province = request.POST.get('province') or None
-                    paziente_esistente.associate_staff = request.POST.get('associate_staff') or None
-                    paziente_esistente.height = request.POST.get('height') or None
-                    paziente_esistente.weight = request.POST.get('weight') or None
-                    paziente_esistente.bmi = request.POST.get('bmi') or None
-                    paziente_esistente.bmi_detection_date = parse_date(request.POST.get('bmi_detection_date')) or None
-                    paziente_esistente.girth_value = request.POST.get('girth_value') or None
-                    paziente_esistente.girth_notes = request.POST.get('girth_notes') or None
-                    paziente_esistente.girth_date = parse_date(request.POST.get('girth_date')) or None
-                    paziente_esistente.alcol = request.POST.get('alcol') or None
-                    paziente_esistente.alcol_type = request.POST.get('alcol_type') or None
-                    paziente_esistente.data_alcol = parse_date(request.POST.get('data_alcol')) or None
-                    paziente_esistente.alcol_frequency = request.POST.get('alcol_frequency') or None
-                    paziente_esistente.smoke = request.POST.get('smoke') or None
-                    paziente_esistente.smoke_frequency = request.POST.get('smoke_frequency') or None
-                    paziente_esistente.reduced_intake = request.POST.get('reduced_intake') or None
-                    paziente_esistente.sport = request.POST.get('sport') or None
-                    paziente_esistente.sport_livello = request.POST.get('sport_livello') or None
-                    paziente_esistente.sport_frequency = request.POST.get('sport_frequency') or None
-                    paziente_esistente.attivita_sedentaria = request.POST.get('attivita_sedentaria') or None
-                    paziente_esistente.livello_sedentarieta = request.POST.get('livello_sedentarieta') or None
-                    paziente_esistente.sedentarieta_nota = request.POST.get('sedentarieta_nota') or None
-                    paziente_esistente.blood_group = request.POST.get('blood_group') or None
-
-                    paziente_esistente.save()
-                    success = "I dati del paziente sono stati aggiornati con successo!"
-                
-                else:
-                    errore = "Operazione non andata a buon fine: 'Un Utente con questo Codice Fiscale è gia presente all'interno del database'."
-                    context['errore'] = errore
-            
-            else:
-                campi_opzionali = [
-                    'residence', 'email', 'password', 'blood_group', 'associate_staff', 'height',
-                    'weight', 'bmi','bmi_detection_date', 'girth_value', 'girth_notes',
-                    'girth_notes','girth_date', 'alcol',  'alcol_type', 'data_alcol',
-                    'alcol_frequency','smoke', 'smoke_frequency', 'reduced_intake',
-                    'sport', 'sport_livello', 'sport_frequency', 'attivita_sedentaria',
-                    'livello_sedentarieta', 'sedentarieta_nota'
-                ]
-
-                if any(request.POST.get(campo) for campo in campi_opzionali):
-
-                        TabellaPazienti.objects.create(
-                            dottore=dottore,
-                            name=request.POST.get('name'),
-                            surname=request.POST.get('surname'),
-                            residence=request.POST.get('residence'),
-                            email=request.POST.get('email') or None,
-                            phone=request.POST.get('phone') or None,
-                            dob=parse_date(request.POST.get('dob')),
-                            gender=request.POST.get('gender'),
-                            cap=request.POST.get('cap'),
-                            province=request.POST.get('province'),
-                            place_of_birth=request.POST.get('place_of_birth'),
-                            codice_fiscale=codice_fiscale,
-                            chronological_age=request.POST.get('chronological_age'),
-                            blood_group=request.POST.get('blood_group') or None,
-                            associate_staff=request.POST.get('associate_staff') or None,
-                            height=request.POST.get('height') or None,
-                            weight=request.POST.get('weight') or None,
-                            bmi=request.POST.get('bmi') or None,
-                            bmi_detection_date=parse_date(request.POST.get('bmi_detection_date')) or None,
-                            girth_value=request.POST.get('girth_value') or None,
-                            girth_notes=request.POST.get('girth_notes') or None,
-                            girth_date=parse_date(request.POST.get('girth_date')) or None,
-                            alcol=request.POST.get('alcol') == 'on' or None,
-                            alcol_type=request.POST.get('alcol_type') or None,
-                            data_alcol=parse_date(request.POST.get('data_alcol')) or None,
-                            alcol_frequency=request.POST.get('alcol_frequency') or None,
-                            smoke=request.POST.get('smoke') == 'on' or None,
-                            smoke_frequency=request.POST.get('smoke_frequency') or None,
-                            reduced_intake=request.POST.get('reduced_intake') or None,
-                            sport=request.POST.get('sport') == 'on' or None,
-                            sport_livello=request.POST.get('sport_livello') or None,
-                            sport_frequency=request.POST.get('sport_frequency') or None,
-                            attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on' or None,
-                            livello_sedentarieta=request.POST.get('livello_sedentarieta') or None,
-                            sedentarieta_nota=request.POST.get('sedentarieta_nota') or None,
-                            
-                            professione = request.POST.get('professione') or None,
-                            pensionato = request.POST.get('pensionato') or None,
-                            menarca = request.POST.get('menarca') or None,
-                            ciclo = request.POST.get('ciclo') or None,
-                            sintomi = request.POST.get('sintomi') or None,
-                            esordio = request.POST.get('esordio') or None,
-                            parto = request.POST.get('parto') or None,
-                            post_parto = request.POST.get('post_parto') or None,
-                            aborto = request.POST.get('aborto') or None,
-                            m_cardiache = request.POST.get('m_cardiache') or None,
-                            diabete_m = request.POST.get('diabete_m') or None,
-                            obesita = request.POST.get('obesita') or None,
-                            epilessia = request.POST.get('epilessia') or None,
-                            ipertensione = request.POST.get('ipertensione') or None,
-                            m_tiroidee = request.POST.get('m_tiroidee') or None,
-                            m_polmonari = request.POST.get('m_polmonari') or None,
-                            tumori = request.POST.get('tumori') or None,
-                            allergie = request.POST.get('allergie') or None,
-                            m_psichiatriche = request.POST.get('m_psichiatriche') or None,
-                            patologie = request.POST.get('patologie') or None,
-                            p_p_altro = request.POST.get('p_p_altro') or None,
-                            t_farmaco = request.POST.get('t_farmaco') or None,
-                            t_dosaggio = request.POST.get('t_dosaggio') or None,
-                            t_durata = request.POST.get('t_durata') or None,
-                            p_cardiovascolari = request.POST.get('p_cardiovascolari') or None,
-                            m_metabolica = request.POST.get('m_metabolica') or None,
-                            p_respiratori_cronici = request.POST.get('p_respiratori_cronici') or None,
-                            m_neurologica = request.POST.get('m_neurologica') or None,
-                            m_endocrina = request.POST.get('m_endocrina') or None,
-                            m_autoimmune = request.POST.get('m_autoimmune') or None,
-                            p_epatici = request.POST.get('p_epatici') or None,
-                            m_renale = request.POST.get('m_renale') or None,
-                            d_gastrointestinali = request.POST.get('d_gastrointestinali') or None,
-                            eloquio = request.POST.get('eloquio') or None,
-                            s_nutrizionale = request.POST.get('s_nutrizionale') or None,
-                            a_genarale = request.POST.get('a_genarale') or None,
-                            psiche = request.POST.get('psiche') or None,
-                            r_ambiente = request.POST.get('r_ambiente') or None,
-                            s_emotivo = request.POST.get('s_emotivo') or None,
-                            costituzione = request.POST.get('costituzione') or None,
-                            statura = request.POST.get('statura') or None,
-                        )
-                        success = "Nuovo paziente salvato con successo!"
-
-                else:
-                        TabellaPazienti.objects.create(
-                            dottore=dottore,
-                            name=request.POST.get('name'),
-                            surname=request.POST.get('surname'),
-                            dob=parse_date(request.POST.get('dob')),
-                            gender=request.POST.get('gender'),
-                            cap=request.POST.get('cap'),
-                            province=request.POST.get('province'),
-                            place_of_birth=request.POST.get('place_of_birth'),
-                            codice_fiscale=codice_fiscale,
-                            chronological_age=request.POST.get('chronological_age'),
-                            
-                        )
-                        success = "Nuovo paziente salvato con successo!"
-
-            if success:
-                context["success"] = success
-
-            return render(request, "includes/InserisciPaziente.html", context)
-
-        except Exception as e:
-            context["errore"] = f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova."
-            return render(request, "includes/InserisciPaziente.html", context)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# VIEWS PER SEZIONE ETA METABOLICA
-class ComposizioneView(View):
-
-    def get(self, request, id):
-
-        persona = get_object_or_404(TabellaPazienti, id=id)
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        ultimo_referto = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto').first()
-
-
-        context = {
-            'persona': persona,
-            'dottore' : dottore,
-            'ultimo_referto': ultimo_referto
-        }
-
-        return render(request, "eta_metabolica/etaMetabolica.html", context)
-
-    def post(self, request, id):       
-        persona = get_object_or_404(TabellaPazienti, id=id)
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        try:
-            # Conversione date (se presenti)
-            bmi_date = request.POST.get("bmi_detection_date")
-            girth_date = request.POST.get("girth_date")
-            bmi_detection_date = datetime.strptime(bmi_date, "%Y-%m-%d").date() if bmi_date else None
-            girth_detection_date = datetime.strptime(girth_date, "%Y-%m-%d").date() if girth_date else None
-
-            # Salva nella tabella RefertiEtaMetabolica
-            RefertiEtaMetabolica.objects.create(
-                dottore=dottore,
-                paziente=persona,
-
-                # Composizione corporea
-                bmi=request.POST.get("bmi"),
-                grasso=request.POST.get("grasso"),
-                acqua=request.POST.get("acqua"),
-                massa_muscolare=request.POST.get("massa_muscolare"),
-                bmr=request.POST.get("bmr"),
-                whr=request.POST.get("whr"),
-                whtr=request.POST.get("whtr"),
-
-                # Profilo glicemico e insulinico
-                glicemia=request.POST.get("glicemia"),
-                ogtt=request.POST.get("ogtt"),
-                emoglobina_g=request.POST.get("emoglobina_g"),
-                insulina_d=request.POST.get("insulina_d"),
-                curva_i=request.POST.get("curva_i"),
-                homa_ir=request.POST.get("homa_ir"),
-                tyg=request.POST.get("tyg"),
-
-                # Profilo lipidico
-                c_tot=request.POST.get("c_tot"),
-                hdl=request.POST.get("hdl"),
-                ldl=request.POST.get("ldl"),
-                trigliceridi=request.POST.get("trigliceridi"),
-
-                # Profilo epatico
-                ast=request.POST.get("ast"),
-                alt=request.POST.get("alt"),
-                ggt=request.POST.get("ggt"),
-                bili_t=request.POST.get("bili_t"),
-
-                # Infiammazione
-                pcr=request.POST.get("pcr"),
-                hgs=request.POST.get("hgs"),
-                sii=request.POST.get("sii"),
-
-                # Stress e antropometria
-                c_plasmatico=request.POST.get("c_plasmatico"),
-                massa_ossea=request.POST.get("massa_ossea"),
-                eta_metabolica=request.POST.get("eta_metabolica"),
-                grasso_viscerale=request.POST.get("grasso_viscerale"),
-
-                # Dati anagrafici e misurazioni
-                height=request.POST.get("altezza"),
-                weight=request.POST.get("weight"),
-                p_fisico=request.POST.get("p_fisico"),
-                girth_value=request.POST.get("girth_value"),
-                girth_notes=request.POST.get("note_addominali"),
-                bmi_detection_date=bmi_detection_date,
-                girth_date=girth_detection_date
-            )
-
-            ultimo_referto = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto').first()
-
-            context = {
-                'persona': persona,
-                'dottore': dottore,
-                'success': 'I dati sono stati aggiornati correttamente nel referto',
-                'ultimo_referto': ultimo_referto
-            }
-
-        except Exception as e:
-            context = {
-                'persona': persona,
-                'dottore': dottore,
-                'errore': f"Errore di sistema: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
-            }
-
-        return render(request, "eta_metabolica/etaMetabolica.html", context)
-
-
-class ComposizioneChartView(View):
-    def get(self, request, id):
-
-        persona = get_object_or_404(TabellaPazienti, id=id)
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        context = {
-                'persona': persona,
-                'dottore': dottore,
-        }
-
-        return render (request, 'eta_metabolica/grafici.html', context)
-
-
-class RefertiComposizioneView(View):
-    def get(self, request, id):
-
-        persona = get_object_or_404(TabellaPazienti, id=id)
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        referti = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto')
-
-
-        context = {
-                'persona': persona,
-                'dottore': dottore,
-                'referti': referti,
-        }
-
-        return render (request, 'eta_metabolica/elencoReferti.html', context)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# TO DEFINE
 class UpdatePersonaContactView(View):
 
     def post(self, request, id):
@@ -2250,8 +2114,6 @@ class UpdatePersonaContactView(View):
             return JsonResponse({"success": False, "error": "Metodo non valido"})
 
 
-# VIEWS PER CALCOLO CAPACITA', SEZIONE CAPACITA' VITALE
-class EtaVitaleView(View):
 
     def get(self, request, id):
 
@@ -2712,13 +2574,13 @@ class PrescrizioniView(View):
 
         return redirect('cartella_paziente', persona_id)
 
-
 #VIEWS APPUNTAMENTI
 class AppuntamentiView(View):
     def get(self, request):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
-        persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')
-        appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('-id')
+        persone = TabellaPazienti.objects.all().order_by('-id')
+        appuntamenti = Appointment.objects.all().order_by('-id')
+
 
         # Ottieni le opzioni definite nei choices
         tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
@@ -2735,7 +2597,6 @@ class AppuntamentiView(View):
         }
 
         return render(request, 'includes/Appuntamenti.html', context)
-
     
 # VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
 class AppuntamentiSalvaView(View):
@@ -2743,9 +2604,10 @@ class AppuntamentiSalvaView(View):
         if request.method == "POST":
             try:
                 body_raw = request.body.decode('utf-8')
+
                 data = json.loads(body_raw)
 
-                # Recuperiamo i dati inviati
+                # Recuperiamo i dati, facendo attenzione ai valori mancanti
                 giorno = data.get("giorno", "").strip()
                 data_appointment = data.get("data", "").strip()
                 time_appointment = data.get("orario", "").strip()
@@ -2755,13 +2617,7 @@ class AppuntamentiSalvaView(View):
                 if not time_appointment:
                     print("❌ ERRORE: Il campo 'orario' è mancante o vuoto!")
 
-                # Recupera il dottore dalla sessione
-                dottore_id = request.session.get('dottore_id')
-                if not dottore_id:
-                    return JsonResponse({"success": False, "error": "Utente non autenticato"}, status=403)
-                dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-                # Creazione dell'appuntamento associando il dottore
+                # Creazione dell'appuntamento
                 Appointment.objects.create(
                     tipologia_visita=data.get("tipologia_visita"),
                     nome_paziente=data.get("nome_paziente"),
@@ -2771,12 +2627,11 @@ class AppuntamentiSalvaView(View):
                     giorno=giorno,
                     data=data_appointment,
                     orario=time_appointment,
-                    voce_prezzario=voce_prezzario,
-                    durata=durata,
-                    dottore=dottore  # ASSOCIA IL DOTTORE QUI
+                    voce_prezzario=voce_prezzario,  # 🔹 Ora viene salvato
+                    durata=durata,  # 🔹 Ora viene salvata
                 )
 
-                return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!", "clear_form": True})
+                return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!", 'clear_form': True})
 
             except json.JSONDecodeError as e:
                 print(f"❌ ERRORE JSON: {str(e)}")
@@ -2818,25 +2673,21 @@ class GetSingleAppointmentView(View):
 # VIEWS GET ALL APPOINTMENTS
 class AppuntamentiGetView(View):
     def get(self, request):
-        # Recupera l'id del dottore dalla sessione
-        dottore_id = request.session.get('dottore_id')
-        if not dottore_id:
-            return JsonResponse({"success": False, "error": "Utente non autenticato"}, status=403)
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        # 📌 1. Ottenere la data di oggi
+        """Recupera gli appuntamenti futuri ed elimina quelli passati"""
+        
+        # 📌 1. Ottenere la data di oggi senza ore/minuti/secondi
         today = now().date()
 
         # 📌 2. Eliminare gli appuntamenti con data precedente a oggi
-        deleted_count, _ = Appointment.objects.filter(data__lt=today, dottore=dottore).delete()
+        deleted_count, _ = Appointment.objects.filter(data__lt=today).delete()  # Cambiato "date" in "data"
 
-        # 📌 3. Recuperare solo gli appuntamenti futuri o di oggi per il dottore
-        future_appointments = Appointment.objects.filter(data__gte=today, dottore=dottore)
+        # 📌 3. Recuperare solo gli appuntamenti futuri o di oggi
+        future_appointments = Appointment.objects.filter(data__gte=today)  # Cambiato "date" in "data"
 
         # 📌 4. Costruire il dizionario degli appuntamenti organizzati per data
         appointments_by_date = {}
         for appointment in future_appointments:
-            date_str = appointment.data.strftime("%Y-%m-%d")
+            date_str = appointment.data.strftime("%Y-%m-%d")  # Formattazione YYYY-MM-DD
             if date_str not in appointments_by_date:
                 appointments_by_date[date_str] = []
             appointments_by_date[date_str].append({
@@ -2919,6 +2770,9 @@ class SearchAppointmentsView(View):
             results = list(appointments.values("id", "nome_paziente", "tipologia_visita", "orario"))
             return JsonResponse({"success": True, "appointments": results})
         return JsonResponse({"success": False, "error": "Nessuna query fornita"})
+    
+
+
 
 #VIEW CREATE PATIENT FROM SECOND MODAL
 class CreaPazienteView(View):

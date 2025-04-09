@@ -40,7 +40,7 @@
             <!-- MENU TRACE -->
             <div class="main-title-nav">
                     <div class="back-tittle">
-                        <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}"></a>
+                        <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}"></a>
                         <h2 class="main-welcome-title">
                             <span>{{ persona.surname|title }}</span>
                             <span>{{ persona.name|title }}</span> |

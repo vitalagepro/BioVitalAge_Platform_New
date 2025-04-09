@@ -84,70 +84,84 @@
             </div>
         </div>
 
-        <!-- MESSAGGIO DI SUCCESSO -->
+
+        <!-- MESSAGGIO DI SUCCESSO CON PUNTEGGIO -->
+        {% if punteggio %}
+        <div class="success_message" id="modal_message">
+
+            <script>
+                function closeModal(){
+                    const modale = document.getElementById('modal_message');
+                    modale.style.display = 'none';
+                }
+            </script>
+
+
+            <div class="header_message">
+                <div class="contianer-title">
+                    <img src="{% static 'includes/images/success.png' %}" alt="">
+                    <p class="title_message">Success!</p>
+                </div>
+                <button class="close" onclick="closeModal()">x</button>
+                
+            </div>
+
+            <p>Dati Aggiornati, Referto Generato!<p>
+            <p style="margin-top: -1rem; color: #2ac670; font-weight: bold;">Il tuo punteggio ottenuto dal calcolo è: {{ punteggio }}</p>
+        
+        </div>  
+
+        <!-- MESSAGGIO DI SUCCESSO SENZA PUNTEGGIO -->
         {% if success %}
-        <div class="successMessage" id="success">
-
-            <p>{{ success }}</p>
-            <div class="progressBarContainerSuccess">
-            <div class="progressBar" id="progressSuccess"></div>
-            </div>
+        <div class="success_message" id="modal_message">
 
             <script>
-            const messaggios = document.getElementById('success');
-            const progressBars = document.getElementById('progressSuccess');
-            const durationSuccess = 6000; 
-            const intervalSuccess = 50; 
-
-            if (messaggios) {
-                let elapsedTimeSuccess = 0; 
-
-                const timerSuccess = setInterval(() => {
-                elapsedTimeSuccess += intervalSuccess;
-                const percentage = ((durationSuccess - elapsedTimeSuccess) / durationSuccess) * 100;
-                progressBars.style.width = `${percentage}%`;
-
-                if (elapsedTimeSuccess >= durationSuccess) {
-                    clearInterval(timerSuccess); 
-                    messaggios.style.display = 'none'; 
+                function closeModal(){
+                    const modale = document.getElementById('modal_message');
+                    modale.style.display = 'none';
                 }
-                }, intervalSuccess);
-            }
             </script>
 
-        </div>
-        {% else %}
-        {% if errore %}
-        <div class="errorSystemContainer" id="error">
-            <p>{{ errore }}</p>
-            <div class="progressBarContainer">
-            <div class="progressBar" id="progress"></div>
+            <div class="header_message">
+                <div class="contianer-title">
+                    <img src="{% static 'includes/images/success.png' %}" alt="">
+                    <p class="title_message">Success!</p>
+                </div>
+                <button class="close" onclick="closeModal()">x</button>
+                
             </div>
 
-            <script>
-            const messaggio = document.getElementById('error');
-            const progressBar = document.getElementById('progress');
-            const durationError = 6000; 
-            const intervalError = 50;
-
-            if (messaggio) {
-                let elapsedTimeError = 0; 
-
-                const timerError = setInterval(() => {
-                elapsedTimeError += intervalError;
-                const percentage = ((durationError - elapsedTimeError) / durationError) * 100;
-                progressBar.style.width = `${percentage}%`;
-
-                if (elapsedTimeError >= durationError) {
-                    clearInterval(timerError); 
-                    messaggio.style.display = 'none'; 
-                }
-                }, intervalError);
-            }
-            </script>
-
+            <p>Dati Aggiornati, Referto Generato!<p>
+            <p style="margin-top: -1rem; color: #c74b5b; font-weight: bold;">X Non è stato possibile calcolare il punteggio.</p>
+        
         </div>
         {% endif %}
+        
+        <!-- MESSAGGIO ERRORE -->
+        {% if errore %}
+        <div class="erorre_message" id="modal_message">
+                
+                <script>
+                    function closeModal(){
+                        const modale = document.getElementById('modal_message');
+                        modale.style.display = 'none';
+                    }
+                </script>
+
+                <div class="header_message">
+                    <div class="contianer-title">
+                        <img src="{% static 'includes/images/unsuccess.png' %}" alt="">
+                        <p class="title_message_errore">Errore!</p>
+                    </div>
+                    <button class="close" onclick="closeModal()">x</button>
+                    
+                </div>
+                <p>Sembra che qualcosa è andato storto.</p>
+                <p style=" color: #c74b5b; font-weight: bold;">{{ errore }}</p>
+            
+        </div>
+        {% endif %}
+
         {% endif %}
 
         <div class="container-button-header">
@@ -164,9 +178,11 @@
         <form method="POST" action="{% url 'composizione' persona.id %}">
             {% csrf_token %}
 
-            <!-- DOMINIO COMPOSIZIONE CORPOREA -->
+            <!-- ETA' METABOLICA BASE -->
             <div class="card-container">
+                <h3 class="title">Età Metabolica Base</h3>
 
+                <!-- DOMINIO COMPOSIZIONE CORPOREA -->
                 <div class="title-container">
                     <img src="{% static 'includes/icone/composizione.png' %}" alt="">
                     <h3>Composizione Corporea</h3>
@@ -209,11 +225,145 @@
                         <input class="input-disabled" type="text" name="whtr" value="{{ ultimo_referto.whtr }}" placeholder="inserisci il valore" disabled>
                     </div>
                 </div>
+
+                <!-- DATI ANAGRAFICI CON MASSA CORPOREA -->
+                <div class="header-container-patient" style="margin-top: 3rem;">
+                    <div class="title-container">
+                        <img src="{% static 'includes/icone/avatar.png' %}" alt="">
+                        <h3>Informazioni generali composizione</h3>
+                    </div>
+                </div>
+
+                <div class="info_container">
+
+                    <!--  <div id="userData" data-gender="{{ ultimo_referto.gender }}" data-name="{{ ultimo_referto.name }}" data-surname="{{ ultimo_referto.surname }}"
+                         data-dob="{{ ultimo_referto.dob }}" data-cf="{{ ultimo_referto.codice_fiscale }}"
+                         data-place_birth="{{ ultimo_referto.place_birth }}" data-chronological_age="{{ ultimo_referto.chronological_age }}" data-acqua="{{ ultimo_referto.acqua }}"
+                         data-massa-muscolare="{{ ultimo_referto.massa_muscolare }}" data-massa-ossea="{{ ultimo_referto.massa_ossea }}"
+                         data-grasso="{{ ultimo_referto.grasso }}" data-punteggio-fisico="{{ ultimo_referto.punteggio_fisico }}"
+                         hidden>
+                     </div>
+             
+                     <div class="field">
+                         <p>Punteggio Fisico</p>
+                        
+                         <div id="confirm-reset-modal" class="custom-modal-overlay hidden-modal-custom">
+                             <div class="custom-modal-content">
+                                 <p id="confirm-modal-message">Sei sicuro di voler resettare lo storico dei punteggi?</p>
+                                 <button id="confirm-reset-btn" class="custom-button">Conferma</button>
+                                 <button id="cancel-reset-btn" class="custom-button cancel-btn">Annulla</button>
+                             </div>
+                         </div>
+                         
+                     
+                         <p id="punteggio_fisico_container">
+                             <select id="punteggio_fisico" name="punteggio_fisico" required>
+                                 <option value="">-- Seleziona Punteggio --</option>
+                                 <option value="1" {% if ultimo_referto.punteggio_fisico == "1" %}selected{% endif %}>Obeso Latente</option>
+                                 <option value="2" {% if ultimo_referto.punteggio_fisico == "2" %}selected{% endif %}>Obeso</option>
+                                 <option value="3" {% if ultimo_referto.punteggio_fisico == "3" %}selected{% endif %}>Struttura robusta
+                                 </option>
+                                 <option value="4" {% if ultimo_referto.punteggio_fisico == "4" %}selected{% endif %}>Insufficientemente
+                                     allenati</option>
+                                 <option value="5" {% if ultimo_referto.punteggio_fisico == "5" %}selected{% endif %}>Regolare</option>
+                                 <option value="6" {% if ultimo_referto.punteggio_fisico == "6" %}selected{% endif %}>Regolare e muscoloso
+                                 </option>
+                                 <option value="7" {% if ultimo_referto.punteggio_fisico == "7" %}selected{% endif %}>Magro</option>
+                                 <option value="8" {% if ultimo_referto.punteggio_fisico == "8" %}selected{% endif %}>Magro e muscoloso
+                                 </option>
+                                 <option value="9" {% if ultimo_referto.punteggio_fisico == "9" %}selected{% endif %}>Molto muscoloso</option>
+                             </select>
+                             <button class="button" id="reset-score">Reset</button>
+                         </p>
+                     </div>
+             
+                     <div class="vignetta-container" id="vignetta-container" style="display: none;">
+                         <div class="vignetta" id="vignetta">
+                             <span class="close-btn" onclick="chiudiVignetta()">&times;</span>
+                             <span id="vignetta-content"></span>
+                         </div>
+                     </div>
+              -->
+
+                     <div class="field" style="margin-top: 20px;">
+                         <p class="field-title">Punteggio Fisico:</p>
+                         <input class="input-disabled" type="text" name="p_fisico" value="{{ ultimo_referto.p_fisico }}" placeholder="inserisci il valore" disabled>
+                     </div>  
+
+                     <div class="field" style="margin-top: 20px;">
+                         <p class="field-title">Altezza:</p>
+                         <input class="input-disabled" type="text" name="altezza" value="{{ ultimo_referto.height }}" placeholder="inserisci il valore" disabled>
+                     </div>  
+
+                     <div class="field" style="margin-top: 20px;">
+                         <p class="field-title">Peso corporeo:</p>
+                         <input class="input-disabled" type="text" name="weight" value="{{ ultimo_referto.weight }}" placeholder="inserisci il valore" disabled>
+                     </div>
+
+                     <div class="field" style="margin-top: 20px;">
+                         <p class="field-title">Data di rilevamento del Bmi:</p>
+                         <input class="input-disabled" type="date" name="bmi_detection_date" value="{{ ultimo_referto.bmi_detection_date|date:'Y-m-d' }}" placeholder="inserisci il valore" disabled>
+                     </div>
+
+                     <div class="field" style="margin-top: 20px;">
+                         <p class="field-title">Circonferenza Addominale:</p>
+                         <input class="input-disabled" type="text" name="girth_value" value="{{ ultimo_referto.girth_value }}" placeholder="inserisci il valore" disabled>
+                     </div>
+                     
+                     <div class="field" style="margin-top: 20px;">
+                         <p class="field-title">Data di misurazione addominale:</p>
+                         <input class="input-disabled" type="date" name="girth_date" value="{{ ultimo_referto.girth_date|date:'Y-m-d' }}" placeholder="inserisci il valore" disabled>
+                     </div>
+                     
+                     <div class="field" style="margin-top: 20px;">
+                         <p class="field-title">Note sull'addome:</p>
+                         <input class="input-disabled" type="text" name="note_addominali" value="{{ ultimo_referto.girth_notes }}" placeholder="inserisci il valore" disabled>
+                     </div>
+                         
+                     {% if ultimo_referto.sport_frequency %}
+                         <div class="field" style="margin-top: 20px;">
+                             <p class="field-title">Frequenza attività fisica:</p>
+                             <input class="input-disabled" type="text" name="sport_frequency" value="{{ ultimo_referto.sport_frequency }}" placeholder="inserisci il valore" disabled>
+                         </div>
+                     {% endif %}
+             
+                     {% if ultimo_referto.livello_sedentarieta %}
+                         <div class="field" style="margin-top: 20px;">
+                             <p class="field-title">Sedentarietà:</p>
+                             <input class="input-disabled" type="text" name="livello_sedentarieta" value="{{ ultimo_referto.livello_sedentarieta }}" placeholder="inserisci il valore" disabled>
+                         </div>
+                     {% endif %}
+             
+                     <div class="field">
+                         <div class="field" style="margin-top: 20px;">
+                             <p class="field-title">Genere:</p>
+                             <input class="input-disabled" type="text" name="gender" value="{{ persona.gender }}" placeholder="inserisci il valore" disabled>
+                         </div>
+                     </div>
+
+                     <div class="field" style="margin-top: 20px;">
+                         <p class="field-title">Massa Ossea:</p>
+                         <input class="input-disabled" type="text" name="c_plasmatico" value="{{ ultimo_referto.c_plasmatico }}" placeholder="inserisci il valore" disabled>
+                     </div>
+
+                     <div class="field" style="margin-top: 20px;">
+                         <p class="field-title">Età Metabolica:</p>
+                         <input class="input-disabled" type="text" name="c_plasmatico" value="{{ ultimo_referto.c_plasmatico }}" placeholder="inserisci il valore" disabled>
+                     </div>      
+             
+                     <div class="field" style="margin-top: 20px;">
+                         <p class="field-title">Grasso Viscerale:</p>
+                         <input class="input-disabled" type="text" name="c_plasmatico" value="{{ ultimo_referto.c_plasmatico }}" placeholder="inserisci il valore" disabled>
+                     </div>            
+                </div>
             </div>  
 
-            <!-- DOMINIO PROFILO GLICEMICO E INSULINICO-->
+            <!-- ETA' METABOLICA AVANZATA -->
             <div class="card-container">
 
+                <h3 class="title">Età Metabolica Avanzata</h3>
+
+                <!-- DOMINIO PROFILO GLICEMICO E INSULINICO-->
                 <div class="title-container">
                     <img src="{% static 'includes/icone/glicemia.png' %}" alt="">
                     <h3>Profilo glicemico e insulinico</h3>
@@ -256,12 +406,9 @@
                         <input class="input-disabled" type="text" name="tyg" value="{{ ultimo_referto.tyg }}" placeholder="inserisci il valore" disabled>
                     </div>   
                 </div>
-            </div>
 
-            <!-- DOMINIO PROFILO LIPIDICO -->
-            <div class="card-container">
-
-                <div class="title-container">
+                <!-- DOMINIO PROFILO LIPIDICO -->
+                <div class="title-container" style="margin-top: 3rem;">
                     <img src="{% static 'includes/icone/lipidi.png' %}" alt="">
                     <h3>Profilo Lipidico</h3>
                 </div>
@@ -289,13 +436,10 @@
                     </div>
         
                 </div>
-            </div>
 
-            <!-- DOMINIO PROFILO METABOLICO EPATICO -->
-            <div class="card-container">
-
-                <div class="title-container">
-                    <img src="{% static 'includes/icone/metabolismo.png' %}" alt="">
+                <!-- DOMINIO PROFILO METABOLICO EPATICO -->
+                <div class="title-container" style="margin-top: 3rem;">
+                    <img src="{% static 'includes/icone/metabolismo.png' %}" alt="" >
                     <h3>Profilo metabolico epatico</h3>
                 </div>
 
@@ -323,191 +467,52 @@
         
                     
                 </div>
-            </div>
 
-            <!-- DOMINIO STRESS E INFIAMMAZIONE -->
-            <div class="grid-container-special">
-                <!-- DOMINIO INFIAMMAZIONE -->
-                <div class="card-container">
-
-                    <div class="title-container">
-                        <img src="{% static 'includes/icone/infiammazione.png' %}" alt="">
-                        <h3>Infiammazione</h3>
-                    </div>
-
-                    <div class="grid-container infiammazione">
-                        
-                        <div class="field">
-                            <p class="field-title">PCR:</p>
-                            <input class="input-disabled" type="text" name="pcr" value="{{ ultimo_referto.pcr }}" placeholder="inserisci il valore" disabled>
-                        </div>
-
-                        <div class="field">
-                            <p class="field-title">HGS:</p>
-                            <input class="input-disabled" type="text" name="c_tot" value="{{ ultimo_referto.hgs }}" placeholder="inserisci il valore" disabled>
-                        </div>
-
-                        <div class="field">
-                            <p class="field-title">SII:</p>
-                            <input class="input-disabled" type="text" name="sii" value="{{ ultimo_referto.sii }}" placeholder="inserisci il valore" disabled>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- DOMINIO STRESS-->
-                <div class="card-container">
-
-                    <div class="title-container">
-                        <img src="{% static 'includes/icone/stress.png' %}" alt="">
-                        <h3>Stress</h3>
-                    </div>  
-
-                    <div class="field" style="margin-top: 20px;">
-                        <p class="field-title">Colesterolo plasmatico:</p>
-                        <input class="input-disabled" type="text" name="c_plasmatico" value="{{ ultimo_referto.c_plasmatico }}" placeholder="inserisci il valore" disabled>
-                    </div>
-            
-                </div>
-            </div>
-
-            <!-- DATI ANAGRAFICI CON MASSA CORPOREA -->
-            <div class="datiMassaCorporea-container" style="margin-bottom: 20px;">
-
-                <div class="header-container-patient">
-                    <div class="title-container">
-                        <img src="{% static 'includes/icone/avatar.png' %}" alt="">
-                        <h3>Informazioni generali composizione</h3>
-                    </div>
-                    
-                </div>
-
-                <div class="container_box">
-                    <div class="info_container">
-
-                       <!--  <div id="userData" data-gender="{{ ultimo_referto.gender }}" data-name="{{ ultimo_referto.name }}" data-surname="{{ ultimo_referto.surname }}"
-                            data-dob="{{ ultimo_referto.dob }}" data-cf="{{ ultimo_referto.codice_fiscale }}"
-                            data-place_birth="{{ ultimo_referto.place_birth }}" data-chronological_age="{{ ultimo_referto.chronological_age }}" data-acqua="{{ ultimo_referto.acqua }}"
-                            data-massa-muscolare="{{ ultimo_referto.massa_muscolare }}" data-massa-ossea="{{ ultimo_referto.massa_ossea }}"
-                            data-grasso="{{ ultimo_referto.grasso }}" data-punteggio-fisico="{{ ultimo_referto.punteggio_fisico }}"
-                            hidden>
-                        </div>
+                <!-- DOMINIO STRESS E INFIAMMAZIONE -->
+                <div class="grid-container-special" style="margin-top: 3rem;">
                 
-                        <div class="field">
-                            <p>Punteggio Fisico</p>
-                           
-                            <div id="confirm-reset-modal" class="custom-modal-overlay hidden-modal-custom">
-                                <div class="custom-modal-content">
-                                    <p id="confirm-modal-message">Sei sicuro di voler resettare lo storico dei punteggi?</p>
-                                    <button id="confirm-reset-btn" class="custom-button">Conferma</button>
-                                    <button id="cancel-reset-btn" class="custom-button cancel-btn">Annulla</button>
+                    <!-- DOMINIO INFIAMMAZIONE -->
+                    <div>
+                        <div class="title-container">
+                            <img src="{% static 'includes/icone/infiammazione.png' %}" alt="">
+                            <h3>Infiammazione</h3>
+                        </div>
+    
+                        <div class="grid-container infiammazione">
+                                
+                                <div class="field">
+                                    <p class="field-title">PCR:</p>
+                                    <input class="input-disabled" type="text" name="pcr" value="{{ ultimo_referto.pcr }}" placeholder="inserisci il valore" disabled>
                                 </div>
-                            </div>
-                            
-                        
-                            <p id="punteggio_fisico_container">
-                                <select id="punteggio_fisico" name="punteggio_fisico" required>
-                                    <option value="">-- Seleziona Punteggio --</option>
-                                    <option value="1" {% if ultimo_referto.punteggio_fisico == "1" %}selected{% endif %}>Obeso Latente</option>
-                                    <option value="2" {% if ultimo_referto.punteggio_fisico == "2" %}selected{% endif %}>Obeso</option>
-                                    <option value="3" {% if ultimo_referto.punteggio_fisico == "3" %}selected{% endif %}>Struttura robusta
-                                    </option>
-                                    <option value="4" {% if ultimo_referto.punteggio_fisico == "4" %}selected{% endif %}>Insufficientemente
-                                        allenati</option>
-                                    <option value="5" {% if ultimo_referto.punteggio_fisico == "5" %}selected{% endif %}>Regolare</option>
-                                    <option value="6" {% if ultimo_referto.punteggio_fisico == "6" %}selected{% endif %}>Regolare e muscoloso
-                                    </option>
-                                    <option value="7" {% if ultimo_referto.punteggio_fisico == "7" %}selected{% endif %}>Magro</option>
-                                    <option value="8" {% if ultimo_referto.punteggio_fisico == "8" %}selected{% endif %}>Magro e muscoloso
-                                    </option>
-                                    <option value="9" {% if ultimo_referto.punteggio_fisico == "9" %}selected{% endif %}>Molto muscoloso</option>
-                                </select>
-                                <button class="button" id="reset-score">Reset</button>
-                            </p>
+        
+                                <div class="field">
+                                    <p class="field-title">HGS:</p>
+                                    <input class="input-disabled" type="text" name="hgs" value="{{ ultimo_referto.hgs }}" placeholder="inserisci il valore" disabled>
+                                </div>
+        
+                                <div class="field">
+                                    <p class="field-title">SII:</p>
+                                    <input class="input-disabled" type="text" name="sii" value="{{ ultimo_referto.sii }}" placeholder="inserisci il valore" disabled>
+                                </div>
                         </div>
-                
-                        <div class="vignetta-container" id="vignetta-container" style="display: none;">
-                            <div class="vignetta" id="vignetta">
-                                <span class="close-btn" onclick="chiudiVignetta()">&times;</span>
-                                <span id="vignetta-content"></span>
-                            </div>
-                        </div>
-                 -->
-
-                        <div class="field" style="margin-top: 20px;">
-                            <p class="field-title">Punteggio Fisico:</p>
-                            <input class="input-disabled" type="text" name="p_fisico" value="{{ ultimo_referto.p_fisico }}" placeholder="inserisci il valore" disabled>
-                        </div>  
-
-                        <div class="field" style="margin-top: 20px;">
-                            <p class="field-title">Altezza:</p>
-                            <input class="input-disabled" type="text" name="altezza" value="{{ ultimo_referto.height }}" placeholder="inserisci il valore" disabled>
-                        </div>  
-
-                        <div class="field" style="margin-top: 20px;">
-                            <p class="field-title">Peso corporeo:</p>
-                            <input class="input-disabled" type="text" name="weight" value="{{ ultimo_referto.weight }}" placeholder="inserisci il valore" disabled>
-                        </div>
-
-                        <div class="field" style="margin-top: 20px;">
-                            <p class="field-title">Data di rilevamento del Bmi:</p>
-                            <input class="input-disabled" type="date" name="bmi_detection_date" value="{{ ultimo_referto.bmi_detection_date|date:'Y-m-d' }}" placeholder="inserisci il valore" disabled>
-                        </div>
-
-                        <div class="field" style="margin-top: 20px;">
-                            <p class="field-title">Circonferenza Addominale:</p>
-                            <input class="input-disabled" type="text" name="girth_value" value="{{ ultimo_referto.girth_value }}" placeholder="inserisci il valore" disabled>
-                        </div>
-                        
-                        <div class="field" style="margin-top: 20px;">
-                            <p class="field-title">Data di misurazione addominale:</p>
-                            <input class="input-disabled" type="date" name="girth_date" value="{{ ultimo_referto.girth_date|date:'Y-m-d' }}" placeholder="inserisci il valore" disabled>
-                        </div>
-                        
-                        <div class="field" style="margin-top: 20px;">
-                            <p class="field-title">Note sull'addome:</p>
-                            <input class="input-disabled" type="text" name="note_addominali" value="{{ ultimo_referto.girth_notes }}" placeholder="inserisci il valore" disabled>
-                        </div>
-                            
-                        {% if ultimo_referto.sport_frequency %}
-                            <div class="field" style="margin-top: 20px;">
-                                <p class="field-title">Frequenza attività fisica:</p>
-                                <input class="input-disabled" type="text" name="sport_frequency" value="{{ ultimo_referto.sport_frequency }}" placeholder="inserisci il valore" disabled>
-                            </div>
-                        {% endif %}
-                
-                        {% if ultimo_referto.livello_sedentarieta %}
-                            <div class="field" style="margin-top: 20px;">
-                                <p class="field-title">Sedentarietà:</p>
-                                <input class="input-disabled" type="text" name="livello_sedentarieta" value="{{ ultimo_referto.livello_sedentarieta }}" placeholder="inserisci il valore" disabled>
-                            </div>
-                        {% endif %}
-                
-                        <div class="field">
-                            <div class="field" style="margin-top: 20px;">
-                                <p class="field-title">Genere:</p>
-                                <input class="input-disabled" type="text" name="gender" value="{{ persona.gender }}" placeholder="inserisci il valore" disabled>
-                            </div>
-                        </div>
-
-                        <div class="field" style="margin-top: 20px;">
-                            <p class="field-title">Massa Ossea:</p>
-                            <input class="input-disabled" type="text" name="c_plasmatico" value="{{ ultimo_referto.c_plasmatico }}" placeholder="inserisci il valore" disabled>
-                        </div>
-
-                        <div class="field" style="margin-top: 20px;">
-                            <p class="field-title">Età Metabolica:</p>
-                            <input class="input-disabled" type="text" name="c_plasmatico" value="{{ ultimo_referto.c_plasmatico }}" placeholder="inserisci il valore" disabled>
-                        </div>      
-                
-                        <div class="field" style="margin-top: 20px;">
-                            <p class="field-title">Grasso Viscerale:</p>
-                            <input class="input-disabled" type="text" name="c_plasmatico" value="{{ ultimo_referto.c_plasmatico }}" placeholder="inserisci il valore" disabled>
-                        </div>            
                     </div>
+    
+                    <!-- DOMINIO STRESS-->
+                    <div>
+                        <div class="title-container">
+                            <img src="{% static 'includes/icone/stress.png' %}" alt="">
+                            <h3>Stress</h3>
+                        </div>  
+    
+                        <div class="field" style="margin-top: 20px;">
+                                <p class="field-title">Colesterolo plasmatico:</p>
+                                <input class="input-disabled" type="text" name="c_plasmatico" value="{{ ultimo_referto.c_plasmatico }}" placeholder="inserisci il valore" disabled>
+                        </div>
+                    </div>
+        
                 </div>
-            </div>  
 
+            </div>
 
             <div class="toolkit">
                 <img src="{% static 'includes/images/arrow.png' %}" alt="" style="width: 40px; height: 40px;">
@@ -596,9 +601,7 @@
                 </a>
                 
             </div>
-        
         </form>
-
     </main>
 
     <!-- Import CDN js -->

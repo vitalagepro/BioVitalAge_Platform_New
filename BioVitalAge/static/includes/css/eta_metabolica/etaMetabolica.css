@@ -94,6 +94,11 @@
 .title-container h3{
   color: var(--contrast-color);
 }
+.title{
+  color: var(--dark2);
+  padding-bottom: 20px;
+  text-align: center;
+}
 .grid-container{
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -103,8 +108,7 @@
 .grid-container-special{
   display: grid;
   grid-template-columns: 60% 39.2%;
-  width: 98%;
-  margin: auto;
+  width: 100%;
   gap: 15px;
 }
 .grid-container-special .card-container{
@@ -262,18 +266,86 @@
 
 
 
+/* CARD GRAFICI CONTAINER */
+.card_grafico{
+  background-color: var(--card-color);
+  width: 98%;
+  margin: auto;
+  border-radius: 8px;
+  margin-top: 1rem;
+  padding: 20px;
+}
+.card_grafico h3{
+  color: var(--contrast-color);
+}
 
 
 
 
+/* MESSAGGIO STYLE */
+
+/* Success Message */
+.success_message{
+  position: fixed;
+  width: 450px;
+  height: 150px;
+  background-color: white;
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  border-bottom: 5px solid #2ac670;
+  padding: 20px;
+}
+.header_message{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.title_message{
+  color: var(--positive-color);
+  font-size: 18px;
+}
+.contianer-title{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+}
+.contianer-title img{
+  width: 30px;
+  height: 30px;
+  margin-top: -1rem;
+}
+.close{
+  border-radius: 50%;
+  padding: 5px 12px;
+  border: none;
+  margin-top: -1rem;
+  color: var(--dark1);
+}
+.close:hover{
+  transform: scale(1.1);
+}
 
 
-
-
-
-
-
-
+/* Error Message */
+.erorre_message{
+  position: fixed;
+  width: 450px;
+  height: 150px;
+  background-color: white;
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  border-bottom: 5px solid #c74b5b;
+  padding: 20px;
+}
+.title_message_errore{
+  color: var(--negative-color-right);
+  font-size: 18px;
+}
 
 
 

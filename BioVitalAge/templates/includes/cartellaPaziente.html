@@ -355,87 +355,124 @@
 
                 <div class="container-second-row">
 
-                    <div class="eta-container">
-                        <h3>Età Biologica</h3>
-                        <div class="lineaContainer">
-                            <p class="estremoInferiore">0</p>
-                            <div class="cronologic-age">
-                                <img src="{% static 'includes/icone/biologica.png' %}" alt="">
-                                <p>38 anni</p>
-                                <p class="linea">|</p>
-                            </div>
-                            <div class="barra-valore"></div>
-                            <div class="biologic-age">
-                                <img src="{% static 'includes/icone/cronologica.png' %}" alt="">
-                                <p>44 anni</p>
-                                <p class="linea">|</p>
-                            </div>
-                            <p class="estremoSuperiore">100</p>
-                        </div>
-
-                        <div class="legenda">
-                            <div class="subcontainer-legenda">
-                                <img src="{% static 'includes/icone/biologica.png' %}" alt="">
-                                <p>Età Biologica</p>
-                            </div>
-                        
-                            <div class="subcontainer-legenda">
-                                <img src="{% static 'includes/icone/cronologica.png' %}" alt="" >
-                                <p>Età Biologica</p>
-                            </div>
-
-                            <div class="subcontainer-legenda">
-                                <p class="quadrato neg"></p>
-                                <p>Valore Negativo</p>
-                            </div>
-                            <div class="subcontainer-legenda">
-                                <p class="quadrato pos"></p>
-                                <p>Valore Positivo</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="capacita_vitale">
+                    <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.punteggio|default:'6' }}">
                         <h3>Capacità Vitale</h3>
 
                         
                         <div class="card-polmone">
                             <div class="backdrop-riempimento">
                                 <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
-                                    <path id="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                    <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
                                 </svg>
                             </div>
                             
-                            <img src="{% static 'includes/icone/polmone.png' %}" alt="" width="180px" height="180px">
+                            <img src="{% static 'includes/icone/cVitale.png' %}" alt="" width="120px" height="120px">
                         </div>
                           
-                        <p class="descrizione-vitale"><span style="font-weight: bold;">Punteggio:</span> 5.56</p>
+                        <p class="descrizione-vitale"><span style="font-weight: bold;">Punteggio: &nbsp; </span>{{ referti_test_recenti.punteggio }} / 10</p>
 
                     </div>
 
-                    <div class="capacita_vitale">
+                    <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.resilienza|default:'8' }}">
                         <h3>Resilienza</h3>
- 
                         <div class="card-polmone">
                             <div class="backdrop-riempimento">
                                 <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
-                                    <path id="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                    <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
                                 </svg>
                             </div>
-                            
-                            <img src="{% static 'includes/icone/germoglio.png' %}" alt="" width="180px" height="180px">
+                            <img src="{% static 'includes/icone/forza.png' %}" alt="" width="120px" height="120px">
                         </div>
-                          
-                        <p class="descrizione-vitale"><span style="font-weight: bold;">Punteggio:</span> not available</p>
-
+                        <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.resilienza|default:'n.a.' }}</p>
                     </div>
 
+                    <div class="eta-container">
+                        <h3>Età Biologica</h3>  
+                 
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                const crono = document.getElementById('crono');
+                                const biologica = document.getElementById('biologica');
+                            
+                                if (crono && biologica) {
+                                    const percentuale_crono = parseInt(crono.textContent);
+                                    const percentuale_biologica = parseInt(biologica.textContent); 
+                            
+                                    const div_crono = document.querySelector('.cronologic-age');
+                                    const div_biologica = document.querySelector('.biologic-age');
+                            
+                                    div_crono.style.left = `${percentuale_crono}%`;
+                                    div_biologica.style.left = `${percentuale_biologica}%`;
+                            
+                                  
+                                    if (percentuale_biologica < percentuale_crono) {
+                                        div_biologica.classList.add('freccia-up');
+                                    } else if (percentuale_biologica > percentuale_crono) {
+                                        div_biologica.classList.add('freccia-down');
+                                    } else {
+                                        div_biologica.classList.add('freccia-equal');
+                                    }
+                                } else {
+                                    console.warn("Elemento 'crono' o 'biologica' non trovato nel DOM.");
+                                }
+                            });
+                        </script>
+                                
+                        <div class="lineaContainer">
+                           <p class="estremoInferiore">0</p>
 
+                            <div class="cronologic-age">
+                                <img src="{% static 'includes/icone/età_crono.png' %}" alt="">
+                                <p id="crono">{{ persona.chronological_age }}</p>      
+                            </div>
+                            
+                            <div class="biologic-age">
+                                <img src="{% static 'includes/icone/eta_biologica.png' %}" alt="" style="margin-top: 15px;"> 
+                                <p id="biologica" style="margin-top: 5px; margin-bottom: 0px;">{{ dati_estesi_ultimo_referto.biological_age }}</p>
+                            </div>
+
+                            <p class="estremoSuperiore">100</p>
+                        </div>
+
+                        <div class="legenda">
+                            <div class="subcontainer-legenda">
+                                <img src="{% static 'includes/icone/eta_biologica.png' %}" alt="">
+                                <p>Età Biologica</p>
+                            </div>
+                        
+                            <div class="subcontainer-legenda">
+                                <img src="{% static 'includes/icone/età_crono.png' %}" alt="" >
+                                <p>Età Cronologica</p>
+                            </div>
+                        </div>
+                    </div>      
+
+                    <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.eta_metabolica|default:'7' }}">
+                        <h3>Età Metabolica</h3>
+                        <div class="card-polmone">
+                            <div class="backdrop-riempimento">
+                                <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
+                                    <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                </svg>
+                            </div>
+                            <img src="{% static 'includes/icone/metabolica.png' %}" alt="" width="120px" height="120px">
+                        </div>
+                        <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.eta_metabolica|default:'n.a.' }}</p>
+                    </div>
+
+                    <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.microbiota|default:'5' }}">
+                        <h3>Microbiota</h3>
+                        <div class="card-polmone">
+                            <div class="backdrop-riempimento">
+                                <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
+                                    <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                </svg>
+                            </div>
+                            <img src="{% static 'includes/icone/microbiota.png' %}" alt="" width="120px" height="120px">
+                        </div>
+                        <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.microbiota|default:'n.a.' }}</p>
+                    </div>
                 </div>
-
-
-               
-
             </div>
         </div>
 
@@ -504,7 +541,10 @@
                     <p style="top: 4rem;">Referti Età Biologica</p>
                     <p style="top: 6rem;"><strong>Ultimo Calcolo:</strong> &nbsp; {{ ultimo_referto.data_referto|date:"d/m/Y" }} </p>
                     <a href="{% url 'elenco_referti' persona.id %}" style="top: 10rem;" id="adjust">Vai ai referti</a>
-                    <a href="{% url 'Calcolatore' %}?parametro={{ persona.codice_fiscale|urlencode }}">Calcola Età Biologica</a>
+                    <a href="{% url 'Calcolatore' persona.id %}?parametro={{ persona.codice_fiscale|urlencode }}">
+                        Calcola l'età biologica
+                    </a>
+                    
                 </div>
             </div>
         </div>
@@ -608,8 +648,6 @@
                     <h3>Elenco Prescrizioni</h3>
 
                     <div class="filtri-button">
-
-                        
 
                         <select name="filter" id="filter" style="width: 10rem;">
 
@@ -755,7 +793,7 @@
         <script src="https://cdn.jsdelivr.net/npm/docx@7.7.0/build/index.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.0.2/docx.min.js"></script>
 
-
+        <!-- FUNZION PDF VUOTO PRESCRIZIONE -->
         <script>
             
             async function generatePDF() {
@@ -821,9 +859,9 @@
 
                     const link = document.createElement("a");
                     link.href = URL.createObjectURL(blob);
-                    link.download = `${persona.name} ${persona.surname}`;
+                    link.download = `${persona.name}_${persona.surname}.pdf`;
                     link.click();
-                
+
                 }
                 catch (error) {
                         console.error("Errore nella generazione del PDF:", error);
@@ -833,242 +871,48 @@
             const downloadButton = document.getElementById('downloadPrescrizioneVuota')
             downloadButton.addEventListener("click", generatePDF);
 
-        </script>
+
+        </script> 
 
 
         {% if pdf_url %}
 
-        <script>    
-
-            async function generatePDFandDOCX(pdfUrl, logoUrl, logo2Url, name, surname, dob, pob, fileName, wordFileName) {
-
-                if (!pdfUrl) {
-                    console.error("Errore: Nessun URL PDF specificato!");
-                    return;
-                }
-
-                try {
-
-                    const existingPdfBytes = await fetch(pdfUrl).then((res) => res.arrayBuffer());
-                    const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
-                    const firstPage = pdfDoc.getPages()[0];
-
-
-                    const logoImageBytes = await fetch(logoUrl).then(res => res.arrayBuffer());
-                    const logo2ImageBytes = await fetch(logo2Url).then(res => res.arrayBuffer());
-
-
-                    const logoImage = await pdfDoc.embedPng(logoImageBytes);
-                    const logo2Image = await pdfDoc.embedPng(logo2ImageBytes);
-
-
-                    firstPage.drawImage(logoImage, { x: 180, y: 20, width: 250, height: 100 });
-                    firstPage.drawImage(logo2Image, { x: 190, y: 730, width: 200, height: 100 });
-
-
-                    const pageWidth = firstPage.getWidth();
-                    const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
-                    const fontSize = 12;
-
-                    const alignRight = (text, y) => {
-                        const textWidth = font.widthOfTextAtSize(text, fontSize);
-                        const xPosition = pageWidth - textWidth - 50;
-                        firstPage.drawText(text, { x: xPosition, y: y, size: fontSize, font: font });
-                    };
-
-
-                    alignRight(`Sig.ra/Sig. ${name} ${surname}`, 640);
-                    alignRight(`Città di nascita: ${pob}`, 615);
-                    alignRight(`Data di nascita: ${dob}`, 590);
-
-
-                    firstPage.drawText("Si prescrivono i seguenti esami:", { x: 50, y: 560, size: fontSize, font: font });
-
-
-                    const listaEsamiElements = document.querySelectorAll("input.esame_nascosto");
-                    const esamiRaw = Array.from(listaEsamiElements).map(input => input.value.trim());
-
-                    let esami = esamiRaw.join(",").split(",").map(e => e.trim());
-
-
-                    esami = [...new Set(esami)];
-
-
-                    let yPosition = 530;
-                    const maxEsamiPrimaPagina = 10;
-
-                    if (esami.length > maxEsamiPrimaPagina) {
-                        firstPage.drawText("Vedi esami in allegato", { x: 60, y: yPosition, size: fontSize, font: font });
-
-
-                        const secondPage = pdfDoc.addPage([600, 800]);
-                        let yPositionSecondPage = 750;
-                        secondPage.drawText("Elenco Esami:", { x: 60, y: yPositionSecondPage, size: fontSize, font: font });
-                        yPositionSecondPage -= 20;
-
-                        for (const esame of esami) {
-                            secondPage.drawText(`- ${esame}`, { x: 60, y: yPositionSecondPage, size: fontSize, font: font });
-                            yPositionSecondPage -= 20;
-
-
-                            if (yPositionSecondPage < 50) {
-                                const newPage = pdfDoc.addPage([600, 800]);
-                                yPositionSecondPage = 750;
-                                newPage.drawText("Elenco Esami (continua):", { x: 60, y: yPositionSecondPage, size: fontSize, font: font });
-                                yPositionSecondPage -= 20;
-                            }
-                        }
-                    } else {
-                        for (const esame of esami) {
-                            firstPage.drawText(`- ${esame}`, { x: 60, y: yPosition, size: fontSize, font: font });
-                            yPosition -= 20;
-                        }
-                    }
-
-
-                    firstPage.drawText("Diagnosi:", { x: 50, y: 300, size: fontSize, font: font });
-
-                    const today = new Date();
-                    const formattedDate = today.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-                    firstPage.drawText(`Bari, ${formattedDate}`, { x: 50, y: 200, size: fontSize, font: font });
-
-                    const text = "Dott. Luigi Aprile:";
-                    const textWidth = font.widthOfTextAtSize(text, fontSize);
-                    const xPosition = pageWidth - textWidth - 50;
-                    firstPage.drawText(text, { x: xPosition, y: 150, size: fontSize, font: font });
-
-
-                    const modifiedPdfBytes = await pdfDoc.save();
-                    const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
-
-
-                    const link = document.createElement("a");
-                    link.href = URL.createObjectURL(blob);
-                    link.download = fileName;
-                    link.click();
-                    generateDOCX(name, surname, dob, pob, esami, wordFileName, formattedDate);
-
-                } catch (error) {
-                    console.error("Errore nella generazione del PDF:", error);
-                }
-            }
-
+        <!-- FUNZION STAMPA PDF PRESCRIZIONI -->
+       
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const wave1 = "M0,40 C150,100 350,-20 500,60 L500,100 L0,100 Z";
+                const wave2 = "M0,60 C150,40 350,120 500,30 L500,100 L0,100 Z";
             
-            async function generateDOCX(name, surname, dob, pob, esami, fileName, formattedDate, logoUrl, logo2Url) {
-                try {
-                    console.log("Verifica docx.js:", typeof window.docx); // Deve stampare "object"
-
-                    const doc = new window.docx.Document();
-
-                    const paragraphSpacing = { after: 300 };
-
-                    // 📌 Converte le immagini in Uint8Array
-                    const logoImageArray = await fetchImageAsUint8Array(logoUrl);
-                    const logo2ImageArray = await fetchImageAsUint8Array(logo2Url);
-
-                    // 📌 Creazione delle immagini
-                    const logoImage = new window.docx.ImageRun({
-                        data: logoImageArray,
-                        transformation: { width: 250, height: 100 },
+                document.querySelectorAll(".capacita_vitale").forEach(card => {
+                    const punteggio = parseFloat(card.dataset.punteggio || "0");
+                    const percentuale = Math.min((punteggio / 10) * 100, 100); // sicurezza: max 100%
+                    
+                    const backdrop = card.querySelector(".backdrop-riempimento");
+                    const wavePath = card.querySelector(".wavePath");
+            
+                    // Animazione onda
+                    gsap.to(wavePath, {
+                        duration: 2,
+                        repeat: -1,
+                        yoyo: true,
+                        ease: "sine.inOut",
+                        attr: { d: wave2 }
                     });
-
-                    const logo2Image = new window.docx.ImageRun({
-                        data: logo2ImageArray,
-                        transformation: { width: 200, height: 100 },
+            
+                    // Riempimento acqua
+                    gsap.to(backdrop, {
+                        duration: 1.8,
+                        height: `${percentuale}%`,
+                        ease: "power2.out"
                     });
-
-                    // 📌 Sezione principale del documento
-                    doc.addSection({
-                        properties: {},
-                        children: [
-                            new window.docx.Paragraph({
-                                alignment: window.docx.AlignmentType.CENTER,
-                                children: [logoImage],
-                            }),
-
-                            new window.docx.Paragraph({ text: "", spacing: paragraphSpacing }), // Spazio
-
-                            new window.docx.Paragraph({
-                                alignment: window.docx.AlignmentType.RIGHT,
-                                children: [new window.docx.TextRun({ text: `Sig.ra/Sig. ${name} ${surname}`, bold: true })],
-                            }),
-                            new window.docx.Paragraph({
-                                alignment: window.docx.AlignmentType.RIGHT,
-                                children: [new window.docx.TextRun(`Città di nascita: ${pob}`)],
-                            }),
-                            new window.docx.Paragraph({
-                                alignment: window.docx.AlignmentType.RIGHT,
-                                children: [new window.docx.TextRun(`Data di nascita: ${dob}`)],
-                            }),
-
-                            new window.docx.Paragraph({ text: "", spacing: paragraphSpacing }), // Spazio
-
-                            new window.docx.Paragraph({
-                                text: "Si prescrivono i seguenti esami:",
-                                bold: true,
-                                spacing: { after: 200 },
-                            }),
-
-                            ...esami.map(esame => new window.docx.Paragraph({
-                                text: `- ${esame}`,
-                                spacing: { after: 150 },
-                            })),
-
-                            new window.docx.Paragraph({ text: "", spacing: paragraphSpacing }), // Spazio
-
-                            new window.docx.Paragraph({
-                                text: "Diagnosi:",
-                                bold: true,
-                                spacing: { after: 200 },
-                            }),
-                            new window.docx.Paragraph(`Bari, ${formattedDate}`),
-
-                            new window.docx.Paragraph({ text: "", spacing: paragraphSpacing }), // Spazio
-
-                            new window.docx.Paragraph({
-                                alignment: window.docx.AlignmentType.RIGHT,
-                                children: [new window.docx.TextRun({ text: "Dott. Luigi Aprile", bold: true })],
-                            }),
-
-                            new window.docx.Paragraph({ text: "", spacing: paragraphSpacing }), // Spazio
-
-                            new window.docx.Paragraph({
-                                alignment: window.docx.AlignmentType.CENTER,
-                                children: [logo2Image],
-                            }),
-                        ],
-                    });
-
-                    // 📌 Converte il DOCX in blob e lo scarica
-                    window.docx.Packer.toBlob(doc).then((docBlob) => {
-                        const link = document.createElement("a");
-                        link.href = URL.createObjectURL(docBlob);
-                        link.download = fileName;
-                        link.click();
-                    });
-
-                } catch (error) {
-                    console.error("❌ Errore nella generazione del DOCX:", error);
-                }
-            }
-
-
-            generatePDFandDOCX(
-                "/static/includes/pdfTemplates/prescrizioneTemplate.pdf",
-                "/static/includes/pdfTemplates/logo.png",
-                "/static/includes/pdfTemplates/logo2.png",
-                "{{ persona.name }}",
-                "{{ persona.surname }}",
-                "{{ persona.dob }}",
-                "{{ persona.pob }}",
-                "{{ persona.name}}_{{ persona.surname }}.pdf",
-                "{{ persona.name}}_{{ persona.surname }}.docx"
-            );
-
+                });
+            });
         </script>
+            
+            
+        
 
- 
         {% endif %}
 
         <!-- CARD BP, SUGAR, HEART, CHOLESTEROL -->
@@ -1203,33 +1047,43 @@
     </script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+   
+    <!-- SCRIPT CAPACITA' VITALE -->
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const wavePath = document.getElementById("wavePath");
-        const backdrop = document.querySelector(".backdrop-riempimento");
-
-        // Onda più visibile
-        const wave1 = "M0,40 C150,100 350,-20 500,60 L500,100 L0,100 Z";
-        const wave2 = "M0,60 C150,40 350,120 500,30 L500,100 L0,100 Z";
-
-        // Attiva ondina animata
-        gsap.to(wavePath, {
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        attr: { d: wave2 }
+        document.addEventListener("DOMContentLoaded", () => {
+            const wave1 = "M0,40 C150,100 350,-20 500,60 L500,100 L0,100 Z";
+            const wave2 = "M0,60 C150,40 350,120 500,30 L500,100 L0,100 Z";
+        
+            document.querySelectorAll(".capacita_vitale").forEach(card => {
+                // Ottieni il punteggio, oppure assegna 1 se mancante (10%)
+                const punteggio = parseFloat(card.dataset.punteggio);
+                const punteggioFinale = isNaN(punteggio) ? 1 : punteggio;
+                const percentuale = Math.min((punteggioFinale / 10) * 100, 100);
+        
+                const backdrop = card.querySelector(".backdrop-riempimento");
+                const wavePath = card.querySelector(".wavePath");
+        
+                if (!wavePath || !backdrop) return;
+        
+                // Animazione ondina
+                gsap.to(wavePath, {
+                    duration: 2,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut",
+                    attr: { d: wave2 }
+                });
+        
+                // Altezza riempimento
+                gsap.to(backdrop, {
+                    duration: 1.8,
+                    height: `${percentuale}%`,
+                    ease: "power2.out"
+                });
+            });
         });
-
-        // Animazione iniziale di riempimento (da height 0% a 50%)
-        gsap.to(backdrop, {
-        duration: 1.8,
-        height: "50%",
-        ease: "power2.out"
-        });
-    });
     </script>
-
+        
 
 
 
