@@ -5,10 +5,6 @@ let emails = [];
 let notifications = [];
 let appUser = window.currentUser || 'guest'; // Usiamo appUser invece di currentUser per evitare conflitti
 let previousUser = null;
-// let storedNotifications =
-//   JSON.parse(localStorage.getItem("notifications")) || [];
-// let dismissedNotifications =
-//   JSON.parse(localStorage.getItem("dismissedNotifications")) || [];
 const updates = [
   {
     version: "v3.15.2",
@@ -107,7 +103,6 @@ async function handleUserChange(newUser) {
     await Promise.all([
       initUserNotifications(),
       fetchNotifications(),
-      fetchEmails()
     ]);
     updateAllBadges();
   } catch (error) {
@@ -127,9 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. Verifica il cambio utente
   checkUserChange();
 
-  // 2. Configura intervallo di aggiornamento
-  setInterval(fetchEmails, 60000);
-  
+  // 2. Configura intervallo di aggiornamento  
   // 3. Configura intervallo di aggiornamento
   setInterval(fetchNotifications, 3600000);
 
@@ -191,8 +184,28 @@ document.addEventListener("DOMContentLoaded", () => {
           renderNotifications();
           break;
         case "Email":
-          // Ricarica le email al momento del click
-          renderEmails();
+          const emailsDataElement = document.getElementById("emails-data");
+
+          if (emailsDataElement) {
+            try {
+              const emails = JSON.parse(emailsDataElement.textContent);
+        
+              if (Array.isArray(emails) && emails.length > 0) {
+                sidebarContent.innerHTML = emails.map((email, index) => `
+                  <a href="${email.link}" target="_blank" class="alert alert-warning notification d-block text-decoration-none" data-index="${index}">
+                    <strong>${email.subject}</strong> - ${email.from}
+                  </a>
+                `).join("");
+              } else {
+                sidebarContent.innerHTML = `<p class="default-text-notification">Nessuna email disponibile.</p>`;
+              }
+            } catch (error) {
+              console.error("Errore nel parsing JSON delle email:", error);
+              sidebarContent.innerHTML = `<p class="default-text-notification">Errore nel caricamento email.</p>`;
+            }
+          } else {
+            sidebarContent.innerHTML = `<p class="default-text-notification">Nessun dato email trovato.</p>`;
+          }
           break;
         case "Appuntamenti":
           break;
@@ -276,9 +289,6 @@ document.addEventListener("DOMContentLoaded", () => {
     handleUserChange(currentUser); // Sostituisci con l'utente reale
 
     console.log("Login effettuato: attendo 500ms per la propagazione dei cookie...");
-    setTimeout(() => {
-      fetchEmails();
-    }, 500);
   });
 
   // Avvia i fetch
@@ -498,41 +508,6 @@ function getCookie(name) {
   return cookieValue;
 }
 
-async function fetchEmails() {
-  // Solo per utenti loggati
-  if (appUser === 'guest') {
-    emails = [];
-    updateAllBadges();
-    return;
-  }
-
-  try {
-    const response = await fetch("/api/fetch-emails/", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-        "X-CSRFToken": getCookie('csrftoken')
-      },
-      cache: 'no-store'
-    });
-
-    if (response.status === 401) {
-      window.location.reload();
-      return;
-    }
-
-    const data = await response.json();
-    if (data.success) {
-      emails = data.emails;
-      console.log("Email aggiornate per", appUser);
-      updateAllBadges();
-    }
-  } catch (error) {
-    console.error("Fetch emails error:", error);
-  }
-}
-
 // Modifica renderNotifications per usare data-id corretti
 function renderNotifications() {
   const sidebarContent = document.getElementById("sidebar-content");
@@ -550,16 +525,4 @@ function renderNotifications() {
     : `<p class="default-text-notification">Attualmente non hai notifiche.</p>`;
 
   gsap.to(".notification", { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 });
-}
-
-// Funzione per renderizzare le email
-function renderEmails() {
-  const sidebarContent = document.getElementById("sidebar-content");
-  sidebarContent.innerHTML = emails.length > 0
-    ? emails.map((email, index) => `
-        <a href="/email/${index}" target="_blank" class="alert alert-warning notification d-block text-decoration-none" data-index="${index}">
-          <strong>${email.subject}</strong> - ${email.sender}
-        </a>
-      `).join("")
-    : `<p class="default-text-notification">Nessuna email disponibile.</p>`;
 }

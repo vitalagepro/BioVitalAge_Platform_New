@@ -12,7 +12,7 @@ urlpatterns = [
 
     # URL NAVBAR
     path('accounts/profile/', ProfileView.as_view(), name='profile'),
-    path('api/fetch-emails/', FetchEmailsView.as_view(), name='fetch_emails'),
+    # path('api/fetch-emails/', FetchEmailsView.as_view(), name='fetch_emails'),
 
     # -- URL HOME PAGE --
     path("Home_Page", HomePageRender.as_view(), name='HomePage'),

@@ -564,6 +564,7 @@
   <script>
     window.currentUser = '{% if user.is_authenticated %}{{ user.username }}{% else %}guest{% endif %}';
   </script>
+  {{ emails|json_script:"emails-data" }}
 </body>
 
 </html>

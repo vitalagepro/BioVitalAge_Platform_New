@@ -24,13 +24,10 @@ from django.utils.decorators import method_decorator
 import traceback
 from django.shortcuts import redirect
 import logging
-from social_django.models import UserSocialAuth
 from BioVitalAge.models import UtentiRegistratiCredenziali
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
-# from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import AccessMixin
+from .utils import get_gmail_emails_for_user  # oppure il path corretto
+from social_django.models import UserSocialAuth
+from django.contrib.auth import login
 
 logger = logging.getLogger(__name__)
 
@@ -155,6 +152,7 @@ class HomePageRender(View):
                     'max_age': max_age,
                     'media_percentage': media_percentage,
                     'dottore': dottore,
+                    'emails': get_gmail_emails_for_user(request.user),  # 👈 AGGIUNGI QUI
                 }
         else:
                 context = {
@@ -175,9 +173,18 @@ class HomePageRender(View):
                     'max_age': max_age,
                     'media_percentage': media_percentage,
                     'dottore': dottore,
+                    'emails': get_gmail_emails_for_user(request.user),  # 👈 AGGIUNGI QUI
                     'show_disclaimer': True  # ad esempio, un flag per mostrare un messaggio
                 }
 
+        try:
+            social_auth = UserSocialAuth.objects.get(user__email=dottore.email, provider="google-oauth2")
+            emails = get_gmail_emails_for_user(social_auth.user)
+        except UserSocialAuth.DoesNotExist:
+            print("⚠️ Account Google non collegato per:", dottore.email)
+            emails = []
+
+        context["emails"] = emails  # ← questo è il campo letto nel template da: <script id="emails-data">
         return render(request, "includes/homePage.html", context)
 
     
@@ -290,6 +297,7 @@ class HomePageRender(View):
                                     'media_percentage': media_percentage,
                                     'dottore': dottore,
                                     'dati_estesi': datiEstesi,
+                                    'emails': get_gmail_emails_for_user(request.user),  # 👈 AGGIUNGI QUI
                                 }
 
                             else: 
@@ -311,9 +319,19 @@ class HomePageRender(View):
                                     'max_age': max_age,
                                     'media_percentage': media_percentage,
                                     'dottore': dottore,
+                                    'emails': get_gmail_emails_for_user(request.user),  # 👈 AGGIUNGI QUI
                                     'show_disclaimer': True
                                 }
 
+                            try:
+                                social_auth = UserSocialAuth.objects.get(user__email=dottore.email, provider="google-oauth2")
+                                emails = get_gmail_emails_for_user(social_auth.user)
+                            except UserSocialAuth.DoesNotExist:
+                                print("⚠️ Account Google non collegato per:", dottore.email)
+                                emails = []
+
+                            context['emails'] = emails
+                            
                             return render(request, 'includes/homePage.html' , context)
                         else:
                             return render(request, 'includes/login.html', {'error': 'Password errata'})
@@ -396,133 +414,6 @@ class MedicalNewsNotificationsView(View):
             return JsonResponse({"success": True, "news": news})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
-
-# VIEW PER AJAX
-class AjaxLoginRequiredMixin(AccessMixin):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return JsonResponse({"success": False, "error": "Autenticazione richiesta"}, status=401)
-        return super().dispatch(request, *args, **kwargs)
-
-
-# VIEW PER LE EMAIL GMAIL
-class FetchEmailsView(AjaxLoginRequiredMixin, View):
-    @method_decorator(login_required(login_url=None))
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        try:
-            # Debug avanzato
-            logger.info(f"FetchEmailsView - User: {request.user.id} ({request.user})")
-            logger.info(f"Session key: {request.session.session_key}")
-            auth_backend = request.session.get('_auth_user_backend', 'Nessun backend trovato')
-            logger.info(f"Auth backend: {auth_backend}")
-
-            # 1. Verifica esplicita dell'autenticazione
-            if not request.user.is_authenticated:
-                logger.warning("Utente non autenticato")
-                return JsonResponse(
-                    {"success": False, "error": "Autenticazione richiesta"}, 
-                    status=401
-                )
-
-            # 2. Ottieni il record UserSocialAuth
-            try:
-                user_social = UserSocialAuth.objects.get(
-                    user=request.user,
-                    provider='google-oauth2'
-                )
-                logger.info(f"Trovato UserSocialAuth: {user_social.id}")
-            except UserSocialAuth.DoesNotExist:
-                logger.warning("Account Google non collegato")
-                return JsonResponse(
-                    {"success": False, "error": "Account Google non collegato"},
-                    status=400
-                )
-
-            # 3. Prepara le credenziali con tutti i parametri necessari
-            extra_data = user_social.extra_data
-            credentials_data = {
-                'token': extra_data.get('access_token'),
-                'refresh_token': extra_data.get('refresh_token'),
-                'token_uri': 'https://oauth2.googleapis.com/token',
-                'client_id': extra_data.get('client_id'),
-                'client_secret': extra_data.get('client_secret'),
-                'scopes': ['https://www.googleapis.com/auth/gmail.readonly']
-            }
-            
-            # 4. Crea e valida le credenziali
-            credentials = Credentials(**credentials_data)
-            
-            # 5. Gestione refresh token (doppio strato)
-            try:
-                if extra_data.get('auth_time', 0) + 3600 < int(time.time()):
-                    logger.info("Refresh token via python-social-auth")
-                    strategy = load_strategy()
-                    user_social.refresh_token(strategy)
-                    credentials.token = user_social.extra_data['access_token']
-                
-                if not credentials.valid:
-                    logger.info("Refresh token via Google API")
-                    credentials.refresh(GoogleRequest())
-                    user_social.extra_data['access_token'] = credentials.token
-                    user_social.save()
-                    
-            except Exception as refresh_error:
-                logger.error(f"Errore refresh token: {str(refresh_error)}")
-                return JsonResponse(
-                    {"success": False, "error": "Errore durante l'aggiornamento del token"},
-                    status=400
-                )
-
-            # 6. Crea il servizio Gmail
-            try:
-                service = build('gmail', 'v1', 
-                              credentials=credentials,
-                              static_discovery=False)
-                
-                # 7. Recupera le email
-                results = service.users().messages().list(
-                    userId='me',
-                    maxResults=5,
-                    q='is:unread'
-                ).execute()
-                
-                messages = results.get('messages', [])
-                emails = []
-                
-                for msg in messages:
-                    msg_data = service.users().messages().get(
-                        userId='me',
-                        id=msg['id'],
-                        format='metadata'
-                    ).execute()
-                    
-                    headers = msg_data.get('payload', {}).get('headers', [])
-                    email_data = {
-                        'subject': next((h['value'] for h in headers if h['name'] == 'Subject'), 'No Subject'),
-                        'from': next((h['value'] for h in headers if h['name'] == 'From'), 'No Sender'),
-                        'date': next((h['value'] for h in headers if h['name'] == 'Date'), 'No Date')
-                    }
-                    emails.append(email_data)
-                
-                logger.info(f"Email recuperate con successo: {len(emails)}")
-                return JsonResponse({'success': True, 'emails': emails})
-                
-            except HttpError as e:
-                logger.error(f"Errore Gmail API: {str(e)}")
-                return JsonResponse(
-                    {"success": False, "error": f"Errore Gmail API: {str(e)}"},
-                    status=500
-                )
-                
-        except Exception as e:
-            logger.error(f"Errore generico: {str(e)}", exc_info=True)
-            return JsonResponse(
-                {"success": False, "error": "Errore interno del server"},
-                status=500
-            )
 
 # VIEW PER LA SEZIONE PROFILO
 class ProfileView(View):
@@ -610,9 +501,18 @@ class StatisticheView(View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
         context = {
-            'dottore' : dottore
+            'dottore' : dottore,
+            'emails': get_gmail_emails_for_user(request.user)  # 👈 AGGIUNGI QUI
         }
+        
+        try:
+            social_auth = UserSocialAuth.objects.get(user__email=dottore.email, provider="google-oauth2")
+            emails = get_gmail_emails_for_user(social_auth.user)
+        except UserSocialAuth.DoesNotExist:
+            print("⚠️ Account Google non collegato per:", dottore.email)
+            emails = []
 
+        context["emails"] = emails  # ← questo è il campo letto nel template da: <script id="emails-data">
         return render(request, "includes/statistiche.html", context)
 
 # VIEW PER IL CALCOLO DELL'ETA' BIOLOGICA
