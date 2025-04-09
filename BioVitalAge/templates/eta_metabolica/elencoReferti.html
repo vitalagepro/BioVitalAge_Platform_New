@@ -85,30 +85,27 @@
 
         <!-- TABELLA REFERTI -->
         <div class="contenitore-tabella" style="margin-top: 2rem;">
-
             <div class="recent-patients" id="card-style">
-
                 <div class="table-container">
-
                     <div class="table-header">
-                        <p>Valore Referto</p>
+                        <p>Posizione</p>
+                        <p>Punteggio Calcolo</p>
                         <p>Data Referto</p>
                         <p>Mostra Referto</p>
                         <p>Scarica Referto</p>
                     </div>
 
-                    
                     <div class="table-content">
                         {% for referto in referti %}
                         <div class="riga-container">
-                            <p>{{ referto.punteggio_fisico  }}</p>
-                            
+                            <p>{{ forloop.counter|add:referti.start_index|add:"-1" }}</p> 
+                            <p>{{ referto.punteggio_finale }}</p>
                             <p>{{ referto.data_referto|date:"d/m/Y" }}</p>
                             <p>
                                 <a href="#"
-                                    data-referto-id="{{ referto.id }}"
-                                    data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
-                                    <img src="{% static 'includes/icone/referto.png' %}" alt="" />
+                                data-referto-id="{{ referto.id }}"
+                                data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
+                                <img src="{% static 'includes/icone/referto.png' %}" alt="" />
                                 </a>
                             </p>
                             <p>
@@ -117,18 +114,37 @@
                                 </a>
                             </p>
                         </div>
-
                         {% empty %}
                         <p class="text-center mb-2 mt-2">Nessun referto recente trovato.</p>
                         {% endfor %}
-
                     </div>
 
+                    <!-- Sezione paginazione -->
+                    <div class="pagination_tabella">
+                        {% if referti.has_previous %}
+                            <a class="previous" href="?page={{ referti.previous_page_number }}">&lt; Previous</a>
+                        {% else %}
+                            <span class="previous disabled">&lt; Previous</span>
+                        {% endif %}
+                    
+                        {% for num in referti.paginator.page_range %}
+                            {% if referti.number == num %}
+                                <span class="current">{{ num }}</span>
+                            {% else %}
+                                <a href="?page={{ num }}">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    
+                        {% if referti.has_next %}
+                            <a class="next" href="?page={{ referti.next_page_number }}">Next &gt;</a>
+                        {% else %}
+                            <span class="next disabled">Next &gt;</span>
+                        {% endif %}
+                    </div>
+                    
                 </div>
             </div>
         </div>
-
-
     </main>
 
     <!-- Import CDN js -->
