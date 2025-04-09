@@ -126,7 +126,12 @@
       <canvas id="incomeByDepartment"></canvas>
     </div>
   </main>
+  <!-- Fetch email from backend -->
   {{ emails|json_script:"emails-data" }}
+  <!-- Script -->
+  <script>
+      window.emailCount = {{ emails|length }};
+  </script>
 </body>
 
 </html>

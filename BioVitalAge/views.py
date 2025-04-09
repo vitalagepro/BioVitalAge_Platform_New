@@ -15,6 +15,7 @@ from django.views.decorators.csrf import csrf_exempt # type: ignore
 ## SHORTCUTS
 from django.shortcuts import render, get_object_or_404, redirect # type: ignore
 from django.shortcuts import redirect # type: ignore
+from django.contrib import messages
 
 ## CONFIG
 from django.conf import settings # type: ignore
@@ -374,61 +375,56 @@ class ProfileView(View):
     def get(self, request, *args, **kwargs):
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        is_gmail_connected = UserSocialAuth.objects.filter(user__email=dottore.email, provider='google-oauth2').exists()
         
         context = {
             'dottore': dottore,
             'email_dottore': dottore.email,
             'nome_dottore': dottore.nome,
             'password_dottore': dottore.password,
-            'gmail_linked': True if dottore.cookie == 'SI' else False,
+            'gmail_linked': is_gmail_connected
         }
         return render(request, 'includes/profile.html', context)
 
     def post(self, request, *args, **kwargs):
         dottore_id = request.session.get('dottore_id')
-        if not dottore_id:
-            return JsonResponse({'status': 'error', 'message': 'Sessione scaduta o utente disconnesso'}, status=401)
-
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
-        # Solo ora, se serve, puoi verificare se ha un account Google collegato
-        try:
-            social_account = UserSocialAuth.objects.get(user=dottore.user, provider='google-oauth2')
-        except Exception as e:
-            social_account = None
+        action = request.POST.get("action")
 
-        # Recupera i dati dal form
-        nome = request.POST.get('name')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        # La checkbox invia "SI" se spuntata, altrimenti None
-        check_value = request.POST.get('check')
+        if action == "update_profile":
+            nome = request.POST.get('name')
+            email = request.POST.get('email')
+            password = request.POST.get('password')
 
-        if nome:
-            dottore.nome = nome
-        if email:
-            dottore.email = email
-        if password:
-            dottore.password = password  # Nota: in produzione usa l'hashing della password
+            if nome:
+                dottore.nome = nome
+            if email:
+                dottore.email = email
+            if password:
+                dottore.password = password  # Hash in produzione
+            dottore.save()
 
-        # Aggiorna lo stato della checkbox nel campo "cookie"
-        dottore.cookie = "SI" if check_value else ""
-        dottore.save()
+            messages.success(request, "Profilo aggiornato con successo.")
+            return redirect("profile")
 
-        # Se la richiesta è AJAX, restituisci una risposta JSON
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        elif action == "update_gmail":
+            check_value = request.POST.get('check') == "SI"
+            dottore.cookie = "SI" if check_value else ""
+            dottore.save()
+
             if not check_value:
-                # Se la checkbox viene disattivata, elimina l'associazione Google senza fare logout dal profilo.
                 try:
-                    social_account = UserSocialAuth.objects.get(user=request.user, provider='google-oauth2')
+                    social_account = UserSocialAuth.objects.get(user__email=dottore.email, provider="google-oauth2")
                     social_account.delete()
+                    messages.success(request, "Account Gmail disconnesso con successo.")
                 except UserSocialAuth.DoesNotExist:
-                    pass
-                return JsonResponse({'status': 'disconnected'})
-            return JsonResponse({'status': 'success'})
+                    messages.info(request, "Nessun account Gmail collegato.")
+            else:
+                # Gmail collegato => redirecta a Google
+                return redirect("/auth/login/google-oauth2/?prompt=consent&access_type=offline")
 
-        # Se non è AJAX, puoi reindirizzare alla pagina profilo (o a una pagina di conferma)
-        return redirect('profile')
+            return redirect("profile")
 
 # VIEW PER LA SEZIONE STATISTICHE
 class StatisticheView(View):
@@ -1796,6 +1792,39 @@ class CalcolatoreRender(View):
             }
             return render(request, "includes/calcolatore.html", context)
 
+class CartellaPazienteView(View):
+
+    def get(self, request, id):
+        
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        
+        #DATI REFERTI ETA' BIOLOGICA
+        referti_recenti = persona.referti.all().order_by('-data_referto')
+        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+        ultimo_referto = referti_recenti.first() if referti_recenti else None
+        
+        dati_estesi_ultimo_referto = None
+        if ultimo_referto:
+            dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+
+
+        visite = ElencoVisitePaziente.objects.filter(paziente_id=id)
+
+        context = {
+            'persona': persona,
+            'referti_recenti': referti_recenti,
+            'dati_estesi': dati_estesi,
+            'ultimo_referto': ultimo_referto,
+            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
+            'dottore' : dottore,
+            'visite': visite,
+            #'elencoPrescrizioni': elencoPrescrizioni,
+        }
+
+        return render(request, "includes/cartellaPaziente.html", context)
 
 class ElencoRefertiView(View):
     def get(self, request, id):
@@ -1822,6 +1851,470 @@ class ElencoRefertiView(View):
         }
 
         return render(request, "includes/elencoReferti.html", context)
+
+# VIEWS PER SEZIONE DATI BASE
+class DatiBaseView(View):
+
+    def get(self, request, id):
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'persona': persona,
+            'dottore' : dottore
+        }
+        return render(request, "includes/dati_base.html", context)
+    
+    def post(self, request, id):
+
+        print(request.POST)
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        try:
+            
+            #Informazioni occupazione
+            persona.professione = request.POST.get("professione") or "No"
+            persona.pensionato = request.POST.get("pensionato") or "No"
+
+            #Per la donna
+            persona.menarca = request.POST.get('menarca') or "No"
+            persona.ciclo = request.POST.get('ciclo') or "No"
+            persona.sintomi = request.POST.get('sintomi') or "No"
+            persona.esordio = request.POST.get('esordio') or "No"
+            persona.parto = request.POST.get('parto') or "No"
+            persona.post_parto = request.POST.get('post_parto') or "No"
+            persona.aborto = request.POST.get('aborto') or "No"
+
+            # Stile di vita - Alcol
+            persona.alcol = request.POST.get("alcol") or "No"
+            persona.alcol_type = request.POST.get("alcol_type") or "No"
+            persona.data_alcol = request.POST.get("data_alcol")
+            persona.alcol_frequency = request.POST.get("alcol_frequency") or "No"
+
+            # Stile di vita - Fumo
+            persona.smoke = request.POST.get("smoke") or "No"
+            persona.smoke_frequency = request.POST.get("smoke_frequency") or "No"
+            persona.reduced_intake = request.POST.get("reduced_intake") or "No"
+
+            # Stile di vita - Sport
+            persona.sport = request.POST.get("sport") or "No"
+            persona.sport_livello = request.POST.get("sport_livello") or "No"
+            persona.sport_frequency = request.POST.get("sport_frequency") or "No"
+
+            # Stile di vita - Sedentarietà
+            persona.attivita_sedentaria = request.POST.get("attivita_sedentaria") or "No"
+            persona.livello_sedentarieta = request.POST.get("livello_sedentarieta") or "No"
+            persona.sedentarieta_nota = request.POST.get("sedentarieta_nota") or "No"
+
+            # Anamnesi
+            persona.m_cardiache = request.POST.get("m_cardiache_fam") or "No"
+            persona.diabete_m = request.POST.get("diabete_m") or "No"
+            persona.ipertensione = request.POST.get("ipertensione") or "No"
+            persona.obesita = request.POST.get("obesita") or "No"
+            persona.m_tiroidee = request.POST.get("m_tiroidee") or "No"
+            persona.m_polmonari = request.POST.get("m_polmonari") or "No"
+            persona.tumori = request.POST.get("tumori") or "No"
+            persona.allergie = request.POST.get("allergie") or "No"
+            persona.m_psichiatriche = request.POST.get("m_psichiatriche") or "No"
+            persona.patologie = request.POST.get("patologie") or "No"
+            persona.p_p_altro = request.POST.get("p_p_altro") or "No"
+            persona.t_farmaco = request.POST.get("t_farmaco") or "No"
+            persona.t_dosaggio = request.POST.get("t_dosaggio") or "No"
+            persona.t_durata = request.POST.get("t_durata") or "No"
+
+            # Esame Obiettivo
+            persona.a_genarale = request.POST.get("a_generale") or "No"
+            persona.psiche = request.POST.get("psiche") or "No"
+            persona.r_ambiente = request.POST.get("r_ambiente") or "No"
+            persona.s_emotivo = request.POST.get("s_emotivo") or "No"
+            persona.costituzione = request.POST.get("costituzione") or "No"
+            persona.statura = request.POST.get("statura") or "No"
+            persona.s_nutrizionale = request.POST.get("s_nutrizionale") or "No"
+            persona.eloquio = request.POST.get("eloquio") or "No"
+
+            # Informazioni del sangue
+            persona.pressure_min = request.POST.get("pressure_min") or "No"
+            persona.pressure_max = request.POST.get("pressure_max") or "No"
+            persona.heart_rate = request.POST.get("heart_rate") or "No"
+            persona.blood_group = request.POST.get("blood_group") or "No"
+            persona.rh_factor = request.POST.get("rh_factor") or "No"
+
+            persona.save()
+
+            context = {
+                'persona': persona,
+                'dottore': dottore,
+                'success': 'I dati sono stati aggiornati correttamente' 
+            }
+
+        except Exception as e:
+            context = {
+                'persona': persona,
+                'dottore': dottore,
+                'errore': f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
+            }
+    
+
+        return render(request, "includes/dati_base.html", context)  
+        
+class InserisciPazienteView(View):
+
+    def get(self, request):
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+            'dottore' : dottore
+        }
+
+        return render(request, "includes/InserisciPaziente.html", context)
+    
+
+    def post(self, request):
+        try:
+            print(request.POST)
+            success = None 
+            dottore = request.user.utentiregistraticredenziali if hasattr(request.user, 'utentiregistraticredenziali') else None
+            codice_fiscale = request.POST.get('codice_fiscale')
+
+            dottore_id = request.session.get('dottore_id')
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+           
+            paziente_esistente = TabellaPazienti.objects.filter(dottore=dottore, codice_fiscale=codice_fiscale).first()
+          
+            def parse_date(date_str):
+                return date_str if date_str else None
+
+            context = {'dottore': dottore}
+
+            if paziente_esistente:
+                campi_opzionali = [
+                    'residence', 'province', 'cap', 'email', 'phone',
+                    'associate_staff', 'height', 'weight', 'bmi', 'bmi_detection_date',
+                    'girth_value', 'girth_notes', 'girth_date',
+                    'alcol', 'alcol_type', 'data_alcol', 'alcol_frequency',
+                    'smoke', 'smoke_frequency', 'reduced_intake',
+                    'sport', 'sport_livello', 'sport_frequency',
+                    'attivita_sedentaria', 'livello_sedentarieta', 'sedentarieta_nota', 'blood_group'
+                ]
+
+                if any(request.POST.get(campo) for campo in campi_opzionali):
+                    paziente_esistente.residence = request.POST.get('residence') or None
+                    paziente_esistente.email = request.POST.get('email') or None
+                    paziente_esistente.phone = request.POST.get('phone') or None
+                    paziente_esistente.cap = request.POST.get('cap') or None
+                    paziente_esistente.province = request.POST.get('province') or None
+                    paziente_esistente.associate_staff = request.POST.get('associate_staff') or None
+                    paziente_esistente.height = request.POST.get('height') or None
+                    paziente_esistente.weight = request.POST.get('weight') or None
+                    paziente_esistente.bmi = request.POST.get('bmi') or None
+                    paziente_esistente.bmi_detection_date = parse_date(request.POST.get('bmi_detection_date')) or None
+                    paziente_esistente.girth_value = request.POST.get('girth_value') or None
+                    paziente_esistente.girth_notes = request.POST.get('girth_notes') or None
+                    paziente_esistente.girth_date = parse_date(request.POST.get('girth_date')) or None
+                    paziente_esistente.alcol = request.POST.get('alcol') or None
+                    paziente_esistente.alcol_type = request.POST.get('alcol_type') or None
+                    paziente_esistente.data_alcol = parse_date(request.POST.get('data_alcol')) or None
+                    paziente_esistente.alcol_frequency = request.POST.get('alcol_frequency') or None
+                    paziente_esistente.smoke = request.POST.get('smoke') or None
+                    paziente_esistente.smoke_frequency = request.POST.get('smoke_frequency') or None
+                    paziente_esistente.reduced_intake = request.POST.get('reduced_intake') or None
+                    paziente_esistente.sport = request.POST.get('sport') or None
+                    paziente_esistente.sport_livello = request.POST.get('sport_livello') or None
+                    paziente_esistente.sport_frequency = request.POST.get('sport_frequency') or None
+                    paziente_esistente.attivita_sedentaria = request.POST.get('attivita_sedentaria') or None
+                    paziente_esistente.livello_sedentarieta = request.POST.get('livello_sedentarieta') or None
+                    paziente_esistente.sedentarieta_nota = request.POST.get('sedentarieta_nota') or None
+                    paziente_esistente.blood_group = request.POST.get('blood_group') or None
+
+                    paziente_esistente.save()
+                    success = "I dati del paziente sono stati aggiornati con successo!"
+                
+                else:
+                    errore = "Operazione non andata a buon fine: 'Un Utente con questo Codice Fiscale è gia presente all'interno del database'."
+                    context['errore'] = errore
+            
+            else:
+                campi_opzionali = [
+                    'residence', 'email', 'password', 'blood_group', 'associate_staff', 'height',
+                    'weight', 'bmi','bmi_detection_date', 'girth_value', 'girth_notes',
+                    'girth_notes','girth_date', 'alcol',  'alcol_type', 'data_alcol',
+                    'alcol_frequency','smoke', 'smoke_frequency', 'reduced_intake',
+                    'sport', 'sport_livello', 'sport_frequency', 'attivita_sedentaria',
+                    'livello_sedentarieta', 'sedentarieta_nota'
+                ]
+
+                if any(request.POST.get(campo) for campo in campi_opzionali):
+
+                        TabellaPazienti.objects.create(
+                            dottore=dottore,
+                            name=request.POST.get('name'),
+                            surname=request.POST.get('surname'),
+                            residence=request.POST.get('residence'),
+                            email=request.POST.get('email') or None,
+                            phone=request.POST.get('phone') or None,
+                            dob=parse_date(request.POST.get('dob')),
+                            gender=request.POST.get('gender'),
+                            cap=request.POST.get('cap'),
+                            province=request.POST.get('province'),
+                            place_of_birth=request.POST.get('place_of_birth'),
+                            codice_fiscale=codice_fiscale,
+                            chronological_age=request.POST.get('chronological_age'),
+                            blood_group=request.POST.get('blood_group') or None,
+                            associate_staff=request.POST.get('associate_staff') or None,
+                            height=request.POST.get('height') or None,
+                            weight=request.POST.get('weight') or None,
+                            bmi=request.POST.get('bmi') or None,
+                            bmi_detection_date=parse_date(request.POST.get('bmi_detection_date')) or None,
+                            girth_value=request.POST.get('girth_value') or None,
+                            girth_notes=request.POST.get('girth_notes') or None,
+                            girth_date=parse_date(request.POST.get('girth_date')) or None,
+                            alcol=request.POST.get('alcol') == 'on' or None,
+                            alcol_type=request.POST.get('alcol_type') or None,
+                            data_alcol=parse_date(request.POST.get('data_alcol')) or None,
+                            alcol_frequency=request.POST.get('alcol_frequency') or None,
+                            smoke=request.POST.get('smoke') == 'on' or None,
+                            smoke_frequency=request.POST.get('smoke_frequency') or None,
+                            reduced_intake=request.POST.get('reduced_intake') or None,
+                            sport=request.POST.get('sport') == 'on' or None,
+                            sport_livello=request.POST.get('sport_livello') or None,
+                            sport_frequency=request.POST.get('sport_frequency') or None,
+                            attivita_sedentaria=request.POST.get('attivita_sedentaria') == 'on' or None,
+                            livello_sedentarieta=request.POST.get('livello_sedentarieta') or None,
+                            sedentarieta_nota=request.POST.get('sedentarieta_nota') or None,
+                            
+                            professione = request.POST.get('professione') or None,
+                            pensionato = request.POST.get('pensionato') or None,
+                            menarca = request.POST.get('menarca') or None,
+                            ciclo = request.POST.get('ciclo') or None,
+                            sintomi = request.POST.get('sintomi') or None,
+                            esordio = request.POST.get('esordio') or None,
+                            parto = request.POST.get('parto') or None,
+                            post_parto = request.POST.get('post_parto') or None,
+                            aborto = request.POST.get('aborto') or None,
+                            m_cardiache = request.POST.get('m_cardiache') or None,
+                            diabete_m = request.POST.get('diabete_m') or None,
+                            obesita = request.POST.get('obesita') or None,
+                            epilessia = request.POST.get('epilessia') or None,
+                            ipertensione = request.POST.get('ipertensione') or None,
+                            m_tiroidee = request.POST.get('m_tiroidee') or None,
+                            m_polmonari = request.POST.get('m_polmonari') or None,
+                            tumori = request.POST.get('tumori') or None,
+                            allergie = request.POST.get('allergie') or None,
+                            m_psichiatriche = request.POST.get('m_psichiatriche') or None,
+                            patologie = request.POST.get('patologie') or None,
+                            p_p_altro = request.POST.get('p_p_altro') or None,
+                            t_farmaco = request.POST.get('t_farmaco') or None,
+                            t_dosaggio = request.POST.get('t_dosaggio') or None,
+                            t_durata = request.POST.get('t_durata') or None,
+                            p_cardiovascolari = request.POST.get('p_cardiovascolari') or None,
+                            m_metabolica = request.POST.get('m_metabolica') or None,
+                            p_respiratori_cronici = request.POST.get('p_respiratori_cronici') or None,
+                            m_neurologica = request.POST.get('m_neurologica') or None,
+                            m_endocrina = request.POST.get('m_endocrina') or None,
+                            m_autoimmune = request.POST.get('m_autoimmune') or None,
+                            p_epatici = request.POST.get('p_epatici') or None,
+                            m_renale = request.POST.get('m_renale') or None,
+                            d_gastrointestinali = request.POST.get('d_gastrointestinali') or None,
+                            eloquio = request.POST.get('eloquio') or None,
+                            s_nutrizionale = request.POST.get('s_nutrizionale') or None,
+                            a_genarale = request.POST.get('a_genarale') or None,
+                            psiche = request.POST.get('psiche') or None,
+                            r_ambiente = request.POST.get('r_ambiente') or None,
+                            s_emotivo = request.POST.get('s_emotivo') or None,
+                            costituzione = request.POST.get('costituzione') or None,
+                            statura = request.POST.get('statura') or None,
+                        )
+                        success = "Nuovo paziente salvato con successo!"
+
+                else:
+                        TabellaPazienti.objects.create(
+                            dottore=dottore,
+                            name=request.POST.get('name'),
+                            surname=request.POST.get('surname'),
+                            dob=parse_date(request.POST.get('dob')),
+                            gender=request.POST.get('gender'),
+                            cap=request.POST.get('cap'),
+                            province=request.POST.get('province'),
+                            place_of_birth=request.POST.get('place_of_birth'),
+                            codice_fiscale=codice_fiscale,
+                            chronological_age=request.POST.get('chronological_age'),
+                            
+                        )
+                        success = "Nuovo paziente salvato con successo!"
+
+            if success:
+                context["success"] = success
+
+            return render(request, "includes/InserisciPaziente.html", context)
+
+        except Exception as e:
+            context["errore"] = f"system error: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova."
+            return render(request, "includes/InserisciPaziente.html", context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# VIEWS PER SEZIONE ETA METABOLICA
+class ComposizioneView(View):
+
+    def get(self, request, id):
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        ultimo_referto = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto').first()
+
+
+        context = {
+            'persona': persona,
+            'dottore' : dottore,
+            'ultimo_referto': ultimo_referto
+        }
+
+        return render(request, "eta_metabolica/etaMetabolica.html", context)
+
+    def post(self, request, id):       
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        try:
+            # Conversione date (se presenti)
+            bmi_date = request.POST.get("bmi_detection_date")
+            girth_date = request.POST.get("girth_date")
+            bmi_detection_date = datetime.strptime(bmi_date, "%Y-%m-%d").date() if bmi_date else None
+            girth_detection_date = datetime.strptime(girth_date, "%Y-%m-%d").date() if girth_date else None
+
+            # Salva nella tabella RefertiEtaMetabolica
+            RefertiEtaMetabolica.objects.create(
+                dottore=dottore,
+                paziente=persona,
+
+                # Composizione corporea
+                bmi=request.POST.get("bmi"),
+                grasso=request.POST.get("grasso"),
+                acqua=request.POST.get("acqua"),
+                massa_muscolare=request.POST.get("massa_muscolare"),
+                bmr=request.POST.get("bmr"),
+                whr=request.POST.get("whr"),
+                whtr=request.POST.get("whtr"),
+
+                # Profilo glicemico e insulinico
+                glicemia=request.POST.get("glicemia"),
+                ogtt=request.POST.get("ogtt"),
+                emoglobina_g=request.POST.get("emoglobina_g"),
+                insulina_d=request.POST.get("insulina_d"),
+                curva_i=request.POST.get("curva_i"),
+                homa_ir=request.POST.get("homa_ir"),
+                tyg=request.POST.get("tyg"),
+
+                # Profilo lipidico
+                c_tot=request.POST.get("c_tot"),
+                hdl=request.POST.get("hdl"),
+                ldl=request.POST.get("ldl"),
+                trigliceridi=request.POST.get("trigliceridi"),
+
+                # Profilo epatico
+                ast=request.POST.get("ast"),
+                alt=request.POST.get("alt"),
+                ggt=request.POST.get("ggt"),
+                bili_t=request.POST.get("bili_t"),
+
+                # Infiammazione
+                pcr=request.POST.get("pcr"),
+                hgs=request.POST.get("hgs"),
+                sii=request.POST.get("sii"),
+
+                # Stress e antropometria
+                c_plasmatico=request.POST.get("c_plasmatico"),
+                massa_ossea=request.POST.get("massa_ossea"),
+                eta_metabolica=request.POST.get("eta_metabolica"),
+                grasso_viscerale=request.POST.get("grasso_viscerale"),
+
+                # Dati anagrafici e misurazioni
+                height=request.POST.get("altezza"),
+                weight=request.POST.get("weight"),
+                p_fisico=request.POST.get("p_fisico"),
+                girth_value=request.POST.get("girth_value"),
+                girth_notes=request.POST.get("note_addominali"),
+                bmi_detection_date=bmi_detection_date,
+                girth_date=girth_detection_date
+            )
+
+            ultimo_referto = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto').first()
+
+            context = {
+                'persona': persona,
+                'dottore': dottore,
+                'success': 'I dati sono stati aggiornati correttamente nel referto',
+                'ultimo_referto': ultimo_referto
+            }
+
+        except Exception as e:
+            context = {
+                'persona': persona,
+                'dottore': dottore,
+                'errore': f"Errore di sistema: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
+            }
+
+        return render(request, "eta_metabolica/etaMetabolica.html", context)
+
+
+class ComposizioneChartView(View):
+    def get(self, request, id):
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context = {
+                'persona': persona,
+                'dottore': dottore,
+        }
+
+        return render (request, 'eta_metabolica/grafici.html', context)
+
+class RefertiComposizioneView(View):
+    def get(self, request, id):
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        referti = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto')
+
+
+        context = {
+                'persona': persona,
+                'dottore': dottore,
+                'referti': referti,
+        }
+
+        return render (request, 'eta_metabolica/elencoReferti.html', context)
 
 class PersonaDetailView(View):
     def get(self, request, persona_id):
@@ -2133,7 +2626,28 @@ class UpdatePersonaContactView(View):
     
     def post(self):
         return
+
+class EtaVitaleView(View):
+
+    def get(self, request, id):
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
+  
+        referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
+
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+
+        context = {
+            'persona': persona,
+            'referti_test_recenti': referti_test_recenti,
+            'dottore': dottore
+        }
+
+        return render(request, "includes/EtaVitale.html", context)
     
+    def post(self):
+        return
+
 class TestEtaVitaleView(View):
 
     def get(self,request, id):

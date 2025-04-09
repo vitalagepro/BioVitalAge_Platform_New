@@ -406,9 +406,12 @@ function updateAllBadges() {
       badge.className = "badge-count";
       emailTrigger.appendChild(badge);
     }
-    badge.textContent = emails.length;
-    badge.style.display = emails.length > 0 ? "flex" : "none";
+
+    const emailCount = window.emailCount || 0;
+    badge.textContent = emailCount;
+    badge.style.display = emailCount > 0 ? "flex" : "none";
   }
+
 }
 
 // Modifica la funzione fetchMedicalNewsNotifications
