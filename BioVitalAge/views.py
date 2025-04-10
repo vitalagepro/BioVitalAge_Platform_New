@@ -3,6 +3,7 @@ import requests, calendar, json, os, traceback, logging # type: ignore
 
 from datetime import datetime, timedelta
 from collections import defaultdict
+from django.core.paginator import Paginator # type: ignore
 
 ## HTTP
 from django.http import JsonResponse # type: ignore
@@ -24,6 +25,7 @@ from django.utils import timezone as dj_timezone # type: ignore
 from django.utils.decorators import method_decorator # type: ignore
 from django.utils.timezone import now # type: ignore
 from django.utils.timezone import localtime # type: ignore
+from django.utils.dateparse import parse_date # type: ignore
 from .utils import *
 
 ## CALCOLO ETA METABOLICA
@@ -35,7 +37,6 @@ from django.db.models import OuterRef, Subquery # type: ignore
 from django.db.models import Count # type: ignore
 from django.db.models import Q # type: ignore
 from django.db.models import Avg, Min, Max # type: ignore
-
 
 
 logger = logging.getLogger(__name__)
@@ -770,7 +771,22 @@ class CartellaPazienteView(View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
         persona = get_object_or_404(TabellaPazienti, id=id)
 
-        
+        # DATI PER GLI INDICATORI DI PERFORMANCE
+        ## DATI CAPACITA' VITALE
+        ultimo_referto_capacita_vitale = persona.referti_test.order_by('-data_ora_creazione').first()
+
+
+        ## DATI RESILIENZA
+
+
+        ## DATI ETA' METABOLICA 
+        referti_recenti = persona.referti_eta_metabolica.all().order_by('-data_referto')
+        ultimo_referto_eta_metabolica = referti_recenti.first() if referti_recenti.exists() else None
+
+        ## MICROBIOTA    
+
+
+
         #DATI REFERTI ETA' BIOLOGICA
         referti_recenti = persona.referti.all().order_by('-data_referto')
         dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
@@ -782,21 +798,109 @@ class CartellaPazienteView(View):
 
 
         visite = ElencoVisitePaziente.objects.filter(paziente_id=id)
-        ultimo_referto = persona.referti_test.order_by('data_ora_creazione').first()
-                
+        
+
         context = {
             'persona': persona,
             'referti_recenti': referti_recenti,
             'dati_estesi': dati_estesi,
-            'ultimo_referto': ultimo_referto,
+            
             'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
             'dottore' : dottore,
             'visite': visite,
             'referti_test_recenti': ultimo_referto,
-            #'elencoPrescrizioni': elencoPrescrizioni,
+
+            #ULTIMO REFERTO ETA METABOLICA
+            'ultimo_referto_eta_metabolica': ultimo_referto_eta_metabolica,
+            #ULTIMO REFERTO CAPACITA' VITALE
+            'ultimo_referto_capacita_vitale': ultimo_referto_capacita_vitale,
+            
         }
 
         return render(request, "includes/cartellaPaziente.html", context)
+
+    def post(self, request, id):
+        
+        def parse_italian_date(value):
+            try:
+                return datetime.strptime(value, "%d/%m/%Y").date()
+            except (ValueError, TypeError):
+                return None
+
+
+        # ---- DATI NECESSARI AL RENDERING DELLA CARTELLA ----
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        persona.codice_fiscale = request.POST.get('codice_fiscale')
+        persona.dob = parse_date(request.POST.get('dob'))
+        persona.residence = request.POST.get('residence')
+        persona.cap = request.POST.get('cap')
+        persona.province = request.POST.get('province')
+        persona.gender = request.POST.get('gender')
+        persona.associate_staff = request.POST.get('associate_staff')
+        persona.blood_group = request.POST.get('blood_group')
+        persona.email = request.POST.get('email')
+        persona.phone = request.POST.get('phone')
+
+        persona.dob = parse_italian_date(request.POST.get('dob'))
+        persona.lastVisit = parse_italian_date(request.POST.get('lastVisit'))
+        persona.upcomingVisit = parse_italian_date(request.POST.get('upcomingVisit'))
+
+        persona.save()
+
+        
+        # DATI PER GLI INDICATORI DI PERFORMANCE
+        ## DATI CAPACITA' VITALE
+        ultimo_referto_capacita_vitale = persona.referti_test.order_by('-data_ora_creazione').first()
+
+
+        ## DATI RESILIENZA
+
+
+        ## DATI ETA' METABOLICA 
+        referti_recenti = persona.referti_eta_metabolica.all().order_by('-data_referto')
+        ultimo_referto_eta_metabolica = referti_recenti.first() if referti_recenti.exists() else None
+
+        ## MICROBIOTA    
+
+
+
+        #DATI REFERTI ETA' BIOLOGICA
+        referti_recenti = persona.referti.all().order_by('-data_referto')
+        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+        ultimo_referto = referti_recenti.first() if referti_recenti else None
+        
+        dati_estesi_ultimo_referto = None
+        if ultimo_referto:
+            dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+
+        visite = ElencoVisitePaziente.objects.filter(paziente_id=id)
+
+        context = {
+            'persona': persona,
+            'referti_recenti': referti_recenti,
+            'dati_estesi': dati_estesi,
+            
+            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
+            'dottore' : dottore,
+            'visite': visite,
+            'referti_test_recenti': ultimo_referto,
+
+            #ULTIMO REFERTO ETA METABOLICA
+            'ultimo_referto_eta_metabolica': ultimo_referto_eta_metabolica,
+            #ULTIMO REFERTO CAPACITA' VITALE
+            'ultimo_referto_capacita_vitale': ultimo_referto_capacita_vitale,
+            "success" : True,
+            
+        }
+
+        return render(request, "includes/cartellaPaziente.html", context)
+
+
+
+
 
 
 ## SEZIONE MUSCOLO
@@ -1000,6 +1104,7 @@ class DatiBaseView(View):
         return render(request, "includes/dati_base.html", context)  
 
 
+
 ## SEZIONE ETA' METABOLICA
 class ComposizioneView(View):
 
@@ -1023,6 +1128,7 @@ class ComposizioneView(View):
 
     def post(self, request, id):
 
+        eta_metabolica_calcolata = None
         success = False
         punteggio = False
 
@@ -1071,7 +1177,6 @@ class ComposizioneView(View):
                 punteggio = eta_metabolica_calcolata
 
             else:
-                print("sono qui")
                 # AGGIUNGI MODALE PER INSUCCESSO 
                 success = True
 
@@ -1143,12 +1248,13 @@ class ComposizioneView(View):
                 'ultimo_referto': ultimo_referto
             }
 
-        except Exception as e:
+        except Exception as e:  
+            print(e)
 
             context = {
                 'persona': persona,
                 'dottore': dottore,
-                'errore': f"Errore di sistema: {str(e)} --- Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
+                'errore': "Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
             }
 
         return render(request, "eta_metabolica/etaMetabolica.html", context)
@@ -1349,22 +1455,26 @@ class ComposizioneChartView(View):
 
 class RefertiComposizioneView(View):
     def get(self, request, id):
-
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
         referti = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto')
-
+        
+        # Impostazione del paginatore (ad es. 10 referti per pagina)
+        paginator = Paginator(referti, 7)
+        page_number = request.GET.get('page')
+        referti_page = paginator.get_page(page_number)
 
         context = {
-                'persona': persona,
-                'dottore': dottore,
-                'referti': referti,
+            'persona': persona,
+            'dottore': dottore,
+            'referti': referti_page, 
         }
 
-        return render (request, 'eta_metabolica/elencoReferti.html', context)
+        return render(request, 'eta_metabolica/elencoReferti.html', context)
+
 
 
 ## SEZIONE CAPACITA' VITALE
@@ -1783,6 +1893,7 @@ class StampaRefertoView(View):
         }
 
         return render(request, "includes/EtaVitale.html", context)
+
 
 
 ## SEZIONE ETA' BIOLOGICA
@@ -2875,6 +2986,7 @@ class ScaricaReferto(View):
         return render(request, "includes/cartellaPaziente.html", context)
 
 
+
 ## SEZIONE RESILIENZA
 class ResilienzaView(View):
     def get(self, request, persona_id):
@@ -2923,6 +3035,7 @@ class ResilienzaView(View):
         }
         return render(request, "includes/Resilienza.html", context)
     
+
 
 ## SEZIONE PRESCRIZIONI
 class PrescrizioniView(View):
