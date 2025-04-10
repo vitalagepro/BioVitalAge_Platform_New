@@ -110,6 +110,7 @@
             <p style="margin-top: -1rem; color: #2ac670; font-weight: bold;">Il tuo punteggio ottenuto dal calcolo è: {{ punteggio }}</p>
         
         </div>  
+        {% endif %}
 
         <!-- MESSAGGIO DI SUCCESSO SENZA PUNTEGGIO -->
         {% if success %}
@@ -156,12 +157,10 @@
                     <button class="close" onclick="closeModal()">x</button>
                     
                 </div>
-                <p>Sembra che qualcosa è andato storto.</p>
-                <p style=" color: #c74b5b; font-weight: bold;">{{ errore }}</p>
+                <p>Sembra che qualcosa sia andato storto.</p>
+                <p style="margin-top: -1rem; color: #c74b5b; font-weight: bold;">X {{ errore }}</p>
             
         </div>
-        {% endif %}
-
         {% endif %}
 
         <div class="container-button-header">
@@ -236,55 +235,6 @@
 
                 <div class="info_container">
 
-                    <!--  <div id="userData" data-gender="{{ ultimo_referto.gender }}" data-name="{{ ultimo_referto.name }}" data-surname="{{ ultimo_referto.surname }}"
-                         data-dob="{{ ultimo_referto.dob }}" data-cf="{{ ultimo_referto.codice_fiscale }}"
-                         data-place_birth="{{ ultimo_referto.place_birth }}" data-chronological_age="{{ ultimo_referto.chronological_age }}" data-acqua="{{ ultimo_referto.acqua }}"
-                         data-massa-muscolare="{{ ultimo_referto.massa_muscolare }}" data-massa-ossea="{{ ultimo_referto.massa_ossea }}"
-                         data-grasso="{{ ultimo_referto.grasso }}" data-punteggio-fisico="{{ ultimo_referto.punteggio_fisico }}"
-                         hidden>
-                     </div>
-             
-                     <div class="field">
-                         <p>Punteggio Fisico</p>
-                        
-                         <div id="confirm-reset-modal" class="custom-modal-overlay hidden-modal-custom">
-                             <div class="custom-modal-content">
-                                 <p id="confirm-modal-message">Sei sicuro di voler resettare lo storico dei punteggi?</p>
-                                 <button id="confirm-reset-btn" class="custom-button">Conferma</button>
-                                 <button id="cancel-reset-btn" class="custom-button cancel-btn">Annulla</button>
-                             </div>
-                         </div>
-                         
-                     
-                         <p id="punteggio_fisico_container">
-                             <select id="punteggio_fisico" name="punteggio_fisico" required>
-                                 <option value="">-- Seleziona Punteggio --</option>
-                                 <option value="1" {% if ultimo_referto.punteggio_fisico == "1" %}selected{% endif %}>Obeso Latente</option>
-                                 <option value="2" {% if ultimo_referto.punteggio_fisico == "2" %}selected{% endif %}>Obeso</option>
-                                 <option value="3" {% if ultimo_referto.punteggio_fisico == "3" %}selected{% endif %}>Struttura robusta
-                                 </option>
-                                 <option value="4" {% if ultimo_referto.punteggio_fisico == "4" %}selected{% endif %}>Insufficientemente
-                                     allenati</option>
-                                 <option value="5" {% if ultimo_referto.punteggio_fisico == "5" %}selected{% endif %}>Regolare</option>
-                                 <option value="6" {% if ultimo_referto.punteggio_fisico == "6" %}selected{% endif %}>Regolare e muscoloso
-                                 </option>
-                                 <option value="7" {% if ultimo_referto.punteggio_fisico == "7" %}selected{% endif %}>Magro</option>
-                                 <option value="8" {% if ultimo_referto.punteggio_fisico == "8" %}selected{% endif %}>Magro e muscoloso
-                                 </option>
-                                 <option value="9" {% if ultimo_referto.punteggio_fisico == "9" %}selected{% endif %}>Molto muscoloso</option>
-                             </select>
-                             <button class="button" id="reset-score">Reset</button>
-                         </p>
-                     </div>
-             
-                     <div class="vignetta-container" id="vignetta-container" style="display: none;">
-                         <div class="vignetta" id="vignetta">
-                             <span class="close-btn" onclick="chiudiVignetta()">&times;</span>
-                             <span id="vignetta-content"></span>
-                         </div>
-                     </div>
-              -->
-
                      <div class="field" style="margin-top: 20px;">
                          <p class="field-title">Punteggio Fisico:</p>
                          <input class="input-disabled" type="text" name="p_fisico" value="{{ ultimo_referto.p_fisico }}" placeholder="inserisci il valore" disabled>
@@ -343,17 +293,17 @@
 
                      <div class="field" style="margin-top: 20px;">
                          <p class="field-title">Massa Ossea:</p>
-                         <input class="input-disabled" type="text" name="c_plasmatico" value="{{ ultimo_referto.c_plasmatico }}" placeholder="inserisci il valore" disabled>
+                         <input class="input-disabled" type="text" name="massa_ossea" value="{{ ultimo_referto.massa_ossea }}" placeholder="inserisci il valore" disabled>
                      </div>
 
                      <div class="field" style="margin-top: 20px;">
                          <p class="field-title">Età Metabolica:</p>
-                         <input class="input-disabled" type="text" name="c_plasmatico" value="{{ ultimo_referto.c_plasmatico }}" placeholder="inserisci il valore" disabled>
+                         <input class="input-disabled" type="text" name="eta_metabolica" value="{{ ultimo_referto.eta_metabolica }}" placeholder="inserisci il valore" disabled>
                      </div>      
              
                      <div class="field" style="margin-top: 20px;">
                          <p class="field-title">Grasso Viscerale:</p>
-                         <input class="input-disabled" type="text" name="c_plasmatico" value="{{ ultimo_referto.c_plasmatico }}" placeholder="inserisci il valore" disabled>
+                         <input class="input-disabled" type="text" name="grasso_viscerale" value="{{ ultimo_referto.grasso_viscerale }}" placeholder="inserisci il valore" disabled>
                      </div>            
                 </div>
             </div>  
@@ -516,57 +466,6 @@
 
             <div class="toolkit">
                 <img src="{% static 'includes/images/arrow.png' %}" alt="" style="width: 40px; height: 40px;">
-
-                <button class="button" type="button" id="genereReport" data-referto-id="{{ referto.id }}" data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
-                    <span class="button__icon-wrapper">
-                        <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        width="18"
-                        class="button__icon-svg"
-                        >
-                        <path
-                            d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        ></path>
-                        <path
-                            d="M14 2V6H18"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        ></path>
-                        </svg>
-                        
-                        <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        width="18"
-                        class="button__icon-svg button__icon-svg--copy"
-                        >
-                        <path
-                            d="M6 2H14L18 6V20C18 21.1 17.1 22 16 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2Z"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        ></path>
-                        <path
-                            d="M14 2V6H18"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        ></path>
-                        </svg>
-                    </span>
-                    Genera PDF referto       
-                </button>
 
                 <a class="button" id="btn_blood_group">
                     <span class="button__icon-wrapper" id="modifica">
