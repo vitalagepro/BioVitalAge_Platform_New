@@ -1,0 +1,46 @@
+/* FONT SYLE */
+* p,
+* input,
+* select{
+    font-family: 'Poppins', sans-serif !important;
+}
+* h3{
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 23px !important;
+    font-weight: 600 !important;
+}
+* span{
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+
+
+
+/* STYLE TABELLA */
+.contenitore-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.contenitore-header h3 {
+    color: var(--contrast-color);
+}
+.filtri-button {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    align-items: center;
+  }
+.filtri-button select {
+    border-radius: 18px;
+    height: 2.9rem;
+    background-color: var(--card-color);
+    border: 2px solid var(--contrast-color2);
+    color: var(--dark2);
+    padding: 5px;
+    outline: none;
+    text-align: center;
+}
+.contenitore-tabella{
+    margin-top: 1rem;
+}

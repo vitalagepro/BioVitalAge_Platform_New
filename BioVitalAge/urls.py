@@ -78,6 +78,8 @@ urlpatterns = [
     ## URL SEZIONE RESILIENZA 
     path('Resilienza/<int:persona_id>/', views.ResilienzaView.as_view(), name='resilienza'),
     
+    ## URL PIANO TERAPEUTICO
+    path('CartellaPaziente/Prescrizioni/<int:persona_id>/', views.PianoTerapeutico.as_view(), name='piano_terapeutico'),
 
 
     ## URL SEZIONE PRESCRIZIONI 

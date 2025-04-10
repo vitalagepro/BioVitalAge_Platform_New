@@ -40,8 +40,8 @@ class TabellaPazienti(models.Model):
     email = models.CharField(max_length=100, null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     dob = models.DateField(null=True, blank=True)
-    gender = models.CharField(max_length=1, null=True, blank=True, choices=[('M', 'Male'), ('F', 'Female')])
-    cap = models.CharField(max_length=5, null=True, blank=True)
+    gender = models.CharField(max_length=20, null=True, blank=True, choices=[('M', 'Male'), ('F', 'Female')])
+    cap = models.CharField(max_length=20, null=True, blank=True)
     residence = models.CharField(max_length=100, null=True, blank=True)
     province = models.CharField(max_length=100, null=True, blank=True)
     place_of_birth = models.CharField(max_length=100, null=True, blank=True)
@@ -128,8 +128,8 @@ class TabellaPazienti(models.Model):
     statura = models.CharField(max_length=100, null=True, blank=True)
 
     ## DOMINIO INFORMAZIONE DEL SANGUE
-    blood_group = models.CharField(max_length=3, null=True, blank=True)
-    rh_factor = models.CharField(max_length=3, null=True, blank=True)
+    blood_group = models.CharField(max_length=20, null=True, blank=True)
+    rh_factor = models.CharField(max_length=20, null=True, blank=True)
     pressure_min = models.CharField(max_length=100, null=True, blank=True)
     pressure_max = models.CharField(max_length=100, null=True, blank=True)
 
