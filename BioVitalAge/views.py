@@ -767,10 +767,6 @@ class CreaPazienteView(View):
 
 
 
-
-
-
-
 # -- SEZIONE RICERCA PAZIENTE --
 ## VIEW PER SEZIONE RICERCA PAZIENTI
 class RisultatiRender(View):
@@ -914,11 +910,7 @@ class InserisciPazienteView(View):
 
 
 
-
-
-
 # -- SEZIONE CARTELLA PAZIENTE --
-
 ## VIEW CARTELLA PAZIENTE
 class CartellaPazienteView(View):
 
@@ -942,11 +934,14 @@ class CartellaPazienteView(View):
 
         punteggio_eta_metabolica = ''
 
-        if ultimo_referto_eta_metabolica.punteggio_finale != None:
-            punteggio_eta_metabolica = ultimo_referto_eta_metabolica.punteggio_finale
+        if ultimo_referto_eta_metabolica:
+            if ultimo_referto_eta_metabolica.punteggio_finale is not None:
+                punteggio_eta_metabolica = ultimo_referto_eta_metabolica.punteggio_finale
+            else:
+                punteggio_eta_metabolica = ultimo_referto_eta_metabolica.eta_metabolica
+        else:
+            punteggio_eta_metabolica = None
 
-        else: 
-            punteggio_eta_metabolica = ultimo_referto_eta_metabolica.eta_metabolica
 
         ## MICROBIOTA    
 
@@ -960,10 +955,7 @@ class CartellaPazienteView(View):
         dati_estesi_ultimo_referto = None
         if ultimo_referto:
             dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
-
-
-        visite = ElencoVisitePaziente.objects.filter(paziente_id=id)
-        
+     
 
         context = {
             'persona': persona,
@@ -972,7 +964,6 @@ class CartellaPazienteView(View):
             
             'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
             'dottore' : dottore,
-            'visite': visite,
             'referti_test_recenti': ultimo_referto,
 
             #ULTIMO REFERTO ETA METABOLICA
@@ -1042,7 +1033,6 @@ class CartellaPazienteView(View):
         if ultimo_referto:
             dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
 
-        visite = ElencoVisitePaziente.objects.filter(paziente_id=id)
 
         context = {
             'persona': persona,
@@ -1051,7 +1041,6 @@ class CartellaPazienteView(View):
             
             'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
             'dottore' : dottore,
-            'visite': visite,
             'referti_test_recenti': ultimo_referto,
 
             #ULTIMO REFERTO ETA METABOLICA
@@ -1063,6 +1052,11 @@ class CartellaPazienteView(View):
         }
 
         return render(request, "includes/cartellaPaziente.html", context)
+
+
+
+
+
 
 
 ## SEZIONE MUSCOLO
@@ -2095,18 +2089,21 @@ class CalcolatoreRender(View):
             return render(request, 'includes/calcolatore.html', context)
 
         
-    def post(self, request):
+    def post(self, request, id):
         data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
         dottore_id = request.session.get('dottore_id')
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
 
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
         try:
-            # Controlla se esiste un paziente con lo stesso nome e cognome
+
             paziente = TabellaPazienti.objects.filter(
                 dottore=dottore,
                 codice_fiscale=data.get('codice_fiscale') 
             ).first()
+
 
             if paziente: 
                 
@@ -2533,7 +2530,8 @@ class CalcolatoreRender(View):
                         "biological_age": biological_age,
                         "data": data,
                         "id_persona": paziente_id,
-                        'dottore': dottore
+                        'dottore': dottore,
+                        "persona": persona
                     }
 
                     return render(request, "includes/calcolatore.html", context)
@@ -2544,7 +2542,8 @@ class CalcolatoreRender(View):
                         "show_modal": False,
                         "error": "Operazione non andata a buon fine: 'Un Utente con questo Codice Fiscale è gia presente all'interno del database'. ",
                         "data": data,
-                        'dottore': dottore
+                        'dottore': dottore,
+                        'persona': persona
                     }
                     return render(request, "includes/calcolatore.html", context)
 
@@ -3024,6 +3023,12 @@ class CalcolatoreRender(View):
             }
             return render(request, "includes/calcolatore.html", context)
 
+
+
+
+
+
+
 class ElencoRefertiView(View):
     def get(self, request, id):
         
@@ -3196,6 +3201,9 @@ class ResilienzaView(View):
     
 
 
+
+
+
 ## SEZIONE PIANO TERAPEUTICO
 class PianoTerapeutico(View):
 
@@ -3205,17 +3213,22 @@ class PianoTerapeutico(View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
 
+        #ELENCO PRESCRIZIONI ESAMI PAZIENTE
+        visite_list = PrescrizioniEsami.objects.filter(paziente=persona).order_by('-data_visita')
+        
+        paginator = Paginator(visite_list, 7)  
+        page_number = request.GET.get('page')
+        visite_page = paginator.get_page(page_number)
+
         context = {
             'persona': persona,
             'dottore' : dottore,
+            'visite': visite_page,  
         }
 
         return render(request, 'piano_terapeutico/piano_terapeutico.html', context)
 
-
-
-
-## SEZIONE PRESCRIZIONI
+### SEZIONE PRESCRIZIONI ESAMI
 class PrescrizioniView(View):
 
     def get(self, request, persona_id):
@@ -3234,85 +3247,27 @@ class PrescrizioniView(View):
 
 
     def post(self, request, persona_id):
-
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
         
         listaCodici = request.POST.get('codici_esami')
         data_list = json.loads(listaCodici)
         numeri = [x for x in data_list if x.isdigit()]
 
-        nuova_visita = ElencoVisitePaziente.objects.create(
-            paziente = persona,
+        nuova_visita = PrescrizioniEsami.objects.create(
+            paziente=persona,
+            esami_prescritti=json.dumps(numeri),
         )
 
-        for i in range(0, len(numeri)):
-            EsameVisita.objects.create(
-                visita=nuova_visita,
-                codice_esame=numeri[i],
-            )
-
-        return redirect('cartella_paziente', persona_id)
-
-class DettagliPrescrizioni(View):
-    def get(self, request, persona_id, visite_id):
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, id=persona_id)
-        visite = ElencoVisitePaziente.objects.all()
-
-        #DATI REFERTI ETA' BIOLOGICA
-        referti_recenti = persona.referti.all().order_by('-data_referto')
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
-        ultimo_referto = referti_recenti.first() if referti_recenti else None
-        
-        dati_estesi_ultimo_referto = None
-        if ultimo_referto:
-            dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+        return redirect('piano_terapeutico', persona_id)
 
 
-        #DATI REFERTI PRESCRIZIONI
-        json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
 
-        if not os.path.exists(json_path):
-            return JsonResponse({"error": f"File JSON non trovato: {json_path}"}, status=404)
 
-        with open(json_path, "r", encoding="utf-8") as file:
-            data = json.load(file)
-        
-        visita = ElencoVisitePaziente.objects.get(id=visite_id)
-        codici_esami = EsameVisita.objects.filter(visita_id=visite_id).values_list('codice_esame', flat=True)
-        listaCodici_Visita = list(codici_esami)
 
-        elencoPrescrizioni = {}
 
-        for esame in data['Foglio1']:  
-            codice_esame = esame.get('CODICE_UNIVOCO_ESAME_PIATTAFORMA')  
 
-            if codice_esame:
-                codice_esame = str(codice_esame).strip()  
 
-            if codice_esame in listaCodici_Visita:
-                elencoPrescrizioni[codice_esame] = esame
 
-        context = {
-            'persona': persona,
-            'referti_recenti': referti_recenti,
-            'dati_estesi': dati_estesi,
-            'ultimo_referto': ultimo_referto,
-            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
-            'dottore' : dottore,
-            'visite': visite,
-            'visita': visita,
-            'elencoPrescrizioni': elencoPrescrizioni,
-        }
-
-        return render(request, "includes/cartellaPaziente.html", context)
-
-class RefertoView(View):
-    def get(self, request, referto_id):
-        referto = ArchivioReferti.objects.get(id=referto_id)
-        return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
 
 
 
@@ -3390,3 +3345,7 @@ class UpdatePersonaContactView(View):
 
         return render(request, "includes/EtaVitale.html", context)
     
+class RefertoView(View):
+    def get(self, request, referto_id):
+        referto = ArchivioReferti.objects.get(id=referto_id)
+        return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
