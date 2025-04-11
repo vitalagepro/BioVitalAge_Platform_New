@@ -15,16 +15,9 @@
 
 
 
-
-
-
-
-
-
 .main-menu-trace {
   width: 50%;
 }
-
 .main-title-nav a {
   color: var(--light1) !important;
   text-decoration: none !important;
@@ -65,9 +58,6 @@
   width: 30px;
   height: 30px;
 }
-
-
-
 .button-grid {
   display: flex;
   justify-content: center;
@@ -178,7 +168,7 @@
 }
 
 
-/* CONTAINER FOR SEZIONI INTERNET */
+/* CONTAINER FOR SEZIONI INTERNE */
 .container-sezioniInterne {
   height: 380px;
   width: 100%;
@@ -268,9 +258,6 @@
 }
 
 
-
-
-
 /*  CARD BP, SUGAR, HEART, CHOLESTEROL */
 .dashboard {
   margin-top: -1rem;
@@ -279,7 +266,6 @@
   gap: 20px;
   padding: 20px;
 }
-
 .card-graphic {
   background: #fff;
   border-radius: 10px;
@@ -292,91 +278,46 @@
   height: 420px;
   overflow: hidden;
 }
-
 .card-graphic .icon img {
   width: 40px;
   height: 40px;
   margin-bottom: 10px;
 }
-
 .card-graphic h3 {
   font-size: 1.2rem;
   margin-bottom: 5px;
   color: var(--contrast-color);
 }
-
 .card-graphic p {
   color: #666;
   font-size: 0.9rem;
   margin-bottom: 15px;
 }
-
 .container_chart_dashboard {
   width: 100%;
   height: 150px;
 }
-
 .card-graphic canvas {
   width: 100%;
   object-fit: cover;
   margin-bottom: 15px;
 }
-
 .card-graphic .data {
   width: 100%;
 }
-
 .card-graphic .data table {
   width: 100%;
   border-collapse: collapse;
   border-radius: 8px;
 }
-
 .card-graphic .data table tr {
   display: flex;
   justify-content: space-between;
 }
-
 .card-graphic .data table td {
   text-align: left;
   padding: 5px;
 }
-
-
-
-
-
-/* STYLE TABELLA */
-.contenitore-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.contenitore-header h3 {
-  color: var(--contrast-color);
-}
-
-.filtri-button {
-  display: flex;
-  justify-content: flex-end;
-  gap: 20px;
-  align-items: center;
-}
-
-.filtri-button select {
-  border-radius: 18px;
-  height: 2.9rem;
-  background-color: var(--card-color);
-  border: 2px solid var(--contrast-color2);
-  color: var(--dark2);
-  padding: 5px;
-  outline: none;
-  text-align: center;
-}
-
-
-
 
 
 
@@ -399,8 +340,6 @@
   padding-top: 10px;
   border-bottom: 2px solid #505050;
 }
-
-
 
 
 
@@ -513,9 +452,6 @@
   z-index: 2;
   color: var(--contrast-color);
 }
-
-
-
 .container-second-row{
   width: 98%;
   margin: 1rem auto;
@@ -523,7 +459,6 @@
   display: flex;
   gap: 8px;
 }
-
 
 /* Età Style */
 .eta-container{
@@ -658,16 +593,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
 /* Capacità Vitale */
 .capacita_vitale,
 .resilienza{
@@ -777,13 +702,6 @@
 
 
 
-
-
-
-
-
-
-
 /* DASBOARD 2 */
 .dashboard2 {
   display: flex;
@@ -822,6 +740,10 @@
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   padding: 20px;
 }
+
+
+
+
 .contenitore-tabella {
   margin: 15px 0;
 }
@@ -836,7 +758,6 @@
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
-
 .conteiner-operation {
   padding: 20px;
   margin-top: -1rem;
@@ -844,7 +765,6 @@
   gap: 20px;
   height: 300px;
 }
-
 .card7 {
   background-image: url(https://www.dimi.univr.it/documenti/Iniziativa/immagine/immagine268271.jpeg);
   position: relative;
@@ -857,7 +777,6 @@
   justify-content: center;
   align-items: flex-start;
 }
-
 .backdrop {
   position: absolute;
   top: 0rem;
@@ -868,7 +787,6 @@
   z-index: 1;
   border-radius: 8px;
 }
-
 .card8 {
   background-image: url(https://www.3ds.com/assets/invest/2024-10/lsh-pharmaceutical-and-biotech-hero-banner-1920x600.jpg);
   position: relative;
@@ -881,7 +799,6 @@
   justify-content: center;
   align-items: flex-start;
 }
-
 .card8 h2,
 .card7 h2 {
   z-index: 3;
@@ -893,13 +810,11 @@
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
-
 .card8 button,
 .card7 button {
   z-index: 3;
   margin-left: 2.5rem;
 }
-
 .risultati-ricerca {
   border: 1px solid var(--contrast-color-shadow);
 }
@@ -1080,108 +995,7 @@ strong {
   width: 65px;
   margin-right: 3.8rem;
 }
-#backdropPrescrizioni{
-  background-color: rgba(0, 0, 0, 0.5);
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 30;
-}
-#modalePrescrizioni{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%,-50%);
-  z-index: 40;
-  width: 1100px;
-  height: 520px;
-  background-color: var(--card-color);
-  border-radius: 8px;
-}
-.title-container{
-  width: 100%;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-}
-.title-container h3{
-  color: var(--contrast-color);
-  font-size: 22px;
-  font-weight: bold;
-}
-.close{
-  height: 2rem;
-  width: 3rem;
-  border-radius: 8px;
-  border: none;
-  background-color: red;
-  color: white;
-  transition: transform 0.3s ease-in-out;
-}
-.close:hover{
-  transform: scale(1.1);
-}
-.ModalPrescrizioni-content{
-  width: 98%;
-  margin: auto;
-  border-radius: 0px 0px 8px 8px;
-  height: 365px;
-  overflow: auto;
-}
-.prescrizioniTable-header{
-  height: 3rem;
-  background-color: var(--contrast-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 98%;
-  margin: auto;
-}
-.prescrizioniTable-header p{
-  color: white;
-  width: 15%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 15px;
-}
-#last{
-  width: 25%;
-}
-.prescrizoniRow{
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid #ddd;
-  height: 5rem;
-}
-.prescrizoniRow p{
-  width: 15%;
-  text-align: center;
-}
 
-
-/* {% if elencoPrescrizioni %}{% endif %} */
-::-webkit-scrollbar {
-  width: 8px; 
-}
-::-webkit-scrollbar-track {
-  background: var(--dark2); 
-}
-::-webkit-scrollbar-thumb  {
-  background: var(--contrast-color); 
-  border-radius: 8px; 
-  transition: background 0.3s;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--contrast-color2); 
-}
 
 
 
@@ -1266,3 +1080,73 @@ strong {
   cursor: not-allowed;
   outline: none;
 }
+
+
+
+
+
+/* Success Message */
+.success_message{
+  position: fixed;
+  width: 450px;
+  height: 150px;
+  background-color: white;
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  border-bottom: 5px solid #2ac670;
+  padding: 20px;
+  z-index: 9999;
+}
+.header_message{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.title_message{
+  color: var(--positive-color);
+  font-size: 18px;
+}
+.contianer-title{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+}
+.contianer-title img{
+  width: 30px;
+  height: 30px;
+  margin-top: -1rem;
+}
+.close{
+  border-radius: 8px;
+  padding: 5px 5px;
+  border: none;
+  margin-top: -1rem;
+  color: var(--dark1);
+  background-color: #dddddd86;
+}
+.close:hover{
+  transform: scale(1.1);
+}
+
+
+/* Error Message */
+.erorre_message{
+  position: fixed;
+  width: 450px;
+  height: 150px;
+  background-color: white;
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  border-bottom: 5px solid #c74b5b;
+  padding: 20px;
+}
+.title_message_errore{
+  color: var(--negative-color-right);
+  font-size: 18px;
+}
+

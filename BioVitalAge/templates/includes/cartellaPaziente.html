@@ -39,6 +39,7 @@
     <!-- NAVBAR -->
     {% include 'components/navBar.html' %}
 
+
     <main>
         <!-- MENU TRACE -->
         <div class="main-title-nav">
@@ -74,20 +75,11 @@
                 <p>Cartella Paziente</p>
             </div>
         
-        </div>
-
+        </div>  
 
         <!-- MESSAGGIO DI SUCCESSO CON PUNTEGGIO -->
-        {% if punteggio %}
+        {% if success %}
         <div class="success_message" id="modal_message">
-
-            <script>
-                function closeModal(){
-                    const modale = document.getElementById('modal_message');
-                    modale.style.display = 'none';
-                }
-            </script>
-
 
             <div class="header_message">
                 <div class="contianer-title">
@@ -98,7 +90,7 @@
                 
             </div>
 
-            <p>Dati Aggiornati!<p>
+            <p>I dati delle informazioni personali sono state correttamente aggiornate!</p>
 
         </div>  
         {% endif %}
@@ -106,14 +98,7 @@
         <!-- MESSAGGIO ERRORE -->
         {% if errore %}
         <div class="erorre_message" id="modal_message">
-                
-                <script>
-                    function closeModal(){
-                        const modale = document.getElementById('modal_message');
-                        modale.style.display = 'none';
-                    }
-                </script>
-
+ 
                 <div class="header_message">
                     <div class="contianer-title">
                         <img src="{% static 'includes/images/unsuccess.png' %}" alt="">
@@ -127,8 +112,6 @@
             
         </div>
         {% endif %}
-
-
 
 
         <!-- CARD PERSONAL INFORMATION -->
@@ -178,38 +161,38 @@
                         <!-- Esempio di input: assicurati che ogni input abbia un name appropriato -->
                         <div class="field">
                             <p class="field-title">Codice Fiscale:</p>
-                            <input class="input-disabled" type="text" name="codice_fiscale" value="{{ persona.codice_fiscale }}" placeholder="inserisci il valore" disabled>
+                            <input class="input-disabled" type="text" name="codice_fiscale" value="{{ persona.codice_fiscale|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
                         </div>
             
                         <div class="field">
                             <p class="field-title">Data di Nascita:</p>
-                            <input class="input-disabled" type="text" name="dob" value="{{ persona.dob|date:'d/m/Y' }}" placeholder="inserisci il valore" disabled>
+                            <input class="input-disabled" type="text" name="dob" value="{{ persona.dob|date:'d/m/Y'|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
                         </div>
             
                         <div class="field">
                             <p class="field-title">Città di nascita:</p>
-                            <input class="input-disabled" type="text" name="place_of_birth" value="{{ persona.place_of_birth|title }}" placeholder="inserisci il valore" disabled>
+                            <input class="input-disabled" type="text" name="place_of_birth" value="{{ persona.place_of_birth|title|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
                         </div>
             
                         <!-- Altri campi... -->
                         <div class="field">
                             <p class="field-title">Città di residenza:</p>
-                            <input class="input-disabled" type="text" name="residence" value="{{ persona.residence|title }}" placeholder="inserisci il valore" disabled>
+                            <input class="input-disabled" type="text" name="residence" value="{{ persona.residence|title|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
                         </div>
             
                         <div class="field">
                             <p class="field-title">CAP:</p>
-                            <input class="input-disabled" type="text" name="cap" value="{{ persona.cap|default:'00000' }}" placeholder="inserisci il valore" disabled>
+                            <input class="input-disabled" type="text" name="cap" value="{{ persona.cap|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
                         </div>
             
                         <div class="field">
                             <p class="field-title">Provincia:</p>
-                            <input class="input-disabled" type="text" name="province" value="{{ persona.province|default:'N/A' }}" placeholder="inserisci il valore" disabled>
+                            <input class="input-disabled" type="text" name="province" value="{{ persona.province|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
                         </div>
             
                         <div class="field">
                             <p class="field-title">Genere:</p>
-                            <input class="input-disabled" type="text" name="gender" value="{{ persona.gender }}" placeholder="inserisci il valore" disabled>
+                            <input class="input-disabled" type="text" name="gender" value="{{ persona.gender|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
                         </div>
                     </div>
             
@@ -231,7 +214,7 @@
                                 </div>
                                 <div class="container-input-info">
                                     <p>Visita Recente</p>
-                                    <input class="input-disabled type-two" type="text" name="lastVisit" value="{{ persona.lastVisit|date:'d/m/Y' }}" placeholder="inserisci il valore" disabled>
+                                    <input class="input-disabled type-two" type="text" name="lastVisit" value="{{ persona.lastVisit|date:'d/m/Y'|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
                                 </div>
                             </div>
             
@@ -241,7 +224,7 @@
                                 </div>
                                 <div class="container-input-info">
                                     <p>Prossima Visita</p>
-                                    <input class="input-disabled type-two" type="text" name="upcomingVisit" value="{{ persona.upcomingVisit|date:'d/m/Y' }}" placeholder="inserisci il valore" disabled>
+                                    <input class="input-disabled type-two" type="text" name="upcomingVisit" value="{{ persona.upcomingVisit|date:'d/m/Y'|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
                                 </div>
                             </div>
             
@@ -251,7 +234,7 @@
                                 </div>
                                 <div class="container-input-info">
                                     <p>Gruppo Sanguigno</p>
-                                    <input class="input-disabled type-two" type="text" name="blood_group" value="{{ persona.blood_group|default:'0 +' }}" placeholder="inserisci il valore" disabled>
+                                    <input class="input-disabled type-two" type="text" name="blood_group" value="{{ persona.blood_group|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
                                 </div>
                             </div>
                         </div>
@@ -263,7 +246,7 @@
                                 </div>
                                 <div class="container-input-info">
                                     <p>Email</p>
-                                    <input class="input-disabled type-two" type="text" name="email" value="{{ persona.email|default:'email@gmail.com' }}" placeholder="inserisci il valore" disabled>
+                                    <input class="input-disabled type-two" type="text" name="email" value="{{ persona.email|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
                                 </div>
                             </div>
             
@@ -273,7 +256,7 @@
                                 </div>
                                 <div class="container-input-info">
                                     <p>Telefono</p>
-                                    <input class="input-disabled type-two" type="text" name="phone" value="{{ persona.phone|default:'n. i.' }}" placeholder="inserisci il valore" disabled>
+                                    <input class="input-disabled type-two" type="text" name="phone" value="{{ persona.phone|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
                                 </div>
                             </div>
                         </div>
@@ -282,7 +265,6 @@
                 </div>
             </form>
         </div>
-
 
 
         <!-- CARD CLOCK -->
@@ -504,7 +486,7 @@
                         </div>
                     </div>      
 
-                    <div class="capacita_vitale" data-punteggio="{{ ultimo_referto_eta_metabolica.punteggio_finale|default:'2' }}">
+                    <div class="capacita_vitale" data-punteggio="{{ punteggio_eta_metabolica|default:'2' }}">
                         <h3>Età Metabolica</h3>
                         <div class="card-polmone">
                             <div class="backdrop-riempimento">
@@ -514,7 +496,7 @@
                             </div>
                             <img src="{% static 'includes/icone/metabolica.png' %}" alt="" width="120px" height="120px">
                         </div>
-                        <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ ultimo_referto_eta_metabolica.punteggio_finale|default:'n.a.' }} / 100</p>
+                        <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ punteggio_eta_metabolica|default:'n.a.' }} / 100</p>
                     </div>
 
                     <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.microbiota|default:'2' }}">
@@ -636,216 +618,12 @@
                     <img src="{% static 'includes/images/teraphy1.png' %}" alt="">
                     <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsum impedit velit libero perspiciatis. Qui, a nihil earum quasi impedit praesentium quia temporibus magnam modi minima libero delectus nam repudiandae amet?
                     </p>
-                    <a href="#">Vai alla sezione</a>
+                    <a href="{% url 'piano_terapeutico' persona.id %}">Vai alla sezione</a>
                 </div>
             </div>
         </div>
         
-        <!-- TABELLA ELENCO PRESCRIZIONI -->
-
-        <!-- Modal Elenco Dettagli Visita -->
-                 
-        <script>
-            function closeModal(){
-                document.getElementById('modalePrescrizioni').style.display = 'none';
-                document.getElementById('backdropPrescrizioni').style.display = 'none';
-            }
-        </script>
-
-        {% if elencoPrescrizioni %}
-            <div class="backdropModalePrescrizioni" id="backdropPrescrizioni"></div>
-            
-            <div class="ModalPrescrizione" id="modalePrescrizioni">
-                <div class="title-container">
-                    <H3>Dettagli visita del {{ visita.data_visita }}</H3>
-                    <button onclick="closeModal()" class="close">X</button>
-                </div>
-
-                <div class="prescrizioniTable-header">
-                    <p>ID Esame</p>
-                    <p>Descrizione Esame</p>
-                    <p>Metodica</p>
-                    <p>Codice Asl</p>
-                    <p>Codice Reg</p>
-                    <p id="last">Apparato / Sistema</p>
-                </div>
-                
-                <div class="ModalPrescrizioni-content">
-                   
-                    <div class="table-content">
-                        {% for codice_esame, dettagli in elencoPrescrizioni.items %}
-                            <div class="prescrizoniRow">
-                                <p>{{ codice_esame }}</p>
-                                <p>{{ dettagli.DESCRIZIONE_ESAME }}</p>
-                                <p>{{ dettagli.METODICA }}</p>
-                                <p>{{ dettagli.COD_ASL }}</p>
-                                <p>{{ dettagli.COD_REG }}</p>
-                                <p id="last">{{ dettagli.APPARATO_or_I_SISTEMI|slice:":20" }}</p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    
-                </div>
-            </div>    
-        {% endif %}
-
-        {% if lista_nomi_esami %}
-            {% for esame in lista_nomi_esami %}
-                <input type="hidden" id="lista_esami" class="esame_nascosto" value="{{ lista_nomi_esami|join:',' }}">
-            {% endfor %}
-        {% endif %}
-
         
-        <div class="contenitore-tabella" style="margin-top: 0; ">
-
-            <div class="recent-patients" id="card-style">
-
-                <div class="contenitore-header">
-                    <h3>Elenco Prescrizioni</h3>
-
-                    <div class="filtri-button">
-
-                        <select name="filter" id="filter" style="width: 10rem;">
-
-                            <option>Tutti</option>
-                            <option value="0">Descrizione Esame Crescente</option>
-                            <option value="1">Descrizione Esame Decrescente</option>
-                            <option value="2">Metodica</option>
-                            <option value="3">Codice Asl</option>
-                            <option value="4">Codice Regione</option>
-                            <option value="5">Apparati / Sitemi</option>
-
-                        </select>
-
-                        <button id="downloadPrescrizioneVuota" class="button" style="width: 4rem;"> 
-                            <span class="button__icon-wrapper">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    width="18"
-                                    class="button__icon-svg"
-                                >
-                                    <path
-                                        d="M12 3V16M12 16L8 12M12 16L16 12"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    />
-                                    <path
-                                        d="M4 20H20"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                    />
-                                </svg>
-
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    width="18"
-                                    class="button__icon-svg button__icon-svg--copy"
-                                >
-                                    <path
-                                        d="M12 3V16M12 16L8 12M12 16L16 12"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    />
-                                    <path
-                                        d="M4 20H20"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                    />
-                                </svg>
-
-                            </span>
-                        </button>
-
-                        <a href="{% url 'prescrizioni' persona.id %}" class="button" style="width: 15rem;"> 
-                            <span class="button__icon-wrapper">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    width="18"
-                                    class="button__icon-svg"
-                                >
-                                    <path
-                                        d="M12 5V19M5 12H19"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    />
-                                </svg>
-
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    width="18"
-                                    class="button__icon-svg button__icon-svg--copy"
-                                >
-                                    <path
-                                        d="M12 5V19M5 12H19"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    />
-                                </svg>
-
-                            </span>
-                            Aggiungi Prescrizioni
-                        </a>
-                    </div>
-
-                </div>
-
-                
-                <div class="table-container">
-                    <div class="table-header">
-                        <p>Id Visita</p>
-                        <p>Data Visita</p>
-                        <p>Visualizza Dettagli</p>
-                        <p>Scarica Prescrizione</p>
-                    </div>
-                    <div class="table-content prescriptions">
-
-                        {% for visite in visite %}
-                            <div class="riga-container">
-                                <p>{{ visite.id }}</p>
-                                <p>{{ visite.data_visita|date:"d/m/Y" }}</p>
-                                <p>
-                                    <a href="{% url 'dettagli_prescrizioni' persona.id visite.id %}">
-                                        <img src="{% static 'includes/icone/referto.png' %}" alt="" />
-                                    </a>
-                                </p>
-                                <p>
-                                    <a href="{% url 'scarica_pdf' persona.id visite.id %}" 
-                                        id="pdfLink"> 
-                                        <img src="{% static 'includes/icone/download.png' %}" alt="Download" />
-                                    </a>
-                                </p>
-                                
-                            </div>
-
-                            {% empty %}
-                            <p class="text-center mt-2 mb-2">No recent prescription found.</p>
-                        {% endfor %}
-
-                        
-                    </div>          
-                </div>            
-            </div>
-        </div>
-
-
         <script src="https://cdn.jsdelivr.net/npm/docx@7.7.0/build/index.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.0.2/docx.min.js"></script>
 
@@ -1082,24 +860,15 @@
     </main>
 
 
-    <!-- Import Js -->
+    <!-- IMPORT JS PRE DOBY CLOSE TAG -->
+    <!--  CLOSE MODALE MESSAGE SUCCESS -->
     <script>
-        const updatePersonaUrl = "{% url 'update_persona_contact' persona.id %}";
-        console.log("URL: {% url 'update_persona_contact' persona.id %}");
-        console.log("ID Persona: {{ persona.id }}")
+        function closeModal(){
+            const modale = document.getElementById('modal_message');
+            modale.style.display = 'none';
+        }
     </script>
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var table = document.getElementById("ScrollRender");
-            if (table) {
-                table.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
-        });
-    </script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-   
+
     <!-- SCRIPT CAPACITA' VITALE -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -1140,9 +909,9 @@
         });
     </script>
         
-    
 
     <script src="{% static 'includes/js/cartellaPaziente.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

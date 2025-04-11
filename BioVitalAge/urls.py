@@ -80,10 +80,18 @@ urlpatterns = [
     
 
 
+    ## URL PIANO TERAPEUTICO
+    path('Cartella_Paziente/Piano_Terapeutico/<int:persona_id>/', views.PianoTerapeutico.as_view(), name='piano_terapeutico'),
+    path('CartellaPaziente/Piano_Terapeutico/Prescrizioni_Esami/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
+    
+
     ## URL SEZIONE PRESCRIZIONI 
-    path('CartellaPaziente/Prescrizioni/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
-    path("CartellaPaziente/Update/<int:persona_id>/<int:visite_id>/", DettagliPrescrizioni.as_view(), name="dettagli_prescrizioni"),
+
     path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
+
+
+
+
 
 
     

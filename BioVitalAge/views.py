@@ -32,9 +32,8 @@ from .calcoloMetabolica import *
 from .models import *
 from .models import TabellaPazienti, ArchivioReferti
 
+
 logger = logging.getLogger(__name__)
-
-
 
 
 # -- SEZIONE LOGIN - HOME PAGE VIEW --
@@ -44,8 +43,6 @@ class LoginRenderingPage(View):
         response = render(request, 'includes/login.html')
         response.delete_cookie('disclaimer_accepted', path='/')
         return response
-
-
 
 ## VIEW LOGOUT
 class LogOutRender(View):
@@ -57,7 +54,6 @@ class LogOutRender(View):
             request.session.flush()
 
         return render(request, 'includes/login.html')
-
 
 ## VIEW PER ACCETTARE IL DISCLAIMER
 class AcceptDisclaimerView(View):
@@ -75,9 +71,6 @@ class AcceptDisclaimerView(View):
             dottore.save() 
 
         return response
-
-
-
 
 ## VIEW PER LOGIN FORM - HOME PAGE RENDER
 class HomePageRender(View):
@@ -359,10 +352,7 @@ class HomePageRender(View):
 
         return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
 
-
-
-
-# VIEW PER LA SEZIONE PROFILO
+## VIEW PER LA SEZIONE PROFILO
 class ProfileView(View):
     def get(self, request, *args, **kwargs):
         dottore_id = request.session.get('dottore_id')
@@ -418,7 +408,7 @@ class ProfileView(View):
 
             return redirect("profile")
 
-# VIEW PER LA SEZIONE STATISTICHE
+## VIEW PER LA SEZIONE STATISTICHE
 class StatisticheView(View):
     def get(self, request):
 
@@ -475,7 +465,6 @@ class AppointmentNotificationsView(View):
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-
 ## VIEW PER LE NOTIFICHE MEDICAL NEWS
 class MedicalNewsNotificationsView(View):
     def get(self, request, *args, **kwargs):
@@ -516,7 +505,7 @@ class MedicalNewsNotificationsView(View):
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
 
-# VIEW PER ACCETTARE IL DISCLAIMER
+## VIEW PER ACCETTARE IL DISCLAIMER
 class AcceptDisclaimerView(View):
     def post(self, request):
         
@@ -530,10 +519,6 @@ class AcceptDisclaimerView(View):
         }
 
         return render(request, "includes/statistiche.html", context)
-
-
-
-
 
 ## SEZIONE APPUNTAMENTI
 ### VIEWS APPUNTAMENTI
@@ -733,11 +718,7 @@ class SearchAppointmentsView(View):
             return JsonResponse({"success": True, "appointments": results})
         return JsonResponse({"success": False, "error": "Nessuna query fornita"})
     
-
-
-
-
-    ### VIEW CREATE PATIENT FROM SECOND MODAL
+### VIEW CREATE PATIENT FROM SECOND MODAL
 class CreaPazienteView(View):
     def post(self, request, *args, **kwargs):
         try:
@@ -781,6 +762,7 @@ class CreaPazienteView(View):
         except Exception as e:
             print(f"❌ Errore nel backend: {e}")  # DEBUG
             return JsonResponse({"success": False, "error": str(e)}, status=500)
+
 
 
 
@@ -926,6 +908,8 @@ class InserisciPazienteView(View):
 
 
 
+
+
 # -- SEZIONE CARTELLA PAZIENTE --
 ## VIEW CARTELLA PAZIENTE
 class CartellaPazienteView(View):
@@ -948,6 +932,17 @@ class CartellaPazienteView(View):
         referti_recenti = persona.referti_eta_metabolica.all().order_by('-data_referto')
         ultimo_referto_eta_metabolica = referti_recenti.first() if referti_recenti.exists() else None
 
+        punteggio_eta_metabolica = ''
+
+        if ultimo_referto_eta_metabolica:
+            if ultimo_referto_eta_metabolica.punteggio_finale is not None:
+                punteggio_eta_metabolica = ultimo_referto_eta_metabolica.punteggio_finale
+            else:
+                punteggio_eta_metabolica = ultimo_referto_eta_metabolica.eta_metabolica
+        else:
+            punteggio_eta_metabolica = None
+
+
         ## MICROBIOTA    
 
 
@@ -960,10 +955,7 @@ class CartellaPazienteView(View):
         dati_estesi_ultimo_referto = None
         if ultimo_referto:
             dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
-
-
-        visite = ElencoVisitePaziente.objects.filter(paziente_id=id)
-        
+     
 
         context = {
             'persona': persona,
@@ -972,11 +964,10 @@ class CartellaPazienteView(View):
             
             'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
             'dottore' : dottore,
-            'visite': visite,
             'referti_test_recenti': ultimo_referto,
 
             #ULTIMO REFERTO ETA METABOLICA
-            'ultimo_referto_eta_metabolica': ultimo_referto_eta_metabolica,
+            'punteggio_eta_metabolica': punteggio_eta_metabolica,
             #ULTIMO REFERTO CAPACITA' VITALE
             'ultimo_referto_capacita_vitale': ultimo_referto_capacita_vitale,
             
@@ -1008,6 +999,7 @@ class CartellaPazienteView(View):
         persona.blood_group = request.POST.get('blood_group')
         persona.email = request.POST.get('email')
         persona.phone = request.POST.get('phone')
+        persona.place_of_birth = request.POST.get('place_of_birth')
 
         persona.dob = parse_italian_date(request.POST.get('dob'))
         persona.lastVisit = parse_italian_date(request.POST.get('lastVisit'))
@@ -1041,7 +1033,6 @@ class CartellaPazienteView(View):
         if ultimo_referto:
             dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
 
-        visite = ElencoVisitePaziente.objects.filter(paziente_id=id)
 
         context = {
             'persona': persona,
@@ -1050,7 +1041,6 @@ class CartellaPazienteView(View):
             
             'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
             'dottore' : dottore,
-            'visite': visite,
             'referti_test_recenti': ultimo_referto,
 
             #ULTIMO REFERTO ETA METABOLICA
@@ -1062,6 +1052,7 @@ class CartellaPazienteView(View):
         }
 
         return render(request, "includes/cartellaPaziente.html", context)
+
 
 
 
@@ -1269,7 +1260,6 @@ class DatiBaseView(View):
         return render(request, "includes/dati_base.html", context)  
 
 
-
 ## SEZIONE ETA' METABOLICA
 class ComposizioneView(View):
 
@@ -1295,7 +1285,7 @@ class ComposizioneView(View):
 
         eta_metabolica_calcolata = None
         success = False
-        punteggio = False
+        punteggio = None
 
         persona = get_object_or_404(TabellaPazienti, id=id)
         dottore_id = request.session.get('dottore_id')
@@ -1332,26 +1322,35 @@ class ComposizioneView(View):
                 'cortisolo': float(request.POST.get("c_plasmatico")) if request.POST.get("c_plasmatico") else None,
             }
 
+            # Proviamo a recuperare il valore dal campo eta_metabolica (se presente)
+            input_eta_metabolica = request.POST.get("eta_metabolica")
+            try:
+                input_eta_metabolica_val = float(input_eta_metabolica) if input_eta_metabolica and input_eta_metabolica.strip() != "" else None
+            except ValueError:
+                input_eta_metabolica_val = None
 
-            # Controlla se tutti i dati necessari sono presenti
-            if all(dati_calcolo.values()):
-                eta_metabolica_calcolata = calcola_eta_metabolica(dati_calcolo)
-
-                # AGGIUNGI MODALE PER PUNTEGGIO E SUCCESSO
-
-                punteggio = eta_metabolica_calcolata
-
+            # Se è presente un valore valido nel campo eta_metabolica…
+            if input_eta_metabolica_val is not None:
+                # Verifica se tutti i dati necessari per il calcolo sono stati inseriti
+                if all(value is not None for value in dati_calcolo.values()):
+                    eta_metabolica_calcolata = calcola_eta_metabolica(dati_calcolo)
+                    punteggio = eta_metabolica_calcolata
+                else:
+                    # Se non sono stati inseriti tutti i dati, usa il valore fornito
+                    punteggio = input_eta_metabolica_val
             else:
-                # AGGIUNGI MODALE PER INSUCCESSO 
-                success = True
+                # Se il campo eta_metabolica non è stato fornito, prova a calcolare se ci sono tutti i dati
+                if all(value is not None for value in dati_calcolo.values()):
+                    eta_metabolica_calcolata = calcola_eta_metabolica(dati_calcolo)
+                    punteggio = eta_metabolica_calcolata
+                else:
+                    success = True
 
             # Salva il referto nella tabella RefertiEtaMetabolica
             RefertiEtaMetabolica.objects.create(
                 dottore=dottore,
                 paziente=persona,
-
-                punteggio_finale = eta_metabolica_calcolata,
-
+                punteggio_finale=eta_metabolica_calcolata,
                 # Composizione corporea
                 bmi=request.POST.get("bmi"),
                 grasso=request.POST.get("grasso"),
@@ -1360,7 +1359,6 @@ class ComposizioneView(View):
                 bmr=request.POST.get("bmr"),
                 whr=request.POST.get("whr"),
                 whtr=request.POST.get("whtr"),
-
                 # Profilo glicemico e insulinico
                 glicemia=request.POST.get("glicemia"),
                 ogtt=request.POST.get("ogtt"),
@@ -1369,30 +1367,25 @@ class ComposizioneView(View):
                 curva_i=request.POST.get("curva_i"),
                 homa_ir=request.POST.get("homa_ir"),
                 tyg=request.POST.get("tyg"),
-
                 # Profilo lipidico
                 c_tot=request.POST.get("c_tot"),
                 hdl=request.POST.get("hdl"),
                 ldl=request.POST.get("ldl"),
                 trigliceridi=request.POST.get("trigliceridi"),
-
                 # Profilo epatico
                 ast=request.POST.get("ast"),
                 alt=request.POST.get("alt"),
                 ggt=request.POST.get("ggt"),
                 bili_t=request.POST.get("bili_t"),
-
                 # Infiammazione
                 pcr=request.POST.get("pcr"),
                 hgs=request.POST.get("hgs"),
                 sii=request.POST.get("sii"),
-
                 # Stress e antropometria
                 c_plasmatico=request.POST.get("c_plasmatico"),
                 massa_ossea=request.POST.get("massa_ossea"),
                 eta_metabolica=request.POST.get("eta_metabolica"),
                 grasso_viscerale=request.POST.get("grasso_viscerale"),
-
                 # Dati anagrafici e misurazioni
                 height=request.POST.get("altezza"),
                 weight=request.POST.get("weight"),
@@ -1413,9 +1406,8 @@ class ComposizioneView(View):
                 'ultimo_referto': ultimo_referto
             }
 
-        except Exception as e:  
+        except Exception as e:
             print(e)
-
             context = {
                 'persona': persona,
                 'dottore': dottore,
@@ -2097,18 +2089,21 @@ class CalcolatoreRender(View):
             return render(request, 'includes/calcolatore.html', context)
 
         
-    def post(self, request):
+    def post(self, request, id):
         data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
         dottore_id = request.session.get('dottore_id')
+
+        persona = get_object_or_404(TabellaPazienti, id=id)
 
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
 
         try:
-            # Controlla se esiste un paziente con lo stesso nome e cognome
+
             paziente = TabellaPazienti.objects.filter(
                 dottore=dottore,
                 codice_fiscale=data.get('codice_fiscale') 
             ).first()
+
 
             if paziente: 
                 
@@ -2535,7 +2530,8 @@ class CalcolatoreRender(View):
                         "biological_age": biological_age,
                         "data": data,
                         "id_persona": paziente_id,
-                        'dottore': dottore
+                        'dottore': dottore,
+                        "persona": persona
                     }
 
                     return render(request, "includes/calcolatore.html", context)
@@ -2546,7 +2542,8 @@ class CalcolatoreRender(View):
                         "show_modal": False,
                         "error": "Operazione non andata a buon fine: 'Un Utente con questo Codice Fiscale è gia presente all'interno del database'. ",
                         "data": data,
-                        'dottore': dottore
+                        'dottore': dottore,
+                        'persona': persona
                     }
                     return render(request, "includes/calcolatore.html", context)
 
@@ -3027,6 +3024,11 @@ class CalcolatoreRender(View):
             return render(request, "includes/calcolatore.html", context)
 
 
+
+
+
+
+
 class ElencoRefertiView(View):
     def get(self, request, id):
         
@@ -3053,8 +3055,6 @@ class ElencoRefertiView(View):
 
         return render(request, "includes/elencoReferti.html", context)
     
-
-
 class PersonaDetailView(View):
     def get(self, request, persona_id):
 
@@ -3201,7 +3201,34 @@ class ResilienzaView(View):
     
 
 
-## SEZIONE PRESCRIZIONI
+
+
+
+## SEZIONE PIANO TERAPEUTICO
+class PianoTerapeutico(View):
+
+    def get(self, request, persona_id):
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        #ELENCO PRESCRIZIONI ESAMI PAZIENTE
+        visite_list = PrescrizioniEsami.objects.filter(paziente=persona).order_by('-data_visita')
+        
+        paginator = Paginator(visite_list, 7)  
+        page_number = request.GET.get('page')
+        visite_page = paginator.get_page(page_number)
+
+        context = {
+            'persona': persona,
+            'dottore' : dottore,
+            'visite': visite_page,  
+        }
+
+        return render(request, 'piano_terapeutico/piano_terapeutico.html', context)
+
+### SEZIONE PRESCRIZIONI ESAMI
 class PrescrizioniView(View):
 
     def get(self, request, persona_id):
@@ -3220,85 +3247,37 @@ class PrescrizioniView(View):
 
 
     def post(self, request, persona_id):
-
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
         
         listaCodici = request.POST.get('codici_esami')
         data_list = json.loads(listaCodici)
         numeri = [x for x in data_list if x.isdigit()]
 
-        nuova_visita = ElencoVisitePaziente.objects.create(
-            paziente = persona,
+        nuova_visita = PrescrizioniEsami.objects.create(
+            paziente=persona,
+            esami_prescritti=json.dumps(numeri),
         )
 
-        for i in range(0, len(numeri)):
-            EsameVisita.objects.create(
-                visita=nuova_visita,
-                codice_esame=numeri[i],
-            )
-
-        return redirect('cartella_paziente', persona_id)
-
-class DettagliPrescrizioni(View):
-    def get(self, request, persona_id, visite_id):
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, id=persona_id)
-        visite = ElencoVisitePaziente.objects.all()
-
-        #DATI REFERTI ETA' BIOLOGICA
-        referti_recenti = persona.referti.all().order_by('-data_referto')
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
-        ultimo_referto = referti_recenti.first() if referti_recenti else None
-        
-        dati_estesi_ultimo_referto = None
-        if ultimo_referto:
-            dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+        return redirect('piano_terapeutico', persona_id)
 
 
-        #DATI REFERTI PRESCRIZIONI
-        json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
 
-        if not os.path.exists(json_path):
-            return JsonResponse({"error": f"File JSON non trovato: {json_path}"}, status=404)
 
-        with open(json_path, "r", encoding="utf-8") as file:
-            data = json.load(file)
-        
-        visita = ElencoVisitePaziente.objects.get(id=visite_id)
-        codici_esami = EsameVisita.objects.filter(visita_id=visite_id).values_list('codice_esame', flat=True)
-        listaCodici_Visita = list(codici_esami)
 
-        elencoPrescrizioni = {}
 
-        for esame in data['Foglio1']:  
-            codice_esame = esame.get('CODICE_UNIVOCO_ESAME_PIATTAFORMA')  
 
-            if codice_esame:
-                codice_esame = str(codice_esame).strip()  
 
-            if codice_esame in listaCodici_Visita:
-                elencoPrescrizioni[codice_esame] = esame
 
-        context = {
-            'persona': persona,
-            'referti_recenti': referti_recenti,
-            'dati_estesi': dati_estesi,
-            'ultimo_referto': ultimo_referto,
-            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
-            'dottore' : dottore,
-            'visite': visite,
-            'visita': visita,
-            'elencoPrescrizioni': elencoPrescrizioni,
-        }
 
-        return render(request, "includes/cartellaPaziente.html", context)
 
-class RefertoView(View):
-    def get(self, request, referto_id):
-        referto = ArchivioReferti.objects.get(id=referto_id)
-        return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
+
+
+
+
+
+
+
+
 
 
 
@@ -3366,3 +3345,7 @@ class UpdatePersonaContactView(View):
 
         return render(request, "includes/EtaVitale.html", context)
     
+class RefertoView(View):
+    def get(self, request, referto_id):
+        referto = ArchivioReferti.objects.get(id=referto_id)
+        return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
