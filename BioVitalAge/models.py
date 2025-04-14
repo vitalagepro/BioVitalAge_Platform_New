@@ -40,8 +40,8 @@ class TabellaPazienti(models.Model):
     email = models.CharField(max_length=100, null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     dob = models.DateField(null=True, blank=True)
-    gender = models.CharField(max_length=1, null=True, blank=True, choices=[('M', 'Male'), ('F', 'Female')])
-    cap = models.CharField(max_length=5, null=True, blank=True)
+    gender = models.CharField(max_length=20, null=True, blank=True, choices=[('M', 'Male'), ('F', 'Female')])
+    cap = models.CharField(max_length=20, null=True, blank=True)
     residence = models.CharField(max_length=100, null=True, blank=True)
     province = models.CharField(max_length=100, null=True, blank=True)
     place_of_birth = models.CharField(max_length=100, null=True, blank=True)
@@ -128,8 +128,8 @@ class TabellaPazienti(models.Model):
     statura = models.CharField(max_length=100, null=True, blank=True)
 
     ## DOMINIO INFORMAZIONE DEL SANGUE
-    blood_group = models.CharField(max_length=3, null=True, blank=True)
-    rh_factor = models.CharField(max_length=3, null=True, blank=True)
+    blood_group = models.CharField(max_length=20, null=True, blank=True)
+    rh_factor = models.CharField(max_length=20, null=True, blank=True)
     pressure_min = models.CharField(max_length=100, null=True, blank=True)
     pressure_max = models.CharField(max_length=100, null=True, blank=True)
 
@@ -513,34 +513,30 @@ class DatiEstesiRefertiTest(models.Model):
         return f"Dati Estesi Referto ID: {self.referto.id}"
     
 
-# ELENCO VISITE
-class ElencoVisitePaziente(models.Model):
+
+
+
+# PRESCRIZIONI ESAMI UTENTE
+class PrescrizioniEsami(models.Model):
     paziente = models.ForeignKey(
         TabellaPazienti, 
         on_delete=models.CASCADE, 
         related_name='visite'
     )
     data_visita = models.DateField(auto_now_add=True)
-    #medico = models.CharField(max_length=100) 
-    #motivo_visita = models.TextField(blank=True, null=True)
+    esami_prescritti = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"Visita di - {self.data_visita}"
 
-# ELENCO ESAMI
-class EsameVisita(models.Model):
-    visita = models.ForeignKey(
-        ElencoVisitePaziente, 
-        on_delete=models.CASCADE, 
-        related_name='esami'
-    )
-    codice_esame = models.CharField(max_length=50)
-    #descrizione = models.CharField(max_length=255)
-    #metodica = models.CharField(max_length=100, blank=True, null=True)
-    #risultato = models.TextField(blank=True, null=True)  
 
-    def __str__(self):
-        return f" Visita {self.visita.id}"
+
+
+
+
+
+
+
 
 # TABELLA APPUNTAMENTI
 class Appointment(models.Model):

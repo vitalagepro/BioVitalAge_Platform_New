@@ -229,26 +229,27 @@
   margin-right: -5.5rem;
 }
 .toolkit:hover {
-  width: 50rem;
+  width: 30rem;
   opacity: 1;
   transform: translateX(0); 
 }
-#genereReport,
 #btn_blood_group {
   height: 3rem;
   opacity: 0;
-  border-radius: 8px !important;
+  border-radius: 4px !important;
   visibility: hidden;
   transform: translateY(10px);
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
-.toolkit:hover #genereReport,
 .toolkit:hover #btn_blood_group {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
-
+#btn_save_changes{
+  border-radius: 4px !important;
+  height: 3rem;
+}
 
 /* STYLE FIX BUTTON MODIFICA DATI */
 #modifica,
