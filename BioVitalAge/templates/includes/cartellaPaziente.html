@@ -113,7 +113,6 @@
         </div>
         {% endif %}
 
-
         <!-- CARD PERSONAL INFORMATION -->
         <div class="container-datiPersonali containerStyle">
 
@@ -266,6 +265,65 @@
             </form>
         </div>
 
+        <!-- CARD SEZIONI STORICO -->
+        <div class="container-storico">
+
+            <div class="card-storico" onclick="window.location.href='{% url 'storico' persona.id %}'">
+                <div class="img-circle-container">
+                    <img src="{% static 'includes/images/storico.png' %}" alt="">
+                </div>
+                <a href="{% url 'storico' persona.id %}">
+                   <span class="freccia">&larr;</span> Storico
+                </a>
+            </div>
+
+            <div class="card-storico">
+                <div class="img-circle-container">
+                    <img src="{% static 'includes/images/diagnosi.png' %}" alt="">
+                </div>
+                
+                <a href="">
+                   <span class="freccia">&larr;</span> Diagnosi
+                </a>
+            </div>
+
+            <div class="card-storico">
+                <div class="img-circle-container">
+                    <img src="{% static 'includes/images/terapie.png' %}" alt="">
+                </div>
+                <a href="">
+                   <span class="freccia">&larr;</span> Terapie
+                </a>
+            </div>
+
+            <div class="card-storico">
+                <div class="img-circle-container">
+                    <img src="{% static 'includes/images/esame.png' %}" alt="">
+                </div>
+                <a href="">
+                   <span class="freccia">&larr;</span> Esami
+                </a>
+            </div>
+
+            <div class="card-storico">
+                <div class="img-circle-container">
+                    <img src="{% static 'includes/images/terapia.png' %}" alt="">
+                </div>
+                <a href="">
+                   <span class="freccia">&larr;</span> Visite
+                </a>
+            </div>
+
+            <div class="card-storico">
+                <div class="img-circle-container">
+                    <img src="{% static 'includes/images/allegati.png' %}" alt="">
+                </div>
+                <a href="">
+                   <span class="freccia">&larr;</span> Allegati
+                </a>
+            </div>
+
+        </div>
 
         <!-- CARD CLOCK -->
         <div class="container-indicatori containerStyle" style="margin-top: 0rem;">

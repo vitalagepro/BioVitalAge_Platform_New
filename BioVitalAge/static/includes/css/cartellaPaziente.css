@@ -1150,3 +1150,65 @@ strong {
   font-size: 18px;
 }
 
+
+
+
+
+
+/* STILE STORICO */
+.container-storico{
+  width: 98%;
+  margin: auto;
+  border-radius: 8px;
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+.card-storico{
+  background-color: var(--card-color);
+  height: 120px;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.05);
+}
+.card-storico:hover{
+  cursor: pointer;
+}
+.card-storico img{
+  width: 40px;
+  height: 40px;
+}
+.card-storico a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; 
+  color: #808080;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-size: 20px;
+  font-weight: bold;
+}
+.card-storico .freccia {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  color: var(--contrast-color);
+}
+.card-storico:hover a {
+  color: var(--contrast-color);
+}
+.card-storico:hover .freccia {
+  opacity: 1;
+  transform: translateX(0);
+}
+.card-storico a span {
+  transition: margin-left 0.3s ease;
+}
+.card-storico:hover a {
+  margin-left: 5px; 
+}

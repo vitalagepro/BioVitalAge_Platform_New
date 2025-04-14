@@ -1054,7 +1054,10 @@ class CartellaPazienteView(View):
         return render(request, "includes/cartellaPaziente.html", context)
 
 
-
+## VIEW STORICO
+class StoricoView(View):
+    def get(self, request, id):
+        return render(request, 'sezioni_storico/allegati.html')
 
 
 
@@ -3027,130 +3030,6 @@ class CalcolatoreRender(View):
 
 
 
-
-
-class ElencoRefertiView(View):
-    def get(self, request, id):
-        
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, id=id)
-        
-        #DATI REFERTI ETA' BIOLOGICA
-        referti_recenti = persona.referti.all().order_by('-data_referto')
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
-        
-        dati_estesi_ultimo_referto = None
-
-        visite = ElencoVisitePaziente.objects.all()
-
-        context = {
-            'persona': persona,
-            'referti_recenti': referti_recenti,
-            'dati_estesi': dati_estesi,
-            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
-            'dottore' : dottore,
-            'visite': visite,
-        }
-
-        return render(request, "includes/elencoReferti.html", context)
-    
-class PersonaDetailView(View):
-    def get(self, request, persona_id):
-
-        # RECUPERO DOTTORE
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
-        # RECUPERO PAZIENTE
-        persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
-
-        # Recupera l'ID del referto dalla query string
-        referto_id = request.GET.get('referto_id')
-
-        # Recupera il referto specifico se l'ID è passato, altrimenti l'ultimo referto
-        if referto_id:
-            referto = get_object_or_404(ArchivioReferti, id=referto_id, paziente=persona)
-        else:
-            referto = ArchivioReferti.objects.filter(paziente=persona).order_by("-data_ora_creazione").first()
-
-        # Ottieni i dati estesi associati al referto selezionato
-        dati_estesi = DatiEstesiReferti.objects.filter(referto=referto).first() if referto else None
-
-        # Preparazione del contesto per il template
-        context = {
-            'persona': persona,
-            'referto': referto,
-            'datiEstesi': dati_estesi,
-            'dottore': dottore,
-        }
-        return render(request, "includes/Referto.html", context)
-
-class ScaricaReferto(View):
-    def get(self, request, persona_id, visite_id):
-
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        persona = get_object_or_404(TabellaPazienti, id=persona_id)
-        visite = ElencoVisitePaziente.objects.all()
-
-        # Logica per generare il PDF
-        pdf_url = f"/media/pdf/{persona.surname}_{persona.name}_Prescrizione.pdf"
-
-        #DATI REFERTI ETA' BIOLOGICA
-        referti_recenti = persona.referti.all().order_by('-data_referto')
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
-        ultimo_referto = referti_recenti.first() if referti_recenti else None
-        
-        dati_estesi_ultimo_referto = None
-        if ultimo_referto:
-            dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
-
-
-        #DATI REFERTI PRESCRIZIONI
-        json_path = os.path.join(settings.STATIC_ROOT, "includes", "json", "ArchivioEsami.json")
-
-        if not os.path.exists(json_path):
-            return JsonResponse({"error": f"File JSON non trovato: {json_path}"}, status=404)
-
-        with open(json_path, "r", encoding="utf-8") as file:
-            data = json.load(file)
-        
-        visita = ElencoVisitePaziente.objects.get(id=visite_id)
-        codici_esami = EsameVisita.objects.filter(visita_id=visite_id).values_list('codice_esame', flat=True)
-        listaCodici_Visita = list(codici_esami)
-
-        elencoPrescrizioni = {}
-
-        for esame in data['Foglio1']:  
-            codice_esame = esame.get('CODICE_UNIVOCO_ESAME_PIATTAFORMA')  
-
-            if codice_esame:
-                codice_esame = str(codice_esame).strip()  
-
-            if codice_esame in listaCodici_Visita:
-                elencoPrescrizioni[codice_esame] = esame
-
-
-        lista_nomi_esami = [esame.get('DESCRIZIONE_ESAME') for esame in elencoPrescrizioni.values() if esame.get('DESCRIZIONE_ESAME')]
-
-        context = {
-            'persona': persona,
-            'referti_recenti': referti_recenti,
-            'dati_estesi': dati_estesi,
-            'ultimo_referto': ultimo_referto,
-            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
-            'dottore' : dottore,
-            'visite': visite,
-            'visita': visita,
-            'lista_nomi_esami': lista_nomi_esami,
-            'pdf_url': pdf_url
-        }
-
-        return render(request, "includes/cartellaPaziente.html", context)
-
-
-
 ## SEZIONE RESILIENZA
 class ResilienzaView(View):
     def get(self, request, persona_id):
@@ -3200,10 +3079,6 @@ class ResilienzaView(View):
         return render(request, "includes/Resilienza.html", context)
     
 
-
-
-
-
 ## SEZIONE PIANO TERAPEUTICO
 class PianoTerapeutico(View):
 
@@ -3216,7 +3091,7 @@ class PianoTerapeutico(View):
         #ELENCO PRESCRIZIONI ESAMI PAZIENTE
         visite_list = PrescrizioniEsami.objects.filter(paziente=persona).order_by('-data_visita')
         
-        paginator = Paginator(visite_list, 7)  
+        paginator = Paginator(visite_list, 5)  
         page_number = request.GET.get('page')
         visite_page = paginator.get_page(page_number)
 
@@ -3349,3 +3224,58 @@ class RefertoView(View):
     def get(self, request, referto_id):
         referto = ArchivioReferti.objects.get(id=referto_id)
         return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
+
+class ElencoRefertiView(View):
+    def get(self, request, id):
+        
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        
+        #DATI REFERTI ETA' BIOLOGICA
+        referti_recenti = persona.referti.all().order_by('-data_referto')
+        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+        
+        dati_estesi_ultimo_referto = None
+
+        context = {
+            'persona': persona,
+            'referti_recenti': referti_recenti,
+            'dati_estesi': dati_estesi,
+            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
+            'dottore' : dottore,
+        }
+
+        return render(request, "includes/elencoReferti.html", context)
+    
+class PersonaDetailView(View):
+    def get(self, request, persona_id):
+
+        # RECUPERO DOTTORE
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        # RECUPERO PAZIENTE
+        persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
+
+        # Recupera l'ID del referto dalla query string
+        referto_id = request.GET.get('referto_id')
+
+        # Recupera il referto specifico se l'ID è passato, altrimenti l'ultimo referto
+        if referto_id:
+            referto = get_object_or_404(ArchivioReferti, id=referto_id, paziente=persona)
+        else:
+            referto = ArchivioReferti.objects.filter(paziente=persona).order_by("-data_ora_creazione").first()
+
+        # Ottieni i dati estesi associati al referto selezionato
+        dati_estesi = DatiEstesiReferti.objects.filter(referto=referto).first() if referto else None
+
+        # Preparazione del contesto per il template
+        context = {
+            'persona': persona,
+            'referto': referto,
+            'datiEstesi': dati_estesi,
+            'dottore': dottore,
+        }
+        return render(request, "includes/Referto.html", context)
+
