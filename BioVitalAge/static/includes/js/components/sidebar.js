@@ -1,7 +1,6 @@
 /*  -----------------------------------------------------------------------------------------------
    GLOBAL VARIABLES
 --------------------------------------------------------------------------------------------------- */
-let emails = [];
 let notifications = [];
 let appUser = window.currentUser || 'guest'; // Usiamo appUser invece di currentUser per evitare conflitti
 let previousUser = null;
@@ -109,11 +108,6 @@ async function handleUserChange(newUser) {
     console.error("Errore durante il cambio utente:", error);
   }
 }
-
-/*  -----------------------------------------------------------------------------------------------
-   EMAIL FETCHING
---------------------------------------------------------------------------------------------------- */
-
 
 /*  -----------------------------------------------------------------------------------------------
    INITIALIZATION

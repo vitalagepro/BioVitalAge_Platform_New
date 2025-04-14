@@ -551,7 +551,7 @@ class AppuntamentiSalvaView(View):
         if request.method == "POST":
             try:
                 body_raw = request.body.decode('utf-8')
-
+                dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
                 data = json.loads(body_raw)
 
                 # Recuperiamo i dati, facendo attenzione ai valori mancanti
@@ -574,8 +574,9 @@ class AppuntamentiSalvaView(View):
                     giorno=giorno,
                     data=data_appointment,
                     orario=time_appointment,
-                    voce_prezzario=voce_prezzario,  # 🔹 Ora viene salvato
-                    durata=durata,  # 🔹 Ora viene salvata
+                    voce_prezzario=voce_prezzario,
+                    durata=durata,
+                    dottore=dottore
                 )
 
                 return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!", 'clear_form': True})
@@ -1075,23 +1076,29 @@ class CartellaPazienteView(View):
 ## VIEW STORICO
 class StoricoView(View):
     def get(self, request, id):
-        paziente = get_object_or_404(TabellaPazienti, id=id)
+        # Recupero Dottore e Paziente
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        ##STORICO APPUNTAMENTI
+        storico_appuntamenti = Appointment.objects.filter(
+            Q(nome_paziente__icontains=persona.name.strip()) |
+            Q(cognome_paziente__icontains=persona.surname.strip())
+        ).order_by('data', 'orario')
+
 
         today = now().date()
 
-        # Tutti gli appuntamenti
-        appuntamenti = Appointment.objects.filter(
-            nome_paziente=paziente.name,
-            cognome_paziente=paziente.surname
-        ).order_by('data', 'orario')
+        # Totale appuntamenti
+        totale_appuntamenti = storico_appuntamenti.count()
 
-        totale_appuntamenti = appuntamenti.count()
-        ultimo_appuntamento = appuntamenti.filter(data__lt=today).last()
-        prossimo_appuntamento = appuntamenti.filter(data__gte=today).first()
+        ultimo_appuntamento = storico_appuntamenti.filter(data__lt=today).last() or None
+        prossimo_appuntamento = storico_appuntamenti.filter(data__gte=today).first() or None
 
         context = {
-            'paziente': paziente,
-            'appuntamenti': appuntamenti,
+            'dottore': dottore,
+            'paziente': persona,
+            'storico_appuntamenti': storico_appuntamenti,
             'totale_appuntamenti': totale_appuntamenti,
             'ultimo_appuntamento': ultimo_appuntamento,
             'prossimo_appuntamento': prossimo_appuntamento,
