@@ -48,6 +48,9 @@ urlpatterns = [
     path("CartellaPaziente/<int:id>/", views.CartellaPazienteView.as_view(), name="cartella_paziente"),
     path("ElencoReferti/<int:id>/", views.ElencoRefertiView.as_view(), name="elenco_referti"),
 
+    ## URL SEZIONI STORICO
+    path("CartellaPaziente/<int:id>/Storico", views.StoricoView.as_view(), name="storico"),
+
 
     ## SEZIONE MUSCOLO
     path('Valutazione_Muscolo_Scheletrica/<int:persona_id>/', views.ValutazioneMSView.as_view(), name='valutazione_m_s'), 
@@ -79,16 +82,13 @@ urlpatterns = [
     path('Resilienza/<int:persona_id>/', views.ResilienzaView.as_view(), name='resilienza'),
     
 
-
     ## URL PIANO TERAPEUTICO
     path('Cartella_Paziente/Piano_Terapeutico/<int:persona_id>/', views.PianoTerapeutico.as_view(), name='piano_terapeutico'),
     path('CartellaPaziente/Piano_Terapeutico/Prescrizioni_Esami/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
     
 
-    ## URL SEZIONE PRESCRIZIONI 
-
-    path("CartellaPaziente/Download/<int:persona_id>/<int:visite_id>/", ScaricaReferto.as_view(), name="scarica_pdf"),
-
+  
+   
 
 
 

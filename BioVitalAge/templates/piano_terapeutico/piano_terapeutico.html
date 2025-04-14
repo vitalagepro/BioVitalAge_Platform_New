@@ -249,11 +249,43 @@
 
 
         <!-- PRESCRIZIONI FARMACI -->
-        <!-- MODALE  -->
         
+        <div class="backdropModalePrescrizioni" id="backdropPrescrizioni"></div>
+            
+        <div class="ModalPrescrizione" id="modalePrescrizioni">
+            <div class="title-container">
+                <H3>Dettagli visita del {{ visita.data_visita }}</H3>
+                <button onclick="closeModal()" class="close">X</button>
+            </div>
 
-        <!-- TABELLA -->
-        <!-- <div class="contenitore-tabella" style="margin-top: 0; ">
+            <div class="prescrizioniTable-header">
+                <p>ID Esame</p>
+                <p>Descrizione Esame</p>
+                <p>Metodica</p>
+                <p>Codice Asl</p>
+                <p>Codice Reg</p>
+                <p id="last">Apparato / Sistema</p>
+            </div>
+                
+            <div class="ModalPrescrizioni-content">
+                   
+                <div class="table-content">
+                    {% for codice_esame, dettagli in elencoPrescrizioni.items %}
+                        <div class="prescrizoniRow">
+                            <p>{{ codice_esame }}</p>
+                            <p>{{ dettagli.DESCRIZIONE_ESAME }}</p>
+                            <p>{{ dettagli.METODICA }}</p>
+                            <p>{{ dettagli.COD_ASL }}</p>
+                            <p>{{ dettagli.COD_REG }}</p>
+                            <p>{{ dettagli.APPARATO_or_I_SISTEMI|slice:":20" }}</p>
+                        </div>
+                    {% endfor %}
+                </div>       
+            </div>
+        </div>    
+   
+        <!-- TABELLA PRESCRIZIONI ESAMI -->
+        <div class="contenitore-tabella" style="margin-top: 0; ">
 
             <div class="recent-patients" id="card-style">
 
@@ -263,144 +295,100 @@
                     <div class="filtri-button">
 
                         <select name="filter" id="filter" style="width: 10rem;">
-
                             <option>Tutti</option>
-                            <option value="0">Descrizione Esame Crescente</option>
-                            <option value="1">Descrizione Esame Decrescente</option>
+                            <option value="0">Nome Esame Crescente</option>
+                            <option value="1">Nome Esame Decrescente</option>
                             <option value="2">Metodica</option>
                             <option value="3">Codice Asl</option>
                             <option value="4">Codice Regione</option>
                             <option value="5">Apparati / Sitemi</option>
-
                         </select>
 
-                        <button id="downloadPrescrizioneVuota" class="button" style="width: 4rem;"> 
+                        <button id="downloadPrescrizioneVuota" class="button"> 
+                            
                             <span class="button__icon-wrapper">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    width="18"
-                                    class="button__icon-svg"
-                                >
-                                    <path
-                                        d="M12 3V16M12 16L8 12M12 16L16 12"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    />
-                                    <path
-                                        d="M4 20H20"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                    />
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+                                    <path d="M12 3V16M12 16L8 12M12 16L16 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M4 20H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                                 </svg>
 
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    width="18"
-                                    class="button__icon-svg button__icon-svg--copy"
-                                >
-                                    <path
-                                        d="M12 3V16M12 16L8 12M12 16L16 12"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    />
-                                    <path
-                                        d="M4 20H20"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                    />
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg button__icon-svg--copy">
+                                    <path d="M12 3V16M12 16L8 12M12 16L16 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M4 20H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                                 </svg>
-
                             </span>
+
+                            Prescrizione Vuota
                         </button>
 
-                        <a href="{% url 'prescrizioni' persona.id %}" class="button" style="width: 15rem;"> 
+                        <a href="" class="button" style="width: 15rem;"> 
+
                             <span class="button__icon-wrapper">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    width="18"
-                                    class="button__icon-svg"
-                                >
-                                    <path
-                                        d="M12 5V19M5 12H19"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    />
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+                                    <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
 
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    width="18"
-                                    class="button__icon-svg button__icon-svg--copy"
-                                >
-                                    <path
-                                        d="M12 5V19M5 12H19"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    />
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg button__icon-svg--copy">
+                                    <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
-
                             </span>
+
                             Aggiungi Prescrizioni
                         </a>
                     </div>
 
                 </div>
 
-                
                 <div class="table-container">
+
                     <div class="table-header">
                         <p>Id Visita</p>
                         <p>Data Visita</p>
                         <p>Visualizza Dettagli</p>
                         <p>Scarica Prescrizione</p>
                     </div>
+
                     <div class="table-content prescriptions">
 
-                        {% for visite in visite %}
-                            <div class="riga-container">
-                                <p>{{ visite.id }}</p>
-                                <p>{{ visite.data_visita|date:"d/m/Y" }}</p>
-                                <p>
-                                    <a href="">
-                                        <img src="{% static 'includes/icone/referto.png' %}" alt="" />
-                                    </a>
-                                </p>
-                                <p>
-                                    <a href="{% url 'scarica_pdf' persona.id visite.id %}" 
-                                        id="pdfLink"> 
-                                        <img src="{% static 'includes/icone/download.png' %}" alt="Download" />
-                                    </a>
-                                </p>
-                                
-                            </div>
-
-                            {% empty %}
-                            <p class="text-center mt-2 mb-2">No recent prescription found.</p>
-                        {% endfor %}
-
+                        <p class="text-center mt-2 mb-2">No recent prescription found.</p>
                         
-                    </div>          
+                    </div>  
+                    
+                    <div class="pagination_tabella">
+                        {% if visite.has_previous %}
+                            <a class="previous" href="?page={{ visite.previous_page_number }}">&lt; Previous</a>
+                        {% else %}
+                            <span class="previous disabled">&lt; Previous</span>
+                        {% endif %}
+                    
+                        {% for num in visite.paginator.page_range %}
+                            {% if visite.number == num %}
+                                <span class="current">{{ num }}</span>
+                            {% else %}
+                                <a href="?page={{ num }}">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    
+                        {% if visite.has_next %}
+                            <a class="next" href="?page={{ visite.next_page_number }}">Next &gt;</a>
+                        {% else %}
+                            <span class="next disabled">Next &gt;</span>
+                        {% endif %}
+                    </div>
+                 
                 </div>            
             </div>
-        </div> -->
+        </div>
+
+
+
+
+
+
+
+
+
+
 
     </main>
 
