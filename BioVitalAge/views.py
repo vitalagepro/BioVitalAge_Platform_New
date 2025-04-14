@@ -620,13 +620,13 @@ class GetSingleAppointmentView(View):
 ### VIEWS GET ALL APPOINTMENTS
 class AppuntamentiGetView(View):
     def get(self, request):
-        """Recupera gli appuntamenti futuri ed elimina quelli passati"""
+        """Recupera gli appuntamenti futuri o di oggi"""
         
         # 📌 1. Ottenere la data di oggi senza ore/minuti/secondi
         today = now().date()
 
         # 📌 2. Eliminare gli appuntamenti con data precedente a oggi
-        deleted_count, _ = Appointment.objects.filter(data__lt=today).delete()  # Cambiato "date" in "data"
+        deleted_count= 0
 
         # 📌 3. Recuperare solo gli appuntamenti futuri o di oggi
         future_appointments = Appointment.objects.filter(data__gte=today)  # Cambiato "date" in "data"
@@ -924,6 +924,21 @@ class CartellaPazienteView(View):
         ## DATI CAPACITA' VITALE
         ultimo_referto_capacita_vitale = persona.referti_test.order_by('-data_ora_creazione').first()
 
+        ##STORICO APPUNTAMENTI
+        storico_appuntamenti = Appointment.objects.filter(
+            Q(nome_paziente__icontains=persona.name.strip()) |
+            Q(cognome_paziente__icontains=persona.surname.strip())
+        ).order_by('data', 'orario')
+
+
+        today = now().date()
+
+        # Totale appuntamenti
+        totale_appuntamenti = storico_appuntamenti.count()
+
+        ultimo_appuntamento = storico_appuntamenti.filter(data__lt=today).last() or None
+        prossimo_appuntamento = storico_appuntamenti.filter(data__gte=today).first() or None
+
 
         ## DATI RESILIENZA
 
@@ -970,7 +985,10 @@ class CartellaPazienteView(View):
             'punteggio_eta_metabolica': punteggio_eta_metabolica,
             #ULTIMO REFERTO CAPACITA' VITALE
             'ultimo_referto_capacita_vitale': ultimo_referto_capacita_vitale,
-            
+            'storico_appuntamenti': storico_appuntamenti,
+            'totale_appuntamenti': totale_appuntamenti,
+            'ultimo_appuntamento': ultimo_appuntamento,
+            'prossimo_appuntamento': prossimo_appuntamento,
         }
 
         return render(request, "includes/cartellaPaziente.html", context)

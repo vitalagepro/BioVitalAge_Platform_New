@@ -266,6 +266,31 @@
             </form>
         </div>
 
+        <div class="card">
+            <h4>Storico Appuntamenti</h4>
+            <p>Totale appuntamenti: <strong>{{ totale_appuntamenti }}</strong></p>
+            <p>Data ultimo appuntamento:
+            <strong>
+            {% if ultimo_appuntamento %}
+                {{ ultimo_appuntamento.data|date:"d/m/Y" }}
+            {% else %}
+                Nessuno
+            {% endif %}
+            </strong>
+            </p>
+            
+            <p>Data prossimo appuntamento:
+            <strong>
+            {% if prossimo_appuntamento %}
+                {{ prossimo_appuntamento.data|date:"d/m/Y" }}
+            {% else %}
+                Nessuno
+            {% endif %}
+            </strong>
+            </p>
+        </div>
+
+
 
         <!-- CARD CLOCK -->
         <div class="container-indicatori containerStyle" style="margin-top: 0rem;">
