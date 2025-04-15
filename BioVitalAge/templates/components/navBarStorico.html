@@ -1,0 +1,77 @@
+<!-- templates/components/navBarPatient.html -->
+{% load static %}
+<header>
+    <nav class="col-md-12 d-flex justify-content-between align-items-center nav-bar">
+        
+        <!-- Logo Section -->
+        <div class="col-md-2 d-flex nav-bar-logo">
+            <a href="{% url 'HomePage' %}">
+                <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®" />
+            </a>
+        </div>
+
+        <!-- Links Section -->
+        <div class="col-md-8 nav-bar-linkage">
+            <a href="#"
+                class="{% if request.resolver_match.url_name == 'Risultati' %}active-link{% endif %}">
+                Storico
+            </a>
+            <a href="#"
+                class="{% if request.resolver_match.url_name == 'Risultati' %}active-link{% endif %}">
+                Diagnosi
+            </a>
+            <a href="#"
+                class="{% if request.resolver_match.url_name == 'Calcolatore' %}active-link{% endif %}">
+                Terapie
+            </a>
+            <a href="#"
+                class="{% if request.resolver_match.url_name == 'Calcolatore' %}active-link{% endif %}">
+                Esami
+            </a>
+            <a href="#"
+                class="{% if request.resolver_match.url_name == 'Calcolatore' %}active-link{% endif %}">
+                Visite
+            </a>
+            <a href="#"
+                class="{% if request.resolver_match.url_name == 'Calcolatore' %}active-link{% endif %}">
+                Allegati
+            </a>
+        </div>
+
+        <!-- User Section -->
+        <div class="col-md-2 nav-bar-user">
+               
+            <h3>Dottor. {{ dottore }}</h3>
+            
+            <div class="img-container-user-nav-bar">
+                <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user">
+            </div>
+            <div class="nav-bar-user-modal" id="userModal">
+                <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn" onclick="window.location.href='{% url 'logout' %}'">Disconnettiti</button> <!-- @ts-ignore  -->
+            </div>
+        </div>
+        
+    </nav>
+</header>
+
+<!-- js import -->
+<script>
+    /*  -----------------------------------------------------------------------------------------------
+        Modal User
+--------------------------------------------------------------------------------------------------- */
+    const userImg = document.getElementById("userImg");
+    const userModal = document.getElementById("userModal");
+    const userModalBtn = document.getElementById("nav-bar-user-modal-btn");
+
+    function showModal() {
+        userModal.classList.add("show");
+    }
+
+    userImg.addEventListener("mouseover", showModal);
+
+    userModal.addEventListener("mouseout", () => {
+        userModal.classList.remove("show");
+    });
+
+    userModalBtn.addEventListener("mouseover", showModal);
+</script>

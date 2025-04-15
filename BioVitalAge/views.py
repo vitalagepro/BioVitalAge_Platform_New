@@ -1060,6 +1060,21 @@ class StoricoView(View):
         return render(request, 'sezioni_storico/allegati.html')
 
 
+class DiagnosiView(View):
+    def get(self, request, id):
+
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        context = {
+            'persona': persona, 
+            'dottore' : dottore,   
+        }
+
+        return render(request, 'sezioni_storico/diagnosi.html', context)
+
+
 
 
 ## SEZIONE MUSCOLO

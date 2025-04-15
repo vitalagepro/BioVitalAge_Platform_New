@@ -51,6 +51,10 @@ urlpatterns = [
     ## URL SEZIONI STORICO
     path("CartellaPaziente/<int:id>/Storico", views.StoricoView.as_view(), name="storico"),
 
+    ## URL SEZIONE DIAGNOSI
+    path("CartellaPaziente/<int:id>/Diagnosi", views.DiagnosiView.as_view(), name="diagnosi"),
+
+
 
     ## SEZIONE MUSCOLO
     path('Valutazione_Muscolo_Scheletrica/<int:persona_id>/', views.ValutazioneMSView.as_view(), name='valutazione_m_s'), 
