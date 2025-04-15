@@ -277,12 +277,12 @@
                 </a>
             </div>
 
-            <div class="card-storico">
+            <div class="card-storico" onclick="window.location.href='{% url 'diagnosi' persona.id %}'">
                 <div class="img-circle-container">
                     <img src="{% static 'includes/images/diagnosi.png' %}" alt="">
                 </div>
                 
-                <a href="">
+                <a href="{% url 'diagnosi' persona.id %}">
                    <span class="freccia">&larr;</span> Diagnosi
                 </a>
             </div>
