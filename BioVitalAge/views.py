@@ -77,8 +77,7 @@ class HomePageRender(View):
 
     def get(self, request):
         persone = TabellaPazienti.objects.all().order_by('-id')[:5]
-        appuntamenti = Appointment.objects.all().order_by('data')[:4]
-
+        today = timezone.now().date()  # Ottieni la data corrente (senza l'ora)
         total_biological_age_count = DatiEstesiReferti.objects.aggregate(total=Count('biological_age'))['total']
         total_pazienti = TabellaPazienti.objects.count()  # Conta tutti i pazienti
         # Calcola il minimo e il massimo dell'età cronologica
@@ -87,6 +86,8 @@ class HomePageRender(View):
         avg_age = TabellaPazienti.objects.aggregate(avg_age=Avg('chronological_age'))['avg_age']
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        # Ottieni solo gli appuntamenti futuri
+        appuntamenti = Appointment.objects.filter(dottore=dottore, data__gte=today).order_by('data')[:4]
         # Calcola il totale "biological_age" solo per i referti associati ai pazienti di questo dottore
         total_biological_age_count = DatiEstesiReferti.objects.filter(referto__paziente__dottore=dottore).aggregate(total=Count('biological_age'))['total']
         total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
@@ -227,8 +228,8 @@ class HomePageRender(View):
                             total_biological_age_count = DatiEstesiReferti.objects.filter(referto__paziente__dottore=dottore).aggregate(total=Count('biological_age'))['total']
                             total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
                             # Ottieni gli appuntamenti del dottore
-                            appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('data')[:4]
-                                    # --- Calcolo per il report "Totale Pazienti" ---
+                            today = timezone.now().date()  # Ottieni la data corrente (senza l'ora)
+                            appuntamenti = Appointment.objects.filter(dottore=dottore, data__gte=today).order_by('data')[:4]                                    # --- Calcolo per il report "Totale Pazienti" ---
                             # Calcola min, max e media dell'età cronologica solo per i pazienti del dottore
                             agg_age = TabellaPazienti.objects.filter(dottore=dottore).aggregate(
                                 min_age=Min('chronological_age'),
