@@ -24,6 +24,7 @@ from django.utils.decorators import method_decorator
 from django.utils.timezone import now, localtime
 from django.utils.dateparse import parse_date
 from django.db.models import OuterRef, Subquery, Count, Q, Avg, Min, Max
+from django.db.models.functions import ExtractMonth
 
 # --- IMPORTS PERSONALI (APP) ---
 from .utils import *
@@ -229,7 +230,7 @@ class HomePageRender(View):
                             total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
                             # Ottieni gli appuntamenti del dottore
                             today = timezone.now().date()  # Ottieni la data corrente (senza l'ora)
-                            appuntamenti = Appointment.objects.filter(dottore=dottore, data__gte=today).order_by('data')[:4]                                    # --- Calcolo per il report "Totale Pazienti" ---
+                            appuntamenti = Appointment.objects.filter(dottore=dottore, data__gte=today).order_by('data')[:4]
                             # Calcola min, max e media dell'età cronologica solo per i pazienti del dottore
                             agg_age = TabellaPazienti.objects.filter(dottore=dottore).aggregate(
                                 min_age=Min('chronological_age'),
@@ -1078,35 +1079,63 @@ class CartellaPazienteView(View):
 class StoricoView(View):
     def get(self, request, id):
         # Recupero Dottore e Paziente
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
         persona = get_object_or_404(TabellaPazienti, id=id)
+        
+        today = timezone.now().date()  # Ottieni la data corrente senza l'orario
 
-        ##STORICO APPUNTAMENTI
+        # Filtra gli appuntamenti del paziente in base al nome e cognome
         storico_appuntamenti = Appointment.objects.filter(
-            Q(nome_paziente__icontains=persona.name.strip()) |
-            Q(cognome_paziente__icontains=persona.surname.strip())
+            Q(nome_paziente__icontains=persona.name.strip()) &
+            Q(cognome_paziente__icontains=persona.surname.strip()) &
+            Q(dottore=dottore)  # Aggiungi il filtro per il dottore
         ).order_by('data', 'orario')
 
+        # Impostazione del paginatore (ad es. 10 referti per pagina)
+        paginator = Paginator(storico_appuntamenti, 7)
+        page_number = request.GET.get('page')
+        storico_page = paginator.get_page(page_number)
 
-        today = now().date()
-
-        # Totale appuntamenti
+        # Totale appuntamenti per il paziente
         totale_appuntamenti = storico_appuntamenti.count()
 
-        ultimo_appuntamento = storico_appuntamenti.filter(data__lt=today).last() or None
-        prossimo_appuntamento = storico_appuntamenti.filter(data__gte=today).first() or None
+        # Appuntamenti confermati
+        appuntamenti_confermati = storico_appuntamenti.filter(confermato=True).count()
+
+        # Calcolo appuntamenti per mese
+        appuntamenti_per_mese = storico_appuntamenti.annotate(month=ExtractMonth('data')).values('month').annotate(count=Count('id')).order_by('month')
+
+         # Crea una lista con i conteggi degli appuntamenti per ogni mese (1-12)
+        appuntamenti_per_mese_count = [0] * 12  # Inizializza una lista di 12 valori (uno per ogni mese)
+
+        # Appuntamenti futuri (conteggio dei prossimi)
+        prossimo_appuntamenti_count = storico_appuntamenti.filter(data__gte=today).count()
+
+        # Appuntamenti passati (count degli appuntamenti con data < oggi)
+        appuntamenti_passati = storico_appuntamenti.filter(data__lt=today).count()
+
+        # Appuntamenti passati (ultimi)
+        ultimo_appuntamento = storico_appuntamenti.filter(data__lt=today).last()
+
+        for item in appuntamenti_per_mese:
+            # Popola il conteggio per ogni mese (mese - 1 perché i mesi in Python sono indicizzati da 1 a 12)
+            appuntamenti_per_mese_count[item['month'] - 1] = item['count']
 
         context = {
             'dottore': dottore,
-            'paziente': persona,
+            'persona': persona,
             'storico_appuntamenti': storico_appuntamenti,
             'totale_appuntamenti': totale_appuntamenti,
+            'appuntamenti_confermati': appuntamenti_confermati,
+            'prossimo_appuntamenti_count': prossimo_appuntamenti_count,
+            'appuntamenti_passati': appuntamenti_passati,
             'ultimo_appuntamento': ultimo_appuntamento,
-            'prossimo_appuntamento': prossimo_appuntamento,
+            'storico_page': storico_page,
+            'appuntamenti_per_mese': appuntamenti_per_mese_count,
         }
 
         return render(request, 'sezioni_storico/storico.html', context)
-
 
 ## VIEW DIAGNOSI
 class DiagnosiView(View):
