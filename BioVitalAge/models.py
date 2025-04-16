@@ -649,3 +649,4 @@ class ValutazioneMS(models.Model):
     def __str__(self):
         return f"Referto - {self.paziente.name} {self.paziente.surname}"
 
+

@@ -76,7 +76,7 @@ urlpatterns = [
     path('UpdateTestVitale/<int:id>/', views.QuizEtaVitaleUpdateView.as_view(), name='updateTestEtaVitale'), 
     
 
-    # URL PER CALCOLATORE 
+    # URL PER ETA BIOLOGICA 
     path("Calcolatore_Page/<int:id>/", views.CalcolatoreRender.as_view(), name='Calcolatore'),
     path("persona/<int:persona_id>/", views.PersonaDetailView.as_view(), name="persona_detail"),
     path("persona/<int:persona_id>/<int:referto_id>/", views.PersonaDetailView.as_view(), name="persona_detail"),
@@ -90,14 +90,6 @@ urlpatterns = [
     path('Cartella_Paziente/Piano_Terapeutico/<int:persona_id>/', views.PianoTerapeutico.as_view(), name='piano_terapeutico'),
     path('CartellaPaziente/Piano_Terapeutico/Prescrizioni_Esami/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
     
-
-  
-   
-
-
-
-
-
     
     # TO DEFINE
     path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>', views.StampaRefertoView.as_view(), name='download_pdf_vitale'),

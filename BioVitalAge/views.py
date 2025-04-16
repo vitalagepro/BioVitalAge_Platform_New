@@ -24,6 +24,7 @@ from django.utils.decorators import method_decorator
 from django.utils.timezone import now, localtime
 from django.utils.dateparse import parse_date
 from django.db.models import OuterRef, Subquery, Count, Q, Avg, Min, Max
+from django.db.models.functions import ExtractMonth
 
 # --- IMPORTS PERSONALI (APP) ---
 from .utils import *
@@ -77,8 +78,7 @@ class HomePageRender(View):
 
     def get(self, request):
         persone = TabellaPazienti.objects.all().order_by('-id')[:5]
-        appuntamenti = Appointment.objects.all().order_by('data')[:4]
-
+        today = timezone.now().date()  # Ottieni la data corrente (senza l'ora)
         total_biological_age_count = DatiEstesiReferti.objects.aggregate(total=Count('biological_age'))['total']
         total_pazienti = TabellaPazienti.objects.count()  # Conta tutti i pazienti
         # Calcola il minimo e il massimo dell'età cronologica
@@ -87,6 +87,8 @@ class HomePageRender(View):
         avg_age = TabellaPazienti.objects.aggregate(avg_age=Avg('chronological_age'))['avg_age']
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        # Ottieni solo gli appuntamenti futuri
+        appuntamenti = Appointment.objects.filter(dottore=dottore, data__gte=today).order_by('data')[:4]
         # Calcola il totale "biological_age" solo per i referti associati ai pazienti di questo dottore
         total_biological_age_count = DatiEstesiReferti.objects.filter(referto__paziente__dottore=dottore).aggregate(total=Count('biological_age'))['total']
         total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
@@ -227,8 +229,8 @@ class HomePageRender(View):
                             total_biological_age_count = DatiEstesiReferti.objects.filter(referto__paziente__dottore=dottore).aggregate(total=Count('biological_age'))['total']
                             total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
                             # Ottieni gli appuntamenti del dottore
-                            appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('data')[:4]
-                                    # --- Calcolo per il report "Totale Pazienti" ---
+                            today = timezone.now().date()  # Ottieni la data corrente (senza l'ora)
+                            appuntamenti = Appointment.objects.filter(dottore=dottore, data__gte=today).order_by('data')[:4]
                             # Calcola min, max e media dell'età cronologica solo per i pazienti del dottore
                             agg_age = TabellaPazienti.objects.filter(dottore=dottore).aggregate(
                                 min_age=Min('chronological_age'),
@@ -428,7 +430,7 @@ class StatisticheView(View):
             emails = []
 
         context["emails"] = emails  # ← questo è il campo letto nel template da: <script id="emails-data">
-        return render(request, "includes/statistiche.html", context)
+        return render(request, "cartella_paziente/home_page/statistiche.html", context)
 
 ## VIEW PER LE NOTIFICHE
 class AppointmentNotificationsView(View):
@@ -518,7 +520,7 @@ class AcceptDisclaimerView(View):
             'dottore' : dottore
         }
 
-        return render(request, "includes/statistiche.html", context)
+        return render(request, "cartella_paziente/home_page/statistiche.html", context)
 
 ## SEZIONE APPUNTAMENTI
 ### VIEWS APPUNTAMENTI
@@ -551,7 +553,7 @@ class AppuntamentiSalvaView(View):
         if request.method == "POST":
             try:
                 body_raw = request.body.decode('utf-8')
-
+                dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
                 data = json.loads(body_raw)
 
                 # Recuperiamo i dati, facendo attenzione ai valori mancanti
@@ -574,8 +576,9 @@ class AppuntamentiSalvaView(View):
                     giorno=giorno,
                     data=data_appointment,
                     orario=time_appointment,
-                    voce_prezzario=voce_prezzario,  # 🔹 Ora viene salvato
-                    durata=durata,  # 🔹 Ora viene salvata
+                    voce_prezzario=voce_prezzario,
+                    durata=durata,
+                    dottore=dottore
                 )
 
                 return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!", 'clear_form': True})
@@ -620,13 +623,13 @@ class GetSingleAppointmentView(View):
 ### VIEWS GET ALL APPOINTMENTS
 class AppuntamentiGetView(View):
     def get(self, request):
-        """Recupera gli appuntamenti futuri ed elimina quelli passati"""
+        """Recupera gli appuntamenti futuri o di oggi"""
         
         # 📌 1. Ottenere la data di oggi senza ore/minuti/secondi
         today = now().date()
 
         # 📌 2. Eliminare gli appuntamenti con data precedente a oggi
-        deleted_count, _ = Appointment.objects.filter(data__lt=today).delete()  # Cambiato "date" in "data"
+        deleted_count= 0
 
         # 📌 3. Recuperare solo gli appuntamenti futuri o di oggi
         future_appointments = Appointment.objects.filter(data__gte=today)  # Cambiato "date" in "data"
@@ -924,6 +927,21 @@ class CartellaPazienteView(View):
         ## DATI CAPACITA' VITALE
         ultimo_referto_capacita_vitale = persona.referti_test.order_by('-data_ora_creazione').first()
 
+        ##STORICO APPUNTAMENTI
+        storico_appuntamenti = Appointment.objects.filter(
+            Q(nome_paziente__icontains=persona.name.strip()) |
+            Q(cognome_paziente__icontains=persona.surname.strip())
+        ).order_by('data', 'orario')
+
+
+        today = now().date()
+
+        # Totale appuntamenti
+        totale_appuntamenti = storico_appuntamenti.count()
+
+        ultimo_appuntamento = storico_appuntamenti.filter(data__lt=today).last() or None
+        prossimo_appuntamento = storico_appuntamenti.filter(data__gte=today).first() or None
+
 
         ## DATI RESILIENZA
 
@@ -970,7 +988,10 @@ class CartellaPazienteView(View):
             'punteggio_eta_metabolica': punteggio_eta_metabolica,
             #ULTIMO REFERTO CAPACITA' VITALE
             'ultimo_referto_capacita_vitale': ultimo_referto_capacita_vitale,
-            
+            'storico_appuntamenti': storico_appuntamenti,
+            'totale_appuntamenti': totale_appuntamenti,
+            'ultimo_appuntamento': ultimo_appuntamento,
+            'prossimo_appuntamento': prossimo_appuntamento,
         }
 
         return render(request, "includes/cartellaPaziente.html", context)
@@ -1057,9 +1078,66 @@ class CartellaPazienteView(View):
 ## VIEW STORICO
 class StoricoView(View):
     def get(self, request, id):
-        return render(request, 'cartella_paziente/sezioni_storico/allegati.html')
+        # Recupero Dottore e Paziente
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        
+        today = timezone.now().date()  # Ottieni la data corrente senza l'orario
 
+        # Filtra gli appuntamenti del paziente in base al nome e cognome
+        storico_appuntamenti = Appointment.objects.filter(
+            Q(nome_paziente__icontains=persona.name.strip()) &
+            Q(cognome_paziente__icontains=persona.surname.strip()) &
+            Q(dottore=dottore)  # Aggiungi il filtro per il dottore
+        ).order_by('data', 'orario')
 
+        # Impostazione del paginatore (ad es. 10 referti per pagina)
+        paginator = Paginator(storico_appuntamenti, 7)
+        page_number = request.GET.get('page')
+        storico_page = paginator.get_page(page_number)
+
+        # Totale appuntamenti per il paziente
+        totale_appuntamenti = storico_appuntamenti.count()
+
+        # Appuntamenti confermati
+        appuntamenti_confermati = storico_appuntamenti.filter(confermato=True).count()
+
+        # Calcolo appuntamenti per mese
+        appuntamenti_per_mese = storico_appuntamenti.annotate(month=ExtractMonth('data')).values('month').annotate(count=Count('id')).order_by('month')
+
+         # Crea una lista con i conteggi degli appuntamenti per ogni mese (1-12)
+        appuntamenti_per_mese_count = [0] * 12  # Inizializza una lista di 12 valori (uno per ogni mese)
+
+        # Appuntamenti futuri (conteggio dei prossimi)
+        prossimo_appuntamenti_count = storico_appuntamenti.filter(data__gte=today).count()
+
+        # Appuntamenti passati (count degli appuntamenti con data < oggi)
+        appuntamenti_passati = storico_appuntamenti.filter(data__lt=today).count()
+
+        # Appuntamenti passati (ultimi)
+        ultimo_appuntamento = storico_appuntamenti.filter(data__lt=today).last()
+
+        for item in appuntamenti_per_mese:
+            # Popola il conteggio per ogni mese (mese - 1 perché i mesi in Python sono indicizzati da 1 a 12)
+            appuntamenti_per_mese_count[item['month'] - 1] = item['count']
+
+        context = {
+            'dottore': dottore,
+            'persona': persona,
+            'storico_appuntamenti': storico_appuntamenti,
+            'totale_appuntamenti': totale_appuntamenti,
+            'appuntamenti_confermati': appuntamenti_confermati,
+            'prossimo_appuntamenti_count': prossimo_appuntamenti_count,
+            'appuntamenti_passati': appuntamenti_passati,
+            'ultimo_appuntamento': ultimo_appuntamento,
+            'storico_page': storico_page,
+            'appuntamenti_per_mese': appuntamenti_per_mese_count,
+        }
+
+        return render(request, 'cartella_paziente/sezioni_storico/storico.html', context)
+
+## VIEW DIAGNOSI
 class DiagnosiView(View):
     def get(self, request, id):
 
@@ -1091,7 +1169,7 @@ class ValutazioneMSView(View):
             'dottore' : dottore,
         }
 
-        return render(request, "includes/valutazioneMS.html", context)
+        return render(request, "cartella_paziente/indici_di_performance/valutazioneMS.html", context)
 
     def post(self, request, persona_id):     
         dottore_id = request.session.get('dottore_id')
@@ -1164,7 +1242,7 @@ class ValutazioneMSView(View):
             'dottore': dottore,
             'successo': True
         }
-        return render(request, "includes/valutazioneMS.html", context)
+        return render(request, "cartella_paziente/indici_di_performance/valutazioneMS.html", context)
 
 
 ## SEZIONE DATI BASE
@@ -1180,7 +1258,7 @@ class DatiBaseView(View):
             'persona': persona,
             'dottore' : dottore
         }
-        return render(request, "includes/dati_base.html", context)
+        return render(request, "cartella_paziente/dati_base/dati_base.html", context)
     
     def post(self, request, id):
 
@@ -1275,7 +1353,7 @@ class DatiBaseView(View):
             }
     
 
-        return render(request, "includes/dati_base.html", context)  
+        return render(request, "cartella_paziente/dati_base/dati_base.html", context)  
 
 
 ## SEZIONE ETA' METABOLICA
@@ -1669,7 +1747,7 @@ class EtaVitaleView(View):
             'dottore': dottore
         }
 
-        return render(request, "includes/EtaVitale.html", context)
+        return render(request, "cartella_paziente/capacita_vitale/EtaVitale.html", context)
     
     def post(self):
         return
@@ -1695,7 +1773,7 @@ class TestEtaVitaleView(View):
             'referti_test_recenti': referti_test_recenti
         }
 
-        return render(request, "includes/testVitale.html", context)
+        return render(request, "cartella_paziente/capacita_vitale/testVitale.html", context)
  
     def post(self, request, id):
 
@@ -1881,8 +1959,7 @@ class TestEtaVitaleView(View):
             'dottore': dottore
             }
 
-            return render(request, "includes/EtaVitale.html", context)
-
+            return render(request, "cartella_paziente/capacita_vitale/EtaVitale.html", context)
 
         except Exception as e:
             print(e)
@@ -1895,7 +1972,9 @@ class TestEtaVitaleView(View):
                 'dottore': dottore
             }    
 
-            return render(request, "includes/testVitale.html", context)
+            return render(request, "cartella_paziente/capacita_vitale/testVitale.html", context)
+
+
 
 class RefertoQuizView(View):
     def get(self, request, persona_id, referto_id):
@@ -1967,7 +2046,7 @@ class RefertoQuizView(View):
             'testo_risultato': testo_risultato,
         }
 
-        return render(request, "includes/RefertoQuiz.html", context)
+        return render(request, "cartella_paziente/capacita_vitale/RefertoQuiz.html", context)
 
 class QuizEtaVitaleUpdateView(View):
 
@@ -2067,7 +2146,7 @@ class StampaRefertoView(View):
             'testo_risultato': testo_risultato,
         }
 
-        return render(request, "includes/EtaVitale.html", context)
+        return render(request, "cartella_paziente/capacita_vitale/EtaVitale.html", context)
 
 def safe_float(data, key, default=0.0):
     try:
@@ -2101,10 +2180,10 @@ class CalcolatoreRender(View):
             except TabellaPazienti.DoesNotExist:
                 context.update({"error": "Paziente non trovato."})
 
-            return render(request, 'includes/calcolatore.html', context)
+            return render(request, 'cartella_paziente/eta_biologica/calcolatore.html', context)
         
         else:
-            return render(request, 'includes/calcolatore.html', context)
+            return render(request, 'cartella_paziente/eta_biologica/calcolatore.html', context)
 
         
     def post(self, request, id):
@@ -2552,7 +2631,7 @@ class CalcolatoreRender(View):
                         "persona": persona
                     }
 
-                    return render(request, "includes/calcolatore.html", context)
+                    return render(request, "cartella_paziente/eta_biologica/calcolatore.html", context)
                 
                 else:
                     
@@ -2563,7 +2642,7 @@ class CalcolatoreRender(View):
                         'dottore': dottore,
                         'persona': persona
                     }
-                    return render(request, "includes/calcolatore.html", context)
+                    return render(request, "cartella_paziente/eta_biologica/calcolatore.html", context)
 
             else:
 
@@ -3029,7 +3108,7 @@ class CalcolatoreRender(View):
                     'dottore' : dottore,
                 }
 
-                return render(request, "includes/calcolatore.html", context)
+                return render(request, "cartella_paziente/eta_biologica/calcolatore.html", context)
 
         except Exception as e:
             error_message = f"System error: {str(e)}\n{traceback.format_exc()}"
@@ -3039,7 +3118,7 @@ class CalcolatoreRender(View):
                 "error": "Si è verificato un errore di sistema. Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova.",
                 "dettaglio": error_message 
             }
-            return render(request, "includes/calcolatore.html", context)
+            return render(request, "cartella_paziente/eta_biologica/calcolatore.html", context)
 
 
 
@@ -3058,7 +3137,7 @@ class ResilienzaView(View):
             'dottore' : dottore,
         }
 
-        return render(request, "includes/Resilienza.html", context)
+        return render(request, "cartella_paziente/resilienza/Resilienza.html", context)
     
     def post(self, request, persona_id): 
         dottore_id = request.session.get('dottore_id')
@@ -3091,7 +3170,7 @@ class ResilienzaView(View):
             'dottore': dottore,
             'successo': True
         }
-        return render(request, "includes/Resilienza.html", context)
+        return render(request, "cartella_paziente/resilienza/Resilienza.html", context)
     
 
 ## SEZIONE PIANO TERAPEUTICO
@@ -3233,12 +3312,12 @@ class UpdatePersonaContactView(View):
             'dottore': dottore
         }
 
-        return render(request, "includes/EtaVitale.html", context)
+        return render(request, "cartella_paziente/capacita_vitale/EtaVitale.html", context)
     
 class RefertoView(View):
     def get(self, request, referto_id):
         referto = ArchivioReferti.objects.get(id=referto_id)
-        return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
+        return render(request, 'cartella_paziente/eta_biologica//Referto.html', {'data_referto': referto.data_referto})
 
 class ElencoRefertiView(View):
     def get(self, request, id):
@@ -3261,7 +3340,7 @@ class ElencoRefertiView(View):
             'dottore' : dottore,
         }
 
-        return render(request, "includes/elencoReferti.html", context)
+        return render(request, "cartella_paziente/eta_biologica/elencoReferti.html", context)
     
 class PersonaDetailView(View):
     def get(self, request, persona_id):
@@ -3292,5 +3371,5 @@ class PersonaDetailView(View):
             'datiEstesi': dati_estesi,
             'dottore': dottore,
         }
-        return render(request, "includes/Referto.html", context)
+        return render(request, "cartella_paziente/eta_biologica/Referto.html", context)
 
