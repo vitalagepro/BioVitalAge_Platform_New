@@ -1109,8 +1109,8 @@ class StoricoView(View):
          # Crea una lista con i conteggi degli appuntamenti per ogni mese (1-12)
         appuntamenti_per_mese_count = [0] * 12  # Inizializza una lista di 12 valori (uno per ogni mese)
 
-        # Appuntamenti futuri (conteggio dei prossimi)
-        prossimo_appuntamenti_count = storico_appuntamenti.filter(data__gte=today).count()
+        # Appuntamento futuro più vicino (il prossimo)
+        prossimo_appuntamento = storico_appuntamenti.filter(data__gte=today).order_by('data').first()
 
         # Appuntamenti passati (count degli appuntamenti con data < oggi)
         appuntamenti_passati = storico_appuntamenti.filter(data__lt=today).count()
@@ -1128,7 +1128,7 @@ class StoricoView(View):
             'storico_appuntamenti': storico_appuntamenti,
             'totale_appuntamenti': totale_appuntamenti,
             'appuntamenti_confermati': appuntamenti_confermati,
-            'prossimo_appuntamenti_count': prossimo_appuntamenti_count,
+            'prossimo_appuntamento': prossimo_appuntamento,
             'appuntamenti_passati': appuntamenti_passati,
             'ultimo_appuntamento': ultimo_appuntamento,
             'storico_page': storico_page,

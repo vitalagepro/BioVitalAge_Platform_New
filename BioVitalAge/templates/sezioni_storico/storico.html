@@ -150,7 +150,14 @@
                         <div class="border-violet">
                             <img src="{% static 'image/Calendario.png' %}" alt="">
                         </div>
-                        <p><strong>Prossimo appuntamento:</strong> {{ prossimo_appuntamenti_count|default:"Nessuno" }}</p>
+                        <p>
+                            <strong>Prossimo appuntamento:</strong>  
+                            {% if prossimo_appuntamento %}
+                                {{ prossimo_appuntamento.data|date:"d/m/Y" }} - {{ prossimo_appuntamento.orario|time:"H:i" }}
+                            {% else %}
+                                Nessun appuntamento futuro
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </div>
