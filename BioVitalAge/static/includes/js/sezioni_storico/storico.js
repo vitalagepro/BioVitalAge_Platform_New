@@ -1,7 +1,10 @@
 /*  -----------------------------------------------------------------------------------------------
         Listener per la paginazione
-        --------------------------------------------------------------------------------------------------- */
+--------------------------------------------------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', function () {
+    // ⏱️ Inizializza subito i bottoni all'avvio della pagina
+    inizializeButtons();
+
     document.addEventListener('click', function (event) {
         const target = event.target;
 
@@ -19,11 +22,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     const doc = parser.parseFromString(html, 'text/html');
                     const newContent = doc.querySelector('#storico-wrapper');
                     document.querySelector('#storico-wrapper').innerHTML = newContent.innerHTML;
+
+                    // 🔁 Reinizializza i listener dopo il nuovo contenuto
                     inizializeButtons();
                 });
         }
     });
 });
+        
 
 /*  -----------------------------------------------------------------------------------------------
 Listener per il pulsante "Modifica"

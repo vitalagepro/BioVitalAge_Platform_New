@@ -102,7 +102,6 @@ class HomePageRender(View):
         min_age = agg_age['min_age']
         max_age = agg_age['max_age']
         avg_age = agg_age['avg_age']
-        appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('data')
         persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
                 
         # --- Calcolo per il report "Totale Pazienti" ---
@@ -240,7 +239,6 @@ class HomePageRender(View):
                             min_age = agg_age['min_age']
                             max_age = agg_age['max_age']
                             avg_age = agg_age['avg_age']
-                            appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('data')
                             persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
                                     # --- Calcolo per il report "Totale Pazienti" ---
                             # Assumiamo che il modello TabellaPazienti abbia un campo 'created_at'

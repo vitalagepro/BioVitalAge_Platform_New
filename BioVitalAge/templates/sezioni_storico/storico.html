@@ -82,7 +82,7 @@
 
         <div class="flex-row">
             {% if ultimo_appuntamento %}
-            <div class="sub-card {% if ultimo_appuntamento.tipologia_visita == 'Generale' %}
+            <div style="flex: 0.4;" class="sub-card {% if ultimo_appuntamento.tipologia_visita == 'Generale' %}
             general-border
             {% elif ultimo_appuntamento.tipologia_visita == 'Riabilitazione' %}
             rehab-border
@@ -125,9 +125,9 @@
             </div>
             {% endif %}
     
-            <div class="sub-card">
+            <div class="sub-card" style="flex: 0.6;">
                 <h3>Statistiche Appuntamenti</h3>
-                <div {% if ultimo_appuntamento %} style="justify-content: space-between;" {% endif %} class="flex-layout">
+                <div {% if ultimo_appuntamento %} style="justify-content: space-between; flex: 1;" {% endif %} class="flex-layout">
                     <div class="flex-row-statistic">
                         <div class="border-violet">
                             <img src="{% static 'image/Diagnosi_tot.png' %}" alt="">
