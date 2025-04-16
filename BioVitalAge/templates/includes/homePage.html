@@ -6,7 +6,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- Favicon -->
-  <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+  <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
   <title>BioVitalAge - HomePage</title>
 
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}" />
   <style>
     :root{
-      --banner-bg: url("{% static 'includes/images/banner-bg.png' %}");
+      --banner-bg: url("{% static 'image/Home_Banner.png' %}");
     }
   </style>
 
@@ -124,6 +124,7 @@
   <main>
     <!-- MAIN MENU TRACE -->
     <div class="main-title-nav">
+
       <!-- SIDEBAR LATERAL -->
       <div id="sidebar" class="sidebar hidden">
         <div class="sidebar-header">
@@ -134,29 +135,36 @@
       </div>
 
       <div class="linkage-container">
+
         <a href="#" title="Notifiche" class="sidebar-trigger" data-section="Notifiche">
-          <img src="{% static 'includes/icone/notifica.png' %}" alt="icon-notify" />
+          <img src="{% static 'image/Notifica.png' %}" alt="icon-notify" />
         </a>
+
         <a href="#" title="Email" class="sidebar-trigger" data-section="Email">
-          <img src="{% static 'includes/icone/email.png' %}" alt="icon-email" />
+          <img src="{% static 'image/Email.png' %}" alt="icon-email" />
         </a>
+
         <a href="#" title="Update" class="sidebar-trigger" data-section="Update">
-          <img src="{% static 'includes/icone/update.png' %}" alt="icon-update" />
+          <img src="{% static 'image/Update.png' %}" alt="icon-update" />
         </a>
+
         <a href="#" title="Funzionalità" class="sidebar-trigger" data-section="Funzionalità">
-          <img src="{% static 'includes/icone/funzionalita.png' %}" alt="icon-funzionalità" />
+          <img src="{% static 'image/Funzionalita.png' %}" alt="icon-funzionalità" />
         </a>
+
         <a href="#" title="Configurazione" class="sidebar-trigger" data-section="Configurazione">
-          <img src="{% static 'includes/icone/configurazione.png' %}" alt="icon-Configurazione" />
+          <img src="{% static 'image/Configurazione.png' %}" alt="icon-Configurazione" />
         </a>
+
         <a href="{% url 'statistiche' %}" title="Statistiche" data-section="Statistiche">
-          <img src="{% static 'includes/icone/statistiche.png' %}" alt="icon-statistiche" />
+          <img src="{% static 'image/Statistiche.png' %}" alt="icon-statistiche" />
         </a>
+        
       </div>
 
       <div class="main-menu-trace" title="Home Page">
         <a href="{% url 'HomePage' %}">
-          <img src="{% static 'includes/icone/homePage.png' %}" alt="" />
+          <img src="{% static 'image/Home.png' %}" alt="" />
         </a>
         <p>»</p>
         <p>Home Page</p>
@@ -325,7 +333,7 @@
                       {% for appointment in appuntamenti %}
                       <tr data-id="{{ appointment.id }}">
                           <td>{{ appointment.id }}</td>
-                          <td><img src="{% static 'includes/icone/avatar.png' %}" alt="Avatar" class="avatar"> {{ appointment.nome_paziente|title }}</td>
+                          <td><img src="{% static 'image/Username_Violet.png' %}" alt="Avatar" class="avatar"> {{ appointment.nome_paziente|title }}</td>
                           <td>{{ appointment.data|date:"d/m/Y" }}</td>
                           <td>{{ appointment.orario|time:"H:i" }}</td>
                           <td>{{ appointment.numero_studio }}</td>
@@ -370,13 +378,13 @@
           <div id="pagination" class="pagination-container"></div>
     </div>
 
-
     <!-- CARDS REPORT -->
     <div class="cards">
+
       <div class="report-card" id="card-style">
         <div class="container-info-report">
           <div class="img-container">
-            <img src="{% static 'includes/icone/patient.png' %}" alt="">
+            <img src="{% static 'image/Patient.png' %}" alt="">
           </div>
           <div class="report-description">
             <h3>Totale Pazienti</h3>
@@ -404,11 +412,10 @@
         </p>        
       </div>
       
-
       <div class="report-card" id="card-style">
         <div class="container-info-report">
           <div class="img-container">
-            <img src="{% static 'includes/icone/referto.png' %}" alt="">
+            <img src="{% static 'image/Referto.png' %}" alt="">
           </div>
           <div class="report-description">
             <h3>Totale Prescrizioni</h3>
@@ -455,11 +462,10 @@
         {% endif %}      
       </div>
       
-
       <div class="report-card" id="card-style">
         <div class="container-info-report">
           <div class="img-container">
-            <img src="{% static 'includes/icone/heart.png' %}" alt="">
+            <img src="{% static 'image/Heart.png' %}" alt="">
           </div>
           <div class="report-description">
             <h3>Età media dei pazienti</h3>
@@ -483,7 +489,7 @@
       <div class="report-card" id="card-style">
         <div class="container-info-report">
           <div class="img-container">
-            <img src="{% static 'includes/icone/income.png' %}" alt="">
+            <img src="{% static 'image/Income.png' %}" alt="">
           </div>
           <div class="report-description">
             <h3>Guadagni</h3>
@@ -498,10 +504,9 @@
         <p id="mediaPercentage">
           <span class="animate-num" data-target="20">0</span>% in più rispetto al mese scorso.
         </p>
-      </div>      
+      </div> 
+
     </div>
-
-
 
     <!-- TABELLA PAZIENTI RECENTI -->
     <div class="recent-patients">

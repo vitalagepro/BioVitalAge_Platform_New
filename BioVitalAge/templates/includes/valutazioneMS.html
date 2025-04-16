@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="csrf-token" content="{{ csrf_token }}">
         <!-- Favicon -->
-        <link rel="sortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+        <link rel="sortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
         <title>Valutazione Muscolo Scheletrica</title>
 
@@ -38,7 +38,7 @@
             <!-- MENU TRACE -->
             <div class="main-title-nav">
                 <div class="back-tittle">
-                    <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}"></a>
+                    <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'image/Arrow_Back.png' %}"></a>
                     <h2 class="main-welcome-title">
                         <span>{{ persona.surname|title }}</span>
                         <span>{{ persona.name|title }}</span> |
@@ -46,11 +46,11 @@
                         {% if persona.phone and persona.email %}
                         |
                         <span class="phone_span">
-                            <img src="{% static 'includes/icone/phone.png' %}" width="20px" height="20px">
+                            <img src="{% static 'image/Phone.png' %}" width="20px" height="20px">
                             Telefono: {{ persona.phone }}
                         </span> |
                         <span class="email_span">
-                            <img src="{% static 'includes/icone/emailNew.png' %}" width="20px" height="20px">
+                            <img src="{% static 'image/Email_Violet.png' %}" width="20px" height="20px">
                             Email: {{ persona.email }}
                         </span>
                         {% endif %}
@@ -59,7 +59,7 @@
             
                 <div class="main-menu-trace">
                     <a href="{% url 'HomePage' %}">
-                        <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+                        <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
                     </a>
                     <p>»</p>
                     <p>Cartella Paziente</p>
@@ -78,7 +78,7 @@
 
                 <div class="card-container">
                         <div class="title-container">
-                            <img src="{% static 'includes/icone/capacitaFisica.png' %}" alt="">
+                            <img src="{% static 'image/Capacita_Fisica.png' %}" alt="">
                             <h3>Attività fisica:</h3>
                         </div>
                             
@@ -156,7 +156,7 @@
 
                 <div class="card-container">
                     <div class="title-container">
-                        <img src="{% static 'includes/icone/muscolo.png' %}" alt="">
+                        <img src="{% static 'image/Muscolo_Violet.png' %}" alt="">
                         <h3>Anamnesi muscolo-scheletrica:</h3>
                     </div>
                         
@@ -181,7 +181,7 @@
 
                 <div class="card-container">
                     <div class="title-container">
-                        <img src="{% static 'includes/icone/anamnesi.png' %}" alt="">
+                        <img src="{% static 'image/Anamnesi.png' %}" alt="">
                         <h3>Esame Generale:</h3>
                     </div>
                         
@@ -225,7 +225,7 @@
 
                 <div class="card-container">
                     <div class="title-container">
-                        <img src="{% static 'includes/icone/muscolo.png' %}" alt="">
+                        <img src="{% static 'image/Muscolo_Scheletrico.png' %}" alt="">
                         <h3>Esame muscolo-scheletrica:</h3>
                     </div>
                         
@@ -324,7 +324,7 @@
 
                 <div class="card-container">
                     <div class="title-container">
-                        <img src="{% static 'includes/icone/postura1.png' %}" alt="" id="img-special">
+                        <img src="{% static 'image/Postura.png' %}" alt="" id="img-special">
                         <h3>Esame posturale:</h3>
                     </div>
                         
@@ -643,7 +643,7 @@
 
                 <div class="card-container">
                     <div class="title-container">
-                        <img src="{% static 'includes/icone/funzionale.png' %}" alt="" id="img-special">
+                        <img src="{% static 'image/Funzionale.png' %}" alt="" id="img-special">
                         <h3>Valutazione complessiva funzionale:</h3>
                     </div>
                         
@@ -718,7 +718,7 @@
                 </div>
 
                 <div class="toolkit">
-                    <img src="{% static 'includes/images/arrow.png' %}" alt="" style="width: 40px; height: 40px;">
+                    <img src="{% static 'image/Arrow_Back.png' %}" alt="" style="width: 40px; height: 40px;">
 
                     <button id="calculateButton" type="submit" class="button">
                         <span class="button__icon-wrapper">

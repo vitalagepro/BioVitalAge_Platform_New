@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Favicon -->
-    <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+    <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
     
     <title>BioVitalAge - Elenco Referti</title>
 
@@ -37,16 +37,17 @@
     {% include 'components/navBarPatient.html' %}
 
     <main>
+
       <div class="main-title-nav">
         <div class="main-menu-trace first-breadcrumb">
             <a href="{% url 'cartella_paziente' persona.id %}">
-                <img src="{% static 'includes/icone/arrowBack.png' %}" alt="">
+                <img src="{% static 'image/Arrow_Back.png' %}" alt="">
             </a>
             <h2 class="main-welcome-title">Elenco di tutti i referti di {{ persona.name|title }} {{ persona.surname|title }}</h2>
         </div>
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
-            <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+            <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
           </a>
           <p>»</p>
           <p>
@@ -89,12 +90,12 @@
                                 <a href="{% url 'persona_detail' persona.id %}?referto_id={{ referto.id }}"
                                     data-referto-id="{{ referto.id }}"
                                     data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
-                                    <img src="{% static 'includes/icone/referto.png' %}" alt="" />
+                                    <img src="{% static 'image/Referto.png' %}" alt="" />
                                 </a>
                             </p>
                             <p>
                                 <a href="{% url 'cartella_paziente' persona.id %}">
-                                    <img src="{% static 'includes/icone/download.png' %}" alt="" />
+                                    <img src="{% static 'image/Referto_Scarica.png' %}" alt="" />
                                 </a>
                             </p>
                         </div>
