@@ -69,10 +69,56 @@ COLORI GRAFICI
 
 
 
+/* ! BADGE */
+.badge.general {
+  background-color: var(--neutral-range-color);
+}
 
+.badge.rehab {
+  background-color: var(--contrast-color-shadow);
+  color: var(--dark2);
+}
 
+.badge.physio-ria {
+  background-color: #26425a;
+}
 
+.badge.physio-spo {
+  background-color: #00937a;
+}
 
+.badge.physio-est {
+  background-color: #2b124c;
+}
+
+.badge.other {
+  background-color: #7f8c8d;
+}
+
+/* ! BORDER TIPOLOGIA */
+.general-border {
+  border-bottom: 4px solid var(--neutral-range-color);
+}
+
+.rehab-border {
+  border-bottom: 4px solid var(--contrast-color-shadow);
+}
+
+.physio-ria-border {
+  border-bottom: 4px solid #26425a;
+}
+
+.physio-spo-border {
+  border-bottom: 4px solid #00937a;
+}
+
+.physio-est-border {
+  border-bottom: 4px solid #2b124c;
+}
+
+.other-border {
+  border-bottom: 4px solid #7f8c8d;
+}
 
 
 
