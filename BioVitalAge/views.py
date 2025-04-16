@@ -102,7 +102,6 @@ class HomePageRender(View):
         min_age = agg_age['min_age']
         max_age = agg_age['max_age']
         avg_age = agg_age['avg_age']
-        appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('data')
         persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
                 
         # --- Calcolo per il report "Totale Pazienti" ---
@@ -240,7 +239,6 @@ class HomePageRender(View):
                             min_age = agg_age['min_age']
                             max_age = agg_age['max_age']
                             avg_age = agg_age['avg_age']
-                            appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('data')
                             persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
                                     # --- Calcolo per il report "Totale Pazienti" ---
                             # Assumiamo che il modello TabellaPazienti abbia un campo 'created_at'
@@ -1093,7 +1091,7 @@ class StoricoView(View):
         ).order_by('data', 'orario')
 
         # Impostazione del paginatore (ad es. 10 referti per pagina)
-        paginator = Paginator(storico_appuntamenti, 7)
+        paginator = Paginator(storico_appuntamenti, 4)
         page_number = request.GET.get('page')
         storico_page = paginator.get_page(page_number)
 
@@ -1109,8 +1107,8 @@ class StoricoView(View):
          # Crea una lista con i conteggi degli appuntamenti per ogni mese (1-12)
         appuntamenti_per_mese_count = [0] * 12  # Inizializza una lista di 12 valori (uno per ogni mese)
 
-        # Appuntamenti futuri (conteggio dei prossimi)
-        prossimo_appuntamenti_count = storico_appuntamenti.filter(data__gte=today).count()
+        # Appuntamento futuro più vicino (il prossimo)
+        prossimo_appuntamento = storico_appuntamenti.filter(data__gte=today).order_by('data').first()
 
         # Appuntamenti passati (count degli appuntamenti con data < oggi)
         appuntamenti_passati = storico_appuntamenti.filter(data__lt=today).count()
@@ -1128,7 +1126,7 @@ class StoricoView(View):
             'storico_appuntamenti': storico_appuntamenti,
             'totale_appuntamenti': totale_appuntamenti,
             'appuntamenti_confermati': appuntamenti_confermati,
-            'prossimo_appuntamenti_count': prossimo_appuntamenti_count,
+            'prossimo_appuntamento': prossimo_appuntamento,
             'appuntamenti_passati': appuntamenti_passati,
             'ultimo_appuntamento': ultimo_appuntamento,
             'storico_page': storico_page,

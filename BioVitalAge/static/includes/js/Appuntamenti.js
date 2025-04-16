@@ -1,4 +1,17 @@
 /*  -----------------------------------------------------------------------------------------------
+  INITIALIZATION\
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", () => {
+  const appointmentId = localStorage.getItem("editAppointmentId");
+  if (appointmentId) {
+    localStorage.removeItem("editAppointmentId");
+    setTimeout(() => {
+      openAppointmentModal(appointmentId);
+    }, 300);  // oppure 500ms se serve più tempo di caricamento
+  }
+});
+
+/*  -----------------------------------------------------------------------------------------------
    GLOBAL VARIABLE
 --------------------------------------------------------------------------------------------------- */
 // Gestione calendario
@@ -2189,6 +2202,17 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
   const data_appointment = convertDateFormat(raw_data_appointment);
   const time_appointment = document.getElementById("time-appointment")?.textContent.trim() || "";
 
+  // Controllo: impedisce di salvare appuntamenti nel passato
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const selectedDate = new Date(data_appointment);
+  selectedDate.setHours(0, 0, 0, 0);
+
+  if (selectedDate < today) {
+    showAlert("danger", "❌ Non puoi impostare un appuntamento in una data passata.");
+    return;
+  }
+
   const appointmentData = {
     tipologia_visita,
     nome_paziente,
@@ -2229,7 +2253,7 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
         loadAppointments();
         closeModalWithGSAP();
       } else {
-        showAlert("danger", "Errore nel salvataggio dell'appuntamento: " + data.error);
+        showAlert("danger", "Errore nel salvataggio dell'appuntamento, controlla di aver compilato tutti i campi necessari.");
       }
     })
     .catch((error) => {
@@ -2367,37 +2391,37 @@ document.addEventListener("DOMContentLoaded", function () {
   const prefissi = [
     {
       value: "+39",
-      flag: "/static/includes/icone/bandiera-italiana.png",
+      flag: "/static/image/Bandiera-italia.png",
       country: "Italia",
       code: "IT",
     },
     {
       value: "+33",
-      flag: "/static/includes/icone/bandiera-francia.png",
+      flag: "/static/image/Bandiera-francia.png",
       country: "Francia",
       code: "FR",
     },
     {
       value: "+44",
-      flag: "/static/includes/icone/bandiera-inglese.png",
+      flag: "/static/image/Bandiera-inghilterra.png",
       country: "Regno Unito",
       code: "GB",
     },
     {
       value: "+49",
-      flag: "/static/includes/icone/bandiera-germania.png",
+      flag: "/static/image/Bandiera-germania.png",
       country: "Germania",
       code: "DE",
     },
     {
       value: "+34",
-      flag: "/static/includes/icone/bandiera-spagnola.png",
+      flag: "/static/image/Bandiera-spagna.png",
       country: "Spagna",
       code: "ES",
     },
     {
       value: "+1",
-      flag: "/static/includes/icone/bandiera-usa.png",
+      flag: "/static/image/Bandiera-usa.png",
       country: "Stati Uniti",
       code: "US",
     },
