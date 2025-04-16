@@ -195,3 +195,34 @@ document.querySelectorAll('.animate-num').forEach(function(elem) {
     }
   });
 });
+
+
+/*  -----------------------------------------------------------------------------------------------
+    RIMUOVI APPUNTAMENTI PASSATI
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // resetta ora per confrontare solo la data
+
+  const rows = document.querySelectorAll("table tbody tr");
+
+  rows.forEach((row) => {
+    const dateCell = row.querySelector("td:nth-child(3)"); // 3ª colonna = Data
+
+    if (dateCell) {
+      const dateParts = dateCell.textContent.trim().split("/");
+      const rowDate = new Date(
+        parseInt(dateParts[2]),
+        parseInt(dateParts[1]) - 1,
+        parseInt(dateParts[0])
+      );
+
+      rowDate.setHours(0, 0, 0, 0);
+
+      if (rowDate < today) {
+        row.style.display = "none";
+      }
+    }
+  });
+});
+

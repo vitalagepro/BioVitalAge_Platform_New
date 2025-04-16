@@ -2189,6 +2189,17 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
   const data_appointment = convertDateFormat(raw_data_appointment);
   const time_appointment = document.getElementById("time-appointment")?.textContent.trim() || "";
 
+  // Controllo: impedisce di salvare appuntamenti nel passato
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const selectedDate = new Date(data_appointment);
+  selectedDate.setHours(0, 0, 0, 0);
+
+  if (selectedDate < today) {
+    showAlert("danger", "❌ Non puoi impostare un appuntamento in una data passata.");
+    return;
+  }
+
   const appointmentData = {
     tipologia_visita,
     nome_paziente,
@@ -2229,7 +2240,7 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
         loadAppointments();
         closeModalWithGSAP();
       } else {
-        showAlert("danger", "Errore nel salvataggio dell'appuntamento: " + data.error);
+        showAlert("danger", "Errore nel salvataggio dell'appuntamento, controlla di aver compilato tutti i campi necessari.");
       }
     })
     .catch((error) => {
