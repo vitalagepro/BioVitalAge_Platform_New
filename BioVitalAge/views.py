@@ -198,7 +198,7 @@ class HomePageRender(View):
             emails = []
 
         context["emails"] = emails  # ← questo è il campo letto nel template da: <script id="emails-data">
-        return render(request, "includes/homePage.html", context)
+        return render(request, "home_page/homePage.html", context)
 
     def post(self, request):
 
@@ -344,7 +344,7 @@ class HomePageRender(View):
 
                             context['emails'] = emails
                             
-                            return render(request, 'includes/homePage.html' , context)
+                            return render(request, 'home_page/homePage.html' , context)
                         else:
                             return render(request, 'includes/login.html', {'error': 'Password errata'})
                 else:
@@ -1057,7 +1057,7 @@ class CartellaPazienteView(View):
 ## VIEW STORICO
 class StoricoView(View):
     def get(self, request, id):
-        return render(request, 'sezioni_storico/allegati.html')
+        return render(request, 'cartella_paziente/sezioni_storico/allegati.html')
 
 
 class DiagnosiView(View):
@@ -1072,7 +1072,7 @@ class DiagnosiView(View):
             'dottore' : dottore,   
         }
 
-        return render(request, 'sezioni_storico/diagnosi.html', context)
+        return render(request, 'cartella_paziente/sezioni_storico/diagnosi.html', context)
 
 
 
@@ -1297,7 +1297,7 @@ class ComposizioneView(View):
             'ultimo_referto': ultimo_referto
         }
 
-        return render(request, "eta_metabolica/etaMetabolica.html", context)
+        return render(request, "cartella_paziente/eta_metabolica/etaMetabolica.html", context)
 
     def post(self, request, id):
 
@@ -1432,7 +1432,7 @@ class ComposizioneView(View):
                 'errore': "Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
             }
 
-        return render(request, "eta_metabolica/etaMetabolica.html", context)
+        return render(request, "cartella_paziente/eta_metabolica/etaMetabolica.html", context)
 
 class ComposizioneChartView(View):
 
@@ -1626,7 +1626,7 @@ class ComposizioneChartView(View):
             'sii': json.dumps(sii_values),
             'cplas': json.dumps(cplas_values),
         }
-        return render(request, 'eta_metabolica/grafici.html', context)
+        return render(request, 'cartella_paziente/eta_metabolica/grafici.html', context)
 
 class RefertiComposizioneView(View):
     def get(self, request, id):
@@ -1648,7 +1648,7 @@ class RefertiComposizioneView(View):
             'referti': referti_page, 
         }
 
-        return render(request, 'eta_metabolica/elencoReferti.html', context)
+        return render(request, 'cartella_paziente/eta_metabolica/elencoReferti.html', context)
 
 
 
@@ -3116,7 +3116,7 @@ class PianoTerapeutico(View):
             'visite': visite_page,  
         }
 
-        return render(request, 'piano_terapeutico/piano_terapeutico.html', context)
+        return render(request, 'cartella_paziente/piano_terapeutico/piano_terapeutico.html', context)
 
 ### SEZIONE PRESCRIZIONI ESAMI
 class PrescrizioniView(View):
@@ -3133,7 +3133,7 @@ class PrescrizioniView(View):
             'dottore': dottore,
         }
 
-        return render(request, "prescrizioni/prescrizioni.html", context)
+        return render(request, "cartella_paziente/piano_terapeutico/prescrizioni.html", context)
 
 
     def post(self, request, persona_id):
