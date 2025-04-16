@@ -1,7 +1,8 @@
 from datetime import datetime
-from django.utils import timezone
-from django.db import models
-from django.contrib.auth.models import User
+from django.utils import timezone # type: ignore
+from django.db import models # type: ignore
+from django.contrib.auth.models import User # type: ignore
+from django.contrib.auth.hashers import make_password # type: ignore
 
 
 # Tabella DOTTORI registrati
@@ -10,8 +11,14 @@ class UtentiRegistratiCredenziali(models.Model):
     nome = models.CharField(max_length=100)
     cognome = models.CharField(max_length=100)
     email = models.CharField(max_length=100, null=True)
-    password = models.CharField(max_length=24, null=True)
+    password = models.CharField(max_length=128, null=True)
     cookie = models.CharField(max_length=2, null=True)
+
+    #FUNZIONE DI HASHING DELLA PASSWORD
+    def save(self, *args, **kwargs):
+        if self.password and not self.password.startswith('pbkdf2_sha256$'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.nome} {self.cognome}'
