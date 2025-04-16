@@ -1093,7 +1093,7 @@ class StoricoView(View):
         ).order_by('data', 'orario')
 
         # Impostazione del paginatore (ad es. 10 referti per pagina)
-        paginator = Paginator(storico_appuntamenti, 7)
+        paginator = Paginator(storico_appuntamenti, 4)
         page_number = request.GET.get('page')
         storico_page = paginator.get_page(page_number)
 
