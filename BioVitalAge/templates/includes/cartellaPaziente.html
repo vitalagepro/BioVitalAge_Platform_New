@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <!-- Favicon -->
-    <link rel="sortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+    <link rel="sortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
     <title>Cartella Paziente</title>
 
@@ -43,8 +43,9 @@
     <main>
         <!-- MENU TRACE -->
         <div class="main-title-nav">
+
             <div class="back-tittle">
-                <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}"></a>
+                <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'image/Arrow_Back.png' %}"></a>
                 <h2 class="main-welcome-title">
                     <span>{{ persona.surname|title }}</span>
                     <span>{{ persona.name|title }}</span> |
@@ -52,11 +53,11 @@
                     {% if persona.phone and persona.email %}
                     |
                     <span class="phone_span">
-                        <img src="{% static 'includes/icone/phone.png' %}" width="20px" height="20px">
+                        <img src="{% static 'image/Phone.png' %}" width="20px" height="20px">
                         Telefono: {{ persona.phone }}
                     </span> |
                     <span class="email_span">
-                        <img src="{% static 'includes/icone/emailNew.png' %}" width="20px" height="20px">
+                        <img src="{% static 'image/Email_Violet.png' %}" width="20px" height="20px">
                         Email: {{ persona.email }}
                     </span>
                     {% endif %}
@@ -65,7 +66,7 @@
         
             <div class="main-menu-trace">
                 <a href="{% url 'HomePage' %}">
-                    <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+                    <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
                 </a>
                 <p>»</p>
                 <p>
@@ -121,12 +122,12 @@
                 
                 <div class="header-card">
                     <div class="container-titolo">
-                        <img src="{% static 'includes/images/info.png' %}" alt="">
+                        <img src="{% static 'image/Info.png' %}" alt="">
                         <h3>Informazioni Personali</h3>
                     </div>
             
                     <div class="button-grid">
-                        <a href="#"><img src="{% static 'includes/icone/note.png' %}" alt="Note" title="Note"></a>
+                        <a href="#"><img src="{% static 'image/Note.png' %}" alt="Note" title="Note"></a>
             
                         <a href="{% static 'includes/pdfTemplates/Privacy&Policy.pdf' %}" download class="privacy-icon">
                             <img src="data:image/png;base64,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"
@@ -196,10 +197,12 @@
                     </div>
             
                     <div class="other_container">
+
                         <div class="subCard-container">
+
                             <div class="card-subcard">
                                 <div class="img-circle-container">
-                                    <img src="{% static 'includes/icone/stetoscopio.png' %}" alt="">
+                                    <img src="{% static 'image/Stetoscopio.png' %}" alt="">
                                 </div>
                                 <div class="container-input-info">
                                     <p>Dottore Associato</p>
@@ -209,7 +212,7 @@
             
                             <div class="card-subcard">
                                 <div class="img-circle-container">
-                                    <img src="{% static 'includes/icone/ospedale.png' %}" alt="">
+                                    <img src="{% static 'image/Ospedale.png' %}" alt="">
                                 </div>
                                 <div class="container-input-info">
                                     <p>Visita Recente</p>
@@ -219,7 +222,7 @@
             
                             <div class="card-subcard">
                                 <div class="img-circle-container">
-                                    <img src="{% static 'includes/icone/calendario.png' %}" alt="">
+                                    <img src="{% static 'image/Calendario.png' %}" alt="">
                                 </div>
                                 <div class="container-input-info">
                                     <p>Prossima Visita</p>
@@ -229,7 +232,7 @@
             
                             <div class="card-subcard">
                                 <div class="img-circle-container">
-                                    <img src="{% static 'includes/icone/blood.png' %}" alt="">
+                                    <img src="{% static 'image/Blood.png' %}" alt="">
                                 </div>
                                 <div class="container-input-info">
                                     <p>Gruppo Sanguigno</p>
@@ -239,9 +242,10 @@
                         </div>
             
                         <div class="Contact-Container">
+
                             <div class="card-subcard">
                                 <div class="img-circle-container">
-                                    <img src="{% static 'includes/icone/emailNew.png' %}" alt="">
+                                    <img src="{% static 'image/Email_Violet.png' %}" alt="">
                                 </div>
                                 <div class="container-input-info">
                                     <p>Email</p>
@@ -251,16 +255,17 @@
             
                             <div class="card-subcard">
                                 <div class="img-circle-container">
-                                    <img src="{% static 'includes/icone/phone.png' %}" alt="">
+                                    <img src="{% static 'image/Phone.png' %}" alt="">
                                 </div>
                                 <div class="container-input-info">
                                     <p>Telefono</p>
                                     <input class="input-disabled type-two" type="text" name="phone" value="{{ persona.phone|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
                                 </div>
                             </div>
+
                         </div>
+
                     </div>
-            
                 </div>
             </form>
         </div>
@@ -270,7 +275,7 @@
 
             <div class="card-storico" onclick="window.location.href='{% url 'storico' persona.id %}'">
                 <div class="img-circle-container">
-                    <img src="{% static 'includes/images/storico.png' %}" alt="">
+                    <img src="{% static 'image/Storico.png' %}" alt="">
                 </div>
                 <a href="{% url 'storico' persona.id %}">
                    <span class="freccia">&larr;</span> Storico
@@ -279,7 +284,7 @@
 
             <div class="card-storico" onclick="window.location.href='{% url 'diagnosi' persona.id %}'">
                 <div class="img-circle-container">
-                    <img src="{% static 'includes/images/diagnosi.png' %}" alt="">
+                    <img src="{% static 'image/Diagnosi.png' %}" alt="">
                 </div>
                 
                 <a href="{% url 'diagnosi' persona.id %}">
@@ -289,7 +294,7 @@
 
             <div class="card-storico">
                 <div class="img-circle-container">
-                    <img src="{% static 'includes/images/terapie.png' %}" alt="">
+                    <img src="{% static 'image/Terapie.png' %}" alt="">
                 </div>
                 <a href="">
                    <span class="freccia">&larr;</span> Terapie
@@ -298,7 +303,7 @@
 
             <div class="card-storico">
                 <div class="img-circle-container">
-                    <img src="{% static 'includes/images/esame.png' %}" alt="">
+                    <img src="{% static 'image/Esame.png' %}" alt="">
                 </div>
                 <a href="">
                    <span class="freccia">&larr;</span> Esami
@@ -307,7 +312,7 @@
 
             <div class="card-storico">
                 <div class="img-circle-container">
-                    <img src="{% static 'includes/images/terapia.png' %}" alt="">
+                    <img src="{% static 'image/Visite.png' %}" alt="">
                 </div>
                 <a href="">
                    <span class="freccia">&larr;</span> Visite
@@ -316,7 +321,7 @@
 
             <div class="card-storico">
                 <div class="img-circle-container">
-                    <img src="{% static 'includes/images/allegati.png' %}" alt="">
+                    <img src="{% static 'image/Allegati.png' %}" alt="">
                 </div>
                 <a href="">
                    <span class="freccia">&larr;</span> Allegati
@@ -343,7 +348,7 @@
                         <div class="percentage" id="heartPercentage"></div>
                         
                         <div class="descrizione-clock">
-                            <img src="{% static 'includes/images/saluteCuore.png' %}" alt="">
+                            <img src="{% static 'image/Heart_Colorato.png' %}" alt="">
                             <p>Salute del Cuore</p>
                         </div>
                     </div>
@@ -358,7 +363,7 @@
                         <div class="percentage" id="kidneyPercentage"></div>
                        
                         <div class="descrizione-clock">
-                            <img src="{% static 'includes/images/reni.png' %}" alt="">
+                            <img src="{% static 'image/Reni.png' %}" alt="">
                             <p>Salute Renale</p>
                         </div>
                     </div>
@@ -372,7 +377,7 @@
                         <div class="percentage" id="liverPercentage"></div>
                       
                         <div class="descrizione-clock">
-                            <img src="{% static 'includes/images/fegato.png' %}" alt="">
+                            <img src="{% static 'image/Fegato.png' %}" alt="">
                             <p>Salute Epatica</p>
                         </div>
                     </div>
@@ -386,7 +391,7 @@
                         <div class="percentage" id="brainPercentage"></div>
                        
                         <div class="descrizione-clock">
-                            <img src="{% static 'includes/images/cervello.png' %}" alt="">
+                            <img src="{% static 'image/Cervello.png' %}" alt="">
                             <p>Salute Cerebrale</p>
                         </div>
                     </div>
@@ -400,7 +405,7 @@
                         <div class="percentage" id="hormonePercentage"></div>
                         
                         <div class="descrizione-clock">
-                            <img src="{% static 'includes/images/cellula.png' %}" alt="">
+                            <img src="{% static 'image/Cellula.png' %}" alt="">
                             <p>Salute Ormonale</p>
                         </div>
                     </div>
@@ -414,7 +419,7 @@
                         <div class="percentage" id="bloodPercentage"></div>
                         
                         <div class="descrizione-clock">
-                            <img src="{% static 'includes/images/sangue.png' %}" alt="">
+                            <img src="{% static 'image/Blood_Colorato.png' %}" alt="">
                             <p>Salute del Sangue</p>
                         </div>
                     </div>
@@ -428,7 +433,7 @@
                         <div class="percentage" id="immunePercentage" style="margin-top: 5px;"></div>
                      
                         <div class="descrizione-clock" style="margin-bottom: -14px;">
-                            <img src="{% static 'includes/images/sistema.png' %}" alt="">
+                            <img src="{% static 'image/Sistema.png' %}" alt="">
                             <p style="max-width: 60%; font-size: 14px;">Salute del Sistema Immunitario</p>
                         </div>
                     </div>
@@ -442,7 +447,7 @@
                         <div class="percentage" id="musclePercentage" style="margin-top: 5px;"></div>
                    
                         <div class="descrizione-clock" style="margin-bottom: -14px;">
-                            <img src="{% static 'includes/images/muscolo.png' %}" alt="">
+                            <img src="{% static 'image/Muscolo.png' %}" alt="">
                             <a href="{% url 'valutazione_m_s' persona.id %}" style="width: 60%; text-decoration: none;"> 
                                 <p style="font-size: 14px;">Salute Muscolo-scheletrica</p>
                             </a>
@@ -454,8 +459,7 @@
 
                     <div class="capacita_vitale" data-punteggio="{{ ultimo_referto_capacita_vitale.punteggio|default:'2' }}">
                         <h3>Capacità Vitale</h3>
-
-                        
+                  
                         <div class="card-polmone">
                             <div class="backdrop-riempimento">
                                 <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
@@ -463,7 +467,7 @@
                                 </svg>
                             </div>
                             
-                            <img src="{% static 'includes/icone/cVitale.png' %}" alt="" width="120px" height="120px">
+                            <img src="{% static 'image/Capacita_Vitale.png' %}" alt="" width="120px" height="120px">
                         </div>
                           
                         <p class="descrizione-vitale"><span style="font-weight: bold;">Punteggio: &nbsp; </span>{{ ultimo_referto_capacita_vitale.punteggio|default:'n.a.' }} / 10</p>
@@ -478,7 +482,7 @@
                                     <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
                                 </svg>
                             </div>
-                            <img src="{% static 'includes/icone/forza.png' %}" alt="" width="120px" height="120px">
+                            <img src="{% static 'image/Resilienza.png' %}" alt="" width="120px" height="120px">
                         </div>
                         <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.resilienza|default:'n.a.' }}</p>
                     </div>
@@ -519,12 +523,12 @@
                            <p class="estremoInferiore">0</p>
 
                             <div class="cronologic-age">
-                                <img src="{% static 'includes/icone/età_crono.png' %}" alt="">
+                                <img src="{% static 'image/Eta_Cronologica.png' %}" alt="">
                                 <p id="crono">{{ persona.chronological_age }}</p>      
                             </div>
                             
                             <div class="biologic-age">
-                                <img src="{% static 'includes/icone/eta_biologica.png' %}" alt="" style="margin-top: 15px;"> 
+                                <img src="{% static 'image/Eta_Biologica.png' %}" alt="" style="margin-top: 15px;"> 
                                 <p id="biologica" style="margin-top: 5px; margin-bottom: 0px;">{{ dati_estesi_ultimo_referto.biological_age }}</p>
                             </div>
 
@@ -533,12 +537,12 @@
 
                         <div class="legenda">
                             <div class="subcontainer-legenda">
-                                <img src="{% static 'includes/icone/eta_biologica.png' %}" alt="">
+                                <img src="{% static 'image/Eta_Biologica.png' %}" alt="">
                                 <p>Età Biologica</p>
                             </div>
                         
                             <div class="subcontainer-legenda">
-                                <img src="{% static 'includes/icone/età_crono.png' %}" alt="" >
+                                <img src="{% static 'image/Eta_Cronologica.png' %}" alt="" >
                                 <p>Età Cronologica</p>
                             </div>
                         </div>
@@ -552,7 +556,7 @@
                                     <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
                                 </svg>
                             </div>
-                            <img src="{% static 'includes/icone/metabolica.png' %}" alt="" width="120px" height="120px">
+                            <img src="{% static 'image/Eta_Metabolica.png' %}" alt="" width="120px" height="120px">
                         </div>
                         <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ punteggio_eta_metabolica|default:'n.a.' }} / 100</p>
                     </div>
@@ -565,7 +569,7 @@
                                     <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
                                 </svg>
                             </div>
-                            <img src="{% static 'includes/icone/microbiota.png' %}" alt="" width="120px" height="120px">
+                            <img src="{% static 'image/Microbiota.png' %}" alt="" width="120px" height="120px">
                         </div>
                         <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.microbiota|default:'n.a.' }}</p>
                     </div>
@@ -575,6 +579,8 @@
 
         <!-- CARD SEZIONI DATI BASE E COMPOSIZIONE CORPOREA -->
         <div class="container-sezioniInterne containerStyle"  style="margin-top: -1rem;">
+            
+            
             <div class="cardDati">
 
              
@@ -585,7 +591,7 @@
 
 
                 <div class="card-content">
-                    <img src="{% static 'includes/images/datiBase3.png' %}" alt="">
+                    <img src="{% static 'image/Dati_Base.png' %}" alt="">
                     <p> In questa sezione è possibile inserire informazioni inerenti le abitudini e lo stile di vita del paziente (fumo,
                         alcol, attività fisica).
                     </p>
@@ -600,7 +606,7 @@
                     <div class="space"></div>
                 </div>
                 <div class="card-content">
-                    <img src="{% static 'includes/images/composizione1.webp' %}" alt="">
+                    <img src="{% static 'image/Sezione_Metabolica.webp' %}" alt="">
                     <p>In questa sezione è possibile inserire informazioni inerenti la composizione corporea del paziente, per una
                         valutazione del suo stato di salute fisica.</p>
                     <a href="{% url 'composizione' persona.id %}">Vai alla sezione</a>
@@ -610,6 +616,7 @@
 
         <!-- CARD SEZIONI ETA VITALE E ETA BIOLOGICA -->
         <div class="container-sezioniInterne containerStyle" style="margin-top: -1rem;">
+            
             <div class="cardDati">
 
                 <div class="cartella-effect">
@@ -619,7 +626,7 @@
 
 
                 <div class="card-content">
-                    <img src="{% static 'includes/images/vitale.png' %}" alt="">
+                    <img src="{% static 'image/Sezione_Vitale.png' %}" alt="">
                     <p>In questa sezione è possibile calcolare un punteggio relativo alla capacità vitale del paziente, sulla base delle
                         informazioni ricavate mediante questionari e prove fisiche.
                     </p>
@@ -634,7 +641,7 @@
                     <div class="space"></div>
                 </div>
                 <div class="card-content">
-                    <img src="{% static 'includes/images/biologica.png' %}" alt="">
+                    <img src="{% static 'image/Sezione_Biologica.png' %}" alt="">
                     <p style="top: 4rem;">Referti Età Biologica</p>
                     <p style="top: 6rem;"><strong>Ultimo Calcolo:</strong> &nbsp; {{ ultimo_referto.data_referto|date:"d/m/Y" }} </p>
                     <a href="{% url 'elenco_referti' persona.id %}" style="top: 10rem;" id="adjust">Vai ai referti</a>
@@ -659,7 +666,7 @@
 
 
                 <div class="card-content">
-                    <img src="{% static 'includes/images/Resilienza.png' %}" alt="">
+                    <img src="{% static 'image/Sezione_Resilienza.png' %}" alt="">
                     <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aspernatur exercitationem placeat impedit mollitia dolor est nesciunt enim in libero repellat temporibus voluptatum esse adipisci, maiores expedita eaque nulla architecto nihil!
                     </p>
                     <a href="{% url 'resilienza' persona.id %}">Vai alla sezione</a>
@@ -673,7 +680,7 @@
                     <div class="space"></div>
                 </div>
                 <div class="card-content">
-                    <img src="{% static 'includes/images/teraphy1.png' %}" alt="">
+                    <img src="{% static 'image/Sezione_Terapeutico.png' %}" alt="">
                     <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsum impedit velit libero perspiciatis. Qui, a nihil earum quasi impedit praesentium quia temporibus magnam modi minima libero delectus nam repudiandae amet?
                     </p>
                     <a href="{% url 'piano_terapeutico' persona.id %}">Vai alla sezione</a>
@@ -808,7 +815,7 @@
 
             <div class="card-graphic" id="card-style">
                 <div class="icon">
-                    <img src="{% static 'includes/icone/pillola.png' %}" alt="BP Levels Icon">
+                    <img src="{% static 'image/BP.png' %}" alt="BP Levels Icon">
                 </div>
                 <h3>Livello BP</h3>
                 <p>Ultime 5 visite</p>
@@ -835,7 +842,7 @@
 
             <div class="card-graphic" id="card-style">
                 <div class="icon">
-                    <img src="{% static 'includes/icone/sugar.png' %}" alt="Sugar Levels Icon">
+                    <img src="{% static 'image/Sugar.png' %}" alt="Sugar Levels Icon">
                 </div>
                 <h3>Livello di zuccheri</h3>
                 <p>Ultime 5 visite</p>
@@ -862,7 +869,7 @@
 
             <div class="card-graphic" id="card-style">
                 <div class="icon">
-                    <img src="{% static 'includes/icone/heart.png' %}" alt="Heart Rate Icon">
+                    <img src="{% static 'image/Heart.png' %}" alt="Heart Rate Icon">
                 </div>
                 <h3>Frequenza Cardiaca</h3>
                 <p>Ultime 5 visite</p>
@@ -889,7 +896,7 @@
 
             <div class="card-graphic" id="card-style">
                 <div class="icon">
-                    <img src="{% static 'includes/icone/provetta.png' %}" alt="Cholesterol Icon">
+                    <img src="{% static 'image/Provetta.png' %}" alt="Cholesterol Icon">
                 </div>
                 <h3>Colesterolo</h3>
                 <p>Ultime 5 visite</p>

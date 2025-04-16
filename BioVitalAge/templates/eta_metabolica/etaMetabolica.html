@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <!-- Favicon -->
-    <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+    <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
     
     <title>Composizione Corporea</title>
 
@@ -47,7 +47,7 @@
         <!-- MAIN MENU TRACE -->
         <div class="main-title-nav">
             <div class="back-tittle">
-                <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}"></a>
+                <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'image/Arrow_Back.png' %}"></a>
                 <h2 class="main-welcome-title">
                     <span>{{ persona.surname|title }}</span>
                     <span>{{ persona.name|title }}</span> |
@@ -55,11 +55,11 @@
                     {% if persona.phone and persona.email %}
                     |
                       <span class="phone_span">
-                        <img src="{% static 'includes/icone/phone.png' %}" width="20px" height="20px">
+                        <img src="{% static 'image/Phone.png' %}" width="20px" height="20px">
                         Telefono: {{ persona.phone }}
                       </span> |
                       <span class="email_span">
-                        <img src="{% static 'includes/icone/emailNew.png' %}" width="20px" height="20px">
+                        <img src="{% static 'image/Email_Violet.png' %}" width="20px" height="20px">
                         Email: {{ persona.email }}
                       </span>
                     {% endif %}
@@ -165,11 +165,11 @@
 
         <div class="container-button-header">
             <div class="container-button" onclick="window.location.href='{% url 'grafici_composizione' persona.id %}'">
-                <img src="{% static 'includes/icone/grafici.png' %}" alt="">
+                <img src="{% static 'image/Grafici.png' %}" alt="">
                 <a href="{% url 'grafici_composizione' persona.id %}">Grafici Andamento</a>
             </div>
             <div class="container-button" onclick="window.location.href='{% url 'referti_composizione' persona.id %}'">
-                <img src="{% static 'includes/icone/elenco.png' %}" alt="">
+                <img src="{% static 'image/Cartella.png' %}" alt="">
                 <a href="{% url 'referti_composizione' persona.id %}">Elenco Referti</a>
             </div>
         </div>
@@ -183,7 +183,7 @@
 
                 <!-- DOMINIO COMPOSIZIONE CORPOREA -->
                 <div class="title-container">
-                    <img src="{% static 'includes/icone/composizione.png' %}" alt="">
+                    <img src="{% static 'image/Composizione.png' %}" alt="">
                     <h3>Composizione Corporea</h3>
                 </div>
 
@@ -228,7 +228,7 @@
                 <!-- DATI ANAGRAFICI CON MASSA CORPOREA -->
                 <div class="header-container-patient" style="margin-top: 3rem;">
                     <div class="title-container">
-                        <img src="{% static 'includes/icone/avatar.png' %}" alt="">
+                        <img src="{% static 'image/Username_Violet.png' %}" alt="">
                         <h3>Informazioni generali composizione</h3>
                     </div>
                 </div>
@@ -315,7 +315,7 @@
 
                 <!-- DOMINIO PROFILO GLICEMICO E INSULINICO-->
                 <div class="title-container">
-                    <img src="{% static 'includes/icone/glicemia.png' %}" alt="">
+                    <img src="{% static 'image/Glicemia.png' %}" alt="">
                     <h3>Profilo glicemico e insulinico</h3>
                 </div>
 
@@ -359,7 +359,7 @@
 
                 <!-- DOMINIO PROFILO LIPIDICO -->
                 <div class="title-container" style="margin-top: 3rem;">
-                    <img src="{% static 'includes/icone/lipidi.png' %}" alt="">
+                    <img src="{% static 'image/Lipidi.png' %}" alt="">
                     <h3>Profilo Lipidico</h3>
                 </div>
 
@@ -389,7 +389,7 @@
 
                 <!-- DOMINIO PROFILO METABOLICO EPATICO -->
                 <div class="title-container" style="margin-top: 3rem;">
-                    <img src="{% static 'includes/icone/metabolismo.png' %}" alt="" >
+                    <img src="{% static 'image/Profilo_Metabolico.png' %}" alt="" >
                     <h3>Profilo metabolico epatico</h3>
                 </div>
 
@@ -424,7 +424,7 @@
                     <!-- DOMINIO INFIAMMAZIONE -->
                     <div>
                         <div class="title-container">
-                            <img src="{% static 'includes/icone/infiammazione.png' %}" alt="">
+                            <img src="{% static 'image/Infiammazione.png' %}" alt="">
                             <h3>Infiammazione</h3>
                         </div>
     
@@ -450,7 +450,7 @@
                     <!-- DOMINIO STRESS-->
                     <div>
                         <div class="title-container">
-                            <img src="{% static 'includes/icone/stress.png' %}" alt="">
+                            <img src="{% static 'includes/icone/Stress.png' %}" alt="">
                             <h3>Stress</h3>
                         </div>  
     

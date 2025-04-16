@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Favicon -->
-    <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+    <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
     <title>BioVitalAge - Referto</title>
 
@@ -54,7 +54,7 @@
     <main>
             <div class="main-title-nav">
                 <div class="back-tittle">
-                    <a id="back" href="{% url 'elenco_referti' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to Results"></a>
+                    <a id="back" href="{% url 'elenco_referti' persona.id %}"><img src="{% static 'image/Arrow_Back.png' %}" alt="back_ico" title="Back to Results"></a>
                     <h2 class="main-welcome-title">
                         <span>{{ persona.surname|title }}</span>
                         <span>{{ persona.name|title }}</span> |
@@ -66,11 +66,11 @@
                         {% endif %}
                         {% if persona.phone and persona.email %}
                           <span class="phone_span">
-                            <img src="{% static 'includes/icone/phone.png' %}" width="20px" height="20px">
+                            <img src="{% static 'image/Phone.png' %}" width="20px" height="20px">
                             Telefono: {{ persona.phone }}
                           </span>
                           <span class="email_span">
-                            <img src="{% static 'includes/icone/emailNew.png' %}" width="20px" height="20px">
+                            <img src="{% static 'image/Email_Violet.png' %}" width="20px" height="20px">
                             Email: {{ persona.email }}
                           </span>
                         {% endif %}
@@ -79,7 +79,7 @@
             
                 <div class="main-menu-trace">
                     <a href="{% url 'HomePage' %}">
-                        <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+                        <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
                     </a>                                    
                     <p>»</p>
                     <p>Elenco Pazienti</p>
@@ -150,7 +150,7 @@
 
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.d_roms }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.d_roms }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
 
                             {% else %}
@@ -179,7 +179,7 @@
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer" id="middleBar"></p>
                                     <p class="barra-pointer-two"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.pat }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.pat }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
 
                             {% else %}
@@ -208,7 +208,7 @@
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer" id="middleBar"></p>
                                     <p class="barra-pointer-two"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.osi }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.osi }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
 
                             {% else %}
@@ -297,7 +297,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.my_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.my_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -325,7 +325,7 @@
                             {% if datiEstesi.p_acid %}
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.p_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.p_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
                             {% else %}
                                 <div class="col-md-12 p-2 barra-container-none">
@@ -350,7 +350,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.st_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.st_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -378,7 +378,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ar_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ar_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -406,7 +406,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.beenic_acid}}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.beenic_acid}}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -444,7 +444,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.p_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.p_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -472,7 +472,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ol_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ol_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -500,7 +500,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ner_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ner_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -532,7 +532,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.a_linoleic_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.a_linoleic_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -560,7 +560,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.eico_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.eico_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -588,7 +588,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.doco_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.doco_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -620,7 +620,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.lin_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.lin_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -648,7 +648,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.gamma_lin_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.gamma_lin_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -676,7 +676,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.dih_gamma_lin_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.dih_gamma_lin_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -704,7 +704,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.arachidonic_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.arachidonic_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -738,7 +738,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.sa_un_fatty_acid }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.sa_un_fatty_acid }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -766,7 +766,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.o3o6_fatty_acid_quotient }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.o3o6_fatty_acid_quotient }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -794,7 +794,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.aa_epa }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.aa_epa }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -822,7 +822,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.o3_index }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.o3_index }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -909,7 +909,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.baso }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.baso }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -937,7 +937,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.eosi }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.eosi }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -965,7 +965,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.lymph }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.lymph }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -993,7 +993,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mono }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mono }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1021,7 +1021,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.neut }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.neut }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1049,7 +1049,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.wbc }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.wbc }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1077,7 +1077,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.neut_ul }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.neut_ul }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1105,7 +1105,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.lymph_ul }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.lymph_ul }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1133,7 +1133,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mono_ul }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mono_ul }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1161,7 +1161,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.eosi_ul }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.eosi_ul }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1189,7 +1189,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.baso_ul }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.baso_ul }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1276,7 +1276,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hct_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hct_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1305,7 +1305,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hct_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hct_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1335,7 +1335,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hgb_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hgb_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1365,7 +1365,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hgb_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hgb_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1395,7 +1395,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mch }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mch }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1423,7 +1423,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mchc }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mchc }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1451,7 +1451,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mcv }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mcv }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1480,7 +1480,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.rbc_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.rbc_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1510,7 +1510,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.rbc_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.rbc_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1540,7 +1540,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.rdwsd }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.rdwsd }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1568,7 +1568,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.rdwcv }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.rdwcv }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1654,7 +1654,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.azotemia }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.azotemia }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1683,7 +1683,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.creatinine_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.creatinine_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1713,7 +1713,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.creatinine_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.creatinine_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1743,7 +1743,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.cistatine_c }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.cistatine_c }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1772,7 +1772,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.uricemy_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.uricemy_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1802,7 +1802,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.uricemy_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.uricemy_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1891,7 +1891,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.plt }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.plt }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1919,7 +1919,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mpv }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mpv }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1947,7 +1947,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.plcr }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.plcr }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -1975,7 +1975,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.pct }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.pct }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2003,7 +2003,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.pdw }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.pdw }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2031,7 +2031,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.d_dimero }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.d_dimero }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2059,7 +2059,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.pai_1 }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.pai_1 }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2145,7 +2145,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tot_chol }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tot_chol }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2173,7 +2173,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ldl_chol }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ldl_chol }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2202,7 +2202,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hdl_chol_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hdl_chol_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2232,7 +2232,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hdl_chol_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hdl_chol_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2262,7 +2262,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.trigl }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.trigl }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2348,7 +2348,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.glicemy }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.glicemy }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2376,7 +2376,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.insulin }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.insulin }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2404,7 +2404,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.homa }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.homa }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2432,7 +2432,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ir }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ir }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2518,7 +2518,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.albuminemia }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.albuminemia }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2546,7 +2546,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tot_prot }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tot_prot }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2580,7 +2580,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tot_prot_ele }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tot_prot_ele }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2608,7 +2608,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.albumin_ele }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.albumin_ele }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2636,7 +2636,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.a_1 }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.a_1 }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2664,7 +2664,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.a_2 }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.a_2 }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2692,7 +2692,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.b_1 }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.b_1 }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2720,7 +2720,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.b_2 }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.b_2 }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2748,7 +2748,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.gamma }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.gamma }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2776,7 +2776,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.albumin_dI }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.albumin_dI }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2804,7 +2804,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.a_1_dI }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.a_1_dI }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2832,7 +2832,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.a_2_dI }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.a_2_dI }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2860,7 +2860,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.b_1_dI }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.b_1_dI }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2888,7 +2888,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.b_2_dI }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.b_2_dI }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2916,7 +2916,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.gamma_dI }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.gamma_dI }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2944,7 +2944,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.insulin }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.insulin }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -2972,7 +2972,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ag_rap }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ag_rap }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3000,7 +3000,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.cm }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.cm }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3028,7 +3028,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.b_2_spike }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.b_2_spike }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3056,7 +3056,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.b_2_spike_m1 }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.b_2_spike_m1 }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3142,7 +3142,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ves }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ves }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3170,7 +3170,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.pcr_c }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.pcr_c }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3257,7 +3257,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tnf_a }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tnf_a }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3285,7 +3285,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.inter_6 }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.inter_6 }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3313,7 +3313,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.inter_10 }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.inter_10 }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3399,7 +3399,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.na }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.na }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3427,7 +3427,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.k }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.k }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3455,7 +3455,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mg }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.mg }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3483,7 +3483,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ci }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ci }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3511,7 +3511,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ca }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ca }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3539,7 +3539,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.p }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.p }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3626,7 +3626,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.dhea_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.dhea_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3656,7 +3656,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.dhea_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.dhea_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3687,7 +3687,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.testo_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.testo_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3717,7 +3717,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.testo_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.testo_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3747,7 +3747,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tsh }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tsh }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3775,7 +3775,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ft3 }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ft3 }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3803,7 +3803,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ft4 }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ft4 }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3832,7 +3832,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.beta_es_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.beta_es_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3862,7 +3862,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.beta_es_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.beta_es_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3893,7 +3893,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.prog_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.prog_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -3923,7 +3923,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.prog_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.prog_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4012,7 +4012,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.fe }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.fe }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4041,7 +4041,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ferritin_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ferritin_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4071,7 +4071,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ferritin_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ferritin_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4101,7 +4101,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.transferrin }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.transferrin }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4189,7 +4189,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.got_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.got_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4219,7 +4219,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.got_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.got_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4250,7 +4250,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.gpt_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.gpt_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4280,7 +4280,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.gpt_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.gpt_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4311,7 +4311,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.g_gt_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.g_gt_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4341,7 +4341,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.g_gt_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.g_gt_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4372,7 +4372,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.a_photo_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.a_photo_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4402,7 +4402,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.a_photo_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.a_photo_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4436,7 +4436,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tot_bili }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tot_bili }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4464,7 +4464,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.direct_bili }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.direct_bili }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4492,7 +4492,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.indirect_bili }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.indirect_bili }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4577,7 +4577,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ves2 }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ves2 }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4606,7 +4606,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.shbg_m }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.shbg_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4636,7 +4636,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.shbg_w }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.shbg_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4666,7 +4666,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.nt_pro }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.nt_pro }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4694,7 +4694,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.v_b12 }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.v_b12 }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4722,7 +4722,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.v_d }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.v_d }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4753,7 +4753,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.s_weight }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.s_weight }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4780,7 +4780,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ph }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ph }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4807,7 +4807,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.glucose }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.glucose }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4834,7 +4834,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.proteins_ex }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.proteins_ex }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4861,7 +4861,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.blood_ex }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.blood_ex }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4888,7 +4888,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ketones }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ketones }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4915,7 +4915,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.uro }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.uro }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4942,7 +4942,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.bilirubin_ex }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.bilirubin_ex }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -4969,7 +4969,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.leuc }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.leuc }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}
@@ -5054,7 +5054,7 @@
         
                                 <div class="col-md-12 p-2 barra-container">
                                     <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.telotest }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.telotest }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                 </div>
         
                             {% else %}

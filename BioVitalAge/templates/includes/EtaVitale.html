@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <!-- Favicon -->
-    <link rel="sortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+    <link rel="sortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
     <title>Età Bio-Vitale</title>
 
@@ -43,7 +43,7 @@
         <!-- MENU TRACE -->
         <div class="main-title-nav">
             <div class="back-tittle">
-                <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}"></a>
+                <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'image/Arrow_Back.png' %}"></a>
                 <h2 class="main-welcome-title">
                     <span>{{ persona.surname|title }}</span>
                     <span>{{ persona.name|title }}</span> |
@@ -51,11 +51,11 @@
                     {% if persona.phone and persona.email %}
                     |
                       <span class="phone_span">
-                        <img src="{% static 'includes/icone/phone.png' %}" width="20px" height="20px">
+                        <img src="{% static 'image/Phone.png' %}" width="20px" height="20px">
                         Telefono: {{ persona.phone }}
                       </span> |
                       <span class="email_span">
-                        <img src="{% static 'includes/icone/emailNew.png' %}" width="20px" height="20px">
+                        <img src="{% static 'image/Email_Violet.png' %}" width="20px" height="20px">
                         Email: {{ persona.email }}
                       </span>
                     {% endif %}
@@ -64,7 +64,7 @@
 
             <div class="main-menu-trace">
                 <a href="{% url 'HomePage' %}">
-                    <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+                    <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
                 </a>
                 <p>»</p>
                 <p>
@@ -117,7 +117,7 @@
         <div class="containerPrincipale">
             <div class="contenitoreTest">
                 <div class="contenitoreTest-Header">
-                    <img src="{% static 'includes/images/etaWelcome.webp' %}" alt="" width="50px" height="50px">
+                    <img src="{% static 'image/Sezione_Vitale.png' %}" alt="" width="50px" height="50px">
                     <h3>Test della capacità Vitale</h3>
                 </div>
                 
@@ -179,14 +179,14 @@
                                 <p>{{ referto.data_referto }}</p>
                                 <p>
                                     <a href="{% url 'referto_test' persona.id referto.id %}">
-                                        <img src="{% static 'includes/icone/referto.png' %}" alt="" />
+                                        <img src="{% static 'image/Referto.png' %}" alt="" />
                                     </a>
                                 </p>
                                 <p>
 
                                     <a href="{% url 'download_pdf_vitale' persona.id referto.id %}" 
                                         id="pdfCapacitaVitale">
-                                        <img src="{% static 'includes/icone/download.png' %}" alt="Scarica PDF">
+                                        <img src="{% static 'image/Referto_Scarica.png' %}" alt="Scarica PDF">
                                     </a>
                                 </p>
                             </div>

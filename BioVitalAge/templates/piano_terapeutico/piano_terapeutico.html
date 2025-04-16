@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <!-- Favicon -->
-    <link rel="sortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+    <link rel="sortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
     <title>Piano Terapeutico</title>
 
@@ -45,7 +45,7 @@
 
             <div class="back-tittle">
 
-                <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}"></a>
+                <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'image/Arrow_Back.png' %}"></a>
                 <h2 class="main-welcome-title">
                     <span>{{ persona.surname|title }}</span>
                     <span>{{ persona.name|title }}</span> |
@@ -53,11 +53,11 @@
                     {% if persona.phone and persona.email %}
                     |
                     <span class="phone_span">
-                        <img src="{% static 'includes/icone/phone.png' %}" width="20px" height="20px">
+                        <img src="{% static 'image/Phone.png' %}" width="20px" height="20px">
                         Telefono: {{ persona.phone }}
                     </span> |
                     <span class="email_span">
-                        <img src="{% static 'includes/icone/emailNew.png' %}" width="20px" height="20px">
+                        <img src="{% static 'image/Email_Violet.png' %}" width="20px" height="20px">
                         Email: {{ persona.email }}
                     </span>
                     {% endif %}
@@ -67,7 +67,7 @@
         
             <div class="main-menu-trace">
                 <a href="{% url 'HomePage' %}">
-                    <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+                    <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
                 </a>
                 <p>»</p>
                 <p>

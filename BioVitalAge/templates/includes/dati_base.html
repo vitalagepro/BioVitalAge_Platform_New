@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{% static 'includes/icone/favicon.png' %}" type="image/x-icon" />
+    <link rel="shortcut icon" href="{% static 'image/Favicon.png' %}" type="image/x-icon" />
     
     <title>BioVitalAge - Dati Base & Stile di Vita</title>
 
@@ -41,7 +41,7 @@
       <div class="main-title-nav">
 
         <div class="back-tittle">
-          <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico" title="Back to folder"></a>
+          <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'image/Arrow_Back.png' %}" alt="back_ico" title="Back to folder"></a>
           <h2 class="main-welcome-title">
             <span>{{ persona.surname|title }}</span>
             <span>{{ persona.name|title }}</span> |
@@ -49,11 +49,11 @@
             {% if persona.phone and persona.email %}
             |
               <span class="phone_span">
-                <img src="{% static 'includes/icone/phone.png' %}" width="20px" height="20px">
+                <img src="{% static 'image/Phone.png' %}" width="20px" height="20px">
                 Telefono: {{ persona.phone }}
               </span> |
               <span class="email_span">
-                <img src="{% static 'includes/icone/emailNew.png' %}" width="20px" height="20px">
+                <img src="{% static 'image/Email_Violet.png' %}" width="20px" height="20px">
                 Email: {{ persona.email }}
               </span>
             {% endif %}
@@ -62,7 +62,7 @@
 
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
-            <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page"/>
+            <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page"/>
           </a>
           <span>»</span>
           <span>Cartella Paziente</span>
@@ -146,7 +146,7 @@
         <div class="container-informazioni-personali">
           <div class="header-container">
             <div class="title-card">
-              <img src="{% static 'includes/icone/work.png' %}" alt="">
+              <img src="{% static 'image/Professione.png' %}" alt="">
               <h3>Informazioni occupazione</h3>
             </div>
           </div>
@@ -171,7 +171,7 @@
 
               <div class="title-card">
 
-                <img src="{% static 'includes/icone/donna.png' %}" alt="">
+                <img src="{% static 'image/Donna.png' %}" alt="">
                 <h3>Informazioni ciclo</h3>
               
               </div>
@@ -247,7 +247,7 @@
 
           <div class="header-container">
             <div class="title-card">
-              <img src="{% static 'includes/icone/piantina.png' %}" alt="">
+              <img src="{% static 'image/Piantina.png' %}" alt="">
               <h3>Stile di vita</h3>
             </div>
           </div>
@@ -336,7 +336,7 @@
 
           <div class="header-container">
             <div class="title-card">
-              <img src="{% static 'includes/icone/anamnesi.png' %}" alt="">
+              <img src="{% static 'image/Anamnesi.png' %}" alt="">
               <h3>Anamnesi</h3>
             </div>
           </div>
@@ -452,7 +452,7 @@
         <div class="container-informazioni-personali" style="margin-top: 1rem; margin-bottom: 20px;">
           <div class="header-container">
             <div class="title-card">
-              <img src="{% static 'includes/icone/obiettivo.png' %}" alt="">
+              <img src="{% static 'image/Visite.png' %}" alt="">
               <h3>Esame Obiettivo</h3>
             </div>
           </div>
@@ -499,7 +499,7 @@
         <div class="container-informazioni-personali" style="margin-top: 1rem; margin-bottom: 20px;">
           <div class="header-container">
             <div class="title-card">
-              <img src="{% static 'includes/icone/sangue.png' %}" alt="">
+              <img src="{% static 'image/Blood.png' %}" alt="">
               <h3>Informazioni del sangue</h3>
             </div>
           </div>
@@ -535,7 +535,7 @@
         </div>
 
         <div class="toolkit">
-          <img src="{% static 'includes/images/arrow.png' %}" alt="" style="width: 40px; height: 40px;">
+          <img src="{% static 'image/Arrow_Back.png' %}" alt="" style="width: 40px; height: 40px;">
 
           <a class="button" id="btn_blood_group">
             <span class="button__icon-wrapper">

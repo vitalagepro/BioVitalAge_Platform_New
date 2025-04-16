@@ -11,7 +11,7 @@
     <title>BioVitalAge - Profilo</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+    <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
     <!-- Font Import  -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -92,7 +92,7 @@
                         </div>
                     </label>
                     <div class="d-flex align-items-center">
-                        <img src="{% static 'includes/icone/icona-gmail.png' %}" alt="icon-gmail" width="25" height="25"
+                        <img src="{% static 'image/Email_Colorato.png' %}" alt="icon-gmail" width="25" height="25"
                             class="mr-2">
                         <span>Collega Gmail</span>
                     </div>
@@ -119,6 +119,7 @@
             }
         }
     </script>
+    
 </body>
 
 <!-- Custom Alert -->
@@ -129,6 +130,7 @@
       <span>{{ message }}</span>
     {% endfor %}
   </div>
+
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const alertBox = document.getElementById("custom-alert");

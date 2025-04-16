@@ -6,7 +6,7 @@
         <!-- Logo Section -->
         <div class="col-md-2 d-flex nav-bar-logo">
             <a href="{% url 'HomePage' %}">
-                <img src="{% static 'includes/icone/Logo.png' %}" alt="logo_img" title="BioVitalAge®" />
+                <img src="{% static 'image/Logo.png' %}" alt="logo_img" title="BioVitalAge®" />
             </a>
         </div>
 
@@ -44,7 +44,7 @@
             <h3>Dottor. {{ dottore }}</h3>
             
             <div class="img-container-user-nav-bar">
-                <img id="userImg" src="{% static 'includes/icone/username.png' %}" alt="user">
+                <img id="userImg" src="{% static 'image/Username_White.png' %}" alt="user">
             </div>
             <div class="nav-bar-user-modal" id="userModal">
                 <button id="nav-bar-user-modal-btn" class="nav-bar-user-modal-btn" onclick="window.location.href='{% url 'logout' %}'">Disconnettiti</button> <!-- @ts-ignore  -->
