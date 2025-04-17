@@ -1,1 +1,297 @@
-terapie
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <!-- Favicon -->
+    <link
+      rel="sortcut icon"
+      href='{% static "image/Favicon.png" %}'
+      type="image/x-icon"
+    />
+
+    <title>Terapie</title>
+
+    <!-- Css Import -->
+    <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'includes/css/sezioni_storico/diagnosi.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'includes/css/sezioni_storico/terapie.css' %}"
+    />
+
+    <!-- Bootstrap import -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Font Import  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- JS IMPORT -->
+    <script
+      src="{% static 'includes/js/sezioni_storico/terapie.js' %}"
+      defer
+      type="module"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+
+  <body>
+    <!-- Loader -->
+    {% include 'components/loader.html' %}
+
+    <!-- NAVBAR -->
+    {% include 'components/navBarStorico.html' %}
+
+    <main>
+      <!-- MENU TRACE -->
+      <div class="main-title-nav">
+        <div class="back-tittle">
+          <a id="back" href="{% url 'cartella_paziente' persona.id %}">
+            <img src="{% static 'image/Arrow_Back.png' %}" />
+          </a>
+
+          <h2 class="main-welcome-title">
+            <span>{{ persona.surname|title }}</span>
+            <span>{{ persona.name|title }}</span> |
+            <span>Età: {{ persona.chronological_age }}</span>
+            {% if persona.phone and persona.email %} |
+            <span class="phone_span">
+              <img
+                src="{% static 'image/Phone.png' %}"
+                width="20px"
+                height="20px"
+              />
+              Telefono: {{ persona.phone }}
+            </span>
+            |
+            <span class="email_span">
+              <img
+                src="{% static 'image/Email_Violet.png' %}"
+                width="20px"
+                height="20px"
+              />
+              Email: {{ persona.email }}
+            </span>
+            {% endif %}
+          </h2>
+        </div>
+
+        <div class="main-menu-trace">
+          <a href="{% url 'HomePage' %}">
+            <img
+              src="{% static 'image/Home.png' %}"
+              alt="Home Page"
+              title="Home Page"
+            />
+          </a>
+          <p>»</p>
+          <p>Cartella Paziente</p>
+          <p>»</p>
+          <p>Terapie</p>
+        </div>
+      </div>
+
+      <<!-- HTML BASE, semplificato per la parte terapia domiciliare e in studio -->
+      <div class="card-container mt-4" id="terapie-wrapper">
+        <!-- TERAPIA DOMICILIARE -->
+        <div class="sub-card">
+          <h3>Terapia Domiciliare</h3>
+          <form id="terapia-domiciliare-form">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="domiciliare" />
+            <div class="row mb-3">
+              <div class="col">
+                <label for="farmaco" class="form-label">Farmaco</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="farmaco"
+                  name="farmaco"
+                  required
+                />
+              </div>
+              <div class="col">
+                <label for="assunzioni" class="form-label"
+                  >Assunzioni giornaliere</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="assunzioni"
+                  name="assunzioni"
+                  min="1"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="row mb-3" id="orari-container"></div>
+
+            <div class="row mb-3">
+              <div class="col">
+                <label for="data_inizio" class="form-label">Data inizio</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  name="data_inizio"
+                  required
+                />
+              </div>
+              <div class="col">
+                <label for="data_fine" class="form-label">Data fine</label>
+                <input type="date" class="form-control" name="data_fine" />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              Salva Terapia Domiciliare
+            </button>
+          </form>
+        </div>
+
+        <!-- TERAPIA IN STUDIO -->
+        <div class="sub-card mt-4">
+          <h3>Terapie in Studio</h3>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Descrizione</th>
+                <th>Data Inizio</th>
+                <th>Data Termine</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody id="tabella-terapie-studio">
+                {% for terapia in terapie_studio %}
+                <tr data-id="{{ terapia.id }}">
+                  <td>{{ terapia.descrizione }}</td>
+                  <td>{{ terapia.data_inizio|date:"d/m/Y" }}</td>
+                  <td>
+                    {% if terapia.data_fine %}
+                      {{ terapia.data_fine|date:"d/m/Y" }}
+                    {% else %}
+                      —
+                    {% endif %}
+                  </td>
+                  <td>
+                    <!-- Qui puoi aggiungere Modifica / Elimina -->
+                    <button class="btn btn-sm btn-outline-primary btn-modifica" data-id="{{ terapia.id }}">Modifica</button>
+                    <button class="btn btn-sm btn-outline-danger btn-elimina" data-id="{{ terapia.id }}">Elimina</button>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center text-muted">Nessuna terapia in studio registrata.</td>
+                </tr>
+              {% endfor %}            
+            </tbody>
+          </table>
+          <button
+            class="btn btn-secondary"
+            data-bs-toggle="modal"
+            data-bs-target="#studioModal"
+          >
+            Aggiungi Terapia in Studio
+          </button>
+        </div>
+
+        <!-- MODALE PER TERAPIA IN STUDIO -->
+        <div class="modal fade" id="studioModal" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form id="studio-terapia-form">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="studio" />
+                <div class="modal-header">
+                  <h5 class="modal-title">Nuova Terapia in Studio</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label">Tipologia</label>
+                    <select name="tipologia" class="form-select" required>
+                      <option value="IV Therapy">IV Therapy</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Descrizione</label>
+                    <textarea
+                      name="descrizione"
+                      class="form-control"
+                      required
+                    ></textarea>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col">
+                      <label class="form-label">Data inizio</label>
+                      <input
+                        type="date"
+                        name="data_inizio"
+                        class="form-control"
+                        required
+                      />
+                    </div>
+                    <div class="col">
+                      <label class="form-label">Data fine</label>
+                      <input
+                        type="date"
+                        name="data_fine"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-success">Salva</button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Chiudi
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Mostra messaggi -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Mostra modale -->
+    {% if mostra_modale %}
+        <script>
+            const modal = new bootstrap.Modal(document.getElementById('studioModal'));
+            modal.show();
+        </script>
+    {% endif %}
+    <script>
+        const pazienteId = {{ persona.id }}
+    </script>
+  </body>
+</html>

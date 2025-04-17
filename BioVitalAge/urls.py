@@ -50,11 +50,14 @@ urlpatterns = [
 
     ## URL SEZIONI STORICO
     path("CartellaPaziente/<int:id>/Storico", views.StoricoView.as_view(), name="storico"),
+    path("CartellaPaziente/<int:id>/Terapie", views.TerapiaView.as_view(), name="terapie"),
 
     ## URL SEZIONE DIAGNOSI
     path("CartellaPaziente/<int:id>/Diagnosi", views.DiagnosiView.as_view(), name="diagnosi"),
 
-
+    ## URL SEZIONE TERAPIE
+    path("elimina-terapia-studio/<int:id>/", EliminaTerapiaStudioView.as_view(), name="elimina_terapia_studio"),
+    path("modifica-terapia-studio/<int:id>/", ModificaTerapiaStudioView.as_view(), name="modifica_terapia_studio"),
 
     ## SEZIONE MUSCOLO
     path('Valutazione_Muscolo_Scheletrica/<int:persona_id>/', views.ValutazioneMSView.as_view(), name='valutazione_m_s'), 

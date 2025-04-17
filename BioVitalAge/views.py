@@ -23,6 +23,7 @@ from django.utils import timezone as dj_timezone # type: ignore
 from django.utils.decorators import method_decorator # type: ignore
 from django.utils.timezone import now, localtime # type: ignore
 from django.utils.dateparse import parse_date # type: ignore
+from django.utils.dateparse import parse_date
 from django.db.models import OuterRef, Subquery, Count, Q, Avg, Min, Max # type: ignore
 from django.db.models.functions import ExtractMonth # type: ignore
 from django.contrib.auth.hashers import check_password # type: ignore
@@ -717,9 +718,8 @@ class ApproveAppointmentView(View):
         return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
 
 ### VIEWS DELETE APPOINTMENT
-@method_decorator(csrf_exempt, name='dispatch')
 class DeleteAppointmentView(View):
-    def delete(self, request, appointment_id):
+    def post(self, request, appointment_id):  # 👈 aggiungi questo
         try:
             appointment = Appointment.objects.get(id=appointment_id)
             appointment.delete()
@@ -1150,6 +1150,83 @@ class StoricoView(View):
         }
 
         return render(request, 'cartella_paziente/sezioni_storico/storico.html', context)
+
+## VIEW TERAPIA
+class TerapiaView(View):
+    def get(self, request, id):
+        dottore_id = request.session.get('dottore_id')
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        # Terape in studio (se vuoi mostrarle anche in GET)
+        terapie_studio = TerapiaInStudio.objects.filter(paziente=persona).order_by('-created_at')
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+            'terapie_studio': terapie_studio,  # opzionale se la tabella è JS-based
+        }
+
+        return render(request, 'cartella_paziente/sezioni_storico/terapie.html', context)
+
+    def post(self, request, id):
+        form_type = request.POST.get("form_type")
+
+        # Salvataggio terapia in studio
+        if form_type == "studio":
+            persona = get_object_or_404(TabellaPazienti, id=id)
+            tipologia = request.POST.get("tipologia")
+            descrizione = request.POST.get("descrizione")
+            data_inizio = parse_date(request.POST.get("data_inizio"))
+            data_fine = parse_date(request.POST.get("data_fine")) or None
+
+            terapia = TerapiaInStudio.objects.create(
+                paziente=persona,
+                tipologia=tipologia,
+                descrizione=descrizione,
+                data_inizio=data_inizio,
+                data_fine=data_fine,
+            )
+
+            return JsonResponse({
+                'success': True,
+                'terapia': {
+                    'id': terapia.id,
+                    'descrizione': terapia.descrizione,
+                    'data_inizio': terapia.data_inizio.strftime('%d/%m/%Y'),
+                    'data_fine': terapia.data_fine.strftime('%d/%m/%Y') if terapia.data_fine else None
+                }
+            })
+
+        return JsonResponse({'success': False})
+
+# ELIMINA TERAPIA FUNZIONE
+class EliminaTerapiaStudioView(View):
+    def post(self, request, id):
+        terapia = get_object_or_404(TerapiaInStudio, id=id)
+        terapia.delete()
+        return JsonResponse({'success': True})
+
+# MODIFICA TERAPIA
+class ModificaTerapiaStudioView(View):
+    def post(self, request, id):
+        terapia = get_object_or_404(TerapiaInStudio, id=id)
+
+        terapia.tipologia = request.POST.get('tipologia')
+        terapia.descrizione = request.POST.get('descrizione')
+        terapia.data_inizio = parse_date(request.POST.get('data_inizio'))
+        terapia.data_fine = parse_date(request.POST.get('data_fine')) or None
+        terapia.save()
+
+        return JsonResponse({
+            'success': True,
+            'terapia': {
+                'id': terapia.id,
+                'descrizione': terapia.descrizione,
+                'data_inizio': terapia.data_inizio.strftime('%d/%m/%Y'),
+                'data_fine': terapia.data_fine.strftime('%d/%m/%Y') if terapia.data_fine else None
+            }
+        })
 
 ## VIEW DIAGNOSI
 class DiagnosiView(View):
