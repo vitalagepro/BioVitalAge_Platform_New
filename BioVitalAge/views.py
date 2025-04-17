@@ -1,5 +1,5 @@
 # --- IMPORTS STANDARD ---
-import requests
+import requests # type: ignore
 import calendar
 import json
 import os
@@ -11,20 +11,22 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 
 # --- IMPORTS DI DJANGO ---
-from django.core.cache import cache
-from django.core.paginator import Paginator
-from django.http import JsonResponse
-from django.views import View
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from django.conf import settings
-from django.utils import timezone as dj_timezone
-from django.utils.decorators import method_decorator
-from django.utils.timezone import now, localtime
-from django.utils.dateparse import parse_date
-from django.db.models import OuterRef, Subquery, Count, Q, Avg, Min, Max
-from django.db.models.functions import ExtractMonth
+from django.core.cache import cache # type: ignore
+from django.core.paginator import Paginator # type: ignore
+from django.http import JsonResponse # type: ignore
+from django.views import View # type: ignore
+from django.views.decorators.csrf import csrf_exempt # type: ignore
+from django.shortcuts import render, get_object_or_404, redirect # type: ignore
+from django.contrib import messages # type: ignore
+from django.conf import settings # type: ignore
+from django.utils import timezone as dj_timezone # type: ignore
+from django.utils.decorators import method_decorator # type: ignore
+from django.utils.timezone import now, localtime # type: ignore
+from django.utils.dateparse import parse_date # type: ignore
+from django.db.models import OuterRef, Subquery, Count, Q, Avg, Min, Max # type: ignore
+from django.db.models.functions import ExtractMonth # type: ignore
+from django.contrib.auth.hashers import check_password # type: ignore
+from django.db.models import OuterRef # type: ignore
 
 # --- IMPORTS PERSONALI (APP) ---
 from .utils import *
@@ -37,7 +39,7 @@ from .models import TabellaPazienti, ArchivioReferti
 logger = logging.getLogger(__name__)
 
 
-# -- SEZIONE LOGIN - HOME PAGE VIEW --
+# -- SEZIONE LOGIN / HOME PAGE VIEW --
 ## VIEW LOGIN RENDER
 class LoginRenderingPage(View):
     def get(self, request):
@@ -199,170 +201,187 @@ class HomePageRender(View):
             emails = []
 
         context["emails"] = emails  # ← questo è il campo letto nel template da: <script id="emails-data">
-        return render(request, "includes/homePage.html", context)
+        return render(request, "home_page/homePage.html", context)
+
 
     def post(self, request):
-
+        
+        #RECUPERA CREDENZIALI
         emailInput = request.POST['email']
         passwordInput = request.POST['password']
 
-        Query = UtentiRegistratiCredenziali.objects.all().values()
-        
-        for record in Query:  
-            for key, value in record.items():
-                if key == 'email':
-                    if value == emailInput: 
-                        if record['password'] == passwordInput:
+        # 1. Verifica se l'email è presente nel DB
+        try:
+            dottore = UtentiRegistratiCredenziali.objects.get(email=emailInput)
+        except UtentiRegistratiCredenziali.DoesNotExist:
+            return render(request, 'includes/login.html', {
+                'error': 'Email inserita non valida o non registrata'
+            })
 
-                            dottore = UtentiRegistratiCredenziali.objects.get(email=emailInput, password=passwordInput)
-                            request.session['dottore_id'] = dottore.id
+        # 2. Verifica la password usando il controllo dell'hash
+        if check_password(passwordInput, dottore.password):
+            request.session['dottore_id'] = dottore.id
 
-                            # Ottieni i 5 pazienti più recenti
-                            persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
-                        
-                            # Ottieni il referto più recente per ogni paziente
-                            ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
-                            dottore_id = request.session.get('dottore_id')
-                            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-                            # Calcola il totale "biological_age" solo per i referti associati ai pazienti di questo dottore
-                            total_biological_age_count = DatiEstesiReferti.objects.filter(referto__paziente__dottore=dottore).aggregate(total=Count('biological_age'))['total']
-                            total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
-                            # Ottieni gli appuntamenti del dottore
-                            today = timezone.now().date()  # Ottieni la data corrente (senza l'ora)
-                            appuntamenti = Appointment.objects.filter(dottore=dottore, data__gte=today).order_by('data')[:4]
-                            # Calcola min, max e media dell'età cronologica solo per i pazienti del dottore
-                            agg_age = TabellaPazienti.objects.filter(dottore=dottore).aggregate(
-                                min_age=Min('chronological_age'),
-                                max_age=Max('chronological_age'),
-                                avg_age=Avg('chronological_age')
-                            )
-                            min_age = agg_age['min_age']
-                            max_age = agg_age['max_age']
-                            avg_age = agg_age['avg_age']
-                            persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
-                                    # --- Calcolo per il report "Totale Pazienti" ---
-                            # Assumiamo che il modello TabellaPazienti abbia un campo 'created_at'
-                            today = dj_timezone.now().date()
-                            # Calcola l'inizio della settimana corrente (supponiamo lunedì come inizio)
-                            start_of_week = today - timedelta(days=today.weekday())
-                            # La settimana precedente va dal lunedì della settimana scorsa fino a domenica (un giorno prima dell'inizio della settimana corrente)
-                            start_of_last_week = start_of_week - timedelta(days=7)
-                            end_of_last_week = start_of_week - timedelta(days=1)
+            # 3. Recupera e calcola le informazioni per la home page
 
-                            # Conta i pazienti creati nella settimana corrente e in quella precedente
-                            current_week_patients = TabellaPazienti.objects.filter(
-                                dottore=dottore, created_at__gte=start_of_week
-                            ).count()
-                            last_week_patients = TabellaPazienti.objects.filter(
-                                dottore=dottore, created_at__gte=start_of_last_week, created_at__lte=end_of_last_week
-                            ).count()
+            # Ottieni i 5 pazienti più recenti
+            persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
 
-                            # Calcola la differenza e la percentuale
-                            difference = current_week_patients - last_week_patients
-                            if last_week_patients > 0:
-                                percentage_increase = (difference / last_week_patients) * 100
-                            else:
-                                percentage_increase = 100 if current_week_patients > 0 else 0
+            # Calcola alcuni aggregati globali
+            total_biological_age_count = DatiEstesiReferti.objects.filter(
+                referto__paziente__dottore=dottore
+            ).aggregate(total=Count('biological_age'))['total']
+            total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
 
-                            # Calcolo dei referti (prescrizioni) associati ai pazienti del dottore
-                            current_week_referti = ArchivioReferti.objects.filter(
-                                paziente__dottore=dottore, data_referto__gte=start_of_week
-                            ).count()
-                            last_week_referti = ArchivioReferti.objects.filter(
-                                paziente__dottore=dottore, data_referto__gte=start_of_last_week, data_referto__lte=end_of_last_week
-                            ).count()
+            # Appuntamenti futuri
+            today = dj_timezone.now().date()
+            appuntamenti = Appointment.objects.filter(
+                dottore=dottore, data__gte=today
+            ).order_by('data')[:4]
 
-                            difference_referti = current_week_referti - last_week_referti
-                            abs_difference_referti = abs(difference_referti)
-                            if last_week_referti > 0:
-                                percentage_increase_referti = abs(difference_referti) / last_week_referti * 100
-                            else:
-                                percentage_increase_referti = 100 if current_week_referti > 0 else 0
+            # Calcoli aggregati per età (min, max, media)
+            agg_age = TabellaPazienti.objects.filter(dottore=dottore).aggregate(
+                min_age=Min('chronological_age'),
+                max_age=Max('chronological_age'),
+                avg_age=Avg('chronological_age')
+            )
+            min_age = agg_age['min_age']
+            max_age = agg_age['max_age']
+            avg_age = agg_age['avg_age']
 
-                            # Calcola la percentuale media delle età cronologiche, se i valori sono validi
-                            if min_age is not None and max_age is not None and max_age != min_age:
-                                relative_position = (avg_age - min_age) / (max_age - min_age)
-                                media_percentage = relative_position * 100
-                            else:
-                                media_percentage = 0
+            # --- Calcolo per il report "Totale Pazienti" ---
+            today_dj = dj_timezone.now().date()
+            start_of_week = today_dj - timedelta(days=today_dj.weekday())
+            start_of_last_week = start_of_week - timedelta(days=7)
+            end_of_last_week = start_of_week - timedelta(days=1)
 
-                            # Ottieni i dati estesi associati al referto più recente di ciascun paziente
-                            datiEstesi = DatiEstesiReferti.objects.filter(referto=Subquery(ultimo_referto.values('id')[:1]))
+            current_week_patients = TabellaPazienti.objects.filter(
+                dottore=dottore, created_at__gte=start_of_week
+            ).count()
+            last_week_patients = TabellaPazienti.objects.filter(
+                dottore=dottore, created_at__gte=start_of_last_week, created_at__lte=end_of_last_week
+            ).count()
 
-                            if dottore.cookie == 'SI':
-                                context = {
-                                    'persone': persone,
-                                    'total_pazienti': total_pazienti,
-                                    'total_biological_age': total_biological_age_count,
-                                    'appuntamenti': appuntamenti,
-                                    'current_week_patients': current_week_patients,
-                                    'last_week_patients': last_week_patients,
-                                    'difference': difference,
-                                    'percentage_increase': percentage_increase,
-                                    'current_week_referti': current_week_referti,
-                                    'last_week_referti': last_week_referti,
-                                    'difference_referti': difference_referti,
-                                    'percentage_increase_referti': percentage_increase_referti,
-                                    'abs_difference_referti': abs_difference_referti,
-                                    'min_age': min_age,
-                                    'max_age': max_age,
-                                    'media_percentage': media_percentage,
-                                    'dottore': dottore,
-                                    'dati_estesi': datiEstesi,
-                                    'emails': get_gmail_emails_for_user(request.user),  # 👈 AGGIUNGI QUI
-                                }
+            difference = current_week_patients - last_week_patients
+            if last_week_patients > 0:
+                percentage_increase = (difference / last_week_patients) * 100
+            else:
+                percentage_increase = 100 if current_week_patients > 0 else 0
 
-                            else: 
-                                context = {
-                                    'persone': persone,
-                                    'total_pazienti': total_pazienti,
-                                    'total_biological_age': total_biological_age_count,
-                                    'appuntamenti': appuntamenti,
-                                    'current_week_patients': current_week_patients,
-                                    'last_week_patients': last_week_patients,
-                                    'difference': difference,
-                                    'percentage_increase': percentage_increase,
-                                    'current_week_referti': current_week_referti,
-                                    'last_week_referti': last_week_referti,
-                                    'difference_referti': difference_referti,
-                                    'percentage_increase_referti': percentage_increase_referti,
-                                    'abs_difference_referti': abs_difference_referti,
-                                    'min_age': min_age,
-                                    'max_age': max_age,
-                                    'media_percentage': media_percentage,
-                                    'dottore': dottore,
-                                    'emails': get_gmail_emails_for_user(request.user),  # 👈 AGGIUNGI QUI
-                                    'show_disclaimer': True
-                                }
+            # --- Calcolo per il report "Totale Prescrizioni" ---
+            current_week_referti = ArchivioReferti.objects.filter(
+                paziente__dottore=dottore, data_referto__gte=start_of_week
+            ).count()
+            last_week_referti = ArchivioReferti.objects.filter(
+                paziente__dottore=dottore, data_referto__gte=start_of_last_week, data_referto__lte=end_of_last_week
+            ).count()
 
-                            try:
-                                social_auth = UserSocialAuth.objects.get(user__email=dottore.email, provider="google-oauth2")
-                                emails = get_gmail_emails_for_user(social_auth.user)
-                            except UserSocialAuth.DoesNotExist:
-                                print("⚠️ Account Google non collegato per:", dottore.email)
-                                emails = []
+            difference_referti = current_week_referti - last_week_referti
+            abs_difference_referti = abs(difference_referti)
+            if last_week_referti > 0:
+                percentage_increase_referti = abs(difference_referti) / last_week_referti * 100
+            else:
+                percentage_increase_referti = 100 if current_week_referti > 0 else 0
 
-                            context['emails'] = emails
-                            
-                            return render(request, 'includes/homePage.html' , context)
-                        else:
-                            return render(request, 'includes/login.html', {'error': 'Password errata'})
-                else:
-                    continue    
+            # Calcola la percentuale media dell'età cronologica
+            if min_age is not None and max_age is not None and max_age != min_age:
+                relative_position = (avg_age - min_age) / (max_age - min_age)
+                media_percentage = relative_position * 100
+            else:
+                media_percentage = 0
 
-        return render(request, 'includes/login.html', {'error': 'Email inserita non valida o non registrata'})
+            # Ottieni i dati estesi relativi all'ultimo referto per ogni paziente
+            ultimo_referto = ArchivioReferti.objects.filter(
+                paziente=OuterRef('referto__paziente')
+            ).order_by('-data_referto')
+            datiEstesi = DatiEstesiReferti.objects.filter(
+                referto=Subquery(ultimo_referto.values('id')[:1])
+            )
+
+            # Prepara il contesto in base al flag "cookie" per il disclaimer
+            if dottore.cookie == "SI":
+                context = {
+                    'persone': persone,
+                    'total_pazienti': total_pazienti,
+                    'total_biological_age': total_biological_age_count,
+                    'appuntamenti': appuntamenti,
+                    'current_week_patients': current_week_patients,
+                    'last_week_patients': last_week_patients,
+                    'difference': difference,
+                    'percentage_increase': percentage_increase,
+                    'current_week_referti': current_week_referti,
+                    'last_week_referti': last_week_referti,
+                    'difference_referti': difference_referti,
+                    'percentage_increase_referti': percentage_increase_referti,
+                    'abs_difference_referti': abs_difference_referti,
+                    'min_age': min_age,
+                    'max_age': max_age,
+                    'media_percentage': media_percentage,
+                    'dottore': dottore,
+                    'dati_estesi': datiEstesi,
+                    'emails': get_gmail_emails_for_user(request.user),
+                }
+            else:
+                context = {
+                    'persone': persone,
+                    'total_pazienti': total_pazienti,
+                    'total_biological_age': total_biological_age_count,
+                    'appuntamenti': appuntamenti,
+                    'current_week_patients': current_week_patients,
+                    'last_week_patients': last_week_patients,
+                    'difference': difference,
+                    'percentage_increase': percentage_increase,
+                    'current_week_referti': current_week_referti,
+                    'last_week_referti': last_week_referti,
+                    'difference_referti': difference_referti,
+                    'percentage_increase_referti': percentage_increase_referti,
+                    'abs_difference_referti': abs_difference_referti,
+                    'min_age': min_age,
+                    'max_age': max_age,
+                    'media_percentage': media_percentage,
+                    'dottore': dottore,
+                    'emails': get_gmail_emails_for_user(request.user),
+                    'show_disclaimer': True
+                }
+
+            # Gestione dati aggiuntivi (Social Auth per Google)
+            try:
+                social_auth = UserSocialAuth.objects.get(
+                    user__email=dottore.email, provider="google-oauth2"
+                )
+                emails = get_gmail_emails_for_user(social_auth.user)
+            except UserSocialAuth.DoesNotExist:
+                print("⚠️ Account Google non collegato per:", dottore.email)
+                emails = []
+            context['emails'] = emails
+
+            return render(request, 'home_page/homePage.html', context)
+
+        else:
+            # Se la password non è corretta, restituisci un messaggio d'errore
+            return render(request, 'includes/login.html', {'error': 'Password errata'})
 
 ## VIEW PER LA SEZIONE PROFILO
+
+def save(self, *args, **kwargs):
+    if self.password and not self.password.startswith('pbkdf2_sha256$'):
+        self.password = make_password(self.password)
+    super().save(*args, **kwargs)
+
 class ProfileView(View):
     def get(self, request, *args, **kwargs):
         dottore_id = request.session.get('dottore_id')
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-        is_gmail_connected = UserSocialAuth.objects.filter(user__email=dottore.email, provider='google-oauth2').exists()
-        
+        is_gmail_connected = UserSocialAuth.objects.filter(
+            user__email=dottore.email, provider='google-oauth2'
+        ).exists()
+
         context = {
             'dottore': dottore,
             'email_dottore': dottore.email,
             'nome_dottore': dottore.nome,
+            # ATTENZIONE: mostrare la password (hashata) può essere una cattiva idea in produzione!
+            # Meglio non mostrarla o mettere un placeholder. 
             'password_dottore': dottore.password,
             'gmail_linked': is_gmail_connected
         }
@@ -384,7 +403,8 @@ class ProfileView(View):
             if email:
                 dottore.email = email
             if password:
-                dottore.password = password  # Hash in produzione
+                # Impostando dottore.password, il suo metodo save() penserà poi ad hashare
+                dottore.password = password  
             dottore.save()
 
             messages.success(request, "Profilo aggiornato con successo.")
@@ -397,13 +417,16 @@ class ProfileView(View):
 
             if not check_value:
                 try:
-                    social_account = UserSocialAuth.objects.get(user__email=dottore.email, provider="google-oauth2")
+                    social_account = UserSocialAuth.objects.get(
+                        user__email=dottore.email, provider="google-oauth2"
+                    )
                     social_account.delete()
                     messages.success(request, "Account Gmail disconnesso con successo.")
                 except UserSocialAuth.DoesNotExist:
                     messages.info(request, "Nessun account Gmail collegato.")
             else:
-                # Gmail collegato => redirecta a Google
+                # Se l'utente decide di "collegare" Gmail,
+                # lo reindirizzi al flusso di autenticazione di Google
                 return redirect("/auth/login/google-oauth2/?prompt=consent&access_type=offline")
 
             return redirect("profile")
@@ -428,7 +451,7 @@ class StatisticheView(View):
             emails = []
 
         context["emails"] = emails  # ← questo è il campo letto nel template da: <script id="emails-data">
-        return render(request, "includes/statistiche.html", context)
+        return render(request, "cartella_paziente/home_page/statistiche.html", context)
 
 ## VIEW PER LE NOTIFICHE
 class AppointmentNotificationsView(View):
@@ -518,7 +541,7 @@ class AcceptDisclaimerView(View):
             'dottore' : dottore
         }
 
-        return render(request, "includes/statistiche.html", context)
+        return render(request, "cartella_paziente/home_page/statistiche.html", context)
 
 ## SEZIONE APPUNTAMENTI
 ### VIEWS APPUNTAMENTI
@@ -765,9 +788,6 @@ class CreaPazienteView(View):
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 
-
-
-
 # -- SEZIONE RICERCA PAZIENTE --
 ## VIEW PER SEZIONE RICERCA PAZIENTI
 class RisultatiRender(View):
@@ -906,10 +926,6 @@ class InserisciPazienteView(View):
         except Exception as e:
             context["errore"] = f"Errore di sistema: {str(e)}. Verifica i campi e riprova."
             return render(request, "includes/InserisciPaziente.html", context)
-
-
-
-
 
 # -- SEZIONE CARTELLA PAZIENTE --
 ## VIEW CARTELLA PAZIENTE
@@ -1133,7 +1149,7 @@ class StoricoView(View):
             'appuntamenti_per_mese': appuntamenti_per_mese_count,
         }
 
-        return render(request, 'sezioni_storico/storico.html', context)
+        return render(request, 'cartella_paziente/sezioni_storico/storico.html', context)
 
 ## VIEW DIAGNOSI
 class DiagnosiView(View):
@@ -1148,7 +1164,8 @@ class DiagnosiView(View):
             'dottore' : dottore,   
         }
 
-        return render(request, 'sezioni_storico/diagnosi.html', context)
+        return render(request, 'cartella_paziente/sezioni_storico/diagnosi.html', context)
+
 
 ## SEZIONE MUSCOLO
 class ValutazioneMSView(View):
@@ -1164,7 +1181,7 @@ class ValutazioneMSView(View):
             'dottore' : dottore,
         }
 
-        return render(request, "includes/valutazioneMS.html", context)
+        return render(request, "cartella_paziente/indici_di_performance/valutazioneMS.html", context)
 
     def post(self, request, persona_id):     
         dottore_id = request.session.get('dottore_id')
@@ -1237,7 +1254,7 @@ class ValutazioneMSView(View):
             'dottore': dottore,
             'successo': True
         }
-        return render(request, "includes/valutazioneMS.html", context)
+        return render(request, "cartella_paziente/indici_di_performance/valutazioneMS.html", context)
 
 
 ## SEZIONE DATI BASE
@@ -1253,7 +1270,7 @@ class DatiBaseView(View):
             'persona': persona,
             'dottore' : dottore
         }
-        return render(request, "includes/dati_base.html", context)
+        return render(request, "cartella_paziente/dati_base/dati_base.html", context)
     
     def post(self, request, id):
 
@@ -1348,7 +1365,7 @@ class DatiBaseView(View):
             }
     
 
-        return render(request, "includes/dati_base.html", context)  
+        return render(request, "cartella_paziente/dati_base/dati_base.html", context)  
 
 
 ## SEZIONE ETA' METABOLICA
@@ -1370,7 +1387,7 @@ class ComposizioneView(View):
             'ultimo_referto': ultimo_referto
         }
 
-        return render(request, "eta_metabolica/etaMetabolica.html", context)
+        return render(request, "cartella_paziente/eta_metabolica/etaMetabolica.html", context)
 
     def post(self, request, id):
 
@@ -1505,7 +1522,7 @@ class ComposizioneView(View):
                 'errore': "Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova." 
             }
 
-        return render(request, "eta_metabolica/etaMetabolica.html", context)
+        return render(request, "cartella_paziente/eta_metabolica/etaMetabolica.html", context)
 
 class ComposizioneChartView(View):
 
@@ -1699,7 +1716,7 @@ class ComposizioneChartView(View):
             'sii': json.dumps(sii_values),
             'cplas': json.dumps(cplas_values),
         }
-        return render(request, 'eta_metabolica/grafici.html', context)
+        return render(request, 'cartella_paziente/eta_metabolica/grafici.html', context)
 
 class RefertiComposizioneView(View):
     def get(self, request, id):
@@ -1721,8 +1738,7 @@ class RefertiComposizioneView(View):
             'referti': referti_page, 
         }
 
-        return render(request, 'eta_metabolica/elencoReferti.html', context)
-
+        return render(request, 'cartella_paziente/eta_metabolica/elencoReferti.html', context)
 
 
 ## SEZIONE CAPACITA' VITALE
@@ -1742,7 +1758,7 @@ class EtaVitaleView(View):
             'dottore': dottore
         }
 
-        return render(request, "includes/EtaVitale.html", context)
+        return render(request, "cartella_paziente/capacita_vitale/EtaVitale.html", context)
     
     def post(self):
         return
@@ -1768,7 +1784,7 @@ class TestEtaVitaleView(View):
             'referti_test_recenti': referti_test_recenti
         }
 
-        return render(request, "includes/testVitale.html", context)
+        return render(request, "cartella_paziente/capacita_vitale/testVitale.html", context)
  
     def post(self, request, id):
 
@@ -1954,8 +1970,7 @@ class TestEtaVitaleView(View):
             'dottore': dottore
             }
 
-            return render(request, "includes/EtaVitale.html", context)
-
+            return render(request, "cartella_paziente/capacita_vitale/EtaVitale.html", context)
 
         except Exception as e:
             print(e)
@@ -1968,7 +1983,8 @@ class TestEtaVitaleView(View):
                 'dottore': dottore
             }    
 
-            return render(request, "includes/testVitale.html", context)
+            return render(request, "cartella_paziente/capacita_vitale/testVitale.html", context)
+
 
 class RefertoQuizView(View):
     def get(self, request, persona_id, referto_id):
@@ -2040,7 +2056,7 @@ class RefertoQuizView(View):
             'testo_risultato': testo_risultato,
         }
 
-        return render(request, "includes/RefertoQuiz.html", context)
+        return render(request, "cartella_paziente/capacita_vitale/RefertoQuiz.html", context)
 
 class QuizEtaVitaleUpdateView(View):
 
@@ -2140,7 +2156,7 @@ class StampaRefertoView(View):
             'testo_risultato': testo_risultato,
         }
 
-        return render(request, "includes/EtaVitale.html", context)
+        return render(request, "cartella_paziente/capacita_vitale/EtaVitale.html", context)
 
 def safe_float(data, key, default=0.0):
     try:
@@ -2174,10 +2190,10 @@ class CalcolatoreRender(View):
             except TabellaPazienti.DoesNotExist:
                 context.update({"error": "Paziente non trovato."})
 
-            return render(request, 'includes/calcolatore.html', context)
+            return render(request, 'cartella_paziente/eta_biologica/calcolatore.html', context)
         
         else:
-            return render(request, 'includes/calcolatore.html', context)
+            return render(request, 'cartella_paziente/eta_biologica/calcolatore.html', context)
 
         
     def post(self, request, id):
@@ -2625,7 +2641,7 @@ class CalcolatoreRender(View):
                         "persona": persona
                     }
 
-                    return render(request, "includes/calcolatore.html", context)
+                    return render(request, "cartella_paziente/eta_biologica/calcolatore.html", context)
                 
                 else:
                     
@@ -2636,7 +2652,7 @@ class CalcolatoreRender(View):
                         'dottore': dottore,
                         'persona': persona
                     }
-                    return render(request, "includes/calcolatore.html", context)
+                    return render(request, "cartella_paziente/eta_biologica/calcolatore.html", context)
 
             else:
 
@@ -3102,7 +3118,7 @@ class CalcolatoreRender(View):
                     'dottore' : dottore,
                 }
 
-                return render(request, "includes/calcolatore.html", context)
+                return render(request, "cartella_paziente/eta_biologica/calcolatore.html", context)
 
         except Exception as e:
             error_message = f"System error: {str(e)}\n{traceback.format_exc()}"
@@ -3112,10 +3128,7 @@ class CalcolatoreRender(View):
                 "error": "Si è verificato un errore di sistema. Controlla di aver inserito tutti i dati corretti nei campi necessari e riprova.",
                 "dettaglio": error_message 
             }
-            return render(request, "includes/calcolatore.html", context)
-
-
-
+            return render(request, "cartella_paziente/eta_biologica/calcolatore.html", context)
 
 
 ## SEZIONE RESILIENZA
@@ -3131,7 +3144,7 @@ class ResilienzaView(View):
             'dottore' : dottore,
         }
 
-        return render(request, "includes/Resilienza.html", context)
+        return render(request, "cartella_paziente/resilienza/Resilienza.html", context)
     
     def post(self, request, persona_id): 
         dottore_id = request.session.get('dottore_id')
@@ -3164,7 +3177,7 @@ class ResilienzaView(View):
             'dottore': dottore,
             'successo': True
         }
-        return render(request, "includes/Resilienza.html", context)
+        return render(request, "cartella_paziente/resilienza/Resilienza.html", context)
     
 
 ## SEZIONE PIANO TERAPEUTICO
@@ -3189,7 +3202,7 @@ class PianoTerapeutico(View):
             'visite': visite_page,  
         }
 
-        return render(request, 'piano_terapeutico/piano_terapeutico.html', context)
+        return render(request, 'cartella_paziente/piano_terapeutico/piano_terapeutico.html', context)
 
 ### SEZIONE PRESCRIZIONI ESAMI
 class PrescrizioniView(View):
@@ -3206,7 +3219,7 @@ class PrescrizioniView(View):
             'dottore': dottore,
         }
 
-        return render(request, "prescrizioni/prescrizioni.html", context)
+        return render(request, "cartella_paziente/piano_terapeutico/prescrizioni.html", context)
 
 
     def post(self, request, persona_id):
@@ -3222,27 +3235,6 @@ class PrescrizioniView(View):
         )
 
         return redirect('piano_terapeutico', persona_id)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # TO DEFINE
@@ -3306,12 +3298,12 @@ class UpdatePersonaContactView(View):
             'dottore': dottore
         }
 
-        return render(request, "includes/EtaVitale.html", context)
+        return render(request, "cartella_paziente/capacita_vitale/EtaVitale.html", context)
     
 class RefertoView(View):
     def get(self, request, referto_id):
         referto = ArchivioReferti.objects.get(id=referto_id)
-        return render(request, 'includes/Referto.html', {'data_referto': referto.data_referto})
+        return render(request, 'cartella_paziente/eta_biologica//Referto.html', {'data_referto': referto.data_referto})
 
 class ElencoRefertiView(View):
     def get(self, request, id):
@@ -3334,7 +3326,7 @@ class ElencoRefertiView(View):
             'dottore' : dottore,
         }
 
-        return render(request, "includes/elencoReferti.html", context)
+        return render(request, "cartella_paziente/eta_biologica/elencoReferti.html", context)
     
 class PersonaDetailView(View):
     def get(self, request, persona_id):
@@ -3365,5 +3357,5 @@ class PersonaDetailView(View):
             'datiEstesi': dati_estesi,
             'dottore': dottore,
         }
-        return render(request, "includes/Referto.html", context)
+        return render(request, "cartella_paziente/eta_biologica/Referto.html", context)
 
