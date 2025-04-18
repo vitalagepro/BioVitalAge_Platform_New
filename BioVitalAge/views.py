@@ -73,8 +73,6 @@ class LogOutRender(View):
         logout(request)
         return redirect('login')
 
-
-
 ## VIEW PER ACCETTARE IL DISCLAIMER
 class AcceptDisclaimerView(LoginRequiredMixin, View):
     login_url = 'login'
@@ -84,8 +82,6 @@ class AcceptDisclaimerView(LoginRequiredMixin, View):
         dottore.cookie = "SI"
         dottore.save(update_fields=['cookie'])
         return JsonResponse({"success": True})
-
-
 
 
 ## VIEW PER LOGIN FORM - HOME PAGE RENDER
@@ -381,8 +377,6 @@ class HomePageRender(LoginRequiredMixin,View):
             # Se la password non è corretta, restituisci un messaggio d'errore
             return render(request, 'includes/login.html', {'error': 'Password errata'})
 
-
-
 ## VIEW PER LA SEZIONE PROFILO
 def save(self, *args, **kwargs):
     if self.password and not self.password.startswith('pbkdf2_sha256$'):
@@ -463,7 +457,6 @@ class ProfileView(LoginRequiredMixin, View):
         # se niente action valida
         messages.error(request, "Azione non riconosciuta.")
         return redirect("profile")
-
 
 
 ## VIEW PER LA SEZIONE STATISTICHE
@@ -780,33 +773,33 @@ class SearchAppointmentsView(LoginRequiredMixin,View):
     
 ### VIEW CREATE PATIENT FROM SECOND MODAL
 class CreaPazienteView(LoginRequiredMixin,View):
+
+    login_url = 'loginPage'
+
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)
-            print("📥 Dati ricevuti dal frontend:", data)  # DEBUG
 
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
             name = data.get("name", "").strip()
             surname = data.get("surname", "").strip()
             phone = data.get("phone", "").strip()
-            email = data.get("email", "").strip()  # Assumendo che tu abbia il campo email nel modello
+            email = data.get("email", "").strip() 
             
-
             if not name or not surname:
-                print("⚠ Errore: Nome e cognome obbligatori")  # DEBUG
                 return JsonResponse({"success": False, "error": "Nome e cognome sono obbligatori!"}, status=400)
 
-            if not dottore_id:
-                print("⚠ Errore: dottore_id mancante!")  # DEBUG
+            if not dottore:
                 return JsonResponse({"success": False, "error": "Devi essere autenticato per aggiungere un paziente."}, status=403)
-
+            
             # Creazione paziente
             paziente = TabellaPazienti.objects.create(
                 name=name,
                 surname=surname,
                 phone=phone,
-                email=email  # Assumendo che email esista nel modello
+                email=email,
+                dottore=dottore
             )
-            print(f"✅ Paziente {paziente.id} salvato: {paziente.name} {paziente.surname}, {paziente.email}")  # DEBUG
 
             return JsonResponse({
                 "success": True,
@@ -816,11 +809,11 @@ class CreaPazienteView(LoginRequiredMixin,View):
             })
 
         except json.JSONDecodeError:
-            print("❌ Errore JSON ricevuto nel backend!")  # DEBUG
+            #print("❌ Errore JSON ricevuto nel backend!")  # DEBUG
             return JsonResponse({"success": False, "error": "Formato JSON non valido."}, status=400)
 
         except Exception as e:
-            print(f"❌ Errore nel backend: {e}")  # DEBUG
+            #print(f"❌ Errore nel backend: {e}")  # DEBUG
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 
@@ -1124,7 +1117,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
 
         return render(request, "includes/cartellaPaziente.html", context)
 
-
 ## VIEW STORICO
 class StoricoView(LoginRequiredMixin,View):
     def get(self, request, id):
@@ -1201,7 +1193,6 @@ class DiagnosiView(LoginRequiredMixin,View):
         }
 
         return render(request, 'cartella_paziente/sezioni_storico/diagnosi.html', context)
-
 
 ## SEZIONE MUSCOLO
 class ValutazioneMSView(LoginRequiredMixin,View):
@@ -1291,7 +1282,6 @@ class ValutazioneMSView(LoginRequiredMixin,View):
             'successo': True
         }
         return render(request, "cartella_paziente/indici_di_performance/valutazioneMS.html", context)
-
 
 ## SEZIONE DATI BASE
 class DatiBaseView(LoginRequiredMixin,View):
@@ -2021,7 +2011,6 @@ class TestEtaVitaleView(LoginRequiredMixin,View):
 
             return render(request, "cartella_paziente/capacita_vitale/testVitale.html", context)
 
-
 class RefertoQuizView(LoginRequiredMixin,View):
     def get(self, request, persona_id, referto_id):
 
@@ -2194,6 +2183,8 @@ class StampaRefertoView(LoginRequiredMixin,View):
 
         return render(request, "cartella_paziente/capacita_vitale/EtaVitale.html", context)
 
+
+## SEZIONE ETA' BIOLOGICA
 def safe_float(data, key, default=0.0):
     try:
         return float(data.get(key, default))
@@ -3166,6 +3157,61 @@ class CalcolatoreRender(LoginRequiredMixin,View):
             }
             return render(request, "cartella_paziente/eta_biologica/calcolatore.html", context)
 
+class ElencoRefertiView(LoginRequiredMixin,View):
+
+    def get(self, request, id):
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        
+        #DATI REFERTI ETA' BIOLOGICA
+        referti_recenti = persona.referti.all().order_by('-data_referto')
+        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+        
+        dati_estesi_ultimo_referto = None
+
+        context = {
+            'persona': persona,
+            'referti_recenti': referti_recenti,
+            'dati_estesi': dati_estesi,
+            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
+            'dottore' : dottore,
+        }
+
+        return render(request, "cartella_paziente/eta_biologica/elencoReferti.html", context)
+   
+class PersonaDetailView(LoginRequiredMixin,View):
+    def get(self, request, persona_id):
+
+        # RECUPERO DOTTORE
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+
+        # RECUPERO PAZIENTE
+        persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
+
+        # Recupera l'ID del referto dalla query string
+        referto_id = request.GET.get('referto_id')
+
+        # Recupera il referto specifico se l'ID è passato, altrimenti l'ultimo referto
+        if referto_id:
+            referto = get_object_or_404(ArchivioReferti, id=referto_id, paziente=persona)
+        else:
+            referto = ArchivioReferti.objects.filter(paziente=persona).order_by("-data_ora_creazione").first()
+
+        # Ottieni i dati estesi associati al referto selezionato
+        dati_estesi = DatiEstesiReferti.objects.filter(referto=referto).first() if referto else None
+
+        # Preparazione del contesto per il template
+        context = {
+            'persona': persona,
+            'referto': referto,
+            'datiEstesi': dati_estesi,
+            'dottore': dottore,
+        }
+        return render(request, "cartella_paziente/eta_biologica/Referto.html", context)
+
+
 
 ## SEZIONE RESILIENZA
 class ResilienzaView(LoginRequiredMixin,View):
@@ -3341,57 +3387,6 @@ class RefertoView(LoginRequiredMixin,View):
         referto = ArchivioReferti.objects.get(id=referto_id)
         return render(request, 'cartella_paziente/eta_biologica//Referto.html', {'data_referto': referto.data_referto})
 
-class ElencoRefertiView(LoginRequiredMixin,View):
-    def get(self, request, id):
-        
-        
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        persona = get_object_or_404(TabellaPazienti, id=id)
-        
-        #DATI REFERTI ETA' BIOLOGICA
-        referti_recenti = persona.referti.all().order_by('-data_referto')
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
-        
-        dati_estesi_ultimo_referto = None
 
-        context = {
-            'persona': persona,
-            'referti_recenti': referti_recenti,
-            'dati_estesi': dati_estesi,
-            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
-            'dottore' : dottore,
-        }
 
-        return render(request, "cartella_paziente/eta_biologica/elencoReferti.html", context)
-    
-class PersonaDetailView(LoginRequiredMixin,View):
-    def get(self, request, persona_id):
-
-        # RECUPERO DOTTORE
-        
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-
-        # RECUPERO PAZIENTE
-        persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
-
-        # Recupera l'ID del referto dalla query string
-        referto_id = request.GET.get('referto_id')
-
-        # Recupera il referto specifico se l'ID è passato, altrimenti l'ultimo referto
-        if referto_id:
-            referto = get_object_or_404(ArchivioReferti, id=referto_id, paziente=persona)
-        else:
-            referto = ArchivioReferti.objects.filter(paziente=persona).order_by("-data_ora_creazione").first()
-
-        # Ottieni i dati estesi associati al referto selezionato
-        dati_estesi = DatiEstesiReferti.objects.filter(referto=referto).first() if referto else None
-
-        # Preparazione del contesto per il template
-        context = {
-            'persona': persona,
-            'referto': referto,
-            'datiEstesi': dati_estesi,
-            'dottore': dottore,
-        }
-        return render(request, "cartella_paziente/eta_biologica/Referto.html", context)
 

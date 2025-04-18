@@ -647,8 +647,7 @@
                     <a href="{% url 'elenco_referti' persona.id %}" style="top: 10rem;" id="adjust">Vai ai referti</a>
                     <a href="{% url 'Calcolatore' persona.id %}?parametro={{ persona.codice_fiscale|urlencode }}">
                         Calcola l'età biologica
-                    </a>
-                    
+                    </a>          
                 </div>
             </div>
         </div>
@@ -688,7 +687,8 @@
             </div>
         </div>
         
-        
+
+        <!-- IMPORT CDN JS -->
         <script src="https://cdn.jsdelivr.net/npm/docx@7.7.0/build/index.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.0.2/docx.min.js"></script>
 
