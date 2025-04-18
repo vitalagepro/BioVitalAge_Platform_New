@@ -383,14 +383,7 @@ class HomePageRender(LoginRequiredMixin,View):
 
 
 
-
-
-
-
-
-
 ## VIEW PER LA SEZIONE PROFILO
-
 def save(self, *args, **kwargs):
     if self.password and not self.password.startswith('pbkdf2_sha256$'):
         self.password = make_password(self.password)
@@ -493,7 +486,7 @@ class StatisticheView(LoginRequiredMixin,View):
             emails = []
 
         context["emails"] = emails  # ← questo è il campo letto nel template da: <script id="emails-data">
-        return render(request, "cartella_paziente/home_page/statistiche.html", context)
+        return render(request, "home_page/statistiche.html", context)
 
 ## VIEW PER LE NOTIFICHE
 class AppointmentNotificationsView(LoginRequiredMixin,View):
@@ -584,6 +577,7 @@ class AcceptDisclaimerView(LoginRequiredMixin,View):
         }
 
         return render(request, "cartella_paziente/home_page/statistiche.html", context)
+
 
 ## SEZIONE APPUNTAMENTI
 ### VIEWS APPUNTAMENTI
