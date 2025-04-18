@@ -145,7 +145,10 @@ tbody tr:hover {
   background-color: #fdecea;
   color: #d32f2f;
 }
-
+.btn:disabled{
+    background-color: var(--contrast-color) !important;
+    color: white !important;
+}
 .pagination_tabella{
     background-color: white;
     border-radius: 0px 0px 4px 4px;
