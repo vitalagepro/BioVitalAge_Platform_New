@@ -656,4 +656,23 @@ class ValutazioneMS(models.Model):
     def __str__(self):
         return f"Referto - {self.paziente.name} {self.paziente.surname}"
 
+## TERAPIE
 
+## TERAPIA DOMICILIARE
+class TerapiaDomiciliare(models.Model):
+    paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="terapie_domiciliari")
+    farmaco = models.CharField(max_length=255)
+    assunzioni = models.IntegerField()
+    orari = models.JSONField()  # salva array di orari es. ["08:00", "14:00"]
+    data_inizio = models.DateField()
+    data_fine = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+## TERAPIA IN STUDIO
+class TerapiaInStudio(models.Model):
+    paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="terapie_studio")
+    tipologia = models.CharField(max_length=100)
+    descrizione = models.TextField()
+    data_inizio = models.DateField()
+    data_fine = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
