@@ -399,48 +399,40 @@ def save(self, *args, **kwargs):
 
 class ProfileView(LoginRequiredMixin, View):
 
+    login_url = 'loginPage'
+    redirect_field_name = 'next'
+
     def get(self, request, *args, **kwargs):
-
-        context_variable_special = ''
-
-        # prendo il profilo del dottore
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-
-    
         is_gmail_connected = UserSocialAuth.objects.filter(
             user__email=dottore.email, provider='google-oauth2'
         ).exists()
 
-        context = {
+        return render(request, 'includes/profile.html', {
             'dottore': dottore,
-            'email_dottore': dottore.email,
-            'nome_dottore': dottore.nome,
-            # Meglio non esporre la password hashata nel form
             'gmail_linked': is_gmail_connected,
-        }
-
-        return render(request, 'includes/profile.html', context)
-    
+        })
 
     def post(self, request, *args, **kwargs):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         action = request.POST.get("action")
 
         if action == "update_profile":
-            nome = request.POST.get('name')
-            email = request.POST.get('email')
+            nome     = request.POST.get('name')
+            email    = request.POST.get('email')
             password = request.POST.get('password')
 
-            # 1) aggiorno il mio modello
+            # 1) aggiorno il modello UtentiRegistratiCredenziali
             if nome:
                 dottore.nome = nome
             if email:
                 dottore.email = email
             if password:
-                dottore.password = password
+                # salvo hashata nel tuo modello
+                dottore.password = make_password(password)
             dottore.save()
 
-            # 2) sincronizzo il Django User
+            # 2) aggiorno il Django User
             user = request.user
             if email:
                 user.email = email
@@ -449,11 +441,11 @@ class ProfileView(LoginRequiredMixin, View):
                 user.set_password(password)
             user.save()
 
-            # 3) aggiorno la sessione per non sloggare
+            # 3) mantengo la sessione attiva se cambio password
             if password:
                 update_session_auth_hash(request, user)
 
-            messages.success(request, "Profilo aggiornato con successo.")
+            messages.success(request, "Profilo e password aggiornati con successo.")
             return redirect("profile")
 
         elif action == "update_gmail":
