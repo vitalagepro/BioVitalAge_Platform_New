@@ -64,35 +64,46 @@ export function confirmDeleteAction({
   let existingAlert = document.getElementById("delete-alert");
   if (existingAlert) existingAlert.remove();
 
-  let confirmAlert = document.createElement("div");
+  const confirmAlert = document.createElement("div");
   confirmAlert.id = "delete-alert";
-  confirmAlert.classList.add("alert", "alert-danger", "fade", "show");
   confirmAlert.style.position = "fixed";
   confirmAlert.style.top = "20px";
   confirmAlert.style.left = "50%";
   confirmAlert.style.transform = "translateX(-50%)";
   confirmAlert.style.zIndex = "1050";
-  confirmAlert.style.width = "auto";
-  confirmAlert.style.maxWidth = "425px";
+  confirmAlert.style.maxWidth = "430px";
+  confirmAlert.style.backgroundColor = "#fff";
+  confirmAlert.style.borderRadius = "12px";
+  confirmAlert.style.padding = "15px 20px";
+  confirmAlert.style.boxShadow = "0 4px 14px rgba(0, 0, 0, 0.15)";
   confirmAlert.style.display = "flex";
-  confirmAlert.style.justifyContent = "space-between";
-  confirmAlert.style.alignItems = "center";
-  confirmAlert.style.padding = "10px 15px";
-  confirmAlert.style.borderRadius = "6px";
-  confirmAlert.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
+  confirmAlert.style.flexDirection = "column";
+  confirmAlert.style.gap = "10px";
   confirmAlert.style.opacity = "0";
 
   confirmAlert.innerHTML = `
-    <span>${confirmMessage}</span>
-    <div class="d-flex gap-2">
-      <button type="button" class="btn btn-sm btn-danger" id="confirmDelete">Elimina</button>
-      <button type="button" class="btn btn-sm btn-secondary" id="cancelDelete">Annulla</button>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 20px;">⚠️</span>
+        <span style="color: #ef4444; font-weight: 600; font-size: 18px;">
+          Conferma eliminazione
+        </span>
+      </div>
+      <button style="background: none; border: none; font-size: 16px; cursor: pointer;" onclick="this.closest('#delete-alert').remove()">✖</button>
+    </div>
+    <div style="color: #333;">${confirmMessage}</div>
+    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+      <button id="cancelDelete" style="background-color: #e5e7eb; color: #111827; padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer;">Annulla</button>
+      <button id="confirmDelete" style="background-color: #dc2626; color: white; padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer;">Elimina</button>
     </div>
   `;
 
   document.body.appendChild(confirmAlert);
+
+  // Entrata animata
   gsap.to(confirmAlert, { opacity: 1, duration: 0.3, ease: "power2.out" });
 
+  // Listener per "Elimina"
   document.getElementById("confirmDelete").addEventListener("click", () => {
     deleteAction({
       url,
@@ -103,6 +114,7 @@ export function confirmDeleteAction({
     });
   });
 
+  // Listener per "Annulla"
   document.getElementById("cancelDelete").addEventListener("click", () => {
     gsap.to(confirmAlert, {
       opacity: 0,
@@ -112,12 +124,15 @@ export function confirmDeleteAction({
     });
   });
 
+  // Timeout auto-rimozione dopo 10s
   setTimeout(() => {
-    gsap.to(confirmAlert, {
-      opacity: 0,
-      duration: 0.3,
-      ease: "power2.in",
-      onComplete: () => confirmAlert.remove(),
-    });
+    if (document.body.contains(confirmAlert)) {
+      gsap.to(confirmAlert, {
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.in",
+        onComplete: () => confirmAlert.remove(),
+      });
+    }
   }, 10000);
 }
