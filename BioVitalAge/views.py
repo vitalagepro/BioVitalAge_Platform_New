@@ -28,6 +28,10 @@ from django.db.models import OuterRef, Subquery, Count, Q, Avg, Min, Max # type:
 from django.db.models.functions import ExtractMonth # type: ignore
 from django.contrib.auth.hashers import check_password # type: ignore
 from django.db.models import OuterRef # type: ignore
+from django.contrib.auth import authenticate, login, logout # type: ignore
+from django.contrib.auth.mixins import LoginRequiredMixin # type: ignore
+from django.contrib.auth import update_session_auth_hash # type: ignore
+
 
 # --- IMPORTS PERSONALI (APP) ---
 from .utils import *
@@ -43,53 +47,66 @@ logger = logging.getLogger(__name__)
 # -- SEZIONE LOGIN / HOME PAGE VIEW --
 ## VIEW LOGIN RENDER
 class LoginRenderingPage(View):
+
     def get(self, request):
         response = render(request, 'includes/login.html')
         response.delete_cookie('disclaimer_accepted', path='/')
         return response
 
+    def post(self, request):
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(request, username=email, password=password) 
+
+        if user:
+            login(request, user)
+            return redirect('HomePage')
+        
+        return render(request, 'includes/login.html', {
+            'error': 'Email o password non valide'
+        })
+
+
 ## VIEW LOGOUT
 class LogOutRender(View):
+
     def get(self, request):
+        logout(request)
+        return redirect('login')
 
-        if 'dottore_id' in request.session:
-            del request.session['dottore_id']
 
-            request.session.flush()
-
-        return render(request, 'includes/login.html')
 
 ## VIEW PER ACCETTARE IL DISCLAIMER
-class AcceptDisclaimerView(View):
+class AcceptDisclaimerView(LoginRequiredMixin, View):
+    login_url = 'login'
+
     def post(self, request):
-        
-        response = JsonResponse({"success": True})
-        
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        dottore.cookie = "SI"
+        dottore.save(update_fields=['cookie'])
+        return JsonResponse({"success": True})
 
-        if dottore_id:  
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-            
-            dottore.cookie = "SI"
-            dottore.save() 
 
-        return response
+
 
 ## VIEW PER LOGIN FORM - HOME PAGE RENDER
-class HomePageRender(View):
+class HomePageRender(LoginRequiredMixin,View):
+
+    login_url = 'loginPage'
 
     def get(self, request):
+
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persone = TabellaPazienti.objects.all().order_by('-id')[:5]
-        today = timezone.now().date()  # Ottieni la data corrente (senza l'ora)
+        today = timezone.now().date()
         total_biological_age_count = DatiEstesiReferti.objects.aggregate(total=Count('biological_age'))['total']
-        total_pazienti = TabellaPazienti.objects.count()  # Conta tutti i pazienti
+        total_pazienti = TabellaPazienti.objects.count() 
+
         # Calcola il minimo e il massimo dell'età cronologica
         min_age = TabellaPazienti.objects.aggregate(min_age=Min('chronological_age'))['min_age']
         max_age = TabellaPazienti.objects.aggregate(max_age=Max('chronological_age'))['max_age']
         avg_age = TabellaPazienti.objects.aggregate(avg_age=Avg('chronological_age'))['avg_age']
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
         # Ottieni solo gli appuntamenti futuri
         appuntamenti = Appointment.objects.filter(dottore=dottore, data__gte=today).order_by('data')[:4]
         # Calcola il totale "biological_age" solo per i referti associati ai pazienti di questo dottore
@@ -128,12 +145,13 @@ class HomePageRender(View):
         else:
             percentage_increase = 100 if current_week_patients > 0 else 0
 
-                # --- Calcolo per il report "Totale Prescrizioni" ---
+         # --- Calcolo per il report "Totale Prescrizioni" ---
+
         # Utilizza il campo data_referto per filtrare i referti
         current_week_referti = ArchivioReferti.objects.filter(data_referto__gte=start_of_week).count()
         last_week_referti = ArchivioReferti.objects.filter(data_referto__gte=start_of_last_week,
                                                            data_referto__lte=end_of_last_week).count()
-
+        
         difference_referti = current_week_referti - last_week_referti
         abs_difference_referti = abs(difference_referti)
 
@@ -205,6 +223,9 @@ class HomePageRender(View):
         return render(request, "home_page/homePage.html", context)
 
 
+
+
+    # DA SISTEMARE
     def post(self, request):
         
         #RECUPERA CREDENZIALI
@@ -221,8 +242,7 @@ class HomePageRender(View):
 
         # 2. Verifica la password usando il controllo dell'hash
         if check_password(passwordInput, dottore.password):
-            request.session['dottore_id'] = dottore.id
-
+            
             # 3. Recupera e calcola le informazioni per la home page
 
             # Ottieni i 5 pazienti più recenti
@@ -362,6 +382,14 @@ class HomePageRender(View):
             # Se la password non è corretta, restituisci un messaggio d'errore
             return render(request, 'includes/login.html', {'error': 'Password errata'})
 
+
+
+
+
+
+
+
+
 ## VIEW PER LA SEZIONE PROFILO
 
 def save(self, *args, **kwargs):
@@ -369,10 +397,16 @@ def save(self, *args, **kwargs):
         self.password = make_password(self.password)
     super().save(*args, **kwargs)
 
-class ProfileView(View):
+class ProfileView(LoginRequiredMixin, View):
+
     def get(self, request, *args, **kwargs):
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+
+        context_variable_special = ''
+
+        # prendo il profilo del dottore
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+
+    
         is_gmail_connected = UserSocialAuth.objects.filter(
             user__email=dottore.email, provider='google-oauth2'
         ).exists()
@@ -381,17 +415,15 @@ class ProfileView(View):
             'dottore': dottore,
             'email_dottore': dottore.email,
             'nome_dottore': dottore.nome,
-            # ATTENZIONE: mostrare la password (hashata) può essere una cattiva idea in produzione!
-            # Meglio non mostrarla o mettere un placeholder. 
-            'password_dottore': dottore.password,
-            'gmail_linked': is_gmail_connected
+            # Meglio non esporre la password hashata nel form
+            'gmail_linked': is_gmail_connected,
         }
+
         return render(request, 'includes/profile.html', context)
+    
 
     def post(self, request, *args, **kwargs):
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
-
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         action = request.POST.get("action")
 
         if action == "update_profile":
@@ -399,14 +431,27 @@ class ProfileView(View):
             email = request.POST.get('email')
             password = request.POST.get('password')
 
+            # 1) aggiorno il mio modello
             if nome:
                 dottore.nome = nome
             if email:
                 dottore.email = email
             if password:
-                # Impostando dottore.password, il suo metodo save() penserà poi ad hashare
-                dottore.password = password  
+                dottore.password = password
             dottore.save()
+
+            # 2) sincronizzo il Django User
+            user = request.user
+            if email:
+                user.email = email
+                user.username = email
+            if password:
+                user.set_password(password)
+            user.save()
+
+            # 3) aggiorno la sessione per non sloggare
+            if password:
+                update_session_auth_hash(request, user)
 
             messages.success(request, "Profilo aggiornato con successo.")
             return redirect("profile")
@@ -414,7 +459,7 @@ class ProfileView(View):
         elif action == "update_gmail":
             check_value = request.POST.get('check') == "SI"
             dottore.cookie = "SI" if check_value else ""
-            dottore.save()
+            dottore.save(update_fields=['cookie'])
 
             if not check_value:
                 try:
@@ -426,18 +471,23 @@ class ProfileView(View):
                 except UserSocialAuth.DoesNotExist:
                     messages.info(request, "Nessun account Gmail collegato.")
             else:
-                # Se l'utente decide di "collegare" Gmail,
-                # lo reindirizzi al flusso di autenticazione di Google
+                # rimando al flusso di Google OAuth
                 return redirect("/auth/login/google-oauth2/?prompt=consent&access_type=offline")
 
             return redirect("profile")
 
+        # se niente action valida
+        messages.error(request, "Azione non riconosciuta.")
+        return redirect("profile")
+
+
+
 ## VIEW PER LA SEZIONE STATISTICHE
-class StatisticheView(View):
+class StatisticheView(LoginRequiredMixin,View):
     def get(self, request):
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         context = {
             'dottore' : dottore,
@@ -455,14 +505,14 @@ class StatisticheView(View):
         return render(request, "cartella_paziente/home_page/statistiche.html", context)
 
 ## VIEW PER LE NOTIFICHE
-class AppointmentNotificationsView(View):
+class AppointmentNotificationsView(LoginRequiredMixin,View):
     def get(self, request, *args, **kwargs):
         try:
             # Recupera l'id del dottore dalla sessione
-            dottore_id = request.session.get('dottore_id')
+            
             if not dottore_id:
                 return JsonResponse({"success": False, "error": "Utente non autenticato"}, status=403)
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
             
             # Usa il fuso orario locale (modifica se usi timezone aware)
             now_local = timezone.localtime(timezone.now())
@@ -490,7 +540,7 @@ class AppointmentNotificationsView(View):
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 ## VIEW PER LE NOTIFICHE MEDICAL NEWS
-class MedicalNewsNotificationsView(View):
+class MedicalNewsNotificationsView(LoginRequiredMixin,View):
     def get(self, request, *args, **kwargs):
         try:
             # Controlla se i dati sono già in cache
@@ -530,13 +580,13 @@ class MedicalNewsNotificationsView(View):
             return JsonResponse({"success": False, "error": str(e)})
 
 ## VIEW PER ACCETTARE IL DISCLAIMER
-class AcceptDisclaimerView(View):
+class AcceptDisclaimerView(LoginRequiredMixin,View):
     def post(self, request):
         
         response = JsonResponse({"success": True})
         
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         context = {
             'dottore' : dottore
@@ -546,9 +596,9 @@ class AcceptDisclaimerView(View):
 
 ## SEZIONE APPUNTAMENTI
 ### VIEWS APPUNTAMENTI
-class AppuntamentiView(View):
+class AppuntamentiView(LoginRequiredMixin,View):
     def get(self, request):
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persone = TabellaPazienti.objects.all().order_by('-id')
         appuntamenti = Appointment.objects.all().order_by('-id')
 
@@ -570,12 +620,12 @@ class AppuntamentiView(View):
         return render(request, 'includes/Appuntamenti.html', context)
     
 ### VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
-class AppuntamentiSalvaView(View):
+class AppuntamentiSalvaView(LoginRequiredMixin,View):
     def post(self, request):
         if request.method == "POST":
             try:
                 body_raw = request.body.decode('utf-8')
-                dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+                dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
                 data = json.loads(body_raw)
 
                 # Recuperiamo i dati, facendo attenzione ai valori mancanti
@@ -615,7 +665,7 @@ class AppuntamentiSalvaView(View):
         return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
 
 ### VIEWS SINGLE APPOINTMENT
-class GetSingleAppointmentView(View):
+class GetSingleAppointmentView(LoginRequiredMixin,View):
     def get(self, request, appointment_id):
         """Recupera i dettagli di un singolo appuntamento"""
         try:
@@ -643,7 +693,7 @@ class GetSingleAppointmentView(View):
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 ### VIEWS GET ALL APPOINTMENTS
-class AppuntamentiGetView(View):
+class AppuntamentiGetView(LoginRequiredMixin,View):
     def get(self, request):
         """Recupera gli appuntamenti futuri o di oggi"""
         
@@ -678,7 +728,7 @@ class AppuntamentiGetView(View):
         return JsonResponse({"success": True, "deleted": deleted_count, "appointments": appointments_by_date})
 
 ### VIEWS UPDATE APPOINTMENT
-class UpdateAppointmentView(View):
+class UpdateAppointmentView(LoginRequiredMixin,View):
     def patch(self, request, appointment_id):
         try:
             data = json.loads(request.body)
@@ -710,7 +760,7 @@ class UpdateAppointmentView(View):
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 ### VIEWS APPROVE APPOINTMENT
-class ApproveAppointmentView(View):
+class ApproveAppointmentView(LoginRequiredMixin,View):
     def post(self, request, appointment_id):
         appointment = get_object_or_404(Appointment, id=appointment_id)
         appointment.confermato = True  # Segna l'appuntamento come confermato
@@ -730,7 +780,7 @@ class DeleteAppointmentView(View):
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 ### VIEW SEARCH APPOINTMENTS
-class SearchAppointmentsView(View):
+class SearchAppointmentsView(LoginRequiredMixin,View):
     def get(self, request):
         query = request.GET.get("q", "").lower().strip()
         if query:
@@ -743,7 +793,7 @@ class SearchAppointmentsView(View):
         return JsonResponse({"success": False, "error": "Nessuna query fornita"})
     
 ### VIEW CREATE PATIENT FROM SECOND MODAL
-class CreaPazienteView(View):
+class CreaPazienteView(LoginRequiredMixin,View):
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)
@@ -753,7 +803,7 @@ class CreaPazienteView(View):
             surname = data.get("surname", "").strip()
             phone = data.get("phone", "").strip()
             email = data.get("email", "").strip()  # Assumendo che tu abbia il campo email nel modello
-            dottore_id = request.session.get('dottore_id')
+            
 
             if not name or not surname:
                 print("⚠ Errore: Nome e cognome obbligatori")  # DEBUG
@@ -790,11 +840,11 @@ class CreaPazienteView(View):
 
 # -- SEZIONE RICERCA PAZIENTE --
 ## VIEW PER SEZIONE RICERCA PAZIENTI
-class RisultatiRender(View):
+class RisultatiRender(LoginRequiredMixin,View):
     def get(self, request):
           
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persone = TabellaPazienti.objects.filter(dottore=dottore)
  
         # Ottieni il referto più recente per ogni paziente
@@ -811,12 +861,12 @@ class RisultatiRender(View):
 
         return render(request, "includes/risultati.html", context)
 
-class InserisciPazienteView(View):
+class InserisciPazienteView(LoginRequiredMixin,View):
 
     def get(self, request):
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         context = {
             'dottore' : dottore
@@ -828,8 +878,8 @@ class InserisciPazienteView(View):
             success = None
             errore = None
             codice_fiscale = request.POST.get('codice_fiscale')
-            dottore_id = request.session.get('dottore_id')
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+            
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
             context = {'dottore': dottore}
 
             def parse_date(date_str):
@@ -929,12 +979,12 @@ class InserisciPazienteView(View):
 
 # -- SEZIONE CARTELLA PAZIENTE --
 ## VIEW CARTELLA PAZIENTE
-class CartellaPazienteView(View):
+class CartellaPazienteView(LoginRequiredMixin,View):
 
     def get(self, request, id):
         
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         # DATI PER GLI INDICATORI DI PERFORMANCE
@@ -1020,8 +1070,8 @@ class CartellaPazienteView(View):
 
 
         # ---- DATI NECESSARI AL RENDERING DELLA CARTELLA ----
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         persona.codice_fiscale = request.POST.get('codice_fiscale')
@@ -1090,11 +1140,11 @@ class CartellaPazienteView(View):
 
 
 ## VIEW STORICO
-class StoricoView(View):
+class StoricoView(LoginRequiredMixin,View):
     def get(self, request, id):
         # Recupero Dottore e Paziente
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
         
         today = timezone.now().date()  # Ottieni la data corrente senza l'orario
@@ -1236,6 +1286,84 @@ class DiagnosiView(View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
         persona = get_object_or_404(TabellaPazienti, id=id)
 
+        # Terape in studio (se vuoi mostrarle anche in GET)
+        terapie_studio = TerapiaInStudio.objects.filter(paziente=persona).order_by('-created_at')
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+            'terapie_studio': terapie_studio,  # opzionale se la tabella è JS-based
+        }
+
+        return render(request, 'cartella_paziente/sezioni_storico/terapie.html', context)
+
+    def post(self, request, id):
+        form_type = request.POST.get("form_type")
+
+        # Salvataggio terapia in studio
+        if form_type == "studio":
+            persona = get_object_or_404(TabellaPazienti, id=id)
+            tipologia = request.POST.get("tipologia")
+            descrizione = request.POST.get("descrizione")
+            data_inizio = parse_date(request.POST.get("data_inizio"))
+            data_fine = parse_date(request.POST.get("data_fine")) or None
+
+            terapia = TerapiaInStudio.objects.create(
+                paziente=persona,
+                tipologia=tipologia,
+                descrizione=descrizione,
+                data_inizio=data_inizio,
+                data_fine=data_fine,
+            )
+
+            return JsonResponse({
+                'success': True,
+                'terapia': {
+                    'id': terapia.id,
+                    'descrizione': terapia.descrizione,
+                    'data_inizio': terapia.data_inizio.strftime('%d/%m/%Y'),
+                    'data_fine': terapia.data_fine.strftime('%d/%m/%Y') if terapia.data_fine else None
+                }
+            })
+
+        return JsonResponse({'success': False})
+
+# ELIMINA TERAPIA FUNZIONE
+class EliminaTerapiaStudioView(View):
+    def post(self, request, id):
+        terapia = get_object_or_404(TerapiaInStudio, id=id)
+        terapia.delete()
+        return JsonResponse({'success': True})
+
+# MODIFICA TERAPIA
+class ModificaTerapiaStudioView(View):
+    def post(self, request, id):
+        terapia = get_object_or_404(TerapiaInStudio, id=id)
+
+        terapia.tipologia = request.POST.get('tipologia')
+        terapia.descrizione = request.POST.get('descrizione')
+        terapia.data_inizio = parse_date(request.POST.get('data_inizio'))
+        terapia.data_fine = parse_date(request.POST.get('data_fine')) or None
+        terapia.save()
+
+        return JsonResponse({
+            'success': True,
+            'terapia': {
+                'id': terapia.id,
+                'descrizione': terapia.descrizione,
+                'data_inizio': terapia.data_inizio.strftime('%d/%m/%Y'),
+                'data_fine': terapia.data_fine.strftime('%d/%m/%Y') if terapia.data_fine else None
+            }
+        })
+
+## VIEW DIAGNOSI
+class DiagnosiView(LoginRequiredMixin,View):
+    def get(self, request, id):
+
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
         context = {
             'persona': persona, 
             'dottore' : dottore,   
@@ -1245,12 +1373,12 @@ class DiagnosiView(View):
 
 
 ## SEZIONE MUSCOLO
-class ValutazioneMSView(View):
+class ValutazioneMSView(LoginRequiredMixin,View):
 
     def get(self, request, persona_id):
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
 
         context = {
@@ -1261,8 +1389,8 @@ class ValutazioneMSView(View):
         return render(request, "cartella_paziente/indici_di_performance/valutazioneMS.html", context)
 
     def post(self, request, persona_id):     
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
 
         try:
@@ -1335,13 +1463,13 @@ class ValutazioneMSView(View):
 
 
 ## SEZIONE DATI BASE
-class DatiBaseView(View):
+class DatiBaseView(LoginRequiredMixin,View):
 
     def get(self, request, id):
         persona = get_object_or_404(TabellaPazienti, id=id)
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         context = {
             'persona': persona,
@@ -1354,8 +1482,8 @@ class DatiBaseView(View):
         print(request.POST)
 
         persona = get_object_or_404(TabellaPazienti, id=id)
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         try:
             
@@ -1446,14 +1574,14 @@ class DatiBaseView(View):
 
 
 ## SEZIONE ETA' METABOLICA
-class ComposizioneView(View):
+class ComposizioneView(LoginRequiredMixin,View):
 
     def get(self, request, id):
 
         persona = get_object_or_404(TabellaPazienti, id=id)
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         ultimo_referto = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto').first()
 
@@ -1473,8 +1601,8 @@ class ComposizioneView(View):
         punteggio = None
 
         persona = get_object_or_404(TabellaPazienti, id=id)
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         try:
             bmi_date = request.POST.get("bmi_detection_date")
@@ -1601,7 +1729,7 @@ class ComposizioneView(View):
 
         return render(request, "cartella_paziente/eta_metabolica/etaMetabolica.html", context)
 
-class ComposizioneChartView(View):
+class ComposizioneChartView(LoginRequiredMixin,View):
 
     def get(self, request, id):
         paziente = get_object_or_404(TabellaPazienti, id=id)
@@ -1795,12 +1923,12 @@ class ComposizioneChartView(View):
         }
         return render(request, 'cartella_paziente/eta_metabolica/grafici.html', context)
 
-class RefertiComposizioneView(View):
+class RefertiComposizioneView(LoginRequiredMixin,View):
     def get(self, request, id):
         persona = get_object_or_404(TabellaPazienti, id=id)
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         referti = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto')
         
@@ -1819,7 +1947,7 @@ class RefertiComposizioneView(View):
 
 
 ## SEZIONE CAPACITA' VITALE
-class EtaVitaleView(View):
+class EtaVitaleView(LoginRequiredMixin,View):
 
     def get(self, request, id):
 
@@ -1827,7 +1955,7 @@ class EtaVitaleView(View):
   
         referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
     
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         context = {
             'persona': persona,
@@ -1840,14 +1968,14 @@ class EtaVitaleView(View):
     def post(self):
         return
     
-class TestEtaVitaleView(View):
+class TestEtaVitaleView(LoginRequiredMixin,View):
 
     def get(self,request, id):
 
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         ultimo_referto = persona.referti.order_by('-data_referto').first()
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
 
         dati_estesi = None
@@ -1869,7 +1997,7 @@ class TestEtaVitaleView(View):
             persona = get_object_or_404(TabellaPazienti, id=id)
             data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
             referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
             Somma_MMSE = (
                 int(data.get('doc_1', 0)) +
@@ -2063,13 +2191,13 @@ class TestEtaVitaleView(View):
             return render(request, "cartella_paziente/capacita_vitale/testVitale.html", context)
 
 
-class RefertoQuizView(View):
+class RefertoQuizView(LoginRequiredMixin,View):
     def get(self, request, persona_id, referto_id):
 
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         referto = get_object_or_404(ArchivioRefertiTest, id=referto_id)
 
@@ -2135,14 +2263,14 @@ class RefertoQuizView(View):
 
         return render(request, "cartella_paziente/capacita_vitale/RefertoQuiz.html", context)
 
-class QuizEtaVitaleUpdateView(View):
+class QuizEtaVitaleUpdateView(LoginRequiredMixin,View):
 
     def get(self, request, id):
         
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         ultimo_referto = persona.referti.order_by('-data_referto').first()
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
 
         dati_estesi = None
@@ -2164,11 +2292,11 @@ class QuizEtaVitaleUpdateView(View):
     def post(self, request, id):
         return 
 
-class StampaRefertoView(View):
+class StampaRefertoView(LoginRequiredMixin,View):
     def get(self, request, persona_id, referto_id):
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
         referto = get_object_or_404(ArchivioRefertiTest, id=referto_id)
         referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
@@ -2241,12 +2369,12 @@ def safe_float(data, key, default=0.0):
     except (ValueError, TypeError):
         return default
 
-class CalcolatoreRender(View):
+class CalcolatoreRender(LoginRequiredMixin,View):
     
     def get(self, request, id):
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         persona = get_object_or_404(TabellaPazienti, id=id)
 
@@ -2275,11 +2403,11 @@ class CalcolatoreRender(View):
         
     def post(self, request, id):
         data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
-        dottore_id = request.session.get('dottore_id')
+        
 
         persona = get_object_or_404(TabellaPazienti, id=id)
 
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         try:
 
@@ -3209,11 +3337,11 @@ class CalcolatoreRender(View):
 
 
 ## SEZIONE RESILIENZA
-class ResilienzaView(View):
+class ResilienzaView(LoginRequiredMixin,View):
     def get(self, request, persona_id):
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
 
         context = {
@@ -3224,8 +3352,8 @@ class ResilienzaView(View):
         return render(request, "cartella_paziente/resilienza/Resilienza.html", context)
     
     def post(self, request, persona_id): 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
 
         # Estrai i dati dal form (con gestione errori base)
@@ -3258,12 +3386,12 @@ class ResilienzaView(View):
     
 
 ## SEZIONE PIANO TERAPEUTICO
-class PianoTerapeutico(View):
+class PianoTerapeutico(LoginRequiredMixin,View):
 
     def get(self, request, persona_id):
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
 
         #ELENCO PRESCRIZIONI ESAMI PAZIENTE
@@ -3282,14 +3410,14 @@ class PianoTerapeutico(View):
         return render(request, 'cartella_paziente/piano_terapeutico/piano_terapeutico.html', context)
 
 ### SEZIONE PRESCRIZIONI ESAMI
-class PrescrizioniView(View):
+class PrescrizioniView(LoginRequiredMixin,View):
 
     def get(self, request, persona_id):
 
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         context = {
             'persona': persona,
@@ -3315,7 +3443,7 @@ class PrescrizioniView(View):
 
 
 # TO DEFINE
-class UpdatePersonaContactView(View):
+class UpdatePersonaContactView(LoginRequiredMixin,View):
 
     def post(self, request, id):
         
@@ -3367,7 +3495,7 @@ class UpdatePersonaContactView(View):
   
         referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
 
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=request.session.get('dottore_id'))
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         context = {
             'persona': persona,
@@ -3377,16 +3505,16 @@ class UpdatePersonaContactView(View):
 
         return render(request, "cartella_paziente/capacita_vitale/EtaVitale.html", context)
     
-class RefertoView(View):
+class RefertoView(LoginRequiredMixin,View):
     def get(self, request, referto_id):
         referto = ArchivioReferti.objects.get(id=referto_id)
         return render(request, 'cartella_paziente/eta_biologica//Referto.html', {'data_referto': referto.data_referto})
 
-class ElencoRefertiView(View):
+class ElencoRefertiView(LoginRequiredMixin,View):
     def get(self, request, id):
         
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
         
         #DATI REFERTI ETA' BIOLOGICA
@@ -3405,12 +3533,12 @@ class ElencoRefertiView(View):
 
         return render(request, "cartella_paziente/eta_biologica/elencoReferti.html", context)
     
-class PersonaDetailView(View):
+class PersonaDetailView(LoginRequiredMixin,View):
     def get(self, request, persona_id):
 
         # RECUPERO DOTTORE
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         # RECUPERO PAZIENTE
         persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
