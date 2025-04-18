@@ -1,4 +1,4 @@
-export default function showAlert(type, message, extraMessage = "") {
+export default function showAlert(type, message, extraMessage = "", borderColor) {
   // Rimuove eventuale alert esistente
   let existingAlert = document.getElementById("global-alert");
   if (existingAlert) existingAlert.remove();
@@ -11,7 +11,7 @@ export default function showAlert(type, message, extraMessage = "") {
   alertDiv.style.left = "50%";
   alertDiv.style.transform = "translateX(-50%)";
   alertDiv.style.zIndex = "1050";
-  alertDiv.style.maxWidth = "420px";
+  alertDiv.style.maxWidth = "425px";
   alertDiv.style.backgroundColor = "#fff";
   alertDiv.style.borderRadius = "12px";
   alertDiv.style.padding = "15px 20px";
@@ -20,6 +20,7 @@ export default function showAlert(type, message, extraMessage = "") {
   alertDiv.style.flexDirection = "column";
   alertDiv.style.gap = "5px";
   alertDiv.style.opacity = "0";
+  alertDiv.style.borderBottom = "4px solid " + borderColor;
 
   // Colori e icone
   const icon = type === "success" ? "✅" : "❌";

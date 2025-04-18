@@ -60,6 +60,7 @@ export function confirmDeleteAction({
   successMessage,
   errorMessage,
   confirmMessage,
+  borderColor
 }) {
   let existingAlert = document.getElementById("delete-alert");
   if (existingAlert) existingAlert.remove();
@@ -80,6 +81,7 @@ export function confirmDeleteAction({
   confirmAlert.style.flexDirection = "column";
   confirmAlert.style.gap = "10px";
   confirmAlert.style.opacity = "0";
+  confirmAlert.style.borderBottom = "4px solid " + borderColor;
 
   confirmAlert.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center;">

@@ -361,21 +361,22 @@ COLORI GRAFICI
 
 /* SCROLLBAR */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 8px !important;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--dark2);
+  background: var(--dark2) !important;
+  border-radius: 0px !important;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--contrast-color);
-  border-radius: 7px;
-  transition: background-color 0.3s ease;
+  background: var(--contrast-color) !important;
+  border-radius: 7px !important;
+  transition: background-color 0.3s ease !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--contrast-color2);
+  background: var(--contrast-color2) !important;
 }
 
 

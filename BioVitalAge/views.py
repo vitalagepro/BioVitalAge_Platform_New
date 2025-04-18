@@ -501,6 +501,7 @@ class AppointmentNotificationsView(LoginRequiredMixin,View):
     def get(self, request, *args, **kwargs):
         try:
             # Recupera l'id del dottore dalla sessione
+            dottore_id = request.session.get('dottore_id')
             
             if not dottore_id:
                 return JsonResponse({"success": False, "error": "Utente non autenticato"}, status=403)
@@ -1237,6 +1238,39 @@ class TerapiaView(View):
                     'descrizione': terapia.descrizione,
                     'data_inizio': terapia.data_inizio.strftime('%d/%m/%Y'),
                     'data_fine': terapia.data_fine.strftime('%d/%m/%Y') if terapia.data_fine else None
+                }
+            })
+        elif form_type == "domiciliare":
+            persona = get_object_or_404(TabellaPazienti, id=id)
+            farmaco = request.POST.get("farmaco")
+            assunzioni = request.POST.get("assunzioni")
+            ora_assunzioni = request.POST.get("ora-assunzioni")
+            data_inizio = parse_date(request.POST.get("data_inizio"))
+            data_fine = parse_date(request.POST.get("data_fine")) or None
+
+            # Esegui un controllo opzionale sui dati (es. numero orari)
+            if not farmaco or not assunzioni or not ora_assunzioni:
+                return JsonResponse({'success': False, 'message': 'Campi obbligatori mancanti.'})
+
+            # Salvataggio della terapia domiciliare
+            terapia_domiciliare = TerapiaDomiciliare.objects.create(
+                paziente=persona,
+                farmaco=farmaco,
+                assunzioni_giornaliere=int(assunzioni),
+                orari_assunzioni=int(ora_assunzioni),
+                data_inizio=data_inizio,
+                data_fine=data_fine,
+            )
+
+            return JsonResponse({
+                'success': True,
+                'terapia': {
+                    'id': terapia_domiciliare.id,
+                    'farmaco': terapia_domiciliare.farmaco,
+                    'assunzioni': terapia_domiciliare.assunzioni_giornaliere,
+                    'orari': terapia_domiciliare.orari_assunzioni,
+                    'data_inizio': terapia_domiciliare.data_inizio.strftime('%d/%m/%Y'),
+                    'data_fine': terapia_domiciliare.data_fine.strftime('%d/%m/%Y') if terapia_domiciliare.data_fine else None,
                 }
             })
 

@@ -467,6 +467,7 @@ function generateWeeklyAppointments(appointmentsByDate) {
                 successMessage: "Appuntamento eliminato con successo!",
                 errorMessage: "Si è verificato un errore durante l'eliminazione.",
                 confirmMessage: "Sei sicuro di voler eliminare questo appuntamento?",
+                borderColor: "#EF4444",
               });
             });
           }
@@ -668,6 +669,7 @@ function generateDailyAppointments(appointmentsForDay) {
           successMessage: "Appuntamento eliminato con successo.",
           errorMessage: "Si è verificato un errore durante la cancellazione.",
           confirmMessage: "Sei sicuro di voler eliminare l'appuntamento?",
+          borderColor: "#EF4444",
         });
       });
     }
@@ -736,7 +738,7 @@ function addDragAndDropEvents(appointmentBox) {
 
       // ✅ **Blocca i giorni passati, compresa la domenica**
       if (newDate < today) {
-        showAlert("danger", "❌ Non puoi spostare un appuntamento in un giorno passato!");
+        showAlert("danger", "Non puoi spostare un appuntamento in un giorno passato!", "", "#ef4444");
         selectedAppointment.style.opacity = "1";
         return;
       }
@@ -956,7 +958,7 @@ function updateAppointmentDate(appointmentId, newDate, newTime) {
       if (data.success) {
         console.log("✅ Appuntamento aggiornato con successo!");
       } else {
-        showAlert("danger", `Errore nello spostamento dell'appuntamento: ${data.error}`);
+        showAlert("danger", `Errore nello spostamento dell'appuntamento: ${data.error}`, "", "#ef4444");
       }
     })
     .catch((error) => console.error("❌ Errore nella richiesta:", error));
@@ -1005,6 +1007,7 @@ function addAppointmentToCell(cella, tipologia, orario, appointmentId) {
       successMessage: "Appuntamento eliminato con successo!",
       errorMessage: "Errore nella cancellazione dell'appuntamento.",
       confirmMessage: "Sei sicuro di voler eliminare questo appuntamento?",
+      borderColor: "#EF4444",
     })
   });
 
@@ -1314,7 +1317,7 @@ function saveAppointmentChanges() {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          showAlert("success", "Appuntamento modificato con successo!");
+          showAlert("success", "Appuntamento aggiornato con successo!", "", "var(--positive-color)");
           // Cerca il box dell'appuntamento da aggiornare nel DOM
           const appointmentBox = document.querySelector(
             `.appointment-box[data-id="${appointmentId}"]`
@@ -1339,122 +1342,6 @@ function saveAppointmentChanges() {
       .catch((error) => console.error("Errore nella richiesta:", error));
   }
 }
-
-/*  -----------------------------------------------------------------------------------------------
-  TEMPORALY COMMENTED
---------------------------------------------------------------------------------------------------- */
-// // Funzione per eliminare un appuntamento
-// function deleteAppointment(appointmentId, appointmentBox, confirmAlert) {
-//   fetch(`/delete-appointment/${appointmentId}/`, {
-//     method: "DELETE",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//   })
-//     .then((response) => {
-//       if (!response.ok) {
-//         throw new Error(`Errore HTTP: ${response.status}`);
-//       }
-//       return response.json();
-//     })
-//     .then((data) => {
-//       if (data.success) {
-//         // 🔹 Effetto GSAP per la rimozione fluida del box appuntamento
-//         gsap.to(appointmentBox, {
-//           opacity: 0,
-//           duration: 0.3,
-//           ease: "power2.in",
-//           onComplete: () => appointmentBox.remove(),
-//         });
-
-//         // 🔹 Rimuove anche l'alert di conferma
-//         gsap.to(confirmAlert, {
-//           opacity: 0,
-//           duration: 0.3,
-//           ease: "power2.in",
-//           onComplete: () => confirmAlert.remove(),
-//         });
-
-//         // 🔹 Mostra l'alert di successo
-//         showAlert("success", "Appuntamento eliminato con successo!");
-//       } else {
-//         console.error("❌ Errore nella cancellazione:", data.error);
-//         showAlert("danger", "Errore nella cancellazione dell'appuntamento.");
-//       }
-//     })
-//     .catch((error) => {
-//       console.error("❌ Errore nella richiesta:", error);
-//       showAlert("danger", "Errore nella richiesta al server.");
-//     });
-// }
-
-// // Funzione per confermare l'eliminazione di un appuntamento tramite modale bootstrap con GSAP
-// function confirmDeleteAppointment(appointmentId, appointmentBox) {
-//   // Controllo se c'è già un alert visibile
-//   let existingAlert = document.getElementById("delete-alert");
-//   if (existingAlert) existingAlert.remove();
-
-//   // 🔹 Creazione alert Bootstrap personalizzato
-//   let confirmAlert = document.createElement("div");
-//   confirmAlert.id = "delete-alert";
-//   confirmAlert.classList.add("alert", "alert-danger", "fade", "show");
-//   confirmAlert.style.position = "fixed";
-//   confirmAlert.style.top = "20px";
-//   confirmAlert.style.left = "50%";
-//   confirmAlert.style.transform = "translateX(-50%)";
-//   confirmAlert.style.zIndex = "1050";
-//   confirmAlert.style.width = "auto";
-//   confirmAlert.style.maxWidth = "420px";
-//   confirmAlert.style.display = "flex";
-//   confirmAlert.style.justifyContent = "space-between";
-//   confirmAlert.style.alignItems = "center";
-//   confirmAlert.style.padding = "10px 15px";
-//   confirmAlert.style.borderRadius = "6px";
-//   confirmAlert.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
-//   confirmAlert.style.opacity = "0"; // 🔹 Opacità iniziale per GSAP
-
-//   confirmAlert.innerHTML = `
-//       <span>Sei sicuro di voler eliminare questo appuntamento?</span>
-//       <div class="d-flex gap-2">
-//           <button type="button" class="btn btn-sm btn-danger" id="confirmDelete">Elimina</button>
-//           <button type="button" class="btn btn-sm btn-secondary" id="cancelDelete">Annulla</button>
-//       </div>
-//   `;
-
-//   // 🔹 Aggiungo l'alert al DOM
-//   document.body.appendChild(confirmAlert);
-
-//   // 🔹 Effetto GSAP per far apparire l'alert con un fade-in
-//   gsap.to(confirmAlert, { opacity: 1, duration: 0.3, ease: "power2.out" });
-
-//   // 🔹 Eventi sui bottoni
-//   document.getElementById("confirmDelete").addEventListener("click", () => {
-//     deleteAppointment(appointmentId, appointmentBox, confirmAlert);
-//   });
-
-//   document.getElementById("cancelDelete").addEventListener("click", () => {
-//     gsap.to(confirmAlert, {
-//       opacity: 0,
-//       duration: 0.3,
-//       ease: "power2.in",
-//       onComplete: () => confirmAlert.remove(),
-//     });
-//   });
-
-//   // 🔹 Rimuove automaticamente l'alert dopo 10 secondi con un fade-out GSAP
-//   setTimeout(() => {
-//     gsap.to(confirmAlert, {
-//       opacity: 0,
-//       duration: 0.3,
-//       ease: "power2.in",
-//       onComplete: () => confirmAlert.remove(),
-//     });
-//   }, 10000);
-// }
-
-/*  -----------------------------------------------------------------------------------------------
-  TEMPORALY COMMENTED
---------------------------------------------------------------------------------------------------- */
 
 /////////////////////////////////////////////////////////////////////// FUNZIONE PRINCIPALE ////////////////////////////////////////////////////////////////////////////////////////////
 document.addEventListener("DOMContentLoaded", () => {
@@ -2157,7 +2044,7 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
   const pazienteValue = pazienteSelect.options[pazienteSelect.selectedIndex].value.trim();
 
   if (!tipologia || !pazienteValue) {
-    showAlert("danger", "Compila tutti i campi obbligatori prima di salvare.");
+    showAlert("danger", "Compila tutti i campi obbligatori prima di salvare.", "", "#FFB02E");
     return;
   }
 
@@ -2190,7 +2077,7 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
   selectedDate.setHours(0, 0, 0, 0);
 
   if (selectedDate < today) {
-    showAlert("danger", "❌ Non puoi impostare un appuntamento in una data passata.");
+    showAlert("danger", "Non puoi impostare un appuntamento in una data passata.", "", "#EF4444");
     return;
   }
 
@@ -2223,7 +2110,7 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
     .then((data) => {
       console.log("📢 Risposta dal server (POST):", data);
       if (data.success) {
-        showAlert("success", "Appuntamento salvato con successo!");
+        showAlert("success", "Appuntamento salvato con successo!", "", "var(--positive-color)");
         // Rimuove le anteprime e resetta il form
         document.querySelectorAll(".appointment-preview").forEach((el) => el.remove());
         if (selectedDayCell) {
@@ -2234,12 +2121,12 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
         loadAppointments();
         closeModalWithGSAP();
       } else {
-        showAlert("danger", "Errore nel salvataggio dell'appuntamento, controlla di aver compilato tutti i campi necessari.");
+        showAlert("danger", "Errore nel salvataggio dell'appuntamento, controlla di aver compilato tutti i campi necessari.", "", "#EF4444");
       }
     })
     .catch((error) => {
       console.error("❌ Errore durante il salvataggio (POST):", error);
-      showAlert("danger", "Si è verificato un errore inaspettato.");
+      showAlert("danger", "Si è verificato un errore inaspettato.", "", "#EF4444");
     });
 });
 
@@ -2311,14 +2198,14 @@ document.getElementById("addUserForm").addEventListener("submit", function (e) {
   }
 
   if (!newName || !newSurname) {
-    showAlert("danger", "Nome e cognome sono obbligatori!");
+    showAlert("danger", "Nome e cognome sono obbligatori!", "", "#EF4444");
     return;
   }
 
   let csrfToken = getCSRFToken();
   if (!csrfToken) {
     console.error("Errore: token CSRF non trovato nel DOM.");
-    showAlert("danger", "Errore di sicurezza: impossibile procedere. Ricarica la pagina e riprova.");
+    showAlert("danger", "Errore di sicurezza: impossibile procedere. Ricarica la pagina e riprova.", "", "#EF4444");
     return;
   }
 
@@ -2338,7 +2225,7 @@ document.getElementById("addUserForm").addEventListener("submit", function (e) {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        showAlert("success", "Paziente aggiunto con successo!");
+        showAlert("success", "Paziente aggiunto con successo!", "", "var(--positive-color)");
         // **AGGIORNAMENTO DINAMICO DEL SELECT**
         let selectPazienti = document.getElementById("paziente-select");
         if (selectPazienti) {
@@ -2357,10 +2244,10 @@ document.getElementById("addUserForm").addEventListener("submit", function (e) {
         newPhone.value = "";
         newEmail.value = "";
       } else {
-        showAlert("danger", "Errore: " + data.error);
+        showAlert("danger", "Errore: " + data.error, "", "#EF4444");
       }
     })
-    .catch((error) => showAlert("danger", "Errore:", error));
+    .catch((error) => showAlert("danger", "Errore:", error, "#EF4444"));
 });
 
 /*  -----------------------------------------------------------------------------------------------
