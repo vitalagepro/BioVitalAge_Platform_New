@@ -16,7 +16,6 @@ from os import getenv
 import pymysql # type: ignore
 
 
-
 pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -152,9 +151,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 AUTHENTICATION_BACKENDS = (
+    'BioVitalAge.backends.UtentiCredenzialiBackend',
     'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+LOGIN_URL = 'loginPage'
+LOGIN_REDIRECT_URL = 'HomePage'
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "596437252615-8o49l67l9jeuciqbjeh5djcdgsb5tmdv.apps.googleusercontent.com"
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
