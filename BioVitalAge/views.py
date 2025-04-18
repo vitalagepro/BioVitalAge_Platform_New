@@ -1197,8 +1197,7 @@ class StoricoView(LoginRequiredMixin,View):
 ## VIEW TERAPIA
 class TerapiaView(View):
     def get(self, request, id):
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         # Terape in studio (se vuoi mostrarle anche in GET)
@@ -1308,8 +1307,7 @@ class ModificaTerapiaStudioView(View):
 class DiagnosiView(View):
     def get(self, request, id):
 
-        dottore_id = request.session.get('dottore_id')
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dottore_id)
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         # Terape in studio (se vuoi mostrarle anche in GET)
