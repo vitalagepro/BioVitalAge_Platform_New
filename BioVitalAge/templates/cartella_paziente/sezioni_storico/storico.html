@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token }}" />
     <!-- Favicon -->
     <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
@@ -20,12 +21,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- JS Import -->
-    <script src="{% static 'includes/js/sezioni_storico/storico.js' %}" defer></script>
+    <script src="{% static 'includes/js/sezioni_storico/storico.js' %}" type="module" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <title>BioVitalAge - Storico</title>
+    <title>Storico</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 
 
@@ -36,7 +37,7 @@
     {% include 'components/loader.html' %}
 
     <!-- NAVBAR -->
-    {% include 'components/navBar.html' %}
+    {% include 'components/navBarStorico.html' %}
 
     <main>
         <!-- MENU TRACE -->
@@ -125,9 +126,9 @@
             </div>
             {% endif %}
     
-            <div class="sub-card" style="flex: 0.6;">
+            <div class="sub-card" {% if not ultimo_appuntamento %} style="flex: 1;" {% endif %} style="flex: 0.6;">
                 <h3>Statistiche Appuntamenti</h3>
-                <div {% if ultimo_appuntamento %} style="justify-content: space-between; flex: 1;" {% endif %} class="flex-layout">
+                <div {% if ultimo_appuntamento %} style="justify-content: space-between; flex: 1; align-items: center;" {% endif %} class="flex-layout">
                     <div class="flex-row-statistic">
                         <div class="border-violet">
                             <img src="{% static 'image/Diagnosi_tot.png' %}" alt="">
@@ -183,7 +184,7 @@
                         {% for appointment in storico_page %}
                         <tr>
                             <td>{{ appointment.id }}</td>
-                            <td class="appointment-note" title="{{  appointment.note }}">{{ appointment.note }}</td>
+                            <td class="appointment-note" title="{{  appointment.note }}">{{ appointment.note|default:"Nessuna" }}</td>
                             <td>
                                 <span class="badge
                                             {% if appointment.tipologia_visita == 'Generale' %}
@@ -257,7 +258,8 @@
     <!-- Import CDN js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        let appuntamenti_per_mese = {{ appuntamenti_per_mese|safe }};
+        let appuntamenti_per_mese_var = {{ appuntamenti_per_mese|safe }};
+        let app
     </script>
 
 </body>
