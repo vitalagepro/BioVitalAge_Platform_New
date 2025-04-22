@@ -1,6 +1,118 @@
 import showAlert from "../components/showAlert.js";
 import { confirmDeleteAction } from "../components/deleteAction.js";
 
+// Attiva la funzione per aggiungere gli orari
+document.getElementById("assunzioni").addEventListener("input", function () {
+  const assunzioni = parseInt(this.value);
+  const grid = document.getElementById("orari-grid");
+
+  // Pulisce tutto tranne il primo input
+  grid.innerHTML = "";
+
+  for (let i = 1; i <= assunzioni; i++) {
+    const input = document.createElement("input");
+    input.type = "time";
+    input.name = `orario${i}`;
+    input.className = "form-control";
+    input.required = true;
+    grid.appendChild(input);
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Elimina terapia domiciliare
+  document.querySelector("#tabella-terapie-studio").addEventListener("click", function (e) {
+    confirmDeleteAction({
+      url: `/elimina-terapia-domiciliare/${e.target.dataset.id}/`,
+      elementToRemove: e.target.parentElement.parentElement,
+      successMessage: "Terapia eliminata con successo!",
+      errorMessage: "Errore durante l'eliminazione della terapia.",
+      confirmMessage: "Sei sicuro di voler eliminare questa terapia?",
+      borderColor: "#EF4444",
+    })
+  });
+
+  // Modifica terapia domiciliare (puoi aprire una modale o popolare i campi)
+  document.querySelector("#tabella-terapie-studio").addEventListener("click", function (e) {
+    if (e.target.classList.contains("btn-modifica")) {
+      const id = e.target.dataset.id;
+      fetch(`/terapie/domiciliare/${id}/dettagli/`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            // Puoi popolare i campi del form esistente per la modifica:
+            document.querySelector("#farmaco").value = data.terapia.farmaco;
+            document.querySelector("#assunzioni").value = data.terapia.assunzioni;
+            // Rimuovi orari precedenti
+            document.getElementById("orari-dinamici").innerHTML = "";
+            Object.values(data.terapia.orari).forEach((val, index) => {
+              const input = document.createElement("input");
+              input.type = "time";
+              input.name = `orario${index + 1}`;
+              input.className = "form-control mt-2";
+              input.value = val;
+              document.getElementById("orari-dinamici").appendChild(input);
+            });
+
+            // Salviamo l'id per la modifica
+            document.getElementById("terapia-domiciliare-form").dataset.editId = id;
+          }
+        });
+    }
+  });
+});
+
+
+// Attiva la funzione per salvare le terapie domiciliari
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('terapia-domiciliare-form');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault(); // ✋ evita il refresh
+
+    const formData = new FormData(form);
+
+    fetch(window.location.href, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+      },
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        // ✅ Aggiungi nuova terapia alla tabella
+        const tbody = document.querySelector('#tabella-terapie-studio');
+        const row = document.createElement('tr');
+        row.setAttribute('data-id', data.terapia.id);
+        row.innerHTML = `
+          <td>${data.terapia.farmaco}</td>
+          <td>${data.terapia.assunzioni}</td>
+          <td>${data.terapia.orari}</td>
+          <td>${data.terapia.data_inizio}</td>
+          <td>${data.terapia.data_fine || '—'}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary btn-modifica" data-id="${data.terapia.id}">✎</button>
+            <button class="btn btn-sm btn-outline-danger btn-elimina" data-id="${data.terapia.id}">✖</button>
+          </td>
+        `;
+        tbody.prepend(row); // metti in cima
+
+        // ✅ Reset form
+        form.reset();
+      } else {
+        alert('Errore: ' + (data.message || 'Errore generico'));
+      }
+    })
+    .catch(err => {
+      console.error('Errore invio:', err);
+      alert('Errore di rete o del server.');
+    });
+  });
+});
+
+// Attiva la funzione per salvare le terapie in studio
 document.addEventListener("DOMContentLoaded", function () {
   const terapiaStudioForm = document.getElementById("studio-terapia-form");
   const tabellaTerapie = document.getElementById("tabella-terapie-studio");
@@ -107,7 +219,6 @@ document.addEventListener("DOMContentLoaded", function () {
       terapiaStudioForm.querySelector('[name="data_fine"]').value = dataFine;
       terapiaStudioForm.querySelector('button[type="submit"]').textContent =
         "Salva Modifiche";
-
       modal.show();
     }
 

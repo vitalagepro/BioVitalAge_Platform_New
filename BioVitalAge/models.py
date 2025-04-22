@@ -663,7 +663,7 @@ class TerapiaDomiciliare(models.Model):
     paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="terapie_domiciliari")
     farmaco = models.CharField(max_length=255)
     assunzioni = models.IntegerField()
-    orari = models.JSONField()  # salva array di orari es. ["08:00", "14:00"]
+    orari = models.JSONField()
     data_inizio = models.DateField()
     data_fine = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

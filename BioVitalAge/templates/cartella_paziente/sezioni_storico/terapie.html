@@ -58,16 +58,38 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Modale -->
     <script>
-      function openModal(){
-          document.getElementById('backdropModale').style.display = 'block'
-          document.getElementById('ModaleInserimento').style.display = 'block'
-      }
-
-      function closeModal(){
-          document.getElementById('backdropModale').style.display = 'none'
-          document.getElementById('ModaleInserimento').style.display = 'none'
-      }
-    </script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const openBtn = document.getElementById("openPrescrizioniBtn");
+        const closeBtn = document.querySelector("#ModaleInserimento .close");
+        const backdrop = document.getElementById("backdropModale");
+        const modal = document.getElementById("ModaleInserimento");
+    
+        function openModal() {
+          backdrop.style.display = "block";
+          modal.style.display = "block";
+          document.body.style.overflow = "hidden";
+          gsap.fromTo(modal, { opacity: 0, y: -50 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" });
+        }
+    
+        function closeModal() {
+          gsap.to(modal, {
+            opacity: 0,
+            y: -50,
+            duration: 0.3,
+            ease: "power2.in",
+            onComplete: () => {
+              modal.style.display = "none";
+              backdrop.style.display = "none";
+              document.body.style.overflow = "auto";
+            },
+          });
+        }
+    
+        if (openBtn) openBtn.addEventListener("click", openModal);
+        if (closeBtn) closeBtn.addEventListener("click", closeModal);
+        if (backdrop) backdrop.addEventListener("click", closeModal); // click fuori per chiudere
+      });
+    </script>    
   </head>
 
   <body>
@@ -130,22 +152,23 @@
       <div class="card-container mt-4" id="terapie-wrapper">
         <!-- TERAPIA DOMICILIARE -->
         <div class="sub-card">
-          <h3>Terapia Domiciliare</h3>
-          <form id="terapia-domiciliare-form">
+          <h3 style="margin-bottom: 2.5%;">Terapia Domiciliare</h3>
+          <form id="terapia-domiciliare-form" method="post">
             {% csrf_token %}
             <input type="hidden" name="form_type" value="domiciliare" />
-            <div class="row mb-3">
-              <div class="col">
+            <div class="row mb-5">
+              <div class="col input-container">
                 <label for="farmaco" class="form-label">Farmaco*</label>
                 <input
                   type="text"
                   class="form-control"
                   id="farmaco"
                   name="farmaco"
+                  placeholder="Inserisci farmaco"
                   required
                 />
               </div>
-              <div class="col">
+              <div class="col input-container">
                 <label for="assunzioni" class="form-label"
                   >Assunzioni giornaliere*</label
                 >
@@ -155,27 +178,30 @@
                   id="assunzioni"
                   name="assunzioni"
                   min="1"
+                  placeholder="Inserisci quantità"
                   required
                 />
               </div>
 
-              <div class="col">
-                <label for="ora-assunzioni" class="form-label">Orario Assunzioni*</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="ora-assunzioni"
-                  name="ora-assunzioni"
-                  min="1"
-                  required
-                />
-              </div>
+              <div class="col input-container">
+                <label for="orari" class="form-label">Orari/o Assunzioni*</label>
+                
+                <!-- Container Grid -->
+                <div id="orari-grid" class="orari-grid">
+                  <!-- Primo input -->
+                  <input
+                    type="time"
+                    class="form-control"
+                    name="orario1"
+                    required
+                  />
+                  <!-- Quelli successivi verranno aggiunti qui -->
+                </div>
+              </div>              
             </div>
 
-            <div class="row mb-3" id="orari-container"></div>
-
             <div class="row mb-3">
-              <div class="col">
+              <div class="col input-container">
                 <label for="data_inizio" class="form-label">Data inizio*</label>
                 <input
                   type="date"
@@ -184,21 +210,64 @@
                   required
                 />
               </div>
-              <div class="col">
+              <div class="col input-container">
                 <label for="data_fine" class="form-label">Data fine*</label>
                 <input type="date" class="form-control" name="data_fine" />
               </div>
             </div>
 
-            <a class="button" type="submit">
+            <button class="button" type="submit">
             
               <span class="button__icon-wrapper">
                 💾
               </span>
             
               Salva Terapia Domiciliare
-            </a>
+            </button>
           </form>
+          <table class="table mt-4">
+            <thead>
+              <tr>
+                <th>Farmaco</th>
+                <th>Assunzioni giornaliere</th>
+                <th>Orari/o assunzioni</th>
+                <th>Data Inizio</th>
+                <th>Data Termine</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody id="tabella-terapie-studio">
+              {% if terapie_domiciliari %}
+                {% for terapia in terapie_domiciliari %}
+                  <tr data-id="{{ terapia.id }}">
+                    <td>{{ terapia.farmaco }}</td>
+                    <td>{{ terapia.assunzioni }}</td>
+                    <td>
+                      {% for orario in terapia.orari.values %}
+                        {{ orario }}
+                      {% endfor %}
+                    </td>
+                    <td>{{ terapia.data_inizio|date:"d/m/Y" }}</td>
+                    <td>
+                      {% if terapia.data_fine %}
+                        {{ terapia.data_fine|date:"d/m/Y" }}
+                      {% else %}
+                        —
+                      {% endif %}
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-outline-primary btn-modifica" data-id="{{ terapia.id }}">✎</button>
+                      <button class="btn btn-sm btn-outline-danger btn-elimina" data-id="{{ terapia.id }}">✖</button>
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr class="no-terapie-row">
+                  <td colspan="4" class="text-center text-muted">Nessuna terapia in studio registrata.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
         </div>
 
         <!-- TERAPIA IN STUDIO -->
@@ -259,70 +328,53 @@
           </a>
         </div>
 
-        <!-- MODALE PER TERAPIA IN STUDIO -->
-        <div class="modal fade" id="studioModal" tabindex="-1">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <form id="studio-terapia-form">
-                {% csrf_token %}
-                <input type="hidden" name="form_type" value="studio" />
-                <div class="modal-header">
-                  <h5 class="modal-title">Nuova Terapia in Studio</h5>
-                  <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                  ></button>
-                </div>
-                <div class="modal-body">
-                  <div class="mb-3">
-                    <label class="form-label">Tipologia</label>
-                    <select name="tipologia" class="form-select" required>
+      <!-- MODALE PER TERAPIA IN STUDIO -->
+      <div class="modal fade" id="studioModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content p-3 rounded-4">
+            <form id="studio-terapia-form">
+              {% csrf_token %}
+              <input type="hidden" name="form_type" value="studio" />
+              <div class="modal-header border-0">
+                <h3 class="modal-title" style="color: var(--contrast-color); font-weight: bold;">Nuova Terapia in Studio</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+
+                <div class="row mb-5">
+                  <div class="col input-container">
+                    <label for="tipologia" class="form-label">Tipologia*</label>
+                    <select name="tipologia" class="form-control" id="tipologia" required>
                       <option value="IV Therapy">IV Therapy</option>
                     </select>
                   </div>
-                  <div class="mb-3">
-                    <label class="form-label">Descrizione</label>
-                    <textarea
-                      name="descrizione"
-                      class="form-control"
-                      required
-                    ></textarea>
+
+                  <div class="col input-container">
+                    <label for="data_inizio_studio" class="form-label">Data inizio*</label>
+                    <input type="date" class="form-control" name="data_inizio" id="data_inizio_studio" required />
                   </div>
-                  <div class="row mb-3">
-                    <div class="col">
-                      <label class="form-label">Data inizio</label>
-                      <input
-                        type="date"
-                        name="data_inizio"
-                        class="form-control"
-                        required
-                      />
-                    </div>
-                    <div class="col">
-                      <label class="form-label">Data fine</label>
-                      <input
-                        type="date"
-                        name="data_fine"
-                        class="form-control"
-                      />
-                    </div>
+
+                  <div class="col input-container">
+                    <label for="data_fine_studio" class="form-label">Data fine</label>
+                    <input type="date" class="form-control" name="data_fine" id="data_fine_studio" />
                   </div>
                 </div>
-                <div class="modal-footer">
-                  <button type="submit" class="button" style="border-radius: 7px;">Salva</button>
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                  >
-                    Chiudi
-                  </button>
+
+                <div class="mb-3 input-container">
+                  <label for="descrizione" class="form-label" style="width: 100%; left: -12px;">Descrizione*</label>
+                  <textarea name="descrizione" class="form-control" id="descrizione" rows="4" required></textarea>
                 </div>
-              </form>
-            </div>
+              </div>
+
+              <div class="modal-footer border-0 mt-3">
+                <button type="submit" class="button"> Salva </button>
+                <button type="button" class="button" data-bs-dismiss="modal">Chiudi</button>
+              </div>
+            </form>
           </div>
         </div>
+      </div>
+
       </div>
 
       <!-- PRESCRIZIONI FARMACI -->
@@ -402,24 +454,17 @@
                   Prescrizione Vuota
                 </button>
       
-                <a href="" class="button" style="width: 15rem;">
-      
+                <a href="javascript:void(0);" id="openPrescrizioniBtn" class="button" style="width: 15rem;">
                   <span class="button__icon-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
-                      class="button__icon-svg">
-                      <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+                      <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-      
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"
-                      class="button__icon-svg button__icon-svg--copy">
-                      <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg button__icon-svg--copy">
+                      <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                   </span>
-      
                   Aggiungi Prescrizioni
-                </a>
+                </a>                
               </div>
       
             </div>
@@ -481,5 +526,52 @@
             modal.show();
         </script>
     {% endif %}
+    <!-- BACKDROP -->
+    <div id="backdropModale" style="display: none;"></div>
+
+    <!-- MODALE PRESCRIZIONE -->
+    <div id="ModaleInserimento" style="display: none;">
+      <div class="title-header-container">
+        <h3>Aggiungi Prescrizione</h3>
+        <button class="close" onclick="closeModal()" style="margin-top: -0.5rem;">X</button>
+      </div>
+
+      <div class="ModaleHeader">
+        <select name="filtri" id="filtri">
+          <option value="0">Tutti</option>
+          <option value="1">Descrizione Esame crescente</option>
+          <option value="2">Descrizione Esame decrescente</option>
+          <option value="3">Metodica</option>
+          <option value="4">Codice Asl</option>
+          <option value="5">Codice Regione</option>
+          <option value="6">Apparato / Sistemi</option>
+        </select>
+
+        <div class="barra-ricercaModale">
+          <input type="text" class="input" id="Email" name="inputField" placeholder="Type name here" required />
+          <button class="button button--submit" type="submit">
+            <span class="button__icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="15" class="button__icon-svg">
+                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"></circle>
+                <line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="15" class="button__icon-svg button__icon-svg--copy">
+                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"></circle>
+                <line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+              </svg>
+            </span>
+            Search
+          </button>
+        </div>
+
+        <select name="" id="menu_tendina_prescrizioni" class="tendinaPrescrizioni">
+          <!-- DINAMICAMENTE POPOLATO CON JS -->
+        </select>
+      </div>
+
+      <div class="Modale-Result-content">
+        <!-- RISULTATI DINAMICI -->
+      </div>
+    </div>
   </body>
 </html>
