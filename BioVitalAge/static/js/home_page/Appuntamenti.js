@@ -1,5 +1,5 @@
-import showAlert from "../js/components/showAlert.js";
-import { confirmDeleteAction } from "../js/components/deleteAction.js";
+import showAlert from "../components/showAlert.js";
+import { confirmDeleteAction } from "../components/deleteAction.js";
 
 /*  -----------------------------------------------------------------------------------------------
   INITIALIZATION\

@@ -23,7 +23,6 @@ from django.utils import timezone as dj_timezone # type: ignore
 from django.utils.decorators import method_decorator # type: ignore
 from django.utils.timezone import now, localtime # type: ignore
 from django.utils.dateparse import parse_date # type: ignore
-from django.utils.dateparse import parse_date
 from django.db.models import OuterRef, Subquery, Count, Q, Avg, Min, Max # type: ignore
 from django.db.models.functions import ExtractMonth # type: ignore
 from django.contrib.auth.hashers import check_password # type: ignore
@@ -43,9 +42,11 @@ from .models import TabellaPazienti, ArchivioReferti
 
 logger = logging.getLogger(__name__)
 
+#----------------------------------------
+# ----  SEZIONE LOGIN / HOME PAGE   -----
+#----------------------------------------
 
-# -- SEZIONE LOGIN / HOME PAGE VIEW --
-## VIEW LOGIN RENDER
+# VIEW LOGIN
 class LoginRenderingPage(View):
 
     def get(self, request):
@@ -66,26 +67,14 @@ class LoginRenderingPage(View):
             'error': 'Email o password non valide'
         })
 
-
-## VIEW LOGOUT
+# VIEW LOGOUT
 class LogOutRender(View):
 
     def get(self, request):
         logout(request)
         return redirect('login')
 
-## VIEW PER ACCETTARE IL DISCLAIMER
-class AcceptDisclaimerView(LoginRequiredMixin, View):
-    login_url = 'login'
-
-    def post(self, request):
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        dottore.cookie = "SI"
-        dottore.save(update_fields=['cookie'])
-        return JsonResponse({"success": True})
-
-
-## VIEW PER LOGIN FORM - HOME PAGE RENDER
+# VIEW HOME PAGE
 class HomePageRender(LoginRequiredMixin,View):
 
     login_url = 'loginPage'
@@ -218,167 +207,102 @@ class HomePageRender(LoginRequiredMixin,View):
         context["emails"] = emails  # ← questo è il campo letto nel template da: <script id="emails-data">
         return render(request, "home_page/homePage.html", context)
 
+# VIEW PER LA SEZIONE STATISTICHE
+class StatisticheView(LoginRequiredMixin,View):
 
+    def get(self, request):
 
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
-    # DA SISTEMARE
-    def post(self, request):
+        context = {
+            'dottore' : dottore,
+            'emails': get_gmail_emails_for_user(request.user)
+        }
         
-        #RECUPERA CREDENZIALI
-        emailInput = request.POST['email']
-        passwordInput = request.POST['password']
-
-        # 1. Verifica se l'email è presente nel DB
         try:
-            dottore = UtentiRegistratiCredenziali.objects.get(email=emailInput)
-        except UtentiRegistratiCredenziali.DoesNotExist:
-            return render(request, 'includes/login.html', {
-                'error': 'Email inserita non valida o non registrata'
-            })
+            social_auth = UserSocialAuth.objects.get(user__email=dottore.email, provider="google-oauth2")
+            emails = get_gmail_emails_for_user(social_auth.user)
+        except UserSocialAuth.DoesNotExist:
+            print("⚠️ Account Google non collegato per:", dottore.email)
+            emails = []
 
-        # 2. Verifica la password usando il controllo dell'hash
-        if check_password(passwordInput, dottore.password):
+        context["emails"] = emails
+        return render(request, "home_page/statistiche.html", context)
+    
+# VIEW PER LE NOTIFICHE MEDICAL NEWS
+class MedicalNewsNotificationsView(LoginRequiredMixin,View):
+    def get(self, request, *args, **kwargs):
+        try:
+            # Controlla se i dati sono già in cache
+            cached_news = cache.get('medical_news')
+            if cached_news:
+                return JsonResponse({"success": True, "news": cached_news})
             
-            # 3. Recupera e calcola le informazioni per la home page
+            api_key = "80734c3bf8e34cf58beedc44db417a73"
+            url = f"https://newsapi.org/v2/everything?q=medicina&language=it&apiKey={api_key}"
+            response = requests.get(url)
+            data = response.json()
+            news = []
+            # Controlla se lo status della risposta è "ok"
+            if data.get("status") == "ok":
+                # Usa la chiave "articles" per ottenere gli articoli
+                articles = data.get("articles", [])
+                for article in articles[:2]:
+                    title = article.get("title", "Notizia medica")
+                    description = article.get("description", "")
+                    # Usa "publishedAt" per la data e prendi solo la parte della data
+                    published_at = article.get("publishedAt", "")[:10]
+                    # Usa "url" per ottenere il link
+                    link = article.get("url", "#")
+                    news.append({
+                        "id": str(uuid.uuid4()),
+                        "title": title,
+                        "description": description,
+                        "published_at": published_at,
+                        "link": link,
+                        "type": "info",
+                        "origin": "medical"
+                    })
+                # Salva in cache per 30 minuti (1800 secondi)
+                cache.set('medical_news', news, 1800)
+            return JsonResponse({"success": True, "news": news})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
 
-            # Ottieni i 5 pazienti più recenti
-            persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
+# VIEW PER LE NOTIFICHE
+class AppointmentNotificationsView(LoginRequiredMixin, View):
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            # non serve più guardare request.session['dottore_id']
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
-            # Calcola alcuni aggregati globali
-            total_biological_age_count = DatiEstesiReferti.objects.filter(
-                referto__paziente__dottore=dottore
-            ).aggregate(total=Count('biological_age'))['total']
-            total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
+            # fuso orario, oggi/domani...
+            now_local = timezone.localtime(timezone.now())
+            today = now_local.date()
+            tomorrow = today + timedelta(days=1)
 
-            # Appuntamenti futuri
-            today = dj_timezone.now().date()
-            appuntamenti = Appointment.objects.filter(
-                dottore=dottore, data__gte=today
-            ).order_by('data')[:4]
-
-            # Calcoli aggregati per età (min, max, media)
-            agg_age = TabellaPazienti.objects.filter(dottore=dottore).aggregate(
-                min_age=Min('chronological_age'),
-                max_age=Max('chronological_age'),
-                avg_age=Avg('chronological_age')
-            )
-            min_age = agg_age['min_age']
-            max_age = agg_age['max_age']
-            avg_age = agg_age['avg_age']
-
-            # --- Calcolo per il report "Totale Pazienti" ---
-            today_dj = dj_timezone.now().date()
-            start_of_week = today_dj - timedelta(days=today_dj.weekday())
-            start_of_last_week = start_of_week - timedelta(days=7)
-            end_of_last_week = start_of_week - timedelta(days=1)
-
-            current_week_patients = TabellaPazienti.objects.filter(
-                dottore=dottore, created_at__gte=start_of_week
-            ).count()
-            last_week_patients = TabellaPazienti.objects.filter(
-                dottore=dottore, created_at__gte=start_of_last_week, created_at__lte=end_of_last_week
-            ).count()
-
-            difference = current_week_patients - last_week_patients
-            if last_week_patients > 0:
-                percentage_increase = (difference / last_week_patients) * 100
-            else:
-                percentage_increase = 100 if current_week_patients > 0 else 0
-
-            # --- Calcolo per il report "Totale Prescrizioni" ---
-            current_week_referti = ArchivioReferti.objects.filter(
-                paziente__dottore=dottore, data_referto__gte=start_of_week
-            ).count()
-            last_week_referti = ArchivioReferti.objects.filter(
-                paziente__dottore=dottore, data_referto__gte=start_of_last_week, data_referto__lte=end_of_last_week
-            ).count()
-
-            difference_referti = current_week_referti - last_week_referti
-            abs_difference_referti = abs(difference_referti)
-            if last_week_referti > 0:
-                percentage_increase_referti = abs(difference_referti) / last_week_referti * 100
-            else:
-                percentage_increase_referti = 100 if current_week_referti > 0 else 0
-
-            # Calcola la percentuale media dell'età cronologica
-            if min_age is not None and max_age is not None and max_age != min_age:
-                relative_position = (avg_age - min_age) / (max_age - min_age)
-                media_percentage = relative_position * 100
-            else:
-                media_percentage = 0
-
-            # Ottieni i dati estesi relativi all'ultimo referto per ogni paziente
-            ultimo_referto = ArchivioReferti.objects.filter(
-                paziente=OuterRef('referto__paziente')
-            ).order_by('-data_referto')
-            datiEstesi = DatiEstesiReferti.objects.filter(
-                referto=Subquery(ultimo_referto.values('id')[:1])
-            )
-
-            # Prepara il contesto in base al flag "cookie" per il disclaimer
-            if dottore.cookie == "SI":
-                context = {
-                    'persone': persone,
-                    'total_pazienti': total_pazienti,
-                    'total_biological_age': total_biological_age_count,
-                    'appuntamenti': appuntamenti,
-                    'current_week_patients': current_week_patients,
-                    'last_week_patients': last_week_patients,
-                    'difference': difference,
-                    'percentage_increase': percentage_increase,
-                    'current_week_referti': current_week_referti,
-                    'last_week_referti': last_week_referti,
-                    'difference_referti': difference_referti,
-                    'percentage_increase_referti': percentage_increase_referti,
-                    'abs_difference_referti': abs_difference_referti,
-                    'min_age': min_age,
-                    'max_age': max_age,
-                    'media_percentage': media_percentage,
-                    'dottore': dottore,
-                    'dati_estesi': datiEstesi,
-                    'emails': get_gmail_emails_for_user(request.user),
-                }
-            else:
-                context = {
-                    'persone': persone,
-                    'total_pazienti': total_pazienti,
-                    'total_biological_age': total_biological_age_count,
-                    'appuntamenti': appuntamenti,
-                    'current_week_patients': current_week_patients,
-                    'last_week_patients': last_week_patients,
-                    'difference': difference,
-                    'percentage_increase': percentage_increase,
-                    'current_week_referti': current_week_referti,
-                    'last_week_referti': last_week_referti,
-                    'difference_referti': difference_referti,
-                    'percentage_increase_referti': percentage_increase_referti,
-                    'abs_difference_referti': abs_difference_referti,
-                    'min_age': min_age,
-                    'max_age': max_age,
-                    'media_percentage': media_percentage,
-                    'dottore': dottore,
-                    'emails': get_gmail_emails_for_user(request.user),
-                    'show_disclaimer': True
-                }
-
-            # Gestione dati aggiuntivi (Social Auth per Google)
-            try:
-                social_auth = UserSocialAuth.objects.get(
-                    user__email=dottore.email, provider="google-oauth2"
-                )
-                emails = get_gmail_emails_for_user(social_auth.user)
-            except UserSocialAuth.DoesNotExist:
-                print("⚠️ Account Google non collegato per:", dottore.email)
-                emails = []
-            context['emails'] = emails
-
-            return render(request, 'home_page/homePage.html', context)
-
-        else:
-            # Se la password non è corretta, restituisci un messaggio d'errore
-            return render(request, 'includes/login.html', {'error': 'Password errata'})
-
-## VIEW PER LA SEZIONE PROFILO
+            notifications = []
+            # Appuntamenti di oggi per il dottore loggato
+            todays_appts = Appointment.objects.filter(data=today, dottore=dottore)
+            for appt in todays_appts:
+                appt_time = appt.orario.strftime('%H:%M') if appt.orario else ""
+                message = f"Oggi alle {appt_time} hai un appuntamento con {appt.nome_paziente} {appt.cognome_paziente}"
+                notifications.append({"message": message, "type": "info"})
+            
+            # Appuntamenti di domani per il dottore loggato
+            tomorrows_appts = Appointment.objects.filter(data=tomorrow, dottore=dottore)
+            count_tomorrow = tomorrows_appts.count()
+            if count_tomorrow > 0:
+                message = f"Domani hai {count_tomorrow} appuntamenti in programma, vai nella sezione appuntamenti per visionarli."
+                notifications.append({"message": message, "type": "warning"})
+            
+            return JsonResponse({"success": True, "notifications": notifications})
+        
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+        
+# VIEW PER LA SEZIONE PROFILO
 def save(self, *args, **kwargs):
     if self.password and not self.password.startswith('pbkdf2_sha256$'):
         self.password = make_password(self.password)
@@ -460,128 +384,18 @@ class ProfileView(LoginRequiredMixin, View):
         return redirect("profile")
 
 
-## VIEW PER LA SEZIONE STATISTICHE
-class StatisticheView(LoginRequiredMixin,View):
-    def get(self, request):
-
-        
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-
-        context = {
-            'dottore' : dottore,
-            'emails': get_gmail_emails_for_user(request.user)  # 👈 AGGIUNGI QUI
-        }
-        
-        try:
-            social_auth = UserSocialAuth.objects.get(user__email=dottore.email, provider="google-oauth2")
-            emails = get_gmail_emails_for_user(social_auth.user)
-        except UserSocialAuth.DoesNotExist:
-            print("⚠️ Account Google non collegato per:", dottore.email)
-            emails = []
-
-        context["emails"] = emails  # ← questo è il campo letto nel template da: <script id="emails-data">
-        return render(request, "home_page/statistiche.html", context)
-
-## VIEW PER LE NOTIFICHE
-class AppointmentNotificationsView(LoginRequiredMixin,View):
-    def get(self, request, *args, **kwargs):
-        try:
-            # Recupera l'id del dottore dalla sessione
-            dottore_id = request.session.get('dottore_id')
-            
-            if not dottore_id:
-                return JsonResponse({"success": False, "error": "Utente non autenticato"}, status=403)
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-            
-            # Usa il fuso orario locale (modifica se usi timezone aware)
-            now_local = timezone.localtime(timezone.now())
-            today = now_local.date()
-            tomorrow = today + timedelta(days=1)
-            
-            notifications = []
-            
-            # Appuntamenti di oggi per il dottore loggato
-            todays_appts = Appointment.objects.filter(data=today, dottore=dottore)
-            for appt in todays_appts:
-                appt_time = appt.orario.strftime('%H:%M') if appt.orario else ""
-                message = f"Oggi alle {appt_time} hai un appuntamento con {appt.nome_paziente} {appt.cognome_paziente}"
-                notifications.append({"message": message, "type": "info"})
-            
-            # Appuntamenti di domani per il dottore loggato
-            tomorrows_appts = Appointment.objects.filter(data=tomorrow, dottore=dottore)
-            count_tomorrow = tomorrows_appts.count()
-            if count_tomorrow > 0:
-                message = f"Domani hai {count_tomorrow} appuntamenti in programma, vai nella sezione appuntamenti per visionarli."
-                notifications.append({"message": message, "type": "warning"})
-            
-            return JsonResponse({"success": True, "notifications": notifications})
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-## VIEW PER LE NOTIFICHE MEDICAL NEWS
-class MedicalNewsNotificationsView(LoginRequiredMixin,View):
-    def get(self, request, *args, **kwargs):
-        try:
-            # Controlla se i dati sono già in cache
-            cached_news = cache.get('medical_news')
-            if cached_news:
-                return JsonResponse({"success": True, "news": cached_news})
-            
-            api_key = "80734c3bf8e34cf58beedc44db417a73"
-            url = f"https://newsapi.org/v2/everything?q=medicina&language=it&apiKey={api_key}"
-            response = requests.get(url)
-            data = response.json()
-            news = []
-            # Controlla se lo status della risposta è "ok"
-            if data.get("status") == "ok":
-                # Usa la chiave "articles" per ottenere gli articoli
-                articles = data.get("articles", [])
-                for article in articles[:2]:
-                    title = article.get("title", "Notizia medica")
-                    description = article.get("description", "")
-                    # Usa "publishedAt" per la data e prendi solo la parte della data
-                    published_at = article.get("publishedAt", "")[:10]
-                    # Usa "url" per ottenere il link
-                    link = article.get("url", "#")
-                    news.append({
-                        "id": str(uuid.uuid4()),
-                        "title": title,
-                        "description": description,
-                        "published_at": published_at,
-                        "link": link,
-                        "type": "info",
-                        "origin": "medical"
-                    })
-                # Salva in cache per 30 minuti (1800 secondi)
-                cache.set('medical_news', news, 1800)
-            return JsonResponse({"success": True, "news": news})
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
-
-## VIEW PER ACCETTARE IL DISCLAIMER
-class AcceptDisclaimerView(LoginRequiredMixin,View):
-    def post(self, request):
-        
-        response = JsonResponse({"success": True})
-        
-        
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-
-        context = {
-            'dottore' : dottore
-        }
-
-        return render(request, "cartella_paziente/home_page/statistiche.html", context)
 
 
-## SEZIONE APPUNTAMENTI
-### VIEWS APPUNTAMENTI
+#----------------------------------------
+#--------- SEZIONE APPUNTAMENTI ---------
+#----------------------------------------
+
+# VIEWS APPUNTAMENTI
 class AppuntamentiView(LoginRequiredMixin,View):
     def get(self, request):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persone = TabellaPazienti.objects.all().order_by('-id')
         appuntamenti = Appointment.objects.all().order_by('-id')
-
 
         # Ottieni le opzioni definite nei choices
         tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
@@ -599,7 +413,7 @@ class AppuntamentiView(LoginRequiredMixin,View):
 
         return render(request, 'includes/Appuntamenti.html', context)
     
-### VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
+# VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
 class AppuntamentiSalvaView(LoginRequiredMixin,View):
     def post(self, request):
         if request.method == "POST":
@@ -644,7 +458,7 @@ class AppuntamentiSalvaView(LoginRequiredMixin,View):
 
         return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
 
-### VIEWS SINGLE APPOINTMENT
+# VIEWS SINGLE APPOINTMENT
 class GetSingleAppointmentView(LoginRequiredMixin,View):
     def get(self, request, appointment_id):
         """Recupera i dettagli di un singolo appuntamento"""
@@ -672,7 +486,7 @@ class GetSingleAppointmentView(LoginRequiredMixin,View):
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-### VIEWS GET ALL APPOINTMENTS
+# VIEWS GET ALL APPOINTMENTS
 class AppuntamentiGetView(LoginRequiredMixin,View):
     def get(self, request):
         """Recupera gli appuntamenti futuri o di oggi"""
@@ -707,7 +521,7 @@ class AppuntamentiGetView(LoginRequiredMixin,View):
 
         return JsonResponse({"success": True, "deleted": deleted_count, "appointments": appointments_by_date})
 
-### VIEWS UPDATE APPOINTMENT
+# VIEWS UPDATE APPOINTMENT
 class UpdateAppointmentView(LoginRequiredMixin,View):
     def patch(self, request, appointment_id):
         try:
@@ -739,7 +553,7 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-### VIEWS APPROVE APPOINTMENT
+# VIEWS APPROVE APPOINTMENT
 class ApproveAppointmentView(LoginRequiredMixin,View):
     def post(self, request, appointment_id):
         appointment = get_object_or_404(Appointment, id=appointment_id)
@@ -747,7 +561,7 @@ class ApproveAppointmentView(LoginRequiredMixin,View):
         appointment.save()
         return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
 
-### VIEWS DELETE APPOINTMENT
+# VIEWS DELETE APPOINTMENT
 class DeleteAppointmentView(View):
     def post(self, request, appointment_id):  # 👈 aggiungi questo
         try:
@@ -759,7 +573,7 @@ class DeleteAppointmentView(View):
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-### VIEW SEARCH APPOINTMENTS
+# VIEW SEARCH APPOINTMENTS
 class SearchAppointmentsView(LoginRequiredMixin,View):
     def get(self, request):
         query = request.GET.get("q", "").lower().strip()
@@ -772,7 +586,7 @@ class SearchAppointmentsView(LoginRequiredMixin,View):
             return JsonResponse({"success": True, "appointments": results})
         return JsonResponse({"success": False, "error": "Nessuna query fornita"})
     
-### VIEW CREATE PATIENT FROM SECOND MODAL
+# VIEW CREATE PATIENT FROM SECOND MODAL
 class CreaPazienteView(LoginRequiredMixin,View):
 
     login_url = 'loginPage'
@@ -818,8 +632,14 @@ class CreaPazienteView(LoginRequiredMixin,View):
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 
-# -- SEZIONE RICERCA PAZIENTE --
-## VIEW PER SEZIONE RICERCA PAZIENTI
+
+
+
+#----------------------------------------
+# ------ SEZIONE RICERCA PAZIENTE -------
+#----------------------------------------
+
+# VIEW PER SEZIONE RICERCA PAZIENTI
 class RisultatiRender(LoginRequiredMixin,View):
     def get(self, request):
           
@@ -957,13 +777,24 @@ class InserisciPazienteView(LoginRequiredMixin,View):
             context["errore"] = f"Errore di sistema: {str(e)}. Verifica i campi e riprova."
             return render(request, "includes/InserisciPaziente.html", context)
 
-# -- SEZIONE CARTELLA PAZIENTE --
-## VIEW CARTELLA PAZIENTE
+
+
+
+
+
+
+
+
+
+#----------------------------------------
+# ------ SEZIONE CARTELLA PAZIENTE ------
+#----------------------------------------
+
+# VIEW CARTELLA PAZIENTE
 class CartellaPazienteView(LoginRequiredMixin,View):
 
     def get(self, request, id):
-        
-        
+         
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
 
@@ -1118,7 +949,7 @@ class CartellaPazienteView(LoginRequiredMixin,View):
 
         return render(request, "includes/cartellaPaziente.html", context)
 
-## VIEW STORICO
+# VIEW STORICO
 class StoricoView(LoginRequiredMixin,View):
     def get(self, request, id):
         # Recupero Dottore e Paziente
@@ -1180,7 +1011,7 @@ class StoricoView(LoginRequiredMixin,View):
 
         return render(request, 'cartella_paziente/sezioni_storico/storico.html', context)
 
-## VIEW TERAPIA
+# VIEW TERAPIA
 class TerapiaView(View):
     def get(self, request, id):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
@@ -1289,7 +1120,7 @@ class ModificaTerapiaStudioView(View):
             }
         })
 
-## VIEW DIAGNOSI
+# VIEW DIAGNOSI
 class DiagnosiView(View):
     def get(self, request, id):
 

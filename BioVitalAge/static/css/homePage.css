@@ -14,6 +14,9 @@
 }
 
 
+:root{
+  --banner-bg: url("{% static 'image/Home_Banner.png' %}");
+}
 
 
 

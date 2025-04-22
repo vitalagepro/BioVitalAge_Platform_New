@@ -5,10 +5,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <!-- Favicon -->
   <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
-  <title>BioVitalAge - Statistiche</title>
+  {% csrf_token %}
+  <meta name="csrf-token" content="{{ csrf_token }}">
+
+  <title>BVA - Statistiche</title>
 
   <!-- Css Import -->
   <link rel="stylesheet" href="{% static 'css/homePage.css' %}" />
@@ -24,25 +28,25 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
 
-  <!-- Js Import -->
-  <script src="{% static 'includes/js/home_page/statistiche.js' %}" defer></script>
+  <!-- CDN Import -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <!-- Script variabile globale current user -->
   <script>
     const currentUser = "{{ dottore|escapejs }}";
-    // Passa l'utente dal backend
     window.currentUser = "{{ dottore|escapejs }}" || 'guest';
-    
-    // Listener per logout
+ 
     document.getElementById('logout-btn')?.addEventListener('click', () => {
       localStorage.setItem('pendingLogout', 'true');
     });
   </script>
-  <script src="{%  static 'includes/js/components/sidebar.js' %}"></script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-  <!-- Chart Import -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- JS import -->
+  <script src="{%  static 'js/components/sidebar.js' %}"></script>
+  <script src="{% static 'js/home_page/statistiche.js' %}" defer></script>
 </head>
 
 <body>
