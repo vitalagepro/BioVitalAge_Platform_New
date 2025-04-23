@@ -51,16 +51,13 @@
   position: relative;
 }
 
-.form-label{
-  background-color: var(--contrast-color-shadow);
-  padding: 10px !important;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: calc(100% - 24px); /* sottrai 2px per non farla sbordare */
-  border-radius: 5px 5px 0px 0px;
+.form-label-custom{
+  position: relative;
   z-index: 4;
-  transform: translate(12px, -85%);
+  background-color: var(--contrast-color-shadow);
+  padding: 10px;
+  margin-bottom: -10px;
+  border-radius: 5px 5px 0px 0px;
 }
 
 .form-control{
@@ -82,10 +79,6 @@
 }
 .orari-grid input {
   width: 100%;
-}
-
-.modal-header{
-  margin-bottom: 10% !important;
 }
 
 /* STILE PAGINAZIONE */

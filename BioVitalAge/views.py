@@ -1210,10 +1210,11 @@ class TerapiaView(View):
 
     def post(self, request, id):
         form_type = request.POST.get("form_type")
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         # Salvataggio terapia in studio
         if form_type == "studio":
-            persona = get_object_or_404(TabellaPazienti, id=id)
+            persona = get_object_or_404(TabellaPazienti, id=id, dottore=dottore)
             tipologia = request.POST.get("tipologia")
             descrizione = request.POST.get("descrizione")
             data_inizio = parse_date(request.POST.get("data_inizio"))
@@ -1237,7 +1238,7 @@ class TerapiaView(View):
                 }
             })
         elif form_type == "domiciliare":
-            persona = get_object_or_404(TabellaPazienti, id=id)
+            persona = get_object_or_404(TabellaPazienti, id=id, dottore=dottore)
             farmaco = request.POST.get("farmaco")
             assunzioni = int(request.POST.get("assunzioni"))
             data_inizio = parse_date(request.POST.get("data_inizio"))
@@ -1250,10 +1251,6 @@ class TerapiaView(View):
                 orario_val = request.POST.get(key)
                 if orario_val:
                     orari_dict[key] = orario_val
-
-            # Validazione base
-            if not farmaco or not orari_dict:
-                return JsonResponse({'success': False, 'message': 'Dati incompleti'})
 
             # Creazione
             terapia = TerapiaDomiciliare.objects.create(
@@ -1272,10 +1269,11 @@ class TerapiaView(View):
                     'farmaco': terapia.farmaco,
                     'assunzioni': terapia.assunzioni,
                     'orari': terapia.orari,
-                    'data_inizio': terapia.data_inizio.strftime('%d/%m/%Y'),
+                    'data_inizio': terapia.data_inizio.strftime('%d/%m/%Y') if terapia.data_inizio else None,
                     'data_fine': terapia.data_fine.strftime('%d/%m/%Y') if terapia.data_fine else None
                 }
             })
+
 
         return JsonResponse({'success': False})
 
@@ -1293,7 +1291,7 @@ class TerapiaDomiciliareDeleteView(View):
         terapia.delete()
         return JsonResponse({'success': True})
 
-# MODIFICA TERAPIA
+# MODIFICA TERAPIA STUDIO
 class ModificaTerapiaStudioView(View):
     def post(self, request, id):
         terapia = get_object_or_404(TerapiaInStudio, id=id)
@@ -1313,6 +1311,57 @@ class ModificaTerapiaStudioView(View):
                 'data_fine': terapia.data_fine.strftime('%d/%m/%Y') if terapia.data_fine else None
             }
         })
+
+# MODIFICA TERAPIA DOMICILIARE
+@method_decorator(csrf_exempt, name='dispatch')
+class ModificaTerapiaDomiciliareView(View):
+    def post(self, request, id):
+        from django.utils.dateparse import parse_date
+
+        terapia = TerapiaDomiciliare.objects.filter(id=id).first()
+        if not terapia:
+            return JsonResponse({'success': False, 'message': 'Terapia non trovata'}, status=404)
+
+        farmaco = request.POST.get("farmaco")
+        assunzioni = int(request.POST.get("assunzioni"))
+        data_inizio = parse_date(request.POST.get("data_inizio"))
+        data_fine = parse_date(request.POST.get("data_fine")) if request.POST.get("data_fine") else None
+
+        orari_dict = {}
+        for i in range(1, assunzioni + 1):
+            key = f"orario{i}"
+            orario_val = request.POST.get(key)
+            if orario_val:
+                orari_dict[key] = orario_val
+
+        # Aggiorna i valori
+        terapia.farmaco = farmaco
+        terapia.assunzioni = assunzioni
+        terapia.orari = orari_dict
+        terapia.data_inizio = data_inizio
+        terapia.data_fine = data_fine
+        terapia.save()
+
+        return JsonResponse({'success': True, 'message': 'Terapia aggiornata con successo!'})
+
+# DETTAGLI TERAPIA DOMICILIARE
+class DettagliTerapiaDomiciliareView(View):
+    def get(self, request, id):
+        try:
+            terapia = TerapiaDomiciliare.objects.get(id=id)
+            return JsonResponse({
+                'success': True,
+                'terapia': {
+                    'id': terapia.id,
+                    'farmaco': terapia.farmaco,
+                    'assunzioni': terapia.assunzioni,
+                    'orari': terapia.orari,
+                    'data_inizio': terapia.data_inizio.strftime('%Y-%m-%d') if terapia.data_inizio else '',
+                    'data_fine': terapia.data_fine.strftime('%Y-%m-%d') if terapia.data_fine else '',
+                }
+            })
+        except TerapiaDomiciliare.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Terapia non trovata'}, status=404)
 
 ## VIEW DIAGNOSI
 class DiagnosiView(View):

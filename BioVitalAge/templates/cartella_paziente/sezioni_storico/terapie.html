@@ -156,9 +156,9 @@
           <form id="terapia-domiciliare-form" method="post">
             {% csrf_token %}
             <input type="hidden" name="form_type" value="domiciliare" />
-            <div class="row mb-5">
+            <div class="row mb-3">
               <div class="col input-container">
-                <label for="farmaco" class="form-label">Farmaco*</label>
+                <label for="farmaco" class="form-label-custom w-100">Farmaco*</label>
                 <input
                   type="text"
                   class="form-control"
@@ -169,7 +169,7 @@
                 />
               </div>
               <div class="col input-container">
-                <label for="assunzioni" class="form-label"
+                <label for="assunzioni" class="form-label-custom w-100"
                   >Assunzioni giornaliere*</label
                 >
                 <input
@@ -178,13 +178,14 @@
                   id="assunzioni"
                   name="assunzioni"
                   min="1"
+                  max="4"
                   placeholder="Inserisci quantità"
                   required
                 />
               </div>
 
               <div class="col input-container">
-                <label for="orari" class="form-label">Orari/o Assunzioni*</label>
+                <label for="orari" id="label-default" class="form-label-custom w-100">Orari/o Assunzioni</label>
                 
                 <!-- Container Grid -->
                 <div id="orari-grid" class="orari-grid">
@@ -193,25 +194,23 @@
                     type="time"
                     class="form-control"
                     name="orario1"
-                    required
                   />
                   <!-- Quelli successivi verranno aggiunti qui -->
                 </div>
-              </div>              
+              </div>
             </div>
 
             <div class="row mb-3">
               <div class="col input-container">
-                <label for="data_inizio" class="form-label">Data inizio*</label>
+                <label for="data_inizio" class="form-label-custom w-100">Data inizio</label>
                 <input
                   type="date"
                   class="form-control"
                   name="data_inizio"
-                  required
                 />
               </div>
               <div class="col input-container">
-                <label for="data_fine" class="form-label">Data fine*</label>
+                <label for="data_fine" class="form-label-custom w-100">Data fine</label>
                 <input type="date" class="form-control" name="data_fine" />
               </div>
             </div>
@@ -236,40 +235,91 @@
                 <th>Azioni</th>
               </tr>
             </thead>
-            <tbody id="tabella-terapie-studio">
+            <tbody id="tabella-terapie-domiciliari">
               {% if terapie_domiciliari %}
                 {% for terapia in terapie_domiciliari %}
                   <tr data-id="{{ terapia.id }}">
                     <td>{{ terapia.farmaco }}</td>
                     <td>{{ terapia.assunzioni }}</td>
                     <td>
-                      {% for orario in terapia.orari.values %}
-                        {{ orario }}
-                      {% endfor %}
-                    </td>
-                    <td>{{ terapia.data_inizio|date:"d/m/Y" }}</td>
+                      {% with terapia.orari.values as orari %}
+                        {% if orari|length == 0 or orari|join:'' == '' %}
+                          Non specificato.
+                        {% else %}
+                          {% for orario in orari %}
+                            {% if orario and orario != "" %}
+                              {{ orario }}{% if not forloop.last %} — {% endif %}
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                      {% endwith %}
+                    </td>                    
+                    <td>{{ terapia.data_inizio|date:"d/m/Y"|default:"Non specificata." }}</td>
                     <td>
                       {% if terapia.data_fine %}
-                        {{ terapia.data_fine|date:"d/m/Y" }}
+                        {{ terapia.data_fine|date:"d/m/Y"|default:"Non specificata." }}
                       {% else %}
-                        —
+                        Non specificata.
                       {% endif %}
                     </td>
                     <td>
-                      <button class="btn btn-sm btn-outline-primary btn-modifica" data-id="{{ terapia.id }}">✎</button>
+                      <button class="btn btn-sm btn-outline-primary btn-modifica" data-id="{{ terapia.id }}" data-modale="domiciliare">✎</button>
                       <button class="btn btn-sm btn-outline-danger btn-elimina" data-id="{{ terapia.id }}">✖</button>
                     </td>
                   </tr>
                 {% endfor %}
               {% else %}
                 <tr class="no-terapie-row">
-                  <td colspan="4" class="text-center text-muted">Nessuna terapia in studio registrata.</td>
+                  <td colspan="6" class="text-center text-muted">Nessuna terapia in studio registrata.</td>
                 </tr>
               {% endif %}
             </tbody>
           </table>
         </div>
 
+        <!-- MODALE PER MODIFICA TERAPIA DOMICILIARE -->
+        <div class="modal fade" id="modaleModificaTerapia" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form id="form-modifica-terapia">
+                {% csrf_token %}
+                <input type="hidden" name="terapia_id" id="terapia-id-modifica" />
+                <div class="modal-header">
+                  <h5 class="modal-title">Modifica Terapia Domiciliare</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3 position-relative">
+                    <label class="form-label-custom w-100">Farmaco</label>
+                    <input type="text" class="form-control" id="farmaco-modifica" name="farmaco" required>
+                  </div>
+                  <div class="mt-3 position-relative">
+                    <label class="form-label-custom w-100">Assunzioni giornaliere</label>
+                    <input type="number" class="form-control" id="assunzioni-modifica" name="assunzioni" min="1" max="4" required>
+                  </div>
+                  <div id="orari-modifica-container" class="row g-2 mt-1 position-relative">
+                    <!-- Input orari dinamici -->
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col position-relative">
+                      <label class="form-label-custom w-100">Data inizio</label>
+                      <input type="date" class="form-control" id="data-inizio-modifica" name="data_inizio" required>
+                    </div>
+                    <div class="col position-relative">
+                      <label class="form-label-custom w-100">Data fine</label>
+                      <input type="date" class="form-control" id="data-fine-modifica" name="data_fine">
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="button">Salva modifiche</button>
+                  <button type="button" class="button" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        
         <!-- TERAPIA IN STUDIO -->
         <div class="sub-card mt-4">
           <h3>Terapie in Studio</h3>
@@ -296,7 +346,7 @@
                       {% endif %}
                     </td>
                     <td>
-                      <button class="btn btn-sm btn-outline-primary btn-modifica" data-id="{{ terapia.id }}">✎</button>
+                      <button class="btn btn-sm btn-outline-primary btn-modifica" data-id="{{ terapia.id }}" data-modale="domiciliare">✎</button>
                       <button class="btn btn-sm btn-outline-danger btn-elimina" data-id="{{ terapia.id }}">✖</button>
                     </td>
                   </tr>
@@ -343,25 +393,25 @@
 
                 <div class="row mb-5">
                   <div class="col input-container">
-                    <label for="tipologia" class="form-label">Tipologia*</label>
+                    <label for="tipologia" class="form-label-custom w-100">Tipologia*</label>
                     <select name="tipologia" class="form-control" id="tipologia" required>
                       <option value="IV Therapy">IV Therapy</option>
                     </select>
                   </div>
 
                   <div class="col input-container">
-                    <label for="data_inizio_studio" class="form-label">Data inizio*</label>
+                    <label for="data_inizio_studio" class="form-label-custom w-100">Data inizio*</label>
                     <input type="date" class="form-control" name="data_inizio" id="data_inizio_studio" required />
                   </div>
 
                   <div class="col input-container">
-                    <label for="data_fine_studio" class="form-label">Data fine</label>
+                    <label for="data_fine_studio" class="form-label-custom w-100">Data fine</label>
                     <input type="date" class="form-control" name="data_fine" id="data_fine_studio" />
                   </div>
                 </div>
 
                 <div class="mb-3 input-container">
-                  <label for="descrizione" class="form-label" style="width: 100%; left: -12px;">Descrizione*</label>
+                  <label for="descrizione" class="form-label-custom w-100">Descrizione*</label>
                   <textarea name="descrizione" class="form-control" id="descrizione" rows="4" required></textarea>
                 </div>
               </div>

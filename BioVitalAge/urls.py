@@ -60,6 +60,8 @@ urlpatterns = [
     path("elimina-terapia-studio/<int:id>/", EliminaTerapiaStudioView.as_view(), name="elimina_terapia_studio"),
     path("elimina-terapia-domiciliare/<int:id>/", TerapiaDomiciliareDeleteView.as_view(), name="elimina_terapia_domiciliare"),
     path("modifica-terapia-studio/<int:id>/", ModificaTerapiaStudioView.as_view(), name="modifica_terapia_studio"),
+    path('terapie/domiciliare/<int:id>/modifica/', ModificaTerapiaDomiciliareView.as_view(), name='modifica_terapia_domiciliare'),
+    path('terapie/domiciliare/<int:id>/dettagli/', DettagliTerapiaDomiciliareView.as_view(), name='dettagli_terapia_domiciliare'),
 
     ## SEZIONE MUSCOLO
     path('Valutazione_Muscolo_Scheletrica/<int:persona_id>/',   views.ValutazioneMSView.as_view(),                    name='valutazione_m_s'), 
