@@ -38,6 +38,7 @@ from .utils import calculate_biological_age, CalcoloPunteggioCapacitaVitale
 from .calcoloMetabolica import *
 from .models import *
 from .models import TabellaPazienti, ArchivioReferti
+from BioVitalAge.error_handlers import catch_exceptions
 
 
 logger = logging.getLogger(__name__)
@@ -47,6 +48,7 @@ logger = logging.getLogger(__name__)
 #----------------------------------------
 
 # VIEW LOGIN
+@method_decorator(catch_exceptions, name='dispatch')
 class LoginRenderingPage(View):
 
     def get(self, request):
@@ -68,6 +70,7 @@ class LoginRenderingPage(View):
         })
 
 # VIEW LOGOUT
+@method_decorator(catch_exceptions, name='dispatch')
 class LogOutRender(View):
 
     def get(self, request):
@@ -75,6 +78,7 @@ class LogOutRender(View):
         return redirect('login')
 
 # VIEW HOME PAGE
+@method_decorator(catch_exceptions, name='dispatch')
 class HomePageRender(LoginRequiredMixin,View):
 
     login_url = 'loginPage'
@@ -208,6 +212,7 @@ class HomePageRender(LoginRequiredMixin,View):
         return render(request, "home_page/homePage.html", context)
 
 # VIEW PER LA SEZIONE STATISTICHE
+@method_decorator(catch_exceptions, name='dispatch')
 class StatisticheView(LoginRequiredMixin,View):
 
     def get(self, request):
@@ -308,6 +313,7 @@ def save(self, *args, **kwargs):
         self.password = make_password(self.password)
     super().save(*args, **kwargs)
 
+@method_decorator(catch_exceptions, name='dispatch')
 class ProfileView(LoginRequiredMixin, View):
 
     login_url = 'loginPage'
@@ -391,6 +397,7 @@ class ProfileView(LoginRequiredMixin, View):
 #----------------------------------------
 
 # VIEWS APPUNTAMENTI
+@method_decorator(catch_exceptions, name='dispatch')
 class AppuntamentiView(LoginRequiredMixin,View):
     def get(self, request):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
@@ -414,6 +421,7 @@ class AppuntamentiView(LoginRequiredMixin,View):
         return render(request, 'includes/Appuntamenti.html', context)
     
 # VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
+@method_decorator(catch_exceptions, name='dispatch')
 class AppuntamentiSalvaView(LoginRequiredMixin,View):
     def post(self, request):
         if request.method == "POST":
@@ -459,6 +467,7 @@ class AppuntamentiSalvaView(LoginRequiredMixin,View):
         return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
 
 # VIEWS SINGLE APPOINTMENT
+@method_decorator(catch_exceptions, name='dispatch')
 class GetSingleAppointmentView(LoginRequiredMixin,View):
     def get(self, request, appointment_id):
         """Recupera i dettagli di un singolo appuntamento"""
@@ -487,6 +496,7 @@ class GetSingleAppointmentView(LoginRequiredMixin,View):
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 # VIEWS GET ALL APPOINTMENTS
+@method_decorator(catch_exceptions, name='dispatch')
 class AppuntamentiGetView(LoginRequiredMixin,View):
     def get(self, request):
         """Recupera gli appuntamenti futuri o di oggi"""
@@ -522,6 +532,7 @@ class AppuntamentiGetView(LoginRequiredMixin,View):
         return JsonResponse({"success": True, "deleted": deleted_count, "appointments": appointments_by_date})
 
 # VIEWS UPDATE APPOINTMENT
+@method_decorator(catch_exceptions, name='dispatch')
 class UpdateAppointmentView(LoginRequiredMixin,View):
     def patch(self, request, appointment_id):
         try:
@@ -554,6 +565,7 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 # VIEWS APPROVE APPOINTMENT
+@method_decorator(catch_exceptions, name='dispatch')
 class ApproveAppointmentView(LoginRequiredMixin,View):
     def post(self, request, appointment_id):
         appointment = get_object_or_404(Appointment, id=appointment_id)
@@ -562,6 +574,7 @@ class ApproveAppointmentView(LoginRequiredMixin,View):
         return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
 
 # VIEWS DELETE APPOINTMENT
+@method_decorator(catch_exceptions, name='dispatch')
 class DeleteAppointmentView(View):
     def post(self, request, appointment_id):  # 👈 aggiungi questo
         try:
@@ -574,6 +587,7 @@ class DeleteAppointmentView(View):
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 # VIEW SEARCH APPOINTMENTS
+@method_decorator(catch_exceptions, name='dispatch')
 class SearchAppointmentsView(LoginRequiredMixin,View):
     def get(self, request):
         query = request.GET.get("q", "").lower().strip()
@@ -587,6 +601,7 @@ class SearchAppointmentsView(LoginRequiredMixin,View):
         return JsonResponse({"success": False, "error": "Nessuna query fornita"})
     
 # VIEW CREATE PATIENT FROM SECOND MODAL
+@method_decorator(catch_exceptions, name='dispatch')
 class CreaPazienteView(LoginRequiredMixin,View):
 
     login_url = 'loginPage'
@@ -640,6 +655,7 @@ class CreaPazienteView(LoginRequiredMixin,View):
 #----------------------------------------
 
 # VIEW PER SEZIONE RICERCA PAZIENTI
+@method_decorator(catch_exceptions, name='dispatch')
 class RisultatiRender(LoginRequiredMixin,View):
     def get(self, request):
           
@@ -661,6 +677,7 @@ class RisultatiRender(LoginRequiredMixin,View):
 
         return render(request, "includes/risultati.html", context)
 
+@method_decorator(catch_exceptions, name='dispatch')
 class InserisciPazienteView(LoginRequiredMixin,View):
 
     def get(self, request):
@@ -791,6 +808,7 @@ class InserisciPazienteView(LoginRequiredMixin,View):
 #----------------------------------------
 
 # VIEW CARTELLA PAZIENTE
+@method_decorator(catch_exceptions, name='dispatch')
 class CartellaPazienteView(LoginRequiredMixin,View):
 
     def get(self, request, id):
@@ -950,6 +968,7 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         return render(request, "includes/cartellaPaziente.html", context)
 
 # VIEW STORICO
+@method_decorator(catch_exceptions, name='dispatch')
 class StoricoView(LoginRequiredMixin,View):
     def get(self, request, id):
         # Recupero Dottore e Paziente
@@ -1012,6 +1031,7 @@ class StoricoView(LoginRequiredMixin,View):
         return render(request, 'cartella_paziente/sezioni_storico/storico.html', context)
 
 # VIEW TERAPIA
+@method_decorator(catch_exceptions, name='dispatch')
 class TerapiaView(View):
     def get(self, request, id):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
@@ -1093,6 +1113,7 @@ class TerapiaView(View):
         return JsonResponse({'success': False})
 
 # ELIMINA TERAPIA FUNZIONE
+@method_decorator(catch_exceptions, name='dispatch')
 class EliminaTerapiaStudioView(View):
     def post(self, request, id):
         terapia = get_object_or_404(TerapiaInStudio, id=id)
@@ -1100,6 +1121,7 @@ class EliminaTerapiaStudioView(View):
         return JsonResponse({'success': True})
 
 # MODIFICA TERAPIA
+@method_decorator(catch_exceptions, name='dispatch')
 class ModificaTerapiaStudioView(View):
     def post(self, request, id):
         terapia = get_object_or_404(TerapiaInStudio, id=id)
@@ -1121,6 +1143,7 @@ class ModificaTerapiaStudioView(View):
         })
 
 # VIEW DIAGNOSI
+@method_decorator(catch_exceptions, name='dispatch')
 class DiagnosiView(View):
     def get(self, request, id):
 
@@ -1170,6 +1193,7 @@ class DiagnosiView(View):
         return JsonResponse({'success': False})
 
 # ELIMINA TERAPIA FUNZIONE
+@method_decorator(catch_exceptions, name='dispatch')
 class EliminaTerapiaStudioView(View):
     def post(self, request, id):
         terapia = get_object_or_404(TerapiaInStudio, id=id)
@@ -1177,6 +1201,7 @@ class EliminaTerapiaStudioView(View):
         return JsonResponse({'success': True})
 
 # MODIFICA TERAPIA
+@method_decorator(catch_exceptions, name='dispatch')
 class ModificaTerapiaStudioView(View):
     def post(self, request, id):
         terapia = get_object_or_404(TerapiaInStudio, id=id)
@@ -1198,6 +1223,7 @@ class ModificaTerapiaStudioView(View):
         })
 
 ## VIEW DIAGNOSI
+@method_decorator(catch_exceptions, name='dispatch')
 class DiagnosiView(LoginRequiredMixin,View):
     def get(self, request, id):
 
@@ -1213,6 +1239,7 @@ class DiagnosiView(LoginRequiredMixin,View):
         return render(request, 'cartella_paziente/sezioni_storico/diagnosi.html', context)
 
 ## SEZIONE MUSCOLO
+@method_decorator(catch_exceptions, name='dispatch')
 class ValutazioneMSView(LoginRequiredMixin,View):
 
     def get(self, request, persona_id):
@@ -1302,6 +1329,7 @@ class ValutazioneMSView(LoginRequiredMixin,View):
         return render(request, "cartella_paziente/indici_di_performance/valutazioneMS.html", context)
 
 ## SEZIONE DATI BASE
+@method_decorator(catch_exceptions, name='dispatch')
 class DatiBaseView(LoginRequiredMixin,View):
 
     def get(self, request, id):
@@ -1413,6 +1441,7 @@ class DatiBaseView(LoginRequiredMixin,View):
 
 
 ## SEZIONE ETA' METABOLICA
+@method_decorator(catch_exceptions, name='dispatch')
 class ComposizioneView(LoginRequiredMixin,View):
 
     def get(self, request, id):
@@ -1568,6 +1597,7 @@ class ComposizioneView(LoginRequiredMixin,View):
 
         return render(request, "cartella_paziente/eta_metabolica/etaMetabolica.html", context)
 
+@method_decorator(catch_exceptions, name='dispatch')
 class ComposizioneChartView(LoginRequiredMixin,View):
 
     def get(self, request, id):
@@ -1762,6 +1792,7 @@ class ComposizioneChartView(LoginRequiredMixin,View):
         }
         return render(request, 'cartella_paziente/eta_metabolica/grafici.html', context)
 
+@method_decorator(catch_exceptions, name='dispatch')
 class RefertiComposizioneView(LoginRequiredMixin,View):
     def get(self, request, id):
         persona = get_object_or_404(TabellaPazienti, id=id)
@@ -1786,6 +1817,7 @@ class RefertiComposizioneView(LoginRequiredMixin,View):
 
 
 ## SEZIONE CAPACITA' VITALE
+@method_decorator(catch_exceptions, name='dispatch')
 class EtaVitaleView(LoginRequiredMixin,View):
 
     def get(self, request, id):
@@ -1806,7 +1838,8 @@ class EtaVitaleView(LoginRequiredMixin,View):
     
     def post(self):
         return
-    
+
+@method_decorator(catch_exceptions, name='dispatch')
 class TestEtaVitaleView(LoginRequiredMixin,View):
 
     def get(self,request, id):
@@ -2029,6 +2062,7 @@ class TestEtaVitaleView(LoginRequiredMixin,View):
 
             return render(request, "cartella_paziente/capacita_vitale/testVitale.html", context)
 
+@method_decorator(catch_exceptions, name='dispatch')
 class RefertoQuizView(LoginRequiredMixin,View):
     def get(self, request, persona_id, referto_id):
 
@@ -2101,6 +2135,7 @@ class RefertoQuizView(LoginRequiredMixin,View):
 
         return render(request, "cartella_paziente/capacita_vitale/RefertoQuiz.html", context)
 
+@method_decorator(catch_exceptions, name='dispatch')
 class QuizEtaVitaleUpdateView(LoginRequiredMixin,View):
 
     def get(self, request, id):
@@ -2130,6 +2165,7 @@ class QuizEtaVitaleUpdateView(LoginRequiredMixin,View):
     def post(self, request, id):
         return 
 
+@method_decorator(catch_exceptions, name='dispatch')
 class StampaRefertoView(LoginRequiredMixin,View):
     def get(self, request, persona_id, referto_id):
 
@@ -2209,6 +2245,7 @@ def safe_float(data, key, default=0.0):
     except (ValueError, TypeError):
         return default
 
+@method_decorator(catch_exceptions, name='dispatch')
 class CalcolatoreRender(LoginRequiredMixin,View):
     
     def get(self, request, id):
@@ -3175,6 +3212,7 @@ class CalcolatoreRender(LoginRequiredMixin,View):
             }
             return render(request, "cartella_paziente/eta_biologica/calcolatore.html", context)
 
+@method_decorator(catch_exceptions, name='dispatch')
 class ElencoRefertiView(LoginRequiredMixin,View):
 
     def get(self, request, id):
@@ -3198,6 +3236,7 @@ class ElencoRefertiView(LoginRequiredMixin,View):
 
         return render(request, "cartella_paziente/eta_biologica/elencoReferti.html", context)
    
+@method_decorator(catch_exceptions, name='dispatch')
 class PersonaDetailView(LoginRequiredMixin,View):
     def get(self, request, persona_id):
 
@@ -3232,6 +3271,7 @@ class PersonaDetailView(LoginRequiredMixin,View):
 
 
 ## SEZIONE RESILIENZA
+@method_decorator(catch_exceptions, name='dispatch')
 class ResilienzaView(LoginRequiredMixin,View):
     def get(self, request, persona_id):
 
@@ -3281,6 +3321,7 @@ class ResilienzaView(LoginRequiredMixin,View):
     
 
 ## SEZIONE PIANO TERAPEUTICO
+@method_decorator(catch_exceptions, name='dispatch')
 class PianoTerapeutico(LoginRequiredMixin,View):
 
     def get(self, request, persona_id):
@@ -3305,6 +3346,7 @@ class PianoTerapeutico(LoginRequiredMixin,View):
         return render(request, 'cartella_paziente/piano_terapeutico/piano_terapeutico.html', context)
 
 ### SEZIONE PRESCRIZIONI ESAMI
+@method_decorator(catch_exceptions, name='dispatch')
 class PrescrizioniView(LoginRequiredMixin,View):
 
     def get(self, request, persona_id):
@@ -3338,6 +3380,7 @@ class PrescrizioniView(LoginRequiredMixin,View):
 
 
 # TO DEFINE
+@method_decorator(catch_exceptions, name='dispatch')
 class UpdatePersonaContactView(LoginRequiredMixin,View):
 
     def post(self, request, id):
@@ -3399,7 +3442,8 @@ class UpdatePersonaContactView(LoginRequiredMixin,View):
         }
 
         return render(request, "cartella_paziente/capacita_vitale/EtaVitale.html", context)
-    
+
+@method_decorator(catch_exceptions, name='dispatch')
 class RefertoView(LoginRequiredMixin,View):
     def get(self, request, referto_id):
         referto = ArchivioReferti.objects.get(id=referto_id)

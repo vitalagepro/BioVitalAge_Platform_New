@@ -15,33 +15,25 @@
     <title>Terapie</title>
 
     <!-- Css Import -->
-    <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}" />
-    <link
-      rel="stylesheet"
-      href="{% static 'includes/css/sezioni_storico/diagnosi.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'includes/css/sezioni_storico/terapie.css' %}"
-    />
+    <link rel="stylesheet" href="{% static 'css/Componenti.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/cartella_paziente/sezioni_storico/diagnosi.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/cartella_paziente/sezioni_storico/terapie.css' %}"/>
 
     <!-- Bootstrap import -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Font Import  -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
 
-    <!-- JS IMPORT -->
+    <!-- CDN IMPORT -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.2.1/docx.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/docx@7.7.0/build/index.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
     <script>
       let pazienteId = "{{ persona.id }}"
       let pazienteName = "{{ persona.name }}"
@@ -49,13 +41,9 @@
       let pazientePob = "{{ persona.pob }}"
       let pazienteDob = `{{ persona.dob|date:"d/m/Y" }}`
     </script>
-    <script
-      src="{% static 'includes/js/sezioni_storico/terapie.js' %}"
-      defer
-      type="module"
-    ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="{% static 'js/cartella_paziente/sezioni_storico/terapie.js' %}" defer type="module"></script>
+
     <!-- Modale -->
     <script>
       function openModal(){
@@ -68,6 +56,7 @@
           document.getElementById('ModaleInserimento').style.display = 'none'
       }
     </script>
+
   </head>
 
   <body>
