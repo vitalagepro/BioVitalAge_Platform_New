@@ -5,7 +5,7 @@ from django.contrib.auth.models import User # type: ignore
 from django.contrib.auth.hashers import make_password # type: ignore
 
 
-# Tabella DOTTORI registrati
+# TABELLA DOTTORI REGISTRATI
 class UtentiRegistratiCredenziali(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     nome = models.CharField(max_length=100)
@@ -23,8 +23,7 @@ class UtentiRegistratiCredenziali(models.Model):
     def __str__(self):
         return f'{self.nome} {self.cognome}'
 
-
-# tabella DATI PAZIENTI associati al dottore
+# TABELLA PAZIENTI
 class TabellaPazienti(models.Model):
 
     dottore = models.ForeignKey(
@@ -143,97 +142,8 @@ class TabellaPazienti(models.Model):
     def __str__(self):
         return f"Paziente: {self.name} {self.surname}"
 
-
-
-# tabella REFERTI ETA' METABOLICA
-class RefertiEtaMetabolica(models.Model):
-    dottore = models.ForeignKey(
-        UtentiRegistratiCredenziali,
-        on_delete=models.CASCADE,
-        related_name='referti_eta_metabolica', 
-        null=True
-    )
-
-    paziente = models.ForeignKey(
-        TabellaPazienti,
-        on_delete=models.CASCADE,
-        related_name='referti_eta_metabolica'
-    )
-
-    punteggio_finale = models.CharField(max_length=100, null=True, blank=True) 
-    data_referto = models.DateTimeField(default=timezone.now)
-
-    # --- DOMINI CLINICI ---
-    # COMPOSIZIONE CORPOREA
-    bmi = models.CharField(max_length=100, null=True, blank=True) 
-    grasso = models.CharField(max_length=100, null=True, blank=True)
-    acqua = models.CharField(max_length=100, null=True, blank=True)
-    massa_muscolare = models.CharField(max_length=100, null=True, blank=True)
-    bmr = models.CharField(max_length=100, null=True, blank=True)
-    whr = models.CharField(max_length=100, null=True, blank=True)
-    whtr = models.CharField(max_length=100, null=True, blank=True)
-
-    # GLICEMICO
-    glicemia = models.CharField(max_length=100, null=True, blank=True)
-    ogtt = models.CharField(max_length=100, null=True, blank=True)
-    emoglobina_g = models.CharField(max_length=100, null=True, blank=True)
-    insulina_d = models.CharField(max_length=100, null=True, blank=True)
-    curva_i = models.CharField(max_length=100, null=True, blank=True)
-    homa_ir = models.CharField(max_length=100, null=True, blank=True)
-    tyg = models.CharField(max_length=100, null=True, blank=True)
-
-    # LIPIDICO
-    c_tot = models.CharField(max_length=100, null=True, blank=True)
-    hdl = models.CharField(max_length=100, null=True, blank=True)
-    ldl = models.CharField(max_length=100, null=True, blank=True)
-    trigliceridi = models.CharField(max_length=100, null=True, blank=True)
-
-    # METABOLICO EPATICO
-    ast = models.CharField(max_length=100, null=True, blank=True)
-    alt = models.CharField(max_length=100, null=True, blank=True)
-    ggt = models.CharField(max_length=100, null=True, blank=True)
-    bili_t = models.CharField(max_length=100, null=True, blank=True)
-
-    # INFIAMMAZIONE
-    pcr = models.CharField(max_length=100, null=True, blank=True)
-    hgs = models.CharField(max_length=100, null=True, blank=True)
-    sii = models.CharField(max_length=100, null=True, blank=True)
-
-    # STRESS
-    c_plasmatico = models.CharField(max_length=100, null=True, blank=True)
-
-    # ALTRI DATI
-    massa_ossea = models.CharField(max_length=100, null=True, blank=True)
-    eta_metabolica = models.CharField(max_length=100, null=True, blank=True)
-    grasso_viscerale = models.CharField(max_length=100, null=True, blank=True)
-    p_fisico = models.CharField(max_length=100, null=True, blank=True)
-    storico_punteggi = models.JSONField(default=list, blank=True)
-
-    # DATI ANTROPOMETRICI
-    height = models.CharField(max_length=255, null=True, blank=True)
-    weight = models.CharField(max_length=255, null=True, blank=True)
-    bmi_detection_date = models.DateField(null=True, blank=True)
-
-    # CIRCONFERENZA ADDOMINALE
-    girth_value = models.CharField(max_length=255, null=True, blank=True)
-    girth_notes = models.TextField(blank=True, null=True)
-    girth_date = models.DateField(null=True, blank=True)
-
-    def aggiungi_punteggio(self, nuovo_punteggio):
-        self.storico_punteggi.append({
-            "punteggio": nuovo_punteggio,
-            "data": timezone.now().isoformat()
-        })
-        self.punteggio_fisico = nuovo_punteggio
-        self.save(update_fields=["punteggio_fisico", "storico_punteggi"])
-
-    def __str__(self):
-        return f"Referto {self.id} - {self.paziente.name} {self.paziente.surname} - {self.data_referto.date()}"
-
-
-
-# Tabella archivio referti associata ai pazienti
-class ArchivioReferti(models.Model):
+# ETA BIOLOGICA
+class RefertiEtaBiologica(models.Model):
     paziente = models.ForeignKey(
         TabellaPazienti,
         on_delete=models.CASCADE, 
@@ -247,11 +157,9 @@ class ArchivioReferti(models.Model):
     def __str__(self):
         return f"Referto ID: {self.id} - Paziente: {self.paziente.name} {self.paziente.surname}"
 
-
-# Nuova tabella per i dati estesi dei referti
-class DatiEstesiReferti(models.Model):
+class DatiEstesiRefertiEtaBiologica(models.Model):
     referto = models.OneToOneField(
-        ArchivioReferti, 
+        RefertiEtaBiologica, 
         on_delete=models.CASCADE, 
         related_name='dati_estesi'
     )
@@ -437,11 +345,119 @@ class DatiEstesiReferti(models.Model):
 
     def __str__(self):
         return f"Dati Estesi Referto ID: {self.referto.id}"
-    
+   
+# ETA METABOLICA
+class RefertiEtaMetabolica(models.Model):
+    dottore = models.ForeignKey(
+        UtentiRegistratiCredenziali,
+        on_delete=models.CASCADE,
+        related_name='referti_eta_metabolica', 
+        null=True
+    )
 
+    paziente = models.ForeignKey(
+        TabellaPazienti,
+        on_delete=models.CASCADE,
+        related_name='referti_eta_metabolica'
+    )
 
-# Tabella archivio referti Quiz associata ai pazienti
-class ArchivioRefertiTest(models.Model):
+    punteggio_finale = models.CharField(max_length=100, null=True, blank=True) 
+    data_referto = models.DateTimeField(default=timezone.now)
+
+    # --- DOMINI CLINICI ---
+    # COMPOSIZIONE CORPOREA
+    bmi = models.CharField(max_length=100, null=True, blank=True) 
+    grasso = models.CharField(max_length=100, null=True, blank=True)
+    acqua = models.CharField(max_length=100, null=True, blank=True)
+    massa_muscolare = models.CharField(max_length=100, null=True, blank=True)
+    bmr = models.CharField(max_length=100, null=True, blank=True)
+    whr = models.CharField(max_length=100, null=True, blank=True)
+    whtr = models.CharField(max_length=100, null=True, blank=True)
+
+    # GLICEMICO
+    glicemia = models.CharField(max_length=100, null=True, blank=True)
+    ogtt = models.CharField(max_length=100, null=True, blank=True)
+    emoglobina_g = models.CharField(max_length=100, null=True, blank=True)
+    insulina_d = models.CharField(max_length=100, null=True, blank=True)
+    curva_i = models.CharField(max_length=100, null=True, blank=True)
+    homa_ir = models.CharField(max_length=100, null=True, blank=True)
+    tyg = models.CharField(max_length=100, null=True, blank=True)
+
+    # LIPIDICO
+    c_tot = models.CharField(max_length=100, null=True, blank=True)
+    hdl = models.CharField(max_length=100, null=True, blank=True)
+    ldl = models.CharField(max_length=100, null=True, blank=True)
+    trigliceridi = models.CharField(max_length=100, null=True, blank=True)
+
+    # METABOLICO EPATICO
+    ast = models.CharField(max_length=100, null=True, blank=True)
+    alt = models.CharField(max_length=100, null=True, blank=True)
+    ggt = models.CharField(max_length=100, null=True, blank=True)
+    bili_t = models.CharField(max_length=100, null=True, blank=True)
+
+    # INFIAMMAZIONE
+    pcr = models.CharField(max_length=100, null=True, blank=True)
+    hgs = models.CharField(max_length=100, null=True, blank=True)
+    sii = models.CharField(max_length=100, null=True, blank=True)
+
+    # STRESS
+    c_plasmatico = models.CharField(max_length=100, null=True, blank=True)
+
+    # ALTRI DATI
+    massa_ossea = models.CharField(max_length=100, null=True, blank=True)
+    eta_metabolica = models.CharField(max_length=100, null=True, blank=True)
+    grasso_viscerale = models.CharField(max_length=100, null=True, blank=True)
+    p_fisico = models.CharField(max_length=100, null=True, blank=True)
+    storico_punteggi = models.JSONField(default=list, blank=True)
+
+    # DATI ANTROPOMETRICI
+    height = models.CharField(max_length=255, null=True, blank=True)
+    weight = models.CharField(max_length=255, null=True, blank=True)
+    bmi_detection_date = models.DateField(null=True, blank=True)
+
+    # CIRCONFERENZA ADDOMINALE
+    girth_value = models.CharField(max_length=255, null=True, blank=True)
+    girth_notes = models.TextField(blank=True, null=True)
+    girth_date = models.DateField(null=True, blank=True)
+
+    def aggiungi_punteggio(self, nuovo_punteggio):
+        self.storico_punteggi.append({
+            "punteggio": nuovo_punteggio,
+            "data": timezone.now().isoformat()
+        })
+        self.punteggio_fisico = nuovo_punteggio
+        self.save(update_fields=["punteggio_fisico", "storico_punteggi"])
+
+    def __str__(self):
+        return f"Referto {self.id} - {self.paziente.name} {self.paziente.surname} - {self.data_referto.date()}"
+
+# CAPACITA RESILIENZA
+class Resilienza(models.Model):
+    paziente = models.ForeignKey(
+        TabellaPazienti,
+        on_delete=models.CASCADE,
+        related_name='resilienza'
+    )
+ 
+    hrv = models.FloatField(null=True, blank=True)
+    cortisolo = models.FloatField(null=True, blank=True)
+    ros = models.FloatField(null=True, blank=True)
+    osi = models.FloatField(null=True, blank=True)
+    droms = models.FloatField(null=True, blank=True)
+    pcr = models.FloatField(null=True, blank=True)
+    nlr = models.FloatField(null=True, blank=True)
+    homa = models.FloatField(null=True, blank=True)
+    ir = models.FloatField(null=True, blank=True)
+    omega_3 = models.FloatField(null=True, blank=True)
+    vo2max = models.FloatField(null=True, blank=True)
+
+    risultato = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Referto - {self.paziente.name} {self.paziente.surname}"
+
+# CAPACITA VITALE TABLE
+class RefertiCapacitaVitale(models.Model):
     paziente = models.ForeignKey(
         TabellaPazienti, 
         on_delete=models.CASCADE, 
@@ -455,11 +471,9 @@ class ArchivioRefertiTest(models.Model):
     def __str__(self):
         return f"Referto ID: {self.id} - Paziente: {self.paziente.name} {self.paziente.surname}"
 
-
-# Nuova tabella per i dati estesi dei referti
-class DatiEstesiRefertiTest(models.Model):
+class DatiEstesiRefertiCapacitaVitale(models.Model):
     referto = models.OneToOneField(
-        ArchivioRefertiTest, 
+        RefertiCapacitaVitale, 
         on_delete=models.CASCADE, 
         related_name='dati_estesi_test'
     )
@@ -519,82 +533,7 @@ class DatiEstesiRefertiTest(models.Model):
     def __str__(self):
         return f"Dati Estesi Referto ID: {self.referto.id}"
     
-
-
-
-
-# PRESCRIZIONI ESAMI UTENTE
-class PrescrizioniEsami(models.Model):
-    paziente = models.ForeignKey(
-        TabellaPazienti, 
-        on_delete=models.CASCADE, 
-        related_name='visite'
-    )
-    data_visita = models.DateField(auto_now_add=True)
-    esami_prescritti = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return f"Visita di - {self.data_visita}"
-
-
-
-
-
-
-
-
-
-
-# TABELLA APPUNTAMENTI
-class Appointment(models.Model):
-    dottore = models.ForeignKey(UtentiRegistratiCredenziali, on_delete=models.CASCADE, null=True, blank=True)
-    cognome_paziente = models.CharField(max_length=255, blank=True, null=True)
-    nome_paziente = models.CharField(max_length=255, blank=True, null=True)
-    tipologia_visita = models.CharField(max_length=100, choices=[('Fisioterapia Sportiva', 'Fisioterapia Sportiva'), ('Fisioterapia e Riabilitazione', 'Fisioterapia e Riabilitazione'), ('Fisioestetica', 'Fisioestetica')], blank=True, null=True)
-    data = models.DateField(default=datetime.now)
-    giorno = models.CharField(max_length=255, blank=True, null=True)
-    orario = models.TimeField()
-    durata = models.CharField(max_length=255, blank=True, null=True)
-    voce_prezzario = models.CharField(max_length=255, blank=True, null=True)
-    numero_studio = models.CharField(max_length=100, choices=[('Studio 1', 'Studio 1'), ('Studio 2', 'Studio 2'), ('Studio 3', 'Studio 3')], blank=True, null=True)
-    note = models.TextField(blank=True, null=True)
-    confermato = models.BooleanField(default=False)  # Campo per segnare la conferma
-    
-    def __str__(self):
-        return f"{self.nome_paziente} - {self.orario}"
-    
-
-
-
-
-
-#TABELLA CAPACITA' RESILIENZA
-class Resilienza(models.Model):
-    paziente = models.ForeignKey(
-        TabellaPazienti,
-        on_delete=models.CASCADE,
-        related_name='resilienza'
-    )
- 
-    hrv = models.FloatField(null=True, blank=True)
-    cortisolo = models.FloatField(null=True, blank=True)
-    ros = models.FloatField(null=True, blank=True)
-    osi = models.FloatField(null=True, blank=True)
-    droms = models.FloatField(null=True, blank=True)
-    pcr = models.FloatField(null=True, blank=True)
-    nlr = models.FloatField(null=True, blank=True)
-    homa = models.FloatField(null=True, blank=True)
-    ir = models.FloatField(null=True, blank=True)
-    omega_3 = models.FloatField(null=True, blank=True)
-    vo2max = models.FloatField(null=True, blank=True)
-
-    risultato = models.FloatField(null=True, blank=True)
-
-    def __str__(self):
-        return f"Referto - {self.paziente.name} {self.paziente.surname}"
-
-
-
+# VALUTAZIONE MUSCOLO SCHELETRICO
 class ValutazioneMS(models.Model):
     paziente = models.ForeignKey(
         TabellaPazienti,
@@ -656,8 +595,37 @@ class ValutazioneMS(models.Model):
     def __str__(self):
         return f"Referto - {self.paziente.name} {self.paziente.surname}"
 
-## TERAPIE
+# PRESCRIZIONI ESAMI UTENTE
+class PrescrizioniEsami(models.Model):
+    paziente = models.ForeignKey(
+        TabellaPazienti, 
+        on_delete=models.CASCADE, 
+        related_name='visite'
+    )
+    data_visita = models.DateField(auto_now_add=True)
+    esami_prescritti = models.TextField(blank=True, null=True)
 
+    def __str__(self):
+        return f"Visita di - {self.data_visita}"
+
+# TABELLA APPUNTAMENTI
+class Appointment(models.Model):
+    dottore = models.ForeignKey(UtentiRegistratiCredenziali, on_delete=models.CASCADE, null=True, blank=True)
+    cognome_paziente = models.CharField(max_length=255, blank=True, null=True)
+    nome_paziente = models.CharField(max_length=255, blank=True, null=True)
+    tipologia_visita = models.CharField(max_length=100, choices=[('Fisioterapia Sportiva', 'Fisioterapia Sportiva'), ('Fisioterapia e Riabilitazione', 'Fisioterapia e Riabilitazione'), ('Fisioestetica', 'Fisioestetica')], blank=True, null=True)
+    data = models.DateField(default=datetime.now)
+    giorno = models.CharField(max_length=255, blank=True, null=True)
+    orario = models.TimeField()
+    durata = models.CharField(max_length=255, blank=True, null=True)
+    voce_prezzario = models.CharField(max_length=255, blank=True, null=True)
+    numero_studio = models.CharField(max_length=100, choices=[('Studio 1', 'Studio 1'), ('Studio 2', 'Studio 2'), ('Studio 3', 'Studio 3')], blank=True, null=True)
+    note = models.TextField(blank=True, null=True)
+    confermato = models.BooleanField(default=False)  # Campo per segnare la conferma
+    
+    def __str__(self):
+        return f"{self.nome_paziente} - {self.orario}"
+    
 ## TERAPIA DOMICILIARE
 class TerapiaDomiciliare(models.Model):
     paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="terapie_domiciliari")

@@ -88,7 +88,7 @@ class HomePageRender(LoginRequiredMixin,View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persone = TabellaPazienti.objects.all().order_by('-id')[:5]
         today = timezone.now().date()
-        total_biological_age_count = DatiEstesiReferti.objects.aggregate(total=Count('biological_age'))['total']
+        total_biological_age_count = DatiEstesiRefertiEtaBiologica.objects.aggregate(total=Count('biological_age'))['total']
         total_pazienti = TabellaPazienti.objects.count() 
 
         # Calcola il minimo e il massimo dell'età cronologica
@@ -99,7 +99,7 @@ class HomePageRender(LoginRequiredMixin,View):
         # Ottieni solo gli appuntamenti futuri
         appuntamenti = Appointment.objects.filter(dottore=dottore, data__gte=today).order_by('data')[:4]
         # Calcola il totale "biological_age" solo per i referti associati ai pazienti di questo dottore
-        total_biological_age_count = DatiEstesiReferti.objects.filter(referto__paziente__dottore=dottore).aggregate(total=Count('biological_age'))['total']
+        total_biological_age_count = DatiEstesiRefertiEtaBiologica.objects.filter(referto__paziente__dottore=dottore).aggregate(total=Count('biological_age'))['total']
         total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
 
         # Calcola min, max e media dell'età cronologica solo per i pazienti del dottore
@@ -137,8 +137,8 @@ class HomePageRender(LoginRequiredMixin,View):
          # --- Calcolo per il report "Totale Prescrizioni" ---
 
         # Utilizza il campo data_referto per filtrare i referti
-        current_week_referti = ArchivioReferti.objects.filter(data_referto__gte=start_of_week).count()
-        last_week_referti = ArchivioReferti.objects.filter(data_referto__gte=start_of_last_week,
+        current_week_referti = RefertiEtaBiologica.objects.filter(data_referto__gte=start_of_week).count()
+        last_week_referti = RefertiEtaBiologica.objects.filter(data_referto__gte=start_of_last_week,
                                                            data_referto__lte=end_of_last_week).count()
         
         difference_referti = current_week_referti - last_week_referti
@@ -664,10 +664,10 @@ class RisultatiRender(LoginRequiredMixin,View):
         persone = TabellaPazienti.objects.filter(dottore=dottore)
  
         # Ottieni il referto più recente per ogni paziente
-        ultimo_referto = ArchivioReferti.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
+        ultimo_referto = RefertiEtaBiologica.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
 
         # Ottieni i dati estesi associati al referto più recente di ciascun paziente
-        datiEstesi = DatiEstesiReferti.objects.filter(referto=Subquery(ultimo_referto.values('id')[:1]))
+        datiEstesi = DatiEstesiRefertiEtaBiologica.objects.filter(referto=Subquery(ultimo_referto.values('id')[:1]))
 
         context = {
             'persone': persone,
@@ -860,12 +860,12 @@ class CartellaPazienteView(LoginRequiredMixin,View):
 
         #DATI REFERTI ETA' BIOLOGICA
         referti_recenti = persona.referti.all().order_by('-data_referto')
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+        dati_estesi = DatiEstesiRefertiEtaBiologica.objects.filter(referto__in=referti_recenti)
         ultimo_referto = referti_recenti.first() if referti_recenti else None
         
         dati_estesi_ultimo_referto = None
         if ultimo_referto:
-            dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+            dati_estesi_ultimo_referto = DatiEstesiRefertiEtaBiologica.objects.filter(referto=ultimo_referto).first()
      
 
         context = {
@@ -940,12 +940,12 @@ class CartellaPazienteView(LoginRequiredMixin,View):
 
         #DATI REFERTI ETA' BIOLOGICA
         referti_recenti = persona.referti.all().order_by('-data_referto')
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+        dati_estesi = DatiEstesiRefertiEtaBiologica.objects.filter(referto__in=referti_recenti)
         ultimo_referto = referti_recenti.first() if referti_recenti else None
         
         dati_estesi_ultimo_referto = None
         if ultimo_referto:
-            dati_estesi_ultimo_referto = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+            dati_estesi_ultimo_referto = DatiEstesiRefertiEtaBiologica.objects.filter(referto=ultimo_referto).first()
 
 
         context = {
@@ -1852,7 +1852,7 @@ class TestEtaVitaleView(LoginRequiredMixin,View):
 
         dati_estesi = None
         if ultimo_referto:
-            dati_estesi = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+            dati_estesi = DatiEstesiRefertiEtaBiologica.objects.filter(referto=ultimo_referto).first()
         
         context = {
             'persona': persona,
@@ -1972,7 +1972,7 @@ class TestEtaVitaleView(LoginRequiredMixin,View):
                                 GS, PPT, Sarc_f_Somma, persona.gender )
 
 
-            referto = ArchivioRefertiTest(
+            referto = RefertiCapacitaVitale(
                 paziente = persona,
                 punteggio = punteggioFinale,
                 #documento = request.FILES.get('documento')
@@ -1980,7 +1980,7 @@ class TestEtaVitaleView(LoginRequiredMixin,View):
             referto.save()
 
 
-            datiEstesi = DatiEstesiRefertiTest(
+            datiEstesi = DatiEstesiRefertiCapacitaVitale(
                 referto = referto,
 
                 #DOMINIO COGNITIVO 
@@ -2071,13 +2071,13 @@ class RefertoQuizView(LoginRequiredMixin,View):
         
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
-        referto = get_object_or_404(ArchivioRefertiTest, id=referto_id)
+        referto = get_object_or_404(RefertiCapacitaVitale, id=referto_id)
 
         ultimo_referto = persona.referti.order_by('-data_referto')
         
         datiEstesi = None
         if referto:
-            datiEstesi = DatiEstesiRefertiTest.objects.filter(referto=referto).first()
+            datiEstesi = DatiEstesiRefertiCapacitaVitale.objects.filter(referto=referto).first()
 
         testo_risultato = ''
 
@@ -2148,7 +2148,7 @@ class QuizEtaVitaleUpdateView(LoginRequiredMixin,View):
 
         dati_estesi = None
         if ultimo_referto:
-            dati_estesi = DatiEstesiReferti.objects.filter(referto=ultimo_referto).first()
+            dati_estesi = DatiEstesiRefertiEtaBiologica.objects.filter(referto=ultimo_referto).first()
 
         card_to_show = request.GET.get('card_name')
 
@@ -2172,13 +2172,13 @@ class StampaRefertoView(LoginRequiredMixin,View):
         
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
-        referto = get_object_or_404(ArchivioRefertiTest, id=referto_id)
+        referto = get_object_or_404(RefertiCapacitaVitale, id=referto_id)
         referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
         ultimo_referto = persona.referti.order_by('-data_referto')
         
         datiEstesi = None
         if referto:
-            datiEstesi = DatiEstesiRefertiTest.objects.filter(referto=referto).first()
+            datiEstesi = DatiEstesiRefertiCapacitaVitale.objects.filter(referto=referto).first()
 
         testo_risultato = ''
 
@@ -2317,7 +2317,7 @@ class CalcolatoreRender(LoginRequiredMixin,View):
                     paziente_query = get_object_or_404(TabellaPazienti, id=paziente.id)
 
                     # Salva i dati del referto
-                    referto = ArchivioReferti(
+                    referto = RefertiEtaBiologica(
                         paziente=paziente_query,
                         descrizione=data.get('descrizione'),
                     )
@@ -2548,7 +2548,7 @@ class CalcolatoreRender(LoginRequiredMixin,View):
                     )
 
                     # Salvataggio dei dati
-                    dati_estesi = DatiEstesiReferti(
+                    dati_estesi = DatiEstesiRefertiEtaBiologica(
                         referto=referto,
 
                         d_roms=d_roms,
@@ -2768,7 +2768,7 @@ class CalcolatoreRender(LoginRequiredMixin,View):
                     paziente.save()
 
 
-                    dati_estesi = DatiEstesiReferti(
+                    dati_estesi = DatiEstesiRefertiEtaBiologica(
                         chronological_age=chronological_age,  
                     )
                     dati_estesi.save()
@@ -2796,7 +2796,7 @@ class CalcolatoreRender(LoginRequiredMixin,View):
                     paziente_id = paziente.id
 
                     # Salva i dati del referto
-                    referto = ArchivioReferti(
+                    referto = RefertiEtaBiologica(
                         paziente=paziente,
                         descrizione=data.get('descrizione'),
                         documento=request.FILES.get('documento')
@@ -3027,7 +3027,7 @@ class CalcolatoreRender(LoginRequiredMixin,View):
                     )
 
                     # Salvataggio dei dati
-                    dati_estesi = DatiEstesiReferti(
+                    dati_estesi = DatiEstesiRefertiEtaBiologica(
                         referto=referto,
 
                         d_roms=d_roms,
@@ -3222,7 +3222,7 @@ class ElencoRefertiView(LoginRequiredMixin,View):
         
         #DATI REFERTI ETA' BIOLOGICA
         referti_recenti = persona.referti.all().order_by('-data_referto')
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+        dati_estesi = DatiEstesiRefertiEtaBiologica.objects.filter(referto__in=referti_recenti)
         
         dati_estesi_ultimo_referto = None
 
@@ -3252,12 +3252,12 @@ class PersonaDetailView(LoginRequiredMixin,View):
 
         # Recupera il referto specifico se l'ID è passato, altrimenti l'ultimo referto
         if referto_id:
-            referto = get_object_or_404(ArchivioReferti, id=referto_id, paziente=persona)
+            referto = get_object_or_404(RefertiEtaBiologica, id=referto_id, paziente=persona)
         else:
-            referto = ArchivioReferti.objects.filter(paziente=persona).order_by("-data_ora_creazione").first()
+            referto = RefertiEtaBiologica.objects.filter(paziente=persona).order_by("-data_ora_creazione").first()
 
         # Ottieni i dati estesi associati al referto selezionato
-        dati_estesi = DatiEstesiReferti.objects.filter(referto=referto).first() if referto else None
+        dati_estesi = DatiEstesiRefertiCapacitaVitale.objects.filter(referto=referto).first() if referto else None
 
         # Preparazione del contesto per il template
         context = {
@@ -3446,7 +3446,7 @@ class UpdatePersonaContactView(LoginRequiredMixin,View):
 @method_decorator(catch_exceptions, name='dispatch')
 class RefertoView(LoginRequiredMixin,View):
     def get(self, request, referto_id):
-        referto = ArchivioReferti.objects.get(id=referto_id)
+        referto = RefertiEtaBiologica.objects.get(id=referto_id)
         return render(request, 'cartella_paziente/eta_biologica//Referto.html', {'data_referto': referto.data_referto})
 
 
