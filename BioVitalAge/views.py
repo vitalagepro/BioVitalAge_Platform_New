@@ -1189,6 +1189,19 @@ class StoricoView(LoginRequiredMixin,View):
 
         return render(request, 'cartella_paziente/sezioni_storico/storico.html', context)
 
+## VIEW ESAMI
+class EsamiView(View):
+    def get(self, request, id):
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+        }
+
+        return render(request, 'cartella_paziente/sezioni_storico/esami.html', context)
+
 ## VIEW TERAPIA
 class TerapiaView(View):
     def get(self, request, id):
@@ -3508,7 +3521,7 @@ class PrescrizioniView(LoginRequiredMixin,View):
             'dottore': dottore,
         }
 
-        return render(request, "cartella_paziente/piano_terapeutico/prescrizioni.html", context)
+        return render(request, "cartella_paziente/sezioni_storico/esami.html", context)
 
 
     def post(self, request, persona_id):
@@ -3524,7 +3537,6 @@ class PrescrizioniView(LoginRequiredMixin,View):
         )
 
         return redirect('piano_terapeutico', persona_id)
-
 
 # TO DEFINE
 class UpdatePersonaContactView(LoginRequiredMixin,View):

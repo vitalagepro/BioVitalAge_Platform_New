@@ -24,7 +24,7 @@
                 class="{% if request.resolver_match.url_name == 'Terapie' %}active-link{% endif %}">
                 Terapie
             </a>
-            <a href="#"
+            <a href="{% url 'esami' persona.id %}"
                 class="{% if request.resolver_match.url_name == 'Esami' %}active-link{% endif %}">
                 Esami
             </a>
