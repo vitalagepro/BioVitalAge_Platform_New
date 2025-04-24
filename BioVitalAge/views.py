@@ -23,7 +23,6 @@ from django.utils import timezone as dj_timezone # type: ignore
 from django.utils.decorators import method_decorator # type: ignore
 from django.utils.timezone import now, localtime # type: ignore
 from django.utils.dateparse import parse_date # type: ignore
-from django.utils.dateparse import parse_date
 from django.db.models import OuterRef, Subquery, Count, Q, Avg, Min, Max # type: ignore
 from django.db.models.functions import ExtractMonth # type: ignore
 from django.contrib.auth.hashers import check_password # type: ignore
@@ -35,17 +34,21 @@ from django.contrib.auth import update_session_auth_hash # type: ignore
 
 # --- IMPORTS PERSONALI (APP) ---
 from .utils import *
-from .utils import calculate_biological_age, CalcoloPunteggioCapacitaVitale
-from .calcoloMetabolica import *
+from BioVitalAge.funzioni_python.calcolo_capacita_vitale import *
+from BioVitalAge.funzioni_python.calcolo_eta_biologica import *
+from BioVitalAge.funzioni_python.calcoloMetabolica import *
 from .models import *
-from .models import TabellaPazienti, ArchivioReferti
+from BioVitalAge.error_handlers import catch_exceptions
 
 
 logger = logging.getLogger(__name__)
 
+#----------------------------------------
+# ----  SEZIONE LOGIN / HOME PAGE   -----
+#----------------------------------------
 
-# -- SEZIONE LOGIN / HOME PAGE VIEW --
-## VIEW LOGIN RENDER
+# VIEW LOGIN
+@method_decorator(catch_exceptions, name='dispatch')
 class LoginRenderingPage(View):
 
     def get(self, request):
@@ -66,30 +69,16 @@ class LoginRenderingPage(View):
             'error': 'Email o password non valide'
         })
 
-
-## VIEW LOGOUT
+# VIEW LOGOUT
+@method_decorator(catch_exceptions, name='dispatch')
 class LogOutRender(View):
 
     def get(self, request):
         logout(request)
-        return redirect('loginPage')
+        return redirect('login')
 
-
-
-## VIEW PER ACCETTARE IL DISCLAIMER
-class AcceptDisclaimerView(LoginRequiredMixin, View):
-    login_url = 'login'
-
-    def post(self, request):
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        dottore.cookie = "SI"
-        dottore.save(update_fields=['cookie'])
-        return JsonResponse({"success": True})
-
-
-
-
-## VIEW PER LOGIN FORM - HOME PAGE RENDER
+# VIEW HOME PAGE
+@method_decorator(catch_exceptions, name='dispatch')
 class HomePageRender(LoginRequiredMixin,View):
 
     login_url = 'loginPage'
@@ -221,181 +210,109 @@ class HomePageRender(LoginRequiredMixin,View):
         context["emails"] = emails  # ← questo è il campo letto nel template da: <script id="emails-data">
         return render(request, "home_page/homePage.html", context)
 
+# VIEW PER LA SEZIONE STATISTICHE
+@method_decorator(catch_exceptions, name='dispatch')
+class StatisticheView(LoginRequiredMixin,View):
 
+    def get(self, request):
 
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
-    # DA SISTEMARE
-    def post(self, request):
+        context = {
+            'dottore' : dottore,
+            'emails': get_gmail_emails_for_user(request.user)
+        }
         
-        #RECUPERA CREDENZIALI
-        emailInput = request.POST['email']
-        passwordInput = request.POST['password']
-
-        # 1. Verifica se l'email è presente nel DB
         try:
-            dottore = UtentiRegistratiCredenziali.objects.get(email=emailInput)
-        except UtentiRegistratiCredenziali.DoesNotExist:
-            return render(request, 'includes/login.html', {
-                'error': 'Email inserita non valida o non registrata'
-            })
+            social_auth = UserSocialAuth.objects.get(user__email=dottore.email, provider="google-oauth2")
+            emails = get_gmail_emails_for_user(social_auth.user)
+        except UserSocialAuth.DoesNotExist:
+            print("⚠️ Account Google non collegato per:", dottore.email)
+            emails = []
 
-        # 2. Verifica la password usando il controllo dell'hash
-        if check_password(passwordInput, dottore.password):
+        context["emails"] = emails
+        return render(request, "home_page/statistiche.html", context)
+    
+# VIEW PER LE NOTIFICHE MEDICAL NEWS
+class MedicalNewsNotificationsView(LoginRequiredMixin,View):
+    def get(self, request, *args, **kwargs):
+        try:
+            # Controlla se i dati sono già in cache
+            cached_news = cache.get('medical_news')
+            if cached_news:
+                return JsonResponse({"success": True, "news": cached_news})
             
-            # 3. Recupera e calcola le informazioni per la home page
+            api_key = "80734c3bf8e34cf58beedc44db417a73"
+            url = f"https://newsapi.org/v2/everything?q=medicina&language=it&apiKey={api_key}"
+            response = requests.get(url)
+            data = response.json()
+            news = []
+            # Controlla se lo status della risposta è "ok"
+            if data.get("status") == "ok":
+                # Usa la chiave "articles" per ottenere gli articoli
+                articles = data.get("articles", [])
+                for article in articles[:2]:
+                    title = article.get("title", "Notizia medica")
+                    description = article.get("description", "")
+                    # Usa "publishedAt" per la data e prendi solo la parte della data
+                    published_at = article.get("publishedAt", "")[:10]
+                    # Usa "url" per ottenere il link
+                    link = article.get("url", "#")
+                    news.append({
+                        "id": str(uuid.uuid4()),
+                        "title": title,
+                        "description": description,
+                        "published_at": published_at,
+                        "link": link,
+                        "type": "info",
+                        "origin": "medical"
+                    })
+                # Salva in cache per 30 minuti (1800 secondi)
+                cache.set('medical_news', news, 1800)
+            return JsonResponse({"success": True, "news": news})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
 
-            # Ottieni i 5 pazienti più recenti
-            persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
+# VIEW PER LE NOTIFICHE
+class AppointmentNotificationsView(LoginRequiredMixin, View):
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            # non serve più guardare request.session['dottore_id']
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
-            # Calcola alcuni aggregati globali
-            total_biological_age_count = DatiEstesiReferti.objects.filter(
-                referto__paziente__dottore=dottore
-            ).aggregate(total=Count('biological_age'))['total']
-            total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
+            # fuso orario, oggi/domani...
+            now_local = timezone.localtime(timezone.now())
+            today = now_local.date()
+            tomorrow = today + timedelta(days=1)
 
-            # Appuntamenti futuri
-            today = dj_timezone.now().date()
-            appuntamenti = Appointment.objects.filter(
-                dottore=dottore, data__gte=today
-            ).order_by('data')[:4]
-
-            # Calcoli aggregati per età (min, max, media)
-            agg_age = TabellaPazienti.objects.filter(dottore=dottore).aggregate(
-                min_age=Min('chronological_age'),
-                max_age=Max('chronological_age'),
-                avg_age=Avg('chronological_age')
-            )
-            min_age = agg_age['min_age']
-            max_age = agg_age['max_age']
-            avg_age = agg_age['avg_age']
-
-            # --- Calcolo per il report "Totale Pazienti" ---
-            today_dj = dj_timezone.now().date()
-            start_of_week = today_dj - timedelta(days=today_dj.weekday())
-            start_of_last_week = start_of_week - timedelta(days=7)
-            end_of_last_week = start_of_week - timedelta(days=1)
-
-            current_week_patients = TabellaPazienti.objects.filter(
-                dottore=dottore, created_at__gte=start_of_week
-            ).count()
-            last_week_patients = TabellaPazienti.objects.filter(
-                dottore=dottore, created_at__gte=start_of_last_week, created_at__lte=end_of_last_week
-            ).count()
-
-            difference = current_week_patients - last_week_patients
-            if last_week_patients > 0:
-                percentage_increase = (difference / last_week_patients) * 100
-            else:
-                percentage_increase = 100 if current_week_patients > 0 else 0
-
-            # --- Calcolo per il report "Totale Prescrizioni" ---
-            current_week_referti = ArchivioReferti.objects.filter(
-                paziente__dottore=dottore, data_referto__gte=start_of_week
-            ).count()
-            last_week_referti = ArchivioReferti.objects.filter(
-                paziente__dottore=dottore, data_referto__gte=start_of_last_week, data_referto__lte=end_of_last_week
-            ).count()
-
-            difference_referti = current_week_referti - last_week_referti
-            abs_difference_referti = abs(difference_referti)
-            if last_week_referti > 0:
-                percentage_increase_referti = abs(difference_referti) / last_week_referti * 100
-            else:
-                percentage_increase_referti = 100 if current_week_referti > 0 else 0
-
-            # Calcola la percentuale media dell'età cronologica
-            if min_age is not None and max_age is not None and max_age != min_age:
-                relative_position = (avg_age - min_age) / (max_age - min_age)
-                media_percentage = relative_position * 100
-            else:
-                media_percentage = 0
-
-            # Ottieni i dati estesi relativi all'ultimo referto per ogni paziente
-            ultimo_referto = ArchivioReferti.objects.filter(
-                paziente=OuterRef('referto__paziente')
-            ).order_by('-data_referto')
-            datiEstesi = DatiEstesiReferti.objects.filter(
-                referto=Subquery(ultimo_referto.values('id')[:1])
-            )
-
-            # Prepara il contesto in base al flag "cookie" per il disclaimer
-            if dottore.cookie == "SI":
-                context = {
-                    'persone': persone,
-                    'total_pazienti': total_pazienti,
-                    'total_biological_age': total_biological_age_count,
-                    'appuntamenti': appuntamenti,
-                    'current_week_patients': current_week_patients,
-                    'last_week_patients': last_week_patients,
-                    'difference': difference,
-                    'percentage_increase': percentage_increase,
-                    'current_week_referti': current_week_referti,
-                    'last_week_referti': last_week_referti,
-                    'difference_referti': difference_referti,
-                    'percentage_increase_referti': percentage_increase_referti,
-                    'abs_difference_referti': abs_difference_referti,
-                    'min_age': min_age,
-                    'max_age': max_age,
-                    'media_percentage': media_percentage,
-                    'dottore': dottore,
-                    'dati_estesi': datiEstesi,
-                    'emails': get_gmail_emails_for_user(request.user),
-                }
-            else:
-                context = {
-                    'persone': persone,
-                    'total_pazienti': total_pazienti,
-                    'total_biological_age': total_biological_age_count,
-                    'appuntamenti': appuntamenti,
-                    'current_week_patients': current_week_patients,
-                    'last_week_patients': last_week_patients,
-                    'difference': difference,
-                    'percentage_increase': percentage_increase,
-                    'current_week_referti': current_week_referti,
-                    'last_week_referti': last_week_referti,
-                    'difference_referti': difference_referti,
-                    'percentage_increase_referti': percentage_increase_referti,
-                    'abs_difference_referti': abs_difference_referti,
-                    'min_age': min_age,
-                    'max_age': max_age,
-                    'media_percentage': media_percentage,
-                    'dottore': dottore,
-                    'emails': get_gmail_emails_for_user(request.user),
-                    'show_disclaimer': True
-                }
-
-            # Gestione dati aggiuntivi (Social Auth per Google)
-            try:
-                social_auth = UserSocialAuth.objects.get(
-                    user__email=dottore.email, provider="google-oauth2"
-                )
-                emails = get_gmail_emails_for_user(social_auth.user)
-            except UserSocialAuth.DoesNotExist:
-                print("⚠️ Account Google non collegato per:", dottore.email)
-                emails = []
-            context['emails'] = emails
-
-            return render(request, 'home_page/homePage.html', context)
-
-        else:
-            # Se la password non è corretta, restituisci un messaggio d'errore
-            return render(request, 'includes/login.html', {'error': 'Password errata'})
-
-
-
-
-
-
-
-
-
-## VIEW PER LA SEZIONE PROFILO
-
+            notifications = []
+            # Appuntamenti di oggi per il dottore loggato
+            todays_appts = Appointment.objects.filter(data=today, dottore=dottore)
+            for appt in todays_appts:
+                appt_time = appt.orario.strftime('%H:%M') if appt.orario else ""
+                message = f"Oggi alle {appt_time} hai un appuntamento con {appt.nome_paziente} {appt.cognome_paziente}"
+                notifications.append({"message": message, "type": "info"})
+            
+            # Appuntamenti di domani per il dottore loggato
+            tomorrows_appts = Appointment.objects.filter(data=tomorrow, dottore=dottore)
+            count_tomorrow = tomorrows_appts.count()
+            if count_tomorrow > 0:
+                message = f"Domani hai {count_tomorrow} appuntamenti in programma, vai nella sezione appuntamenti per visionarli."
+                notifications.append({"message": message, "type": "warning"})
+            
+            return JsonResponse({"success": True, "notifications": notifications})
+        
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+        
+# VIEW PER LA SEZIONE PROFILO
 def save(self, *args, **kwargs):
     if self.password and not self.password.startswith('pbkdf2_sha256$'):
         self.password = make_password(self.password)
     super().save(*args, **kwargs)
 
+@method_decorator(catch_exceptions, name='dispatch')
 class ProfileView(LoginRequiredMixin, View):
 
     login_url = 'loginPage'
@@ -473,116 +390,13 @@ class ProfileView(LoginRequiredMixin, View):
 
 
 
-## VIEW PER LA SEZIONE STATISTICHE
-class StatisticheView(LoginRequiredMixin,View):
-    def get(self, request):
 
-        
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+#----------------------------------------
+#--------- SEZIONE APPUNTAMENTI ---------
+#----------------------------------------
 
-        context = {
-            'dottore' : dottore,
-            'emails': get_gmail_emails_for_user(request.user)  # 👈 AGGIUNGI QUI
-        }
-        
-        try:
-            social_auth = UserSocialAuth.objects.get(user__email=dottore.email, provider="google-oauth2")
-            emails = get_gmail_emails_for_user(social_auth.user)
-        except UserSocialAuth.DoesNotExist:
-            print("⚠️ Account Google non collegato per:", dottore.email)
-            emails = []
-
-        context["emails"] = emails  # ← questo è il campo letto nel template da: <script id="emails-data">
-        return render(request, "cartella_paziente/home_page/statistiche.html", context)
-
-## VIEW PER LE NOTIFICHE
-class AppointmentNotificationsView(LoginRequiredMixin,View):
-    def get(self, request, *args, **kwargs):
-        try:
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-            
-            # Usa il fuso orario locale (modifica se usi timezone aware)
-            now_local = timezone.localtime(timezone.now())
-            today = now_local.date()
-            tomorrow = today + timedelta(days=1)
-            
-            notifications = []
-            
-            # Appuntamenti di oggi per il dottore loggato
-            todays_appts = Appointment.objects.filter(data=today, dottore=dottore)
-            for appt in todays_appts:
-                appt_time = appt.orario.strftime('%H:%M') if appt.orario else ""
-                message = f"Oggi alle {appt_time} hai un appuntamento con {appt.nome_paziente} {appt.cognome_paziente}"
-                notifications.append({"message": message, "type": "info"})
-            
-            # Appuntamenti di domani per il dottore loggato
-            tomorrows_appts = Appointment.objects.filter(data=tomorrow, dottore=dottore)
-            count_tomorrow = tomorrows_appts.count()
-            if count_tomorrow > 0:
-                message = f"Domani hai {count_tomorrow} appuntamenti in programma, vai nella sezione appuntamenti per visionarli."
-                notifications.append({"message": message, "type": "warning"})
-            
-            return JsonResponse({"success": True, "notifications": notifications})
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-## VIEW PER LE NOTIFICHE MEDICAL NEWS
-class MedicalNewsNotificationsView(LoginRequiredMixin,View):
-    def get(self, request, *args, **kwargs):
-        try:
-            # Controlla se i dati sono già in cache
-            cached_news = cache.get('medical_news')
-            if cached_news:
-                return JsonResponse({"success": True, "news": cached_news})
-            
-            api_key = "80734c3bf8e34cf58beedc44db417a73"
-            url = f"https://newsapi.org/v2/everything?q=medicina&language=it&apiKey={api_key}"
-            response = requests.get(url)
-            data = response.json()
-            news = []
-            # Controlla se lo status della risposta è "ok"
-            if data.get("status") == "ok":
-                # Usa la chiave "articles" per ottenere gli articoli
-                articles = data.get("articles", [])
-                for article in articles[:2]:
-                    title = article.get("title", "Notizia medica")
-                    description = article.get("description", "")
-                    # Usa "publishedAt" per la data e prendi solo la parte della data
-                    published_at = article.get("publishedAt", "")[:10]
-                    # Usa "url" per ottenere il link
-                    link = article.get("url", "#")
-                    news.append({
-                        "id": str(uuid.uuid4()),
-                        "title": title,
-                        "description": description,
-                        "published_at": published_at,
-                        "link": link,
-                        "type": "info",
-                        "origin": "medical"
-                    })
-                # Salva in cache per 30 minuti (1800 secondi)
-                cache.set('medical_news', news, 1800)
-            return JsonResponse({"success": True, "news": news})
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
-
-## VIEW PER ACCETTARE IL DISCLAIMER
-class AcceptDisclaimerView(LoginRequiredMixin,View):
-    def post(self, request):
-        
-        response = JsonResponse({"success": True})
-        
-        
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-
-        context = {
-            'dottore' : dottore
-        }
-
-        return render(request, "cartella_paziente/home_page/statistiche.html", context)
-
-## SEZIONE APPUNTAMENTI
-### VIEWS APPUNTAMENTI
+# VIEWS APPUNTAMENTI
+@method_decorator(catch_exceptions, name='dispatch')
 class AppuntamentiView(LoginRequiredMixin,View):
     def get(self, request):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
@@ -606,7 +420,8 @@ class AppuntamentiView(LoginRequiredMixin,View):
 
         return render(request, 'includes/Appuntamenti.html', context)
     
-### VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
+# VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
+@method_decorator(catch_exceptions, name='dispatch')
 class AppuntamentiSalvaView(LoginRequiredMixin,View):
     def post(self, request):
         if request.method == "POST":
@@ -651,7 +466,8 @@ class AppuntamentiSalvaView(LoginRequiredMixin,View):
 
         return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
 
-### VIEWS SINGLE APPOINTMENT
+# VIEWS SINGLE APPOINTMENT
+@method_decorator(catch_exceptions, name='dispatch')
 class GetSingleAppointmentView(LoginRequiredMixin,View):
     def get(self, request, appointment_id):
         """Recupera i dettagli di un singolo appuntamento"""
@@ -680,7 +496,8 @@ class GetSingleAppointmentView(LoginRequiredMixin,View):
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-### VIEWS GET ALL APPOINTMENTS
+# VIEWS GET ALL APPOINTMENTS
+@method_decorator(catch_exceptions, name='dispatch')
 class AppuntamentiGetView(LoginRequiredMixin,View):
     def get(self, request):
         """Recupera gli appuntamenti futuri o di oggi"""
@@ -719,7 +536,8 @@ class AppuntamentiGetView(LoginRequiredMixin,View):
 
         return JsonResponse({"success": True, "deleted": deleted_count, "appointments": appointments_by_date})
 
-### VIEWS UPDATE APPOINTMENT
+# VIEWS UPDATE APPOINTMENT
+@method_decorator(catch_exceptions, name='dispatch')
 class UpdateAppointmentView(LoginRequiredMixin,View):
     def patch(self, request, appointment_id):
         try:
@@ -751,7 +569,8 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-### VIEWS APPROVE APPOINTMENT
+# VIEWS APPROVE APPOINTMENT
+@method_decorator(catch_exceptions, name='dispatch')
 class ApproveAppointmentView(LoginRequiredMixin,View):
     def post(self, request, appointment_id):
         appointment = get_object_or_404(Appointment, id=appointment_id)
@@ -759,7 +578,8 @@ class ApproveAppointmentView(LoginRequiredMixin,View):
         appointment.save()
         return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
 
-### VIEWS DELETE APPOINTMENT
+# VIEWS DELETE APPOINTMENT
+@method_decorator(catch_exceptions, name='dispatch')
 class DeleteAppointmentView(View):
     def post(self, request, appointment_id):  # 👈 aggiungi questo
         try:
@@ -771,7 +591,8 @@ class DeleteAppointmentView(View):
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-### VIEW SEARCH APPOINTMENTS
+# VIEW SEARCH APPOINTMENTS
+@method_decorator(catch_exceptions, name='dispatch')
 class SearchAppointmentsView(LoginRequiredMixin,View):
     def get(self, request):
         query = request.GET.get("q", "").lower().strip()
@@ -784,31 +605,36 @@ class SearchAppointmentsView(LoginRequiredMixin,View):
             return JsonResponse({"success": True, "appointments": results})
         return JsonResponse({"success": False, "error": "Nessuna query fornita"})
     
-### VIEW CREATE PATIENT FROM SECOND MODAL
+# VIEW CREATE PATIENT FROM SECOND MODAL
+@method_decorator(catch_exceptions, name='dispatch')
 class CreaPazienteView(LoginRequiredMixin,View):
+
+    login_url = 'loginPage'
+
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)
-            print("📥 Dati ricevuti dal frontend:", data)  # DEBUG
 
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
             name = data.get("name", "").strip()
             surname = data.get("surname", "").strip()
             phone = data.get("phone", "").strip()
-            email = data.get("email", "").strip()  # Assumendo che tu abbia il campo email nel modello
+            email = data.get("email", "").strip() 
             
-
             if not name or not surname:
-                print("⚠ Errore: Nome e cognome obbligatori")  # DEBUG
                 return JsonResponse({"success": False, "error": "Nome e cognome sono obbligatori!"}, status=400)
 
+            if not dottore:
+                return JsonResponse({"success": False, "error": "Devi essere autenticato per aggiungere un paziente."}, status=403)
+            
             # Creazione paziente
             paziente = TabellaPazienti.objects.create(
                 name=name,
                 surname=surname,
                 phone=phone,
-                email=email  # Assumendo che email esista nel modello
+                email=email,
+                dottore=dottore
             )
-            print(f"✅ Paziente {paziente.id} salvato: {paziente.name} {paziente.surname}, {paziente.email}")  # DEBUG
 
             return JsonResponse({
                 "success": True,
@@ -818,16 +644,23 @@ class CreaPazienteView(LoginRequiredMixin,View):
             })
 
         except json.JSONDecodeError:
-            print("❌ Errore JSON ricevuto nel backend!")  # DEBUG
+            #print("❌ Errore JSON ricevuto nel backend!")  # DEBUG
             return JsonResponse({"success": False, "error": "Formato JSON non valido."}, status=400)
 
         except Exception as e:
-            print(f"❌ Errore nel backend: {e}")  # DEBUG
+            #print(f"❌ Errore nel backend: {e}")  # DEBUG
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 
-# -- SEZIONE RICERCA PAZIENTE --
-## VIEW PER SEZIONE RICERCA PAZIENTI
+
+
+
+#----------------------------------------
+# ------ SEZIONE RICERCA PAZIENTE -------
+#----------------------------------------
+
+# VIEW PER SEZIONE RICERCA PAZIENTI
+@method_decorator(catch_exceptions, name='dispatch')
 class RisultatiRender(LoginRequiredMixin,View):
     def get(self, request):
           
@@ -849,6 +682,7 @@ class RisultatiRender(LoginRequiredMixin,View):
 
         return render(request, "includes/risultati.html", context)
 
+@method_decorator(catch_exceptions, name='dispatch')
 class InserisciPazienteView(LoginRequiredMixin,View):
 
     def get(self, request):
@@ -965,13 +799,25 @@ class InserisciPazienteView(LoginRequiredMixin,View):
             context["errore"] = f"Errore di sistema: {str(e)}. Verifica i campi e riprova."
             return render(request, "includes/InserisciPaziente.html", context)
 
-# -- SEZIONE CARTELLA PAZIENTE --
-## VIEW CARTELLA PAZIENTE
+
+
+
+
+
+
+
+
+
+#----------------------------------------
+# ------ SEZIONE CARTELLA PAZIENTE ------
+#----------------------------------------
+
+# VIEW CARTELLA PAZIENTE
+@method_decorator(catch_exceptions, name='dispatch')
 class CartellaPazienteView(LoginRequiredMixin,View):
 
     def get(self, request, id):
-        
-        
+         
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
 
@@ -1126,8 +972,8 @@ class CartellaPazienteView(LoginRequiredMixin,View):
 
         return render(request, "includes/cartellaPaziente.html", context)
 
-
-## VIEW STORICO
+# VIEW STORICO
+@method_decorator(catch_exceptions, name='dispatch')
 class StoricoView(LoginRequiredMixin,View):
     def get(self, request, id):
         # Recupero Dottore e Paziente
@@ -1190,6 +1036,7 @@ class StoricoView(LoginRequiredMixin,View):
         return render(request, 'cartella_paziente/sezioni_storico/storico.html', context)
 
 ## VIEW ESAMI
+@method_decorator(catch_exceptions, name='dispatch')
 class EsamiView(View):
     def get(self, request, id):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
@@ -1203,6 +1050,7 @@ class EsamiView(View):
         return render(request, 'cartella_paziente/sezioni_storico/esami.html', context)
 
 ## VIEW TERAPIA
+@method_decorator(catch_exceptions, name='dispatch')
 class TerapiaView(View):
     def get(self, request, id):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
@@ -1290,7 +1138,8 @@ class TerapiaView(View):
 
         return JsonResponse({'success': False})
 
-# ELIMINA TERAPIA studio
+# ELIMINA TERAPIA FUNZIONE
+@method_decorator(catch_exceptions, name='dispatch')
 class EliminaTerapiaStudioView(View):
     def post(self, request, id):
         terapia = get_object_or_404(TerapiaInStudio, id=id)
@@ -1305,6 +1154,8 @@ class TerapiaDomiciliareDeleteView(View):
         return JsonResponse({'success': True})
 
 # MODIFICA TERAPIA STUDIO
+# MODIFICA TERAPIA
+@method_decorator(catch_exceptions, name='dispatch')
 class ModificaTerapiaStudioView(View):
     def post(self, request, id):
         terapia = get_object_or_404(TerapiaInStudio, id=id)
@@ -1377,6 +1228,8 @@ class DettagliTerapiaDomiciliareView(View):
             return JsonResponse({'success': False, 'message': 'Terapia non trovata'}, status=404)
 
 ## VIEW DIAGNOSI
+# VIEW DIAGNOSI
+@method_decorator(catch_exceptions, name='dispatch')
 class DiagnosiView(View):
     def get(self, request, id):
 
@@ -1426,6 +1279,7 @@ class DiagnosiView(View):
         return JsonResponse({'success': False})
 
 # ELIMINA TERAPIA FUNZIONE
+@method_decorator(catch_exceptions, name='dispatch')
 class EliminaTerapiaStudioView(View):
     def post(self, request, id):
         terapia = get_object_or_404(TerapiaInStudio, id=id)
@@ -1433,6 +1287,7 @@ class EliminaTerapiaStudioView(View):
         return JsonResponse({'success': True})
 
 # MODIFICA TERAPIA
+@method_decorator(catch_exceptions, name='dispatch')
 class ModificaTerapiaStudioView(View):
     def post(self, request, id):
         terapia = get_object_or_404(TerapiaInStudio, id=id)
@@ -1454,6 +1309,7 @@ class ModificaTerapiaStudioView(View):
         })
 
 ## VIEW DIAGNOSI
+@method_decorator(catch_exceptions, name='dispatch')
 class DiagnosiView(LoginRequiredMixin,View):
     def get(self, request, id):
 
@@ -1468,8 +1324,8 @@ class DiagnosiView(LoginRequiredMixin,View):
 
         return render(request, 'cartella_paziente/sezioni_storico/diagnosi.html', context)
 
-
 ## SEZIONE MUSCOLO
+@method_decorator(catch_exceptions, name='dispatch')
 class ValutazioneMSView(LoginRequiredMixin,View):
 
     def get(self, request, persona_id):
@@ -1558,8 +1414,8 @@ class ValutazioneMSView(LoginRequiredMixin,View):
         }
         return render(request, "cartella_paziente/indici_di_performance/valutazioneMS.html", context)
 
-
 ## SEZIONE DATI BASE
+@method_decorator(catch_exceptions, name='dispatch')
 class DatiBaseView(LoginRequiredMixin,View):
 
     def get(self, request, id):
@@ -1671,6 +1527,7 @@ class DatiBaseView(LoginRequiredMixin,View):
 
 
 ## SEZIONE ETA' METABOLICA
+@method_decorator(catch_exceptions, name='dispatch')
 class ComposizioneView(LoginRequiredMixin,View):
 
     def get(self, request, id):
@@ -1826,6 +1683,7 @@ class ComposizioneView(LoginRequiredMixin,View):
 
         return render(request, "cartella_paziente/eta_metabolica/etaMetabolica.html", context)
 
+@method_decorator(catch_exceptions, name='dispatch')
 class ComposizioneChartView(LoginRequiredMixin,View):
 
     def get(self, request, id):
@@ -2020,6 +1878,7 @@ class ComposizioneChartView(LoginRequiredMixin,View):
         }
         return render(request, 'cartella_paziente/eta_metabolica/grafici.html', context)
 
+@method_decorator(catch_exceptions, name='dispatch')
 class RefertiComposizioneView(LoginRequiredMixin,View):
     def get(self, request, id):
         persona = get_object_or_404(TabellaPazienti, id=id)
@@ -2044,6 +1903,7 @@ class RefertiComposizioneView(LoginRequiredMixin,View):
 
 
 ## SEZIONE CAPACITA' VITALE
+@method_decorator(catch_exceptions, name='dispatch')
 class EtaVitaleView(LoginRequiredMixin,View):
 
     def get(self, request, id):
@@ -2064,7 +1924,8 @@ class EtaVitaleView(LoginRequiredMixin,View):
     
     def post(self):
         return
-    
+
+@method_decorator(catch_exceptions, name='dispatch')
 class TestEtaVitaleView(LoginRequiredMixin,View):
 
     def get(self,request, id):
@@ -2287,7 +2148,7 @@ class TestEtaVitaleView(LoginRequiredMixin,View):
 
             return render(request, "cartella_paziente/capacita_vitale/testVitale.html", context)
 
-
+@method_decorator(catch_exceptions, name='dispatch')
 class RefertoQuizView(LoginRequiredMixin,View):
     def get(self, request, persona_id, referto_id):
 
@@ -2360,6 +2221,7 @@ class RefertoQuizView(LoginRequiredMixin,View):
 
         return render(request, "cartella_paziente/capacita_vitale/RefertoQuiz.html", context)
 
+@method_decorator(catch_exceptions, name='dispatch')
 class QuizEtaVitaleUpdateView(LoginRequiredMixin,View):
 
     def get(self, request, id):
@@ -2389,6 +2251,7 @@ class QuizEtaVitaleUpdateView(LoginRequiredMixin,View):
     def post(self, request, id):
         return 
 
+@method_decorator(catch_exceptions, name='dispatch')
 class StampaRefertoView(LoginRequiredMixin,View):
     def get(self, request, persona_id, referto_id):
 
@@ -2460,12 +2323,15 @@ class StampaRefertoView(LoginRequiredMixin,View):
 
         return render(request, "cartella_paziente/capacita_vitale/EtaVitale.html", context)
 
+
+## SEZIONE ETA' BIOLOGICA
 def safe_float(data, key, default=0.0):
     try:
         return float(data.get(key, default))
     except (ValueError, TypeError):
         return default
 
+@method_decorator(catch_exceptions, name='dispatch')
 class CalcolatoreRender(LoginRequiredMixin,View):
     
     def get(self, request, id):
@@ -3432,8 +3298,66 @@ class CalcolatoreRender(LoginRequiredMixin,View):
             }
             return render(request, "cartella_paziente/eta_biologica/calcolatore.html", context)
 
+@method_decorator(catch_exceptions, name='dispatch')
+class ElencoRefertiView(LoginRequiredMixin,View):
+
+    def get(self, request, id):
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        
+        #DATI REFERTI ETA' BIOLOGICA
+        referti_recenti = persona.referti.all().order_by('-data_referto')
+        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
+        
+        dati_estesi_ultimo_referto = None
+
+        context = {
+            'persona': persona,
+            'referti_recenti': referti_recenti,
+            'dati_estesi': dati_estesi,
+            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
+            'dottore' : dottore,
+        }
+
+        return render(request, "cartella_paziente/eta_biologica/elencoReferti.html", context)
+   
+@method_decorator(catch_exceptions, name='dispatch')
+class PersonaDetailView(LoginRequiredMixin,View):
+    def get(self, request, persona_id):
+
+        # RECUPERO DOTTORE
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+
+        # RECUPERO PAZIENTE
+        persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
+
+        # Recupera l'ID del referto dalla query string
+        referto_id = request.GET.get('referto_id')
+
+        # Recupera il referto specifico se l'ID è passato, altrimenti l'ultimo referto
+        if referto_id:
+            referto = get_object_or_404(ArchivioReferti, id=referto_id, paziente=persona)
+        else:
+            referto = ArchivioReferti.objects.filter(paziente=persona).order_by("-data_ora_creazione").first()
+
+        # Ottieni i dati estesi associati al referto selezionato
+        dati_estesi = DatiEstesiReferti.objects.filter(referto=referto).first() if referto else None
+
+        # Preparazione del contesto per il template
+        context = {
+            'persona': persona,
+            'referto': referto,
+            'datiEstesi': dati_estesi,
+            'dottore': dottore,
+        }
+        return render(request, "cartella_paziente/eta_biologica/Referto.html", context)
+
+
 
 ## SEZIONE RESILIENZA
+@method_decorator(catch_exceptions, name='dispatch')
 class ResilienzaView(LoginRequiredMixin,View):
     def get(self, request, persona_id):
 
@@ -3483,6 +3407,7 @@ class ResilienzaView(LoginRequiredMixin,View):
     
 
 ## SEZIONE PIANO TERAPEUTICO
+@method_decorator(catch_exceptions, name='dispatch')
 class PianoTerapeutico(LoginRequiredMixin,View):
 
     def get(self, request, persona_id):
@@ -3507,6 +3432,7 @@ class PianoTerapeutico(LoginRequiredMixin,View):
         return render(request, 'cartella_paziente/piano_terapeutico/piano_terapeutico.html', context)
 
 ### SEZIONE PRESCRIZIONI ESAMI
+@method_decorator(catch_exceptions, name='dispatch')
 class PrescrizioniView(LoginRequiredMixin,View):
 
     def get(self, request, persona_id):
@@ -3539,6 +3465,7 @@ class PrescrizioniView(LoginRequiredMixin,View):
         return redirect('piano_terapeutico', persona_id)
 
 # TO DEFINE
+@method_decorator(catch_exceptions, name='dispatch')
 class UpdatePersonaContactView(LoginRequiredMixin,View):
 
     def post(self, request, id):
@@ -3600,63 +3527,13 @@ class UpdatePersonaContactView(LoginRequiredMixin,View):
         }
 
         return render(request, "cartella_paziente/capacita_vitale/EtaVitale.html", context)
-    
+
+@method_decorator(catch_exceptions, name='dispatch')
 class RefertoView(LoginRequiredMixin,View):
     def get(self, request, referto_id):
         referto = ArchivioReferti.objects.get(id=referto_id)
         return render(request, 'cartella_paziente/eta_biologica//Referto.html', {'data_referto': referto.data_referto})
 
-class ElencoRefertiView(LoginRequiredMixin,View):
-    def get(self, request, id):
-        
-        
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        persona = get_object_or_404(TabellaPazienti, id=id)
-        
-        #DATI REFERTI ETA' BIOLOGICA
-        referti_recenti = persona.referti.all().order_by('-data_referto')
-        dati_estesi = DatiEstesiReferti.objects.filter(referto__in=referti_recenti)
-        
-        dati_estesi_ultimo_referto = None
 
-        context = {
-            'persona': persona,
-            'referti_recenti': referti_recenti,
-            'dati_estesi': dati_estesi,
-            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
-            'dottore' : dottore,
-        }
 
-        return render(request, "cartella_paziente/eta_biologica/elencoReferti.html", context)
-    
-class PersonaDetailView(LoginRequiredMixin,View):
-    def get(self, request, persona_id):
-
-        # RECUPERO DOTTORE
-        
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-
-        # RECUPERO PAZIENTE
-        persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
-
-        # Recupera l'ID del referto dalla query string
-        referto_id = request.GET.get('referto_id')
-
-        # Recupera il referto specifico se l'ID è passato, altrimenti l'ultimo referto
-        if referto_id:
-            referto = get_object_or_404(ArchivioReferti, id=referto_id, paziente=persona)
-        else:
-            referto = ArchivioReferti.objects.filter(paziente=persona).order_by("-data_ora_creazione").first()
-
-        # Ottieni i dati estesi associati al referto selezionato
-        dati_estesi = DatiEstesiReferti.objects.filter(referto=referto).first() if referto else None
-
-        # Preparazione del contesto per il template
-        context = {
-            'persona': persona,
-            'referto': referto,
-            'datiEstesi': dati_estesi,
-            'dottore': dottore,
-        }
-        return render(request, "cartella_paziente/eta_biologica/Referto.html", context)
 

@@ -12,8 +12,8 @@
     <title>Test Età Bio-Vitale</title>
 
     <!-- Css Import -->
-    <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}">
-    <link rel="stylesheet" href="{% static 'includes/css/TestEtaVitale.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Componenti.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cartella_paziente/capacita_vitale/TestEtaVitale.css' %}">
 
 
     <!-- Bootstrap import -->
@@ -25,7 +25,7 @@
       window.cardToShow = "{{ card_to_show|escapejs }}";
     </script>
     {% endif %}
-    <script src="{% static 'includes/js/Quiz.js' %}" defer></script>
+    <script src="{% static 'js/cartella_paziente/capacita_vitale/Quiz.js' %}" defer></script>
 
     <!-- Font Import  -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1214,9 +1214,9 @@
                                     <p>BMI</p>
                                     <p>
                                         {% if persona.bmi %}
-                                            <input type="number" name="bmi-1" placeholder="{{ persona.bmi }}" value="{{ persona.bmi }}">
+                                            <input type="text" name="bmi-1" placeholder="{{ persona.bmi }}" value="{{ persona.bmi }}">
                                         {% else %}
-                                            <input type="number" name="bmi-1" placeholder="Inserisci il valore">
+                                            <input type="text" name="bmi-1" placeholder="Inserisci il valore">
                                         {% endif %}
                                     </p>
                                     <p id="long-p">

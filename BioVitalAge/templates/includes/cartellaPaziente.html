@@ -5,16 +5,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token }}">
+
     <!-- Favicon -->
     <link rel="sortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
-    <title>Cartella Paziente</title>
+    {% csrf_token %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <title>BVA - Cartella Paziente</title>
 
     <!-- Css Import -->
-    <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}">
-    <link rel="stylesheet" href="{% static 'includes/css/cartellaPaziente.css' %}">
-    <link rel="stylesheet" href="{% static 'includes/css/homePage.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Componenti.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cartellaPaziente.css' %}">
+    <link rel="stylesheet" href="{% static 'css/homePage.css' %}">
 
     <!-- Bootstrap import -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,7 +27,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 
-    <!-- JS IMPORT -->
+    <!-- CDN IMPORT -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://unpkg.com/libphonenumber-js/bundle/libphonenumber-js.min.js"></script>
@@ -38,7 +41,6 @@
 
     <!-- NAVBAR -->
     {% include 'components/navBar.html' %}
-
 
     <main>
         <!-- MENU TRACE -->
@@ -647,8 +649,7 @@
                     <a href="{% url 'elenco_referti' persona.id %}" style="top: 10rem;" id="adjust">Vai ai referti</a>
                     <a href="{% url 'Calcolatore' persona.id %}?parametro={{ persona.codice_fiscale|urlencode }}">
                         Calcola l'età biologica
-                    </a>
-                    
+                    </a>          
                 </div>
             </div>
         </div>
@@ -687,129 +688,7 @@
                 </div>
             </div>
         </div>
-        
-        
-        <script src="https://cdn.jsdelivr.net/npm/docx@7.7.0/build/index.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.0.2/docx.min.js"></script>
-
-        <!-- FUNZION PDF VUOTO PRESCRIZIONE -->
-        <script>
-            
-        //     async function generatePDF() {
-
-        //         try {
-        //             const existingPdfBytes = await fetch('/static/includes/pdfTemplates/prescrizioneTemplate.pdf').then((res) => res.arrayBuffer());
-        //             const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
-        //             const firstPage = pdfDoc.getPages()[0];
-
-        //             const logoUrl = "/static/includes/pdfTemplates/logo.png";
-        //             const logo2Url = "/static/includes/pdfTemplates/logo2.png";
-
-        //             const logoImageBytes = await fetch(logoUrl).then(res => res.arrayBuffer());
-        //             const logo2ImageBytes = await fetch(logo2Url).then(res => res.arrayBuffer());
-
-        //             const logoImage = await pdfDoc.embedPng(logoImageBytes);
-        //             const logo2Image = await pdfDoc.embedPng(logo2ImageBytes);
-
-
-        //             firstPage.drawImage(logoImage, { x: 180, y: 20, width: 250, height: 140 });
-        //             firstPage.drawImage(logo2Image, { x: 190, y: 730, width: 200, height: 100 });
-
-
-        //             const pageWidth = firstPage.getWidth();
-        //             const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
-        //             const fontSize = 12;
-
-        //             const alignRight = (text, y) => {
-        //                 const textWidth = font.widthOfTextAtSize(text, fontSize);
-        //                 const xPosition = pageWidth - textWidth - 50;
-        //                 firstPage.drawText(text, { x: xPosition, y: y, size: fontSize, font: font });
-        //             };
-
-        //             const persona = {
-        //                 name: "{{ persona.name }}",
-        //                 surname: "{{ persona.surname }}",
-        //                 pob: "{{ persona.pob }}",
-        //                 dob: "{{ persona.dob }}"
-        //             };
-
-        //             alignRight(`Sig.ra/Sig. ${persona.name} ${persona.surname}`, 640);
-        //             alignRight(`Città di nascita: ${persona.pob}`, 615);
-        //             alignRight(`Data di nascita: ${persona.dob}`, 590);
-
-
-        //             firstPage.drawText("Si prescrivono i seguenti esami:", { x: 50, y: 560, size: fontSize, font: font });
-        //             firstPage.drawText("Diagnosi:", { x: 50, y: 300, size: fontSize, font: font });
-
-        //             const today = new Date();
-        //             const formattedDate = today.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-        //             firstPage.drawText(`Bari, ${formattedDate}`, { x: 50, y: 200, size: fontSize, font: font });
-
-        //             const text = "Dott. Luigi Aprile:";
-        //             const textWidth = font.widthOfTextAtSize(text, fontSize);
-        //             const xPosition = pageWidth - textWidth - 50;
-        //             firstPage.drawText(text, { x: xPosition, y: 150, size: fontSize, font: font });
-
-
-        //             const modifiedPdfBytes = await pdfDoc.save();
-        //             const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
-
-
-        //             const link = document.createElement("a");
-        //             link.href = URL.createObjectURL(blob);
-        //             link.download = `${persona.name}_${persona.surname}.pdf`;
-        //             link.click();
-
-        //         }
-        //         catch (error) {
-        //                 console.error("Errore nella generazione del PDF:", error);
-        //         }
-        //     }
-
-        //     const downloadButton = document.getElementById('downloadPrescrizioneVuota')
-        //     downloadButton.addEventListener("click", generatePDF);
-
-
-        // </script> 
-
-        {% if pdf_url %}
-
-        <!-- FUNZION STAMPA PDF PRESCRIZIONI -->
        
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                const wave1 = "M0,40 C150,100 350,-20 500,60 L500,100 L0,100 Z";
-                const wave2 = "M0,60 C150,40 350,120 500,30 L500,100 L0,100 Z";
-            
-                document.querySelectorAll(".capacita_vitale").forEach(card => {
-                    const punteggio = parseFloat(card.dataset.punteggio || "0");
-                    const percentuale = Math.min((punteggio / 10) * 100, 100); // sicurezza: max 100%
-                    
-                    const backdrop = card.querySelector(".backdrop-riempimento");
-                    const wavePath = card.querySelector(".wavePath");
-            
-                    // Animazione onda
-                    gsap.to(wavePath, {
-                        duration: 2,
-                        repeat: -1,
-                        yoyo: true,
-                        ease: "sine.inOut",
-                        attr: { d: wave2 }
-                    });
-            
-                    // Riempimento acqua
-                    gsap.to(backdrop, {
-                        duration: 1.8,
-                        height: `${percentuale}%`,
-                        ease: "power2.out"
-                    });
-                });
-            });
-        </script>
-    
-        {% endif %}
-
         <!-- CARD BP, SUGAR, HEART, CHOLESTEROL -->
         <div class="dashboard">
 
@@ -924,8 +803,9 @@
 
     </main>
 
-
     <!-- IMPORT JS PRE DOBY CLOSE TAG -->
+    <script src="{% static 'js/cartellaPaziente.js' %}"></script>
+    
     <!--  CLOSE MODALE MESSAGE SUCCESS -->
     <script>
         function closeModal(){
@@ -973,11 +853,13 @@
             });
         });
     </script>
-        
 
-    <script src="{% static 'includes/js/cartellaPaziente.js' %}"></script>
+    <!-- CDN import -->
+    <script src="https://cdn.jsdelivr.net/npm/docx@7.7.0/build/index.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.0.2/docx.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

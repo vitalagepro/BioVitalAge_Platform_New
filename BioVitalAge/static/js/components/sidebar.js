@@ -1,8 +1,13 @@
 /*  -----------------------------------------------------------------------------------------------
    GLOBAL VARIABLES
 --------------------------------------------------------------------------------------------------- */
+const csrftoken = document
+  .querySelector('meta[name="csrf-token"]')
+  .getAttribute('content');
+
+
 let notifications = [];
-let appUser = window.currentUser || 'guest'; // Usiamo appUser invece di currentUser per evitare conflitti
+let appUser = window.currentUser || 'guest'; 
 let previousUser = null;
 const updates = [
   {
@@ -76,7 +81,6 @@ function checkUserChange() {
   const storedUser = localStorage.getItem('appUser') || 'guest';
 
   if (templateUser !== storedUser) {
-    console.log(`Cambio utente rilevato: ${storedUser} → ${templateUser}`);
     handleUserChange(templateUser);
   }
 
@@ -90,8 +94,6 @@ async function handleUserChange(newUser) {
 
   previousUser = appUser;
   appUser = newUser || 'guest';
-  
-  console.log(`Gestione cambio utente: ${previousUser} → ${appUser}`);
   
   // Resetta solo lo stato frontend
   notifications = [];
@@ -117,14 +119,12 @@ document.addEventListener("DOMContentLoaded", () => {
   checkUserChange();
 
   // 2. Configura intervallo di aggiornamento  
-  // 3. Configura intervallo di aggiornamento
   setInterval(fetchNotifications, 3600000);
 
   updateAllBadges();
   // 4. Listener per logout
   document.getElementById('logout-btn')?.addEventListener('click', () => {
     localStorage.setItem('pendingLogout', 'true');
-    // Pulisci solo i dati sensibili mantenendo le preferenze
     localStorage.removeItem('appUser');
   });
 });
@@ -138,20 +138,10 @@ async function fetchNotifications() {
   await fetchAppointmentNotifications();
   await fetchMedicalNewsNotifications();
   updateNotificationsBadge();
-  updateAllBadges(); // <--- QUI
+  updateAllBadges(); 
   localStorage.setItem(`notifications_${appUser}`, JSON.stringify(notifications));
-  console.log("Notifiche aggiornate...");
 }
 
-// // Se ci sono notifiche memorizzate, le usi, altrimenti fai il fetch
-// if (storedNotifications.length > 0) {
-//   // Usa solo le notifiche non eliminate (filtrando per id)
-//   notifications = storedNotifications.filter(
-//     (n) => !dismissedNotifications.includes(n.id)
-//   );
-//   updateNotificationsBadge();
-// } else {
-// }
 updateAllBadges();
 initUserNotifications();
 fetchNotifications();
@@ -282,7 +272,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('login-btn')?.addEventListener('click', () => {
     handleUserChange(currentUser); // Sostituisci con l'utente reale
 
-    console.log("Login effettuato: attendo 500ms per la propagazione dei cookie...");
   });
 
   // Avvia i fetch
@@ -293,7 +282,6 @@ document.addEventListener("DOMContentLoaded", () => {
   checkUserChange();
 
   setInterval(() => {
-    console.log("Aggiorno le notifiche...");
     fetchAppointmentNotifications();
     fetchMedicalNewsNotifications();
   }, 60000);
@@ -314,7 +302,6 @@ function initUserNotifications() {
   // Filtra ID non validi
   dismissedNotifications = dismissedNotifications.filter(id => id && id !== 'undefined');
 
-  console.log(`Notifiche caricate per ${appUser}: ${notifications.length}`);
   updateNotificationsBadge();
 }
 
@@ -429,50 +416,56 @@ function generateNewsHTML(news) {
 // Funzione per il fetch delle news
 async function fetchMedicalNewsNotifications() {
   try {
-    const response = await fetch("/api/medical-news-notifications/");
-    const data = await response.json();
-    console.log(data);
-    if (data.success) {
-      const freshNews = (appUser === 'guest'
-        ? data.news.slice(0, 2)
-        : data.news.filter(news => news.id && !dismissedNotifications.includes(news.id)).slice(0, 2)
-      );
-
-      const newsNotifications = freshNews.map(news => ({
-        id: news.id,
-        type: 'info',
-        message: generateNewsHTML(news),
-        origin: 'news'
-      }));
-
-      // Confronta gli ID attuali delle notifiche di news con quelli delle nuove notifiche
-      const currentNewsIds = notifications.filter(n => n.origin === 'news').map(n => n.id);
-      const newNewsIds = newsNotifications.map(n => n.id);
-      if (JSON.stringify(currentNewsIds) !== JSON.stringify(newNewsIds)) {
-        notifications = notifications.filter(n => n.origin !== 'news');
-        notifications = notifications.concat(newsNotifications);
-        saveUserNotifications();
-        updateNotificationsBadge();
+    const response = await fetch("/api/medical-news-notifications/", {
+      method: "GET",
+      credentials: "same-origin",
+      headers: {
+        "Accept": "application/json",
+        "X-CSRFToken": csrftoken
       }
+    });
+
+    if (!response.ok) {
+      console.warn("News-Notifications fallita:", response.status);
+      return;
     }
-  } catch (error) {
-    console.error("Fetch news error:", error);
+
+    const data = await response.json();
+    if (data.success) {
+      // …gestisci le news…
+    }
+  } catch (err) {
+    console.error("Errore fetchMedicalNewsNotifications:", err);
   }
 }
 
+
 // Funzione per il fetch delle notifiche di appuntamenti
 async function fetchAppointmentNotifications() {
+
   try {
-    const response = await fetch("/api/appointment-notifications/");
+    const response = await fetch("/api/appointment-notifications/", {
+      method: "GET",
+      credentials: "same-origin",
+      headers: {
+        "Accept": "application/json",
+        "X-CSRFToken": csrftoken
+      }
+    });
+    if (!response.ok) {
+      console.warn("APPT-Notifications fallita:", response.status);
+      return;
+    }
     const data = await response.json();
+
     if (data.success) {
-      // Filtra le notifiche degli appuntamenti: usa n.message come id se n.id non esiste
+   
       const filtered = data.notifications.filter(
         (n) => !dismissedNotifications.includes(n.message)
       );
-      // Rimuovi le notifiche di appuntamenti già presenti
+   
       notifications = notifications.filter((n) => n.origin !== "appointments");
-      // Per ogni notifica, se non esiste un id, usalo dal message; assegna l'origine
+   
       filtered.forEach((n) => {
         if (!n.id) {
           n.id = n.message;
@@ -482,26 +475,20 @@ async function fetchAppointmentNotifications() {
       notifications = notifications.concat(filtered);
       updateNotificationsBadge();
     }
-  } catch (error) {
-    console.error("Errore nel recupero notifiche appuntamenti:", error);
+  } catch (err) {
+    console.error("Errore fetchAppointmentNotifications:", err);
   }
-}
 
-// Funzione per il fetch delle email
+} 
+
+
 /* EMAIL FETCHING */
 function getCookie(name) {
   let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      // Verifica se questo cookie inizia con il nome cercato
-      if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
+  document.cookie.split(';').forEach(cookie => {
+    const [key, val] = cookie.trim().split('=');
+    if (key === name) cookieValue = decodeURIComponent(val);
+  });
   return cookieValue;
 }
 
