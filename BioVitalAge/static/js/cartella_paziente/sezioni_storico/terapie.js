@@ -1,5 +1,5 @@
-import showAlert from "../components/showAlert.js";
-import { confirmDeleteAction } from "../components/deleteAction.js";
+import showAlert from "../../components/showAlert.js";
+import { confirmDeleteAction } from "../../components/deleteAction.js";
 
 // Attiva la funzione per aggiungere gli orari
 document.getElementById("assunzioni").addEventListener("input", function () {

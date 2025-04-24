@@ -1,4 +1,4 @@
-import { confirmDeleteAction } from "../components/deleteAction.js";
+import { confirmDeleteAction } from "../../components/deleteAction.js";
 
 /*  -----------------------------------------------------------------------------------------------
         Listener per la paginazione

@@ -738,7 +738,7 @@ function addDragAndDropEvents(appointmentBox) {
 
       // ✅ **Blocca i giorni passati, compresa la domenica**
       if (newDate < today) {
-        showAlert("danger", "Non puoi spostare un appuntamento in un giorno passato!", "", "#ef4444");
+        showAlert({type: "warning", message: "Non puoi spostare un appuntamento in un giorno passato!", extraMessage: "", borderColor: "#ef4444"});
         selectedAppointment.style.opacity = "1";
         return;
       }
@@ -958,7 +958,7 @@ function updateAppointmentDate(appointmentId, newDate, newTime) {
       if (data.success) {
         console.log("✅ Appuntamento aggiornato con successo!");
       } else {
-        showAlert("danger", `Errore nello spostamento dell'appuntamento: ${data.error}`, "", "#ef4444");
+        showAlert({type: "danger", message: `Errore nello spostamento dell'appuntamento: ${data.error}`, extraMessage: "", borderColor: "#ef4444"});
       }
     })
     .catch((error) => console.error("❌ Errore nella richiesta:", error));
@@ -1317,7 +1317,7 @@ function saveAppointmentChanges() {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          showAlert("success", "Appuntamento aggiornato con successo!", "", "var(--positive-color)");
+          showAlert({type: "success", message: "Appuntamento aggiornato con successo!", extraMessage: "", borderColor: "var(--positive-color)"})
           // Cerca il box dell'appuntamento da aggiornare nel DOM
           const appointmentBox = document.querySelector(
             `.appointment-box[data-id="${appointmentId}"]`
@@ -2044,7 +2044,7 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
   const pazienteValue = pazienteSelect.options[pazienteSelect.selectedIndex].value.trim();
 
   if (!tipologia || !pazienteValue) {
-    showAlert("danger", "Compila tutti i campi obbligatori prima di salvare.", "", "#FFB02E");
+    showAlert({type: "danger", message: "Compila tutti i campi obbligatori prima di salvare.", extraMessage: "", borderColor: "#FFB02E"})
     return;
   }
 
@@ -2077,7 +2077,7 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
   selectedDate.setHours(0, 0, 0, 0);
 
   if (selectedDate < today) {
-    showAlert("danger", "Non puoi impostare un appuntamento in una data passata.", "", "#EF4444");
+    showAlert({type: "danger", message: "Non puoi impostare un appuntamento in una data passata.", extraMessage: "", borderColor: "#EF4444"})
     return;
   }
 
@@ -2110,7 +2110,7 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
     .then((data) => {
       console.log("📢 Risposta dal server (POST):", data);
       if (data.success) {
-        showAlert("success", "Appuntamento salvato con successo!", "", "var(--positive-color)");
+        showAlert({type: "success", message: "Appuntamento salvato con successo!", extraMessage: "", borderColor: "var(--positive-color)"})
         // Rimuove le anteprime e resetta il form
         document.querySelectorAll(".appointment-preview").forEach((el) => el.remove());
         if (selectedDayCell) {
@@ -2121,12 +2121,12 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
         loadAppointments();
         closeModalWithGSAP();
       } else {
-        showAlert("danger", "Errore nel salvataggio dell'appuntamento, controlla di aver compilato tutti i campi necessari.", "", "#EF4444");
+        showAlert({type: "danger", message: "Errore nel salvataggio dell'appuntamento, controlla di aver compilato tutti i campi necessari.", extraMessage: "", borderColor: "#EF4444"})
       }
     })
     .catch((error) => {
       console.error("❌ Errore durante il salvataggio (POST):", error);
-      showAlert("danger", "Si è verificato un errore inaspettato.", "", "#EF4444");
+      showAlert({type: "danger", message: "Si è verificato un errore inaspettato.", extraMessage: "", borderColor: "#EF4444"});
     });
 });
 
@@ -2198,14 +2198,14 @@ document.getElementById("addUserForm").addEventListener("submit", function (e) {
   }
 
   if (!newName || !newSurname) {
-    showAlert("danger", "Nome e cognome sono obbligatori!", "", "#EF4444");
+    showAlert({type: "danger", message: "Nome e cognome sono obbligatori!", extraMessage: "", borderColor: "#EF4444"})
     return;
   }
 
   let csrfToken = getCSRFToken();
   if (!csrfToken) {
     console.error("Errore: token CSRF non trovato nel DOM.");
-    showAlert("danger", "Errore di sicurezza: impossibile procedere. Ricarica la pagina e riprova.", "", "#EF4444");
+    showAlert({type: "danger", message: "Errore di sicurezza: impossibile procedere. Ricarica la pagina e riprova.", extraMessage: "", borderColor: "#EF4444"})
     return;
   }
 
@@ -2225,7 +2225,7 @@ document.getElementById("addUserForm").addEventListener("submit", function (e) {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        showAlert("success", "Paziente aggiunto con successo!", "", "var(--positive-color)");
+        showAlert({type: "success", message: "Paziente aggiunto con successo!", extraMessage: "", borderColor: "var(--positive-color)"})
         // **AGGIORNAMENTO DINAMICO DEL SELECT**
         let selectPazienti = document.getElementById("paziente-select");
         if (selectPazienti) {
@@ -2244,10 +2244,10 @@ document.getElementById("addUserForm").addEventListener("submit", function (e) {
         newPhone.value = "";
         newEmail.value = "";
       } else {
-        showAlert("danger", "Errore: " + data.error, "", "#EF4444");
+        showAlert({type: "danger", message: "Errore: " + data.error, extraMessage: "", borderColor: "#EF4444"})
       }
     })
-    .catch((error) => showAlert("danger", "Errore:", error, "#EF4444"));
+    .catch((error) => showAlert({type: "danger", message: "Errore:", extraMessage: error, borderColor: "#EF4444"}));
 });
 
 /*  -----------------------------------------------------------------------------------------------
