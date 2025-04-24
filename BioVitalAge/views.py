@@ -34,10 +34,10 @@ from django.contrib.auth import update_session_auth_hash # type: ignore
 
 # --- IMPORTS PERSONALI (APP) ---
 from .utils import *
-from .utils import calculate_biological_age, CalcoloPunteggioCapacitaVitale
-from .calcoloMetabolica import *
+from BioVitalAge.funzioni_python.calcolo_capacita_vitale import *
+from BioVitalAge.funzioni_python.calcolo_eta_biologica import *
+from BioVitalAge.funzioni_python.calcoloMetabolica import *
 from .models import *
-from .models import TabellaPazienti, ArchivioReferti
 from BioVitalAge.error_handlers import catch_exceptions
 
 
