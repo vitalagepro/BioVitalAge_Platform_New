@@ -40,14 +40,55 @@
     {% include 'components/navBarStorico.html' %}
 
     <script>
-        function openModal(){
-            document.getElementById('backdropModale').style.display = 'block'
-            document.getElementById('ModaleInserimento').style.display = 'block'
+        function openModal() {
+          const backdropModale = document.getElementById('backdropModale');
+          const modale = document.getElementById('ModaleInserimento');
+
+          // Mostra elementi
+          backdropModale.style.display = 'block';
+          modale.style.display = 'block';
+
+          // Anima il backdrop
+          gsap.fromTo(backdropModale,
+            { opacity: 0 },
+            { opacity: 1, duration: 0.2, ease: "power2.out" }
+          );
+
+          // Anima la modale
+          gsap.fromTo(modale,
+            { opacity: 0, scale: 0.95 },
+            { opacity: 1, scale: 1, duration: 0.2, ease: "power2.out" }
+          );
         }
 
-        function closeModal(){
-            document.getElementById('backdropModale').style.display = 'none'
-            document.getElementById('ModaleInserimento').style.display = 'none'
+
+        function closeModal() {
+          const backdropModale = document.getElementById('backdropModale');
+          const modale = document.getElementById('ModaleInserimento');
+
+          // Anima la modale
+          gsap.to(modale, {
+            opacity: 0,
+            scale: 0.95,
+            duration: 0.2,
+            ease: "power2.in",
+            onComplete: () => {
+              modale.style.display = 'none';
+              modale.style.opacity = '';
+              modale.style.transform = '';
+            }
+          });
+
+          // Anima il backdrop
+          gsap.to(backdropModale, {
+            opacity: 0,
+            duration: 0.2,
+            ease: "power2.in",
+            onComplete: () => {
+              backdropModale.style.display = 'none';
+              backdropModale.style.opacity = '';
+            }
+          });
         }
     </script>
 
@@ -273,27 +314,60 @@
       <!-- Pacchetti Prescrizione Modale -->
       <script>
 
-        function openModalPacchetti(){
+        function openModalPacchetti() {
+          const modalePacchetti = document.getElementById('ModalePacchettiEsami');
+          const backdropModale = document.getElementById('backdropModale');
 
-            const modalePacchetti = document.getElementById('ModalePacchettiEsami');
-            modalePacchetti.style.display = 'block';
+          // Mostra gli elementi (necessario prima dell'animazione)
+          modalePacchetti.style.display = 'block';
+          backdropModale.style.display = 'block';
 
-            const backdropModale = document.getElementById('backdropModale');
-            backdropModale.style.display = 'block';
+          // Anima il backdrop con fade-in
+          gsap.fromTo(backdropModale, 
+            { opacity: 0 }, 
+            { opacity: 1, duration: 0.2, ease: "power2.out" }
+          );
 
-            caricaTuttiIPacchetti();
-            
+          // Anima la modale con fade-in + zoom leggero
+          gsap.fromTo(modalePacchetti, 
+            { opacity: 0, scale: 0.95 }, 
+            { opacity: 1, scale: 1, duration: 0.2, ease: "power2.out" }
+          );
+
+          // Carica i pacchetti
+          caricaTuttiIPacchetti();
         }
 
-        function closeModalPacchetti(){
 
-            const modalePacchetti = document.getElementById('ModalePacchettiEsami');
-            modalePacchetti.style.display = 'none';
+        function closeModalPacchetti() {
+          const modalePacchetti = document.getElementById('ModalePacchettiEsami');
+          const backdropModale = document.getElementById('backdropModale');
 
-            const backdropModale = document.getElementById('backdropModale');
-            backdropModale.style.display = 'none';
+          // Anima la modale: fade-out + leggera riduzione scala
+          gsap.to(modalePacchetti, {
+            opacity: 0,
+            scale: 0.95,
+            duration: 0.2,
+            ease: "power2.in",
+            onComplete: () => {
+              modalePacchetti.style.display = 'none';
+              modalePacchetti.style.opacity = ''; // resetta per futuri usi
+              modalePacchetti.style.transform = ''; // resetta scala
+            }
+          });
 
+          // Anima il backdrop: fade-out
+          gsap.to(backdropModale, {
+            opacity: 0,
+            duration: 0.2,
+            ease: "power2.in",
+            onComplete: () => {
+              backdropModale.style.display = 'none';
+              backdropModale.style.opacity = ''; // resetta
+            }
+          });
         }
+
 
 
       </script>
