@@ -198,6 +198,54 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// Salva modifiche terapia domiciliare dalla modale
+document.addEventListener("DOMContentLoaded", function () {
+  const formModifica = document.getElementById("form-modifica-terapia");
+
+  formModifica.addEventListener("submit", function (e) {
+    e.preventDefault(); // evita comportamento predefinito
+
+    const formData = new FormData(formModifica);
+    const terapiaId = formData.get("terapia_id");
+
+    fetch(`/terapie/domiciliare/${terapiaId}/modifica/`, {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          showAlert({
+            type: "success",
+            message: data.message,
+            borderColor: "var(--positive-color)",
+          });
+
+          // Chiudi la modale dopo successo
+          const modalElement = document.getElementById("modaleModificaTerapia");
+          const modal = bootstrap.Modal.getInstance(modalElement);
+          modal.hide();
+
+          // 👉 facoltativo: aggiorna la riga nella tabella, oppure fai reload
+          location.reload();
+        } else {
+          showAlert({
+            type: "danger",
+            message: data.message || "Errore nella modifica della terapia",
+            borderColor: "#ef4444",
+          });
+        }
+      })
+      .catch((err) => {
+        console.error("Errore durante la modifica:", err);
+        showAlert({
+          type: "danger",
+          message: "Errore del server.",
+          borderColor: "#ef4444",
+        });
+      });
+  });
+});
 
 // Attiva la funzione per salvare le terapie domiciliari
 document.addEventListener('DOMContentLoaded', function () {

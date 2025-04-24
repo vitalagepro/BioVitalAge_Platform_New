@@ -24,7 +24,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 
     <!-- JS IMPORT -->
-
+    <script src="{% static 'js/cartella_paziente/sezioni_storico/diagnosi.js' %}" defer></script>
 </head>
 
 <body>
@@ -33,7 +33,6 @@
 
     <!-- NAVBAR -->
     {% include 'components/navBarStorico.html' %}
-
 
     <main>
         <!-- MENU TRACE -->
@@ -78,7 +77,7 @@
         <div class="card-container" style="margin-top: 2rem;">
 
             <div class="flex-row">
-                <div class="sub-card grave-border">
+                <div class="sub-card grave-border" style="flex: 0.6;">
                     
                     <div class="container-title-badge">
                         <h3>Ultima Diagnosi</h3>
@@ -96,24 +95,39 @@
                     
                 </div>
         
-                <div class="sub-card">
-                    <h3>Statistiche Diagnosi</h3>
-                    <div class="flex-layout">
-                        <div>
-                            <img src="{% static 'image/Diagnosi_tot.png' %}" alt="">        
-                            <p><strong>Totale Diagnosi:</strong> 5</p>
+                <div class="sub-card" {% if not ultimo_appuntamento %} style="flex: 1;" {% endif %} style="flex: 0.6;">
+                    <h3>Statistiche Appuntamenti</h3>
+                    <div {% if ultimo_appuntamento %} style="justify-content: space-between; flex: 1; align-items: center;" {% endif %} class="flex-layout">
+                        <div class="flex-row-statistic">
+                            <div class="border-violet">
+                                <img src="{% static 'image/Diagnosi_tot.png' %}" alt="">
+                            </div>
+                            <p><strong>Totale Diagnosi: </strong> {{ totale_diagnosi|default:"Nessuna" }}</p>
                         </div>
-                        <div>
-                            <img src="{% static 'image/Diagnosi_attive.png' %}" alt="">
-                            <p><strong>Diagnosi Attive:</strong> 2</p>
+                        <div class="flex-row-statistic">
+                            <div class="border-violet">
+                                <img src="{% static 'image/Done.png' %}" alt="">
+                            </div>
+                            <p><strong>Diagnosi Attive:</strong> {{ diagnosi_attive|default:"Nessuna" }}</p>
                         </div>
-                        <div>
-                            <img src="{% static 'image/Done.png' %}" alt="">
-                            <p><strong>Diagnosi Risolte:</strong> 3</p>
+                        <div class="flex-row-statistic">
+                            <div class="border-violet">
+                                <img src="{% static 'image/Diagnosi_attive.png' %}" alt="">
+                            </div>
+                            <p><strong>Diagnosi Risolte:</strong> {{ diagnosi_risolte|default:"Nessuna" }}</p>
                         </div>
-                        <div>
-                            <img src="{% static 'image/Calendario.png' %}" alt="">
-                            <p><strong>Prossimo Controllo:</strong> 12/06/2025</p>
+                        <div class="flex-row-statistic">
+                            <div class="border-violet">
+                                <img src="{% static 'image/Calendario.png' %}" alt="">
+                            </div>
+                            <p>
+                                <strong>Prossimo Controllo:</strong>  
+                                {% if prossimo_controllo %}
+                                    {{ prossimo_controllo.data|date:"d/m/Y" }} - {{ prossimo_controllo.orario|time:"H:i" }}
+                                {% else %}
+                                    Nessun controllo futuro.
+                                {% endif %}
+                            </p>
                         </div>
                     </div>
                 </div>

@@ -1154,7 +1154,6 @@ class TerapiaDomiciliareDeleteView(View):
         return JsonResponse({'success': True})
 
 # MODIFICA TERAPIA STUDIO
-# MODIFICA TERAPIA
 @method_decorator(catch_exceptions, name='dispatch')
 class ModificaTerapiaStudioView(View):
     def post(self, request, id):
