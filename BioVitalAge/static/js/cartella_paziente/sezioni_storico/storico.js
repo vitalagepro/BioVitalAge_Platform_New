@@ -1,4 +1,3 @@
-import showAlert from "../../components/showAlert.js";
 import { confirmDeleteAction } from "../../components/deleteAction.js";
 
 /*  -----------------------------------------------------------------------------------------------

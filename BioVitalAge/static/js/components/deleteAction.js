@@ -3,23 +3,42 @@
 import showAlert from "./showAlert.js";
 
 export function deleteAction({
-  url,
-  elementToRemove,
+  url = null,
+  onConfirm = null,
+  elementToRemove = null,
   confirmAlert = null,
   successMessage,
   errorMessage,
 }) {
+  if (typeof onConfirm === "function") {
+    try {
+      onConfirm(); // esegue azione custom
+      if (confirmAlert) {
+        gsap.to(confirmAlert, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => confirmAlert.remove(),
+        });
+      }
+      showAlert({ type: "success", message: successMessage, borderColor: "#22c55e" });
+    } catch (error) {
+      console.error("❌ Errore nell'onConfirm:", error);
+      showAlert({ type: "danger", message: errorMessage, borderColor: "#EF4444" });
+    }
+    return;
+  }
+
+  // Se non c'è `onConfirm`, procedi con la fetch
   fetch(url, {
-    method: "POST", // ✅ compatibile con Django + CSRF
+    method: "POST",
     headers: {
       "X-CSRFToken": document.querySelector("[name=csrf-token]").content,
       "Content-Type": "application/json",
     },
   })
     .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Errore HTTP: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
       return response.json();
     })
     .then((data) => {
@@ -32,7 +51,6 @@ export function deleteAction({
             onComplete: () => elementToRemove.remove(),
           });
         }
-
         if (confirmAlert) {
           gsap.to(confirmAlert, {
             opacity: 0,
@@ -41,26 +59,26 @@ export function deleteAction({
             onComplete: () => confirmAlert.remove(),
           });
         }
-
-        showAlert("success", successMessage);
+        showAlert({ type: "success", message: successMessage, borderColor: "#22c55e" });
       } else {
         console.error("❌ Errore nella cancellazione:", data.error);
-        showAlert("danger", errorMessage);
+        showAlert({ type: "danger", message: errorMessage, borderColor: "#EF4444" });
       }
     })
     .catch((error) => {
       console.error("❌ Errore nella richiesta:", error);
-      showAlert("danger", "Errore nella richiesta al server.");
+      showAlert({ type: "danger", message: "Errore nella richiesta al server.", borderColor: "#EF4444" });
     });
 }
 
 export function confirmDeleteAction({
-  url,
-  elementToRemove,
+  url = null,
+  onConfirm = null,
+  elementToRemove = null,
   successMessage,
   errorMessage,
   confirmMessage,
-  borderColor
+  borderColor,
 }) {
   let existingAlert = document.getElementById("delete-alert");
   if (existingAlert) existingAlert.remove();
@@ -81,7 +99,7 @@ export function confirmDeleteAction({
   confirmAlert.style.flexDirection = "column";
   confirmAlert.style.gap = "10px";
   confirmAlert.style.opacity = "0";
-  confirmAlert.style.borderBottom = "4px solid " + borderColor;
+  confirmAlert.style.borderBottom = `4px solid ${borderColor}`;
 
   confirmAlert.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -101,14 +119,12 @@ export function confirmDeleteAction({
   `;
 
   document.body.appendChild(confirmAlert);
-
-  // Entrata animata
   gsap.to(confirmAlert, { opacity: 1, duration: 0.3, ease: "power2.out" });
 
-  // Listener per "Elimina"
   document.getElementById("confirmDelete").addEventListener("click", () => {
     deleteAction({
       url,
+      onConfirm,
       elementToRemove,
       confirmAlert,
       successMessage,
@@ -116,7 +132,6 @@ export function confirmDeleteAction({
     });
   });
 
-  // Listener per "Annulla"
   document.getElementById("cancelDelete").addEventListener("click", () => {
     gsap.to(confirmAlert, {
       opacity: 0,
@@ -126,7 +141,6 @@ export function confirmDeleteAction({
     });
   });
 
-  // Timeout auto-rimozione dopo 10s
   setTimeout(() => {
     if (document.body.contains(confirmAlert)) {
       gsap.to(confirmAlert, {

@@ -84,7 +84,6 @@ class HomePageRender(LoginRequiredMixin,View):
     login_url = 'loginPage'
 
     def get(self, request):
-
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persone = TabellaPazienti.objects.all().order_by('-id')[:5]
         today = timezone.now().date()
@@ -176,7 +175,7 @@ class HomePageRender(LoginRequiredMixin,View):
                     'max_age': max_age,
                     'media_percentage': media_percentage,
                     'dottore': dottore,
-                    'emails': get_gmail_emails_for_user(request.user),  # 👈 AGGIUNGI QUI
+                    'emails': get_gmail_emails_for_user(request.user),
                 }
         else:
                 context = {
@@ -197,8 +196,8 @@ class HomePageRender(LoginRequiredMixin,View):
                     'max_age': max_age,
                     'media_percentage': media_percentage,
                     'dottore': dottore,
-                    'emails': get_gmail_emails_for_user(request.user),  # 👈 AGGIUNGI QUI
-                    'show_disclaimer': True  # ad esempio, un flag per mostrare un messaggio
+                    'emails': get_gmail_emails_for_user(request.user),
+                    'show_disclaimer': True
                 }
 
         try:
@@ -401,8 +400,9 @@ class ProfileView(LoginRequiredMixin, View):
 class AppuntamentiView(LoginRequiredMixin,View):
     def get(self, request):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        persone = TabellaPazienti.objects.all().order_by('-id')
-        appuntamenti = Appointment.objects.all().order_by('-id')
+        persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')
+        appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('-id')
+
 
         # Ottieni le opzioni definite nei choices
         tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
@@ -472,7 +472,8 @@ class GetSingleAppointmentView(LoginRequiredMixin,View):
     def get(self, request, appointment_id):
         """Recupera i dettagli di un singolo appuntamento"""
         try:
-            appointment = Appointment.objects.get(id=appointment_id)
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+            appointment = get_object_or_404(Appointment, id=appointment_id, dottore=dottore)
 
             response_data = {
                 "success": True,
@@ -500,6 +501,7 @@ class GetSingleAppointmentView(LoginRequiredMixin,View):
 class AppuntamentiGetView(LoginRequiredMixin,View):
     def get(self, request):
         """Recupera gli appuntamenti futuri o di oggi"""
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         
         # 📌 1. Ottenere la data di oggi senza ore/minuti/secondi
         today = now().date()
@@ -508,7 +510,10 @@ class AppuntamentiGetView(LoginRequiredMixin,View):
         deleted_count= 0
 
         # 📌 3. Recuperare solo gli appuntamenti futuri o di oggi
-        future_appointments = Appointment.objects.filter(data__gte=today)  # Cambiato "date" in "data"
+        future_appointments = Appointment.objects.filter(
+            data__gte=today,
+            dottore=dottore
+        )
 
         # 📌 4. Costruire il dizionario degli appuntamenti organizzati per data
         appointments_by_date = {}
@@ -1030,7 +1035,21 @@ class StoricoView(LoginRequiredMixin,View):
 
         return render(request, 'cartella_paziente/sezioni_storico/storico.html', context)
 
-# VIEW TERAPIA
+## VIEW ESAMI
+@method_decorator(catch_exceptions, name='dispatch')
+class EsamiView(View):
+    def get(self, request, id):
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+        }
+
+        return render(request, 'cartella_paziente/sezioni_storico/esami.html', context)
+
+## VIEW TERAPIA
 @method_decorator(catch_exceptions, name='dispatch')
 class TerapiaView(View):
     def get(self, request, id):
@@ -1039,21 +1058,24 @@ class TerapiaView(View):
 
         # Terape in studio (se vuoi mostrarle anche in GET)
         terapie_studio = TerapiaInStudio.objects.filter(paziente=persona).order_by('-created_at')
+        terapie_domiciliari = TerapiaDomiciliare.objects.filter(paziente=persona).order_by('-created_at')
 
         context = {
             'persona': persona,
             'dottore': dottore,
-            'terapie_studio': terapie_studio,  # opzionale se la tabella è JS-based
+            'terapie_studio': terapie_studio,
+            'terapie_domiciliari': terapie_domiciliari
         }
 
         return render(request, 'cartella_paziente/sezioni_storico/terapie.html', context)
 
     def post(self, request, id):
         form_type = request.POST.get("form_type")
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         # Salvataggio terapia in studio
         if form_type == "studio":
-            persona = get_object_or_404(TabellaPazienti, id=id)
+            persona = get_object_or_404(TabellaPazienti, id=id, dottore=dottore)
             tipologia = request.POST.get("tipologia")
             descrizione = request.POST.get("descrizione")
             data_inizio = parse_date(request.POST.get("data_inizio"))
@@ -1077,38 +1099,42 @@ class TerapiaView(View):
                 }
             })
         elif form_type == "domiciliare":
-            persona = get_object_or_404(TabellaPazienti, id=id)
+            persona = get_object_or_404(TabellaPazienti, id=id, dottore=dottore)
             farmaco = request.POST.get("farmaco")
-            assunzioni = request.POST.get("assunzioni")
-            ora_assunzioni = request.POST.get("ora-assunzioni")
+            assunzioni = int(request.POST.get("assunzioni"))
             data_inizio = parse_date(request.POST.get("data_inizio"))
             data_fine = parse_date(request.POST.get("data_fine")) or None
 
-            # Esegui un controllo opzionale sui dati (es. numero orari)
-            if not farmaco or not assunzioni or not ora_assunzioni:
-                return JsonResponse({'success': False, 'message': 'Campi obbligatori mancanti.'})
+            # Recupero dinamico degli orari
+            orari_dict = {}
+            for i in range(1, assunzioni + 1):
+                key = f"orario{i}"
+                orario_val = request.POST.get(key)
+                if orario_val:
+                    orari_dict[key] = orario_val
 
-            # Salvataggio della terapia domiciliare
-            terapia_domiciliare = TerapiaDomiciliare.objects.create(
+            # Creazione
+            terapia = TerapiaDomiciliare.objects.create(
                 paziente=persona,
                 farmaco=farmaco,
-                assunzioni_giornaliere=int(assunzioni),
-                orari_assunzioni=int(ora_assunzioni),
+                assunzioni=assunzioni,
+                orari=orari_dict,
                 data_inizio=data_inizio,
-                data_fine=data_fine,
+                data_fine=data_fine
             )
 
             return JsonResponse({
                 'success': True,
                 'terapia': {
-                    'id': terapia_domiciliare.id,
-                    'farmaco': terapia_domiciliare.farmaco,
-                    'assunzioni': terapia_domiciliare.assunzioni_giornaliere,
-                    'orari': terapia_domiciliare.orari_assunzioni,
-                    'data_inizio': terapia_domiciliare.data_inizio.strftime('%d/%m/%Y'),
-                    'data_fine': terapia_domiciliare.data_fine.strftime('%d/%m/%Y') if terapia_domiciliare.data_fine else None,
+                    'id': terapia.id,
+                    'farmaco': terapia.farmaco,
+                    'assunzioni': terapia.assunzioni,
+                    'orari': terapia.orari,
+                    'data_inizio': terapia.data_inizio.strftime('%d/%m/%Y') if terapia.data_inizio else None,
+                    'data_fine': terapia.data_fine.strftime('%d/%m/%Y') if terapia.data_fine else None
                 }
             })
+
 
         return JsonResponse({'success': False})
 
@@ -1120,7 +1146,14 @@ class EliminaTerapiaStudioView(View):
         terapia.delete()
         return JsonResponse({'success': True})
 
-# MODIFICA TERAPIA
+## ELIMINA TERAPIA DOMICILIARE
+class TerapiaDomiciliareDeleteView(View):
+    def post(self, request, id):
+        terapia = get_object_or_404(TerapiaDomiciliare, id=id)
+        terapia.delete()
+        return JsonResponse({'success': True})
+
+# MODIFICA TERAPIA STUDIO
 @method_decorator(catch_exceptions, name='dispatch')
 class ModificaTerapiaStudioView(View):
     def post(self, request, id):
@@ -1142,6 +1175,58 @@ class ModificaTerapiaStudioView(View):
             }
         })
 
+# MODIFICA TERAPIA DOMICILIARE
+@method_decorator(csrf_exempt, name='dispatch')
+class ModificaTerapiaDomiciliareView(View):
+    def post(self, request, id):
+        from django.utils.dateparse import parse_date
+
+        terapia = TerapiaDomiciliare.objects.filter(id=id).first()
+        if not terapia:
+            return JsonResponse({'success': False, 'message': 'Terapia non trovata'}, status=404)
+
+        farmaco = request.POST.get("farmaco")
+        assunzioni = int(request.POST.get("assunzioni"))
+        data_inizio = parse_date(request.POST.get("data_inizio"))
+        data_fine = parse_date(request.POST.get("data_fine")) if request.POST.get("data_fine") else None
+
+        orari_dict = {}
+        for i in range(1, assunzioni + 1):
+            key = f"orario{i}"
+            orario_val = request.POST.get(key)
+            if orario_val:
+                orari_dict[key] = orario_val
+
+        # Aggiorna i valori
+        terapia.farmaco = farmaco
+        terapia.assunzioni = assunzioni
+        terapia.orari = orari_dict
+        terapia.data_inizio = data_inizio
+        terapia.data_fine = data_fine
+        terapia.save()
+
+        return JsonResponse({'success': True, 'message': 'Terapia aggiornata con successo!'})
+
+# DETTAGLI TERAPIA DOMICILIARE
+class DettagliTerapiaDomiciliareView(View):
+    def get(self, request, id):
+        try:
+            terapia = TerapiaDomiciliare.objects.get(id=id)
+            return JsonResponse({
+                'success': True,
+                'terapia': {
+                    'id': terapia.id,
+                    'farmaco': terapia.farmaco,
+                    'assunzioni': terapia.assunzioni,
+                    'orari': terapia.orari,
+                    'data_inizio': terapia.data_inizio.strftime('%Y-%m-%d') if terapia.data_inizio else '',
+                    'data_fine': terapia.data_fine.strftime('%Y-%m-%d') if terapia.data_fine else '',
+                }
+            })
+        except TerapiaDomiciliare.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Terapia non trovata'}, status=404)
+
+## VIEW DIAGNOSI
 # VIEW DIAGNOSI
 @method_decorator(catch_exceptions, name='dispatch')
 class DiagnosiView(View):
@@ -3361,7 +3446,7 @@ class PrescrizioniView(LoginRequiredMixin,View):
             'dottore': dottore,
         }
 
-        return render(request, "cartella_paziente/piano_terapeutico/prescrizioni.html", context)
+        return render(request, "cartella_paziente/sezioni_storico/esami.html", context)
 
 
     def post(self, request, persona_id):
@@ -3377,7 +3462,6 @@ class PrescrizioniView(LoginRequiredMixin,View):
         )
 
         return redirect('piano_terapeutico', persona_id)
-
 
 # TO DEFINE
 @method_decorator(catch_exceptions, name='dispatch')

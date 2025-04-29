@@ -46,16 +46,16 @@ document.addEventListener("DOMContentLoaded", () => {
               row.style.backgroundColor = "#d4edda";
   
               // mostro alert di successo
-              showAlert("success", "Appuntamento confermato!", "", "var(--positive-color)");
+              showAlert({type: "success", message: "Appuntamento confermato!", extraMessage: "", borderColor: "var(--positive-color)"})
   
               // ricarico dopo 5 secondi
               setTimeout(() => window.location.reload(), 5000);
             } else {
-              showAlert("danger", "Errore: " + (data.error || "sconosciuto"), "", "#EF4444");
+              showAlert({type: "danger", message: "Errore: " + (data.error || "sconosciuto"), extraMessage: "", borderColor: "#EF4444"})
             }
           } catch (err) {
             console.error("Errore di rete durante la conferma:", err);
-            showAlert("danger", "Errore di rete durante la conferma", "", "#EF4444");
+            showAlert({type: "danger", message: "Errore di rete durante la conferma", extraMessage: "", borderColor: "#EF4444"})
           }
   
         } else {

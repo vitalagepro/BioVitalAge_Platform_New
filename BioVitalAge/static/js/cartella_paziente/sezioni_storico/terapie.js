@@ -1,6 +1,333 @@
-import showAlert from "../components/showAlert.js";
-import { confirmDeleteAction } from "../components/deleteAction.js";
+import showAlert from "../../components/showAlert.js";
+import { confirmDeleteAction } from "../../components/deleteAction.js";
 
+// Attiva la funzione per aggiungere gli orari
+document.getElementById("assunzioni").addEventListener("input", function () {
+  const assunzioni = parseInt(this.value);
+  const grid = document.getElementById("orari-grid");
+
+  // ✅ Seleziona SOLO la label nel form di aggiunta
+  const labelAggiunta = document.querySelector('#orari-grid').previousElementSibling;
+
+  if (assunzioni && assunzioni > 0) {
+    if (labelAggiunta) labelAggiunta.style.display = "none";
+  } else {
+    if (labelAggiunta) labelAggiunta.style.display = "block";
+  }
+
+  grid.innerHTML = "";
+
+  if (!assunzioni || assunzioni < 1) {
+    // Default: 1 input
+    const defaultInput = document.createElement("input");
+    defaultInput.type = "time";
+    defaultInput.name = "orario1";
+    defaultInput.className = "form-control";
+    defaultInput.required = true;
+    grid.appendChild(defaultInput);
+    return;
+  }
+
+  for (let i = 1; i <= assunzioni; i++) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "input-container mb-3";
+
+    const label = document.createElement("label");
+    label.className = "form-label-custom d-block";
+    label.textContent = `Orario ${i}`;
+
+    const input = document.createElement("input");
+    input.type = "time";
+    input.name = `orario${i}`;
+    input.className = "form-control";
+
+    wrapper.appendChild(label);
+    wrapper.appendChild(input);
+    grid.appendChild(wrapper);
+  }
+});
+
+// Elimina o modifica terapia domiciliare
+document.addEventListener("DOMContentLoaded", function () {
+  // Elimina terapia domiciliare
+  document.querySelector("#tabella-terapie-domiciliari").addEventListener("click", function (e) {
+    if (e.target.classList.contains("btn-elimina")) {
+      const row = e.target.closest("tr");
+  
+      confirmDeleteAction({
+        url: `/elimina-terapia-domiciliare/${e.target.dataset.id}/`,
+        elementToRemove: row,
+        successMessage: "Terapia eliminata con successo!",
+        errorMessage: "Errore durante l'eliminazione della terapia.",
+        confirmMessage: "Sei sicuro di voler eliminare questa terapia?",
+        borderColor: "#EF4444",
+      });
+  
+      // Dopo 400ms, controlla se la tabella è vuota e fai reload
+      setTimeout(() => {
+        const righeRestanti = document.querySelectorAll("#tabella-terapie-domiciliari tr");
+        if (righeRestanti.length === 0) {
+          location.reload();
+        }
+      }, 100);
+    }
+  });  
+
+  // Modifica terapia domiciliare (puoi aprire una modale o popolare i campi)
+  document.querySelector("#tabella-terapie-domiciliari").addEventListener("click", function (e) {
+    if (e.target.classList.contains("btn-modifica")) {
+      // 👉 Verifica il tipo di modale da aprire
+      const tipoModale = e.target.dataset.modale;
+  
+      if (tipoModale === "domiciliare") {
+        const id = e.target.dataset.id;
+        fetch(`/terapie/domiciliare/${id}/dettagli/`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              document.getElementById("terapia-id-modifica").value = id;
+              document.getElementById("farmaco-modifica").value = data.terapia.farmaco;
+              document.getElementById("assunzioni-modifica").value = data.terapia.assunzioni;
+              document.getElementById("data-inizio-modifica").value = data.terapia.data_inizio;
+              document.getElementById("data-fine-modifica").value = data.terapia.data_fine || "";
+  
+              const orariContainer = document.getElementById("orari-modifica-container");
+              orariContainer.innerHTML = "";                             
+            }
+          });
+      }
+    }
+  });
+});
+
+// Attiva la funzione per aggiungere gli orari anche nella modale
+document.addEventListener("DOMContentLoaded", function () {
+  const orariContainer = document.getElementById("orari-modifica-container");
+  const inputAssunzioni = document.getElementById("assunzioni-modifica");
+
+  // Variabile globale per memorizzare gli orari dal backend
+  let orariBackend = [];
+
+  // Funzione per popolare i campi orari (usata sia inizialmente che dopo update)
+  function aggiornaOrari(numero) {
+    const defaultLabel = document.getElementById("label-default")
+    orariContainer.innerHTML = "";
+
+    for (let i = 1; i <= numero; i++) {
+      const col = document.createElement("div");
+      col.className = "col-md-6 orario-wrapper position-relative";
+
+      const label = document.createElement("label");
+      label.className = "form-label-custom d-block";
+      label.textContent = `Orario ${i}`;
+
+      const input = document.createElement("input");
+      input.type = "time";
+      input.name = `orario${i}`;
+      input.className = "form-control";
+
+      // Se esiste già un valore per questo orario, lo metto
+      if (orariBackend[i - 1]) {
+        input.value = orariBackend[i - 1];
+      }
+
+      col.appendChild(label);
+      col.appendChild(input);
+      orariContainer.appendChild(col);
+    }
+  }
+
+  // Quando cambia il numero di assunzioni
+  inputAssunzioni.addEventListener("input", function () {
+    const numero = parseInt(this.value);
+    
+    if (!numero || isNaN(numero)) {
+      aggiornaOrari(orariBackend.length);
+      inputAssunzioni.value = orariBackend.length; // ripristina anche il numero mostrato
+      return;
+    }
+  
+    aggiornaOrari(numero);
+  });  
+
+  // Quando apro la modale, fetch dei dati dal backend
+  document.querySelector("#tabella-terapie-domiciliari").addEventListener("click", function (e) {
+    if (e.target.classList.contains("btn-modifica")) {
+      // Mostra la MODALE CORRETTA
+      const id = e.target.dataset.id;
+      fetch(`/terapie/domiciliare/${id}/dettagli/`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+            const modal = new bootstrap.Modal(
+              document.getElementById("modaleModificaTerapia")
+            );
+            modal.show();
+            
+            document.getElementById("terapia-id-modifica").value = id;
+            document.getElementById("farmaco-modifica").value =
+              data.terapia.farmaco;
+            document.getElementById("assunzioni-modifica").value =
+              data.terapia.assunzioni;
+            document.getElementById("data-inizio-modifica").value =
+              data.terapia.data_inizio;
+            document.getElementById("data-fine-modifica").value =
+              data.terapia.data_fine || "";
+
+            // Salvo gli orari originali
+            orariBackend = Object.values(data.terapia.orari);
+
+            // Mostro gli orari nella modale
+            aggiornaOrari(data.terapia.assunzioni);
+
+            // Gestione chiusura via pulsante X o "Chiudi"
+            modalElement
+              .querySelectorAll('[data-bs-dismiss="modal"]')
+              .forEach((btn) => {
+                btn.addEventListener("click", () => {
+                  const backdrop = document.querySelector(".modal-backdrop");
+                  if (backdrop) backdrop.remove(); // rimuove il background
+                  document.body.classList.remove("modal-open"); // riattiva lo scroll della pagina
+                  document.body.style.overflow = ""; // reset overflow
+                  modal.hide(); // chiude la modale
+                });
+              });
+          }
+        });
+    }
+  });
+});
+
+// Salva modifiche terapia domiciliare dalla modale
+document.addEventListener("DOMContentLoaded", function () {
+  const formModifica = document.getElementById("form-modifica-terapia");
+
+  formModifica.addEventListener("submit", function (e) {
+    e.preventDefault(); // evita comportamento predefinito
+
+    const formData = new FormData(formModifica);
+    const terapiaId = formData.get("terapia_id");
+
+    fetch(`/terapie/domiciliare/${terapiaId}/modifica/`, {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          showAlert({
+            type: "success",
+            message: data.message,
+            borderColor: "var(--positive-color)",
+          });
+
+          // Chiudi la modale dopo successo
+          const modalElement = document.getElementById("modaleModificaTerapia");
+          const modal = bootstrap.Modal.getInstance(modalElement);
+          modal.hide();
+
+          // 👉 facoltativo: aggiorna la riga nella tabella, oppure fai reload
+          location.reload();
+        } else {
+          showAlert({
+            type: "danger",
+            message: data.message || "Errore nella modifica della terapia",
+            borderColor: "#ef4444",
+          });
+        }
+      })
+      .catch((err) => {
+        console.error("Errore durante la modifica:", err);
+        showAlert({
+          type: "danger",
+          message: "Errore del server.",
+          borderColor: "#ef4444",
+        });
+      });
+  });
+});
+
+// Attiva la funzione per salvare le terapie domiciliari
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('terapia-domiciliare-form');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault(); // ✋ evita il refresh
+
+    const formData = new FormData(form);
+
+    fetch(window.location.href, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+      },
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        // ✅ Aggiungi nuova terapia alla tabella
+        const tbody = document.querySelector('#tabella-terapie-domiciliari');
+        const row = document.createElement('tr');
+        row.setAttribute('data-id', data.terapia.id);
+        // Converti gli orari in stringa leggibile
+        const orariString = Object.values(data.terapia.orari).join(" - ");
+
+        // Rimuovi eventuale riga placeholder ("Nessuna terapia registrata")
+        const noTerapieRow = document.querySelector('#tabella-terapie-domiciliari .no-terapie-row');
+        if (noTerapieRow) noTerapieRow.remove();
+
+        row.innerHTML = `
+          <td>${data.terapia.farmaco}</td>
+          <td>${data.terapia.assunzioni}</td>
+          <td>${orariString}</td>
+          <td>${data.terapia.data_inizio}</td>
+          <td>${data.terapia.data_fine || '—'}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary btn-modifica" data-id="${data.terapia.id}" data-modale="domiciliare">✎</button>
+            <button class="btn btn-sm btn-outline-danger btn-elimina" data-id="${data.terapia.id}">✖</button>
+          </td>
+        `;
+        tbody.prepend(row); // metti in cima
+
+        // ✅ Reset form
+        form.reset();
+
+        // ✅ Reset orari dinamici a 1 solo input
+        const orariGrid = document.getElementById("orari-grid");
+        orariGrid.innerHTML = "";
+        const defaultInput = document.createElement("input");
+        defaultInput.type = "time";
+        defaultInput.name = "orario1";
+        defaultInput.className = "form-control";
+        defaultInput.required = true;
+        orariGrid.appendChild(defaultInput);
+
+        showAlert({
+          type: "success",
+          message: "Terapia Domiciliare salvata con successo.",
+          borderColor: "var(--positive-color)"
+        })
+      } else {
+        showAlert({
+          type: "danger",
+          message: `Errore: ${data.message}`,
+          borderColor: "#ef4444",
+        });
+      }
+    })
+    .catch(err => {
+      console.error('Errore invio:', err);
+      showAlert({
+        type: "danger",
+        message: 'Errore di rete o del server.',
+        borderColor: "#ef4444",
+      });
+    });
+  });
+});
+
+// Attiva la funzione per salvare le terapie in studio
 document.addEventListener("DOMContentLoaded", function () {
   const terapiaStudioForm = document.getElementById("studio-terapia-form");
   const tabellaTerapie = document.getElementById("tabella-terapie-studio");
@@ -76,7 +403,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       })
       .catch(() => {
-        alert("Errore durante la richiesta al server.");
+        showAlert({
+          type: "danger",
+          message: 'Errore durante la richiesta al server.',
+          borderColor: "#ef4444",
+        });
       });
   });
 
@@ -107,7 +438,6 @@ document.addEventListener("DOMContentLoaded", function () {
       terapiaStudioForm.querySelector('[name="data_fine"]').value = dataFine;
       terapiaStudioForm.querySelector('button[type="submit"]').textContent =
         "Salva Modifiche";
-
       modal.show();
     }
 
