@@ -182,8 +182,8 @@ tbody tr:hover {
 }
 
 .icon-container-appointment {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
