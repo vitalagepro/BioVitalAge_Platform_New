@@ -1,0 +1,139 @@
+/* FONT STYLE */
+* p,
+* input,
+* select{
+    font-family: 'Poppins', sans-serif !important;
+}
+* h3{
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 23px !important;
+    font-weight: 600 !important;
+}
+* span{
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+
+.container-biologica{
+    background-color: var(--card-color);
+    width: 98%;
+    margin: auto;
+    margin-top: 1rem;
+    border-radius: 4px;
+    height: 700px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 2rem;
+}
+.card-calcolatore-anteprima{
+    width: 98%;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 1px 1px 8px 2px rgba(0, 0, 0, 0.08);
+    height: 480px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 15px;
+}
+.flex-container{
+    height: 170px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    background-color: var(--card-color);
+    width: 98%;
+}
+.img-container {
+    position: relative;
+    display: inline-block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    overflow: hidden;
+}
+.img-container img {
+    display: block;
+    width: 48%;
+    height: 100%;
+    border-radius: 8px;
+    transition: transform 0.3s ease; 
+    transform-origin: center center;
+}
+.img-container .overlay {
+    cursor: pointer;
+    position: absolute;
+    top: 0; left: 1.8rem;
+    width: 96.5%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none; 
+    border-radius: 8px;
+}
+.overlay-btn {
+    padding: 0.75em 1.5em;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--contrast-color);
+    color: white;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.1s;
+}
+.img-container:hover .overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+.img-container:hover .overlay-btn {
+    opacity: 1;
+}
+.overlay-btn:hover{
+    background-color: var(--contrast-color2);
+}
+.img-container:hover img {
+    transform: scale(1.01);
+}
+.card-calcolatore-anteprima h3{
+    color: var(--contrast-color);
+}
+
+.container-content{
+    width: 50%;
+    background-color: white;
+    height: 100%;
+    box-shadow: 1px 1px 8px 2px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 20px;
+    padding-top: 40px;
+}
+.container-content h3{
+    color: var(--contrast-color);
+}
+.container-stat{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.container-stat-img{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}

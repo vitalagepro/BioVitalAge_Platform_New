@@ -73,9 +73,13 @@ urlpatterns = [
     
     
     # URL PER ETA BIOLOGICA 
+    path("Eta_Biologica/<int:id>/",                             views.EtaBiologicaView.as_view(),                     name='eta_biologica'),
+    path("Eta_Biologica/ElencoReferti/<int:id>/",               views.ElencoRefertiView.as_view(),                    name="elenco_referti"),
+
     path("Eta_Biologica/Calcolatore/<int:id>/",                        views.CalcolatoreRender.as_view(),             name='Calcolatore'),
     path("Eta_Biologica/ElencoReferti/Referto/<int:persona_id>/",      views.PersonaDetailView.as_view(),             name="persona_detail"),
-    path("Eta_Biologica/ElencoReferti/<int:id>/",                      views.ElencoRefertiView.as_view(),             name="elenco_referti"),
+    
+
 
 
     ## URL SEZIONE RESILIENZA 

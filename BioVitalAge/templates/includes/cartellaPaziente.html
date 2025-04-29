@@ -620,12 +620,10 @@
         <div class="container-sezioniInterne containerStyle" style="margin-top: -1rem;">
             
             <div class="cardDati">
-
                 <div class="cartella-effect">
                     <h3>Capacità Vitale</h3>
                     <div class="space"></div>
                 </div>
-
 
                 <div class="card-content">
                     <img src="{% static 'image/Sezione_Vitale.png' %}" alt="">
@@ -642,14 +640,18 @@
                     <h3>Rapporto Età Biologica</h3>
                     <div class="space"></div>
                 </div>
+
                 <div class="card-content">
                     <img src="{% static 'image/Sezione_Biologica.png' %}" alt="">
-                    <p style="top: 4rem;">Referti Età Biologica</p>
-                    <p style="top: 6rem;"><strong>Ultimo Calcolo:</strong> &nbsp; {{ ultimo_referto.data_referto|date:"d/m/Y" }} </p>
-                    <a href="{% url 'elenco_referti' persona.id %}" style="top: 10rem;" id="adjust">Vai ai referti</a>
+                    <p>In questa sezione è possibile calcolare l'età biologica del paziente e vedere l'andamento insieme ai relativi referti.</p>
+                    
+
+                    <!-- <a href="{% url 'elenco_referti' persona.id %}" style="top: 10rem;" id="adjust">Vai ai referti</a>
                     <a href="{% url 'Calcolatore' persona.id %}?parametro={{ persona.codice_fiscale|urlencode }}">
                         Calcola l'età biologica
-                    </a>          
+                    </a>     --> 
+                    
+                    <a href="{% url 'eta_biologica' persona.id %}">Vai Alla sezione</a>
                 </div>
             </div>
         </div>
