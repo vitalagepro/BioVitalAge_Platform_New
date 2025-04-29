@@ -836,17 +836,13 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         ultimo_appuntamento = storico_appuntamenti.filter(data__lt=today).last() or None
         prossimo_appuntamento = storico_appuntamenti.filter(data__gte=today).first() or None
 
-
         ## DATI SCORE
-        # Prendi l’ultimo referto di età biologica
-        ultimo_referto = persona.referti.order_by('-data_ora_creazione').first()
-
         
+        ultimo_referto = persona.referti.order_by('data_ora_creazione').first()
 
         score = ''
 
-        
-
+        print(persona.referti.all())
 
 
         if ultimo_referto:
