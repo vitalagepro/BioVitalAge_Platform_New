@@ -130,6 +130,153 @@ tbody tr:hover {
   text-overflow: ellipsis;
   max-width: 200px;
 }
+
+/* ! MODALE E GESTIONE MODALE */
+.modal-diagnosi{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 9;
+  inset: 0;
+  background: rgba(0, 0, 0, .4);
+  visibility: hidden;
+  opacity: 0;
+  backdrop-filter: blur(0px);
+}
+
+.modal-diagnosi.active{
+  display: block;
+}
+
+.modal-section {
+  margin-top: 5%;
+}
+
+.modal-content-appointments {
+  background-color: #fff;
+  transform: scale(0.8);
+  opacity: 0;
+  margin: 15% auto;
+  padding: 20px;
+  width: 70%;
+  border-radius: 10px;
+  position: relative;
+}
+
+
+.header-modal-appointments {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  margin-bottom: 20px;
+}
+
+.header-modal-appointments h3 {
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
+.icon-container-appointment {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--contrast-color2);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.icon-container-appointment img {
+  width: 100%;
+  height: 100%;
+}
+
+.close {
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: red;
+}
+
+.button-modal-appointments {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.button-modal-appointments .btn-secondary {
+  background-color: var(--card-color);
+  color: var(--contrast-color);
+  border: 2px solid var(--contrast-color2);
+}
+
+.button-modal-appointments .btn-secondary:hover {
+  background-color: var(--contrast-color2);
+  color: white;
+}
+
+.icon-form-appointment img {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
+}
+
+.icon-form-appointment img:hover {
+  transform: scale(1.2);
+}
+
+.form-appointment {
+  display: grid;
+  grid-template-columns: 3fr 3fr 3fr;
+  align-items: center;
+  gap: 45px;
+}
+
+.form-appointment span {
+  color: var(--contrast-color);
+}
+
+.form-appointment input{
+  width: 100%;
+}
+
+.form-select-appointment {
+  border: none;
+  border-bottom: 1px solid var(--contrast-color);
+  color: var(--contrast-color);
+  padding: 5px;
+  cursor: pointer;
+  outline: none;
+}
+
+.form-textarea {
+  height: 35px;
+  width: 100%;
+  background: #dddddd47;
+  cursor: auto;
+}
+
+.gravita-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+}
+
+#gravitaRange {
+  width: 300px;
+}
+
+/* ! BUTTON */
 .btn {
   border: none;
   border-radius: 8px;

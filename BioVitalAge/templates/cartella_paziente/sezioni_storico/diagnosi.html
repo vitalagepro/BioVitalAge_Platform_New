@@ -23,6 +23,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
     <!-- JS IMPORT -->
     <script src="{% static 'js/cartella_paziente/sezioni_storico/diagnosi.js' %}" defer></script>
 </head>
@@ -87,7 +89,7 @@
                     <div class="content-grid">
                         <p><strong>Descrizione:</strong> Dolore toracico cronico</p>
                         <p><strong>Data Diagnosi:</strong> 12/04/2025</p>
-                        <p><strong>Codifica ICD10:</strong> I20.9</p>
+                        <!-- <p><strong>Codifica ICD10:</strong> I20.9</p> -->
                         <p><strong>Stato:</strong> In trattamento</p>
                         <p><strong>Terapie:</strong> Betabloccante 50mg/die</p>
                         <p><strong>Note:</strong> Monitoraggio trimestrale</p>
@@ -135,7 +137,26 @@
         
 
             <div class="sub-card">
-                <h3>Storico Diagnosi</h3>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="mb-0">Storico Diagnosi</h3>
+                    <button title="Aggiungi Diagnosi" class="button" id="openDiagnosisBtn">
+                        <span class="button__icon-wrapper">
+                          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14"
+                            height="14">
+                            <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round" />
+                          </svg>
+                      
+                          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            class="button__icon-svg button__icon-svg--copy" width="14" height="14">
+                            <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round" />
+                          </svg>
+                      
+                        </span>
+                        Aggiungi una Diagnosi
+                    </button>
+                </div>
                 <div class="table-wrapper">
                     <table>
                         <thead>
@@ -231,6 +252,86 @@
     </main>
 
 
+    <div id="diagnosisModal" class="modal-diagnosi">
+        <div class="modal-content-appointments">
+      
+          <!-- Header -->
+          <header class="header-modal-appointments">
+            <div class="d-flex align-items-center gap-3">
+              <div class="icon-container-appointment">
+                <img src="{% static 'image/Diagnosi_Colorato.png' %}" alt="Icona Diagnosi">
+              </div>
+              <h3>Nuova Diagnosi</h3>
+            </div>
+            <span id="closeDiagnosisModal" class="close">&times;</span>
+          </header>
+      
+          <!-- Corpo della modale -->
+          <div class="modal-section">
+            <form id="diagnosis-form" action="POST" class="form-appointment" data-id="{{ diagnosi.id }}">
+                {% csrf_token %}
+            
+                <div class="w-full">
+                    <!-- Descrizione -->
+                    <label class="input-typology mt-4 w-100">
+                        <div class="d-flex flex-column w-100">
+                            <p class="mb-0">Descrizione</p>
+                            <input type="text" name="descrizione" class="form-select-appointment w-100"
+                                placeholder="Descrizione...">
+                        </div>
+                    </label>
+                </div>
+                <div class="w-100">
+                    <!-- Data Diagnosi -->
+                    <label class="mt-4 w-100">
+                        <p class="mb-0">Data Diagnosi</p>
+                        <input type="date" name="data_diagnosi" class="form-select-appointment">
+                    </label>
+                </div>
+                <div class="w-full">
+                    <!-- Stato -->
+                    <label class="mt-4 w-100">
+                        <p class="mb-0">Stato</p>
+                        <input type="text" name="stato" class="form-select-appointment" placeholder="Es. Confermato, Sospetto...">
+                    </label>
+                </div>
+            
+                <!-- Note -->
+                <label class="mt-4 w-100">
+                    <p class="mb-0">Note</p>
+                    <textarea name="note" id="note" class="form-select-appointment form-textarea" rows="3"
+                        placeholder="Eventuali dettagli..."></textarea>
+                </label>
+            
+                <!-- Range Gravità -->
+                <label class="mt-4 w-100">
+                    <p class="mb-0">Gravità</p>
+                    <div class="gravita-wrapper">
+                        <input type="range" id="gravitaRange" min="1" max="3" step="1" value="2">
+                        <svg id="gravitaSVG" width="350" height="60" viewBox="0 0 350 60">
+                            <!-- Barre colorate -->
+                            <rect x="0" y="30" width="100" height="10" fill="#4CAF50" />
+                            <rect x="100" y="30" width="100" height="10" fill="#FFC107" />
+                            <rect x="200" y="30" width="100" height="10" fill="#F44336" />
+                
+                            <!-- Indicatore (triangolo) -->
+                            <polygon id="indicator" points="0,25 10,0 20,25" fill="black" />
+                        </svg>
+                
+                        <p id="gravitaLabel">Moderata</p>
+                    </div>
+                </label>
+            </form>
+          </div>
+      
+          <!-- Footer con pulsanti -->
+          <div class="button-modal-appointments">
+            <button type="submit" form="diagnosis-form" class="button btn-primary">Salva</button>
+            <button type="button" class="button btn-secondary" id="closeDiagnosisBtn">Chiudi</button>
+          </div>
+      
+        </div>
+    </div>
 </body>
 
 </html>
