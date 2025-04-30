@@ -631,8 +631,8 @@ class TerapiaDomiciliare(models.Model):
     paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="terapie_domiciliari")
     farmaco = models.CharField(max_length=255)
     assunzioni = models.IntegerField()
-    orari = models.JSONField()  # salva array di orari es. ["08:00", "14:00"]
-    data_inizio = models.DateField()
+    orari = models.JSONField(null=True)
+    data_inizio = models.DateField(null=True)
     data_fine = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -643,4 +643,14 @@ class TerapiaInStudio(models.Model):
     descrizione = models.TextField()
     data_inizio = models.DateField()
     data_fine = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+## DIAGNOSI
+class Diagnosi(models.Model):
+    paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="diagnosi")
+    descrizione = models.TextField()
+    data_diagnosi = models.DateField()
+    stato = models.CharField(max_length=100)
+    note = models.TextField(blank=True, null=True)
+    gravita = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
