@@ -1264,11 +1264,35 @@ class DiagnosiView(LoginRequiredMixin, View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
         diagnosi = Diagnosi.objects.filter(paziente=persona)
+        totale_diagnosi = diagnosi.count()
+        diagnosi_attive = diagnosi.exclude(stato__icontains="risolta").count()
+        diagnosi_risolte = diagnosi.filter(stato__icontains="risolta").count()
+
+        # Appuntamento futuro più vicino (es. per prossimo controllo)
+        prossimo_controllo = (
+            Diagnosi.objects
+                .filter(paziente=persona, data_diagnosi__gt=now().date())
+                .order_by('data_diagnosi')
+                .first()
+        )
+
+        # Impostazione del paginatore (ad es. 10 referti per pagina)
+        paginator = Paginator(diagnosi, 4)
+        page_number = request.GET.get('page')
+        storico_diagnosi = paginator.get_page(page_number)
+
+        ultima_diagnosi = diagnosi.order_by('data_diagnosi').first()
 
         context = {
             'persona': persona,
             'dottore': dottore,
             'diagnosi': diagnosi,
+            'totale_diagnosi': totale_diagnosi,
+            'diagnosi_attive': diagnosi_attive,
+            'diagnosi_risolte': diagnosi_risolte,
+            'prossimo_controllo': prossimo_controllo,
+            'ultima_diagnosi': ultima_diagnosi,
+            'storico_diagnosi': storico_diagnosi
         }
         return render(request, 'cartella_paziente/sezioni_storico/diagnosi.html', context)
 

@@ -1,4 +1,30 @@
 /*  -----------------------------------------------------------------------------------------------
+        Listener per la paginazione
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('click', function (event) {
+      const target = event.target;
+
+      // Se hai cliccato su un <a> dentro la paginazione
+      if (target.closest('.pagination_tabella a')) {
+          event.preventDefault();
+
+          const link = target.closest('a');
+          const url = link.href;
+
+          fetch(url)
+              .then(response => response.text())
+              .then(html => {
+                  const parser = new DOMParser();
+                  const doc = parser.parseFromString(html, 'text/html');
+                  const newContent = doc.querySelector('.table-wrapper');
+                  document.querySelector('.table-wrapper').innerHTML = newContent.innerHTML;
+              });
+      }
+  });
+});
+
+/*  -----------------------------------------------------------------------------------------------
     Range Gravità
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
@@ -47,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalInner = modal.querySelector(".modal-content-appointments");
   const closeIcon = document.getElementById("closeDiagnosisModal");
   const closeFooter = document.getElementById("closeDiagnosisBtn");
+  const form = document.getElementById("diagnosis-form");
 
   // Timeline GSAP (inizialmente in pausa)
   const tl = gsap.timeline({ paused: true });
@@ -55,9 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
   gsap.set(modal, { autoAlpha: 0, backdropFilter: "blur(0px)" });
   gsap.set(modalInner, { scale: 0.8, opacity: 0 });
 
-  // Definisci l’animazione
+  // Animazione modale
   tl.to(modal, {
-    autoAlpha: 1, // visibility: visible + opacity
+    autoAlpha: 1,
     backdropFilter: "blur(6px)",
     duration: 0.3,
   }).to(
@@ -69,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ease: "back.out(1.5)",
     },
     "-=0.25"
-  ); // parte leggermente in sovrapposizione
+  );
 
   // Apri modale
   openBtn.addEventListener("click", () => {
@@ -77,10 +104,11 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.style.overflow = "hidden";
   });
 
-  // Funzione di chiusura
+  // Chiudi modale
   function closeModal() {
     tl.reverse();
     document.body.style.overflow = "auto";
+    form.reset(); // resetta il form dopo la chiusura
   }
 
   closeIcon.addEventListener("click", closeModal);
@@ -88,4 +116,43 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("click", (e) => {
     if (e.target === modal) closeModal();
   });
+
+  // Intercetta il submit del form
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault(); // blocca il comportamento di default
+
+    const formData = new FormData(form);
+    const data = {
+      descrizione: formData.get("descrizione"),
+      data_diagnosi: formData.get("data_diagnosi"),
+      stato: formData.get("stato"),
+      note: formData.get("note"),
+      gravita: formData.get("gravita"),
+    };
+
+    try {
+      const response = await fetch(window.location.pathname, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": document.querySelector("[name=csrf-token]").content,
+          "X-Requested-With": "XMLHttpRequest"
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        // Puoi aggiungere dinamicamente la nuova diagnosi alla tabella, se vuoi
+        closeModal(); // chiudi modale
+        // opzionale: mostra un alert o aggiorna parzialmente la UI
+      } else {
+        alert("Errore: " + (result.error || "Impossibile salvare la diagnosi."));
+      }
+    } catch (error) {
+      console.error("Errore nel salvataggio:", error);
+      alert("Errore nella richiesta.");
+    }
+  });
 });
+
