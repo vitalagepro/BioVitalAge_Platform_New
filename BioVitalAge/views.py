@@ -1057,8 +1057,8 @@ class TerapiaView(View):
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         # Terape in studio (se vuoi mostrarle anche in GET)
-        terapie_studio = TerapiaInStudio.objects.filter(paziente=persona).order_by('-created_at')
-        terapie_domiciliari = TerapiaDomiciliare.objects.filter(paziente=persona).order_by('-created_at')
+        terapie_studio = TerapiaInStudio.objects.filter(paziente=persona).order_by('data_inizio')
+        terapie_domiciliari = TerapiaDomiciliare.objects.filter(paziente=persona).order_by('data_inizio')
 
         context = {
             'persona': persona,
@@ -1226,57 +1226,6 @@ class DettagliTerapiaDomiciliareView(View):
         except TerapiaDomiciliare.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Terapia non trovata'}, status=404)
 
-## VIEW DIAGNOSI
-# VIEW DIAGNOSI
-@method_decorator(catch_exceptions, name='dispatch')
-class DiagnosiView(View):
-    def get(self, request, id):
-
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        persona = get_object_or_404(TabellaPazienti, id=id)
-
-        # Terape in studio (se vuoi mostrarle anche in GET)
-        terapie_studio = TerapiaInStudio.objects.filter(paziente=persona).order_by('-created_at')
-
-        context = {
-            'persona': persona,
-            'dottore': dottore,
-            'terapie_studio': terapie_studio,  # opzionale se la tabella è JS-based
-        }
-
-        return render(request, 'cartella_paziente/sezioni_storico/terapie.html', context)
-
-    def post(self, request, id):
-        form_type = request.POST.get("form_type")
-
-        # Salvataggio terapia in studio
-        if form_type == "studio":
-            persona = get_object_or_404(TabellaPazienti, id=id)
-            tipologia = request.POST.get("tipologia")
-            descrizione = request.POST.get("descrizione")
-            data_inizio = parse_date(request.POST.get("data_inizio"))
-            data_fine = parse_date(request.POST.get("data_fine")) or None
-
-            terapia = TerapiaInStudio.objects.create(
-                paziente=persona,
-                tipologia=tipologia,
-                descrizione=descrizione,
-                data_inizio=data_inizio,
-                data_fine=data_fine,
-            )
-
-            return JsonResponse({
-                'success': True,
-                'terapia': {
-                    'id': terapia.id,
-                    'descrizione': terapia.descrizione,
-                    'data_inizio': terapia.data_inizio.strftime('%d/%m/%Y'),
-                    'data_fine': terapia.data_fine.strftime('%d/%m/%Y') if terapia.data_fine else None
-                }
-            })
-
-        return JsonResponse({'success': False})
-
 # ELIMINA TERAPIA FUNZIONE
 @method_decorator(catch_exceptions, name='dispatch')
 class EliminaTerapiaStudioView(View):
@@ -1309,19 +1258,49 @@ class ModificaTerapiaStudioView(View):
 
 ## VIEW DIAGNOSI
 @method_decorator(catch_exceptions, name='dispatch')
-class DiagnosiView(LoginRequiredMixin,View):
+class DiagnosiView(LoginRequiredMixin, View):
     def get(self, request, id):
-
-        
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
+        diagnosi = Diagnosi.objects.filter(paziente=persona).order_by('-data_diagnosi')
 
         context = {
-            'persona': persona, 
-            'dottore' : dottore,   
+            'persona': persona,
+            'dottore': dottore,
+            'diagnosi': diagnosi
         }
 
         return render(request, 'cartella_paziente/sezioni_storico/diagnosi.html', context)
+
+    def post(self, request, id):
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        descrizione = request.POST.get('descrizione')
+        data_diagnosi = request.POST.get('data_diagnosi')
+        stato = request.POST.get('stato')
+        note = request.POST.get('note')
+        gravita = request.POST.get('gravita')
+
+        print("descrizione:", descrizione)
+        print("data_diagnosi:", data_diagnosi)
+        print("stato:", stato)
+        print("gravita:", gravita)
+        print("note:", note)
+
+        if not (descrizione and data_diagnosi and stato and gravita):
+            return JsonResponse({'success': False, 'error': 'Dati mancanti'}, status=400)
+
+        Diagnosi.objects.create(
+            paziente=persona,
+            descrizione=descrizione,
+            data_diagnosi=data_diagnosi,
+            stato=stato,
+            note=note,
+            gravita=int(gravita),
+        )
+
+        return JsonResponse({'success': True})
 
 ## SEZIONE MUSCOLO
 @method_decorator(catch_exceptions, name='dispatch')

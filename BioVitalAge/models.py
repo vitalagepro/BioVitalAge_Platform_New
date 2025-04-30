@@ -644,3 +644,13 @@ class TerapiaInStudio(models.Model):
     data_inizio = models.DateField()
     data_fine = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+## DIAGNOSI
+class Diagnosi(models.Model):
+    paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="diagnosi")
+    descrizione = models.TextField()
+    data_diagnosi = models.DateField()
+    stato = models.CharField(max_length=100)
+    note = models.TextField(blank=True, null=True)
+    gravita = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)

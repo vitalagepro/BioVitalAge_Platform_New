@@ -7,25 +7,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const label = document.getElementById("gravitaLabel");
 
   const map = {
-    1: { label: "Lieve", x: 40 },
-    2: { label: "Moderata", x: 140 },
-    3: { label: "Grave", x: 240 },
+    1: { label: "Lieve", x: 40, y: 10, color: "#4CAF50" },
+    2: { label: "Moderata", x: 140, y: 10, color: "#FFC107" },
+    3: { label: "Grave", x: 240, y: 10, color: "#F44336" },
   };
 
   function updateIndicator(value, animate = true) {
-    const targetX = map[value].x;
+    const { x: targetX, y: targetY, label: gravitaLabel, color } = map[value];
 
     if (animate) {
       gsap.to(indicator, {
         x: targetX,
+        y: targetY,
+        fill: color,
         duration: 0.4,
         ease: "back.out(1.7)",
       });
     } else {
-      gsap.set(indicator, { x: targetX });
+      gsap.set(indicator, { x: targetX, y: targetY, fill: color });
     }
 
-    label.textContent = map[value].label;
+    label.textContent = gravitaLabel;
   }
 
   range.addEventListener("input", () => {

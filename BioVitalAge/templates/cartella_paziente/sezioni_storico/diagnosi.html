@@ -169,30 +169,28 @@
                                 <th>Azioni</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Diabete Mellito tipo 2</td>
-                                <td><span class="badge moderata">Moderata</span></td>
-                                <td>01/03/2024</td>
-                                <td>In trattamento</td>
+                        <tbody id="diagnosiTableBody">
+                            {% for diagnosi in diagnosi %}
+                              <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ diagnosi.descrizione }}</td>
                                 <td>
-                                    <button class="btn edit">✎</button>
-                                    <button class="btn delete">✖</button>
+                                  <span class="badge 
+                                    {% if diagnosi.gravita == 1 %}lieve{% elif diagnosi.gravita == 2 %}moderata{% else %}grave{% endif %}">
+                                    {% if diagnosi.gravita == 1 %}Lieve{% elif diagnosi.gravita == 2 %}Moderata{% else %}Grave{% endif %}
+                                  </span>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Ipertensione arteriosa</td>
-                                <td><span class="badge lieve">Lieve</span></td>
-                                <td>15/01/2023</td>
-                                <td>Risolta</td>
+                                <td>{{ diagnosi.data_diagnosi|date:"d/m/Y" }}</td>
+                                <td>{{ diagnosi.stato }}</td>
                                 <td>
-                                    <button class="btn edit">✎</button>
-                                    <button class="btn delete">✖</button>
+                                  <button class="btn edit">✎</button>
+                                  <button class="btn delete">✖</button>
                                 </td>
-                            </tr>
-                        </tbody>
+                              </tr>
+                            {% empty %}
+                              <tr><td colspan="6">Nessuna diagnosi registrata.</td></tr>
+                            {% endfor %}
+                          </tbody>                          
                     </table>
                 </div>
             </div>
@@ -268,9 +266,8 @@
       
           <!-- Corpo della modale -->
           <div class="modal-section">
-            <form id="diagnosis-form" action="POST" class="form-appointment" data-id="{{ diagnosi.id }}">
+            <form id="diagnosis-form" method="post" action="{% url 'diagnosi' persona.id %}" class="form-appointment" data-id="{{ diagnosi.id }}">
                 {% csrf_token %}
-            
                 <div class="w-full">
                     <!-- Descrizione -->
                     <label class="input-typology mt-4 w-100">
@@ -307,16 +304,24 @@
                 <label class="mt-4 w-100">
                     <p class="mb-0">Gravità</p>
                     <div class="gravita-wrapper">
-                        <input type="range" id="gravitaRange" min="1" max="3" step="1" value="2">
+                        <input type="range" id="gravitaRange" name="gravita" min="1" max="3" step="1" value="2">
                         <svg id="gravitaSVG" width="350" height="60" viewBox="0 0 350 60">
                             <!-- Barre colorate -->
                             <rect x="0" y="30" width="100" height="10" fill="#4CAF50" />
                             <rect x="100" y="30" width="100" height="10" fill="#FFC107" />
                             <rect x="200" y="30" width="100" height="10" fill="#F44336" />
-                
-                            <!-- Indicatore (triangolo) -->
-                            <polygon id="indicator" points="0,25 10,0 20,25" fill="black" />
-                        </svg>
+                          
+                            <!-- Indicatore stile GMaps, più piccolo -->
+                            <path id="indicator"
+                                d="M7,0 
+                                C10,0 13,3 13,6 
+                                C13,9 10,15 7,18 
+                                C4,15 1,9 1,6 
+                                C1,3 4,0 7,0 Z"
+                                fill="white" stroke="var(--contrast-color2)" stroke-width="1.4"/>
+                      
+                          </svg>
+                          
                 
                         <p id="gravitaLabel">Moderata</p>
                     </div>

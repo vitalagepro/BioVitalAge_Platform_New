@@ -76,6 +76,10 @@
   border-radius: 8px;
 }
 
+.grave{
+  background: #f44336;
+}
+
 .lieve {
   background: #4caf50;
 }
