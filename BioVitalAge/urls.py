@@ -71,16 +71,12 @@ urlpatterns = [
     path('RefertoTest/<int:persona_id>/<int:referto_id>/',      views.RefertoQuizView.as_view(),                      name='referto_test'),
     path('UpdateTestVitale/<int:id>/',                          views.QuizEtaVitaleUpdateView.as_view(),              name='updateTestEtaVitale'), 
     
-    
     # URL PER ETA BIOLOGICA 
     path("Eta_Biologica/<int:id>/",                             views.EtaBiologicaView.as_view(),                     name='eta_biologica'),
     path("Eta_Biologica/ElencoReferti/<int:id>/",               views.ElencoRefertiView.as_view(),                    name="elenco_referti"),
 
     path("Eta_Biologica/Calcolatore/<int:id>/",                        views.CalcolatoreRender.as_view(),             name='Calcolatore'),
     path("Eta_Biologica/ElencoReferti/Referto/<int:persona_id>/",      views.PersonaDetailView.as_view(),             name="persona_detail"),
-    
-
-
 
     ## URL SEZIONE RESILIENZA 
     path('Resilienza/<int:persona_id>/',                               views.ResilienzaView.as_view(),                name='resilienza'),

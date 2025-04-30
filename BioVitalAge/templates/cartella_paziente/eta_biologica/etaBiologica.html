@@ -176,57 +176,83 @@
         </div>
 
         <div class="container-biologica">
+
             <div class="flex-container">
+
                 <div class="container-content">
-                    <h3>Statistiche Ultimo Risultato</h3>
+                    <h3 style="margin-top: -1rem;">Statistiche Ultimo Risultato</h3>
                     <div class="container-stat" style="margin-top: 1rem;">
+
                         <div class="container-stat-img">
-                            <img src="{% static 'image/Calendario.png' %}" alt="">
+                            
+                            <img src="{% static 'image/Punteggio.png' %}" alt="">
+                            
                             <p><strong>punteggio:</strong> default</p>
                         </div>
                         
                         <div class="container-stat-img">
-                            <img src="{% static 'image/Calendario.png' %}" alt="">
+                           
+                            <img src="{% static 'image/Inserimento.png' %}" alt="">
+                            
                             <p><strong>data inserimento:</strong> default</p>
                         </div>
 
                         <div class="container-stat-img">
-                            <img src="{% static 'image/Calendario.png' %}" alt="">
-                            <p><strong>data prev:</strong> default</p>
+                            
+                            <img src="{% static 'image/DataRecente.png' %}" alt="">
+                            
+                            <p><strong>data last:</strong> default</p>
                         </div>
 
                         <div class="container-stat-img">
-                            <img src="{% static 'image/Calendario.png' %}" alt="">
+                            
+                            <img src="{% static 'image/Referto.png' %}" alt="">
+                            
                             <p><strong>numero referti:</strong> default</p>
                         </div>
+
                     </div>
                 </div>
+
+
                 <div class="container-content">
-                    <h3>Prospetto valori</h3>
+                    <h3 style="margin-top: -1rem;">Prospetto valori</h3>
                     <!-- Quanto i valori posso crescere e dove potranno arrivare tra x anni -->
                     <div class="container-stat" style="margin-top: 1rem;">
-                        <div class="container-stat-img">
-                            <img src="{% static 'image/Calendario.png' %}" alt="">
-                            <p><strong>punteggio:</strong> default</p>
+                        <div class="container-stat-img special">
+                            <div class="freccia">
+                                <img src="{% static 'image/Sezione_Biologica.png' %}" alt="">
+                            </div>
+                           
+                            <p><strong>Età Biologica:  &nbsp;</strong>xx</p>
                         </div>
                         
-                        <div class="container-stat-img">
-                            <img src="{% static 'image/Calendario.png' %}" alt="">
-                            <p><strong>data inserimento:</strong> default</p>
+                        <div class="container-stat-img special">
+                            <div class="freccia">
+                                <img src="{% static 'image/Heart_Colorato.png' %}" alt="">
+                            </div>
+                            <p><strong>Salute Cuore:  &nbsp;</strong> xx</p>
                         </div>
 
-                        <div class="container-stat-img">
-                            <img src="{% static 'image/Calendario.png' %}" alt="">
-                            <p><strong>data prev:</strong> default</p>
+                        <div class="container-stat-img special">
+                            <div class="freccia">
+                                <img src="{% static 'image/Cervello.png' %}" alt="">
+                            </div>
+                            <p><strong>Salute Cerebrale:  &nbsp;</strong> xx</p>
                         </div>
 
-                        <div class="container-stat-img">
-                            <img src="{% static 'image/Calendario.png' %}" alt="">
-                            <p><strong>numero referti:</strong> default</p>
+                        <div class="container-stat-img special">
+                            <div class="freccia">
+                                <img src="{% static 'image/Blood_Colorato.png' %}" alt="">
+                            </div>
+                            <p><strong>Salute del Sangue:  &nbsp;</strong> xx</p>
                         </div>
                     </div>
                 </div>
+
             </div>
+
+            
             <div class="card-calcolatore-anteprima">
                 <h3>Calcolatore Età Biologica</h3>
 

@@ -838,12 +838,11 @@ class CartellaPazienteView(LoginRequiredMixin,View):
 
         ## DATI SCORE
         
-        ultimo_referto = persona.referti.order_by('data_ora_creazione').first()
+        ultimo_referto = persona.referti.order_by('-data_ora_creazione').first()
 
         score = ''
 
-        print(persona.referti.all())
-
+        print(ultimo_referto)
 
         if ultimo_referto:
             dati = ultimo_referto.dati_estesi
@@ -901,7 +900,7 @@ class CartellaPazienteView(LoginRequiredMixin,View):
                     "Stress Ossidativo PAT",
                     "Stress Ossidativo OSI REDOX",
                 ],
-                "Sistema Ormonale": [
+                "Sistema_Ormonale": [
                     "TSH",
                     "FT3",
                     "FT4",
@@ -921,7 +920,7 @@ class CartellaPazienteView(LoginRequiredMixin,View):
                     "Sideremia",
                     "Transferrina",
                 ],
-                "Sistema Immunitario": [
+                "Sistema_Immunitario": [
                     "PCR",
                     "Omocisteina",
                     "TNF-A",
@@ -999,7 +998,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
                 "IL-10":                          "inter_10",
             }
 
-
             organi_valori = {}
 
             for organo, tests in organi_esami.items():
@@ -1018,10 +1016,9 @@ class CartellaPazienteView(LoginRequiredMixin,View):
                     if valore is not None:
                         valori_esami_raw[nome_test] = valore
 
+            score = calcola_score_organi(valori_esami_raw, organi_valori)
 
-            percentuali = calcola_score_organi(valori_esami_raw, organi_valori)
-
-            print(percentuali)
+            print(score)
 
         else:
             score = None 

@@ -57,30 +57,51 @@ ranges_normali = {
 
 # 3. Funzione per normalizzare un valore rispetto al suo range
 def normalizza(valore, minimo, massimo):
+
     if valore < minimo:
-        return max(0, (valore / minimo)) * 100
+        ratio = valore / minimo
     elif valore > massimo:
-        return max(0, (massimo / valore)) * 100
+        ratio = massimo / valore
     else:
-        return 100
+        ratio = 1.0
+    return max(ratio, 0.0)
+    
 
 # 4. Funzione per calcolare lo score di ciascun organo
 def calcola_score_organi(valori_esami, organi_esami_pesi):
     punteggi = {}
 
-    for organo, esami in organi_esami_pesi.items():
-        score = 0
-        for esame, peso in esami.items():
-            if esame in valori_esami and esame in ranges_normali:
-                valore = valori_esami[esame]
-                minimo, massimo = ranges_normali[esame]
-                normalizzato = normalizza(valore, minimo, massimo)
-                score += (normalizzato * peso / 100)
-        punteggi[organo] = round(score, 2)
+    for organo, pesi in organi_esami_pesi.items():
+        # elenco test effettivamente presenti nei valori e con peso non None
+        valid_tests = [
+            (test, pesi[test])
+            for test in pesi
+            if test in valori_esami and pesi[test] is not None
+        ]
+        # se non c'è nessun test valido, il punteggio è 0
+        if not valid_tests:
+            punteggi[organo] = 0
+            continue
+
+        total_weight = sum(p for _, p in valid_tests)
+
+        # SE total_weight è 0, salta la divisione e metti 0
+        if total_weight == 0:
+            punteggi[organo] = 0
+            continue
+
+        weighted_sum = 0.0
+        for test, peso in valid_tests:
+            minimo, massimo = ranges_normali[test]
+            norm = normalizza(valori_esami[test], minimo, massimo)
+            weighted_sum += norm * peso
+
+        # ora total_weight > 0, la divisione è sicura
+        fraction = weighted_sum / total_weight
+        percent = int(round(fraction * 100))
+        punteggi[organo] = max(0, min(100, percent))
 
     return punteggi
-
-
 
 
 
