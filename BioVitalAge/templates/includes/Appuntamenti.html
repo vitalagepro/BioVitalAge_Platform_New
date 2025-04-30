@@ -4,31 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- Favicon -->
-    <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
-    
+    <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
+
+    {% csrf_token %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
     <title>BioVitalAge - Calendario Appuntamenti</title>
 
     <!-- Css Import -->
-    <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}" />
-    <link rel="stylesheet" href="{% static 'includes/css/appuntamenti.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Componenti.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/appuntamenti.css' %}">
 
+    <!-- Font Import  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 
     <!-- Bootstrap import -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Js Import  -->
-    <script src="{% static 'includes/js/Appuntamenti.js' %}" defer></script>
+    <!-- CDN Import  -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- Font Import  -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <!-- JS Import -->
+    <script src="{% static 'js/home_page/Appuntamenti.js' %}" type="module" defer></script>
 </head>
 <body>
     <!-- Loader -->
@@ -40,14 +45,14 @@
     <main>
       <div class="main-title-nav">
         <div class="back-tittle">
-            <a id="back" href="{% url 'HomePage' %}"><img src="{% static 'includes/icone/arrowBack.png' %}"></a>
+            <a id="back" href="{% url 'HomePage' %}"><img src="{% static 'image/Arrow_Back.png' %}"></a>
             <h2 class="main-welcome-title">
                 Calendario Appuntamenti
             </h2>
         </div>
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
-            <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+            <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
           </a>
           <p>»</p>
           <p>Home Page</p>
@@ -126,7 +131,7 @@
                         <header class="header-modal-appointments mb-5">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="icon-container-appointment">
-                                    <img src="{% static 'includes/icone/add-user-modal.png' %}" alt="Icona Calendario">
+                                    <img src="{% static 'image/Aggiungi_Paziente.png' %}" alt="Aggiungi Paziente">
                                 </div>
                                 <h3>Aggiungi Paziente</h3>
                             </div>
@@ -155,7 +160,7 @@
                                     <p class="m-0">Prefisso</p>
                                     <div class="custom-select">
                                         <div class="selected-option">
-                                            <img src="{% static 'includes/icone/bandiera-italiana.png' %}" alt="bandiera-italiana" class="flag-icon">
+                                            <img src="{% static 'image/Bandiera-italia.png' %}" alt="bandiera-italiana" class="flag-icon">
                                             <span id="selected-prefix">+39</span>
                                         </div>
                                         <ul class="options-list">
@@ -184,7 +189,7 @@
                         <header class="header-modal-appointments">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="icon-container-appointment">
-                                    <img src="{% static 'includes/icone/calendar-icon.png' %}" alt="Icona Calendario">
+                                    <img src="{% static 'image/Calendario_Colorato.png' %}" alt="Icona Calendario">
                                 </div>
                                 <h3>Nuovo Appuntamento</h3>
                             </div>
@@ -232,7 +237,7 @@
                                     </div>
                                     <div class="d-flex align-items-center gap-2">
                                         <div class="icon_add_paient">
-                                            <img src="{% static 'includes/icone/add-user.png' %}" alt="add-user" title="add-user">
+                                            <img src="{% static 'image/username_Aggiungi.png' %}" alt="add-user" title="add-user">
                                         </div>
                                         <select name="paziente-select" id="paziente-select" class="w-100 form-select-appointment">
                                             <option>Seleziona Paziente</option>
@@ -684,7 +689,6 @@
         </div>
     </div>
   
-
     <!-- Bottone per aprire il popup -->
     <div id="appointment-actions-popup" class="popup-actions hidden-popup">
         <button class="btn-view" title="Visualizza dettagli">👁️</button>

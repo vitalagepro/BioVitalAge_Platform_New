@@ -4,14 +4,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <!-- Favicon -->
-    <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+    <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
     <title>BioVitalAge - Inserisci Paziente</title>
 
     <!-- Css Import -->
-    <link rel="stylesheet" href="{% static 'includes/css/Componenti.css' %}" />
-    <link rel="stylesheet" href="{% static 'includes/css/InserisciPaziente.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/Componenti.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/InserisciPaziente.css' %}" />
 
     <!-- Bootstrap import -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
@@ -22,12 +23,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet"/>
 
     <!-- Js Import -->
-     <script src="{% static 'includes/js/InserisciPaziente.js' %}" defer></script>
-     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Chart Import -->
+    <script src="{% static 'js/ricerca_pazienti/InserisciPaziente.js' %}" defer></script>
+     
+    <!-- CDN Import -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
 
   <body>
@@ -40,13 +41,13 @@
     <main>
       <div class="main-title-nav">
         <div class="back-tittle">
-          <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'includes/icone/arrowBack.png' %}" alt="back_ico"
+          <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'image/Arrow_Back.png' %}" alt="back_ico"
               title="Torna alla sezione Pazienti"></a>
           <h2 class="main-welcome-title">Pazienti</h2>
         </div>
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
-            <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+            <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
           </a>
           <span>»</span>
           <span>Inserisci Pazienti</span>
@@ -124,7 +125,7 @@
         <!-- INFORMAZIONI PERSONALI -->
         <div class="section" style="margin-top: 1rem;" id="personal">
           <div class="container-title">
-            <img src="{% static 'includes/icone/personal.png' %}" alt="">
+            <img src="{% static 'image/Personale.png' %}" alt="">
             <h3>Patient Information</h3>
           </div>
 
@@ -8432,7 +8433,7 @@
         <div class="container-card" style="margin-top: 1rem;" id="professione">
           
           <div class="container-title" style="margin-bottom: 15px;">
-            <img style="margin-top: -0.5rem;" src="{% static 'includes/icone/work.png' %}" alt="">
+            <img style="margin-top: -0.5rem;" src="{% static 'image/Professione.png' %}" alt="">
             <h3>Professione</h3>
           </div>
             
@@ -8470,7 +8471,7 @@
         <div class="container-card hidden" style="margin-top: 1rem;" id="donna">
           
           <div class="container-title" style="margin-bottom: 15px;">
-            <img style="margin-top: -0.5rem;" src="{% static 'includes/icone/donna.png' %}" alt="">
+            <img style="margin-top: -0.5rem;" src="{% static 'image/Donna.png' %}" alt="">
             <h3>Per la Donna</h3>
           </div>
           
@@ -8542,7 +8543,7 @@
         <div class="container-card" style="margin-top: 1rem;" id="anamnesi">
           
           <div class="container-title" style="margin-bottom: 15px;">
-            <img style="margin-top: -0.5rem;" src="{% static 'includes/icone/anamnesi.png' %}" alt="">
+            <img style="margin-top: -0.5rem;" src="{% static 'image/Anamnesi.png' %}" alt="">
             <h3>Anamnesi</h3>
           </div>
         
@@ -8885,7 +8886,7 @@
         <div class="container-card" style="margin-top: 1rem;" id="anamnesi2">
           
           <div class="container-title" style="margin-bottom: 15px;">
-            <img style="margin-top: -0.5rem;" src="{% static 'includes/icone/anamnesi.png' %}" alt="">
+            <img style="margin-top: -0.5rem;" src="{% static 'image/Anamnesi.png' %}" alt="">
             <h3>Anamnesi</h3>
           </div>
         
@@ -9197,7 +9198,7 @@
         <div class="container_data table_data" style="margin-top: 1rem;" id="datibase">
 
           <div class="container-title">
-            <img style="margin-top: -0.5rem;" src="{% static 'includes/icone/datiBase.png' %}" alt="">
+            <img style="margin-top: -0.5rem;" src="{% static 'image/Cartella.png' %}" alt="">
             <h3>Dati Base</h3>
           </div>
 
@@ -9255,7 +9256,7 @@
         <div class="container_data table_data" style="margin-top: 1rem;" id="datibase2">
 
           <div class="container-title">
-            <img style="margin-top: -0.5rem;" src="{% static 'includes/icone/piantina.png' %}" alt="">
+            <img style="margin-top: -0.5rem;" src="{% static 'image/Piantina.png' %}" alt="">
             <h3>Stile di vita</h3>
           </div>
           
@@ -9372,7 +9373,7 @@
           
           <div class="container-title">
 
-            <img src="{% static 'includes/icone/obiettivo.png' %}" alt="">
+            <img src="{% static 'image/Visite.png' %}" alt="">
             <h3>Esame Obbiettivo</h3>
            
           </div>
@@ -9563,11 +9564,12 @@
 
     </main>
 
-    <!-- Import Js -->
+    <!-- CDN Import -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'includes/js/CodiceFiscale.js' %}" defer></script> 
-  </body>
 
+    <!-- JS import end of body -->
+    <script src="{% static 'js/CodiceFiscale.js' %}" defer></script> 
+  </body>
 </html>
 
 

@@ -13,7 +13,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 from os import getenv
-import pymysql
+import pymysql # type: ignore
+
+
 
 pymysql.install_as_MySQLdb()
 
@@ -41,6 +43,7 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
+    "admin_reorder",
     'Calcolatore',
     'BioVitalAge',
     'social_django',
@@ -53,6 +56,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "admin_reorder.middleware.ModelAdminReorder",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -150,9 +154,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 AUTHENTICATION_BACKENDS = (
+    'BioVitalAge.backends.UtentiCredenzialiBackend',
     'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+LOGIN_URL = 'loginPage'
+LOGIN_REDIRECT_URL = 'HomePage'
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "596437252615-8o49l67l9jeuciqbjeh5djcdgsb5tmdv.apps.googleusercontent.com"
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
@@ -181,3 +189,50 @@ CSRF_COOKIE_HTTPONLY = False  # Necessario per leggere il token via JS
 # SESSION_COOKIE_SECURE = True  # Se usi HTTPS
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://biovitalageplatformdeployed-env.eba-exhbgdpt.us-east-1.elasticbeanstalk.com']  # I tuoi domini
 CORS_ALLOW_CREDENTIALS = True
+
+
+ADMIN_REORDER = [
+    # 1) Dottori registrati
+    {
+        "app": "BioVitalAge",
+        "label": "Dottori Registrati",
+        "models": [
+            "BioVitalAge.UtentiRegistratiCredenziali",
+        ],
+    },
+    # 2) Elenco Cartelle Pazienti
+    {
+        "app": "BioVitalAge",
+        "label": "Elenco Cartelle Pazienti",
+        "models": [
+            "BioVitalAge.TabellaPazienti",
+        ],
+    },
+    # 3) Dettagli Cartelle Pazienti
+    {
+        "app": "BioVitalAge",   # ← aggiungi questa riga
+        "label": "Dettagli Cartelle Pazienti",
+        "models": [
+            "BioVitalAge.RefertiEtaBiologica",
+            "BioVitalAge.DatiEstesiRefertiEtaBiologica",
+            "BioVitalAge.RefertiEtaMetabolica",
+            "BioVitalAge.RefertiCapacitaVitale",
+            "BioVitalAge.DatiEstesiRefertiCapacitaVitale",
+            "BioVitalAge.PrescrizioniEsami",
+            "BioVitalAge.ValutazioneMS",
+            "BioVitalAge.Resilienza",
+        ],
+    },
+    # 4) Appuntamenti
+    {
+        "app": "BioVitalAge",
+        "label": "Appuntamenti",
+        "models": [
+            "BioVitalAge.Appointment",
+        ],
+    },
+    # 5) Calcolatore rimane in fondo
+    "Calcolatore",
+    # 6) Social Auth
+    "social_django",
+]
