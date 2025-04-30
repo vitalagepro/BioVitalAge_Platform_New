@@ -7,7 +7,7 @@ import traceback
 import logging
 import uuid
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from collections import defaultdict
 
 # --- IMPORTS DI DJANGO ---
@@ -1257,49 +1257,81 @@ class ModificaTerapiaStudioView(View):
         })
 
 ## VIEW DIAGNOSI
-@method_decorator(catch_exceptions, name='dispatch')
+@method_decorator(csrf_exempt, name='dispatch')
 class DiagnosiView(LoginRequiredMixin, View):
+
     def get(self, request, id):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
-        diagnosi = Diagnosi.objects.filter(paziente=persona).order_by('-data_diagnosi')
+        diagnosi = Diagnosi.objects.filter(paziente=persona)
 
         context = {
             'persona': persona,
             'dottore': dottore,
-            'diagnosi': diagnosi
+            'diagnosi': diagnosi,
         }
-
         return render(request, 'cartella_paziente/sezioni_storico/diagnosi.html', context)
 
     def post(self, request, id):
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        """Crea nuova diagnosi"""
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         descrizione = request.POST.get('descrizione')
-        data_diagnosi = request.POST.get('data_diagnosi')
+        data_diagnosi_str = request.POST.get('data_diagnosi') or date.get('data_diagnosi')
+        try:
+            data_diagnosi = datetime.strptime(data_diagnosi_str, "%Y-%m-%d").date()
+        except Exception:
+            return JsonResponse({'success': False, 'error': 'Formato data non valido'}, status=400)        
         stato = request.POST.get('stato')
         note = request.POST.get('note')
         gravita = request.POST.get('gravita')
 
-        print("descrizione:", descrizione)
-        print("data_diagnosi:", data_diagnosi)
-        print("stato:", stato)
-        print("gravita:", gravita)
-        print("note:", note)
-
         if not (descrizione and data_diagnosi and stato and gravita):
             return JsonResponse({'success': False, 'error': 'Dati mancanti'}, status=400)
 
-        Diagnosi.objects.create(
+        diagnosi = Diagnosi.objects.create(
             paziente=persona,
             descrizione=descrizione,
             data_diagnosi=data_diagnosi,
             stato=stato,
             note=note,
-            gravita=int(gravita),
+            gravita=int(gravita)
         )
 
+        return JsonResponse({
+            'success': True,
+            'id': diagnosi.id,
+            'descrizione': diagnosi.descrizione,
+            'data_diagnosi': diagnosi.data_diagnosi.strftime('%Y-%m-%d'),
+            'stato': diagnosi.stato,
+            'note': diagnosi.note,
+            'gravita': diagnosi.gravita
+        })
+
+    def patch(self, request, id):
+        """Modifica diagnosi esistente"""
+        import json
+        data = json.loads(request.body)
+
+        diagnosi_id = data.get('id')
+        diagnosi = get_object_or_404(Diagnosi, id=diagnosi_id)
+
+        diagnosi.descrizione = data.get('descrizione', diagnosi.descrizione)
+        diagnosi.data_diagnosi = data.get('data_diagnosi', diagnosi.data_diagnosi)
+        diagnosi.stato = data.get('stato', diagnosi.stato)
+        diagnosi.note = data.get('note', diagnosi.note)
+        diagnosi.gravita = data.get('gravita', diagnosi.gravita)
+        diagnosi.save()
+
+        return JsonResponse({'success': True})
+
+    def delete(self, request, id):
+        """Elimina diagnosi"""
+        import json
+        data = json.loads(request.body)
+        diagnosi_id = data.get('id')
+        diagnosi = get_object_or_404(Diagnosi, id=diagnosi_id)
+        diagnosi.delete()
         return JsonResponse({'success': True})
 
 ## SEZIONE MUSCOLO
