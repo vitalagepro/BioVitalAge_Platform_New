@@ -13,6 +13,9 @@
     font-family: 'Montserrat', sans-serif !important;
 }
 
+#small_title{
+  font-size: 20.9px !important;
+}
 
 
 .main-menu-trace {
@@ -376,22 +379,16 @@
   transition: transform 0.5s ease-out;
 }
 .progress-ring {
-  position: relative;
-  transform: rotate(-90deg); /* Ruota il cerchio per far iniziare il riempimento dall'alto */
+  /* 1) ruota TUTTO il <svg> di -90° per far partire da ore 12 */
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transform-box: fill-box;        /* necessario per SVG */
 }
 .progress-ring__background {
+  /* sfondo grigio, nessuna animazione */
   fill: none;
-  stroke: #e0e0e0; /* Colore di sfondo */
+  stroke: #e0e0e0;
   stroke-width: 10;
-}
-.progress-ring__progress {
-  fill: none;
-  stroke: var(--contrast-color); /* Usa il colore del tema */
-  stroke-width: 10;
-  stroke-linecap: round; /* Arrotonda le estremità */
-  stroke-dasharray: 283; /* Lunghezza massima del cerchio */
-  stroke-dashoffset: 283; /* Nasconde inizialmente il cerchio */
-  transition: stroke-dashoffset 1s ease-in-out; /* Effetto animazione */
 }
 .percentage {
   position: absolute;
@@ -459,6 +456,22 @@
   display: flex;
   gap: 8px;
 }
+.progress-ring__circle {
+  stroke-linecap: butt; 
+}
+.progress-ring__progress {
+  fill: none;
+  stroke: var(--contrast-color);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transform: none;
+  marker-end: url(#endDot);
+  transition: stroke-dashoffset 1s ease-in-out;
+}
+
+
+
+
 
 /* Età Style */
 .eta-container{

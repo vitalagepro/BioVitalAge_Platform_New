@@ -332,6 +332,18 @@
 
         </div>
 
+        <defs>
+            <marker
+              id="endDot"
+              viewBox="0 0 10 10"
+              refX="5" refY="5"
+              markerUnits="strokeWidth"
+              markerWidth="10" markerHeight="10"
+              orient="auto">
+              <circle cx="5" cy="5" r="5" fill="var(--contrast-color)"/>
+            </marker>
+        </defs>
+
         <!-- CARD CLOCK -->
         <div class="container-indicatori containerStyle" style="margin-top: 0rem;">
             <div class="card card4" id="card-style">
@@ -343,7 +355,7 @@
 
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="heartClock" cx="70" cy="70" r="65"></circle>
+                            <circle class="progress-ring__progress" id="heartClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
                         </svg>
                        
                            
@@ -359,7 +371,7 @@
 
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="kidneyClock" cx="70" cy="70" r="65"></circle>
+                            <circle class="progress-ring__progress" id="kidneyClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
                         </svg>
                     
                         <div class="percentage" id="kidneyPercentage"></div>
@@ -373,7 +385,7 @@
                     <div class="container-clock">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="liverClock" cx="70" cy="70" r="65"></circle>
+                            <circle class="progress-ring__progress" id="liverClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
                         </svg>
 
                         <div class="percentage" id="liverPercentage"></div>
@@ -387,7 +399,7 @@
                     <div class="container-clock">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="brainClock" cx="70" cy="70" r="65"></circle>
+                            <circle class="progress-ring__progress" id="brainClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
                         </svg>
 
                         <div class="percentage" id="brainPercentage"></div>
@@ -401,7 +413,7 @@
                     <div class="container-clock">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="hormoneClock" cx="70" cy="70" r="65"></circle>
+                            <circle class="progress-ring__progress" id="hormoneClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
                         </svg>
 
                         <div class="percentage" id="hormonePercentage"></div>
@@ -415,7 +427,7 @@
                     <div class="container-clock">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="bloodClock" cx="70" cy="70" r="65"></circle>
+                            <circle class="progress-ring__progress" id="bloodClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
                         </svg>
 
                         <div class="percentage" id="bloodPercentage"></div>
@@ -429,7 +441,7 @@
                     <div class="container-clock" style="gap: 15px;">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="immuneClock" cx="70" cy="70" r="65"></circle>
+                            <circle class="progress-ring__progress" id="immuneClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
                         </svg>
 
                         <div class="percentage" id="immunePercentage" style="margin-top: 5px;"></div>
@@ -440,19 +452,19 @@
                         </div>
                     </div>
                 
-                    <div class="container-clock" style="gap: 15px;">
+                    <div class="container-clock">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="muscleClock" cx="70" cy="70" r="65"></circle>
+                            <circle class="progress-ring__progress" id="muscleClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
                         </svg>
 
                         <div class="percentage" id="musclePercentage" style="margin-top: 5px;"></div>
                    
-                        <div class="descrizione-clock" style="margin-bottom: -14px;">
-                            <img src="{% static 'image/Muscolo.png' %}" alt="">
-                            <a href="{% url 'valutazione_m_s' persona.id %}" style="width: 60%; text-decoration: none;"> 
-                                <p style="font-size: 14px;">Salute Muscolo-scheletrica</p>
-                            </a>
+                        <div class="descrizione-clock" >
+                            <img src="{% static 'image/Microbiota.png' %}" alt="">
+                            
+                            <p>Microbiota</p>
+                            
                         </div>
                     </div>
                 </div>
@@ -563,15 +575,15 @@
                         <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ punteggio_eta_metabolica|default:'n.a.' }} / 100</p>
                     </div>
 
-                    <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.microbiota|default:'2' }}">
-                        <h3>Microbiota</h3>
+                    <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.microbiota|default:'2' }}" onclick="window.location.href = '{% url 'valutazione_m_s' persona.id %}' " style="cursor: pointer;">
+                        <h3 id="small_title">Età Muscolo Scheletrica</h3>
                         <div class="card-polmone">
                             <div class="backdrop-riempimento">
                                 <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
                                     <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
                                 </svg>
                             </div>
-                            <img src="{% static 'image/Microbiota.png' %}" alt="" width="120px" height="120px">
+                            <img src="{% static 'image/Muscolo.png' %}" alt="" width="120px" height="120px">
                         </div>
                         <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.microbiota|default:'n.a.' }}</p>
                     </div>
@@ -620,12 +632,10 @@
         <div class="container-sezioniInterne containerStyle" style="margin-top: -1rem;">
             
             <div class="cardDati">
-
                 <div class="cartella-effect">
                     <h3>Capacità Vitale</h3>
                     <div class="space"></div>
                 </div>
-
 
                 <div class="card-content">
                     <img src="{% static 'image/Sezione_Vitale.png' %}" alt="">
@@ -642,14 +652,18 @@
                     <h3>Rapporto Età Biologica</h3>
                     <div class="space"></div>
                 </div>
+
                 <div class="card-content">
                     <img src="{% static 'image/Sezione_Biologica.png' %}" alt="">
-                    <p style="top: 4rem;">Referti Età Biologica</p>
-                    <p style="top: 6rem;"><strong>Ultimo Calcolo:</strong> &nbsp; {{ ultimo_referto.data_referto|date:"d/m/Y" }} </p>
-                    <a href="{% url 'elenco_referti' persona.id %}" style="top: 10rem;" id="adjust">Vai ai referti</a>
+                    <p>In questa sezione è possibile calcolare l'età biologica del paziente e vedere l'andamento insieme ai relativi referti.</p>
+                    
+
+                    <!-- <a href="{% url 'elenco_referti' persona.id %}" style="top: 10rem;" id="adjust">Vai ai referti</a>
                     <a href="{% url 'Calcolatore' persona.id %}?parametro={{ persona.codice_fiscale|urlencode }}">
                         Calcola l'età biologica
-                    </a>          
+                    </a>     --> 
+                    
+                    <a href="{% url 'eta_biologica' persona.id %}">Vai Alla sezione</a>
                 </div>
             </div>
         </div>
@@ -802,6 +816,104 @@
         </div>
 
     </main>
+
+    <!-- SCRIPT SCORE -->
+    <script>
+        // Anima un singolo cerchio di progresso
+        function animateClock(clockId, percentageId, targetPercentage) {
+            const clock = document.getElementById(clockId);
+            const pctEl = document.getElementById(percentageId);
+            if (!clock || !pctEl) return;
+
+            const radius = clock.r.baseVal.value;
+            const circumference = 2 * Math.PI * radius;
+            const pct = Math.min(Math.max(targetPercentage, 0), 100);
+            const offset = ((100 - pct) / 100) * circumference;
+
+            // 1) imposta dasharray
+            clock.style.strokeDasharray = `${circumference} ${circumference}`;
+
+            // 2) disabilita la transizione per il "reset"
+            clock.style.transition = 'none';
+            clock.style.strokeDashoffset = circumference;
+
+            // 3) forza il reflow per essere sicuri che il reset sia applicato subito
+            clock.getBoundingClientRect();
+
+            // 4) con un tick riattiva la transizione e porta al valore corretto
+            setTimeout(() => {
+                clock.style.transition = 'stroke-dashoffset 0.35s ease-in-out';
+                clock.style.strokeDashoffset = offset;
+            }, 50);
+
+            // 5) aggiorna la percentuale testuale
+            pctEl.textContent = `${pct}%`;
+        }
+
+      
+        // Genera i grafici (invariato)
+        function generateChart(ctx, data, label) {
+          new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: ["Giorno 1", "Giorno 2", "Giorno 3", "Giorno 4", "Giorno 5"],
+              datasets: [{
+                label: label,
+                data: data,
+                backgroundColor: "#3b255d2c",
+                borderColor: "#3a255d",
+                tension: 0.3,
+                fill: true,
+              }],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: { x: { display: false }, y: { display: false } },
+            },
+          });
+        }
+      
+        // Al caricamento della pagina, anima tutti i clock e genera i grafici
+        document.addEventListener("DOMContentLoaded", () => {
+          animateClock("heartClock",    "heartPercentage",    {{ score.Cuore }});
+          animateClock("kidneyClock",   "kidneyPercentage",   {{ score.Reni }});
+          animateClock("liverClock",    "liverPercentage",    {{ score.Fegato }});
+          animateClock("brainClock",    "brainPercentage",    {{ score.Cervello }});
+          animateClock("hormoneClock",  "hormonePercentage",  {{ score.Sistema_Ormonale }});
+          animateClock("bloodClock",    "bloodPercentage",    {{ score.Sangue }});
+          animateClock("immuneClock",   "immunePercentage",   {{ score.Sistema_Immunitario }});
+          animateClock("muscleClock",   "musclePercentage",   75);
+      
+          // Chart 1: Livello BP
+          generateChart(
+            document.getElementById("chart1").getContext("2d"),
+            [140, 190, 230, 210, 180],
+            "Livello BP"
+          );
+          // Chart 2: Livello di zuccheri
+          generateChart(
+            document.getElementById("chart2").getContext("2d"),
+            [90, 100, 110, 120, 130],
+            "Livello di zuccheri"
+          );
+          // Chart 3: Frequenza Cardiaca
+          generateChart(
+            document.getElementById("chart3").getContext("2d"),
+            [80, 85, 90, 95, 100],
+            "Frequenza Cardiaca"
+          );
+          // Chart 4: Colesterolo
+          generateChart(
+            document.getElementById("chart4").getContext("2d"),
+            [180, 220, 240, 200, 210],
+            "Colesterolo"
+          );
+        });
+    </script>
+      
+      
 
     <!-- IMPORT JS PRE DOBY CLOSE TAG -->
     <script src="{% static 'js/cartellaPaziente.js' %}"></script>

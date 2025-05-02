@@ -37,6 +37,8 @@ from .utils import *
 from BioVitalAge.funzioni_python.calcolo_capacita_vitale import *
 from BioVitalAge.funzioni_python.calcolo_eta_biologica import *
 from BioVitalAge.funzioni_python.calcoloMetabolica import *
+from BioVitalAge.funzioni_python.calcolo_score import *
+
 from .models import *
 from BioVitalAge.error_handlers import catch_exceptions
 
@@ -831,7 +833,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             Q(cognome_paziente__icontains=persona.surname.strip())
         ).order_by('data', 'orario')
 
-
         today = now().date()
 
         # Totale appuntamenti
@@ -840,6 +841,192 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         ultimo_appuntamento = storico_appuntamenti.filter(data__lt=today).last() or None
         prossimo_appuntamento = storico_appuntamenti.filter(data__gte=today).first() or None
 
+        ## DATI SCORE
+        
+        ultimo_referto = persona.referti.order_by('-data_ora_creazione').first()
+
+        score = ''
+
+        print(ultimo_referto)
+
+        if ultimo_referto:
+            dati = ultimo_referto.dati_estesi
+
+            organi_esami = {
+                "Cuore": [
+                    "Colesterolo Totale",
+                    "Colesterolo LDL",
+                    "Colesterolo HDL",
+                    "Trigliceridi",
+                    "PCR",
+                    "NT-proBNP",
+                    "Omocisteina",
+                    "Glicemia",
+                    "Insulina",
+                    "HOMA Test",
+                    "IR Test",
+                    "Creatinina",
+                    "Stress Ossidativo",
+                    "Omega Screening",
+                ],
+                "Reni": [
+                    "Creatinina",
+                    "Azotemia",
+                    "Sodio",
+                    "Potassio",
+                    "Cloruri",
+                    "Fosforo",
+                    "Calcio",
+                    "Esame delle Urine",
+                ],
+                "Fegato": [
+                    "Transaminasi GOT",
+                    "Transaminasi GPT",
+                    "Gamma-GT",
+                    "Bilirubina Totale",
+                    "Bilirubina Diretta",
+                    "Bilirubina Indiretta",
+                    "Fosfatasi Alcalina",
+                    "Albumina",
+                    "Proteine Totali",
+                ],
+                "Cervello": [
+                    "Omocisteina",
+                    "Vitamina B12",
+                    "Vitamina D",
+                    "DHEA",
+                    "TSH",
+                    "FT3",
+                    "FT4",
+                    "Omega-3 Index",
+                    "EPA",
+                    "DHA",
+                    "Stress Ossidativo dROMS",
+                    "Stress Ossidativo PAT",
+                    "Stress Ossidativo OSI REDOX",
+                ],
+                "Sistema_Ormonale": [
+                    "TSH",
+                    "FT3",
+                    "FT4",
+                    "Insulina",
+                    "HOMA Test",
+                    "IR Test",
+                    "Glicemia",
+                    "DHEA",
+                    "Testosterone",
+                    "17B-Estradiolo",
+                    "Progesterone",
+                    "SHBG",
+                ],
+                "Sangue": [
+                    "Emocromo",
+                    "Ferritina",
+                    "Sideremia",
+                    "Transferrina",
+                ],
+                "Sistema_Immunitario": [
+                    "PCR",
+                    "Omocisteina",
+                    "TNF-A",
+                    "IL-6",
+                    "IL-10",
+                ],
+            }
+
+            TEST_FIELD_MAP = {
+                # Lipidi e marker cardiovascolari
+                "Colesterolo Totale":             "tot_chol",
+                "Colesterolo LDL":                "ldl_chol",
+                "Colesterolo HDL":                "hdl_chol_m", 
+                "Trigliceridi":                   "trigl",
+                "PCR":                            "pcr_c",
+                "NT-proBNP":                      "nt_pro",
+                "Omocisteina":                    "omocisteina",   
+                "Glicemia":                       "glicemy",
+                "Insulina":                       "insulin",
+                "HOMA Test":                      "homa",
+                "IR Test":                        "ir",
+                "Creatinina":                     "creatinine_m",
+                "Stress Ossidativo":              "osi",
+                "Omega Screening":                "o3o6_fatty_acid_quotient",
+
+                # Reni
+                "Azotemia":                       "azotemia",
+                "Sodio":                          "na",
+                "Potassio":                       "k",
+                "Cloruri":                        "ci",
+                "Fosforo":                        "p",
+                "Calcio":                         "ca",
+                "Esame delle Urine":              "uro",
+
+                # Fegato
+                "Transaminasi GOT":               "got_m",
+                "Transaminasi GPT":               "gpt_m",
+                "Gamma-GT":                       "g_gt_m",
+                "Bilirubina Totale":              "tot_bili",
+                "Bilirubina Diretta":             "direct_bili",
+                "Bilirubina Indiretta":           "indirect_bili",
+                "Fosfatasi Alcalina":             "a_photo_m",
+                "Albumina":                       "albuminemia",
+                "Proteine Totali":                "tot_prot",
+
+                # Cervello e infiammazione ossidativa
+                "Vitamina B12":                   "v_b12",
+                "Vitamina D":                     "v_d",
+                "DHEA":                           "dhea_m",
+                "TSH":                            "tsh",
+                "FT3":                            "ft3",
+                "FT4":                            "ft4",
+                "Omega-3 Index":                  "o3_index",
+                "EPA":                            "aa_epa",
+                "DHA":                            "doco_acid",
+                "Stress Ossidativo dROMS":        "d_roms",
+                "Stress Ossidativo PAT":          "pat",
+                "Stress Ossidativo OSI REDOX":    "osi",
+
+                # Sistema ormonale
+                "Testosterone":                   "testo_m",
+                "17B-Estradiolo":                 "beta_es_m",
+                "Progesterone":                   "prog_m",
+                "SHBG":                           "shbg_m",
+
+                # Sangue & ferro
+                "Emocromo":                       "emocromo",     
+                "Ferritina":                      "ferritin_m",
+                "Sideremia":                      "sideremia",   
+                "Transferrina":                   "transferrin",
+
+                # Sistema immunitario
+                "TNF-A":                          "tnf_a",
+                "IL-6":                           "inter_6",
+                "IL-10":                          "inter_10",
+            }
+
+            organi_valori = {}
+
+            for organo, tests in organi_esami.items():
+                organi_valori[organo] = {}
+                for test_name in tests:
+                    field_name = TEST_FIELD_MAP.get(test_name)
+                    if not field_name:
+                        # se manca la mappatura, salta o logga
+                        continue
+                    # recupera l'attributo; se è None, va a None
+                    organi_valori[organo][test_name] = getattr(dati, field_name, None)
+
+            valori_esami_raw = {}
+            for tests in organi_valori.values():
+                for nome_test, valore in tests.items():
+                    if valore is not None:
+                        valori_esami_raw[nome_test] = valore
+
+            score = calcola_score_organi(valori_esami_raw, organi_valori)
+
+            print(score)
+
+        else:
+            score = None 
 
         ## DATI RESILIENZA
 
@@ -881,6 +1068,9 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
             'dottore' : dottore,
             'referti_test_recenti': ultimo_referto,
+
+            #SCORE VALUE
+            'score' : score,
 
             #ULTIMO REFERTO ETA METABOLICA
             'punteggio_eta_metabolica': punteggio_eta_metabolica,
@@ -2364,6 +2554,28 @@ def safe_float(data, key, default=0.0):
         return float(data.get(key, default))
     except (ValueError, TypeError):
         return default
+
+@method_decorator(catch_exceptions, name='dispatch')
+class EtaBiologicaView(LoginRequiredMixin, View):
+
+    def get(self, request, id):
+
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        context = {
+            'dottore' : dottore,
+            'persona': persona,
+        }
+
+        return render(request, 'cartella_paziente/eta_biologica/etaBiologica.html', context)
+
+
+
+
+
+
+
 
 @method_decorator(catch_exceptions, name='dispatch')
 class CalcolatoreRender(LoginRequiredMixin,View):
