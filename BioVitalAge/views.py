@@ -2547,12 +2547,6 @@ class EtaBiologicaView(LoginRequiredMixin, View):
         return render(request, 'cartella_paziente/eta_biologica/etaBiologica.html', context)
 
 
-
-
-
-
-
-
 @method_decorator(catch_exceptions, name='dispatch')
 class CalcolatoreRender(LoginRequiredMixin,View):
     
@@ -2568,22 +2562,7 @@ class CalcolatoreRender(LoginRequiredMixin,View):
             'persona': persona,
         }
 
-        codice_fiscale = request.GET.get('parametro')
-
-        if codice_fiscale:
-            try:
-                paziente = TabellaPazienti.objects.get(dottore=dottore, codice_fiscale=codice_fiscale)
-                context.update({
-                    "paziente": paziente,
-                    "id_persona": paziente.id
-                })
-            except TabellaPazienti.DoesNotExist:
-                context.update({"error": "Paziente non trovato."})
-
-            return render(request, 'cartella_paziente/eta_biologica/calcolatore.html', context)
-        
-        else:
-            return render(request, 'cartella_paziente/eta_biologica/calcolatore.html', context)
+        return render(request, 'cartella_paziente/eta_biologica/calcolatore.html', context)
 
         
     def post(self, request, id):

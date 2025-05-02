@@ -129,6 +129,165 @@
                 </div>
             </div>
 
+
+            <!-- SALUTE DEL CUORE -->
+            <div class="exams-container">
+                <div class="content-container">
+
+                    <div class="indicator-container">
+                        <p class="nome"><span>Colesterolo Totale (mg/dI):</span>{{ datiEstesi.tot_chol }}</p>
+                        <div class="indicator-content-container" id="indicatori-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">0</p>
+                                <div class="positiveTesto">
+                                    <p>>0</p>
+                                    <p>200</p>
+                                </div>
+                                <p class="extremeNegativeRange">500</p>
+                            </div>
+                            {% if datiEstesi.tot_chol %}
+        
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tot_chol }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                </div>
+        
+                            {% else %}
+        
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.tot_chol }}"></p>
+                                </div>
+        
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="indicator-container">
+                        <p class="nome"><span>Colesterolo LDL (mg/dL):</span>{{ datiEstesi.ldl_chol }}</p>
+                        <div class="indicator-content-container" id="indicatori-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">0</p>
+                                <div class="positiveTesto">
+                                    <p>>0</p>
+                                    <p>100</p>
+                                </div>
+                                <p class="extremeNegativeRange">200</p>
+                            </div>
+                            {% if datiEstesi.ldl_chol %}
+        
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ldl_chol }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                </div>
+        
+                            {% else %}
+        
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.ldl_chol }}"></p>
+                                </div>
+        
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if persona.gender == 'M' %}
+                    <div class="indicator-container">
+                        <p class="nome"><span>Colesterolo HDL Uomo(mg/dL):</span>{{ datiEstesi.hdl_chol_m }}</p>
+                        <div class="indicator-content-container" id="indicatori-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">0</p>
+                                <div class="positiveTesto">
+                                    <p>35</p>
+                                    <p>55</p>
+                                </div>
+                                <p class="extremeNegativeRange">100</p>
+                            </div>
+                            {% if datiEstesi.hdl_chol_m %}
+        
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hdl_chol_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                </div>
+        
+                            {% else %}
+        
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.hdl_chol_m }}"></p>
+                                </div>
+        
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% else %}
+
+                    <div class="indicator-container">
+                        <p class="nome"><span>Colesterolo HDL Donna(mg/dL):</span>{{ datiEstesi.hdl_chol_w }}</p>
+                        <div class="indicator-content-container" id="indicatori-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">0</p>
+                                <div class="positiveTesto">
+                                    <p>45</p>
+                                    <p>65</p>
+                                </div>
+                                <p class="extremeNegativeRange">120</p>
+                            </div>
+                            {% if datiEstesi.hdl_chol_w %}
+        
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hdl_chol_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                </div>
+        
+                            {% else %}
+        
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.hdl_chol_w }}"></p>
+                                </div>
+        
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% endif %}
+
+                    <div class="indicator-container">
+                        <p class="nome"><span>Trigliceridi (mg/dL):</span>{{ datiEstesi.trigl }}</p>
+                        <div class="indicator-content-container" id="indicatori-container">
+                            <div class="indicator">
+                                <p class="negativeTesto">0</p>
+                                <div class="positiveTesto">
+                                    <p>150</p>
+                                    <p>200</p>
+                                </div>
+                                <p class="extremeNegativeRange">500</p>
+                            </div>
+                            {% if datiEstesi.trigl %}
+        
+                                <div class="col-md-12 p-2 barra-container">
+                                    <p class="barra-pointer"></p>
+                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.trigl }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                </div>
+        
+                            {% else %}
+        
+                                <div class="col-md-12 p-2 barra-container-none">
+                                    <p data-value="{{ datiEstesi.trigl }}"></p>
+                                </div>
+        
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+
+
+        
+        
+            </div>
+
+
+
             <!-- STRESS OSSIDATIVO -->
             <div class="exams-container stampa">
 
@@ -2128,153 +2287,7 @@
             <div class="exams-container stampa">
                 <h3>Assetto Lipidico</h3>
 
-                <div class="content-container">
-
-                    <div class="indicator-container">
-                        <p class="nome"><span>Colesterolo Totale (mg/dI):</span>{{ datiEstesi.tot_chol }}</p>
-                        <div class="indicator-content-container" id="indicatori-container">
-                            <div class="indicator">
-                                <p class="negativeTesto">0</p>
-                                <div class="positiveTesto">
-                                    <p>>0</p>
-                                    <p>200</p>
-                                </div>
-                                <p class="extremeNegativeRange">500</p>
-                            </div>
-                            {% if datiEstesi.tot_chol %}
-        
-                                <div class="col-md-12 p-2 barra-container">
-                                    <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.tot_chol }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
-                                </div>
-        
-                            {% else %}
-        
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ datiEstesi.tot_chol }}"></p>
-                                </div>
-        
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div class="indicator-container">
-                        <p class="nome"><span>Colesterolo LDL (mg/dL):</span>{{ datiEstesi.ldl_chol }}</p>
-                        <div class="indicator-content-container" id="indicatori-container">
-                            <div class="indicator">
-                                <p class="negativeTesto">0</p>
-                                <div class="positiveTesto">
-                                    <p>>0</p>
-                                    <p>100</p>
-                                </div>
-                                <p class="extremeNegativeRange">200</p>
-                            </div>
-                            {% if datiEstesi.ldl_chol %}
-        
-                                <div class="col-md-12 p-2 barra-container">
-                                    <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.ldl_chol }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
-                                </div>
-        
-                            {% else %}
-        
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ datiEstesi.ldl_chol }}"></p>
-                                </div>
-        
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    {% if persona.gender == 'M' %}
-                    <div class="indicator-container">
-                        <p class="nome"><span>Colesterolo HDL Uomo(mg/dL):</span>{{ datiEstesi.hdl_chol_m }}</p>
-                        <div class="indicator-content-container" id="indicatori-container">
-                            <div class="indicator">
-                                <p class="negativeTesto">0</p>
-                                <div class="positiveTesto">
-                                    <p>35</p>
-                                    <p>55</p>
-                                </div>
-                                <p class="extremeNegativeRange">100</p>
-                            </div>
-                            {% if datiEstesi.hdl_chol_m %}
-        
-                                <div class="col-md-12 p-2 barra-container">
-                                    <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hdl_chol_m }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
-                                </div>
-        
-                            {% else %}
-        
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ datiEstesi.hdl_chol_m }}"></p>
-                                </div>
-        
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    {% else %}
-
-                    <div class="indicator-container">
-                        <p class="nome"><span>Colesterolo HDL Donna(mg/dL):</span>{{ datiEstesi.hdl_chol_w }}</p>
-                        <div class="indicator-content-container" id="indicatori-container">
-                            <div class="indicator">
-                                <p class="negativeTesto">0</p>
-                                <div class="positiveTesto">
-                                    <p>45</p>
-                                    <p>65</p>
-                                </div>
-                                <p class="extremeNegativeRange">120</p>
-                            </div>
-                            {% if datiEstesi.hdl_chol_w %}
-        
-                                <div class="col-md-12 p-2 barra-container">
-                                    <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.hdl_chol_w }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
-                                </div>
-        
-                            {% else %}
-        
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ datiEstesi.hdl_chol_w }}"></p>
-                                </div>
-        
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    {% endif %}
-
-                    <div class="indicator-container">
-                        <p class="nome"><span>Trigliceridi (mg/dL):</span>{{ datiEstesi.trigl }}</p>
-                        <div class="indicator-content-container" id="indicatori-container">
-                            <div class="indicator">
-                                <p class="negativeTesto">0</p>
-                                <div class="positiveTesto">
-                                    <p>150</p>
-                                    <p>200</p>
-                                </div>
-                                <p class="extremeNegativeRange">500</p>
-                            </div>
-                            {% if datiEstesi.trigl %}
-        
-                                <div class="col-md-12 p-2 barra-container">
-                                    <p class="barra-pointer"></p>
-                                    <p id="indicator" class="indicatore" data-value="{{ datiEstesi.trigl }}"><img src="{% static 'image/Heart_Colorato.png' %}" alt="" style="width: 50px; height: 50px;"></p>
-                                </div>
-        
-                            {% else %}
-        
-                                <div class="col-md-12 p-2 barra-container-none">
-                                    <p data-value="{{ datiEstesi.trigl }}"></p>
-                                </div>
-        
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
+                
                 <button class="generatePDFButton button" id="genereReportLipidAp">
                     <span class="button__icon-wrapper">
                         <svg

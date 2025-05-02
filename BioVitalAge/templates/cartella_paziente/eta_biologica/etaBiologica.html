@@ -264,7 +264,7 @@
                   
                     <!-- overlay che compare solo on-hover -->
                     <div class="overlay">
-                      <button class="overlay-btn" onclick="window.location.href='{% url 'Calcolatore' persona.id %}' ">Apri calcolatore</button>
+                      <button class="overlay-btn" onclick="window.location.href='{% url 'Calcolatore' persona.id %}?parametro={{ persona.codice_fiscale|urlencode }}' ">Apri calcolatore</button>
                     </div>
                 </div>
             </div>
