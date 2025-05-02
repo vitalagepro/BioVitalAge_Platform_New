@@ -1457,6 +1457,16 @@ class DiagnosiView(LoginRequiredMixin, View):
         totale_diagnosi = diagnosi.count()
         diagnosi_attive = diagnosi.exclude(stato__icontains="risolta").count()
         diagnosi_risolte = diagnosi.filter(stato__icontains="risolta").count()
+        # Conta diagnosi per mese
+        diagnosi_per_mese = diagnosi.annotate(month=ExtractMonth('data_diagnosi')) \
+                                    .values('month') \
+                                    .annotate(count=Count('id')) \
+                                    .order_by('month')
+        # Array [0, 0, ..., 0] con valori aggiornati
+        diagnosi_mensili = [0] * 12
+        for item in diagnosi_per_mese:
+            diagnosi_mensili[item['month'] - 1] = item['count']
+
 
         # Appuntamento futuro più vicino (es. per prossimo controllo)
         prossimo_controllo = (
@@ -1480,6 +1490,7 @@ class DiagnosiView(LoginRequiredMixin, View):
             'totale_diagnosi': totale_diagnosi,
             'diagnosi_attive': diagnosi_attive,
             'diagnosi_risolte': diagnosi_risolte,
+            'diagnosi_mensili': diagnosi_mensili,
             'prossimo_controllo': prossimo_controllo,
             'ultima_diagnosi': ultima_diagnosi,
             'storico_diagnosi': storico_diagnosi
@@ -1488,17 +1499,24 @@ class DiagnosiView(LoginRequiredMixin, View):
 
     def post(self, request, id):
         """Crea nuova diagnosi"""
+        import json
         persona = get_object_or_404(TabellaPazienti, id=id)
 
-        descrizione = request.POST.get('descrizione')
-        data_diagnosi_str = request.POST.get('data_diagnosi') or date.get('data_diagnosi')
+        try:
+            data = json.loads(request.body)
+        except Exception:
+            return JsonResponse({'success': False, 'error': 'Dati non validi'}, status=400)
+
+        descrizione = data.get('descrizione')
+        data_diagnosi_str = data.get('data_diagnosi')
+        stato = data.get('stato')
+        note = data.get('note')
+        gravita = data.get('gravita')
+
         try:
             data_diagnosi = datetime.strptime(data_diagnosi_str, "%Y-%m-%d").date()
         except Exception:
-            return JsonResponse({'success': False, 'error': 'Formato data non valido'}, status=400)        
-        stato = request.POST.get('stato')
-        note = request.POST.get('note')
-        gravita = request.POST.get('gravita')
+            return JsonResponse({'success': False, 'error': 'Formato data non valido'}, status=400)
 
         if not (descrizione and data_diagnosi and stato and gravita):
             return JsonResponse({'success': False, 'error': 'Dati mancanti'}, status=400)
@@ -1526,10 +1544,8 @@ class DiagnosiView(LoginRequiredMixin, View):
         """Modifica diagnosi esistente"""
         import json
         data = json.loads(request.body)
-
         diagnosi_id = data.get('id')
         diagnosi = get_object_or_404(Diagnosi, id=diagnosi_id)
-
         diagnosi.descrizione = data.get('descrizione', diagnosi.descrizione)
         diagnosi.data_diagnosi = data.get('data_diagnosi', diagnosi.data_diagnosi)
         diagnosi.stato = data.get('stato', diagnosi.stato)
@@ -1539,14 +1555,29 @@ class DiagnosiView(LoginRequiredMixin, View):
 
         return JsonResponse({'success': True})
 
-    def delete(self, request, id):
-        """Elimina diagnosi"""
-        import json
-        data = json.loads(request.body)
-        diagnosi_id = data.get('id')
+## VIEW DETTAGLI DIAGNOSI
+class DiagnosiDettaglioView(LoginRequiredMixin, View):
+    def get(self, request, diagnosi_id):
+        diagnosi = get_object_or_404(Diagnosi, id=diagnosi_id)
+
+        return JsonResponse({
+            'id': diagnosi.id,
+            'descrizione': diagnosi.descrizione,
+            'data_diagnosi': diagnosi.data_diagnosi.strftime('%Y-%m-%d'),
+            'stato': diagnosi.stato,
+            'note': diagnosi.note,
+            'gravita': diagnosi.gravita,
+        })
+
+## VIEW DELETE DIAGNOSI
+class DeleteDiagnosiView(View):
+    def post(self, request, id, diagnosi_id):
+        # Verifica che il paziente esista
+        get_object_or_404(TabellaPazienti, id=id)
+        
         diagnosi = get_object_or_404(Diagnosi, id=diagnosi_id)
         diagnosi.delete()
-        return JsonResponse({'success': True})
+        return JsonResponse({"success": True})
 
 ## SEZIONE MUSCOLO
 @method_decorator(catch_exceptions, name='dispatch')

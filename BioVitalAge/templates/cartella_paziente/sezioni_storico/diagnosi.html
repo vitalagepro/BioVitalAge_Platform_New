@@ -26,7 +26,7 @@
     <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
     <!-- JS IMPORT -->
-    <script src="{% static 'js/cartella_paziente/sezioni_storico/diagnosi.js' %}" defer></script>
+    <script src="{% static 'js/cartella_paziente/sezioni_storico/diagnosi.js' %}" type="module" defer></script>
 </head>
 
 <body>
@@ -79,23 +79,31 @@
         <div class="card-container" style="margin-top: 2rem;">
 
             <div class="flex-row">
-                <div class="sub-card grave-border" style="flex: 0.6;">
-                    
-                    <div class="container-title-badge">
-                        <h3>Ultima Diagnosi</h3>
-                        <p class="badge-gravita grave">Grave</p>
-                    </div>
+                {% if ultima_diagnosi %}
+                    <div class="sub-card {% if ultima_diagnosi.gravita == 3 %} grave-border {% elif ultima_diagnosi.gravita == 1 %} lieve-border {% elif ultima_diagnosi.gravita == 2 %} moderata-border {% endif %}" style="flex: 0.6;">
+                        
+                        <div class="container-title-badge">
+                            <h3>Ultima Diagnosi</h3>
+                            <p class="badge-gravita
+                            {% if ultima_diagnosi.gravita == 3 %}
+                                grave
+                            {% elif ultima_diagnosi.gravita == 1 %}
+                                lieve
+                            {% elif ultima_diagnosi.gravita == 2 %}
+                                moderata
+                            {% endif %} ">{% if ultima_diagnosi.gravita == 3 %}Grave{% elif ultima_diagnosi.gravita == 1 %}Lieve{% elif ultima_diagnosi.gravita == 2 %}Moderata{% endif %}</p>
+                        </div>
 
-                    <div class="content-grid">
-                        <p><strong>Descrizione:</strong> Dolore toracico cronico</p>
-                        <p><strong>Data Diagnosi:</strong> 12/04/2025</p>
-                        <!-- <p><strong>Codifica ICD10:</strong> I20.9</p> -->
-                        <p><strong>Stato:</strong> In trattamento</p>
-                        <p><strong>Terapie:</strong> Betabloccante 50mg/die</p>
-                        <p><strong>Note:</strong> Monitoraggio trimestrale</p>
+                        <div class="content-grid">
+                            <p><strong>Descrizione:</strong> {{ ultima_diagnosi.descrizione }}</p>
+                            <p><strong>Data Diagnosi:</strong> {{ ultima_diagnosi.data_diagnosi|date:"d/m/Y"|default:"Nessuna data disponibile." }}</p>
+                            <!-- <p><strong>Codifica ICD10:</strong> I20.9</p> -->
+                            <p><strong>Stato:</strong> {{ ultima_diagnosi.stato }}</p>
+                            <p><strong>Note:</strong> {{ ultima_diagnosi.note|default:"Nessuna." }}</p>
+                        </div>
+                        
                     </div>
-                    
-                </div>
+                {% endif %}
         
                 <div class="sub-card" {% if not ultima_diagnosi %} style="flex: 1;" {% endif %} style="flex: 0.6;">
                     <h3>Statistiche Appuntamenti</h3>
@@ -125,7 +133,7 @@
                             <p>
                                 <strong>Prossimo Controllo:</strong>  
                                 {% if prossimo_controllo %}
-                                    {{ prossimo_controllo.data|date:"d/m/Y" }} - {{ prossimo_controllo.orario|time:"H:i" }}
+                                    {{ prossimo_controllo.data|date:"d/m/Y" }}
                                 {% else %}
                                     Nessun controllo futuro.
                                 {% endif %}
@@ -171,20 +179,20 @@
                         </thead>
                         <tbody id="diagnosiTableBody">
                             {% for diagnosi in storico_diagnosi %}
-                              <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ diagnosi.descrizione }}</td>
-                                <td>
+                              <tr data-id="{{ diagnosi.id }}">
+                                <td class="td-id">{{ diagnosi.id }}</td>
+                                <td class="td-descrizione">{{ diagnosi.descrizione }}</td>
+                                <td class="td-gravita">
                                   <span class="badge 
                                     {% if diagnosi.gravita == 1 %}lieve{% elif diagnosi.gravita == 2 %}moderata{% else %}grave{% endif %}">
                                     {% if diagnosi.gravita == 1 %}Lieve{% elif diagnosi.gravita == 2 %}Moderata{% else %}Grave{% endif %}
                                   </span>
                                 </td>
-                                <td>{{ diagnosi.data_diagnosi|date:"d/m/Y" }}</td>
-                                <td>{{ diagnosi.stato }}</td>
-                                <td>
-                                  <button class="btn edit">✎</button>
-                                  <button class="btn delete">✖</button>
+                                <td class="td-data">{{ diagnosi.data_diagnosi|date:"d/m/Y" }}</td>
+                                <td class="td-stato">{{ diagnosi.stato }}</td>
+                                <td class="td-azioni">
+                                    <button onclick="compilaDiagnosi({{ diagnosi.id }})" class="btn edit">✎</button>
+                                    <button class="btn delete" data-id="{{ diagnosi.id }}">✖</button>
                                 </td>
                               </tr>
                             {% empty %}
@@ -194,22 +202,22 @@
                     </table>
                     <!-- Sezione paginazione -->
                     <div class="pagination_tabella">
-                        {% if storico_page.has_previous %}
-                        <a class="previous" href="?page={{ storico_page.previous_page_number }}">Previous</a>
+                        {% if storico_diagnosi.has_previous %}
+                        <a class="previous" href="?page={{ storico_diagnosi.previous_page_number }}">Previous</a>
                         {% else %}
                         <span class="previous disabled">Previous</span>
                         {% endif %}
                 
-                        {% for num in storico_page.paginator.page_range %}
-                        {% if storico_page.number == num %}
+                        {% for num in storico_diagnosi.paginator.page_range %}
+                        {% if storico_diagnosi.number == num %}
                         <span class="current">{{ num }}</span>
                         {% else %}
                         <a href="?page={{ num }}">{{ num }}</a>
                         {% endif %}
                         {% endfor %}
                 
-                        {% if storico_page.has_next %}
-                        <a class="next" href="?page={{ storico_page.next_page_number }}">Next</a>
+                        {% if storico_diagnosi.has_next %}
+                        <a class="next" href="?page={{ storico_diagnosi.next_page_number }}">Next</a>
                         {% else %}
                         <span class="next disabled">Next</span>
                         {% endif %}
@@ -220,39 +228,38 @@
 
             <div class="sub-card" style="margin-top: 1rem;">
                 <h3>Andamento Parametri</h3>
-                <canvas id="graficoDiagnosi"></canvas>
+                <canvas id="graficoDiagnosi" data-mensili='{{ diagnosi_mensili|safe }}'></canvas>
             </div>
         
         </div>
         
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
-            const ctx = document.getElementById('graficoDiagnosi').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
+            let diagnosiChart;
+            document.addEventListener("DOMContentLoaded", () => {
+                const ctx = document.getElementById('graficoDiagnosi').getContext('2d');
+                const datiDiagnosi = JSON.parse(document.getElementById('graficoDiagnosi').dataset.mensili);
+
+                diagnosiChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
                     labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
                     datasets: [{
-                        label: 'Pazienti Mensili',
-                        data: [40, 60, 55, 70, 80, 90, 100, 85, 75, 95, 110, 120],
+                        label: 'Diagnosi mensili',
+                        data: datiDiagnosi,
                         backgroundColor: 'rgba(128, 90, 213, 0.3)',
                         borderColor: 'rgba(128, 90, 213, 1)',
                         pointBackgroundColor: 'rgba(128, 90, 213, 1)',
                         fill: true,
                         tension: 0.3
                     }]
-                },
-                options: {
+                    },
+                    options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
-                        }
+                        legend: { display: false },
+                        tooltip: { mode: 'index', intersect: false }
                     },
                     interaction: {
                         mode: 'nearest',
@@ -260,19 +267,19 @@
                     },
                     scales: {
                         y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 20
-                            }
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
                         }
                     }
-                }
+                    }
+                });
             });
-        </script>
+
+        </script>        
 
     </main>
 
-
+    <!-- Modale Nuova Diagnosi -->
     <div id="diagnosisModal" class="modal-diagnosi">
         <div class="modal-content-appointments">
       
@@ -289,8 +296,9 @@
       
           <!-- Corpo della modale -->
           <div class="modal-section">
-            <form id="diagnosis-form" method="post" action="{% url 'diagnosi' persona.id %}" class="form-appointment" data-id="{{ diagnosi.id }}">
+            <form id="diagnosis-form" method="post" action="{% url 'diagnosi' persona.id %}" class="form-appointment" data-id="{{ diagnosi.id }}" data-mode="create">
                 {% csrf_token %}
+                <input type="hidden" name="id_diagnosi" id="id_diagnosi">
                 <div class="w-full">
                     <!-- Descrizione -->
                     <label class="input-typology mt-4 w-100">
@@ -354,12 +362,16 @@
       
           <!-- Footer con pulsanti -->
           <div class="button-modal-appointments">
-            <button type="submit" form="diagnosis-form" class="button btn-primary">Salva</button>
-            <button type="button" class="button btn-secondary" id="closeDiagnosisBtn">Chiudi</button>
+            <button type="submit" class="button btn-primary" id="submitDiagnosiBtn" form="diagnosis-form">Salva</button>
+            <button type="button" class="button btn-secondary" id="closeDiagnosisBtn" >Chiudi</button>
           </div>
       
         </div>
-    </div>
+    </div>   
+      
+    <script>
+        pazienteId = "{{ persona.id }}";
+    </script>
 </body>
 
 </html>

@@ -47,9 +47,11 @@ urlpatterns = [
     path("CartellaPaziente/<int:id>/Storico",                   views.StoricoView.as_view(),                          name="storico"),
     path("CartellaPaziente/<int:id>/Terapie",                   views.TerapiaView.as_view(),                          name="terapie"),
     path("CartellaPaziente/<int:id>/Esami",                     views.EsamiView.as_view(),                            name="esami"),
+    path("CartellaPaziente/<int:id>/Diagnosi",                  views.DiagnosiView.as_view(),                         name="diagnosi"),
 
     ## URL SEZIONE DIAGNOSI
-    path("CartellaPaziente/<int:id>/Diagnosi",                  views.DiagnosiView.as_view(),                         name="diagnosi"),
+    path('diagnosi/<int:diagnosi_id>/dettagli/',                views.DiagnosiDettaglioView.as_view(),                name='diagnosi_dettaglio'),
+    path("CartellaPaziente/<int:id>/Diagnosi/<int:diagnosi_id>/delete/", views.DeleteDiagnosiView.as_view(),          name="delete_diagnosi"),
 
     ## URL SEZIONE TERAPIE
     path("elimina-terapia-studio/<int:id>/",                    EliminaTerapiaStudioView.as_view(),                   name="elimina_terapia_studio"),
