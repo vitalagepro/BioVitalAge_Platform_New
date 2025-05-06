@@ -1250,11 +1250,24 @@ class TerapiaView(View):
         terapie_studio = TerapiaInStudio.objects.filter(paziente=persona).order_by('data_inizio')
         terapie_domiciliari = TerapiaDomiciliare.objects.filter(paziente=persona).order_by('data_inizio')
 
+        # Impostazione del paginatore (ad es. 10 referti per pagina)
+        paginator = Paginator(terapie_domiciliari, 4)
+        page_number = request.GET.get('page')
+        storico_terapie = paginator.get_page(page_number)
+
+        # Impostazione del paginatore (ad es. 10 referti per pagina)
+        paginator = Paginator(terapie_studio, 4)
+        page_number = request.GET.get('page')
+        storico_studio = paginator.get_page(page_number)
+
         context = {
             'persona': persona,
             'dottore': dottore,
             'terapie_studio': terapie_studio,
-            'terapie_domiciliari': terapie_domiciliari
+            'terapie_domiciliari': terapie_domiciliari,
+            'storico_terapie': storico_terapie,
+            'storico_studio': storico_studio
+
         }
 
         return render(request, 'cartella_paziente/sezioni_storico/terapie.html', context)
