@@ -1455,8 +1455,8 @@ class DiagnosiView(LoginRequiredMixin, View):
         persona = get_object_or_404(TabellaPazienti, id=id)
         diagnosi = Diagnosi.objects.filter(paziente=persona)
         totale_diagnosi = diagnosi.count()
-        diagnosi_attive = diagnosi.exclude(stato__icontains="risolta").count()
-        diagnosi_risolte = diagnosi.filter(stato__icontains="risolta").count()
+        diagnosi_attive  = diagnosi.filter(risolta=False).count()
+        diagnosi_risolte = diagnosi.filter(risolta=True).count()
         # Conta diagnosi per mese
         diagnosi_per_mese = diagnosi.annotate(month=ExtractMonth('data_diagnosi')) \
                                     .values('month') \
@@ -1527,7 +1527,8 @@ class DiagnosiView(LoginRequiredMixin, View):
             data_diagnosi=data_diagnosi,
             stato=stato,
             note=note,
-            gravita=int(gravita)
+            gravita=int(gravita),
+            risolta=False
         )
 
         return JsonResponse({
@@ -1537,7 +1538,8 @@ class DiagnosiView(LoginRequiredMixin, View):
             'data_diagnosi': diagnosi.data_diagnosi.strftime('%Y-%m-%d'),
             'stato': diagnosi.stato,
             'note': diagnosi.note,
-            'gravita': diagnosi.gravita
+            'gravita': diagnosi.gravita,
+            "risolta": diagnosi.risolta
         })
 
     def patch(self, request, id):
@@ -1551,6 +1553,7 @@ class DiagnosiView(LoginRequiredMixin, View):
         diagnosi.stato = data.get('stato', diagnosi.stato)
         diagnosi.note = data.get('note', diagnosi.note)
         diagnosi.gravita = data.get('gravita', diagnosi.gravita)
+        diagnosi.risolta = data.get('risolta', diagnosi.risolta)
         diagnosi.save()
 
         return JsonResponse({'success': True})
@@ -1567,6 +1570,7 @@ class DiagnosiDettaglioView(LoginRequiredMixin, View):
             'stato': diagnosi.stato,
             'note': diagnosi.note,
             'gravita': diagnosi.gravita,
+            "risolta": diagnosi.risolta,
         })
 
 ## VIEW DELETE DIAGNOSI

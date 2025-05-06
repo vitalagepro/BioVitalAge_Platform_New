@@ -653,4 +653,5 @@ class Diagnosi(models.Model):
     stato = models.CharField(max_length=100)
     note = models.TextField(blank=True, null=True)
     gravita = models.IntegerField()
+    risolta = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

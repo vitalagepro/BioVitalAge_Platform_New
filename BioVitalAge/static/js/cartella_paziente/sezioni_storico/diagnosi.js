@@ -176,7 +176,8 @@ document.addEventListener("DOMContentLoaded", () => {
       stato: form.stato.value,
       note: form.note.value,
       gravita: form.gravita.value,
-    };
+      risolta: form.risolta.checked
+    };    
 
     try {
       const url = window.location.pathname;
@@ -212,6 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <td><span class="badge ${getBadgeClass(result.gravita)}">${getGravitaLabel(result.gravita)}</span></td>
           <td>${formatDataItaliana(result.data_diagnosi)}</td>
           <td>${result.stato}</td>
+          <td>${result.risolta ? "Si" : "No"}</td>
           <td>
             <button class="btn edit" onclick="compilaDiagnosi(${result.id})">✎</button>
             <button class="btn delete" data-id="${result.id}">✖</button>
@@ -257,12 +259,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const gravitaBadge = row.querySelector(".td-gravita .badge");
           gravitaBadge.textContent = getGravitaLabel(data.gravita);
-          gravitaBadge.className = "badge " + getGravitaClass(data.gravita);
+          gravitaBadge.className = "badge " + getBadgeClass(data.gravita);
         }
       }
     } catch (error) {
       console.error("Errore nel salvataggio:", error);
-      alert("Errore nella richiesta.");
+      showAlert({
+        type: "danger",
+        message: "Si è verificato un errore inaspettato.",
+        extraMessage: "",
+        borderColor: "#EF4444",
+      });
     }
   });
 });
@@ -297,6 +304,7 @@ function compilaDiagnosi(diagnosiId) {
       form.stato.value = data.stato;
       form.note.value = data.note;
       form.gravita.value = data.gravita;
+      form.risolta.checked = data.risolta;
       document.getElementById("id_diagnosi").value = data.id;
       // Forza aggiornamento indicatore
       const range = document.getElementById("gravitaRange");
