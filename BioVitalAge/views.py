@@ -1459,7 +1459,7 @@ class ModificaTerapiaStudioView(View):
             }
         })
 
-## VIEW DIAGNOSI
+### VIEW DIAGNOSI
 @method_decorator(csrf_exempt, name='dispatch')
 class DiagnosiView(LoginRequiredMixin, View):
 
@@ -1595,6 +1595,18 @@ class DeleteDiagnosiView(View):
         diagnosi = get_object_or_404(Diagnosi, id=diagnosi_id)
         diagnosi.delete()
         return JsonResponse({"success": True})
+
+
+### VIEW ALLEGATI
+class AllegatiView(View):
+    def get(self, request, id):
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        context = {
+            'dottore': dottore,
+            'persona': persona
+        }
+        return render(request, "cartella_paziente/sezioni_storico/allegati.html", context)
 
 ## SEZIONE MUSCOLO
 @method_decorator(catch_exceptions, name='dispatch')

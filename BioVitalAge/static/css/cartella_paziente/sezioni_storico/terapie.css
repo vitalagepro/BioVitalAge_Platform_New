@@ -184,6 +184,7 @@
 }
 .close:hover {
   transform: scale(1.1);
+  color: var(--card-color);
 }
 .ModalPrescrizioni-content {
   width: 98%;

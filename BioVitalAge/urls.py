@@ -48,6 +48,7 @@ urlpatterns = [
     path("CartellaPaziente/<int:id>/Terapie",                   views.TerapiaView.as_view(),                          name="terapie"),
     path("CartellaPaziente/<int:id>/Esami",                     views.EsamiView.as_view(),                            name="esami"),
     path("CartellaPaziente/<int:id>/Diagnosi",                  views.DiagnosiView.as_view(),                         name="diagnosi"),
+    path("CartellaPaziente/<int:id>/Allegati",                 views.AllegatiView.as_view(),                         name="allegati"),
 
     ## URL SEZIONE DIAGNOSI
     path('diagnosi/<int:diagnosi_id>/dettagli/',                views.DiagnosiDettaglioView.as_view(),                name='diagnosi_dettaglio'),
