@@ -655,3 +655,17 @@ class Diagnosi(models.Model):
     gravita = models.IntegerField()
     risolta = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+## LABORATORIO
+class AllegatiLaboratorio(models.Model):
+    paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="allegati_laboratorio")
+    file = models.FileField(upload_to='laboratorio/', null=True, blank=True)
+    data_referto = models.DateField(default=datetime.now)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+## STRUMENTALE
+class AllegatiStrumentale (models.Model):
+    paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="allegati_strumentale")
+    file = models.FileField(upload_to='strumentale/', null=True, blank=True)
+    data_referto = models.DateField(default=datetime.now)
+    created_at = models.DateTimeField(auto_now_add=True)

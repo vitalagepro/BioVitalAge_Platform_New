@@ -231,6 +231,14 @@ ADMIN_REORDER = [
             "BioVitalAge.Appointment",
         ],
     },
+    {
+        "app": "BioVitalAge",
+        "label": "PDF esami",
+        "models": [
+            "BioVitalAge.AllegatiLaboratorio",
+            "BioVitalAge.AllegatiStrumentale",
+        ],
+    },
     # 5) Calcolatore rimane in fondo
     "Calcolatore",
     # 6) Social Auth

@@ -14,6 +14,8 @@ from collections import defaultdict
 from django.core.cache import cache # type: ignore
 from django.core.paginator import Paginator # type: ignore
 from django.http import JsonResponse # type: ignore
+from django.http import FileResponse, Http404
+from django.contrib.auth.decorators import login_required
 from django.views import View # type: ignore
 from django.views.decorators.csrf import csrf_exempt # type: ignore
 from django.shortcuts import render, get_object_or_404, redirect # type: ignore
@@ -1600,13 +1602,82 @@ class DeleteDiagnosiView(View):
 ### VIEW ALLEGATI
 class AllegatiView(View):
     def get(self, request, id):
+        return self._render_with_context(request, id)
+
+    def post(self, request, id):
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        # Rileva quale form è stato inviato usando data-table (puoi anche usare un campo hidden)
+        data_table = request.POST.get('data-table')
+
+        # Recupera i dati
+        data = request.POST.get('data_referto')
+        file = request.FILES.get('file')
+
+        if file and data_table == "esami-di-laboratorio":
+            AllegatiLaboratorio.objects.create(paziente=persona, data_referto=data, file=file)
+        elif file and data_table == "esami-strumentali":
+            AllegatiStrumentale.objects.create(paziente=persona, data_referto=data, file=file)
+
+        return redirect('allegati', id=persona.id)
+
+    def _render_with_context(self, request, id):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
+
+        laboratorio = AllegatiLaboratorio.objects.filter(paziente=persona).order_by('data_referto')
+        strumentali = AllegatiStrumentale.objects.filter(paziente=persona).order_by('data_referto')
+
+        paginator_lab = Paginator(laboratorio, 4)
+        page_number = request.GET.get('page')
+        allegati_laboratorio = paginator_lab.get_page(page_number)
+
+        paginator_strum = Paginator(strumentali, 4)
+        page_number = request.GET.get('page')
+        allegati_strumentale = paginator_strum.get_page(page_number)
+
         context = {
             'dottore': dottore,
-            'persona': persona
+            'persona': persona,
+            'allegati_laboratorio': allegati_laboratorio,
+            'allegati_strumentale': allegati_strumentale
         }
         return render(request, "cartella_paziente/sezioni_storico/allegati.html", context)
+
+## DOWNLOAD ALLEGATI
+@method_decorator(login_required, name='dispatch')
+class DownloadAllegatoView(View):
+    def get(self, request, tipo, allegato_id):
+        if tipo == "laboratorio":
+            allegato = get_object_or_404(AllegatiLaboratorio, id=allegato_id)
+        elif tipo == "strumentale":
+            allegato = get_object_or_404(AllegatiStrumentale, id=allegato_id)
+        else:
+            raise Http404("Tipo non valido")
+
+        if not allegato.file:
+            raise Http404("File non trovato")
+
+        return FileResponse(
+            allegato.file.open("rb"),
+            as_attachment=True,
+            filename=allegato.file.name.split("/")[-1]
+        )
+
+## ELIMINA ALLEGATI
+class DeleteAllegatoView(LoginRequiredMixin, View):
+    def post(self, request, paziente_id, tipo, allegato_id):
+        if tipo == "laboratorio":
+            model = AllegatiLaboratorio
+        elif tipo == "strumentale":
+            model = AllegatiStrumentale
+        else:
+            return JsonResponse({"error": "Tipo non valido"}, status=400)
+
+        allegato = get_object_or_404(model, id=allegato_id)
+        allegato.file.delete()
+        allegato.delete()
+        return JsonResponse({"success": True})
 
 ## SEZIONE MUSCOLO
 @method_decorator(catch_exceptions, name='dispatch')

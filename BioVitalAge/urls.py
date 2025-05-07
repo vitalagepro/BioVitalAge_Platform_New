@@ -48,7 +48,7 @@ urlpatterns = [
     path("CartellaPaziente/<int:id>/Terapie",                   views.TerapiaView.as_view(),                          name="terapie"),
     path("CartellaPaziente/<int:id>/Esami",                     views.EsamiView.as_view(),                            name="esami"),
     path("CartellaPaziente/<int:id>/Diagnosi",                  views.DiagnosiView.as_view(),                         name="diagnosi"),
-    path("CartellaPaziente/<int:id>/Allegati",                 views.AllegatiView.as_view(),                         name="allegati"),
+    path("CartellaPaziente/<int:id>/Allegati",                  views.AllegatiView.as_view(),                         name="allegati"),
 
     ## URL SEZIONE DIAGNOSI
     path('diagnosi/<int:diagnosi_id>/dettagli/',                views.DiagnosiDettaglioView.as_view(),                name='diagnosi_dettaglio'),
@@ -60,6 +60,10 @@ urlpatterns = [
     path("modifica-terapia-studio/<int:id>/",                   ModificaTerapiaStudioView.as_view(),                  name="modifica_terapia_studio"),
     path('terapie/domiciliare/<int:id>/modifica/',              ModificaTerapiaDomiciliareView.as_view(),             name='modifica_terapia_domiciliare'),
     path('terapie/domiciliare/<int:id>/dettagli/',              DettagliTerapiaDomiciliareView.as_view(),             name='dettagli_terapia_domiciliare'),
+
+    ## URL SEZIONE ALLEGATI
+    path("download/<str:tipo>/<int:allegato_id>/",              DownloadAllegatoView.as_view(),                       name="download_allegato"),
+    path("CartellaPaziente/<int:paziente_id>/Allegato/<str:tipo>/<int:allegato_id>/delete/", DeleteAllegatoView.as_view(), name="delete_allegato"),
 
     ## SEZIONE MUSCOLO
     path('Valutazione_Muscolo_Scheletrica/<int:persona_id>/',   views.ValutazioneMSView.as_view(),                    name='valutazione_m_s'), 

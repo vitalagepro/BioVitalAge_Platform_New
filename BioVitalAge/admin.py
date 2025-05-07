@@ -13,6 +13,8 @@ from .models import (
     ValutazioneMS,
     TerapiaDomiciliare,
     TerapiaInStudio,
+    AllegatiLaboratorio,
+    AllegatiStrumentale
 )
 
 # --- Inline per i figli di TabellaPazienti ---
@@ -136,3 +138,17 @@ class ResilienzaAdmin(admin.ModelAdmin):
 class ValutazioneMSAdmin(admin.ModelAdmin):
     list_display  = ("paziente", "frequenza_a_f", "tipo_a_f")
     search_fields = ("paziente__name",)
+
+@admin.register(AllegatiLaboratorio)
+class AllegatiLaboratorioAdmin(admin.ModelAdmin):
+    list_display  = ("paziente", "data_referto", "file", "created_at")
+    list_filter   = ("data_referto",)
+    search_fields = ("paziente__name", "paziente__surname")
+    readonly_fields = ("created_at",)
+
+@admin.register(AllegatiStrumentale)
+class AllegatiStrumentaleAdmin(admin.ModelAdmin):
+    list_display  = ("paziente", "data_referto", "file", "created_at")
+    list_filter   = ("data_referto",)
+    search_fields = ("paziente__name", "paziente__surname")
+    readonly_fields = ("created_at",)
