@@ -3413,50 +3413,14 @@
                     {% if id_persona %}
                     <a href="{% url 'persona_detail' id_persona %}" class="button"> 
                         <span class="button__icon-wrapper">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                width="18"
-                                class="button__icon-svg"
-                                >
-                                <circle
-                                    cx="12"
-                                    cy="7"
-                                    r="4"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                ></circle>
-                                <path
-                                    d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                ></path>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+                                <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
+                                <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
 
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                width="18"
-                                class="button__icon-svg button__icon-svg--copy"
-                                >
-                                <circle
-                                    cx="12"
-                                    cy="7"
-                                    r="4"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                ></circle>
-                                <path
-                                    d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                ></path>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg button__icon-svg--copy">
+                                <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle>
+                                <path d="M6 22V20C6 17.79 7.79 16 10 16H14C16.21 16 18 17.79 18 20V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </span>
                         Results Page
@@ -12762,6 +12726,7 @@
                                     <input type="range" id="inter_6_range" name="inter_6_range" min="0" max="8.8"  value="0"
                                         oninput="inter_6.value=this.value" step="0.01">
                                 </div>
+
                                 <div class="form-group">
                                     <label for="inter_10">Interleuchina-10 (ng/ml)</label>
                                     <input type="number" id="inter_10" name="inter_10" placeholder="Solo valori numerici"  step="0.01">
@@ -12794,21 +12759,21 @@
 
                             <div class="grid-container"> 
                                 <div class="form-group">
-                                    <label for="ca">Calcio (mg/dL)</label>
-                                    <input type="number" id="ca" name="ca" placeholder="Solo valori numerici"  step="0.01">
-                                    <input type="range" id="ca_range" name="ca_range" min="0" max="20" value="0"  oninput="ca.value=this.value" step="0.01">
+                                    <label for="calcio">Calcio (mg/dL)</label>
+                                    <input type="number" id="calcio" name="ca" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="calcio_range" name="ca_range" min="0" max="20" value="0"  oninput="calcio.value=this.value" step="0.01">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="p">Fosforo (mg/dL)</label>
-                                    <input type="number" id="p" name="p" placeholder="Solo valori numerici"  step="0.01">
-                                    <input type="range" id="p_range" name="p_range" min="0" max="10" value="0"  oninput="p.value=this.value" step="0.01">
+                                    <label for="fosforo">Fosforo (mg/dL)</label>
+                                    <input type="number" id="fosforo" name="p" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="fosforo_range" name="p_range" min="0" max="10" value="0"  oninput="fosforo.value=this.value" step="0.01">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="mg">Magnesio (mg/dL)</label>
-                                    <input type="number" id="mg" name="mg" placeholder="Solo valori numerici"  step="0.01">
-                                    <input type="range" id="mg_range" name="mg_range" min="0" max="5" value="0"  oninput="mg.value=this.value" step="0.01">
+                                    <label for="mg_muscolare">Magnesio (mg/dL)</label>
+                                    <input type="number" id="mg_muscolare" name="mg" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="mg_muscolare_range" name="mg_range" min="0" max="5" value="0"  oninput="mg_muscolare.value=this.value" step="0.01">
                                 </div>
 
                                 <div class="form-group">
@@ -12820,7 +12785,6 @@
                             </div>
                         </div>
                     </div>
-
             </div> 
             
             <div class="toolkit">
@@ -12873,32 +12837,33 @@
             document.body.classList.add('no-scroll');
             const modal = document.getElementById('myModal');
             const backdrop = document.getElementById('backdrop');
-
-            document.getElementById('myModal').style.display = 'flex';
+      
+            modal.style.display = 'flex';
             modal.classList.remove('hidden');
             modal.classList.add('visible');
             backdrop.classList.add('visible');
-            document.body.classList.add('no-scroll');
+      
+            // --- qui chiami la tua initIndicatori ---
+            if (typeof initIndicatori === 'function') {
+              initIndicatori();
+            }
         }
-
+      
         function closeModal() {
             const modal = document.getElementById('myModal');
             const backdrop = document.getElementById('backdrop');
-
+      
             modal.classList.remove('visible');
             modal.classList.add('hidden');
             backdrop.classList.remove('visible');
             document.body.classList.remove('no-scroll');
         }
-
-        const modal = document.getElementById("myModal");
-        if (modal) {
-            {% if show_modal %}
-            openModal("visible", "hidden");
-            {% endif %}
-        } else {
-            console.log("Modal not found");
-        }
+      
+        {% if show_modal %}
+          document.addEventListener('DOMContentLoaded', () => {
+            openModal();
+          });
+        {% endif %}
     </script>
     
     <!-- Import Js Bootstrap -->

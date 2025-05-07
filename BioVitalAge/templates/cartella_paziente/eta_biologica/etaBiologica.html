@@ -164,12 +164,12 @@
 
         <div class="container-button-header" style="gap: 10px;">
 
-            <div class="container-button" onclick="window.location.href='{% url 'grafici_composizione' persona.id %}'">
+            <div class="container-button" onclick="window.location.href='#'">
                 <img src="{% static 'image/Grafici.png' %}" alt="">
                 <a href="#">Grafici Andamento</a>
             </div>
 
-            <div class="container-button" onclick="window.location.href='{% url 'referti_composizione' persona.id %}'">
+            <div class="container-button" onclick="window.location.href='{% url 'elenco_referti' persona.id %}'">
                 <img src="{% static 'image/Cartella.png' %}" alt="">
                 <a href="{% url 'elenco_referti' persona.id %}">Elenco Referti</a>
             </div>
