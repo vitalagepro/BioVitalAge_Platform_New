@@ -1625,6 +1625,47 @@ class DeleteAllegatoView(LoginRequiredMixin, View):
         allegato.delete()
         return JsonResponse({"success": True})
 
+### VIEW VISITE
+class VisiteView(View):
+    def get(self, request, id):
+        return self._render_with_context(request, id)
+
+    def post(self, request, id):
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        return redirect('visite', id=persona.id)
+
+    def _render_with_context(self, request, id):
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        persone = TabellaPazienti.objects.filter(dottore=dottore)
+
+        visite = Visite.objects.filter(paziente=persona).order_by('-data_visita')
+        # Ottieni le opzioni definite nei choices
+        tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
+        numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
+        voce_prezzario = Appointment._meta.get_field('voce_prezzario').choices
+        visiteFissate = Appointment.objects.filter(
+            Q(nome_paziente__icontains=persona.name.strip()) &
+            Q(cognome_paziente__icontains=persona.surname.strip()) &
+            Q(dottore=dottore)  # Aggiungi il filtro per il dottore
+        ).order_by('-data', '-orario')        
+        
+        paginator = Paginator(visite, 4)
+        page_number = request.GET.get('page')
+        visite = paginator.get_page(page_number)
+
+        context = {
+            'dottore': dottore,
+            'persona': persona,
+            'persone': persone,
+            'visite': visite,
+            'visiteFissate': visiteFissate,
+            'tipologia_appuntamenti': tipologia_appuntamenti,
+            'numero_studio': numero_studio,
+            'voce_prezzario': voce_prezzario
+        }
+        return render(request, "cartella_paziente/sezioni_storico/visite.html", context)
+
 ## SEZIONE MUSCOLO
 @method_decorator(catch_exceptions, name='dispatch')
 class ValutazioneMSView(LoginRequiredMixin,View):
