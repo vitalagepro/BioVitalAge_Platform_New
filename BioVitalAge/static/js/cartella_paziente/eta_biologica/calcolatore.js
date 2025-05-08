@@ -1,63 +1,85 @@
 /*  -----------------------------------------------------------------------------------------------
   Indicator New function
 --------------------------------------------------------------------------------------------------- */
-const ContainerIndicatori = document.querySelectorAll(".indicator-container");
-
-ContainerIndicatori.forEach((element) => {
-  try { 
-    const indicatorContainer = element.querySelector(".indicator-content-container");
-    const indicator = element.querySelector(".indicatore");
-    const valoreEsame = parseFloat(indicator?.getAttribute("data-value") || 0);
-
-    const containerRangePositive = indicatorContainer.querySelector(".positiveTesto");
-    const rangePositiveIndicator = containerRangePositive?.querySelectorAll("p") || [];
-    let minPositive = rangePositiveIndicator[0]?.textContent.trim();
-    let maxPositive = rangePositiveIndicator[1]?.textContent.trim();
-
-    // Gestione del valore ">0"
-    if (minPositive === ">0") {
-      minPositive = 0.1; 
-    }
-
-    // Converti in numeri per i calcoli
-    minPositive = parseFloat(minPositive);
-    maxPositive = parseFloat(maxPositive);
-
-    const rangeNegativeIndicator = parseFloat(
-      element.querySelector(".negativeTesto")?.textContent.split(" ")[0] || 0
-    );
-    const extremeRightRangeIndicator = parseFloat(
-      element.querySelector(".extremeNegativeRange")?.textContent.split(" ")[1] || 0
-    );
-
-    if (isNaN(valoreEsame) || isNaN(minPositive) || isNaN(maxPositive)) {
-      
-      return;
-    }
-
-    if (
-      valoreEsame >= minPositive &&
-      valoreEsame <= maxPositive
-    ) {
-   
-      const percentuale = ((valoreEsame - minPositive) / (maxPositive - minPositive)) * 30 + 26;
-      indicator.style.left = `${Math.round(percentuale)}%`;
-    } else if (valoreEsame < minPositive) {
-     
-      const percentuale = ((valoreEsame - rangeNegativeIndicator) / (minPositive - rangeNegativeIndicator)) * 30 - 4;
-      indicator.style.left = `${Math.max(Math.round(percentuale), 0)}%`;
-    } else if (valoreEsame > maxPositive) {
- 
-      const percentuale = ((valoreEsame - maxPositive) / (extremeRightRangeIndicator - maxPositive)) * 30 + 66;
-      indicator.style.left = `${Math.min(Math.round(percentuale), 100)}%`;
-    } else {
-      console.warn("Caso non gestito per valoreEsame:", valoreEsame);
-    }
-
-  } catch (error) {
-    console.error("Errore durante l'elaborazione:", error, element);
+/**
+ * Inizializza e posiziona i cursori degli indicatori
+ * Deve essere chiamata solo quando la modale (e quindi gli .indicator-container) è già nel DOM.
+ */
+function initIndicatori() {
+  const containers = document.querySelectorAll(".indicator-container");
+  if (!containers.length) {
+    // niente da fare se non ci sono indicatori
+    return;
   }
-});
+
+  containers.forEach(element => {
+    try {
+      const indicatorContainer = element.querySelector(".indicator-content-container");
+      const indicator = element.querySelector(".indicator");
+      if (!indicator) {
+        console.warn("Indicator non trovato in", element);
+        return;
+      }
+
+      // Valore dell'esame
+      const valoreEsame = parseFloat(indicator.getAttribute("data-value") || "0");
+
+      // Range positivo (due <p> dentro .positiveTesto)
+      const posTxt = indicatorContainer?.querySelector(".positiveTesto");
+      const posPs = posTxt ? posTxt.querySelectorAll("p") : [];
+      let minPositive = posPs[0]?.textContent.trim() ?? "";
+      let maxPositive = posPs[1]?.textContent.trim() ?? "";
+
+      // special case ">0"
+      if (minPositive === ">0") {
+        minPositive = "0.1";
+      }
+      minPositive = parseFloat(minPositive);
+      maxPositive = parseFloat(maxPositive);
+
+      // Range negativi (da .negativeTesto ed .extremeNegativeRange)
+      const rangeNegativeIndicator = parseFloat(
+        element.querySelector(".negativeTesto")?.textContent.split(" ")[0] || "0"
+      );
+      const extremeRightRangeIndicator = parseFloat(
+        element.querySelector(".extremeNegativeRange")?.textContent.split(" ")[1] || "0"
+      );
+
+      // Se uno qualsiasi non è numero, skip
+      if ([valoreEsame, minPositive, maxPositive, rangeNegativeIndicator, extremeRightRangeIndicator]
+          .some(v => isNaN(v))) {
+        return;
+      }
+
+      let percentuale;
+
+      if (valoreEsame >= minPositive && valoreEsame <= maxPositive) {
+        // dentro range positivo → tra 26% e 56%
+        percentuale = ((valoreEsame - minPositive) / (maxPositive - minPositive)) * 30 + 26;
+      } else if (valoreEsame < minPositive) {
+        // sotto il minimo positivo → tra 0% e 26%
+        percentuale = ((valoreEsame - rangeNegativeIndicator) / (minPositive - rangeNegativeIndicator)) * 30 - 4;
+        percentuale = Math.max(Math.round(percentuale), 0);
+      } else {
+        // sopra il massimo positivo → tra 56% e 100%
+        percentuale = ((valoreEsame - maxPositive) / (extremeRightRangeIndicator - maxPositive)) * 30 + 66;
+        percentuale = Math.min(Math.round(percentuale), 100);
+      }
+
+      indicator.style.left = `${Math.round(percentuale)}%`;
+
+    } catch (error) {
+      console.error("Errore durante l'elaborazione degli indicatori:", error, element);
+    }
+  });
+}
+
+// Esempio di come lanciarla alla apertura di una Bootstrap modal:
+const bioModal = document.getElementById("miaModaleBioAge");
+if (bioModal) {
+  bioModal.addEventListener("shown.bs.modal", initIndicatori);
+}
+
 
 
 /*  -----------------------------------------------------------------------------------------------

@@ -35,7 +35,15 @@
   padding: inherit;
 }
 
-
+#subtitle{
+  border-radius: 8px;
+  background-color: var(--contrast-color-shadow);
+  color: var(--dark1);
+  width: 12rem;
+  text-align: center;
+  padding: 5px 10px;
+  font-weight: bold;
+}
 
 .modal-pdf-container {
   position: fixed;

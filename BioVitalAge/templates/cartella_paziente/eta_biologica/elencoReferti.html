@@ -43,7 +43,7 @@
 
         <div class="main-title-nav">
             <div class="main-menu-trace first-breadcrumb">
-                <a href="{% url 'cartella_paziente' persona.id %}">
+                <a href="{% url 'eta_biologica' persona.id %}">
                     <img src="{% static 'image/Arrow_Back.png' %}" alt="">
                 </a>
                 <h2 class="main-welcome-title">Elenco di tutti i referti di {{ persona.name|title }} {{ persona.surname|title }}</h2>
@@ -69,6 +69,7 @@
         <div class="contenitore-tabella" style="margin-top: 20px;">
             <div class="recent-patients" id="card-style">
                 <div class="table-container">
+                    
                     <div class="table-header">
                         <p>Età Cronologica</p>
                         <p>Età Biologica</p>
@@ -77,6 +78,7 @@
                         <p>Mostra Referto</p>
                         <p>Scarica Referto</p>
                     </div>
+
                     <div class="table-content">
                         {% for referto in referti_recenti %}
                         <div class="riga-container">

@@ -4,90 +4,79 @@
   height: 30px;
 }
 
-/***** ! FORM PRESET ******/
-label {
-  font-weight: bold;
-  background-color: var(--contrast-color-shadow);
-  color: var(--dark1);
-  padding: 15px;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-}
 
+
+/* Stile BASE per tutti i range, definisco le variabili e rendo il background trasparente */
 input[type="range"] {
-  margin-top: 10px;
-  padding: 8px 0 8px 1px;
-}
-/* Stile per il track */
-input[type="range"] {
+  --value: 0%;                  /* valore iniziale del fill */
+  --track: #e0e0e0;             /* colore della parte vuota */
+  --fill: var(--contrast-color2); /* colore della parte piena */
   -webkit-appearance: none;
   width: 100%;
   height: 10px;
-  background: #e0e0e0;
+  background: transparent;      /* tolgo il background statico */
   border-radius: 15px;
+  margin-top: 10px;
+  padding: 8px 0 8px 1px;
   outline: none;
   overflow: hidden;
 }
 
-/* Traccia riempita per Chrome, Edge e Safari */
+/* Chrome, Safari, Edge */
 input[type="range"]::-webkit-slider-runnable-track {
-  background: linear-gradient(to right,
-      var(--contrast-color2) 0%,
-      var(--contrast-color2) var(--value),
-      #e0e0e0 var(--value),
-      #e0e0e0 100%);
+  height: 10px;
   border-radius: 10px;
+  background: linear-gradient(
+    to right,
+    var(--fill) var(--value),
+    var(--track) var(--value)
+  );
 }
-
-/* Thumb personalizzato */
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  /* Rimuove lo stile di default */
-  background-color: var(--contrast-color);
-  /* Colore desiderato */
-  border: 2px solid var(--contrast-color2);
-  /* Bordo del thumb */
-  width: 15px;
-  height: 15px;
+  width: 15px; height: 15px;
   border-radius: 50%;
+  background-color: var(--contrast-color);
+  border: 2px solid var(--contrast-color2);
+  margin-top: -3px;  /* centra verticalmente */
   cursor: pointer;
 }
 
-/* Traccia riempita per Firefox */
-input[type="range"]::-moz-range-progress {
-  background-color: var(--contrast-color2);
-  /* Colore della parte riempita */
+/* Firefox */
+input[type="range"]::-moz-range-track {
   height: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
+  background: var(--track);
 }
-
-/* Thumb personalizzato per Firefox */
+input[type="range"]::-moz-range-progress {
+  background: var(--fill);
+  height: 10px;
+  border-radius: 10px;
+}
 input[type="range"]::-moz-range-thumb {
+  width: 15px; height: 15px;
+  border-radius: 50%;
   background-color: var(--contrast-color);
   border: 2px solid var(--contrast-color2);
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
   cursor: pointer;
 }
 
-/* Traccia riempita per IE */
+/* IE */
 input[type="range"]::-ms-fill-lower {
-  background: var(--contrast-color2);
-  /* Colore della parte riempita */
-  border-radius: 5px;
+  background: var(--fill);
+  border-radius: 10px;
 }
-
-/* Thumb personalizzato per IE */
+input[type="range"]::-ms-fill-upper {
+  background: var(--track);
+  border-radius: 10px;
+}
 input[type="range"]::-ms-thumb {
+  width: 15px; height: 15px;
+  border-radius: 50%;
   background-color: var(--contrast-color);
   border: 2px solid var(--contrast-color2);
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
   cursor: pointer;
 }
-/* ! **************** */
 
 
 

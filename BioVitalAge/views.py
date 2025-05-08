@@ -821,270 +821,216 @@ class InserisciPazienteView(LoginRequiredMixin,View):
 class CartellaPazienteView(LoginRequiredMixin,View):
 
     def get(self, request, id):
-         
+        # Recupera dottore e paziente
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         # DATI PER GLI INDICATORI DI PERFORMANCE
-        ## DATI CAPACITA' VITALE
-        ultimo_referto_capacita_vitale = persona.referti_test.order_by('-data_ora_creazione').first()
+        ## CAPACITÀ VITALE
+        ultimo_referto_capacita_vitale = (
+            persona.referti_test
+                   .order_by('-data_ora_creazione')
+                   .first()
+        )
 
-        ##STORICO APPUNTAMENTI
-        storico_appuntamenti = Appointment.objects.filter(
-            Q(nome_paziente__icontains=persona.name.strip()) |
-            Q(cognome_paziente__icontains=persona.surname.strip())
-        ).order_by('data', 'orario')
-
+        ## STORICO APPUNTAMENTI
+        storico_appuntamenti = (
+            Appointment.objects
+            .filter(
+                Q(nome_paziente__icontains=persona.name.strip()) |
+                Q(cognome_paziente__icontains=persona.surname.strip())
+            )
+            .order_by('data', 'orario')
+        )
         today = now().date()
-
-        # Totale appuntamenti
         totale_appuntamenti = storico_appuntamenti.count()
-
         ultimo_appuntamento = storico_appuntamenti.filter(data__lt=today).last() or None
         prossimo_appuntamento = storico_appuntamenti.filter(data__gte=today).first() or None
 
-        ## DATI SCORE
-        
+        # CALCOLO DELLO SCORE DEGLI ORGANI
+        punteggi_organi = {}
+        dettagli_organi = {}
+        report_testuale = None
+        score_js = {}
+
         ultimo_referto = persona.referti.order_by('-data_ora_creazione').first()
-
-        score = ''
-
-        print(ultimo_referto)
-
         if ultimo_referto:
             dati = ultimo_referto.dati_estesi
 
+            # Configurazione esami per organo
             organi_esami = {
-                "Cuore": [
-                    "Colesterolo Totale",
-                    "Colesterolo LDL",
-                    "Colesterolo HDL",
-                    "Trigliceridi",
-                    "PCR",
-                    "NT-proBNP",
-                    "Omocisteina",
-                    "Glicemia",
-                    "Insulina",
-                    "HOMA Test",
-                    "IR Test",
-                    "Creatinina",
-                    "Stress Ossidativo",
-                    "Omega Screening",
-                ],
-                "Reni": [
-                    "Creatinina",
-                    "Azotemia",
-                    "Sodio",
-                    "Potassio",
-                    "Cloruri",
-                    "Fosforo",
-                    "Calcio",
-                    "Esame delle Urine",
-                ],
-                "Fegato": [
-                    "Transaminasi GOT",
-                    "Transaminasi GPT",
-                    "Gamma-GT",
-                    "Bilirubina Totale",
-                    "Bilirubina Diretta",
-                    "Bilirubina Indiretta",
-                    "Fosfatasi Alcalina",
-                    "Albumina",
-                    "Proteine Totali",
-                ],
-                "Cervello": [
-                    "Omocisteina",
-                    "Vitamina B12",
-                    "Vitamina D",
-                    "DHEA",
-                    "TSH",
-                    "FT3",
-                    "FT4",
-                    "Omega-3 Index",
-                    "EPA",
-                    "DHA",
-                    "Stress Ossidativo dROMS",
-                    "Stress Ossidativo PAT",
-                    "Stress Ossidativo OSI REDOX",
-                ],
-                "Sistema_Ormonale": [
-                    "TSH",
-                    "FT3",
-                    "FT4",
-                    "Insulina",
-                    "HOMA Test",
-                    "IR Test",
-                    "Glicemia",
-                    "DHEA",
-                    "Testosterone",
-                    "17B-Estradiolo",
-                    "Progesterone",
-                    "SHBG",
-                ],
-                "Sangue": [
-                    "Emocromo",
-                    "Ferritina",
-                    "Sideremia",
-                    "Transferrina",
-                ],
-                "Sistema_Immunitario": [
-                    "PCR",
-                    "Omocisteina",
-                    "TNF-A",
-                    "IL-6",
-                    "IL-10",
-                ],
+                "Cuore": ["Colesterolo Totale", "Colesterolo LDL", "Colesterolo HDL", "Trigliceridi",
+                           "PCR", "NT-proBNP", "Omocisteina", "Glicemia", "Insulina",
+                           "HOMA Test", "IR Test", "Creatinina", "Stress Ossidativo", "Omega Screening"],
+                "Reni": ["Creatinina", "Azotemia", "Sodio", "Potassio", "Cloruri",
+                          "Fosforo", "Calcio", "Esame delle Urine"],
+                "Fegato": ["Transaminasi GOT", "Transaminasi GPT", "Gamma-GT", "Bilirubina Totale",
+                            "Bilirubina Diretta", "Bilirubina Indiretta", "Fosfatasi Alcalina",
+                            "Albumina", "Proteine Totali"],
+                "Cervello": ["Omocisteina", "Vitamina B12", "Vitamina D", "DHEA", "TSH", "FT3",
+                              "FT4", "Omega-3 Index", "EPA", "DHA",
+                              "Stress Ossidativo dROMS", "Stress Ossidativo PAT", "Stress Ossidativo OSI REDOX"],
+                "Sistema Ormonale": ["TSH", "FT3", "FT4", "Insulina", "HOMA Test", "IR Test",
+                                      "Glicemia", "DHEA", "Testosterone", "17B-Estradiolo",
+                                      "Progesterone", "SHBG"],
+                "Sangue": ["Emocromo - Globuli Rossi", "Emocromo - Emoglobina", "Emocromo - Ematocrito",
+                            "Emocromo - MCV", "Emocromo - MCH", "Emocromo - MCHC", "Emocromo - RDW",
+                            "Emocromo - Globuli Bianchi", "Emocromo - Neutrofili", "Emocromo - Linfociti",
+                            "Emocromo - Monociti", "Emocromo - Eosinofili", "Emocromo - Basofili",
+                            "Emocromo - Piastrine", "Ferritina", "Sideremia", "Transferrina"],
+                "Sistema Immunitario": ["PCR", "Omocisteina", "TNF-A", "IL-6", "IL-10"],
             }
 
+            # Mappa dei campi del modello ai nomi degli esami
             TEST_FIELD_MAP = {
-                # Lipidi e marker cardiovascolari
-                "Colesterolo Totale":             "tot_chol",
-                "Colesterolo LDL":                "ldl_chol",
-                "Colesterolo HDL":                "hdl_chol_m", 
-                "Trigliceridi":                   "trigl",
-                "PCR":                            "pcr_c",
-                "NT-proBNP":                      "nt_pro",
-                "Omocisteina":                    "omocisteina",   
-                "Glicemia":                       "glicemy",
-                "Insulina":                       "insulin",
-                "HOMA Test":                      "homa",
-                "IR Test":                        "ir",
-                "Creatinina":                     "creatinine_m",
-                "Stress Ossidativo":              "osi",
-                "Omega Screening":                "o3o6_fatty_acid_quotient",
-
+                # Cuore e metabolismo
+                "Colesterolo Totale": "tot_chol",
+                "Colesterolo LDL": "ldl_chol",
+                "Colesterolo HDL": "hdl_chol_m",
+                "Trigliceridi": "trigl",
+                "PCR": "pcr_c",
+                "NT-proBNP": "nt_pro",
+                "Omocisteina": "omocisteina",
+                "Glicemia": "glicemy",
+                "Insulina": "insulin",
+                "HOMA Test": "homa",
+                "IR Test": "ir",
+                "Creatinina": "creatinine_m",
+                "Stress Ossidativo": "osi",
+                "Omega Screening": "o3o6_fatty_acid_quotient",
                 # Reni
-                "Azotemia":                       "azotemia",
-                "Sodio":                          "na",
-                "Potassio":                       "k",
-                "Cloruri":                        "ci",
-                "Fosforo":                        "p",
-                "Calcio":                         "ca",
-                "Esame delle Urine":              "uro",
-
+                "Azotemia": "azotemia",
+                "Sodio": "na",
+                "Potassio": "k",
+                "Cloruri": "ci",
+                "Fosforo": "p",
+                "Calcio": "ca",
+                "Esame delle Urine": "uro",
                 # Fegato
-                "Transaminasi GOT":               "got_m",
-                "Transaminasi GPT":               "gpt_m",
-                "Gamma-GT":                       "g_gt_m",
-                "Bilirubina Totale":              "tot_bili",
-                "Bilirubina Diretta":             "direct_bili",
-                "Bilirubina Indiretta":           "indirect_bili",
-                "Fosfatasi Alcalina":             "a_photo_m",
-                "Albumina":                       "albuminemia",
-                "Proteine Totali":                "tot_prot",
-
-                # Cervello e infiammazione ossidativa
-                "Vitamina B12":                   "v_b12",
-                "Vitamina D":                     "v_d",
-                "DHEA":                           "dhea_m",
-                "TSH":                            "tsh",
-                "FT3":                            "ft3",
-                "FT4":                            "ft4",
-                "Omega-3 Index":                  "o3_index",
-                "EPA":                            "aa_epa",
-                "DHA":                            "doco_acid",
-                "Stress Ossidativo dROMS":        "d_roms",
-                "Stress Ossidativo PAT":          "pat",
-                "Stress Ossidativo OSI REDOX":    "osi",
-
-                # Sistema ormonale
-                "Testosterone":                   "testo_m",
-                "17B-Estradiolo":                 "beta_es_m",
-                "Progesterone":                   "prog_m",
-                "SHBG":                           "shbg_m",
-
-                # Sangue & ferro
-                "Emocromo":                       "emocromo",     
-                "Ferritina":                      "ferritin_m",
-                "Sideremia":                      "sideremia",   
-                "Transferrina":                   "transferrin",
-
-                # Sistema immunitario
-                "TNF-A":                          "tnf_a",
-                "IL-6":                           "inter_6",
-                "IL-10":                          "inter_10",
+                "Transaminasi GOT": "got_m",
+                "Transaminasi GPT": "gpt_m",
+                "Gamma-GT": "g_gt_m",
+                "Bilirubina Totale": "tot_bili",
+                "Bilirubina Diretta": "direct_bili",
+                "Bilirubina Indiretta": "indirect_bili",
+                "Fosfatasi Alcalina": "a_photo_m",
+                "Albumina": "albuminemia",
+                "Proteine Totali": "tot_prot",
+                # Cervello
+                "Vitamina B12": "v_b12",
+                "Vitamina D": "v_d",
+                "DHEA": "dhea_m",
+                "TSH": "tsh",
+                "FT3": "ft3",
+                "FT4": "ft4",
+                "Omega-3 Index": "o3_index",
+                "EPA": "aa_epa",
+                "DHA": "doco_acid",
+                "Stress Ossidativo dROMS": "d_roms",
+                "Stress Ossidativo PAT": "pat",
+                "Stress Ossidativo OSI REDOX": "osi",
+                # Ormoni
+                "Testosterone": "testo_m",
+                "17B-Estradiolo": "beta_es_m",
+                "Progesterone": "prog_m",
+                "SHBG": "shbg_m",
+                # Sangue e ferro
+                "Emocromo - Globuli Rossi": "rbc",
+                "Emocromo - Emoglobina": "hemoglobin",
+                "Emocromo - Ematocrito": "hematocrit",
+                "Emocromo - MCV": "mcv",
+                "Emocromo - MCH": "mch",
+                "Emocromo - MCHC": "mchc",
+                "Emocromo - RDW": "rdw",
+                "Emocromo - Globuli Bianchi": "wbc",
+                "Emocromo - Neutrofili": "neutrophils_pct",
+                "Emocromo - Linfociti": "lymphocytes_pct",
+                "Emocromo - Monociti": "monocytes_pct",
+                "Emocromo - Eosinofili": "eosinophils_pct",
+                "Emocromo - Basofili": "basophils_pct",
+                "Emocromo - Piastrine": "platelets",
+                "Ferritina": "ferritin_m",
+                "Sideremia": "sideremia",
+                "Transferrina": "transferrin",
+                # Immunitario
+                "TNF-A": "tnf_a",
+                "IL-6": "inter_6",
+                "IL-10": "inter_10",
             }
 
-            organi_valori = {}
+            # Costruisci dizionario valori grezzi
+            organi_valori = {
+                organo: {
+                    test: getattr(dati, TEST_FIELD_MAP.get(test), None)
+                    for test in tests
+                }
+                for organo, tests in organi_esami.items()
+            }
+            valori_esami_raw = {
+                test: val
+                for vals in organi_valori.values()
+                for test, val in vals.items()
+                if val is not None
+            }
 
-            for organo, tests in organi_esami.items():
-                organi_valori[organo] = {}
-                for test_name in tests:
-                    field_name = TEST_FIELD_MAP.get(test_name)
-                    if not field_name:
-                        # se manca la mappatura, salta o logga
-                        continue
-                    # recupera l'attributo; se è None, va a None
-                    organi_valori[organo][test_name] = getattr(dati, field_name, None)
+            # Recupera sesso ("M" o "F") dal modello Paziente
+            sesso_paziente = getattr(persona, 'sesso', None)
 
-            valori_esami_raw = {}
-            for tests in organi_valori.values():
-                for nome_test, valore in tests.items():
-                    if valore is not None:
-                        valori_esami_raw[nome_test] = valore
+            # Calcola punteggi e dettagli
+            punteggi_organi, dettagli_organi = calcola_score_organi(
+                valori_esami_raw,
+                sesso_paziente
+            )
 
-            score = calcola_score_organi(valori_esami_raw, organi_valori)
+            # Prepara dizionario per JS: chiavi con underscore
+            score_js = {organo.replace(' ', '_'): valore for organo, valore in punteggi_organi.items()}
 
-            print(score)
-
-        else:
-            score = None 
-
-        ## DATI RESILIENZA
-
-
-        ## DATI ETA' METABOLICA 
-        referti_recenti = persona.referti_eta_metabolica.all().order_by('-data_referto')
-        ultimo_referto_eta_metabolica = referti_recenti.first() if referti_recenti.exists() else None
-
-        punteggio_eta_metabolica = ''
-
-        if ultimo_referto_eta_metabolica:
-            if ultimo_referto_eta_metabolica.punteggio_finale is not None:
-                punteggio_eta_metabolica = ultimo_referto_eta_metabolica.punteggio_finale
-            else:
-                punteggio_eta_metabolica = ultimo_referto_eta_metabolica.eta_metabolica
-        else:
-            punteggio_eta_metabolica = None
-
-
-        ## MICROBIOTA    
-
-
-
-        #DATI REFERTI ETA' BIOLOGICA
-        referti_recenti = persona.referti.all().order_by('-data_referto')
-        dati_estesi = DatiEstesiRefertiEtaBiologica.objects.filter(referto__in=referti_recenti)
-        ultimo_referto = referti_recenti.first() if referti_recenti else None
+            # Genera report testuale senza dettagli
+            report_testuale = genera_report(punteggi_organi, dettagli_organi, mostrar_dettagli=False)
         
-        dati_estesi_ultimo_referto = None
-        if ultimo_referto:
-            dati_estesi_ultimo_referto = DatiEstesiRefertiEtaBiologica.objects.filter(referto=ultimo_referto).first()
-     
+        else:
+            score_js = {}
+
+        # ALTRI DATI (ETA' METABOLICA, ETA' BIOLOGICA)
+        referti_eta = persona.referti_eta_metabolica.order_by('-data_referto')
+        ultimo_referto_eta = referti_eta.first() if referti_eta.exists() else None
+        punteggio_eta_metabolica = (
+            ultimo_referto_eta.punteggio_finale
+            if ultimo_referto_eta and ultimo_referto_eta.punteggio_finale is not None
+            else (ultimo_referto_eta.eta_metabolica if ultimo_referto_eta else None)
+        )
+
+        dati_estesi_ultimo_bio = (
+            DatiEstesiRefertiEtaBiologica.objects
+            .filter(referto=persona.referti.order_by('-data_referto').first())
+            .first()
+        )
 
         context = {
             'persona': persona,
-            'referti_recenti': referti_recenti,
-            'dati_estesi': dati_estesi,
-            
-            'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
-            'dottore' : dottore,
-            'referti_test_recenti': ultimo_referto,
-
-            #SCORE VALUE
-            'score' : score,
-
-            #ULTIMO REFERTO ETA METABOLICA
-            'punteggio_eta_metabolica': punteggio_eta_metabolica,
-            #ULTIMO REFERTO CAPACITA' VITALE
+            'dottore': dottore,
             'ultimo_referto_capacita_vitale': ultimo_referto_capacita_vitale,
             'storico_appuntamenti': storico_appuntamenti,
             'totale_appuntamenti': totale_appuntamenti,
             'ultimo_appuntamento': ultimo_appuntamento,
             'prossimo_appuntamento': prossimo_appuntamento,
+
+            # Score per JS con underscore
+            'score': score_js,
+
+            # Score dettagliati
+            'punteggi_organi': punteggi_organi,
+            'dettagli_organi': dettagli_organi,
+            'report_testuale': report_testuale,
+
+            # Punteggio età metabolica e dati bio
+            'punteggio_eta_metabolica': punteggio_eta_metabolica,
+            'dati_estesi_ultimo_bio': dati_estesi_ultimo_bio,
         }
 
         return render(request, "includes/cartellaPaziente.html", context)
+
+
 
     def post(self, request, id):
         
@@ -2702,12 +2648,6 @@ class EtaBiologicaView(LoginRequiredMixin, View):
         return render(request, 'cartella_paziente/eta_biologica/etaBiologica.html', context)
 
 
-
-
-
-
-
-
 @method_decorator(catch_exceptions, name='dispatch')
 class CalcolatoreRender(LoginRequiredMixin,View):
     
@@ -2723,22 +2663,7 @@ class CalcolatoreRender(LoginRequiredMixin,View):
             'persona': persona,
         }
 
-        codice_fiscale = request.GET.get('parametro')
-
-        if codice_fiscale:
-            try:
-                paziente = TabellaPazienti.objects.get(dottore=dottore, codice_fiscale=codice_fiscale)
-                context.update({
-                    "paziente": paziente,
-                    "id_persona": paziente.id
-                })
-            except TabellaPazienti.DoesNotExist:
-                context.update({"error": "Paziente non trovato."})
-
-            return render(request, 'cartella_paziente/eta_biologica/calcolatore.html', context)
-        
-        else:
-            return render(request, 'cartella_paziente/eta_biologica/calcolatore.html', context)
+        return render(request, 'cartella_paziente/eta_biologica/calcolatore.html', context)
 
         
     def post(self, request, id):
@@ -3701,28 +3626,22 @@ class ElencoRefertiView(LoginRequiredMixin,View):
    
 @method_decorator(catch_exceptions, name='dispatch')
 class PersonaDetailView(LoginRequiredMixin,View):
+
     def get(self, request, persona_id):
 
-        # RECUPERO DOTTORE
-        
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-
-        # RECUPERO PAZIENTE
         persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
 
-        # Recupera l'ID del referto dalla query string
-        referto_id = request.GET.get('referto_id')
+        referto_id = request.GET.get("referto_id")
 
-        # Recupera il referto specifico se l'ID è passato, altrimenti l'ultimo referto
-        if referto_id:
-            referto = get_object_or_404(RefertiEtaBiologica, id=referto_id, paziente=persona)
-        else:
+        if referto_id:                     
+            referto = get_object_or_404(RefertiEtaBiologica,id=referto_id,paziente=persona)
+        else:                              
             referto = RefertiEtaBiologica.objects.filter(paziente=persona).order_by("-data_ora_creazione").first()
 
-        # Ottieni i dati estesi associati al referto selezionato
-        dati_estesi = DatiEstesiRefertiCapacitaVitale.objects.filter(referto=referto).first() if referto else None
+        dati_estesi = DatiEstesiRefertiEtaBiologica.objects.filter(referto=referto).first() if referto else None
 
-        # Preparazione del contesto per il template
+
         context = {
             'persona': persona,
             'referto': referto,
