@@ -1,3 +1,9 @@
+/* FONT STYLE IMPORT */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap');
+
+
+
 /* ! ROOT */
 :root {
   --dark1: #0c042c;
@@ -27,6 +33,109 @@
   --neutral-range-color: #d4a33e;
 }
 
+.card-personal-info h3 {
+  color: var(--contrast-color);
+  padding-bottom: 20px;
+}
+
+
+/*  STYLE CARD  */
+.exams-container {
+  background-color: var(--card-color);
+  border-radius: 5px;
+  padding: 20px;
+  width: 98%;
+  margin: 1rem auto;
+}
+.container-title{
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 15px;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.container-title img{
+  width: 30px;
+  height: 30px;
+}
+.exams-container .container-title h3{
+  color: var(--contrast-color);
+  font-weight: bold !important;
+}
+.content-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+
+/* STYLE CARD INDICATORI */
+.indicator-container {
+  border-radius: 8px;
+  box-shadow: 1px 1px 8px 2px rgba(0, 0, 0, 0.08);
+}
+.nome {
+  background-color: var(--contrast-color-shadow);
+  padding: 20px;
+  border-radius: 8px;
+  color: var(--dark2);
+  font-size: 18px;
+}
+.nome span {
+  color: var(--dark2);
+  font-size: 18px;
+  font-weight: 500 !important;
+}
+.nome {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 20px;
+}
+#indicatori-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: -1.5rem;
+  padding-bottom: 30px;
+}
+.generatePDFButton{
+  border-radius: 8px !important;
+}
+.container-subtitle{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#subtitle{
+  border-radius: 8px;
+  background-color: var(--contrast-color-shadow);
+  color: var(--dark1);
+  width: 12rem;
+  text-align: center;
+  padding: 10px 10px;
+}
+
+
+
+.parent-section summary {
+  background: var(--contrast-color-shadow);
+  border-radius: 6px;
+  padding: .5rem 1rem;
+  font-weight: 600;
+}
+.child-section summary {
+  background: #e3e0f2;
+  margin-top: .5rem;
+  border-radius: 4px;
+  padding: .4rem .8rem;
+  font-weight: 500;
+}
+
+
+
+
 /* ! MODAL */
 .main-welcome-title span{
   color: inherit;
@@ -34,17 +143,6 @@
   font-size: inherit;
   padding: inherit;
 }
-
-#subtitle{
-  border-radius: 8px;
-  background-color: var(--contrast-color-shadow);
-  color: var(--dark1);
-  width: 12rem;
-  text-align: center;
-  padding: 5px 10px;
-  font-weight: bold;
-}
-
 .modal-pdf-container {
   position: fixed;
   top: 0;
@@ -57,11 +155,9 @@
   align-items: center;
   z-index: 1000;
 }
-
 .modal-pdf-container.hidden {
   display: none;
 }
-
 .modal-pdf-content {
   background: white !important;
   padding: 20px;
@@ -70,15 +166,12 @@
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-
 .modal-pdf-content h2 {
   margin-bottom: 10px;
 }
-
 .modal-pdf-content p {
   margin-bottom: 20px;
 }
-
 .btn-pdf-close {
   background-color: #007bff;
   color: #fff;
@@ -87,31 +180,21 @@
   border-radius: 5px;
   cursor: pointer;
 }
-
 .btn-pdf-close:hover {
   background-color: #0056b3;
 }
-
 .container-risultati {
   width: 98%;
   margin: 2rem auto;
 }
-
 .card-personal-info {
   background-color: var(--tittle1);
   border-radius: 8px;
   padding: 10px 20px;
 }
-
 .card-content-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-}
-
-.card-personal-info h3,
-.exams-container h3 {
-  color: var(--contrast-color);
-  padding-bottom: 20px;
 }
 
 .detail-row {
@@ -119,59 +202,40 @@
   justify-content: flex-start;
   align-items: center;
 }
-
 .detail-row p {
   font-size: 18px;
 }
-
 span {
   color: var(--contrast-color2);
   font-weight: bold;
   padding-right: 10px;
 }
 
-.exams-container {
-  margin-top: 1rem;
-  background-color: var(--card-color);
-  border-radius: 5px;
-  padding: 40px;
-  margin: 25px;
-}
-
-.content-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 20px;
-  padding: 20px 0;
-}
 
 .description {
   display: flex;
   justify-content: flex-start;
   align-items: center;
 }
-
 .indicator {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-bottom: 15px;
 }
-
 #indicator img {
   margin-top: -0.5rem;
+  width: 40px;
+  height: 40px;
 }
-
 .negativeTesto,
 .extremeNegativeRange {
   color: var(--negative-color-right);
   width: 30%;
 }
-
 .extremeNegativeRange {
   text-align: right;
 }
-
 .positiveTesto {
   color: var(--positive-color);
   display: flex;
@@ -179,22 +243,18 @@ span {
   align-items: center;
   width: 50%;
 }
-
 .extremePositiveRange {
   color: var(--positive-color);
 }
-
 #middleTesto {
   width: 40%;
   color: var(--neutral-range-color);
 }
-
 #middleBar {
   width: 40%;
   left: 30%;
   background-color: var(--neutral-range-color);
 }
-
 .barra-container {
   background-color: var(--neutral-bg-color);
   border-radius: 8px;
@@ -202,14 +262,12 @@ span {
   position: relative;
   background-color: var(--negative-color-right);
 }
-
 .barra-container-none {
   background-color: var(--neutral-bg-color);
   border-radius: 8px;
   height: 1rem;
   position: relative;
 }
-
 .barra-pointer {
   height: 100%;
   position: absolute;
@@ -221,7 +279,6 @@ span {
   background-color: var(--positive-color);
   z-index: 1;
 }
-
 .barra-pointer-two {
   background-color: var(--positive-color);
   position: absolute;
@@ -231,12 +288,10 @@ span {
   height: 100%;
   border-radius: 8px;
 }
-
 #barraSpecial {
   left: 50%;
   width: 50%;
 }
-
 #indicator {
   position: absolute;
   top: -1rem;
@@ -245,10 +300,12 @@ span {
   width: 0.5rem;
   border-radius: 8px;
 }
-
 #screenshotBtn {
   margin: 0 0 20px 25px;
 }
+
+
+
 
 /*  -----------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------- */
@@ -257,12 +314,10 @@ span {
   margin: 0 !important;
   padding: 0 !important;
 }
-
 .container_box {
   display: flex;
   justify-content: space-between;
 }
-
 .info_container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -271,7 +326,6 @@ span {
   row-gap: 20px;
   width: 100%;
 }
-
 .container_data {
   display: flex;
   visibility: hidden;
@@ -279,12 +333,10 @@ span {
   flex-direction: column;
   position: relative;
 }
-
 .field {
   display: flex;
   flex-direction: column;
 }
-
 .field p:first-of-type {
   background-color: var(--contrast-color-shadow);
   border-radius: 8px;
@@ -294,7 +346,6 @@ span {
   font-weight: bold;
   padding-bottom: 25px;
 }
-
 .field p:last-of-type {
   border-bottom: 1px solid #ddd;
   border-left: 1px solid #ddd;
@@ -310,40 +361,6 @@ span {
 /*  -----------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------- */
 
-.indicator-container {
-  border-radius: 8px;
-}
-
-.indicator-container {
-  color: var(--dark2);
-  font-size: 20px;
-}
-
-.nome {
-  background-color: var(--contrast-color-shadow);
-  padding: 20px;
-  border-radius: 8px;
-}
-
-.nome span {
-  color: var(--dark2);
-  font-size: 20px;
-}
-
-.nome {
-  display: flex;
-  justify-content: space-between;
-  padding-right: 20px;
-}
-
-#indicatori-container {
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  margin-top: -1.5rem;
-  padding-bottom: 30px;
-}
 
 /*  SPINNER STAMPA STYLE */
 #spinnerBackdrop {
@@ -377,7 +394,6 @@ span {
   -webkit-animation: bounce05 var(--duration) linear infinite;
   animation: bounce05 var(--duration) linear infinite;
 }
-
 #snipperStampa .slide {
   width: 92px;
   height: 20px;
@@ -388,7 +404,6 @@ span {
   -webkit-animation: slide05 var(--duration) ease infinite;
   animation: slide05 var(--duration) ease infinite;
 }
-
 #snipperStampa .slide:before,
 #snipperStampa .slide:after,
 #snipperStampa .slide i:before {
@@ -396,14 +411,12 @@ span {
   position: absolute;
   background: var(--tool);
 }
-
 #snipperStampa .slide:before {
   width: 2px;
   height: 8px;
   top: 6px;
   left: 100%;
 }
-
 #snipperStampa .slide:after {
   left: 94px;
   top: 3px;
@@ -411,7 +424,6 @@ span {
   width: 6px;
   border-radius: 3px;
 }
-
 #snipperStampa .slide i {
   display: block;
   position: absolute;
@@ -421,7 +433,6 @@ span {
   top: 4px;
   background: var(--tool);
 }
-
 #snipperStampa .slide i:before {
   right: 100%;
   top: -2px;
@@ -429,7 +440,6 @@ span {
   border-radius: 2px;
   height: 14px;
 }
-
 #snipperStampa .paper {
   position: absolute;
   left: 24px;
@@ -442,7 +452,6 @@ span {
   -webkit-animation: paper05 var(--duration) linear infinite;
   animation: paper05 var(--duration) linear infinite;
 }
-
 #snipperStampa .paper:before {
   content: "";
   position: absolute;
@@ -455,7 +464,6 @@ span {
   background: var(--text);
   box-shadow: 0 12px 0 var(--text), 0 24px 0 var(--text), 0 36px 0 var(--text);
 }
-
 #snipperStampa .keyboard {
   width: 120px;
   height: 56px;
@@ -463,13 +471,11 @@ span {
   z-index: 1;
   position: relative;
 }
-
 #snipperStampa .keyboard:before,
 #snipperStampa .keyboard:after {
   content: "";
   position: absolute;
 }
-
 #snipperStampa .keyboard:before {
   top: 0;
   left: 0;
@@ -480,7 +486,6 @@ span {
   transform: perspective(10px) rotateX(2deg);
   transform-origin: 50% 100%;
 }
-
 #snipperStampa .keyboard:after {
   left: 2px;
   top: 25px;
@@ -494,7 +499,6 @@ span {
   -webkit-animation: keyboard05 var(--duration) linear infinite;
   animation: keyboard05 var(--duration) linear infinite;
 }
-
 @keyframes bounce05 {
   85%,
   92%,
@@ -510,7 +514,6 @@ span {
     transform: translateY(2px);
   }
 }
-
 @keyframes slide05 {
   5% {
     transform: translateX(14px);
@@ -540,7 +543,6 @@ span {
     transform: translateX(14px);
   }
 }
-
 @keyframes paper05 {
   5% {
     transform: translateY(46px);
@@ -571,7 +573,6 @@ span {
     transform: translateY(46px);
   }
 }
-
 @keyframes keyboard05 {
   5%,
   12%,
@@ -736,11 +737,6 @@ h2 {
   margin-top: 15px;
   border-radius: 8px;
 }
-
-
-
-
-
 .tittle-container{
   display: flex;
   justify-content: flex-start;
@@ -754,80 +750,66 @@ h2 {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*  -----------------------------------------------------------------------------------------------
-  SPINNER 1
---------------------------------------------------------------------------------------------------- */
-/* #snipperStampa {
+.redirecter{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  width: 5rem;
+  padding: 20px;
+  gap: 15px;
   position: fixed;
+  right: -1rem;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: none;
-  border: 8px solid #f3f3f3; 
-  border-top: 8px solid var(--contrast-color); 
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
+  background-color: white;
+  z-index: 9999;
+  box-shadow: 1px 1px 8px 2px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
 }
-
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-} */
-
-/*  -----------------------------------------------------------------------------------------------
-  SPINNER 2
---------------------------------------------------------------------------------------------------- */
-/* #snipperStampa {
+.redirecter a img{
+  width: 30px;
+  height: 30px;
+}
+.redirecter a img:hover{
+  transform: scale(1.1);
+}
+.redirecter-wrapper {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: none;
+  top: 30%;
+  right: 0;
+  width: 12px;              
+  height: 5rem;             
+  background: #7c3aed;       
+  border-radius: 8px 0 0 8px;
+  cursor: pointer;
+  z-index: 9999;             
+  overflow: visible;       
+}
+.redirecter {
+  position: absolute;       
+  top: 0;                   
+  right: 0;                 
+  width: 5rem;              
+  padding: 20px;
+  background: #fff;
+  box-shadow: 1px 1px 8px rgba(0,0,0,0.08);
+  border-radius: 8px 0 0 8px;
+  transform: translateX(100%);       
+  transition: transform .3s ease;    
+}
+.redirecter-wrapper:hover .redirecter {
+  transform: translateX(0);          
+}
+#screenshotBtn{
+  width: 4rem;
+  margin-right: 1.2rem;
+  margin-top: 2rem;
+  margin-bottom: 0rem;
 }
 
-#snipperStampa svg polyline {
-  fill: none;
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
 
-#snipperStampa svg polyline#back {
-  fill: none;
-  stroke: #ff000433;
-}
 
-#snipperStampa svg polyline#front {
-  fill: none;
-  stroke: #ed0e12;
-  stroke-dasharray: 48, 144;
-  stroke-dashoffset: 192;
-  animation: dash_682 1.4s linear infinite;
-}
 
-@keyframes dash_682 {
-  72.5% {
-    opacity: 0;
-  }
 
-  to {
-    stroke-dashoffset: 0;
-  }
-} */
+
+

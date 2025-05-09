@@ -2492,7 +2492,6 @@ class EtaBiologicaView(LoginRequiredMixin, View):
 
         return render(request, 'cartella_paziente/eta_biologica/etaBiologica.html', context)
 
-
 @method_decorator(catch_exceptions, name='dispatch')
 class CalcolatoreRender(LoginRequiredMixin,View):
     
@@ -3494,6 +3493,259 @@ class PersonaDetailView(LoginRequiredMixin,View):
             'dottore': dottore,
         }
         return render(request, "cartella_paziente/eta_biologica/Referto.html", context)
+
+@method_decorator(catch_exceptions, name='dispatch')
+class GrafiAndamentoBiologica(LoginRequiredMixin, View):
+
+    def get(self, request, persona_id):
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, dottore=dottore, id=persona_id)
+
+        # 1) Tutti i referti del paziente
+        referti = (
+            RefertiEtaBiologica.objects
+            .filter(paziente=persona)
+            .select_related('dati_estesi')
+            .order_by('data_referto')
+        )
+
+        labels         =   []
+        tot_chol       =   []
+        ldl_chol       =   []
+        hdl_chol       =   []
+        trigl          =   []
+        pai_1          =   []
+        d_dimero       =   []
+        d_roms         =   []
+        pat            =   []
+        osi            =   []
+        labels_renal   =   []
+        creat_in       =   []
+        azotemia_list  =   []
+        cystatine_list =   []
+        uric_in        =   [] 
+        labels_liver   =   []
+        ggt_list       =   []
+        alp_list       =   []
+        got_list       =   []
+        gpt_list       =   []
+        bili_dir_list  =   []
+        bili_indir_list=   []
+        albumin_list   =   []
+        labels_brain   =   []
+        mag_list       =   []
+        na_list        =   []
+        k_list         =   []
+        b12_list       =   []
+        labels_hormonal=   []
+        glicemia_list  =   []
+        tsh_list       =   []
+        insulina_list  =   []
+        homa_list      =   []
+        ir_list        =   []
+        labels_blood   =   []
+        wbc_list       =   []
+        hct_list       =   []
+        hgb_list       =   []
+        rbc_list       =   []
+        plt_list       =   []
+        sider_list     =   []
+        ferritin_list  =   []
+        transf_list    =   []
+        labels_immune  =   []
+        pcr_list       =   []
+        tnf_list       =   []
+        il6_list       =   []
+        il10_list      =   []
+
+
+        for r in referti:
+            labels_immune.append(r.data_referto.strftime('%b %Y'))
+            de = getattr(r, 'dati_estesi', None)
+            pcr_list.append(de.pcr_c         if de else None)
+            tnf_list.append(de.tnf_a         if de else None)
+            il6_list.append(de.inter_6       if de else None)
+            il10_list.append(de.inter_10     if de else None)
+
+        for r in referti:
+            labels_blood.append(r.data_referto.strftime('%b %Y'))
+            de = getattr(r, 'dati_estesi', None)
+
+            # WBC e PLT
+            wbc_list.append(de.wbc        if de else None)
+            plt_list.append(de.plt        if de else None)
+
+            # Sideremia e Transferrina
+            sider_list.append(de.fe       if de else None)
+            transf_list.append(de.transferrin if de else None)
+
+            # Uomo vs Donna per hct, hgb, rbc, ferritina
+            if de:
+                if persona.gender == 'M':
+                    hct_list.append(de.hct_m)
+                    hgb_list.append(de.hgb_m)
+                    rbc_list.append(de.rbc_m)
+                    ferritin_list.append(de.ferritin_m)
+                else:
+                    hct_list.append(de.hct_w)
+                    hgb_list.append(de.hgb_w)
+                    rbc_list.append(de.rbc_w)
+                    ferritin_list.append(de.ferritin_w)
+            else:
+                hct_list.append(None)
+                hgb_list.append(None)
+                rbc_list.append(None)
+                ferritin_list.append(None)
+
+        for r in referti:
+            labels_hormonal.append(r.data_referto.strftime('%b %Y'))
+            de = getattr(r, 'dati_estesi', None)
+
+            glicemia_list.append(de.glicemy if de else None)
+            tsh_list.append(     de.tsh     if de else None)
+            insulina_list.append(de.insulin if de else None)
+            homa_list.append(    de.homa    if de else None)
+            ir_list.append(      de.ir      if de else None)
+
+        for r in referti:
+            labels_brain.append(r.data_referto.strftime('%b %Y'))
+            de = getattr(r, 'dati_estesi', None)
+
+            mag_list.append(    de.mg       if de else None)
+            na_list.append(     de.na       if de else None)
+            k_list.append(      de.k        if de else None)
+            b12_list.append(    de.v_b12    if de else None)
+
+        for r in referti:
+            labels_liver.append(r.data_referto.strftime('%b %Y'))
+            de = getattr(r, 'dati_estesi', None)
+
+            # GGT
+            ggt_list.append(de.g_gt_m    if (de and persona.gender=='M') else
+                            de.g_gt_w    if de else None)
+
+            # ALP (Fosfatasi Alcalina)
+            alp_list.append(de.a_photo_m if (de and persona.gender=='M') else
+                            de.a_photo_w if de else None)
+
+            # GOT (AST)
+            got_list.append(de.got_m     if (de and persona.gender=='M') else
+                            de.got_w     if de else None)
+
+            # GPT (ALT)
+            gpt_list.append(de.gpt_m     if (de and persona.gender=='M') else
+                            de.gpt_w     if de else None)
+
+            # Bilirubine
+            bili_dir_list.append(   de.direct_bili   if de else None)
+            bili_indir_list.append( de.indirect_bili if de else None)
+
+            # Albumina
+            albumin_list.append(de.albuminemia if de else None)
+
+        for r in referti:
+            labels_renal.append(r.data_referto.strftime('%b %Y'))
+            de = getattr(r, 'dati_estesi', None)
+
+            # Creatinina in base al sesso
+            if de:
+                if persona.gender == 'M':
+                    creat_in.append(de.creatinine_m)
+                    uric_in.append(de.uricemy_m)
+                else:
+                    creat_in.append(de.creatinine_w)
+                    uric_in.append(de.uricemy_w)
+            else:
+                creat_in.append(None)
+                uric_in.append(None)
+
+            azotemia_list.append(de.azotemia if de else None)
+            cystatine_list.append(de.cistatine_c if de else None)
+
+        for r in referti:
+        
+            labels.append(r.data_referto.strftime('%b %Y'))
+            de = getattr(r, 'dati_estesi', None)
+
+
+            tot_chol.append(de.tot_chol      if de else None)
+            ldl_chol.append(de.ldl_chol      if de else None)
+            if de:
+                hdl_chol.append(de.hdl_chol_m if persona.gender =='M' else de.hdl_chol_w)
+            else:
+                hdl_chol.append(None)
+            trigl.append(de.trigl                if de else None)
+            pai_1.append(de.pai_1                if de else None)
+            d_dimero.append(de.d_dimero          if de else None)
+            d_roms.append(de.d_roms              if de else None)
+            pat.append(de.pat                    if de else None)
+            osi.append(de.osi                    if de else None)
+
+        context = {
+            'persona':       persona,
+            'dottore':       dottore,
+            'referti':       referti,
+            'labels_heart':  labels,
+            'tot_chol':      tot_chol,
+            'ldl_chol':      ldl_chol,
+            'hdl_chol':      hdl_chol,
+            'trigl':         trigl,
+            'pai_1':         pai_1,
+            'd_dimero':      d_dimero,
+            'd_roms':        d_roms,
+            'pat':           pat,
+            'osi':           osi,
+            'labels_renal':    labels_renal,
+            'creat_in':        creat_in,
+            'azotemia_list':   azotemia_list,
+            'cystatine_list':  cystatine_list,
+            'uric_in':         uric_in,
+            'labels_liver':    labels_liver,
+            'ggt_list':        ggt_list,
+            'alp_list':        alp_list,
+            'got_list':        got_list,
+            'gpt_list':        gpt_list,
+            'bili_dir_list':   bili_dir_list,
+            'bili_indir_list': bili_indir_list,
+            'albumin_list':    albumin_list,
+            'labels_brain':  labels_brain,
+            'mag_list':      mag_list,
+            'na_list':       na_list,
+            'k_list':        k_list,
+            'b12_list':      b12_list,
+            'labels_hormonal': labels_hormonal,
+            'glicemia_list':   glicemia_list,
+            'tsh_list':        tsh_list,
+            'insulina_list':   insulina_list,
+            'homa_list':       homa_list,
+            'ir_list':         ir_list,
+            'labels_blood':   labels_blood,
+            'wbc_list':       wbc_list,
+            'hct_list':       hct_list,
+            'hgb_list':       hgb_list,
+            'rbc_list':       rbc_list,
+            'plt_list':       plt_list,
+            'sider_list':     sider_list,
+            'ferritin_list':  ferritin_list,
+            'transf_list':    transf_list,
+            'labels_immune': labels_immune,
+            'pcr_list':      pcr_list,
+            'tnf_list':      tnf_list,
+            'il6_list':      il6_list,
+            'il10_list':     il10_list,
+        }
+       
+        return render(request, "cartella_paziente/eta_biologica/grafici.html", context)
+
+
+
+
+
+
+
+
+
+
 
 
 

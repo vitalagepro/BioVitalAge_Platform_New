@@ -745,6 +745,13 @@ main {
   color: var(--light1);
   margin-top: 3px;
 }
+.main-menu-trace a:hover{
+  color: white!important;
+}
+.main-menu-trace p a:hover{
+  color: white!important;
+}
+
 
 .back-tittle {
   display: flex;
@@ -1040,9 +1047,9 @@ main {
 }
 
 
-
-
-
-
+.breadcrumb{
+  color: white !important;
+  border-bottom: 2px solid #ddd;
+}
 
 
