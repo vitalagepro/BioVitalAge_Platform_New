@@ -14,6 +14,8 @@ from collections import defaultdict
 from django.core.cache import cache # type: ignore
 from django.core.paginator import Paginator # type: ignore
 from django.http import JsonResponse # type: ignore
+from django.http import FileResponse, Http404
+from django.contrib.auth.decorators import login_required
 from django.views import View # type: ignore
 from django.views.decorators.csrf import csrf_exempt # type: ignore
 from django.shortcuts import render, get_object_or_404, redirect # type: ignore
@@ -25,6 +27,7 @@ from django.utils.timezone import now, localtime # type: ignore
 from django.utils.dateparse import parse_date # type: ignore
 from django.db.models import OuterRef, Subquery, Count, Q, Avg, Min, Max # type: ignore
 from django.db.models.functions import ExtractMonth # type: ignore
+from django.db.models.functions import Lower
 from django.contrib.auth.hashers import check_password # type: ignore
 from django.db.models import OuterRef # type: ignore
 from django.contrib.auth import authenticate, login, logout # type: ignore
@@ -402,7 +405,9 @@ class ProfileView(LoginRequiredMixin, View):
 class AppuntamentiView(LoginRequiredMixin,View):
     def get(self, request):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')
+        persone = TabellaPazienti.objects.filter(dottore=dottore)\
+            .annotate(lower_surname=Lower('surname'), lower_name=Lower('name'))\
+            .order_by('lower_surname', 'lower_name')        
         appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('-id')
 
 
@@ -1196,11 +1201,24 @@ class TerapiaView(View):
         terapie_studio = TerapiaInStudio.objects.filter(paziente=persona).order_by('data_inizio')
         terapie_domiciliari = TerapiaDomiciliare.objects.filter(paziente=persona).order_by('data_inizio')
 
+        # Impostazione del paginatore (ad es. 10 referti per pagina)
+        paginator = Paginator(terapie_domiciliari, 4)
+        page_number = request.GET.get('page')
+        storico_terapie = paginator.get_page(page_number)
+
+        # Impostazione del paginatore (ad es. 10 referti per pagina)
+        paginator = Paginator(terapie_studio, 4)
+        page_number = request.GET.get('page')
+        storico_studio = paginator.get_page(page_number)
+
         context = {
             'persona': persona,
             'dottore': dottore,
             'terapie_studio': terapie_studio,
-            'terapie_domiciliari': terapie_domiciliari
+            'terapie_domiciliari': terapie_domiciliari,
+            'storico_terapie': storico_terapie,
+            'storico_studio': storico_studio
+
         }
 
         return render(request, 'cartella_paziente/sezioni_storico/terapie.html', context)
@@ -1392,7 +1410,7 @@ class ModificaTerapiaStudioView(View):
             }
         })
 
-## VIEW DIAGNOSI
+### VIEW DIAGNOSI
 @method_decorator(csrf_exempt, name='dispatch')
 class DiagnosiView(LoginRequiredMixin, View):
 
@@ -1400,27 +1418,69 @@ class DiagnosiView(LoginRequiredMixin, View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
         diagnosi = Diagnosi.objects.filter(paziente=persona)
+        totale_diagnosi = diagnosi.count()
+        diagnosi_attive  = diagnosi.filter(risolta=False).count()
+        diagnosi_risolte = diagnosi.filter(risolta=True).count()
+        # Conta diagnosi per mese
+        diagnosi_per_mese = diagnosi.annotate(month=ExtractMonth('data_diagnosi')) \
+                                    .values('month') \
+                                    .annotate(count=Count('id')) \
+                                    .order_by('month')
+        # Array [0, 0, ..., 0] con valori aggiornati
+        diagnosi_mensili = [0] * 12
+        for item in diagnosi_per_mese:
+            diagnosi_mensili[item['month'] - 1] = item['count']
+
+
+        # Appuntamento futuro più vicino (es. per prossimo controllo)
+        prossimo_controllo = (
+            Diagnosi.objects
+                .filter(paziente=persona, data_diagnosi__gt=now().date())
+                .order_by('data_diagnosi')
+                .first()
+        )
+
+        # Impostazione del paginatore (ad es. 10 referti per pagina)
+        paginator = Paginator(diagnosi, 4)
+        page_number = request.GET.get('page')
+        storico_diagnosi = paginator.get_page(page_number)
+
+        ultima_diagnosi = diagnosi.order_by('data_diagnosi').first()
 
         context = {
             'persona': persona,
             'dottore': dottore,
             'diagnosi': diagnosi,
+            'totale_diagnosi': totale_diagnosi,
+            'diagnosi_attive': diagnosi_attive,
+            'diagnosi_risolte': diagnosi_risolte,
+            'diagnosi_mensili': diagnosi_mensili,
+            'prossimo_controllo': prossimo_controllo,
+            'ultima_diagnosi': ultima_diagnosi,
+            'storico_diagnosi': storico_diagnosi
         }
         return render(request, 'cartella_paziente/sezioni_storico/diagnosi.html', context)
 
     def post(self, request, id):
         """Crea nuova diagnosi"""
+        import json
         persona = get_object_or_404(TabellaPazienti, id=id)
 
-        descrizione = request.POST.get('descrizione')
-        data_diagnosi_str = request.POST.get('data_diagnosi') or date.get('data_diagnosi')
+        try:
+            data = json.loads(request.body)
+        except Exception:
+            return JsonResponse({'success': False, 'error': 'Dati non validi'}, status=400)
+
+        descrizione = data.get('descrizione')
+        data_diagnosi_str = data.get('data_diagnosi')
+        stato = data.get('stato')
+        note = data.get('note')
+        gravita = data.get('gravita')
+
         try:
             data_diagnosi = datetime.strptime(data_diagnosi_str, "%Y-%m-%d").date()
         except Exception:
-            return JsonResponse({'success': False, 'error': 'Formato data non valido'}, status=400)        
-        stato = request.POST.get('stato')
-        note = request.POST.get('note')
-        gravita = request.POST.get('gravita')
+            return JsonResponse({'success': False, 'error': 'Formato data non valido'}, status=400)
 
         if not (descrizione and data_diagnosi and stato and gravita):
             return JsonResponse({'success': False, 'error': 'Dati mancanti'}, status=400)
@@ -1431,7 +1491,8 @@ class DiagnosiView(LoginRequiredMixin, View):
             data_diagnosi=data_diagnosi,
             stato=stato,
             note=note,
-            gravita=int(gravita)
+            gravita=int(gravita),
+            risolta=False
         )
 
         return JsonResponse({
@@ -1441,34 +1502,174 @@ class DiagnosiView(LoginRequiredMixin, View):
             'data_diagnosi': diagnosi.data_diagnosi.strftime('%Y-%m-%d'),
             'stato': diagnosi.stato,
             'note': diagnosi.note,
-            'gravita': diagnosi.gravita
+            'gravita': diagnosi.gravita,
+            "risolta": diagnosi.risolta
         })
 
     def patch(self, request, id):
         """Modifica diagnosi esistente"""
         import json
         data = json.loads(request.body)
-
         diagnosi_id = data.get('id')
         diagnosi = get_object_or_404(Diagnosi, id=diagnosi_id)
-
         diagnosi.descrizione = data.get('descrizione', diagnosi.descrizione)
         diagnosi.data_diagnosi = data.get('data_diagnosi', diagnosi.data_diagnosi)
         diagnosi.stato = data.get('stato', diagnosi.stato)
         diagnosi.note = data.get('note', diagnosi.note)
         diagnosi.gravita = data.get('gravita', diagnosi.gravita)
+        diagnosi.risolta = data.get('risolta', diagnosi.risolta)
         diagnosi.save()
 
         return JsonResponse({'success': True})
 
-    def delete(self, request, id):
-        """Elimina diagnosi"""
-        import json
-        data = json.loads(request.body)
-        diagnosi_id = data.get('id')
+## VIEW DETTAGLI DIAGNOSI
+class DiagnosiDettaglioView(LoginRequiredMixin, View):
+    def get(self, request, diagnosi_id):
+        diagnosi = get_object_or_404(Diagnosi, id=diagnosi_id)
+
+        return JsonResponse({
+            'id': diagnosi.id,
+            'descrizione': diagnosi.descrizione,
+            'data_diagnosi': diagnosi.data_diagnosi.strftime('%Y-%m-%d'),
+            'stato': diagnosi.stato,
+            'note': diagnosi.note,
+            'gravita': diagnosi.gravita,
+            "risolta": diagnosi.risolta,
+        })
+
+## VIEW DELETE DIAGNOSI
+class DeleteDiagnosiView(View):
+    def post(self, request, id, diagnosi_id):
+        # Verifica che il paziente esista
+        get_object_or_404(TabellaPazienti, id=id)
+        
         diagnosi = get_object_or_404(Diagnosi, id=diagnosi_id)
         diagnosi.delete()
-        return JsonResponse({'success': True})
+        return JsonResponse({"success": True})
+
+
+### VIEW ALLEGATI
+class AllegatiView(View):
+    def get(self, request, id):
+        return self._render_with_context(request, id)
+
+    def post(self, request, id):
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        # Rileva quale form è stato inviato usando data-table (puoi anche usare un campo hidden)
+        data_table = request.POST.get('data-table')
+
+        # Recupera i dati
+        data = request.POST.get('data_referto')
+        file = request.FILES.get('file')
+
+        if file and data_table == "esami-di-laboratorio":
+            AllegatiLaboratorio.objects.create(paziente=persona, data_referto=data, file=file)
+        elif file and data_table == "esami-strumentali":
+            AllegatiStrumentale.objects.create(paziente=persona, data_referto=data, file=file)
+
+        return redirect('allegati', id=persona.id)
+
+    def _render_with_context(self, request, id):
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        laboratorio = AllegatiLaboratorio.objects.filter(paziente=persona).order_by('data_referto')
+        strumentali = AllegatiStrumentale.objects.filter(paziente=persona).order_by('data_referto')
+
+        paginator_lab = Paginator(laboratorio, 4)
+        page_number = request.GET.get('page')
+        allegati_laboratorio = paginator_lab.get_page(page_number)
+
+        paginator_strum = Paginator(strumentali, 4)
+        page_number = request.GET.get('page')
+        allegati_strumentale = paginator_strum.get_page(page_number)
+
+        context = {
+            'dottore': dottore,
+            'persona': persona,
+            'allegati_laboratorio': allegati_laboratorio,
+            'allegati_strumentale': allegati_strumentale
+        }
+        return render(request, "cartella_paziente/sezioni_storico/allegati.html", context)
+
+## DOWNLOAD ALLEGATI
+@method_decorator(login_required, name='dispatch')
+class DownloadAllegatoView(View):
+    def get(self, request, tipo, allegato_id):
+        if tipo == "laboratorio":
+            allegato = get_object_or_404(AllegatiLaboratorio, id=allegato_id)
+        elif tipo == "strumentale":
+            allegato = get_object_or_404(AllegatiStrumentale, id=allegato_id)
+        else:
+            raise Http404("Tipo non valido")
+
+        if not allegato.file:
+            raise Http404("File non trovato")
+
+        return FileResponse(
+            allegato.file.open("rb"),
+            as_attachment=True,
+            filename=allegato.file.name.split("/")[-1]
+        )
+
+## ELIMINA ALLEGATI
+class DeleteAllegatoView(LoginRequiredMixin, View):
+    def post(self, request, paziente_id, tipo, allegato_id):
+        if tipo == "laboratorio":
+            model = AllegatiLaboratorio
+        elif tipo == "strumentale":
+            model = AllegatiStrumentale
+        else:
+            return JsonResponse({"error": "Tipo non valido"}, status=400)
+
+        allegato = get_object_or_404(model, id=allegato_id)
+        allegato.file.delete()
+        allegato.delete()
+        return JsonResponse({"success": True})
+
+### VIEW VISITE
+class VisiteView(View):
+    def get(self, request, id):
+        return self._render_with_context(request, id)
+
+    def post(self, request, id):
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        return redirect('visite', id=persona.id)
+
+    def _render_with_context(self, request, id):
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        persone = TabellaPazienti.objects.filter(dottore=dottore)\
+            .annotate(lower_surname=Lower('surname'), lower_name=Lower('name'))\
+            .order_by('lower_surname', 'lower_name')
+        
+        visite = Visite.objects.filter(paziente=persona).order_by('-data_visita')
+        # Ottieni le opzioni definite nei choices
+        tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
+        numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
+        voce_prezzario = Appointment._meta.get_field('voce_prezzario').choices
+        visiteFissate = Appointment.objects.filter(
+            Q(cognome_paziente__icontains=persona.surname.strip()) &
+            Q(nome_paziente__icontains=persona.name.strip()) &
+            Q(dottore=dottore)
+        ).order_by('-data', '-orario')
+        
+        paginator = Paginator(visiteFissate, 4)
+        page_number = request.GET.get('page')
+        visite = paginator.get_page(page_number)
+
+        context = {
+            'dottore': dottore,
+            'persona': persona,
+            'persone': persone,
+            'visite': visite,
+            'visiteFissate': visiteFissate,
+            'tipologia_appuntamenti': tipologia_appuntamenti,
+            'numero_studio': numero_studio,
+            'voce_prezzario': voce_prezzario
+        }
+        return render(request, "cartella_paziente/sezioni_storico/visite.html", context)
 
 ## SEZIONE MUSCOLO
 @method_decorator(catch_exceptions, name='dispatch')

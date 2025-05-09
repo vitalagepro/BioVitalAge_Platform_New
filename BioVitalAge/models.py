@@ -621,7 +621,7 @@ class Appointment(models.Model):
     voce_prezzario = models.CharField(max_length=255, blank=True, null=True)
     numero_studio = models.CharField(max_length=100, choices=[('Studio 1', 'Studio 1'), ('Studio 2', 'Studio 2'), ('Studio 3', 'Studio 3')], blank=True, null=True)
     note = models.TextField(blank=True, null=True)
-    confermato = models.BooleanField(default=False)  # Campo per segnare la conferma
+    confermato = models.BooleanField(default=False)
     
     def __str__(self):
         return f"{self.nome_paziente} - {self.orario}"
@@ -653,4 +653,25 @@ class Diagnosi(models.Model):
     stato = models.CharField(max_length=100)
     note = models.TextField(blank=True, null=True)
     gravita = models.IntegerField()
+    risolta = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+## LABORATORIO
+class AllegatiLaboratorio(models.Model):
+    paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="allegati_laboratorio")
+    file = models.FileField(upload_to='laboratorio/', null=True, blank=True)
+    data_referto = models.DateField(default=datetime.now)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+## STRUMENTALE
+class AllegatiStrumentale (models.Model):
+    paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="allegati_strumentale")
+    file = models.FileField(upload_to='strumentale/', null=True, blank=True)
+    data_referto = models.DateField(default=datetime.now)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+## VISITE
+class Visite(models.Model):
+    paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="visitePazienti")
+    data_visita = models.DateField(default=datetime.now)
     created_at = models.DateTimeField(auto_now_add=True)

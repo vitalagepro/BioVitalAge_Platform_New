@@ -1,4 +1,4 @@
-/* FONT STYLE */
+/* RESET CSS */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -13,6 +13,27 @@
 * span {
   font-family: "Montserrat", sans-serif !important;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* STYLE CARD E SUB CARD */
 .card-container {
@@ -43,6 +64,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 15px;
   flex-direction: column;
 }
 .flex-row-statistic p {
@@ -92,6 +114,14 @@
   border-bottom: 4px solid #f44336;
 }
 
+.moderata-border {
+  border-bottom: 4px solid #ffc107;
+}
+
+.lieve-border {
+  border-bottom: 4px solid #4caf50;
+}
+
 .flex-layout {
   display: flex;
   justify-content: space-around;
@@ -135,6 +165,28 @@ tbody tr:hover {
   max-width: 200px;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ! MODALE E GESTIONE MODALE */
 .modal-diagnosi{
   display: flex;
@@ -168,6 +220,15 @@ tbody tr:hover {
   position: relative;
 }
 
+.badge-success{
+  background: #4CAF50;
+  color: #fff;
+}
+
+.badge-secondary{
+  background: #3b1e5e;
+  color: #fff;
+}
 
 .header-modal-appointments {
   display: flex;
@@ -279,6 +340,224 @@ tbody tr:hover {
 #gravitaRange {
   width: 300px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* From Uiverse.io by chase2k25 */ 
+/* Switch Container */
+.switch-container {
+  position: relative;
+  width: 75px;
+  height: 25px;
+  background: #d6d6d6;
+  border-radius: 50px;
+  box-shadow:
+    inset -8px -8px 16px #ffffff,
+    inset 8px 8px 16px #b0b0b0;
+}
+
+/* Hidden Checkbox */
+.toggle-checkbox {
+  display: none;
+}
+
+/* Switch Label (Interactive Area) */
+.switch {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateY(-50%);
+  border-radius: 50px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Toggle Button */
+.toggle {
+  position: absolute;
+  width: 40px;
+  height: 25px;
+  background: linear-gradient(145deg, #d9d9d9, #bfbfbf);
+  border-radius: 50px;
+  top: 0;
+  left: 0;
+  box-shadow:
+    -4px -4px 8px #ffffff,
+    4px 4px 8px #b0b0b0;
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 10px;
+}
+
+/* LED Light */
+.led {
+  width: 5px;
+  height: 5px;
+  background: grey;
+  border-radius: 50%;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Active State for Toggle (ON) */
+.toggle-checkbox:checked + .switch .toggle {
+  left: 30px;
+  background: linear-gradient(145deg, #cfcfcf, #a9a9a9);
+  box-shadow:
+    -4px -4px 8px #ffffff,
+    4px 4px 8px #8a8a8a;
+}
+
+.toggle-checkbox:checked + .switch .led {
+  background: var(--positive-color);
+  box-shadow: 0 0 15px 4px var(--positive-color);
+}
+
+/* Hover Effect */
+.switch:hover .toggle {
+  box-shadow:
+    -4px -4px 12px #ffffff,
+    4px 4px 12px #9b9b9b;
+}
+
+
+
+
+
+
+
+/* === MODALE DIAGNOSI EDIT === */
+.modal-diagnosi {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.modal-diagnosi.active {
+  pointer-events: all;
+}
+
+#editDiagnosiModal.modal-diagnosi {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
+  z-index: 999;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+#editDiagnosiModal.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+#editDiagnosiModal .modal-content-appointments {
+  background-color: #fff;
+  padding: 2rem;
+  width: 70%;
+  border-radius: 10px;
+  position: relative;
+  transform: scale(0.95);
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+#editDiagnosiModal.active .modal-content-appointments {
+  transform: scale(1);
+  opacity: 1;
+}
+
+#editDiagnosiModal .header-modal-appointments {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+#editDiagnosiModal .icon-container-appointment {
+  width: 70px;
+  height: 70px;
+  background-color: var(--contrast-color2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+#editDiagnosiModal .icon-container-appointment img {
+  width: 100%;
+  height: 100%;
+}
+
+#editDiagnosiModal .form-appointment {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+#editDiagnosiModal .form-select-appointment {
+  border: none;
+  border-bottom: 1px solid var(--contrast-color);
+  color: var(--contrast-color);
+  padding: 6px;
+  width: 100%;
+}
+
+#editDiagnosiModal .form-textarea {
+  height: 60px;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#editDiagnosiModal .button-modal-appointments {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  gap: 10px;
+}
+
+#editDiagnosiModal .close {
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--contrast-color);
+}
+
+#editDiagnosiModal .close:hover {
+  color: red;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 /* ! BUTTON */
 .btn {

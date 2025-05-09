@@ -1,6 +1,55 @@
 import showAlert from "../../components/showAlert.js";
 import { confirmDeleteAction } from "../../components/deleteAction.js";
 
+
+/* ------------------------------------------------------------------
+   PAGINAZIONE CON DUE TABELLE (domiciliari / studio)
+------------------------------------------------------------------ */
+document.addEventListener("DOMContentLoaded", () => {
+
+  // Delego il click all’intero documento
+  document.addEventListener("click", async (event) => {
+
+    // Cerco un link <a> dentro una .pagination_tabella
+    const link = event.target.closest(".pagination_tabella a");
+    if (!link) return;                 // non era un click di paginazione
+
+    event.preventDefault();
+
+    /*--------------------------------------------------------------
+      1) capisco *quale* blocco tabella/pagination ha generato il click
+    ----------------------------------------------------------------*/
+    const pagination = link.closest(".pagination_tabella");
+    const tableKey   = pagination.dataset.table;                     // "domiciliari" | "studio"
+
+    // Il wrapper della tabella con lo stesso data‑table
+    const wrapper = document.querySelector(`.table-wrapper[data-table="${tableKey}"]`);
+
+    try {
+      /*------------------------------------------------------------
+        2) scarico la pagina richiesta e prelevo SOLO i frammenti
+           relativi a quella tabella
+      ------------------------------------------------------------*/
+      const response = await fetch(link.href);
+      const html     = await response.text();
+      const doc      = new DOMParser().parseFromString(html, "text/html");
+
+      const newWrapper    = doc.querySelector(`.table-wrapper[data-table="${tableKey}"]`);
+      const newPagination = doc.querySelector(`.pagination_tabella[data-table="${tableKey}"]`);
+
+      /*------------------------------------------------------------
+        3) sostituisco i contenuti
+      ------------------------------------------------------------*/
+      wrapper.innerHTML    = newWrapper.innerHTML;
+      pagination.innerHTML = newPagination.innerHTML;
+
+    } catch (err) {
+      console.error("Errore nella paginazione:", err);
+    }
+  });
+
+});
+
 // Attiva la funzione per aggiungere gli orari
 document.getElementById("assunzioni").addEventListener("input", function () {
   const assunzioni = parseInt(this.value);

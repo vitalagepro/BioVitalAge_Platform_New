@@ -130,9 +130,11 @@
             />
           </a>
           <p>»</p>
-          <p>Cartella Paziente</p>
+          <p>
+            <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
+          </p>
           <p>»</p>
-          <p>Terapie</p>
+          <p class="breadcrumb">Terapie</p>
         </div>
       </div>
 
@@ -212,57 +214,81 @@
               Salva Terapia Domiciliare
             </button>
           </form>
-          <table class="table mt-4">
-            <thead>
-              <tr>
-                <th>Farmaco</th>
-                <th>Assunzioni giornaliere</th>
-                <th>Orari/o assunzioni</th>
-                <th>Data Inizio</th>
-                <th>Data Termine</th>
-                <th>Azioni</th>
-              </tr>
-            </thead>
-            <tbody id="tabella-terapie-domiciliari">
-              {% if terapie_domiciliari %}
-                {% for terapia in terapie_domiciliari %}
-                  <tr data-id="{{ terapia.id }}">
-                    <td>{{ terapia.farmaco }}</td>
-                    <td>{{ terapia.assunzioni }}</td>
-                    <td>
-                      {% with terapia.orari.values as orari %}
-                        {% if orari|length == 0 or orari|join:'' == '' %}
-                          Non specificato.
-                        {% else %}
-                          {% for orario in orari %}
-                            {% if orario and orario != "" %}
-                              {{ orario }}{% if not forloop.last %} — {% endif %}
-                            {% endif %}
-                          {% endfor %}
-                        {% endif %}
-                      {% endwith %}
-                    </td>                    
-                    <td>{{ terapia.data_inizio|date:"d/m/Y"|default:"Non specificata." }}</td>
-                    <td>
-                      {% if terapia.data_fine %}
-                        {{ terapia.data_fine|date:"d/m/Y"|default:"Non specificata." }}
-                      {% else %}
-                        Non specificata.
-                      {% endif %}
-                    </td>
-                    <td>
-                      <button class="btn btn-sm btn-outline-primary btn-modifica" data-id="{{ terapia.id }}" data-modale="domiciliare">✎</button>
-                      <button class="btn btn-sm btn-outline-danger btn-elimina" data-id="{{ terapia.id }}">✖</button>
-                    </td>
-                  </tr>
-                {% endfor %}
-              {% else %}
-                <tr class="no-terapie-row">
-                  <td colspan="6" class="text-center text-muted">Nessuna terapia in studio registrata.</td>
+          <div class="table-wrapper mt-3" data-table="terapie-domiciliari">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Farmaco</th>
+                  <th>Assunzioni giornaliere</th>
+                  <th>Orari/o assunzioni</th>
+                  <th>Data Inizio</th>
+                  <th>Data Termine</th>
+                  <th>Azioni</th>
                 </tr>
+              </thead>
+              <tbody id="tabella-terapie-domiciliari">
+                {% if terapie_domiciliari %}
+                  {% for terapia in storico_terapie %}
+                    <tr data-id="{{ terapia.id }}">
+                      <td>{{ terapia.farmaco }}</td>
+                      <td>{{ terapia.assunzioni }}</td>
+                      <td>
+                        {% with terapia.orari.values as orari %}
+                          {% if orari|length == 0 or orari|join:'' == '' %}
+                            Non specificato.
+                          {% else %}
+                            {% for orario in orari %}
+                              {% if orario and orario != "" %}
+                                {{ orario|default:"Non specificato." }}{% if not forloop.last %} — {% endif %}
+                              {% endif %}
+                            {% endfor %}
+                          {% endif %}
+                        {% endwith %}
+                      </td>                    
+                      <td>{{ terapia.data_inizio|date:"d/m/Y"|default:"Non specificata." }}</td>
+                      <td>
+                        {% if terapia.data_fine %}
+                          {{ terapia.data_fine|date:"d/m/Y"|default:"Non specificata." }}
+                        {% else %}
+                          Non specificata.
+                        {% endif %}
+                      </td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary btn-modifica" data-id="{{ terapia.id }}" data-modale="domiciliare">✎</button>
+                        <button class="btn btn-sm btn-outline-danger btn-elimina" data-id="{{ terapia.id }}">✖</button>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr class="no-terapie-row">
+                    <td colspan="6" class="text-center text-muted">Nessuna terapia in studio registrata.</td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+            <!-- Sezione paginazione -->
+            <div class="pagination_tabella mb-3" data-table="terapie-domiciliari">
+              {% if storico_terapie.has_previous %}
+              <a class="previous" href="?page={{ storico_terapie.previous_page_number }}">Previous</a>
+              {% else %}
+              <span class="previous disabled">Previous</span>
               {% endif %}
-            </tbody>
-          </table>
+            
+              {% for num in storico_terapie.paginator.page_range %}
+              {% if storico_terapie.number == num %}
+              <span class="current">{{ num }}</span>
+              {% else %}
+              <a href="?page={{ num }}">{{ num }}</a>
+              {% endif %}
+              {% endfor %}
+            
+              {% if storico_terapie.has_next %}
+              <a class="next" href="?page={{ storico_terapie.next_page_number }}">Next</a>
+              {% else %}
+              <span class="next disabled">Next</span>
+              {% endif %}
+            </div>
+          </div>
         </div>
 
         <!-- MODALE PER MODIFICA TERAPIA DOMICILIARE -->
@@ -311,42 +337,66 @@
         <!-- TERAPIA IN STUDIO -->
         <div class="sub-card mt-4">
           <h3>Terapie in Studio</h3>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Descrizione</th>
-                <th>Data Inizio</th>
-                <th>Data Termine</th>
-                <th>Azioni</th>
-              </tr>
-            </thead>
-            <tbody id="tabella-terapie-studio">
-              {% if terapie_studio %}
-                {% for terapia in terapie_studio %}
-                  <tr data-id="{{ terapia.id }}">
-                    <td>{{ terapia.descrizione }}</td>
-                    <td>{{ terapia.data_inizio|date:"d/m/Y" }}</td>
-                    <td>
-                      {% if terapia.data_fine %}
-                        {{ terapia.data_fine|date:"d/m/Y" }}
-                      {% else %}
-                        —
-                      {% endif %}
-                    </td>
-                    <td>
-                      <button class="btn btn-sm btn-outline-primary btn-modifica" data-id="{{ terapia.id }}" data-modale="domiciliare">✎</button>
-                      <button class="btn btn-sm btn-outline-danger btn-elimina" data-id="{{ terapia.id }}">✖</button>
-                    </td>
-                  </tr>
-                {% endfor %}
-              {% else %}
-                <tr class="no-terapie-row">
-                  <td colspan="4" class="text-center text-muted">Nessuna terapia in studio registrata.</td>
+          <div class="table-wrapper" data-table="terapie-in-studio">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Descrizione</th>
+                  <th>Data Inizio</th>
+                  <th>Data Termine</th>
+                  <th>Azioni</th>
                 </tr>
+              </thead>
+              <tbody id="tabella-terapie-studio">
+                {% if terapie_studio %}
+                  {% for terapia in storico_studio %}
+                    <tr data-id="{{ terapia.id }}">
+                      <td>{{ terapia.descrizione }}</td>
+                      <td>{{ terapia.data_inizio|date:"d/m/Y" }}</td>
+                      <td>
+                        {% if terapia.data_fine %}
+                          {{ terapia.data_fine|date:"d/m/Y" }}
+                        {% else %}
+                          —
+                        {% endif %}
+                      </td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary btn-modifica" data-id="{{ terapia.id }}" data-modale="domiciliare">✎</button>
+                        <button class="btn btn-sm btn-outline-danger btn-elimina" data-id="{{ terapia.id }}">✖</button>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr class="no-terapie-row">
+                    <td colspan="4" class="text-center text-muted">Nessuna terapia in studio registrata.</td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+            <!-- Sezione paginazione -->
+            <div class="pagination_tabella mb-3" data-table="terapie-in-studio">
+              {% if storico_studio.has_previous %}
+              <a class="previous" href="?page={{ storico_studio.previous_page_number }}">Previous</a>
+              {% else %}
+              <span class="previous disabled">Previous</span>
               {% endif %}
-            </tbody>
-          </table>
-          <a href="" class="button" data-bs-toggle="modal" data-bs-target="#studioModal">
+            
+              {% for num in storico_studio.paginator.page_range %}
+              {% if storico_studio.number == num %}
+              <span class="current">{{ num }}</span>
+              {% else %}
+              <a href="?page={{ num }}">{{ num }}</a>
+              {% endif %}
+              {% endfor %}
+            
+              {% if storico_studio.has_next %}
+              <a class="next" href="?page={{ storico_studio.next_page_number }}">Next</a>
+              {% else %}
+              <span class="next disabled">Next</span>
+              {% endif %}
+            </div>
+          </div>
+          <a href="" class="button mt-3" data-bs-toggle="modal" data-bs-target="#studioModal">
       
             <span class="button__icon-wrapper">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18"

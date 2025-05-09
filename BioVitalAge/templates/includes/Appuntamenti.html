@@ -242,7 +242,9 @@
                                         <select name="paziente-select" id="paziente-select" class="w-100 form-select-appointment">
                                             <option>Seleziona Paziente</option>
                                             {% for paziente in persone %}
-                                                <option  value="{{ paziente.name|lower }} {{ paziente.surname|lower }}|{{ paziente.id}}">{{ paziente.name|title }} {{ paziente.surname|title }}</option>
+                                                <option value="{{ paziente.name|lower }} {{ paziente.surname|lower }}|{{ paziente.id }}">
+                                                    {{ paziente.surname|title }} {{ paziente.name|title }}
+                                                </option>
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -307,14 +309,11 @@
                     </span>
                     Appuntamento
                 </button>
-            </div>
-            
-            
+            </div>    
         </div>
 
 
         <!-- CALENDARIO MONTH LAYOUT -->
-       
         <div class="header-rowTrace" id="month-head">
                 <p>Lunedi</p>
                 <p>Martedi</p>
