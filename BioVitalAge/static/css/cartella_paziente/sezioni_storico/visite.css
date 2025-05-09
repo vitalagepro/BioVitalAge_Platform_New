@@ -1,9 +1,9 @@
 /* ! TABLE */
 .table-wrapper {
-  border-radius: 10px;
+  border-radius: 10px 10px 0 0 !important;
+  background-color: var(--card-color);
   overflow: hidden;
   margin: 10px 0px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   border-radius: 17px;
 }
 
@@ -40,6 +40,78 @@
     background-color: var(--contrast-color) !important;
     color: white !important;
 }
+
+/*  PAGINATION  */
+.pagination_tabella {
+    background-color: var(--card-color);
+    border-radius: 0px 0px 4px 4px;
+    padding: 20px 0 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.previous,
+.next {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    width: 8rem;
+    text-align: center;
+}
+
+.previous:hover,
+.next:hover {
+    background-color: #ddd;
+}
+
+.previous {
+    border-radius: 4px 0px 0px 4px;
+}
+
+.next {
+    border-radius: 0px 4px 4px 0px;
+}
+
+.pagination_tabella a,
+.pagination_tabella span {
+  margin: 0 5px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+}
+.pagination_tabella a {
+  color: #333;
+}
+.pagination_tabella a:hover {
+  background-color: #f0f0f0;
+}
+.pagination_tabella .current {
+  background-color: var(--contrast-color);
+  color: #fff;
+  border-color: var(--contrast-color);
+}
+.pagination_tabella .disabled {
+  color: #aaa;
+  border-color: #ccc;
+  cursor: default;
+  pointer-events: none;
+  background-color: #f8f8f8;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -333,6 +405,27 @@ tbody tr:hover {
     align-items: center;
     gap: 10px;
     margin-top: 10px;
+}
+
+.Btn-modify{
+    background-color: var(--contrast-color2);
+    fill: white !important;
+    border: none;
+    width: 40px;
+    height: 40px;
+    padding: 20px;
+    border-radius: 100%;
+    cursor: pointer;
+}
+
+.svg{
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
+}
+
+.svg:hover {
+    transform: scale(1.2);
 }
 
 .input-typology {

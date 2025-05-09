@@ -78,9 +78,11 @@
                     <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
                 </a>
                 <p>»</p>
-                <p>Cartella Paziente</p>
+                <p>
+                    <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
+                </p>
                 <p>»</p>
-                <p>Storico</p>
+                <p class="breadcrumb">Storico</p>
             </div>
         
         </div>  

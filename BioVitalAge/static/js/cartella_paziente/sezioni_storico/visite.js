@@ -127,6 +127,145 @@ const mappingTipologie = {
 
 
 
+/*  -----------------------------------------------------------------------------------------------
+        Listener per la paginazione
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("click", function (event) {
+    const target = event.target;
+
+    // Se hai cliccato su un <a> dentro la paginazione
+    if (target.closest(".pagination_tabella a")) {
+      event.preventDefault();
+
+      const link = target.closest("a");
+      const url = link.href;
+
+      fetch(url)
+        .then((response) => response.text())
+        .then((html) => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, "text/html");
+          const newContent = doc.querySelector(".table-wrapper");
+          document.querySelector(".table-wrapper").innerHTML =
+            newContent.innerHTML;
+        });
+    }
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* -----------------------------------------------------------------------------------------------
+   ATTIVA INPUT DATA/ORA PER VISITE (MODALE)
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", () => {
+  const editBtn = document.getElementById("edit-date-btn");
+  const dateInput = document.getElementById("editDate");
+  const timeInput = document.getElementById("editTime");
+  const form = document.getElementById("date-appointment-form");
+
+  const daySpan = document.getElementById("day-appointment");
+  const dateSpan = document.getElementById("date-appointment");
+  const timeSpan = document.getElementById("time-appointment");
+
+  const openBtn = document.getElementById("openModal"); // bottone "Aggiungi nuova visita"
+
+  if (!editBtn || !dateInput || !timeInput || !form || !openBtn) return;
+
+  // Al click su "Aggiungi nuova visita" => precompila data/orario
+  openBtn.addEventListener("click", () => {
+    const now = new Date();
+    const giorno = 'Giorno, ';
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    const dd = String(now.getDate()).padStart(2, "0");
+    const formattedDate = `Data, `;
+    const inputDateValue = `${yyyy}-${mm}-${dd}`;
+    const formattedTime = "Orario";
+
+    // aggiorna span
+    daySpan.textContent = giorno;
+    dateSpan.textContent = formattedDate;
+    timeSpan.textContent = formattedTime;
+
+    // aggiorna input
+    dateInput.value = inputDateValue;
+    timeInput.value = formattedTime;
+
+    // nascondi input inizialmente
+    dateInput.style.display = "none";
+    timeInput.style.display = "none";
+  });
+
+  // Al click su "Edita" => mostra input e nascondi gli span
+  editBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    dateInput.style.display = "inline-block";
+    timeInput.style.display = "inline-block";
+    daySpan.style.display = "none";
+    dateSpan.style.display = "none";
+    timeSpan.style.display = "none";
+  });
+
+  // Quando cambia data, aggiorna il giorno della settimana
+  dateInput.addEventListener("change", () => {
+    const selectedDate = new Date(dateInput.value);
+    const giorni = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+    const giorno = giorni[selectedDate.getDay()];
+    daySpan.textContent = giorno;
+    daySpan.style.display = "inline";
+  });
+
+  // Validazione al submit
+  form.addEventListener("submit", (e) => {
+    if (!dateInput.value || !timeInput.value) {
+      e.preventDefault();
+      showAlert({
+        type: "danger",
+        message: "Inserisci data e orario prima di salvare l'appuntamento.",
+        extraMessage: "",
+        borderColor: "#EF4444",
+      });
+    } else {
+      // aggiorna gli span con i valori definitivi
+      const [yyyy, mm, dd] = dateInput.value.split("-");
+      dateSpan.textContent = `${dd}/${mm}/${yyyy}`;
+      timeSpan.textContent = timeInput.value;
+    }
+  });
+});
+
+
+
+
+
+
+
 
 
 
@@ -608,3 +747,203 @@ document
     const calendarUrl = addToGoogleCalendar(appointment);
     window.open(calendarUrl, "_blank");
   });
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const editBtn = document.getElementById("edit-date-btn");
+  const dateInput = document.getElementById("editDate");
+  const timeInput = document.getElementById("editTime");
+  const container = document.getElementById("edit-date-container");
+
+  const daySpan = document.getElementById("day-appointment");
+  const dateSpan = document.getElementById("date-appointment");
+  const timeSpan = document.getElementById("time-appointment");
+
+  if (!editBtn || !dateInput || !timeInput || !container) return;
+
+  editBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    // Mostra il container
+    container.style.display = "flex"; // oppure "block" se preferisci in colonna
+    dateInput.style.display = "inline-block";
+    timeInput.style.display = "inline-block";
+
+    // Nasconde gli span
+    if (daySpan) daySpan.style.display = "none";
+    if (dateSpan) dateSpan.style.display = "none";
+    if (timeSpan) timeSpan.style.display = "none";
+  });
+
+  const saveBtn = document.getElementById("save-date-btn");
+  
+  editBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+  
+    container.style.display = "flex";
+    dateInput.style.display = "inline-block";
+    timeInput.style.display = "inline-block";
+    saveBtn.style.display = "inline-block";
+  
+    daySpan.style.display = "none";
+    dateSpan.style.display = "none";
+    timeSpan.style.display = "none";
+  });
+  
+  saveBtn.addEventListener("click", () => {
+    const dateVal = dateInput.value;
+    const timeVal = timeInput.value;
+  
+    if (!dateVal || !timeVal) {
+      showAlert({
+        type: "danger",
+        message: "Inserisci data e ora prima di salvare.",
+        extraMessage: "",
+        borderColor: "#EF4444",
+      });
+      return;
+    }
+  
+    const giorniSettimana = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+    const dateObj = new Date(dateVal);
+    const dayName = giorniSettimana[dateObj.getDay()];
+  
+    // Aggiorna gli span
+    daySpan.textContent = dayName;
+    dateSpan.textContent = dateVal.split("-").reverse().join("/");
+    timeSpan.textContent = timeVal;
+  
+    // Mostra gli span
+    daySpan.style.display = "inline";
+    dateSpan.style.display = "inline";
+    timeSpan.style.display = "inline";
+  
+    // Nascondi input e bottone
+    dateInput.style.display = "none";
+    timeInput.style.display = "none";
+    saveBtn.style.display = "none";
+    container.style.display = "none";
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const saveBtn = document.getElementById("saveAppointmentBtn");
+
+  saveBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+
+    const date = document.getElementById("editDate").value;
+    const time = document.getElementById("editTime").value;
+    const day = document.getElementById("day-appointment").textContent.trim();
+    const tipologia = document.getElementById("tipologia_visita").value;
+    const vocePrezzario = document.getElementById("voce-prezzario").value;
+    const durata = document.getElementById("time").value;
+    const studio = document.getElementById("studio").value;
+    const note = document.getElementById("note").value;
+    const pazienteVal = document.getElementById("paziente-select").value;
+
+    if (!date || !time || !tipologia || !vocePrezzario || !durata || !studio || !pazienteVal) {
+      showAlert({
+        type: "danger",
+        message: "⚠️ Compila tutti i campi obbligatori prima di salvare.",
+        borderColor: "#EF4444",
+      });
+      return;
+    }
+
+    const [nomeCompleto, pazienteId] = pazienteVal.split("|");
+    const [nome, cognome] = nomeCompleto.trim().split(" ");
+
+    const payload = {
+      giorno: day,
+      data: date,
+      orario: time,
+      tipologia_visita: tipologia,
+      voce_prezzario: vocePrezzario,
+      durata: durata,
+      numero_studio: studio,
+      note: note,
+      nome_paziente: nome || "",
+      cognome_paziente: cognome || "",
+    };
+
+    try {
+      const response = await fetch("/salva-appuntamento/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        showAlert({
+          type: "success",
+          message: "✅ Appuntamento salvato con successo!",
+          extraMessage: "",
+          borderColor: "var(--positive-color)",
+        });
+
+        // ✅ RESETTA I CAMPI DELLA MODALE
+        document.getElementById("tipologia_visita").selectedIndex = 0;
+        document.getElementById("voce-prezzario").innerHTML = `<option>Seleziona una Voce</option>`;
+        document.getElementById("time").innerHTML = `<option>Seleziona una Durata</option>`;
+        document.getElementById("studio").selectedIndex = 0;
+        document.getElementById("paziente-select").selectedIndex = 0;
+        document.getElementById("note").value = "";
+
+        // ✅ RESET DATE/TIME
+        const oggi = new Date();
+        const yyyy = oggi.getFullYear();
+        const mm = String(oggi.getMonth() + 1).padStart(2, "0");
+        const dd = String(oggi.getDate()).padStart(2, "0");
+        const defaultTime = "09:00";
+
+        document.getElementById("editDate").value = `${yyyy}-${mm}-${dd}`;
+        document.getElementById("editTime").value = defaultTime;
+        document.getElementById("day-appointment").textContent = "";
+        document.getElementById("date-appointment").textContent = "";
+        document.getElementById("time-appointment").textContent = "";
+
+        // ✅ RIPRISTINA visibilità SPAN e nasconde gli input
+        document.getElementById("editDate").style.display = "none";
+        document.getElementById("editTime").style.display = "none";
+        document.getElementById("day-appointment").style.display = "inline";
+        document.getElementById("date-appointment").style.display = "inline";
+        document.getElementById("time-appointment").style.display = "inline";
+
+        // ✅ CHIUDI MODALE
+        gsap.to("#appointmentModal", {
+          opacity: 0,
+          y: -50,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => {
+            document.getElementById("appointmentModal").style.display = "none";
+            document.body.style.overflow = "auto";
+          },
+        });
+      } else {
+        showAlert({
+          type: "danger",
+          message: result.error || "Errore sconosciuto",
+          borderColor: "#EF4444",
+        });
+      }
+    } catch (err) {
+      console.error("❌ Errore fetch:", err);
+      showAlert({
+        type: "danger",
+        message: "Errore di rete: " + err.message,
+        borderColor: "#EF4444",
+      });
+    }
+  });
+});

@@ -130,9 +130,11 @@
             />
           </a>
           <p>»</p>
-          <p>Cartella Paziente</p>
+          <p>
+            <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
+          </p>
           <p>»</p>
-          <p>Terapie</p>
+          <p class="breadcrumb">Terapie</p>
         </div>
       </div>
 

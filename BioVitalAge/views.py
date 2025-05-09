@@ -27,6 +27,7 @@ from django.utils.timezone import now, localtime # type: ignore
 from django.utils.dateparse import parse_date # type: ignore
 from django.db.models import OuterRef, Subquery, Count, Q, Avg, Min, Max # type: ignore
 from django.db.models.functions import ExtractMonth # type: ignore
+from django.db.models.functions import Lower
 from django.contrib.auth.hashers import check_password # type: ignore
 from django.db.models import OuterRef # type: ignore
 from django.contrib.auth import authenticate, login, logout # type: ignore
@@ -404,7 +405,9 @@ class ProfileView(LoginRequiredMixin, View):
 class AppuntamentiView(LoginRequiredMixin,View):
     def get(self, request):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')
+        persone = TabellaPazienti.objects.filter(dottore=dottore)\
+            .annotate(lower_surname=Lower('surname'), lower_name=Lower('name'))\
+            .order_by('lower_surname', 'lower_name')        
         appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('-id')
 
 
@@ -1637,20 +1640,22 @@ class VisiteView(View):
     def _render_with_context(self, request, id):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
-        persone = TabellaPazienti.objects.filter(dottore=dottore)
-
+        persone = TabellaPazienti.objects.filter(dottore=dottore)\
+            .annotate(lower_surname=Lower('surname'), lower_name=Lower('name'))\
+            .order_by('lower_surname', 'lower_name')
+        
         visite = Visite.objects.filter(paziente=persona).order_by('-data_visita')
         # Ottieni le opzioni definite nei choices
         tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
         numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
         voce_prezzario = Appointment._meta.get_field('voce_prezzario').choices
         visiteFissate = Appointment.objects.filter(
-            Q(nome_paziente__icontains=persona.name.strip()) &
             Q(cognome_paziente__icontains=persona.surname.strip()) &
-            Q(dottore=dottore)  # Aggiungi il filtro per il dottore
-        ).order_by('-data', '-orario')        
+            Q(nome_paziente__icontains=persona.name.strip()) &
+            Q(dottore=dottore)
+        ).order_by('-data', '-orario')
         
-        paginator = Paginator(visite, 4)
+        paginator = Paginator(visiteFissate, 4)
         page_number = request.GET.get('page')
         visite = paginator.get_page(page_number)
 

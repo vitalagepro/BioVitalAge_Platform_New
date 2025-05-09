@@ -57,9 +57,11 @@
                     <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
                 </a>
                 <p>»</p>
-                <p>Cartella Paziente</p>
+                <p>
+                    <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
+                </p>
                 <p>»</p>
-                <p>Visite</p>
+                <p class="breadcrumb">Visite</p>
             </div>
         </div>
 
@@ -102,7 +104,6 @@
                             <form action="POST" id="date-appointment-form" class="form-appointment" data-id="{{ appuntamenti.id }}">
                                 {% csrf_token %}
                                 <a id="edit-date-btn" class="Btn-modify" title="Modifica">
-                                    Edita
                                     <svg class="svg" viewBox="0 0 512 512">
                                         <path
                                             d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z">
@@ -121,6 +122,7 @@
                             <div id="edit-date-container" style="display:none;">
                                 <input type="date" id="editDate" style="display:none;">
                                 <input type="time" id="editTime" style="display:none;">
+                                <button type="button" id="save-date-btn" class="button mt-2" style="display:none;">Salva Modifica</button>
                             </div>
 
 
@@ -143,7 +145,9 @@
                                         <select name="paziente-select" id="paziente-select" class="w-100 form-select-appointment">
                                             <option>Seleziona Paziente</option>
                                             {% for paziente in persone %}
-                                                <option  value="{{ paziente.name|lower }} {{ paziente.surname|lower }}|{{ paziente.id}}">{{ paziente.name|title }} {{ paziente.surname|title }}</option>
+                                                <option value="{{ paziente.name|lower }} {{ paziente.surname|lower }}|{{ paziente.id }}">
+                                                    {{ paziente.surname|title }} {{ paziente.name|title }}
+                                                </option>
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -182,7 +186,7 @@
                         </div>
 
                         <div class="button-modal-appointments">
-                            <button type="submit" class="button btn-primary">Salva</button>
+                            <button type="submit" class="button btn-primary" id="saveAppointmentBtn">Salva</button>
                             <button type="button" class="button" id="googleCalendarBtn">Aggiungi a Google Calendar</button>
                             <button type="button" class="button btn-secondary" id="closeModalBtn">Chiudi</button>
                         </div>
@@ -262,32 +266,53 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% if visiteFissate %}
-                            {% for appointment in visiteFissate %}
-                            <tr data-id="{{ appointment.id }}">
-                                <td>
-                                    <span>
-                                        {{ appointment.voce_prezzario|title }}
-                                    </span>
-                                </td>
-                                <td>{{ appointment.dottore.nome | title }} {{  appointment.dottore.cognome | title}}</td>
-                                <td>{{ appointment.data|date:"d/m/Y" }}</td>
-                                <td>{{ appointment.note|default:"Nessuna nota aggiuntiva." }}</td>
-                                <td class="td-azioni">
-                                    <button class="btn edit">✎</button>
-                                    <button class="btn delete" data-id="{{ appointment.id }}">✖</button>
-                                </td>
-                            </tr>
+                        {% if visite %}
+                            {% for visita in visite %}
+                                <tr data-id="{{ visita.id }}">
+                                    <td>
+                                        <span>
+                                            {{ visita.voce_prezzario|title }}
+                                        </span>
+                                    </td>
+                                    <td>{{ visita.dottore.nome | title }} {{ visita.dottore.cognome | title}}</td>
+                                    <td>{{ visita.data|date:"d/m/Y" }}</td>
+                                    <td>{{ visita.note|default:"Nessuna nota aggiuntiva." }}</td>
+                                    <td class="td-azioni">
+                                        <button class="btn edit">✎</button>
+                                        <button class="btn delete" data-id="{{ visita.id }}">✖</button>
+                                    </td>
+                                </tr>
                             {% endfor %}
                         {% else %}
-                            <tr>
-                                <td colspan="7" class="text-center">Nessuna visita disponibile.</td>
-                            </tr>
+                        <tr>
+                            <td colspan="7" class="text-center">Nessuna visita disponibile.</td>
+                        </tr>
                         {% endif %}
                     </tbody>
                 </table>
-      
-                <div id="pagination" class="pagination-container"></div>
+            
+                <!-- Sezione paginazione -->
+                <div class="pagination_tabella mb-3">
+                    {% if visite.has_previous %}
+                        <a class="previous" href="?page={{ visite.previous_page_number }}">Previous</a>
+                    {% else %}
+                        <span class="previous disabled">Previous</span>
+                    {% endif %}
+            
+                    {% for num in visite.paginator.page_range %}
+                        {% if visite.number == num %}
+                            <span class="current">{{ num }}</span>
+                        {% else %}
+                            <a href="?page={{ num }}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+            
+                    {% if visite.has_next %}
+                        <a class="next" href="?page={{ visite.next_page_number }}">Next</a>
+                    {% else %}
+                        <span class="next disabled">Next</span>
+                    {% endif %}
+                </div>
             </div>
         </div>
      </main>
