@@ -1,6 +1,14 @@
 import showAlert from "../../components/showAlert.js";
 
 /*  -----------------------------------------------------------------------------------------------
+  GLOBAL VARIABLES
+--------------------------------------------------------------------------------------------------- */
+const defaultGiorno = "Giorno";
+const defaultFormattedDate = "Data";
+const defaultFormattedTime = "Ora";
+const defaultDateValue = "";  // oppure una data come "2025-05-10"
+
+/*  -----------------------------------------------------------------------------------------------
    MAPPING TIPOLOGIE
 --------------------------------------------------------------------------------------------------- */
 const mappingTipologie = {
@@ -187,55 +195,190 @@ document.addEventListener("DOMContentLoaded", () => {
   const editBtn = document.getElementById("edit-date-btn");
   const dateInput = document.getElementById("editDate");
   const timeInput = document.getElementById("editTime");
-  const form = document.getElementById("date-appointment-form");
-
   const daySpan = document.getElementById("day-appointment");
   const dateSpan = document.getElementById("date-appointment");
   const timeSpan = document.getElementById("time-appointment");
+  const dateContainer = document.getElementById("edit-date-container");
+  const spanGroup = document.getElementById("date-display-group");
+  const saveBtn = document.getElementById("save-date-btn");
+
+  const form = document.getElementById("date-appointment-form");
 
   const openBtn = document.getElementById("openModal"); // bottone "Aggiungi nuova visita"
 
+  let isEditing = false;
+
   if (!editBtn || !dateInput || !timeInput || !form || !openBtn) return;
 
-  // Al click su "Aggiungi nuova visita" => precompila data/orario
-  openBtn.addEventListener("click", () => {
-    const now = new Date();
-    const giorno = 'Giorno, ';
-    const yyyy = now.getFullYear();
-    const mm = String(now.getMonth() + 1).padStart(2, "0");
-    const dd = String(now.getDate()).padStart(2, "0");
-    const formattedDate = `Data, `;
-    const inputDateValue = `${yyyy}-${mm}-${dd}`;
-    const formattedTime = "Orario";
+  // 🟣 Imposta i valori iniziali al caricamento della modale
+  function setDefaultValues() {
+    daySpan.textContent = `${defaultGiorno},`;
+    dateSpan.textContent = `${defaultFormattedDate},`;
+    timeSpan.textContent = defaultFormattedTime;
+  
+    dateInput.value = defaultDateValue;
+    timeInput.value = "";  // oppure defaultFormattedTime se vuoi precompilarlo
+  }  
 
-    // aggiorna span
-    daySpan.textContent = giorno;
-    dateSpan.textContent = formattedDate;
-    timeSpan.textContent = formattedTime;
+  if (openBtn) {
+    openBtn.addEventListener("click", () => {
+      setDefaultValues();
+    
+      // Rimuove la classe d-none da ogni span
+      spanGroup.classList.remove("d-none");    
+      daySpan.classList.remove("d-none");
+      dateSpan.classList.remove("d-none");
+      timeSpan.classList.remove("d-none");
+    
+      gsap.set(spanGroup, { opacity: 0, y: -10 });
+      gsap.to(spanGroup, { opacity: 1, y: 0, duration: 0.3 });
+    
+      // Nasconde input
+      gsap.to(dateContainer, {
+        opacity: 0,
+        y: -10,
+        duration: 0.2,
+        onComplete: () => {
+          dateContainer.style.display = "none";
+          dateInput.style.display = "none";
+          timeInput.style.display = "none";
+          saveBtn.style.display = "none";
+        },
+      });
+    
+      isEditing = false;           
+    });
+  }
 
-    // aggiorna input
-    dateInput.value = inputDateValue;
-    timeInput.value = formattedTime;
-
-    // nascondi input inizialmente
-    dateInput.style.display = "none";
-    timeInput.style.display = "none";
-  });
-
-  // Al click su "Edita" => mostra input e nascondi gli span
+  // 🔁 Al click su "Edita"
   editBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    dateInput.style.display = "inline-block";
-    timeInput.style.display = "inline-block";
-    daySpan.style.display = "none";
-    dateSpan.style.display = "none";
-    timeSpan.style.display = "none";
+
+    if (!isEditing) {
+      isEditing = true;
+
+      // Mostra input + bottone
+      dateContainer.style.display = "block";
+      dateInput.style.display = "inline-block";
+      timeInput.style.display = "inline-block";
+      saveBtn.style.display = "inline-flex";
+
+      gsap.to(spanGroup, {
+        opacity: 0,
+        y: -10,
+        duration: 0.2,
+        onComplete: () => {
+          // Nasconde gli span
+          spanGroup.classList.add("d-none");
+          daySpan.classList.add("d-none");
+          dateSpan.classList.add("d-none");
+          timeSpan.classList.add("d-none");
+
+          // Anima la comparsa degli input
+          gsap.fromTo(
+            dateContainer,
+            { opacity: 0, y: -10 },
+            { opacity: 1, y: 0, duration: 0.3 }
+          );
+        },
+      });
+
+    } else {
+      isEditing = false;
+
+      // Nascondi input + bottone
+      gsap.to(dateContainer, {
+        opacity: 0,
+        y: -10,
+        duration: 0.2,
+        onComplete: () => {
+          dateContainer.style.display = "none";
+          dateInput.style.display = "none";
+          timeInput.style.display = "none";
+          saveBtn.style.display = "none";
+
+          // Mostra gli span rimuovendo d-none
+          spanGroup.classList.remove("d-none");
+          daySpan.classList.remove("d-none");
+          dateSpan.classList.remove("d-none");
+          timeSpan.classList.remove("d-none");
+
+          gsap.fromTo(
+            spanGroup,
+            { opacity: 0, y: -10 },
+            { opacity: 1, y: 0, duration: 0.3 }
+          );
+        },
+      });
+    }
   });
+
+  saveBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+  
+    if (!dateInput.value || !timeInput.value) {
+      showAlert({
+        type: "danger",
+        message: "Inserisci data e orario prima di salvare.",
+        extraMessage: "",
+        borderColor: "#EF4444",
+      });
+      return;
+    }
+  
+    // aggiorna gli span con i valori definitivi
+    const [yyyy, mm, dd] = dateInput.value.split("-");
+    const giorni = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+    const selectedDate = new Date(dateInput.value);
+    const giorno = giorni[selectedDate.getDay()];
+    
+    daySpan.textContent = `${giorno},`;
+    dateSpan.textContent = `${dd}/${mm}/${yyyy},`;
+    timeSpan.textContent = timeInput.value;
+    
+  
+    // Chiude la modalità editing
+    isEditing = false;
+  
+    gsap.to(dateContainer, {
+      opacity: 0,
+      y: -10,
+      duration: 0.2,
+      onComplete: () => {
+        dateContainer.style.display = "none";
+        dateInput.style.display = "none";
+        timeInput.style.display = "none";
+        saveBtn.style.display = "none";
+  
+        // Ri-mostra gli span
+        spanGroup.classList.remove("d-none");
+        daySpan.classList.remove("d-none");
+        dateSpan.classList.remove("d-none");
+        timeSpan.classList.remove("d-none");
+  
+        gsap.fromTo(
+          spanGroup,
+          { opacity: 0, y: -10 },
+          { opacity: 1, y: 0, duration: 0.3 }
+        );
+      },
+    });
+  });
+  
+  
 
   // Quando cambia data, aggiorna il giorno della settimana
   dateInput.addEventListener("change", () => {
     const selectedDate = new Date(dateInput.value);
-    const giorni = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+    const giorni = [
+      "Domenica",
+      "Lunedì",
+      "Martedì",
+      "Mercoledì",
+      "Giovedì",
+      "Venerdì",
+      "Sabato",
+    ];
     const giorno = giorni[selectedDate.getDay()];
     daySpan.textContent = giorno;
     daySpan.style.display = "inline";
@@ -247,7 +390,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       showAlert({
         type: "danger",
-        message: "Inserisci data e orario prima di salvare l'appuntamento.",
+        message: "Inserisci data o orario prima di salvare l'appuntamento.",
         extraMessage: "",
         borderColor: "#EF4444",
       });
@@ -277,6 +420,7 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
   const apriBtn = document.getElementById("openModal"); // bottone per aprire modale
   const modale = document.getElementById("appointmentModal");
+  const contenuto = document.getElementById("appointmentContent"); // interno
   const chiudiBtn1 = document.getElementById("closeModal");
   const chiudiBtn2 = document.getElementById("closeModalBtn");
 
@@ -339,20 +483,33 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Animazione apertura
-  gsap.set(modale, { opacity: 0, display: "none", y: -50 });
+  gsap.set(modale, { opacity: 0, display: "none" });
+  gsap.set(contenuto, { opacity: 0, y: -50 });
+
   apriBtn.addEventListener("click", () => {
-    gsap.set(modale, { display: "block" });
-    gsap.to(modale, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
+    gsap.set(modale, { display: "flex" });
+
+    gsap.to(modale, { opacity: 1, duration: 0.3, ease: "power2.out" });
+    gsap.to(contenuto, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
   });
 
   // Animazione chiusura
   const chiudiModale = () => {
-    gsap.to(modale, {
+    gsap.to(contenuto, {
       opacity: 0,
       y: -50,
+      duration: 0.2,
+      ease: "power2.in",
+    });
+
+    gsap.to(modale, {
+      opacity: 0,
       duration: 0.3,
       ease: "power2.in",
-      onComplete: () => gsap.set(modale, { display: "none" }),
+      delay: 0.15,
+      onComplete: () => {
+        gsap.set(modale, { display: "none" });
+      },
     });
   };
 
@@ -747,86 +904,6 @@ document
     const calendarUrl = addToGoogleCalendar(appointment);
     window.open(calendarUrl, "_blank");
   });
-
-
-
-
-document.addEventListener("DOMContentLoaded", () => {
-  const editBtn = document.getElementById("edit-date-btn");
-  const dateInput = document.getElementById("editDate");
-  const timeInput = document.getElementById("editTime");
-  const container = document.getElementById("edit-date-container");
-
-  const daySpan = document.getElementById("day-appointment");
-  const dateSpan = document.getElementById("date-appointment");
-  const timeSpan = document.getElementById("time-appointment");
-
-  if (!editBtn || !dateInput || !timeInput || !container) return;
-
-  editBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-
-    // Mostra il container
-    container.style.display = "flex"; // oppure "block" se preferisci in colonna
-    dateInput.style.display = "inline-block";
-    timeInput.style.display = "inline-block";
-
-    // Nasconde gli span
-    if (daySpan) daySpan.style.display = "none";
-    if (dateSpan) dateSpan.style.display = "none";
-    if (timeSpan) timeSpan.style.display = "none";
-  });
-
-  const saveBtn = document.getElementById("save-date-btn");
-  
-  editBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-  
-    container.style.display = "flex";
-    dateInput.style.display = "inline-block";
-    timeInput.style.display = "inline-block";
-    saveBtn.style.display = "inline-block";
-  
-    daySpan.style.display = "none";
-    dateSpan.style.display = "none";
-    timeSpan.style.display = "none";
-  });
-  
-  saveBtn.addEventListener("click", () => {
-    const dateVal = dateInput.value;
-    const timeVal = timeInput.value;
-  
-    if (!dateVal || !timeVal) {
-      showAlert({
-        type: "danger",
-        message: "Inserisci data e ora prima di salvare.",
-        extraMessage: "",
-        borderColor: "#EF4444",
-      });
-      return;
-    }
-  
-    const giorniSettimana = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
-    const dateObj = new Date(dateVal);
-    const dayName = giorniSettimana[dateObj.getDay()];
-  
-    // Aggiorna gli span
-    daySpan.textContent = dayName;
-    dateSpan.textContent = dateVal.split("-").reverse().join("/");
-    timeSpan.textContent = timeVal;
-  
-    // Mostra gli span
-    daySpan.style.display = "inline";
-    dateSpan.style.display = "inline";
-    timeSpan.style.display = "inline";
-  
-    // Nascondi input e bottone
-    dateInput.style.display = "none";
-    timeInput.style.display = "none";
-    saveBtn.style.display = "none";
-    container.style.display = "none";
-  });
-});
 
 document.addEventListener("DOMContentLoaded", () => {
   const saveBtn = document.getElementById("saveAppointmentBtn");
