@@ -130,7 +130,7 @@
                                 {% csrf_token %}
                                 <label for="tipologia" class="input-typology">
                                     <div class="d-flex flex-column w-100">
-                                        <p class="mb-0">Tipologia</p>
+                                        <p class="mb-0">Tipologia*</p>
                                         <select name="tipologia_visita" id="tipologia_visita" class="form-select-appointment w-100">
                                             <option>Seleziona tipologia</option>
                                             {% for tipologia in tipologia_appuntamenti %}
@@ -138,36 +138,39 @@
                                             {% endfor %}
                                         </select>
                                     </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="icon_add_paient">
-                                            <img src="{% static 'image/username_Aggiungi.png' %}" alt="add-user" title="add-user">
+                                    <div>
+                                        <p class="mb-0">Paziente*</p>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="icon_add_paient">
+                                                <img src="{% static 'image/username_Aggiungi.png' %}" alt="add-user" title="add-user">
+                                            </div>
+                                            <select name="paziente-select" id="paziente-select" class="w-100 form-select-appointment">
+                                                <option>Seleziona Paziente</option>
+                                                {% for paziente in persone %}
+                                                    <option value="{{ paziente.name|lower }} {{ paziente.surname|lower }}|{{ paziente.id }}">
+                                                        {{ paziente.name|title }} {{ paziente.surname|title }} 
+                                                    </option>                                               
+                                                {% endfor %}
+                                            </select>
                                         </div>
-                                        <select name="paziente-select" id="paziente-select" class="w-100 form-select-appointment">
-                                            <option>Seleziona Paziente</option>
-                                            {% for paziente in persone %}
-                                                <option value="{{ paziente.name|lower }} {{ paziente.surname|lower }}|{{ paziente.id }}">
-                                                    {{ paziente.surname|title }} {{ paziente.name|title }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
                                     </div>
                                 </label>
                             
                                 <label id="input-time" class="mt-4">
                                     <div>
-                                        <p class="mb-0">Voce Prezzario</p>
+                                        <p class="mb-0">Voce Prezzario*</p>
                                         <select name="voce-prezzario" id="voce-prezzario" class="w-100">
                                             <option>Seleziona una Voce</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <p class="mb-0">Durata</p>
+                                        <p class="mb-0">Durata*</p>
                                         <select name="time" id="time">
                                             <option>Seleziona una Durata</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <p class="mb-0">N° Studio</p>
+                                        <p class="mb-0">N° Studio*</p>
                                         <select name="studio" id="studio">
                                             <option>Seleziona uno Studio</option>
                                             {% for studio in numero_studio %}
@@ -252,6 +255,8 @@
                         </form>
                     </div>
                 </div>
+
+                <!-- Tabella -->
                 <div class="table-wrapper">
                     <table>
                         <thead>

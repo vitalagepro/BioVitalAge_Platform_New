@@ -66,6 +66,9 @@ urlpatterns = [
     path("download/<str:tipo>/<int:allegato_id>/",              DownloadAllegatoView.as_view(),                       name="download_allegato"),
     path("CartellaPaziente/<int:paziente_id>/Allegato/<str:tipo>/<int:allegato_id>/delete/", DeleteAllegatoView.as_view(), name="delete_allegato"),
 
+    ## URL SEZIONE VISITE
+    path('elimina-visita/<int:id>/',                            EliminaVisitaView.as_view(),                          name='elimina_visita'),
+
     ## SEZIONE MUSCOLO
     path('Valutazione_Muscolo_Scheletrica/<int:persona_id>/',   views.ValutazioneMSView.as_view(),                    name='valutazione_m_s'), 
 

@@ -1,11 +1,12 @@
 import showAlert from "../../components/showAlert.js";
+import { confirmDeleteAction } from "../../components/deleteAction.js";
 
 /*  -----------------------------------------------------------------------------------------------
   GLOBAL VARIABLES
 --------------------------------------------------------------------------------------------------- */
-const defaultGiorno = "Giorno";
-const defaultFormattedDate = "Data";
-const defaultFormattedTime = "Ora";
+const defaultGiorno = "Giorno*";
+const defaultFormattedDate = "Data*";
+const defaultFormattedTime = "Ora*";
 const defaultDateValue = "";  // oppure una data come "2025-05-10"
 
 /*  -----------------------------------------------------------------------------------------------
@@ -946,6 +947,7 @@ document.addEventListener("DOMContentLoaded", () => {
       note: note,
       nome_paziente: nome || "",
       cognome_paziente: cognome || "",
+      pazienteId: pazienteId || "",
     };
 
     try {
@@ -1022,5 +1024,49 @@ document.addEventListener("DOMContentLoaded", () => {
         borderColor: "#EF4444",
       });
     }
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  -----------------------------------------------------------------------------------------------
+  EVENTO PER ELIMINARE UN APPUNTAMENTO
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", () => {
+  const deleteButtons = document.querySelectorAll(".btn.delete");
+
+  deleteButtons.forEach((btn) => {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      const id = btn.dataset.id;
+      if (!id) return;
+
+      confirmDeleteAction({
+        url: `/elimina-visita/${id}/`,
+        elementToRemove: btn.closest("tr"),
+        successMessage: "Visita eliminata con successo!",
+        errorMessage: "Errore durante l'eliminazione della visita.",
+        confirmMessage: "Sei sicuro di voler eliminare questa visita?",
+        borderColor: "#EF4444", // rosso
+      });
+    });
   });
 });

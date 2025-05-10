@@ -243,7 +243,7 @@
                                             <option>Seleziona Paziente</option>
                                             {% for paziente in persone %}
                                                 <option value="{{ paziente.name|lower }} {{ paziente.surname|lower }}|{{ paziente.id }}">
-                                                    {{ paziente.surname|title }} {{ paziente.name|title }}
+                                                    {{ paziente.name|title }} {{ paziente.surname|title }} 
                                                 </option>
                                             {% endfor %}
                                         </select>

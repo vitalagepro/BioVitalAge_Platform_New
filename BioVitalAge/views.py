@@ -407,7 +407,7 @@ class AppuntamentiView(LoginRequiredMixin,View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persone = TabellaPazienti.objects.filter(dottore=dottore)\
             .annotate(lower_surname=Lower('surname'), lower_name=Lower('name'))\
-            .order_by('lower_surname', 'lower_name')        
+            .order_by('lower_name', 'lower_surname')
         appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('-id')
 
 
@@ -1644,18 +1644,17 @@ class VisiteView(View):
             .annotate(lower_surname=Lower('surname'), lower_name=Lower('name'))\
             .order_by('lower_surname', 'lower_name')
         
-        visite = Visite.objects.filter(paziente=persona).order_by('-data_visita')
+        visite = Appointment.objects.filter(
+            nome_paziente__icontains=persona.name.strip(),
+            cognome_paziente__icontains=persona.surname.strip()
+        ).order_by('-data', '-orario')
+
         # Ottieni le opzioni definite nei choices
         tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
         numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
         voce_prezzario = Appointment._meta.get_field('voce_prezzario').choices
-        visiteFissate = Appointment.objects.filter(
-            Q(cognome_paziente__icontains=persona.surname.strip()) &
-            Q(nome_paziente__icontains=persona.name.strip()) &
-            Q(dottore=dottore)
-        ).order_by('-data', '-orario')
-        
-        paginator = Paginator(visiteFissate, 4)
+
+        paginator = Paginator(visite, 4)
         page_number = request.GET.get('page')
         visite = paginator.get_page(page_number)
 
@@ -1664,12 +1663,22 @@ class VisiteView(View):
             'persona': persona,
             'persone': persone,
             'visite': visite,
-            'visiteFissate': visiteFissate,
             'tipologia_appuntamenti': tipologia_appuntamenti,
             'numero_studio': numero_studio,
             'voce_prezzario': voce_prezzario
         }
         return render(request, "cartella_paziente/sezioni_storico/visite.html", context)
+
+## VIEW ELIMINA VISITE
+@method_decorator(csrf_exempt, name='dispatch')
+class EliminaVisitaView(View):
+    def post(self, request, id):
+        try:
+            visita = Appointment.objects.get(id=id)
+            visita.delete()
+            return JsonResponse({'success': True})
+        except Appointment.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Visita non trovata'}, status=404)
 
 ## SEZIONE MUSCOLO
 @method_decorator(catch_exceptions, name='dispatch')
