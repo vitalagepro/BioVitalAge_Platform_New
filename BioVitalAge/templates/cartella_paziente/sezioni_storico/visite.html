@@ -63,8 +63,8 @@
                 <p>»</p>
                 <p class="breadcrumb">Visite</p>
             </div>
-        </div>
-
+        </div>       
+        
         <div class="card-container" style="margin-top: 2rem;">
             <div class="button-container">
                 <h3>Visite Fissate e Passate</h3>
@@ -87,7 +87,7 @@
 
                 <!-- Modale nuova visita -->
                 <div id="appointmentModal" class="modal-appointments modal-overlay">
-                    <div class="modal-content-appointments" id="appointmentContent">
+                    <div class="modal-content-appointments" id="appointmentContent" style="height: max-content !important;">
 
                         <header class="header-modal-appointments">
                             <div class="d-flex align-items-center gap-3">
@@ -281,7 +281,7 @@
                                         <td>{{ visita.data|date:"d/m/Y" }}</td>
                                         <td>{{ visita.note|default:"Nessuna nota aggiuntiva." }}</td>
                                         <td class="td-azioni">
-                                            <button class="btn edit">✎</button>
+                                            <button class="btn edit" id="ediBtnVisit" data-id="{{ visita.id }}">✎</button>
                                             <button class="btn delete" data-id="{{ visita.id }}">✖</button>
                                         </td>
                                     </tr>

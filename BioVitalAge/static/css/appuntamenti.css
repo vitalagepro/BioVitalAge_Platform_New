@@ -100,7 +100,7 @@ input[type='time'] {
     padding: 0.5rem 1.5rem;
 }
 
-.Btn-modify {
+/* .Btn-modify {
     position: relative;
     display: flex;
     align-items: center;
@@ -116,7 +116,7 @@ input[type='time'] {
     cursor: pointer;
     border-radius: 50px;
     transition-duration: .3s;
-}
+} */
 
 .button-view-all {
     padding: 0.48rem 1.4rem;
@@ -1164,27 +1164,34 @@ input[type='time'] {
 
 
 /* =============== SVG/ICONS =============== */
-.svg {
-    width: 15px;
-    position: absolute;
-    fill: white;
-    transition-duration: .3s;
-}
-
-.save-icon {
-    width: 20px !important;
-}
-
-.Btn-modify:hover svg {
-    transform: scale(1.2);
-    margin: 0;
-    padding: 0;
+.Btn-modify{
+    fill: var(--contrast-color2) !important;
     border: none;
-    transition-duration: .3s;
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 
-.Btn-modify:active {
-    transform: translate(3px, 3px);
-    transition-duration: .3s;
-    box-shadow: 2px 2px 0px rgb(140, 32, 212);
+.svg{
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
+}
+
+.svg:hover {
+    transform: scale(1.2);
+}
+
+#editDate, #editTime {
+    width: 60%;
+    border: none;
+    border-bottom: 1px solid var(--contrast-color);
+    color: var(--contrast-color);
+    padding: 5px;
+    cursor: pointer;
+    outline: none;
 }

@@ -404,10 +404,32 @@ class ProfileView(LoginRequiredMixin, View):
 @method_decorator(catch_exceptions, name='dispatch')
 class AppuntamentiView(LoginRequiredMixin,View):
     def get(self, request):
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        persone = TabellaPazienti.objects.filter(dottore=dottore)\
-            .annotate(lower_surname=Lower('surname'), lower_name=Lower('name'))\
-            .order_by('lower_name', 'lower_surname')
+        user_email = request.user.email.lower()
+        can_choose = (user_email == "isabella.g.santandrea@gmail.com")
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)            # per tutti gli altri, rimane il dottore “fisso”
+
+        # se può scegliere, passiamo la lista completa
+        dottori = UtentiRegistratiCredenziali.objects.all() if can_choose else None
+
+        if can_choose:
+            persone = (
+                TabellaPazienti.objects.all()
+                .order_by(
+                    Lower('name'),
+                    Lower('surname'),
+                )
+            )
+
+        # nella tua view:
+        if not can_choose:
+            persone = (
+                TabellaPazienti.objects
+                .filter(dottore=dottore)
+                .order_by(
+                    Lower('name'),
+                    Lower('surname'),
+                )
+            )
         appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('-id')
 
 
@@ -417,6 +439,8 @@ class AppuntamentiView(LoginRequiredMixin,View):
         voce_prezzario = Appointment._meta.get_field('voce_prezzario').choices
 
         context = {
+            'can_choose': can_choose,
+            'dottori': dottori,
             'dottore': dottore,
             'persone': persone,
             'appuntamenti': appuntamenti,
@@ -431,6 +455,17 @@ class AppuntamentiView(LoginRequiredMixin,View):
 @method_decorator(catch_exceptions, name='dispatch')
 class AppuntamentiSalvaView(LoginRequiredMixin,View):
     def post(self, request):
+        data = json.loads(request.body.decode())
+        # se l’utente ha il permesso e ha scelto un id, usalo:
+        if request.user.email.lower() == "isabella.g.santandrea@gmail.com":
+            dott_id = data.get("dottore_id")
+            if dott_id:
+                dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dott_id)
+            else:
+                return JsonResponse({"success": False, "error": "Devi selezionare un dottore"}, status=400)
+        else:
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+
         if request.method == "POST":
             try:
                 body_raw = request.body.decode('utf-8')
@@ -508,7 +543,21 @@ class GetSingleAppointmentView(LoginRequiredMixin,View):
 class AppuntamentiGetView(LoginRequiredMixin,View):
     def get(self, request):
         """Recupera gli appuntamenti futuri o di oggi"""
+        email = request.user.email.lower()
+        is_secretary = (email == "isabella.g.santandrea@gmail.com")
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+
+         # Se Isabella passa un dottore, usalo. Altrimenti (o per gli altri utenti) uso il profilo loggato
+        if is_secretary and request.GET.get("dottore_id"):
+            dottore = get_object_or_404(
+                UtentiRegistratiCredenziali,
+                id=request.GET["dottore_id"]
+            )
+        else:
+            dottore = get_object_or_404(
+                UtentiRegistratiCredenziali,
+                user=request.user
+            )
         
         # 📌 1. Ottenere la data di oggi senza ore/minuti/secondi
         today = now().date()
@@ -550,6 +599,11 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
         try:
             data = json.loads(request.body)
             appointment = Appointment.objects.get(id=appointment_id)
+
+            # only allow doctor change to special user
+            if request.user.email.lower() == "isabella.g.santandrea@gmail.com" and data.get("dottore_id"):
+                new_doc = get_object_or_404(UtentiRegistratiCredenziali, id=data["dottore_id"])
+                appointment.dottore = new_doc
             
             # Aggiorna solo se i valori sono presenti e non vuoti nel payload
             if data.get("new_date"):
@@ -1640,9 +1694,15 @@ class VisiteView(View):
     def _render_with_context(self, request, id):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
-        persone = TabellaPazienti.objects.filter(dottore=dottore)\
-            .annotate(lower_surname=Lower('surname'), lower_name=Lower('name'))\
-            .order_by('lower_surname', 'lower_name')
+        # nella tua view:
+        persone = (
+            TabellaPazienti.objects
+            .filter(dottore=dottore)
+            .order_by(
+                Lower('name'),
+                Lower('surname'),
+            )
+        )
         
         visite = Appointment.objects.filter(
             nome_paziente__icontains=persona.name.strip(),

@@ -951,8 +951,16 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const response = await fetch("/salva-appuntamento/", {
-        method: "POST",
+      const isEdit = saveBtn.getAttribute("data-edit-id");
+
+      const url = isEdit
+        ? `/update-appointment/${isEdit}/`
+        : "/salva-appuntamento/";
+      
+      const method = isEdit ? "PATCH" : "POST";
+      
+      const response = await fetch(url, {
+        method: method,
         headers: {
           "Content-Type": "application/json",
           "X-CSRFToken": csrfToken,
@@ -965,7 +973,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (result.success) {
         showAlert({
           type: "success",
-          message: "✅ Appuntamento salvato con successo!",
+          message: "Appuntamento modificato con successo!",
           extraMessage: "",
           borderColor: "var(--positive-color)",
         });
@@ -1047,7 +1055,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 /*  -----------------------------------------------------------------------------------------------
-  EVENTO PER ELIMINARE UN APPUNTAMENTO
+  EVENTO PER ELIMINARE UNA VISITA
 --------------------------------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
   const deleteButtons = document.querySelectorAll(".btn.delete");
@@ -1069,4 +1077,148 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  -----------------------------------------------------------------------------------------------
+  EVENTO PER MODIFICARE UNA VISITA
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", () => {
+  const editButtons = document.querySelectorAll(".btn.edit");
+
+  editButtons.forEach((btn) => {
+    btn.addEventListener("click", async function () {
+      const id = this.dataset.id;
+      if (!id) return;
+
+      try {
+        const response = await fetch(`/get-appointment/${id}/`);
+        const data = await response.json();
+
+        if (!data.success) {
+          alert("Errore nel recupero dati");
+          return;
+        }
+
+        // ✍️ Precompila i campi
+        document.getElementById("note").value = data.note || "";
+        document.getElementById("studio").value = data.numero_studio;
+        // Trigger change su tipologia
+        const tipologiaSelect = document.getElementById("tipologia_visita");
+        tipologiaSelect.value = data.tipologia_visita;
+        tipologiaSelect.dispatchEvent(new Event("change"));
+    
+        setTimeout(() => {
+          document.getElementById("voce-prezzario").value = data.voce_prezzario;
+        }, 300);
+
+        setTimeout(() => {
+          const vocePrezzarioSelect = document.getElementById("voce-prezzario");
+          vocePrezzarioSelect.value = data.voce_prezzario;
+        
+          // ✅ Simula il change per popolare la DURATA
+          vocePrezzarioSelect.dispatchEvent(new Event("change"));
+        
+          const durataSelect = document.getElementById("time");
+          let attempts = 0;
+        
+          const interval = setInterval(() => {
+            const option = Array.from(durataSelect.options).find(opt => opt.value === data.durata);
+            if (option) {
+              durataSelect.value = data.durata;
+              clearInterval(interval);
+            }
+        
+            attempts++;
+            if (attempts > 20) {
+              clearInterval(interval);
+              console.warn("Durata non trovata dopo 20 tentativi.");
+            }
+          }, 100);
+        }, 300);        
+
+        // Seleziona paziente
+        const nomeCompleto = `${data.nome_paziente.toLowerCase()} ${data.cognome_paziente.toLowerCase()}`;
+        const selectPaziente = document.getElementById("paziente-select");
+        for (let option of selectPaziente.options) {
+          if (option.value.toLowerCase().includes(nomeCompleto)) {
+            selectPaziente.value = option.value;
+            break;
+          }
+        }
+
+        const dateParts = data.data.split("-");
+        const year = parseInt(dateParts[0]);
+        const month = parseInt(dateParts[1]) - 1; // mesi in JS partono da 0
+        const day = parseInt(dateParts[2]);
+
+        const jsDate = new Date(year, month, day);
+
+        // Calcola giorno della settimana in italiano
+        const giorniSettimana = [
+          "Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"
+        ];
+        const giornoItaliano = giorniSettimana[jsDate.getDay()];
+
+        // Format italiano
+        const dataItaliana = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+
+        // Aggiorna gli span
+        document.getElementById("day-appointment").textContent = `${giornoItaliano},`;
+        document.getElementById("date-appointment").textContent = `${dataItaliana},`;
+        document.getElementById("time-appointment").textContent = data.orario;
+
+
+        // Nascondi input, mostra solo span
+        document.getElementById("edit-date-container").classList.add("d-none");
+        document.getElementById("date-display-group").classList.remove("d-none");
+
+        // Precarica valori negli input
+        document.getElementById("editDate").value = data.data;
+        document.getElementById("editTime").value = data.orario;
+
+        // Setta l'id per il salvataggio
+        document.getElementById("date-appointment-form").setAttribute("data-id", id);
+        document.getElementById("saveAppointmentBtn").setAttribute("data-edit-id", id);
+
+        // 🟣 GSAP per apertura modale
+        const modale = document.getElementById("appointmentModal");
+        const contenuto = document.getElementById("appointmentContent");
+
+        gsap.set(modale, { display: "flex", opacity: 0 });
+        gsap.set(contenuto, { opacity: 0, y: -50 });
+
+        gsap.to(modale, { opacity: 1, duration: 0.3, ease: "power2.out" });
+        gsap.to(contenuto, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
+
+      } catch (err) {
+        console.error("Errore durante l'edit:", err);
+        alert("Errore di rete o dati.");
+      }
+    });
+  });
+
+  // ✎ Attiva modifica giorno/data/ora
+  const editDateBtn = document.getElementById("edit-date-btn");
+  if (editDateBtn) {
+    editDateBtn.addEventListener("click", () => {
+      document.getElementById("date-display-group").classList.add("d-none");
+      document.getElementById("edit-date-container").classList.remove("d-none");
+      document.getElementById("edit-date-container").style.width = "max-content";
+      document.getElementById("save-date-btn").style.display = "block";
+      document.getElementById("save-date-btn").style.display = "inline-flex";
+    });
+  }
 });

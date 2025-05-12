@@ -298,19 +298,51 @@ function viewAppointmentDetails(appointmentId) {
         const year = dateObj.getFullYear();
         const italianDate = `${day}/${month}/${year}`;
 
+        // capitalizeWords: mette maiuscola la prima lettera di ogni parola
+        function capitalizeWords(str) {
+          return str
+            .toLowerCase()
+            .split(' ')
+            .map(word =>
+              word.charAt(0).toUpperCase() + word.slice(1)
+            )
+            .join(' ');
+        }
+
+        // poi, nel tuo innerHTML:
+        const fullName =
+          `${data.nome_paziente} ${data.cognome_paziente}`;
+
         // Popola i dettagli nella modale
-        content.innerHTML = `
-          <p><strong>🧑 Paziente:</strong> ${data.nome_paziente} ${
-          data.cognome_paziente
-        }</p>
-          <p><strong>📅 Data:</strong> ${italianDate}</p>
-          <p><strong>⏰ Orario:</strong> ${data.orario.slice(0, 5)}</p>
-          <p><strong>💬 Tipologia:</strong> ${data.tipologia_visita}</p>
-          <p><strong>🏥 Studio:</strong> ${data.numero_studio}</p>
-          <p><strong>🧾 Voce prezzario:</strong> ${data.voce_prezzario}</p>
-          <p><strong>🕒 Durata:</strong> ${data.durata} minuti</p>
-          <p><strong>📝 Note:</strong> ${data.note || "Nessuna"}</p>
-        `;
+        if (data.dottore && data.dottore.nome) {
+          content.innerHTML = `
+            <p><strong>👨‍⚕️ Dottore: ${data.dottore.nome} ${data.dottore.cognome}</strong>
+            <p><strong>🧑 Paziente:</strong>
+              ${capitalizeWords(fullName)}
+            </p>
+            <p><strong>📅 Data:</strong> ${italianDate}</p>
+            <p><strong>⏰ Orario:</strong> ${data.orario.slice(0, 5)}</p>
+            <p><strong>💬 Tipologia:</strong> ${data.tipologia_visita}</p>
+            <p><strong>🏥 Studio:</strong> ${data.numero_studio}</p>
+            <p><strong>🧾 Voce prezzario:</strong> ${data.voce_prezzario}</p>
+            <p><strong>🕒 Durata:</strong> ${data.durata} minuti</p>
+            <p><strong>📝 Note:</strong> ${data.note || "Nessuna"}</p>
+          `;  
+        } else{
+          content.innerHTML = `
+            <p><strong>🧑 Paziente:</strong>
+              ${capitalizeWords(fullName)}
+            </p>
+            <p><strong>📅 Data:</strong> ${italianDate}</p>
+            <p><strong>⏰ Orario:</strong> ${data.orario.slice(0, 5)}</p>
+            <p><strong>💬 Tipologia:</strong> ${data.tipologia_visita}</p>
+            <p><strong>🏥 Studio:</strong> ${data.numero_studio}</p>
+            <p><strong>🧾 Voce prezzario:</strong> ${data.voce_prezzario}</p>
+            <p><strong>🕒 Durata:</strong> ${data.durata} minuti</p>
+            <p><strong>📝 Note:</strong> ${data.note || "Nessuna"}</p>
+          `;
+        }
+
 
         modal.classList.remove("hidden-details");
         document.body.style.overflow = "hidden";
@@ -1790,11 +1822,11 @@ document.addEventListener("DOMContentLoaded", () => {
       daySpan.textContent = getItalianDayName(selectedDate) + ",";
       dateSpan.textContent = formatItalianDate(selectedDate) + ",";
     } else {
-      daySpan.textContent = "Giorno,";
-      dateSpan.textContent = "Data,";
+      daySpan.textContent = "Giorno*,";
+      dateSpan.textContent = "Data*,";
     }
     // Imposta un orario di default
-    timeSpan.textContent = "Orario";
+    timeSpan.textContent = "Orario*";
 
     // Nasconde i campi per l'editing
     editDateContainer.style.display = "none";
@@ -1985,9 +2017,9 @@ function resetFormFields() {
   // Reset del campo note
   document.getElementById("note").value = "";
   // Reset degli <span> per data e orario
-  document.getElementById("day-appointment").textContent = "Giorno,";
-  document.getElementById("date-appointment").textContent = "Data,";
-  document.getElementById("time-appointment").textContent = "Orario,";
+  document.getElementById("day-appointment").textContent = "Giorno*,";
+  document.getElementById("date-appointment").textContent = "Data*,";
+  document.getElementById("time-appointment").textContent = "Orario*,";
 }
 
 // Funzione per chiudere il modal
@@ -2096,6 +2128,23 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
   };
 
   console.log("📢 Dati inviati (POST):", appointmentData);
+
+
+  // 1) Aggiungi il giorno della settimana
+  appointmentData.giorno = document
+  .getElementById("day-appointment")
+  .textContent.trim();
+
+  // 2) Aggiungi l’id del dottore, se presente (solo utente Isabella)
+  const doctorSelect = document.getElementById("dottore-select");
+  if (doctorSelect) {
+  const dottId = doctorSelect.value;
+  if (!dottId) {
+    showAlert("danger", "Seleziona un dottore!");
+    return;
+  }
+  appointmentData.dottore_id = dottId;
+  }
 
   // Invio dei dati al backend Django tramite POST
   fetch("/salva-appuntamento/", {
