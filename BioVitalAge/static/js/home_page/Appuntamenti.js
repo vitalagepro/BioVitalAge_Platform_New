@@ -314,7 +314,8 @@ function viewAppointmentDetails(appointmentId) {
           `${data.nome_paziente} ${data.cognome_paziente}`;
 
         // Popola i dettagli nella modale
-        if (data.dottore && data.dottore.nome) {
+        if (isSecretary) {
+          console.log("Dottore:", data.dottore);
           content.innerHTML = `
             <p><strong>👨‍⚕️ Dottore: ${data.dottore.nome} ${data.dottore.cognome}</strong>
             <p><strong>🧑 Paziente:</strong>

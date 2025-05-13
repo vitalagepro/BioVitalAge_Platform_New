@@ -54,6 +54,7 @@ logger = logging.getLogger(__name__)
 
 # VIEW LOGIN
 @method_decorator(catch_exceptions, name='dispatch')
+@method_decorator(catch_exceptions, name='dispatch')
 class LoginRenderingPage(View):
 
     def get(self, request):
@@ -64,12 +65,31 @@ class LoginRenderingPage(View):
     def post(self, request):
         email = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(request, username=email, password=password) 
+        user = authenticate(request, username=email, password=password)
 
         if user:
+            # recupera il profilo esteso
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=user)
+
+            # fai il login
             login(request, user)
-            return redirect('HomePage')
-        
+
+            # se è segretaria/o, prendi tutti i pazienti, altrimenti solo i suoi
+            if dottore.isSecretary:
+                appuntamenti = Appointment.objects.all().order_by('data')[:4]
+                persone = TabellaPazienti.objects.order_by('-created_at').all()[:5]
+            else:
+                appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('data')[:5]
+                persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-created_at')[:5]
+
+            # render della home o della pagina principale appuntamenti
+            return render(request, 'home_page/homePage.html', {
+                'appuntamenti': appuntamenti,
+                'dottore': dottore,
+                'persone': persone,
+            })
+
+        # credenziali non valide
         return render(request, 'includes/login.html', {
             'error': 'Email o password non valide'
         })
@@ -80,7 +100,7 @@ class LogOutRender(View):
 
     def get(self, request):
         logout(request)
-        return redirect('login')
+        return redirect('loginPage')
 
 # VIEW HOME PAGE
 @method_decorator(catch_exceptions, name='dispatch')
@@ -90,10 +110,14 @@ class HomePageRender(LoginRequiredMixin,View):
 
     def get(self, request):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        persone = TabellaPazienti.objects.all().order_by('-id')[:5]
+        persone = TabellaPazienti.objects.order_by('created_at').all()
         today = timezone.now().date()
         total_biological_age_count = DatiEstesiRefertiEtaBiologica.objects.aggregate(total=Count('biological_age'))['total']
-        total_pazienti = TabellaPazienti.objects.count() 
+        if dottore.isSecretary:
+            total_pazienti = TabellaPazienti.objects.all().count()
+        else:
+            # Filtra i pazienti in base al dottore loggato
+            total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
 
         # Calcola il minimo e il massimo dell'età cronologica
         min_age = TabellaPazienti.objects.aggregate(min_age=Min('chronological_age'))['min_age']
@@ -101,21 +125,40 @@ class HomePageRender(LoginRequiredMixin,View):
         avg_age = TabellaPazienti.objects.aggregate(avg_age=Avg('chronological_age'))['avg_age']
 
         # Ottieni solo gli appuntamenti futuri
-        appuntamenti = Appointment.objects.filter(dottore=dottore, data__gte=today).order_by('data')[:4]
+        if dottore.isSecretary:
+            appuntamenti = Appointment.objects.filter(data__gte=today).order_by('data')[:4]
+        else:
+            appuntamenti = Appointment.objects.filter(dottore=dottore, data__gte=today).order_by('data')[:4]
         # Calcola il totale "biological_age" solo per i referti associati ai pazienti di questo dottore
-        total_biological_age_count = DatiEstesiRefertiEtaBiologica.objects.filter(referto__paziente__dottore=dottore).aggregate(total=Count('biological_age'))['total']
-        total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
+
+        if dottore.isSecretary:
+            total_biological_age_count = DatiEstesiRefertiEtaBiologica.objects.aggregate(total=Count('biological_age'))['total']
+            total_pazienti = TabellaPazienti.objects.all().count()
+        else:
+            total_biological_age_count = DatiEstesiRefertiEtaBiologica.objects.filter(referto__paziente__dottore=dottore).aggregate(total=Count('biological_age'))['total']
+            total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
 
         # Calcola min, max e media dell'età cronologica solo per i pazienti del dottore
-        agg_age = TabellaPazienti.objects.filter(dottore=dottore).aggregate(
-            min_age=Min('chronological_age'),
-            max_age=Max('chronological_age'),
-            avg_age=Avg('chronological_age')
-        )
+        if dottore.isSecretary:
+            agg_age = TabellaPazienti.objects.aggregate(
+                min_age=Min('chronological_age'),
+                max_age=Max('chronological_age'),
+                avg_age=Avg('chronological_age')
+            )
+        else:
+            agg_age = TabellaPazienti.objects.filter(dottore=dottore).aggregate(
+                min_age=Min('chronological_age'),
+                max_age=Max('chronological_age'),
+                avg_age=Avg('chronological_age')
+            )
         min_age = agg_age['min_age']
         max_age = agg_age['max_age']
         avg_age = agg_age['avg_age']
-        persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-id')[:5]
+
+        if dottore.isSecretary:
+            persone = TabellaPazienti.objects.all().order_by('-created_at')[:5]
+        else:
+            persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-created_at')[:5]
                 
         # --- Calcolo per il report "Totale Pazienti" ---
         today = dj_timezone.now().date()
@@ -124,12 +167,16 @@ class HomePageRender(LoginRequiredMixin,View):
         end_of_last_week = start_of_week - timedelta(days=1)
 
         # Conta i pazienti creati nella settimana corrente e in quella precedente
-        current_week_patients = TabellaPazienti.objects.filter(
-            dottore=dottore, created_at__gte=start_of_week
-        ).count()
-        last_week_patients = TabellaPazienti.objects.filter(
-            dottore=dottore, created_at__gte=start_of_last_week, created_at__lte=end_of_last_week
-        ).count()
+        if dottore.isSecretary:
+            current_week_patients = TabellaPazienti.objects.filter(created_at__gte=start_of_week).count()
+            last_week_patients = TabellaPazienti.objects.filter(created_at__gte=start_of_last_week, created_at__lte=end_of_last_week).count()
+        else:
+            current_week_patients = TabellaPazienti.objects.filter(
+                dottore=dottore, created_at__gte=start_of_week
+            ).count()
+            last_week_patients = TabellaPazienti.objects.filter(
+                dottore=dottore, created_at__gte=start_of_last_week, created_at__lte=end_of_last_week
+            ).count()
 
         # Calcola la differenza e la percentuale
         difference = current_week_patients - last_week_patients
@@ -404,14 +451,14 @@ class ProfileView(LoginRequiredMixin, View):
 @method_decorator(catch_exceptions, name='dispatch')
 class AppuntamentiView(LoginRequiredMixin,View):
     def get(self, request):
-        user_email = request.user.email.lower()
-        can_choose = (user_email == "isabella.g.santandrea@gmail.com")
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)            # per tutti gli altri, rimane il dottore “fisso”
+        profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        is_secretary = profile.isSecretary
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         # se può scegliere, passiamo la lista completa
-        dottori = UtentiRegistratiCredenziali.objects.all() if can_choose else None
+        dottori = UtentiRegistratiCredenziali.objects.all() if is_secretary else None
 
-        if can_choose:
+        if is_secretary:
             persone = (
                 TabellaPazienti.objects.all()
                 .order_by(
@@ -421,7 +468,7 @@ class AppuntamentiView(LoginRequiredMixin,View):
             )
 
         # nella tua view:
-        if not can_choose:
+        if not is_secretary:
             persone = (
                 TabellaPazienti.objects
                 .filter(dottore=dottore)
@@ -430,7 +477,12 @@ class AppuntamentiView(LoginRequiredMixin,View):
                     Lower('surname'),
                 )
             )
-        appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('-id')
+
+        if is_secretary:
+            appuntamenti = Appointment.objects.all().order_by('-id')
+
+        if not is_secretary:
+            appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('-id')
 
 
         # Ottieni le opzioni definite nei choices
@@ -439,7 +491,7 @@ class AppuntamentiView(LoginRequiredMixin,View):
         voce_prezzario = Appointment._meta.get_field('voce_prezzario').choices
 
         context = {
-            'can_choose': can_choose,
+            'is_secretary': is_secretary,
             'dottori': dottori,
             'dottore': dottore,
             'persone': persone,
@@ -453,70 +505,71 @@ class AppuntamentiView(LoginRequiredMixin,View):
     
 # VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
 @method_decorator(catch_exceptions, name='dispatch')
-class AppuntamentiSalvaView(LoginRequiredMixin,View):
+class AppuntamentiSalvaView(LoginRequiredMixin, View):
     def post(self, request):
         data = json.loads(request.body.decode())
-        # se l’utente ha il permesso e ha scelto un id, usalo:
-        if request.user.email.lower() == "isabella.g.santandrea@gmail.com":
+        profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        # se è segretaria/o, prendo il dottore scelto
+        if profile.isSecretary:
             dott_id = data.get("dottore_id")
-            if dott_id:
-                dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dott_id)
-            else:
-                return JsonResponse({"success": False, "error": "Devi selezionare un dottore"}, status=400)
-        else:
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-
-        if request.method == "POST":
-            try:
-                body_raw = request.body.decode('utf-8')
-                dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-                data = json.loads(body_raw)
-
-                # Recuperiamo i dati, facendo attenzione ai valori mancanti
-                giorno = data.get("giorno", "").strip()
-                data_appointment = data.get("data", "").strip()
-                time_appointment = data.get("orario", "").strip()
-                voce_prezzario = data.get("voce_prezzario", "").strip()
-                durata = data.get("durata", "").strip()
-
-                if not time_appointment:
-                    print("❌ ERRORE: Il campo 'orario' è mancante o vuoto!")
-
-                # Creazione dell'appuntamento
-                Appointment.objects.create(
-                    tipologia_visita=data.get("tipologia_visita"),
-                    nome_paziente=data.get("nome_paziente"),
-                    cognome_paziente=data.get("cognome_paziente"),
-                    numero_studio=data.get("numero_studio"),
-                    note=data.get("note"),
-                    giorno=giorno,
-                    data=data_appointment,
-                    orario=time_appointment,
-                    voce_prezzario=voce_prezzario,
-                    durata=durata,
-                    dottore=dottore
+            if not dott_id:
+                return JsonResponse(
+                    {"success": False, "error": "Devi selezionare un dottore"},
+                    status=400
                 )
+            dottore = get_object_or_404(UtentiRegistratiCredenziali, id=dott_id)
+        else:
+            # per tutti gli altri, continuo a usare il profilo loggato
+            dottore = profile
 
-                return JsonResponse({"success": True, "message": "Appuntamento salvato correttamente!", 'clear_form': True})
+        # Adesso creo l’appuntamento passando il dottore corretto:
+        appt = Appointment.objects.create(
+            tipologia_visita   = data.get("tipologia_visita"),
+            nome_paziente      = data.get("nome_paziente"),
+            cognome_paziente   = data.get("cognome_paziente"),
+            numero_studio      = data.get("numero_studio"),
+            note               = data.get("note"),
+            giorno             = data.get("giorno"),
+            data               = data.get("data"),
+            orario             = data.get("orario"),
+            voce_prezzario     = data.get("voce_prezzario"),
+            durata             = data.get("durata"),
+            dottore            = dottore
+        )
 
-            except json.JSONDecodeError as e:
-                print(f"❌ ERRORE JSON: {str(e)}")
-                return JsonResponse({"success": False, "error": "Formato JSON non valido"}, status=400)
-            except Exception as e:
-                print(f"❌ ERRORE GENERICO: {str(e)}")
-                return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-        return JsonResponse({"success": False, "error": "Metodo non consentito"}, status=405)
+        # 🔥 DEBUG: restituisco anche il dottore associato per verificare
+        return JsonResponse({
+            "success": True,
+            "message": "Appuntamento salvato!",
+            "dottore_associato": {
+                "id": appt.dottore.id,
+                "nome": appt.dottore.nome,
+                "cognome": appt.dottore.cognome,
+            }
+        })
 
 # VIEWS SINGLE APPOINTMENT
 @method_decorator(catch_exceptions, name='dispatch')
-class GetSingleAppointmentView(LoginRequiredMixin,View):
+class GetSingleAppointmentView(LoginRequiredMixin, View):
     def get(self, request, appointment_id):
-        """Recupera i dettagli di un singolo appuntamento"""
         try:
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-            appointment = get_object_or_404(Appointment, id=appointment_id, dottore=dottore)
+            # 1) Prendo il profilo utente
+            profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+            is_secretary = profile.isSecretary
 
+            if is_secretary:
+                # la segretaria può vedere qualsiasi appuntamento
+                appointment = get_object_or_404(Appointment, id=appointment_id)
+            else:
+                # gli altri user vedono soltanto i loro
+                dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+                appointment = get_object_or_404(
+                    Appointment,
+                    id=appointment_id,
+                    dottore=dottore
+                )
+
+            # Ora serializziamo sempre il dottore scelto
             response_data = {
                 "success": True,
                 "id": appointment.id,
@@ -524,19 +577,33 @@ class GetSingleAppointmentView(LoginRequiredMixin,View):
                 "cognome_paziente": appointment.cognome_paziente,
                 "giorno": appointment.giorno,
                 "data": appointment.data.strftime("%Y-%m-%d"),
-                "numero_studio": appointment.numero_studio or "",  # Se è null, assegna ""
-                "note": appointment.note or "",  # Se è null, assegna ""
-                "voce_prezzario": appointment.voce_prezzario or "",  # Se è null, assegna ""
-                "tipologia_visita": appointment.tipologia_visita or "",  # Se è null, assegna ""
-                "orario": str(appointment.orario)[:5],  # Formattato in HH:mm
-                "durata": appointment.durata or "",  # Se è null, assegna ""
+                "numero_studio": appointment.numero_studio or "",
+                "note": appointment.note or "",
+                "voce_prezzario": appointment.voce_prezzario or "",
+                "tipologia_visita": appointment.tipologia_visita or "",
+                "orario": str(appointment.orario)[:5],
+                "durata": appointment.durata or "",
+                "dottore": {
+                    "id": appointment.dottore.id,
+                    "nome": appointment.dottore.nome,
+                    "cognome": appointment.dottore.cognome,
+                },
             }
-
             return JsonResponse(response_data)
-        except Appointment.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
+
+        except Http404:
+            # sia per dottore sbagliato, sia per appointment inesistente
+            return JsonResponse(
+                {"success": False, "error": "Appuntamento non trovato"},
+                status=404
+            )
         except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
+            # Stampa in console lo stack per debug
+            import traceback; traceback.print_exc()
+            return JsonResponse(
+                {"success": False, "error": str(e)},
+                status=500
+            )
 
 # VIEWS GET ALL APPOINTMENTS
 @method_decorator(catch_exceptions, name='dispatch')
@@ -566,10 +633,17 @@ class AppuntamentiGetView(LoginRequiredMixin,View):
         deleted_count= 0
 
         # 📌 3. Recuperare solo gli appuntamenti futuri o di oggi
-        future_appointments = Appointment.objects.filter(
-            data__gte=today,
-            dottore=dottore
-        )
+        # Se l'utente è un segretario, mostra tutti gli appuntamenti futuri
+        if is_secretary:
+            future_appointments = Appointment.objects.filter(
+                data__gte=today,
+            )
+        # Se l'utente non è un segretario, mostra solo gli appuntamenti futuri del dottore loggato
+        else:
+            future_appointments = Appointment.objects.filter(
+                data__gte=today,
+                dottore=dottore
+            )
 
         # 📌 4. Costruire il dizionario degli appuntamenti organizzati per data
         appointments_by_date = {}
@@ -599,11 +673,12 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
         try:
             data = json.loads(request.body)
             appointment = Appointment.objects.get(id=appointment_id)
+            profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
             # only allow doctor change to special user
-            if request.user.email.lower() == "isabella.g.santandrea@gmail.com" and data.get("dottore_id"):
-                new_doc = get_object_or_404(UtentiRegistratiCredenziali, id=data["dottore_id"])
-                appointment.dottore = new_doc
+            if profile.isSecretary and data.get("dottore_id"):
+                        new_doc = get_object_or_404(UtentiRegistratiCredenziali, id=data["dottore_id"])
+                        appointment.dottore = new_doc
             
             # Aggiorna solo se i valori sono presenti e non vuoti nel payload
             if data.get("new_date"):
@@ -624,7 +699,15 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
                 appointment.note = data["note"]
             
             appointment.save()
-            return JsonResponse({"success": True, "message": "Appuntamento aggiornato!"})
+            return JsonResponse({
+                        "success": True,
+                        "message": "Appuntamento aggiornato!",
+                        "dottore_associato": {
+                            "id": appointment.dottore.id,
+                            "nome": appointment.dottore.nome,
+                            "cognome": appointment.dottore.cognome,
+                        }
+                    })
         except Appointment.DoesNotExist:
             return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
         except Exception as e:
@@ -727,7 +810,11 @@ class RisultatiRender(LoginRequiredMixin,View):
           
         
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        persone = TabellaPazienti.objects.filter(dottore=dottore)
+        if dottore.isSecretary:
+            # Se il dottore è una segretaria, mostra tutti i pazienti
+            persone = TabellaPazienti.objects.all()
+        else:
+            persone = TabellaPazienti.objects.filter(dottore=dottore)
  
         # Ottieni il referto più recente per ogni paziente
         ultimo_referto = RefertiEtaBiologica.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
@@ -1695,14 +1782,24 @@ class VisiteView(View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
         # nella tua view:
-        persone = (
-            TabellaPazienti.objects
-            .filter(dottore=dottore)
-            .order_by(
-                Lower('name'),
-                Lower('surname'),
+        if dottore.isSecretary:
+            persone = (
+                TabellaPazienti.objects
+                .all()
+                .order_by(
+                    Lower('name'),
+                    Lower('surname'),
+                )
             )
-        )
+        else:
+            persone = (
+                TabellaPazienti.objects
+                .filter(dottore=dottore)
+                .order_by(
+                    Lower('name'),
+                    Lower('surname'),
+                )
+            )
         
         visite = Appointment.objects.filter(
             nome_paziente__icontains=persona.name.strip(),

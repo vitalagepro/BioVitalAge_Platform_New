@@ -12,6 +12,7 @@ class UtentiRegistratiCredenziali(models.Model):
     cognome = models.CharField(max_length=100)
     email = models.CharField(max_length=100, null=True)
     password = models.CharField(max_length=128, null=True)
+    isSecretary = models.BooleanField(default=False)
     cookie = models.CharField(max_length=2, null=True)
 
     #FUNZIONE DI HASHING DELLA PASSWORD

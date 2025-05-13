@@ -226,7 +226,7 @@
                             <form action="POST" id="patient-appointment">
                                 {% csrf_token %}
                                 {# includes/Appuntamenti.html #}
-                                {% if can_choose %}
+                                {% if is_secretary %}
                                   <label for="dottore-select" class="mb-3">
                                     <p class="mb-0">Dottore Associato*</p>
                                     <select id="dottore-select" name="dottore_id" class="form-select-appointment w-100">
@@ -710,5 +710,9 @@
         <button class="btn-view" title="Visualizza dettagli">👁️</button>
         <button class="btn-edit" title="Modifica appuntamento">✏️</button>
     </div>
+
+    <script>
+        isSecretary = {{ is_secretary|lower }};
+    </script>
 </body>
 </html>

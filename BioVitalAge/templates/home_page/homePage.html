@@ -486,22 +486,28 @@
         </div>
 
         <div class="table-content">
-          {% for persona in persone %}
-          <div class="riga-container">
-            <p>{{ persona.name|title }}</p>
-            <p>{{ persona.surname|title }}</p>
-            <p>{{ persona.dob|date:"d/m/Y" }}</p>
-            <p>{{ persona.codice_fiscale }}</p>
-            <p>{{ persona.place_of_birth|title }}</p>
-            <p>{{ persona.chronological_age }}</p>
- 
-            <p>
-              <a href="{% url 'cartella_paziente' persona.id %}">
-                <img src="{% static 'image/Cartella.png' %}" alt="Cartella" />
-              </a>
-            </p>
-          </div>
-          {% endfor %}
+          {% if persone %}
+            {% for persona in persone %}
+            <div class="riga-container">
+              <p>{{ persona.name|title }}</p>
+              <p>{{ persona.surname|title }}</p>
+              <p>{{ persona.dob|date:"d/m/Y"|default:"Non specificato." }}</p>
+              <p>{{ persona.codice_fiscale|default:"Non specificato." }}</p>
+              <p>{{ persona.place_of_birth|title|default:"Non specificato." }}</p>
+              <p>{{ persona.chronological_age }}</p>
+  
+              <p>
+                <a href="{% url 'cartella_paziente' persona.id %}">
+                  <img src="{% static 'image/Cartella.png' %}" alt="Cartella" />
+                </a>
+              </p>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="riga-container">
+              <p colspan="7" class="text-center">Nessun paziente trovato.</p>
+            </div>
+          {% endif %}
         </div>
       </div>
     </div>
