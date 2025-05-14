@@ -16,3 +16,10 @@
     align-items: center;
 }
 
+.generatePDFButton{
+    border: none !important;
+    background: none !important;
+}
+.generatePDFButton:hover img{
+    transform: scale(1.1);
+}

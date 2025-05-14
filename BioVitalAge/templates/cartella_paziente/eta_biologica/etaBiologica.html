@@ -176,17 +176,6 @@
             <h3 class="prospetto">Prospetto Valori</h3>
 
             <div class="flex-container">
-                
-                <div class="card">
-                    <div class="card-container-title">
-                        <img src="{% static 'image/Sezione_Biologica.png' %}">
-                        <h4>Δ Età</h4>
-                    </div>
-                    <div class="card-content">
-                        <p class="arrow upper" style="margin-top: 15px;"><span>numero</span> anni</p>
-                        <p style="margin-top: -0.5rem;">Chrono vs Bio</p>
-                    </div>
-                </div>
                   
                 <div class="card">
                     <div class="card-container-title">
@@ -195,8 +184,8 @@
                     </div>
                     <div class="card-content">
                         <div class="card-content">
-                            <p class="punteggio">punteggio:</p>
-                            <p class="arrow upper">numero</p>
+                            <p class="punteggio"><span>precedente:</span> {{ score2.salute_cuore }}</p>
+                            <p class="arrow upper">ultimo: <span> {{ score1.salute_cuore }}</span></p>
                         </div>
                     </div>
                 </div>
@@ -208,8 +197,8 @@
                     </div>
                     <div class="card-content">
                         <div class="card-content">
-                            <p class="punteggio">punteggio:</p>
-                            <p class="arrow upper">numero</p>
+                            <p class="punteggio"><span>precedente:</span> {{ score2.salute_renale }}</p>
+                            <p class="arrow upper">ultimo:<span> {{ score1.salute_renale }}</span></p>
                         </div>
                     </div>
                 </div>
@@ -221,8 +210,8 @@
                     </div>
                     <div class="card-content">
                         <div class="card-content">
-                            <p class="punteggio">punteggio:</p>
-                            <p class="arrow upper">numero</p>
+                            <p class="punteggio"><span>precedente:</span> {{ score2.salute_epatica }}</p>
+                            <p class="arrow upper">ultimo: <span> {{ score1.salute_epatica }}</span></p>
                         </div>
                     </div>
                 </div>
@@ -234,8 +223,8 @@
                     </div>
                     <div class="card-content">
                         <div class="card-content">
-                            <p class="punteggio">punteggio:</p>
-                            <p class="arrow upper">numero</p>
+                            <p class="punteggio"><span>precedente:</span>  {{ score2.salute_cerebrale }}</p>
+                            <p class="arrow upper">ultimo: <span> {{ score1.salute_cerebrale }}</span></p>
                         </div>
                     </div>
                 </div>
@@ -247,8 +236,8 @@
                     </div>
                     <div class="card-content">
                         <div class="card-content">
-                            <p class="punteggio">punteggio:</p>
-                            <p class="arrow upper">numero</p>
+                            <p class="punteggio"><span>precedente:</span>  {{ score2.salute_ormonale }}</p>
+                            <p class="arrow upper">ultimo: <span> {{ score1.salute_ormonale }}</span></p>
                         </div>
                     </div>
                 </div>
@@ -260,8 +249,8 @@
                     </div>
                     <div class="card-content">
                         <div class="card-content">
-                            <p class="punteggio">punteggio:</p>
-                            <p class="arrow upper">numero</p>
+                            <p class="punteggio"><span>precedente:</span>  {{ score2.salute_sangue }}</p>
+                            <p class="arrow upper">ultimo: <span> {{ score1.salute_sangue }}</span></p>
                         </div>
                     </div>
                 </div>
@@ -273,8 +262,8 @@
                     </div>
                     <div class="card-content">
                         <div class="card-content">
-                            <p class="punteggio">punteggio:</p>
-                            <p class="arrow upper">numero</p>
+                            <p class="punteggio"><span>precedente:</span>  {{ score2.salute_s_i }}</p>
+                            <p class="arrow upper">ultimo: <span> {{ score1.salute_s_i }}</span></p>
                         </div>
                     </div>
                 </div>
@@ -285,8 +274,8 @@
                         <h4>Salute Muscolo-scheletrica</h4>
                     </div>
                     <div class="card-content">
-                        <p class="punteggio">punteggio:</p>
-                        <p class="arrow upper">numero</p>
+                        <p class="punteggio"><span>precedente:</span></p>
+                            <p class="arrow upper">ultimo: <span></span></p>
                     </div>
                 </div>
             </div>
@@ -308,18 +297,6 @@
             </div>
         </div>
 
-
-
-
-
-
-
-
-
-
-
-
-        
     </main>
 
     <!-- Import CDN js -->

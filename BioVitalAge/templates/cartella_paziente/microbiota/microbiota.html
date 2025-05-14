@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicon -->
+    <link rel="sortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
+
+    {% csrf_token %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <title>BVA - Microbiota</title>
+
+    <!-- Css Import -->
+    <link rel="stylesheet" href="{% static 'css/Componenti.css' %}">
+    <link rel="stylesheet" href="{% static 'css/homePage.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cartella_paziente/microbiota/microbiota.css' %}">
+
+    <!-- Bootstrap import -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Import  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+
+    <!-- CDN IMPORT -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/libphonenumber-js/bundle/libphonenumber-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+</head>
+
+
+<body>
+    <!-- Loader -->
+    {% include 'components/loader.html' %}
+
+    <!-- NAVBAR -->
+    {% include 'components/navBar.html' %}
+
+    <main>
+        <!-- MENU TRACE -->
+        <div class="main-title-nav">
+
+            <div class="back-tittle">
+                <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'image/Arrow_Back.png' %}"></a>
+                <h2 class="main-welcome-title">
+                    <span>{{ persona.surname|title }}</span>
+                    <span>{{ persona.name|title }}</span> |
+                    <span>Età: {{ persona.chronological_age }}</span>
+                    {% if persona.phone and persona.email %}
+                    |
+                    <span class="phone_span">
+                        <img src="{% static 'image/Phone.png' %}" width="20px" height="20px">
+                        Telefono: {{ persona.phone }}
+                    </span> |
+                    <span class="email_span">
+                        <img src="{% static 'image/Email_Violet.png' %}" width="20px" height="20px">
+                        Email: {{ persona.email }}
+                    </span>
+                    {% endif %}
+                </h2>
+            </div>
+        
+            <div class="main-menu-trace">
+                <a href="{% url 'HomePage' %}">
+                    <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
+                </a>
+                <p>»</p>
+                <p>
+                    <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
+                </p>
+                <p>»</p>
+                <p class="breadcrumb">Microbiota</p>
+            </div>
+
+        </div>  
+
+        <div class="card-inserimento">
+            <h3>Referto Microbiota</h3>
+
+            <div class="card-content">
+                <div class="card-container">
+                    <div class="container-title">
+                        <h5>Carica Referto Microbiota</h5>
+                        <img src="{% static 'image/upload.png' %}" alt="">
+                    </div>
+                    <div class="download-container">
+                        <form action="/upload/" method="post" enctype="multipart/form-data">
+                            <!-- token CSRF se usi Django -->
+                            {% csrf_token %}
+
+                            <div class="container-seleziona">
+                                <label for="pdfUpload">Carica il tuo PDF:</label><br>
+                                <input type="file" id="pdfUpload" name="pdf_file" accept="application/pdf" required>
+                            </div>
+                            
+                            <div class="container-submit">
+                                <p><span>Ultima data di caricamento:</span> 00/00/0000</p>
+                                <button type="submit">Carica Pdf</button>
+                            </div>  
+                            
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card-container">
+                    <div class="container-title">
+                        <h5>Scarica Referto Microbiota</h5>
+                        <img src="{% static 'image/download.png' %}" alt="">
+                    </div>
+                    <div class="upload-container">
+                        
+                        <div class="container-scarica">
+                            <label for="pdfDownload">Scarica il tuo PDF:</label><br>
+                            <p>Nome del pdf</p>
+                        </div>
+                                
+                        <div class="container-scarica-pdf">
+                            <p><span>Data Pdf:</span> 00/00/0000</p>
+                            <button type="submit">Scarica Pdf</button>
+                        </div>  
+                                
+                    </div>
+                </div>
+            </div> 
+
+        </div>
+
+        <div class="card-result">
+            <h3>Parametri di Biodiversità</h3>
+            <p></p>
+        </div>
+
+    </main>
+</body>
+</html>

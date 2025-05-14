@@ -452,7 +452,7 @@
                         </div>
                     </div>
                 
-                    <div class="container-clock">
+                    <div class="container-clock" onclick="window.location.href ='{% url 'microbiota' persona.id %}'" style="cursor: pointer;">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
                             <circle class="progress-ring__progress" id="muscleClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
@@ -460,11 +460,11 @@
 
                         <div class="percentage" id="musclePercentage" style="margin-top: 5px;"></div>
                    
-                        <div class="descrizione-clock" >
+                        <div class="descrizione-clock" style="margin-top: 5px;">
                             <img src="{% static 'image/Microbiota.png' %}" alt="">
                             
-                            <p>Microbiota</p>
-                            
+                            <a style="text-decoration: none; color: #3a255d;" href="{% url 'microbiota' persona.id %}">Microbiota</a>
+                        
                         </div>
                     </div>
                 </div>
@@ -593,16 +593,13 @@
 
         <!-- CARD SEZIONI DATI BASE E COMPOSIZIONE CORPOREA -->
         <div class="container-sezioniInterne containerStyle"  style="margin-top: -1rem;">
-            
-            
+                
             <div class="cardDati">
-
-             
+         
                 <div class="cartella-effect">
                     <h3>Dati Base - Stile di Vita Paziente</h3>
                     <div class="space"></div>
                 </div>
-
 
                 <div class="card-content">
                     <img src="{% static 'image/Dati_Base.png' %}" alt="">

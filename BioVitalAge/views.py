@@ -1033,8 +1033,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
 
         return render(request, "includes/cartellaPaziente.html", context)
 
-
-
     def post(self, request, id):
         
         def parse_italian_date(value):
@@ -1042,7 +1040,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
                 return datetime.strptime(value, "%d/%m/%Y").date()
             except (ValueError, TypeError):
                 return None
-
 
         # ---- DATI NECESSARI AL RENDERING DELLA CARTELLA ----
         
@@ -1067,22 +1064,17 @@ class CartellaPazienteView(LoginRequiredMixin,View):
 
         persona.save()
 
-        
         # DATI PER GLI INDICATORI DI PERFORMANCE
         ## DATI CAPACITA' VITALE
         ultimo_referto_capacita_vitale = persona.referti_test.order_by('-data_ora_creazione').first()
 
-
         ## DATI RESILIENZA
-
 
         ## DATI ETA' METABOLICA 
         referti_recenti = persona.referti_eta_metabolica.all().order_by('-data_referto')
         ultimo_referto_eta_metabolica = referti_recenti.first() if referti_recenti.exists() else None
 
         ## MICROBIOTA    
-
-
 
         #DATI REFERTI ETA' BIOLOGICA
         referti_recenti = persona.referti.all().order_by('-data_referto')
@@ -1092,7 +1084,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         dati_estesi_ultimo_referto = None
         if ultimo_referto:
             dati_estesi_ultimo_referto = DatiEstesiRefertiEtaBiologica.objects.filter(referto=ultimo_referto).first()
-
 
         context = {
             'persona': persona,
@@ -1108,9 +1099,7 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             #ULTIMO REFERTO CAPACITA' VITALE
             'ultimo_referto_capacita_vitale': ultimo_referto_capacita_vitale,
             "success" : True,
-            
         }
-
         return render(request, "includes/cartellaPaziente.html", context)
 
 # VIEW STORICO
@@ -2682,16 +2671,49 @@ def safe_float(data, key, default=0.0):
 class EtaBiologicaView(LoginRequiredMixin, View):
 
     def get(self, request, id):
-
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
 
-        context = {
-            'dottore' : dottore,
-            'persona': persona,
-        }
+        # 1) Recupera i 2 ultimi referti con select_related sui dati_estesi
+        ultimi_referti = (
+            RefertiEtaBiologica.objects
+            .filter(paziente=persona)
+            .select_related('dati_estesi')
+            .order_by('-data_referto', '-id')[:2]
+        )
 
+        # 2) Estrai i 2 punteggi in due dizionari distinti
+        score1 = {}
+        score2 = {}
+
+        # Mappatura tra nome campo modello e chiave desiderata
+        campi_score = [
+            'salute_cuore', 'salute_renale', 'salute_epatica',
+            'salute_cerebrale', 'salute_ormonale',
+            'salute_sangue', 'salute_s_i', 'salute_m_s',
+        ]
+
+        # Scorri i due oggetti in ordine e assegna a score1/score2
+        for idx, ref in enumerate(ultimi_referti, start=1):
+            dati = getattr(ref, 'dati_estesi', None)
+            target = score1 if idx == 1 else score2
+            if dati:
+                for campo in campi_score:
+                    target[campo] = getattr(dati, campo)
+            else:
+                # se non ci sono dati_estesi, metti None
+                for campo in campi_score:
+                    target[campo] = None
+
+        context = {
+            'dottore': dottore,
+            'persona': persona,
+            'score1': score1,
+            'score2': score2,
+            'ultimi_referti': ultimi_referti,
+        }
         return render(request, 'cartella_paziente/eta_biologica/etaBiologica.html', context)
+
 
 @method_decorator(catch_exceptions, name='dispatch')
 class CalcolatoreRender(LoginRequiredMixin,View):
@@ -2889,6 +2911,7 @@ class CalcolatoreRender(LoginRequiredMixin,View):
                  
                     ves = safe_float(data, 'ves')
                     pcr_c = safe_float(data, 'pcr_c')
+                    sideremia = safe_float(data, 'sideremia')
 
                     tnf_a = safe_float(data, 'tnf_a')
                     inter_6 = safe_float(data, 'inter_6')
@@ -2973,6 +2996,246 @@ class CalcolatoreRender(LoginRequiredMixin,View):
                         ]
 
   
+                                # Configurazione esami per organo
+                   
+                    organi_esami = {
+                        "Cuore": ["Colesterolo Totale", "Colesterolo LDL", "Colesterolo HDL", "Trigliceridi",
+                                "PCR", "NT-proBNP", "Omocisteina", "Glicemia", "Insulina",
+                                "HOMA Test", "IR Test", "Creatinina", "Stress Ossidativo", "Omega Screening"],
+                        "Reni": ["Creatinina", "Azotemia", "Sodio", "Potassio", "Cloruri",
+                                "Fosforo", "Calcio", "Esame delle Urine"],
+                        "Fegato": ["Transaminasi GOT", "Transaminasi GPT", "Gamma-GT", "Bilirubina Totale",
+                                    "Bilirubina Diretta", "Bilirubina Indiretta", "Fosfatasi Alcalina",
+                                    "Albumina", "Proteine Totali"],
+                        "Cervello": ["Omocisteina", "Vitamina B12", "Vitamina D", "DHEA", "TSH", "FT3",
+                                    "FT4", "Omega-3 Index", "EPA", "DHA",
+                                    "Stress Ossidativo dROMS", "Stress Ossidativo PAT", "Stress Ossidativo OSI REDOX"],
+                        "Sistema Ormonale": ["TSH", "FT3", "FT4", "Insulina", "HOMA Test", "IR Test",
+                                            "Glicemia", "DHEA", "Testosterone", "17B-Estradiolo",
+                                            "Progesterone", "SHBG"],
+                        "Sangue": ["Emocromo - Globuli Rossi", "Emocromo - Emoglobina", "Emocromo - Ematocrito",
+                                    "Emocromo - MCV", "Emocromo - MCH", "Emocromo - MCHC", "Emocromo - RDW",
+                                    "Emocromo - Globuli Bianchi", "Emocromo - Neutrofili", "Emocromo - Linfociti",
+                                    "Emocromo - Monociti", "Emocromo - Eosinofili", "Emocromo - Basofili",
+                                    "Emocromo - Piastrine", "Ferritina", "Sideremia", "Transferrina"],
+                        "Sistema Immunitario": ["PCR", "Omocisteina", "TNF-A", "IL-6", "IL-10"],
+                    }
+
+                    # Mappa dei campi del modello ai nomi degli esami
+                    TEST_FIELD_MAP = {
+                        # Cuore e metabolismo
+                        "Colesterolo Totale": "tot_chol",
+                        "Colesterolo LDL": "ldl_chol",
+                        "Colesterolo HDL": "hdl_chol_m",
+                        "Trigliceridi": "trigl",
+                        "PCR": "pcr_c",
+                        "NT-proBNP": "nt_pro",
+                        "Omocisteina": "omocisteina",
+                        "Glicemia": "glicemy",
+                        "Insulina": "insulin",
+                        "HOMA Test": "homa",
+                        "IR Test": "ir",
+                        "Creatinina": "creatinine_m",
+                        "Stress Ossidativo": "osi",
+                        "Omega Screening": "o3o6_fatty_acid_quotient",
+                        # Reni
+                        "Azotemia": "azotemia",
+                        "Sodio": "na",
+                        "Potassio": "k",
+                        "Cloruri": "ci",
+                        "Fosforo": "p",
+                        "Calcio": "ca",
+                        "Esame delle Urine": "uro",
+                        # Fegato
+                        "Transaminasi GOT": "got_m",
+                        "Transaminasi GPT": "gpt_m",
+                        "Gamma-GT": "g_gt_m",
+                        "Bilirubina Totale": "tot_bili",
+                        "Bilirubina Diretta": "direct_bili",
+                        "Bilirubina Indiretta": "indirect_bili",
+                        "Fosfatasi Alcalina": "a_photo_m",
+                        "Albumina": "albuminemia",
+                        "Proteine Totali": "tot_prot",
+                        # Cervello
+                        "Vitamina B12": "v_b12",
+                        "Vitamina D": "v_d",
+                        "DHEA": "dhea_m",
+                        "TSH": "tsh",
+                        "FT3": "ft3",
+                        "FT4": "ft4",
+                        "Omega-3 Index": "o3_index",
+                        "EPA": "aa_epa",
+                        "DHA": "doco_acid",
+                        "Stress Ossidativo dROMS": "d_roms",
+                        "Stress Ossidativo PAT": "pat",
+                        "Stress Ossidativo OSI REDOX": "osi",
+                        # Ormoni
+                        "Testosterone": "testo_m",
+                        "17B-Estradiolo": "beta_es_m",
+                        "Progesterone": "prog_m",
+                        "SHBG": "shbg_m",
+                        # Sangue e ferro
+                        "Emocromo - Globuli Rossi": "rbc",
+                        "Emocromo - Emoglobina": "hemoglobin",
+                        "Emocromo - Ematocrito": "hematocrit",
+                        "Emocromo - MCV": "mcv",
+                        "Emocromo - MCH": "mch",
+                        "Emocromo - MCHC": "mchc",
+                        "Emocromo - RDW": "rdw",
+                        "Emocromo - Globuli Bianchi": "wbc",
+                        "Emocromo - Neutrofili": "neutrophils_pct",
+                        "Emocromo - Linfociti": "lymphocytes_pct",
+                        "Emocromo - Monociti": "monocytes_pct",
+                        "Emocromo - Eosinofili": "eosinophils_pct",
+                        "Emocromo - Basofili": "basophils_pct",
+                        "Emocromo - Piastrine": "platelets",
+                        "Ferritina": "ferritin_m",
+                        "Sideremia": "sideremia",
+                        "Transferrina": "transferrin",
+                        # Immunitario
+                        "TNF-A": "tnf_a",
+                        "IL-6": "inter_6",
+                        "IL-10": "inter_10",
+                    }
+
+
+                    raw_values = {
+                        # Cuore & metabolismo
+                        "tot_chol":               tot_chol,
+                        "ldl_chol":               ldl_chol,
+                        "hdl_chol_m":             hdl_chol_m,
+                        "trigl":                  trigl,
+                        "pcr_c":                  pcr_c,
+                        "nt_pro":                 nt_pro,
+                        "omocisteina":            ves2,
+                        "glicemy":                glicemy,
+                        "insulin":                insulin,
+                        "homa":                   homa,
+                        "ir":                     ir,
+                        "creatinine_m":           creatinine_m,
+                        "osi":                    osi,
+                        "o3o6_fatty_acid_quotient": o3o6_fatty_acid_quotient,
+
+                        # Reni
+                        "azotemia":               azotemia,
+                        "na":                     na,
+                        "k":                      k,
+                        "ci":                     ci,
+                        "p":                      p,
+                        "ca":                     ca,
+                        "uro":                    uro,
+
+                        # Fegato
+                        "got_m":                  got_m,
+                        "gpt_m":                  gpt_m,
+                        "g_gt_m":                 g_gt_m,
+                        "tot_bili":               tot_bili,
+                        "direct_bili":            direct_bili,
+                        "indirect_bili":          indirect_bili,
+                        "a_photo_m":              a_photo_m,
+                        "albuminemia":            albuminemia,
+                        "tot_prot":               tot_prot,
+
+                        # Cervello
+                        "v_b12":                  v_b12,
+                        "v_d":                    v_d,
+                        "dhea_m":                 dhea_m,
+                        "tsh":                    tsh,
+                        "ft3":                    ft3,
+                        "ft4":                    ft4,
+                        "o3_index":               o3_index,
+                        "aa_epa":                 aa_epa,
+                        "doco_acid":              doco_acid,
+                        "d_roms":                 d_roms,
+                        "pat":                    pat,
+
+                        # Sistema Ormonale
+                        "testo_m":                testo_m,
+                        "beta_es_m":              beta_es_m,
+                        "prog_m":                 prog_m,
+                        "shbg_m":                 shbg_m,
+
+                        # Sangue & ferro
+                        "rbc":                    rbc_m,
+                        "hemoglobin":             hgb_m,
+                        "hematocrit":             hct_m,
+                        "mcv":                    mcv,
+                        "mch":                    mch,
+                        "mchc":                   mchc,
+                        "rdw":                    rdwsd,
+                        "wbc":                    wbc,
+                        "neutrophils_pct":        neut_ul,
+                        "lymphocytes_pct":        lymph_ul,
+                        "monocytes_pct":          mono_ul,
+                        "eosinophils_pct":        eosi_ul,
+                        "basophils_pct":          baso_ul,
+                        "platelets":              plt,
+                        "ferritin_m":             ferritin_m,
+                        "sideremia":              sideremia,
+                        "transferrin":            transferrin,
+
+                        # Sistema Immunitario
+                        "tnf_a":                  tnf_a,
+                        "inter_6":                inter_6,
+                        "inter_10":               inter_10,
+
+                        # Acidi grassi e marker vari
+                        "my_acid":                my_acid,
+                        "p_acid":                 p_acid,
+                        "st_acid":                st_acid,
+                        "ar_acid":                ar_acid,
+                        "beenic_acid":            beenic_acid,
+                        "pal_acid":               pal_acid,
+                        "ol_acid":                ol_acid,
+                        "ner_acid":               ner_acid,
+                        "a_linoleic_acid":        a_linoleic_acid,
+                        "eico_acid":              eico_acid,
+                        "lin_acid":               lin_acid,
+                        "gamma_lin_acid":         gamma_lin_acid,
+                        "dih_gamma_lin_acid":     dih_gamma_lin_acid,
+                        "arachidonic_acid":       arachidonic_acid,
+                        "sa_un_fatty_acid":       sa_un_fatty_acid,
+
+                        # Altri marker di infiammazione, coagulazione, urine…
+                        "ves":                    ves,
+                        "d_dimero":               d_dimero,
+                        "pai_1":                  pai_1,
+                        "blood_ex":               blood_ex,
+                        "proteins_ex":            proteins_ex,
+                        "bilirubin_ex":           bilirubin_ex,
+                        "ketones":                ketones,
+                        "leuc":                   leuc,
+                        "glucose":                glucose,
+                    }
+
+
+                    organi_valori = {
+                        organo: {
+                            test: raw_values.get(TEST_FIELD_MAP[test])
+                            for test in tests
+                            if TEST_FIELD_MAP.get(test) in raw_values
+                        }
+                        for organo, tests in organi_esami.items()
+                    }
+
+                    # 3) Estrai solo quelli non None
+                    valori_esami_raw = {
+                        test: val
+                        for vals in organi_valori.values()
+                        for test, val in vals.items()
+                        if val is not None
+                    }
+
+                    # 4) Chiama il tuo calcolo
+                    punteggi_organi, dettagli_organi = calcola_score_organi(
+                        valori_esami_raw,
+                        persona.gender
+                    )
+
+                    # 5) E poi il report
+                    score_js = { o.replace(" ", "_"): v for o, v in punteggi_organi.items() }
+                    report_testuale = genera_report(punteggi_organi, dettagli_organi, mostrar_dettagli=False)
+
                     # Calcolo dell'età biologica
                     biological_age = calculate_biological_age(
                         chronological_age, d_roms = d_roms, osi = osi, pat = pat, wbc = wbc, basophils = baso_ul,
@@ -3142,9 +3405,17 @@ class CalcolatoreRender(LoginRequiredMixin,View):
                         telotest=telotest,
 
                         biological_age= biological_age,
+
+                        #SCORE
+                        salute_cuore = score_js['Cuore'],
+                        salute_renale = score_js['Reni'],
+                        salute_epatica = score_js['Fegato'],
+                        salute_cerebrale =  score_js['Cervello'],
+                        salute_ormonale =  score_js['Sistema_Ormonale'],
+                        salute_sangue =  score_js['Sangue'],
+                        salute_s_i =  score_js['Sistema_Immunitario'],
                     )
                     dati_estesi.save()
-
 
                     # Context da mostrare nel template
                     context = {
@@ -3645,6 +3916,10 @@ class CalcolatoreRender(LoginRequiredMixin,View):
             }
             return render(request, "cartella_paziente/eta_biologica/calcolatore.html", context)
 
+
+
+
+
 @method_decorator(catch_exceptions, name='dispatch')
 class ElencoRefertiView(LoginRequiredMixin,View):
 
@@ -4130,4 +4405,20 @@ class RefertoView(LoginRequiredMixin,View):
 
 
 
+
+
+## SEZIONE MICROIDIOTA
+@method_decorator(catch_exceptions, name='dispatch')
+class MicrobiotaView(LoginRequiredMixin,View):
+    def get(self, request, id):
+        
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        context = {
+            'persona': persona,
+            'dottore': dottore,
+        }
+
+        return render(request, 'cartella_paziente/microbiota/microbiota.html', context)
 

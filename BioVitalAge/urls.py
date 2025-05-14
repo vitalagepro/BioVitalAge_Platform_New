@@ -94,12 +94,15 @@ urlpatterns = [
     path('Resilienza/<int:persona_id>/',                               views.ResilienzaView.as_view(),                name='resilienza'),
     
     ## URL PIANO TERAPEUTICO
-    path('Cartella_Paziente/Piano_Terapeutico/<int:persona_id>/',           views.PianoTerapeutico.as_view(),          name='piano_terapeutico'),
-    path('CartellaPaziente/Piano_Terapeutico/Prescrizioni_Esami/<int:persona_id>/', views.PrescrizioniView.as_view(),  name='prescrizioni'),
+    path('Cartella_Paziente/Piano_Terapeutico/<int:persona_id>/',           views.PianoTerapeutico.as_view(),         name='piano_terapeutico'),
+    path('CartellaPaziente/Piano_Terapeutico/Prescrizioni_Esami/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
     
+    ## SEZIONE MICROBIOTA
+    path('CartellaPaziente/Microbiota/<int:id>/',                          views.MicrobiotaView.as_view(),            name='microbiota'),
+
     # TO DEFINE
-    path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>',              views.StampaRefertoView.as_view(),         name='download_pdf_vitale'),
-    path('update-persona/<int:id>/',                                         views.UpdatePersonaContactView.as_view(),  name='update_persona_contact'), 
+    path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>',         views.StampaRefertoView.as_view(),            name='download_pdf_vitale'),
+    path('update-persona/<int:id>/',                                    views.UpdatePersonaContactView.as_view(),     name='update_persona_contact'), 
 ]
 
 

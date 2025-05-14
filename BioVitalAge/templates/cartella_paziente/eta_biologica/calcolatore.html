@@ -3434,7 +3434,7 @@
         <div class="main-title-nav">
 
             <div class="back-tittle">
-                <a id="back" href="{% url 'cartella_paziente' persona.id %}"><img src="{% static 'image/Arrow_Back.png' %}"></a>
+                <a id="back" href="{% url 'eta_biologica' persona.id %}"><img src="{% static 'image/Arrow_Back.png' %}"></a>
                 <h2 class="main-welcome-title">
                     <span>{{ persona.surname|title }}</span>
                     <span>{{ persona.name|title }}</span> |
@@ -12495,7 +12495,7 @@
 
                         <div class="card-indices_content" id="sangueContent">  
 
-                            <h3>Globuli Bianchi</h3>
+                            <h3 style="margin-top: 0rem;">Globuli Bianchi</h3>
                             <div class="grid-container">
                                 <div class="form-group">
                                     <label for="baso">Basofili (%)</label>
@@ -12653,7 +12653,7 @@
                                 </div>
                             </div>
 
-                            <div class="flex-container"  id="flex-adjust" style="padding-bottom: 50px;">
+                            <div class="grid-container" style="padding-bottom: 50px;">
                                 <div class="form-group">
                                     <label for="fe">Sidermia (µg/dI)</label>
                                     <input type="number" id="fe" name="fe" placeholder="Solo valori numerici" step="0.01">
@@ -12711,6 +12711,13 @@
                                     <input type="number" id="ves2" name="ves2" placeholder="Solo valori numerici"  step="0.01">
                                     <input type="range" id="ves2_range" name="ves2_range" min="0" max="300"  value="0"
                                         oninput="ves2.value=this.value" step="0.01">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="sideremia">Sideremia</label>
+                                    <input type="number" id="sideremia" name="sideremia" placeholder="Solo valori numerici"  step="0.01">
+                                    <input type="range" id="sideremia_range" name="sideremia_range" min="0" max="300"  value="0"
+                                        oninput="sideremia.value=this.value" step="0.01">
                                 </div>
 
                                 <div class="form-group">

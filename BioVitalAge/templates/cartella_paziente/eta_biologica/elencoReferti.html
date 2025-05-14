@@ -29,7 +29,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     
     <!-- JS Import -->
-    <script src="{% static 'js/cartella_paziente/eta_biologica/elencoReferti.js' %}"></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script src="{% static 'js/cartella_paziente/eta_biologica/elencoReferti.js' %}"></script>    
+    <script src="{% static 'js/generatePdfFunction.js' %}" defer></script>
 
 </head>
 <body>
@@ -79,13 +81,19 @@
                         <p>Scarica Referto</p>
                     </div>
 
+                    <input type="hidden" name="" id="name" value="{{ persona.name }}">
+                    <input type="hidden" name="" id="surname" value="{{ persona.surname }}">
+                    <input type="hidden" name="" id="codice_fiscale" value="{{ persona.codice_fiscale }}">
+                    <input type="hidden" name="" id="place_birth" value="{{ persona.place_of_birth }}">
+                    <input type="hidden" name="" id="dob" value="{{ persona.dob }}">
+
                     <div class="table-content">
                         {% for referto in referti_recenti %}
                         <div class="riga-container">
-                            <p>{{ persona.chronological_age }}</p>
+                            <p id="chronological_age" data-value="{{ persona.chronological_age }}">{{ persona.chronological_age }}</p>
                             {% for dato in dati_estesi %}
                             {% if dato.referto.id == referto.id %}
-                            <p>{{ dato.biological_age }}</p>
+                            <p id="biological_age" data-value="{{ datiEstesi.biological_age|default:'NaN' }}">{{ dato.biological_age }}</p>
                             {% endif %}
                             {% endfor %}
                             <p>{{ referto.descrizione|default:"N/A" }}</p>
@@ -98,9 +106,9 @@
                                 </a>
                             </p>
                             <p>
-                                <a href="{% url 'cartella_paziente' persona.id %}">
+                                <button class="generatePDFButton" id="screenshotBtn" data-referto-id="{{ referto.id }}" data-referto-date="{{ referto.data_referto|date:'Y-m-d' }}">
                                     <img src="{% static 'image/Referto_Scarica.png' %}" alt="" />
-                                </a>
+                                </button>
                             </p>
                         </div>
                         {% empty %}
@@ -109,6 +117,15 @@
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <!-- SPINNER -->
+        <div id="spinnerBackdrop">
+                <div id="snipperStampa">
+                    <div class="slide"><i></i></div>
+                    <div class="paper"></div>
+                    <div class="keyboard"></div>
+                </div>
         </div>
 
   </main>
