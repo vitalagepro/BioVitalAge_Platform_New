@@ -54,7 +54,6 @@ logger = logging.getLogger(__name__)
 
 # VIEW LOGIN
 @method_decorator(catch_exceptions, name='dispatch')
-@method_decorator(catch_exceptions, name='dispatch')
 class LoginRenderingPage(View):
 
     def get(self, request):
@@ -63,36 +62,21 @@ class LoginRenderingPage(View):
         return response
 
     def post(self, request):
-        email = request.POST.get('email')
+        email    = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(request, username=email, password=password)
+        user     = authenticate(request, username=email, password=password)
 
-        if user:
-            # recupera il profilo esteso
-            dottore = get_object_or_404(UtentiRegistratiCredenziali, user=user)
-
-            # fai il login
-            login(request, user)
-
-            # se è segretaria/o, prendi tutti i pazienti, altrimenti solo i suoi
-            if dottore.isSecretary:
-                appuntamenti = Appointment.objects.all().order_by('data')[:4]
-                persone = TabellaPazienti.objects.order_by('-created_at').all()[:5]
-            else:
-                appuntamenti = Appointment.objects.filter(dottore=dottore).order_by('data')[:5]
-                persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-created_at')[:5]
-
-            # render della home o della pagina principale appuntamenti
-            return render(request, 'home_page/homePage.html', {
-                'appuntamenti': appuntamenti,
-                'dottore': dottore,
-                'persone': persone,
+        if not user:
+            return render(request, 'includes/login.html', {
+                'error': 'Email o password non valide'
             })
 
-        # credenziali non valide
-        return render(request, 'includes/login.html', {
-            'error': 'Email o password non valide'
-        })
+        # 1) Faccio il login
+        login(request, user)
+
+        # 2) Redirect alla home: HomePageRender gestirà tutto il contesto
+        return redirect('HomePage')
+    
 
 # VIEW LOGOUT
 @method_decorator(catch_exceptions, name='dispatch')
@@ -357,7 +341,54 @@ class AppointmentNotificationsView(LoginRequiredMixin, View):
         
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
-        
+
+# VIEW PER LE NOTIFICHE EMAIL
+class EmailNotificationsView(LoginRequiredMixin, View):
+    login_url = 'loginPage'
+    redirect_field_name = 'next'
+
+    def get(self, request, *args, **kwargs):
+        # 1) recupera l’account Google collegato
+        try:
+            social = request.user.social_auth.get(provider='google-oauth2')
+        except UserSocialAuth.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Nessun account Google collegato.'}, status=400)
+
+        data = social.extra_data
+        # 2) monta le Credentials con refresh_token e access_token
+        creds = Credentials(
+            token=data.get('access_token'),
+            refresh_token=data.get('refresh_token'),
+            token_uri='https://oauth2.googleapis.com/token',
+            client_id=settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
+            client_secret=settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
+            scopes=['https://www.googleapis.com/auth/gmail.readonly']
+        )
+
+        # 3) chiama Gmail API
+        service = build('gmail', 'v1', credentials=creds)
+        msgs = service.users().messages().list(userId='me', maxResults=10).execute()
+
+        emails = []
+        for m in msgs.get('messages', []):
+            msg = (
+                service.users()
+                       .messages()
+                       .get(userId='me', id=m['id'], format='metadata',
+                            metadataHeaders=['Subject', 'From'])
+                       .execute()
+            )
+            headers = {h['name']: h['value'] for h in msg['payload']['headers']}
+            emails.append({
+                'id':      m['id'],
+                'subject': headers.get('Subject', '(no subject)'),
+                'from':    headers.get('From', ''),
+                'snippet': msg.get('snippet', ''),
+                'link':    f'https://mail.google.com/mail/u/0/#all/{m["id"]}'
+            })
+
+        return JsonResponse({'success': True, 'emails': emails})
+
 # VIEW PER LA SEZIONE PROFILO
 def save(self, *args, **kwargs):
     if self.password and not self.password.startswith('pbkdf2_sha256$'):
@@ -386,34 +417,41 @@ class ProfileView(LoginRequiredMixin, View):
         action = request.POST.get("action")
 
         if action == "update_profile":
-            nome     = request.POST.get('name')
-            email    = request.POST.get('email')
-            password = request.POST.get('password')
+            nome  = request.POST.get('name', '').strip()
+            cognome = request.POST.get('surname', '').strip()
+            email = request.POST.get('email', '').strip()
+            password = request.POST.get('password', '')
 
-            # 1) aggiorno il modello UtentiRegistratiCredenziali
+            # Aggiorno solo i campi modificati
             if nome:
                 dottore.nome = nome
+            if cognome:
+                dottore.cognome = cognome
             if email:
                 dottore.email = email
-            if password:
-                # salvo hashata nel tuo modello
+
+            # Salvo la password solo se è stata cambiata davvero
+            # qui `dottore.password` è l'hash memorizzato, e in form hai value="Password Criptografata"
+            default_marker = "Password Criptografata"
+            if password and password != default_marker:
                 dottore.password = make_password(password)
+
             dottore.save()
 
-            # 2) aggiorno il Django User
+            # Poi aggiorno anche il Django User
             user = request.user
             if email:
                 user.email = email
                 user.username = email
-            if password:
+            if password and password != default_marker:
                 user.set_password(password)
             user.save()
 
-            # 3) mantengo la sessione attiva se cambio password
-            if password:
+            # Mantieni la sessione attiva se la password è cambiata
+            if password and password != default_marker:
                 update_session_auth_hash(request, user)
 
-            messages.success(request, "Profilo e password aggiornati con successo.")
+            messages.success(request, "Profilo aggiornato correttamente.")
             return redirect("profile")
 
         elif action == "update_gmail":
@@ -439,8 +477,6 @@ class ProfileView(LoginRequiredMixin, View):
         # se niente action valida
         messages.error(request, "Azione non riconosciuta.")
         return redirect("profile")
-
-
 
 
 #----------------------------------------
@@ -675,11 +711,11 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
             appointment = Appointment.objects.get(id=appointment_id)
             profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
+
             # only allow doctor change to special user
             if profile.isSecretary and data.get("dottore_id"):
                         new_doc = get_object_or_404(UtentiRegistratiCredenziali, id=data["dottore_id"])
                         appointment.dottore = new_doc
-            
             # Aggiorna solo se i valori sono presenti e non vuoti nel payload
             if data.get("new_date"):
                 appointment.data = data["new_date"]
@@ -695,6 +731,8 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
                 appointment.numero_studio = data["numero_studio"]
             if data.get("voce_prezzario"):
                 appointment.voce_prezzario = data["voce_prezzario"]
+            if data.get("durata"):
+                appointment.durata = data["durata"]
             if "note" in data:  # anche se è vuota, la nota verrà aggiornato
                 appointment.note = data["note"]
             
@@ -967,6 +1005,10 @@ class CartellaPazienteView(LoginRequiredMixin,View):
     def get(self, request, id):
         # Recupera dottore e paziente
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        is_secretary = profile.isSecretary
+         # se può scegliere, passiamo la lista completa
+        dottori = UtentiRegistratiCredenziali.objects.all() if is_secretary else None
         persona = get_object_or_404(TabellaPazienti, id=id)
 
         # DATI PER GLI INDICATORI DI PERFORMANCE
@@ -1158,6 +1200,8 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             'totale_appuntamenti': totale_appuntamenti,
             'ultimo_appuntamento': ultimo_appuntamento,
             'prossimo_appuntamento': prossimo_appuntamento,
+            'dottori': dottori,
+            'is_secretary': is_secretary,
 
             # Score per JS con underscore
             'score': score_js,

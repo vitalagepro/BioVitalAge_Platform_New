@@ -17,6 +17,7 @@ urlpatterns = [
     ## URL SIDEBAR
     path('api/appointment-notifications/',                      AppointmentNotificationsView.as_view(),              name='appointment-notifications'),
     path('api/medical-news-notifications/',                     MedicalNewsNotificationsView.as_view(),              name='medical-news-notifications'),
+    path('api/email-notifications/',                            EmailNotificationsView.as_view(),                    name='email_notifications'),
 
     ## URL HOME PAGE / STATISTICHE
     path("Home_Page/Statistiche",                               views.StatisticheView.as_view(),                     name="statistiche"),

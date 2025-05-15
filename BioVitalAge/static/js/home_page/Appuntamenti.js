@@ -957,13 +957,13 @@ function loadAppointmentsForDailyView() {
     .catch(err => console.error("Errore nella fetch degli appuntamenti per il giorno:", err));
 }
 
-// Funzione per formattare la data in YYYY-MM-DD per il backend
-function formatDateForBackend(date, day) {
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Mese in due cifre
-  const year = date.getFullYear();
-  const dayFormatted = String(day).padStart(2, "0"); // Giorno in due cifre
-  return `${year}-${month}-${dayFormatted}`;
-}
+// // Funzione per formattare la data in YYYY-MM-DD per il backend
+// function formatDateForBackend(date, day) {
+//   const month = String(date.getMonth() + 1).padStart(2, "0"); // Mese in due cifre
+//   const year = date.getFullYear();
+//   const dayFormatted = String(day).padStart(2, "0"); // Giorno in due cifre
+//   return `${year}-${month}-${dayFormatted}`;
+// }
 
 // Aggiorna la data di un appuntamento nel backend
 function updateAppointmentDate(appointmentId, newDate, newTime) {
@@ -1145,6 +1145,31 @@ function openAppointmentModal(appointmentId) {
         // **TRIGGER AUTOMATICO DEL CAMBIO TIPOLOGIA**
         tipologiaSelect.dispatchEvent(new Event("change"));
 
+        // **SETTAGGIO DOTTORE ASSOCIATO**
+        const dottoreSelect = document.getElementById("dottore-select");
+        if (dottoreSelect && data.dottore) {
+          // prendo l'id come stringa
+          const docId = data.dottore.id.toString();
+          // cerco un <option> con quel value
+          const existing = Array.from(dottoreSelect.options)
+            .find(opt => opt.value === docId);
+
+          if (existing) {
+            // se esiste, lo seleziono
+            dottoreSelect.value = docId;
+          } else {
+            // altrimenti ne creo uno "fuori lista"
+            const label = `${data.dottore.nome} ${data.dottore.cognome}`;
+            const opt = new Option(label, docId);
+            opt.style.color = "red";
+            dottoreSelect.add(opt);
+            dottoreSelect.value = docId;
+          }
+          // faccio scattare eventuali listener sul cambio
+          dottoreSelect.dispatchEvent(new Event("change"));
+        }
+
+
         setTimeout(() => {
           let voceOption = [...vocePrezzarioSelect.options].find(
             (option) =>
@@ -1307,73 +1332,88 @@ function openAppointmentModal(appointmentId) {
 
 // Funzione per salvare le modifiche all'appuntamento
 function saveAppointmentChanges() {
+  // 1) Prendo l'ID dell'appuntamento
   const formElement = document.getElementById("date-appointment-form");
-  const appointmentId = formElement.getAttribute("data-id");
-  // Recupera il token CSRF
-  const csrfToken =
-    document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "";
+  const appointmentId = formElement?.getAttribute("data-id");
+  if (!appointmentId) return;
 
-  // Raccogli i dati dal form
-  const updatedTipologia = document.getElementById("tipologia_visita").value;
-  const updatedOrario = document.getElementById("time-appointment").textContent.trim();
-  const updatedPaziente = document.getElementById("paziente-select").value;
-  const updatedVocePrezzario = document.getElementById("voce-prezzario").value;
-  const updatedDurata = document.getElementById("time").value;
-  const updatedStudio = document.getElementById("studio").value;
-  const updatedNote = document.getElementById("note").value;
+  // 2) CSRF token
+  const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']")?.value || "";
 
-  // Separiamo nome e cognome dall'eventuale ID
-  const [nameSurname, id] = updatedPaziente.split("|");
-  const parts = nameSurname.trim().split(" ");
-  const nomePaziente = parts.shift();
-  const cognomePaziente = parts.join(" ");
+  // 3) Raccogli tutti i campi
+  const tipologiaVisita    = document.getElementById("tipologia_visita").value;
+  const orario             = document.getElementById("time-appointment").textContent.trim();
+  const vocePrezzario      = document.getElementById("voce-prezzario").value;
+  const durata             = document.getElementById("time").value;
+  const studio             = document.getElementById("studio").value;
+  const note               = document.getElementById("note").value;
 
-  if (appointmentId) {
-    // Aggiorna l'appuntamento esistente via PATCH
-    fetch(`/update-appointment/${appointmentId}/`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrfToken, // Includi il token CSRF
-      },
-      body: JSON.stringify({
-        tipologia_visita: updatedTipologia,
-        orario: updatedOrario,
-        nome_paziente: nomePaziente,
-        cognome_paziente: cognomePaziente,
-        voce_prezzario: updatedVocePrezzario,
-        durata: updatedDurata,
-        numero_studio: updatedStudio,
-        note: updatedNote,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          showAlert({type: "success", message: "Appuntamento aggiornato con successo!", extraMessage: "", borderColor: "var(--positive-color)"})
-          // Cerca il box dell'appuntamento da aggiornare nel DOM
-          const appointmentBox = document.querySelector(
-            `.appointment-box[data-id="${appointmentId}"]`
-          );
-          if (appointmentBox) {
-            // Supponiamo che il testo sia contenuto in un <span> all'interno del box:
-            const textSpan = appointmentBox.querySelector("span");
-            if (textSpan) {
-              // Aggiorna il contenuto con i nuovi dati
-              // Ad esempio, se vuoi visualizzare "tipologia - orario":
-              textSpan.textContent = `${updatedTipologia} - ${updatedOrario.slice(0, 5)}`;
-            }
-          }
-          // Puoi anche aggiornare altri elementi del box se necessario
-
-          resetFormFields();
-          closeModalWithGSAP();
-        } else {
-          console.error("Errore aggiornamento appuntamento:", data.error);
-        }
-      })
-      .catch((error) => console.error("Errore nella richiesta:", error));
+  // 4) Estrai nome e cognome dal select paziente
+  const pazienteValue      = document.getElementById("paziente-select").value;
+  let nomePaziente = "", cognomePaziente = "";
+  if (pazienteValue.includes("|")) {
+    const [fullName] = pazienteValue.split("|");
+    const parts      = fullName.trim().split(" ");
+    nomePaziente     = parts.shift() || "";
+    cognomePaziente  = parts.join(" ") || "";
   }
+
+  // 5) Costruisci il payload minimo
+  const payload = {
+    tipologia_visita: tipologiaVisita,
+    orario:           orario,
+    nome_paziente:    nomePaziente,
+    cognome_paziente: cognomePaziente,
+    voce_prezzario:   vocePrezzario,
+    durata:           durata,
+    numero_studio:    studio,
+    note:             note,
+  };
+
+  // 6) Solo se il select #dottore-select esiste (cioè sono segretaria/o),
+  //    aggiungo dottore_id al payload
+  const dottoreSelect = document.getElementById("dottore-select");
+  if (dottoreSelect) {
+    payload.dottore_id = dottoreSelect.value;
+  }
+
+  // 7) Chiamata PATCH
+  fetch(`/update-appointment/${appointmentId}/`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken":   csrfToken,
+    },
+    body: JSON.stringify(payload),
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showAlert({
+          type:        "success",
+          message:     "Appuntamento aggiornato con successo!",
+          borderColor: "var(--positive-color)",
+        });
+
+        // Aggiorna il box nell'interfaccia se serve...
+        const appointmentBox = document.querySelector(
+          `.appointment-box[data-id="${appointmentId}"]`
+        );
+        if (appointmentBox) {
+          const span = appointmentBox.querySelector("span");
+          if (span) {
+            span.textContent = `${tipologiaVisita} - ${orario.slice(0,5)}`;
+          }
+        }
+
+        // Pulisci e chiudi modal
+        resetFormFields();
+        closeModalWithGSAP();
+      } else {
+        console.error("Errore aggiornamento appuntamento:", data.error);
+      }
+    })
+    .catch(err => console.error("Errore nella richiesta PATCH:", err));
 }
 
 /////////////////////////////////////////////////////////////////////// FUNZIONE PRINCIPALE ////////////////////////////////////////////////////////////////////////////////////////////

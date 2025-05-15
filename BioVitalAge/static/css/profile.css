@@ -136,11 +136,12 @@ form {
 .password-container {
   position: relative;
   display: inline-block;
+  width: 100% !important;
 }
 
 .toggle-password {
   position: absolute;
-  top: 33%;
+  top: 73%;
   right: 10px;
   transform: translateY(-50%);
   cursor: pointer;

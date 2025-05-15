@@ -201,16 +201,36 @@
                     <div class="other_container">
 
                         <div class="subCard-container">
-
                             <div class="card-subcard">
                                 <div class="img-circle-container">
-                                    <img src="{% static 'image/Stetoscopio.png' %}" alt="">
+                                  <img src="{% static 'image/Stetoscopio.png' %}" alt="">
                                 </div>
                                 <div class="container-input-info">
-                                    <p>Dottore Associato</p>
-                                    <input class="input-disabled type-two" type="text" name="associate_staff" value="{{ persona.associate_staff|default:persona.dottore }}" placeholder="inserisci il valore" disabled>
+                                  <p class="mb-1">Dottore Associato</p>
+                              
+                                  {# span di sola lettura, sempre visibile #}
+                                  <span id="associate-display" class="type-two input-disabled">
+                                    {{ persona.dottore|default:"Non assegnato." }}
+                                  </span>
+                              
+                                  {# select per la segreteria, di default nascosto #}
+                                  {% if is_secretary %}
+                                    <select id="associate-select"
+                                            name="associate_staff"
+                                            class="type-two input-disabled"
+                                            style="display: none;">
+                                      <option value="">Seleziona Dottore</option>
+                                      {% for doc in dottori %}
+                                        <option value="{{ doc.id }}"
+                                          {% if persona.associate_staff_id == doc.id %}selected{% endif %}>
+                                          {{ doc.nome|title }} {{ doc.cognome|title }}
+                                        </option>
+                                      {% endfor %}
+                                    </select>
+                                  {% endif %}
+                              
                                 </div>
-                            </div>
+                            </div>                              
             
                             <div class="card-subcard">
                                 <div class="img-circle-container">
@@ -925,6 +945,14 @@
             modale.style.display = 'none';
         }
     </script>
+
+    <!-- IS SECRETARY -->
+    <script>
+        window.isSecretary = {{ is_secretary|yesno:"true,false" }};
+    </script>
+  
+
+
 
     <!-- SCRIPT CAPACITA' VITALE -->
     <script>

@@ -73,14 +73,21 @@
                     </div>
                 </div>
 
-                <div class="password-container form-group">
-                    <label for="password">Modifica Password</label>
-                    <input type="password" id="password" class="form-control" name="password"
-                        value="Password Criptografata" placeholder="Inserisci la password">
-                    <span class="toggle-password" onclick="togglePasswordVisibility()">
-                        <i class="eye-icon fas fa-eye"></i>
-                        <i class="slash-icon fas fa-eye-slash"></i>
-                    </span>
+                <div>
+                    <div class="form-group">
+                        <label for="surname">Modifica Cognome</label>
+                        <input type="text" class="form-control" id="surname" name="surname" value="{{ dottore.cognome }}"
+                            placeholder="Enter surname">
+                    </div>
+                    <div class="password-container form-group">
+                        <label for="password">Modifica Password</label>
+                        <input type="password" id="password" class="form-control" name="password"
+                            value="Password Criptografata" placeholder="Inserisci la password">
+                        <span class="toggle-password" onclick="togglePasswordVisibility()">
+                            <i class="eye-icon fas fa-eye"></i>
+                            <i class="slash-icon fas fa-eye-slash"></i>
+                        </span>
+                    </div>
                 </div>
 
                 <!-- Checkbox Gmail -->
