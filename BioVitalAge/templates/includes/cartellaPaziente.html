@@ -201,16 +201,43 @@
                     <div class="other_container">
 
                         <div class="subCard-container">
-
                             <div class="card-subcard">
                                 <div class="img-circle-container">
-                                    <img src="{% static 'image/Stetoscopio.png' %}" alt="">
+                                  <img src="{% static 'image/Stetoscopio.png' %}" alt="">
                                 </div>
                                 <div class="container-input-info">
-                                    <p>Dottore Associato</p>
-                                    <input class="input-disabled type-two" type="text" name="associate_staff" value="{{ persona.associate_staff|default:persona.dottore }}" placeholder="inserisci il valore" disabled>
+                                  <p class="mb-1">Dottore Associato</p>
+                              
+                                  {% if is_secretary %}
+                                    <!-- select per la segreteria, default selezionato sul paciente.dottore.id -->
+                                    <select id="associate-select"
+                                            name="dottore"
+                                            class="type-two input-disabled"
+                                            style="display: none;">
+                                      <option value="">Seleziona Dottore</option>
+                                      {% for doc in dottori %}
+                                        <option value="{{ doc.id }}"
+                                          {% if persona.dottore and persona.dottore.id == doc.id %}selected{% endif %}>
+                                          {{ doc.nome|title }} {{ doc.cognome|title }}
+                                        </option>
+                                      {% endfor %}
+                                    </select>
+                                    <!-- span di sola lettura, sempre visibile finché non si clicka Edita -->
+                                    <span id="associate-display" class="type-two">
+                                      {{ persona.dottore.nome|title }} {{ persona.dottore.cognome|title }}
+                                    </span>
+                                  {% else %}
+                                    <!-- non-segreteria: input disabilitato che mostra solo nome e cognome  -->
+                                    <input type="text"
+                                           name="associate_staff"
+                                           class="input-disabled type-two"
+                                           value="{{ persona.dottore.nome|title }} {{ persona.dottore.cognome|title }}"
+                                           disabled>
+                                  {% endif %}
+                              
                                 </div>
                             </div>
+                                                        
             
                             <div class="card-subcard">
                                 <div class="img-circle-container">
@@ -913,7 +940,7 @@
       
 
     <!-- IMPORT JS PRE DOBY CLOSE TAG -->
-    <script src="{% static 'js/cartellaPaziente.js' %}"></script>
+    <script src="{% static 'js/cartellaPaziente.js' %}" type="module"></script>
     
     <!--  CLOSE MODALE MESSAGE SUCCESS -->
     <script>
@@ -922,6 +949,14 @@
             modale.style.display = 'none';
         }
     </script>
+
+    <!-- IS SECRETARY -->
+    <script>
+        window.isSecretary = {{ is_secretary|yesno:"true,false" }};
+    </script>
+  
+
+
 
     <!-- SCRIPT CAPACITA' VITALE -->
     <script>

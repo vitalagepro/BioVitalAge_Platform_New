@@ -1082,6 +1082,10 @@ strong {
   cursor: text;
   padding-left: 10px;
 }
+#associate-select{
+  cursor: pointer !important;
+  padding: 0;
+}
 .input-disabled.editing {
   background-color: #fff;
   border: 1px solid var(--contrast-color);

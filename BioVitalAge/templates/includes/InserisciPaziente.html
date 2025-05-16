@@ -8422,10 +8422,20 @@
                   <label for="blood_group">Gruppo Sanguigno</label>
                   <input type="text" id="blood_group" name="blood_group" placeholder="Inserisci il gruppo sanguigno">
               </div>
-              <div class="form-group">
+              {% if isSecretary %}
+                <div class="form-group">
                   <label for="associate_staff">Dottore Associato</label>
-                  <input type="text" id="associate_staff" name="associate_staff" placeholder="Inserisci il dottore associato">
-              </div>
+                  <!-- select per la segreteria, default selezionato sul paciente.dottore.id -->
+                  <select id="associate-select" name="dottore" class="type-two">
+                    <option value="">Seleziona Dottore</option>
+                    {% for doc in dottori %}
+                      <option value="{{ doc.id }}">
+                        {{ doc.nome|title }} {{ doc.cognome|title }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endif %}
           </div>
         </div>
 

@@ -1,3 +1,5 @@
+import showAlert from "./components/showAlert.js";
+
 /*  -----------------------------------------------------------------------------------------------
   Funzione di paginazione con controllo di tabelle con la stessa classe
   --------------------------------------------------------------------------------------------------- */
@@ -279,35 +281,56 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 /* FUNZIONE PER ABILITARE GLI INPUT PER LA MODIFICA */
-document.addEventListener("DOMContentLoaded", function() {
-  var modifyBtn = document.querySelector(".Btn-modify");
-  var form = document.getElementById("personaForm");
-  var inputs = form.querySelectorAll(".input-disabled");
-  
-  var isEditing = false;
-  
-  modifyBtn.addEventListener("click", function(e) {
-      e.preventDefault();
-      if (!isEditing) {
-          // Abilita gli input e aggiunge la classe "editing"
-          inputs.forEach(function(input) {
-              input.removeAttribute("disabled");
-              input.classList.add("editing"); // Aggiunge la classe
-          });
-          
-          var btnText = modifyBtn.querySelector(".btn-text");
-          if (btnText) {
-              btnText.textContent = "Salva";
-          } else {
-              modifyBtn.textContent = "Salva";
-          }
-          isEditing = true;
-      } else {
-          // Se si clicca in modalità "Salva", invia il form
-          form.submit();
+document.addEventListener("DOMContentLoaded", () => {
+  const modifyBtn       = document.querySelector(".Btn-modify");
+  const displaySpan     = document.getElementById("associate-display");
+  const selectField     = document.getElementById("associate-select");
+  const otherInputs     = document.querySelectorAll(".input-disabled:not([name='associate_staff'])");
+  let   isEditing       = false;
+
+  modifyBtn.addEventListener("click", e => {
+    e.preventDefault();
+
+    // ➊ Se non sei segretaria/o, alert su click dello span
+    if (displaySpan && !window.isSecretary) {
+      displaySpan.style.cursor = "pointer";
+      displaySpan.addEventListener("click", () => {
+        showAlert({
+          type: "warning",
+          message: "Non hai i permessi per modificare questo campo.",
+          extraMessage: "Solo la segreteria può modificare questo campo.",
+          borderColor: "#f97316",
+        });
+      });
+    }
+
+    if (!isEditing) {
+      // 1) se sono segretaria, nascondi lo span e mostra il select
+      if (window.isSecretary && selectField) {
+        displaySpan.style.display = "none";
+        selectField.style.display = "";   // rimuove display:none
+        selectField.classList.add("editing");
       }
+
+      // 2) abilita TUTTI gli altri input
+      otherInputs.forEach(inp => {
+        inp.removeAttribute("disabled");
+        inp.classList.add("editing");
+      });
+
+      modifyBtn.querySelector(".btn-text").textContent = "Salva";
+      isEditing = true;
+
+    } else {
+      // invia il form in modalità "Salva"
+      document.getElementById("personaForm").submit();
+    }
   });
 });
+
+
+
+
 
 
 
