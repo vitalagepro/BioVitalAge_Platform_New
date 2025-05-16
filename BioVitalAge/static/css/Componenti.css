@@ -932,7 +932,6 @@ main {
 
 .riga-container:hover {
   background-color: var(--contrast-color-shadow);
-  cursor: pointer;
 }
 
 .riga-container p {

@@ -1,3 +1,5 @@
+import showAlert from "./components/showAlert.js";
+
 /*  -----------------------------------------------------------------------------------------------
   Funzione di paginazione con controllo di tabelle con la stessa classe
   --------------------------------------------------------------------------------------------------- */
@@ -288,6 +290,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   modifyBtn.addEventListener("click", e => {
     e.preventDefault();
+
+    // ➊ Se non sei segretaria/o, alert su click dello span
+    if (displaySpan && !window.isSecretary) {
+      displaySpan.style.cursor = "pointer";
+      displaySpan.addEventListener("click", () => {
+        showAlert({
+          type: "warning",
+          message: "Non hai i permessi per modificare questo campo.",
+          extraMessage: "Solo la segreteria può modificare questo campo.",
+          borderColor: "#f97316",
+        });
+      });
+    }
 
     if (!isEditing) {
       // 1) se sono segretaria, nascondi lo span e mostra il select

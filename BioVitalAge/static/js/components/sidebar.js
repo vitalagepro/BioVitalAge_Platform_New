@@ -37,6 +37,7 @@ const updates = [
 ];
 
 const configurations = [
+  { setting: "Ruolo", value: role },
   { setting: "Lingua", value: "Italiano" },
   {
     setting: "Account",

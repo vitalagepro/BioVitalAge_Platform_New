@@ -923,7 +923,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const studio = document.getElementById("studio").value;
     const note = document.getElementById("note").value;
     const pazienteVal = document.getElementById("paziente-select").value;
-
+    const [nomeCompleto, pazienteId] = pazienteVal.split("|");
+  
+    // → split “intelligente” per nomi/cognomi composti
+    const parts = nomeCompleto.trim().split(" ");
+    const nome = parts.shift() || "";
+    const cognome = parts.join(" ") || "";
+    
+    // Controlla se i campi obbligatori sono stati compilati
     if (!date || !time || !tipologia || !vocePrezzario || !durata || !studio || !pazienteVal) {
       showAlert({
         type: "danger",
@@ -932,9 +939,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       return;
     }
-
-    const [nomeCompleto, pazienteId] = pazienteVal.split("|");
-    const [nome, cognome] = nomeCompleto.trim().split(" ");
 
     const payload = {
       giorno: day,

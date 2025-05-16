@@ -42,7 +42,13 @@
   <script>
       const currentUser = "{{ dottore|escapejs }}";
       window.currentUser = "{{ dottore|escapejs }}" || 'guest';
+      window.isSecretary = {{ dottore.isSecretary|yesno:"true,false" }};
       
+
+          // Calcola il ruolo
+      window.role = window.isSecretary 
+        ? 'Segreteria/o' 
+        : 'Dottore/Dottoressa';
       document.getElementById('logout-btn')?.addEventListener('click', () => {
         localStorage.setItem('pendingLogout', 'true');
       });

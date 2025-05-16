@@ -875,9 +875,14 @@ class InserisciPazienteView(LoginRequiredMixin,View):
 
         
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        is_secretary = profile.isSecretary
+        dottori = UtentiRegistratiCredenziali.objects.all() if is_secretary else None
 
         context = {
-            'dottore' : dottore
+            'dottore' : dottore,
+            'isSecretary' : is_secretary,
+            'dottori' : dottori,
         }
         return render(request, "includes/InserisciPaziente.html", context)  
     
@@ -893,7 +898,13 @@ class InserisciPazienteView(LoginRequiredMixin,View):
             def parse_date(date_str):
                 return date_str if date_str else None
 
-            paziente = TabellaPazienti.objects.filter(dottore=dottore, codice_fiscale=codice_fiscale).first()
+            profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+            is_secretary = profile.isSecretary
+
+            if is_secretary:
+                paziente = TabellaPazienti.objects.filter(codice_fiscale=codice_fiscale).first()
+            else:
+                paziente = TabellaPazienti.objects.filter(dottore=dottore, codice_fiscale=codice_fiscale).first()
 
             if paziente:
                 dati_modificati = False
@@ -918,18 +929,32 @@ class InserisciPazienteView(LoginRequiredMixin,View):
                 else:
                     errore = "⚠️ Il paziente esiste già e non sono stati forniti nuovi dati da aggiornare."
             else:
-                paziente = TabellaPazienti(
-                    dottore=dottore,
-                    codice_fiscale=codice_fiscale,
-                    name=request.POST.get('name'),
-                    surname=request.POST.get('surname'),
-                    dob=parse_date(request.POST.get('dob')),
-                    gender=request.POST.get('gender'),
-                    cap=request.POST.get('cap'),
-                    province=request.POST.get('province'),
-                    place_of_birth=request.POST.get('place_of_birth'),
-                    chronological_age=request.POST.get('chronological_age')
-                )
+                if is_secretary:
+                    paziente = TabellaPazienti(
+                        dottore_id = request.POST.get('dottore'),  # ← qui uso _id
+                        codice_fiscale=codice_fiscale,
+                        name=request.POST.get('name'),
+                        surname=request.POST.get('surname'),
+                        dob=parse_date(request.POST.get('dob')),
+                        gender=request.POST.get('gender'),
+                        cap=request.POST.get('cap'),
+                        province=request.POST.get('province'),
+                        place_of_birth=request.POST.get('place_of_birth'),
+                        chronological_age=request.POST.get('chronological_age')
+                    )
+                else:
+                    paziente = TabellaPazienti(
+                        dottore=dottore,
+                        codice_fiscale=codice_fiscale,
+                        name=request.POST.get('name'),
+                        surname=request.POST.get('surname'),
+                        dob=parse_date(request.POST.get('dob')),
+                        gender=request.POST.get('gender'),
+                        cap=request.POST.get('cap'),
+                        province=request.POST.get('province'),
+                        place_of_birth=request.POST.get('place_of_birth'),
+                        chronological_age=request.POST.get('chronological_age')
+                    )
 
                 for field in TabellaPazienti._meta.get_fields():
                     if not (hasattr(field, 'attname') and field.attname):
@@ -1007,7 +1032,8 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         is_secretary = profile.isSecretary
-         # se può scegliere, passiamo la lista completa
+
+        # se può scegliere, passiamo la lista completa
         dottori = UtentiRegistratiCredenziali.objects.all() if is_secretary else None
         persona = get_object_or_404(TabellaPazienti, id=id)
 
@@ -1234,13 +1260,16 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
 
+        # 2) recupera il profilo DjangoSocial / UtentiRegistratiCredenziali
+        profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        is_secretary = profile.isSecretary
+
         persona.codice_fiscale = request.POST.get('codice_fiscale')
         persona.dob = parse_date(request.POST.get('dob'))
         persona.residence = request.POST.get('residence')
         persona.cap = request.POST.get('cap')
         persona.province = request.POST.get('province')
         persona.gender = request.POST.get('gender')
-        persona.associate_staff = request.POST.get('associate_staff')
         persona.blood_group = request.POST.get('blood_group')
         persona.email = request.POST.get('email')
         persona.phone = request.POST.get('phone')
@@ -1250,6 +1279,14 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         persona.lastVisit = parse_italian_date(request.POST.get('lastVisit'))
         persona.upcomingVisit = parse_italian_date(request.POST.get('upcomingVisit'))
 
+        # 4) se è segretaria, cambia la FK dottore
+        if is_secretary:
+            doctor_id = request.POST.get('dottore')
+            if doctor_id:
+                persona.dottore_id = int(doctor_id)
+            else:
+                persona.dottore = None      
+                 
         persona.save()
 
         
@@ -1845,10 +1882,20 @@ class VisiteView(View):
                 )
             )
         
-        visite = Appointment.objects.filter(
-            nome_paziente__icontains=persona.name.strip(),
-            cognome_paziente__icontains=persona.surname.strip()
-        ).order_by('-data', '-orario')
+        if dottore.isSecretary:
+            # Filtra gli appuntamenti del paziente in base al nome e cognome
+            visite = Appointment.objects.filter(
+                nome_paziente__icontains=persona.name.strip(),
+                cognome_paziente__icontains=persona.surname.strip()
+            ).order_by('-data', '-orario')
+        else:
+            # Filtra gli appuntamenti del paziente in base al nome e cognome
+            # e al dottore associato (se non è segretaria/o)
+            visite = Appointment.objects.filter(
+                nome_paziente__icontains=persona.name.strip(),
+                cognome_paziente__icontains=persona.surname.strip(),
+                dottore=dottore
+            ).order_by('-data', '-orario')
 
         # Ottieni le opzioni definite nei choices
         tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
@@ -4290,6 +4337,10 @@ class UpdatePersonaContactView(LoginRequiredMixin,View):
 
                 # Recupera il modello e aggiorna i dati
                 from .models import TabellaPazienti  # Sostituisci con il tuo modello
+
+                profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+                is_secretary = profile.isSecretary
+
                 persona = TabellaPazienti.objects.get(id=id)
                 persona.cap = cap
                 persona.residence = residence
@@ -4300,6 +4351,15 @@ class UpdatePersonaContactView(LoginRequiredMixin,View):
                 persona.lastVisit = lastVisit
                 persona.upcomingVisit = upcomingVisit
                 persona.blood_group = blood_group
+
+                        # 4) se è segretaria, cambia la FK dottore
+                if is_secretary:
+                    doctor_id = request.POST.get('dottore')
+                    if doctor_id:
+                        persona.dottore_id = int(doctor_id)
+                    else:
+                        persona.dottore = None     
+
                 persona.save()  # Salva le modifiche nel database
 
                 # print(f"Persona {id} aggiornata con email: {email}, telefono: {phone}, associate_staff: {associate_staff}, lastVisit: {lastVisit}, upcomingVisit: {upcomingVisit}, blood_group: {blood_group}")

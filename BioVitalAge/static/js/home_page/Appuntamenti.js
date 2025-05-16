@@ -1237,7 +1237,7 @@ function openAppointmentModal(appointmentId) {
         // Popola gli altri campi della modale
         const dateParts = data.data.split("-");
         const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-        document.getElementById("date-appointment").textContent = `, ${formattedDate}, `;
+        document.getElementById("date-appointment").textContent = ` ${formattedDate}, `;
         document.getElementById("time-appointment").textContent = data.orario.slice(0, 5);
         document.getElementById("tipologia_visita").value = data.tipologia_visita || "";
 
