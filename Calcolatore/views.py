@@ -265,7 +265,6 @@ class CalcoloEtaBiologica(View):
                         hct = hct_m, mcv = mcv, mch = mch, mchc = mchc, rdw = rdwsd, exams = exams, gender=data.get('gender')
         )
 
-
         datiSalvati = TabellaPazienti(
                         name = data.get('name'),
                         surname = data.get('surname'),
@@ -442,7 +441,7 @@ class CalcoloEtaBiologica(View):
         context = {
                     "show_modal": True,
                     "biological_age": biological_age,
-                    "data": data,    
+                    "data": data, 
         }
 
 
