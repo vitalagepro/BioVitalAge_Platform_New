@@ -684,12 +684,6 @@ class AllegatiStrumentale (models.Model):
     data_referto = models.DateField(default=datetime.now)
     created_at = models.DateTimeField(auto_now_add=True)
 
-## VISITE
-class Visite(models.Model):
-    paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="visitePazienti")
-    data_visita = models.DateField(default=datetime.now)
-    created_at = models.DateTimeField(auto_now_add=True)
-
 ## MICROBIOTA
 class MicrobiotaReport(models.Model):
     paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name='microbiota_reports')

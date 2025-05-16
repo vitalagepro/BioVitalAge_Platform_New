@@ -6,7 +6,10 @@ from social_django.utils import load_strategy
 from social_django.models import UserSocialAuth
 import logging
 from django.contrib.auth.models import AnonymousUser
-import PyPDF2
+try:
+    import PyPDF2
+except ImportError:
+    raise ImportError("Il modulo 'PyPDF2' non è installato. Puoi installarlo eseguendo 'pip install PyPDF2'.")
 import re
 
 
