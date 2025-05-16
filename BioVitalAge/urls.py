@@ -2,6 +2,12 @@ from django.urls import path # type: ignore
 from . import views
 from .views import *
 
+def download_microbiota(request, report_id):
+    report = get_object_or_404(MicrobiotaReport, id=report_id)
+    response = FileResponse(report.file.open('rb'), content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{report.file.name.split("/")[-1]}"'
+    return response
+
 urlpatterns = [
 
     # URL PER LOGIN
@@ -98,7 +104,9 @@ urlpatterns = [
     path('CartellaPaziente/Piano_Terapeutico/Prescrizioni_Esami/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
     
     ## SEZIONE MICROBIOTA
-    path('CartellaPaziente/Microbiota/<int:id>/',                          views.MicrobiotaView.as_view(),            name='microbiota'),
+    path('CartellaPaziente/Microbiota/<int:id>/',                          views.MicrobiotaView.as_view(),            name='microbiota_detail'),
+    path('CartellaPaziente/Microbiota/download/<int:report_id>/', download_microbiota, name='microbiota_download'),
+
 
     # TO DEFINE
     path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>',         views.StampaRefertoView.as_view(),            name='download_pdf_vitale'),

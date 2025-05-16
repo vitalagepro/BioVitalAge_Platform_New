@@ -688,3 +688,14 @@ class Visite(models.Model):
     paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="visitePazienti")
     data_visita = models.DateField(default=datetime.now)
     created_at = models.DateTimeField(auto_now_add=True)
+
+## MICROBIOTA
+class MicrobiotaReport(models.Model):
+    paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name='microbiota_reports')
+    caricato_da = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    file = models.FileField(upload_to='microbiota_reports/%Y/%m/%d/')
+    dati_estratti = models.JSONField(blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Report {self.id} – {self.paziente} ({self.created_at.date()})"

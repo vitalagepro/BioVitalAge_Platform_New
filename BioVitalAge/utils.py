@@ -6,7 +6,8 @@ from social_django.utils import load_strategy
 from social_django.models import UserSocialAuth
 import logging
 from django.contrib.auth.models import AnonymousUser
-
+import PyPDF2
+import re
 
 
 # Set up logging
@@ -69,3 +70,34 @@ def get_gmail_emails_for_user(user):
         logger.exception("Errore durante il recupero delle email:", exc_info=True)
 
     return []
+
+
+
+
+
+
+
+
+
+
+
+#SEZIONE MICROBIOTA FUNZIONE PER ESTRARRE VALORI DAL REFERTO 
+def extract_microbiota_values(pdf_path: str) -> dict:
+    reader = PyPDF2.PdfReader(pdf_path)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text() or ""
+
+    data = {}
+    # regex di esempio: chiave seguita da valore numerico (adatta ai tuoi referti)
+    pattern = re.compile(r'^(?P<key>[\w\s/éàèìòùÀÈÌÒÙ%\-\.]+?)\s+(?P<value>[0-9]+(?:\.[0-9]+)?)$', re.MULTILINE)
+    for m in pattern.finditer(text):
+        key = m.group('key').strip()
+        value = float(m.group('value'))
+        data[key] = value
+
+
+    print(data)
+    return data
+
+

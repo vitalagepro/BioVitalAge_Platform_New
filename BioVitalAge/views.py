@@ -4422,3 +4422,30 @@ class MicrobiotaView(LoginRequiredMixin,View):
 
         return render(request, 'cartella_paziente/microbiota/microbiota.html', context)
 
+    def post(self, request, id):
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+
+        pdf = request.FILES.get('pdf_file')
+        if pdf:
+            # crea e salva il file
+            report = MicrobiotaReport.objects.create(
+                paziente=persona,
+                caricato_da=dottore.user,
+                file=pdf
+            )
+            # estrae i valori
+            data = extract_microbiota_values(report.file.path)
+            report.dati_estratti = data
+            report.save()
+
+            print(report)
+
+            return redirect('microbiota_detail', id=persona.id)
+
+        # se mancano dati, torna al template con errore
+        return render(request, 'cartella_paziente/microbiota/microbiota.html', {
+            'persona': persona,
+            'dottore': dottore,
+            'error': "Devi selezionare un PDF.",
+        })

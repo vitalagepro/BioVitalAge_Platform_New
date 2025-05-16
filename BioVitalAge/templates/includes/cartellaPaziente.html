@@ -452,7 +452,7 @@
                         </div>
                     </div>
                 
-                    <div class="container-clock" onclick="window.location.href ='{% url 'microbiota' persona.id %}'" style="cursor: pointer;">
+                    <div class="container-clock" onclick="window.location.href ='{% url 'microbiota_detail' persona.id %}'" style="cursor: pointer;">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
                             <circle class="progress-ring__progress" id="muscleClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
@@ -463,7 +463,7 @@
                         <div class="descrizione-clock" style="margin-top: 5px;">
                             <img src="{% static 'image/Microbiota.png' %}" alt="">
                             
-                            <a style="text-decoration: none; color: #3a255d;" href="{% url 'microbiota' persona.id %}">Microbiota</a>
+                            <a style="text-decoration: none; color: #3a255d;" href="{% url 'microbiota_detail' persona.id %}">Microbiota</a>
                         
                         </div>
                     </div>
