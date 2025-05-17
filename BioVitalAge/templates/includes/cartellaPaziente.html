@@ -206,38 +206,29 @@
                                   <img src="{% static 'image/Stetoscopio.png' %}" alt="">
                                 </div>
                                 <div class="container-input-info">
-                                  <p class="mb-1">Dottore Associato</p>
-                              
-                                  {% if is_secretary %}
-                                    <!-- select per la segreteria, default selezionato sul paciente.dottore.id -->
-                                    <select id="associate-select"
-                                            name="dottore"
-                                            class="type-two input-disabled"
-                                            style="display: none;">
-                                      <option value="">Seleziona Dottore</option>
-                                      {% for doc in dottori %}
-                                        <option value="{{ doc.id }}"
-                                          {% if persona.dottore and persona.dottore.id == doc.id %}selected{% endif %}>
-                                          {{ doc.nome|title }} {{ doc.cognome|title }}
-                                        </option>
-                                      {% endfor %}
-                                    </select>
-                                    <!-- span di sola lettura, sempre visibile finché non si clicka Edita -->
-                                    <span id="associate-display" class="type-two">
-                                      {{ persona.dottore.nome|title }} {{ persona.dottore.cognome|title }}
-                                    </span>
-                                  {% else %}
-                                    <!-- non-segreteria: input disabilitato che mostra solo nome e cognome  -->
-                                    <input type="text"
-                                           name="associate_staff"
-                                           class="input-disabled type-two"
-                                           value="{{ persona.dottore.nome|title }} {{ persona.dottore.cognome|title }}"
-                                           disabled>
-                                  {% endif %}
-                              
-                                </div>
+                                    <p class="mb-1">Dottore Associato</p>
+                                  
+                                    {% if is_secretary %}
+                                      <span id="associate-display" class="type-two">
+                                        {{ persona.dottore.nome|title }} {{ persona.dottore.cognome|title }}
+                                      </span>
+                                      <select id="associate-select" name="dottore"
+                                              class="type-two" style="display:none">
+                                        <option value="">Seleziona Dottore</option>
+                                        {% for doc in dottori %}
+                                          <option value="{{ doc.id }}"
+                                            {% if persona.dottore and persona.dottore.id == doc.id %}selected{% endif %}>
+                                            {{ doc.nome|title }} {{ doc.cognome|title }}
+                                          </option>
+                                        {% endfor %}
+                                      </select>
+                                    {% else %}
+                                      <span id="associate-display" class="type-two input-disabled">
+                                        {{ persona.dottore.nome|title }} {{ persona.dottore.cognome|title }}
+                                      </span>
+                                    {% endif %}
+                                </div>                                  
                             </div>
-                                                        
             
                             <div class="card-subcard">
                                 <div class="img-circle-container">
@@ -245,19 +236,41 @@
                                 </div>
                                 <div class="container-input-info">
                                     <p>Visita Recente</p>
-                                    <input class="input-disabled type-two" type="text" name="lastVisit" value="{{ persona.lastVisit|date:'d/m/Y'|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
+                                    <!-- span per visualizzazione -->
+                                    <span id="lastVisit-display" class="type-two cursor-not-allowed">
+                                        {% if ultimo_appuntamento %}
+                                            {{ ultimo_appuntamento.data|date:"d/m/Y" }}
+                                        {% else %}
+                                            non presente.
+                                        {% endif %}
+                                    </span>
+                                    <!-- input date vero e proprio (ISO) -->
+                                    <input id="lastVisit-input" class="type-two" type="date" name="lastVisit"
+                                        value="{% if ultimo_appuntamento %}{{ ultimo_appuntamento.data|date:'Y-m-d' }}{% endif %}"
+                                        style="display:none; cursor: not-allowed;">
                                 </div>
-                            </div>
+                                </div>
             
-                            <div class="card-subcard">
-                                <div class="img-circle-container">
-                                    <img src="{% static 'image/Calendario.png' %}" alt="">
+                                <div class="card-subcard">
+                                    <div class="img-circle-container">
+                                      <img src="{% static 'image/Calendario.png' %}" alt="">
+                                    </div>
+                                    <div class="container-input-info">
+                                      <p>Prossima Visita</p>
+                                    <!-- span per visualizzazione -->
+                                    <span id="lastVisit-display" class="type-two cursor-not-allowed">
+                                        {% if prossimo_appuntamento %}
+                                            {{ prossimo_appuntamento.data|date:"d/m/Y" }}
+                                        {% else %}
+                                            non presente.
+                                        {% endif %}
+                                    </span>
+                                    <!-- input date vero e proprio (ISO) -->
+                                    <input id="lastVisit-input" class="type-two" type="date" name="lastVisit"
+                                        value="{% if prossimo_appuntamento %}{{ prossimo_appuntamento.data|date:'Y-m-d' }}{% endif %}"
+                                        style="display:none; cursor: not-allowed;">
+                                    </div>
                                 </div>
-                                <div class="container-input-info">
-                                    <p>Prossima Visita</p>
-                                    <input class="input-disabled type-two" type="text" name="upcomingVisit" value="{{ persona.upcomingVisit|date:'d/m/Y'|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
-                                </div>
-                            </div>
             
                             <div class="card-subcard">
                                 <div class="img-circle-container">

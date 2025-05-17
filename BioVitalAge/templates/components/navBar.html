@@ -11,21 +11,43 @@
 
         <!-- Links Section -->
         <div class="col-md-8 nav-bar-linkage">
-            <a href="{% url 'Risultati' %}">Pazienti</a>
+            <a href="{% url 'loginPage' %}">Pazienti</a>
         </div>
 
         <!-- User Section -->
         <div class="col-md-2 nav-bar-user" id="userContainer">
-            <h3>{% if dottore.isSecretary %}Segr. {{ dottore.cognome }}{% else %}Dottor. {{ dottore.cognome }}{% endif %}</h3>
+            <h3>
+                {% if dottore.isSecretary %}
+                    Segr. {{ dottore.cognome }}
+                {% elif dottore.user %}
+                    Dottor. {{ dottore.cognome }}
+                {% else %}
+                    Account Demo
+                {% endif %}
+            </h3>
             
             <div class="img-container-user-nav-bar">
                 <img id="userImg" src="{% static 'image/Username_White.png' %}" alt="user">
             </div>
             <div class="nav-bar-user-modal" id="userModal">
-                <button id="profileBtn" class="nav-bar-user-modal-btn" onclick="window.location.href='{% url 'profile' %}'">Profilo</button>
-                <button id="logoutBtn" class="nav-bar-user-modal-btn" onclick="window.location.href='{% url 'logout' %}'">Disconnettiti</button>
+                {% if dottore.user %}
+                    <!-- Utente registrato -->
+                    <button id="profileBtn" class="nav-bar-user-modal-btn"
+                            onclick="window.location.href='{% url 'profile' %}'">
+                        Profilo
+                    </button>
+                    <button id="logoutBtn" class="nav-bar-user-modal-btn"
+                            onclick="window.location.href='{% url 'logout' %}'">
+                        Disconnettiti
+                    </button>
+                {% else %}
+                <!-- Utente calcolatore -->
+                <button class="nav-bar-user-modal-btn" onclick="window.location.href='{% url 'loginPage' %}'">Accedi per altre
+                    funzionalità</button>
+                {% endif %}
             </div>
         </div>
+
     </nav>
 </header>
 

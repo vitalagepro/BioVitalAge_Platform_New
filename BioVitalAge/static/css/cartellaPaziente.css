@@ -1098,6 +1098,10 @@ strong {
   outline: none;
 }
 
+.cursor-not-allowed{
+  cursor: not-allowed !important;
+}
+
 
 
 

@@ -39,7 +39,13 @@
   <script>
     const currentUser = "{{ dottore|escapejs }}";
     window.currentUser = "{{ dottore|escapejs }}" || 'guest';
- 
+    window.isSecretary = {{ dottore.isSecretary|yesno:"true,false" }};
+      
+
+      // Calcola il ruolo
+    window.role = window.isSecretary 
+      ? 'Segreteria/o' 
+      : 'Dottore/Dottoressa';
     document.getElementById('logout-btn')?.addEventListener('click', () => {
       localStorage.setItem('pendingLogout', 'true');
     });
@@ -47,6 +53,17 @@
 
   <!-- JS import -->
   <script src="{%  static 'js/components/sidebar.js' %}"></script>
+  {# dati mensili #}
+  {{ monthly_labels|json_script:"monthly-labels" }}
+  {{ monthly_counts|json_script:"monthly-data" }}
+
+  {# dati età #}
+  {{ age_labels|json_script:"age-labels" }}
+  {{ age_datasets|json_script:"age-datasets" }}
+
+  {# dati settimanali #}
+  {{ weekly_labels|json_script:"weekly-labels" }}
+  {{ weekly_counts|json_script:"weekly-data" }}
   <script src="{% static 'js/home_page/statistiche.js' %}" defer></script>
 </head>
 
@@ -123,7 +140,7 @@
 
     <div class="chart-container">
       <div class="chart-title">Pazienti</div>
-      <canvas id="patients"></canvas>
+      <canvas id="weeklyPatientsChart"></canvas>
     </div>
 
     <div class="chart-container">

@@ -28,6 +28,7 @@ from django.utils.dateparse import parse_date # type: ignore
 from django.db.models import OuterRef, Subquery, Count, Q, Avg, Min, Max # type: ignore
 from django.db.models.functions import ExtractMonth # type: ignore
 from django.db.models.functions import Lower
+from django.db.models.functions import ExtractMonth, ExtractWeekDay
 from django.contrib.auth.hashers import check_password # type: ignore
 from django.db.models import OuterRef # type: ignore
 from django.contrib.auth import authenticate, login, logout # type: ignore
@@ -248,25 +249,79 @@ class HomePageRender(LoginRequiredMixin,View):
 
 # VIEW PER LA SEZIONE STATISTICHE
 @method_decorator(catch_exceptions, name='dispatch')
-class StatisticheView(LoginRequiredMixin,View):
-
+class StatisticheView(LoginRequiredMixin, View):
     def get(self, request):
-
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        if dottore.isSecretary:
+            qs = TabellaPazienti.objects.all()
+        else:
+            qs = TabellaPazienti.objects.filter(dottore=dottore)
 
+        # 1️⃣ Pazienti inseriti per mese (escludi created_at NULL)
+        month_labels = ["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"]
+        monthly_qs = (
+            qs
+              .exclude(created_at__isnull=True)
+              .annotate(mese=ExtractMonth('created_at'))
+              .values('mese')
+              .annotate(count=Count('id'))
+        )
+        monthly_counts = [0]*12
+        for it in monthly_qs:
+            # sicuro che it['mese'] non sia None
+            monthly_counts[it['mese']-1] = it['count']
+
+        # 2️⃣ Fasce d’età per mese
+        age_groups = [(0,5),(6,15),(16,25),(26,45),(46,200)]
+        colors = ["#6a2dcc","#8041e0","#9666e4","#ad8be8","#c3b0ec"]
+        today = date.today()
+        age_datasets = []
+        for idx, (min_age, max_age) in enumerate(age_groups):
+            subqs = qs.filter(
+                dob__lte = today - timedelta(days=365*min_age),
+                dob__gt  = today - timedelta(days=365*(max_age+1))
+            )
+            sub_month = (
+                subqs
+                  .exclude(created_at__isnull=True)
+                  .annotate(mese=ExtractMonth('created_at'))
+                  .values('mese')
+                  .annotate(count=Count('id'))
+            )
+            arr = [0]*12
+            for it in sub_month:
+                arr[it['mese']-1] = it['count']
+            age_datasets.append({
+                'label': f"{min_age}-{max_age if max_age<200 else '+'}",
+                'data': arr,
+                'backgroundColor': colors[idx]
+            })
+
+        # 3️⃣ Pazienti per giorno della settimana
+        week_labels = ["Dom","Lun","Mar","Mer","Gio","Ven","Sab"]
+        weekly_qs = (
+            qs
+              .exclude(created_at__isnull=True)
+              .annotate(day=ExtractWeekDay('created_at'))
+              .values('day')
+              .annotate(count=Count('id'))
+              .filter(day__isnull=False)
+        )
+        weekly_counts = [0]*7
+        for it in weekly_qs:
+            weekly_counts[it['day']-1] = it['count']
+
+        # 4️⃣ Contesto e render
         context = {
-            'dottore' : dottore,
-            'emails': get_gmail_emails_for_user(request.user)
+            'dottore':        dottore,
+            'monthly_labels': month_labels,
+            'monthly_counts': monthly_counts,
+            'age_labels':     month_labels,
+            'age_datasets':   age_datasets,
+            'weekly_labels':  week_labels,
+            'weekly_counts':  weekly_counts,
+            'emails':         get_gmail_emails_for_user(request.user),
         }
-        
-        try:
-            social_auth = UserSocialAuth.objects.get(user__email=dottore.email, provider="google-oauth2")
-            emails = get_gmail_emails_for_user(social_auth.user)
-        except UserSocialAuth.DoesNotExist:
-            print("⚠️ Account Google non collegato per:", dottore.email)
-            emails = []
-
-        context["emails"] = emails
         return render(request, "home_page/statistiche.html", context)
     
 # VIEW PER LE NOTIFICHE MEDICAL NEWS
@@ -1273,8 +1328,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         persona.place_of_birth = request.POST.get('place_of_birth')
 
         persona.dob = parse_italian_date(request.POST.get('dob'))
-        persona.lastVisit = parse_italian_date(request.POST.get('lastVisit'))
-        persona.upcomingVisit = parse_italian_date(request.POST.get('upcomingVisit'))
 
         # 4) se è segretaria, cambia la FK dottore
         if is_secretary:
@@ -1285,6 +1338,16 @@ class CartellaPazienteView(LoginRequiredMixin,View):
                 persona.dottore = None      
                  
         persona.save()
+
+        # RI–CALCOLO dei dati che ti servono
+        today = now().date()
+        storico_app = Appointment.objects.filter(
+            Q(nome_paziente__icontains=persona.name.strip()) &
+            Q(cognome_paziente__icontains=persona.surname.strip())
+        ).order_by('data', 'orario')
+
+        ultimo_appuntamento = storico_app.filter(data__lt=today).last()
+        prossimo_appuntamento = storico_app.filter(data__gte=today).first()
 
         # DATI PER GLI INDICATORI DI PERFORMANCE
         ## DATI CAPACITA' VITALE
@@ -1315,6 +1378,8 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             'dati_estesi_ultimo_referto': dati_estesi_ultimo_referto,
             'dottore' : dottore,
             'referti_test_recenti': ultimo_referto,
+            'ultimo_appuntamento': ultimo_appuntamento,
+            'prossimo_appuntamento': prossimo_appuntamento,
 
             #ULTIMO REFERTO ETA METABOLICA
             'ultimo_referto_eta_metabolica': ultimo_referto_eta_metabolica,
@@ -4606,8 +4671,6 @@ class UpdatePersonaContactView(LoginRequiredMixin,View):
                 email = data.get("email")
                 phone = data.get("phone")
                 associate_staff = data.get("associate_staff")
-                lastVisit = data.get("lastVisit")
-                upcomingVisit = data.get("upcomingVisit")
                 blood_group = data.get("blood_group")
 
                 # Recupera il modello e aggiorna i dati
@@ -4623,8 +4686,6 @@ class UpdatePersonaContactView(LoginRequiredMixin,View):
                 persona.email = email
                 persona.phone = phone
                 persona.associate_staff = associate_staff
-                persona.lastVisit = lastVisit
-                persona.upcomingVisit = upcomingVisit
                 persona.blood_group = blood_group
 
                         # 4) se è segretaria, cambia la FK dottore

@@ -5,20 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Favicon -->
-    <link rel="shortcut icon" href='{% static "includes/icone/favicon.png" %}' type="image/x-icon">
+    <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
     
     <title>BioVitalAge - Calcolatore</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'css/Componenti.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/calcolatore.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cartella_paziente/eta_biologica/calcolatore.css' %}">
 
     <!-- Js Import  -->
-    <script src="{% static 'js/calcolatore.js' %}" defer></script>
+    <script src="{% static 'js/cartella_paziente/eta_biologica/calcolatore.js' %}" type="module" defer></script>
     <script src="{% static 'js/CodiceFiscale.js' %}" defer></script>
 
     <!-- Bootstrap import -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- GSAP Import -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <!-- Font Import  -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,7 +66,7 @@
         
                                         <div class="col-md-12 p-2 barra-container">
                                             <p class="barra-pointer"></p>
-                                            <p id="indicator" class="indicatore" data-value="{{ data.d_roms }}"><img src="{% static 'includes/icone/cuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
+                                            <p id="indicator" class="indicatore" data-value="{{ data.d_roms }}"><img src="{% static 'image/saluteCuore.png' %}" alt="" style="width: 50px; height: 50px;"></p>
                                         </div>
         
                                     {% else %}
@@ -4085,11 +4088,11 @@
         <div class="main-title-nav">
             <h2 class="main-welcome-title">Calcola l'età Biologica</h2>
             <div class="main-menu-trace">
-                <a href="{% url 'HomePage' %}">
-                    <img src="{% static 'includes/icone/homePage.png' %}" alt="Home Page" title="Home Page" />
+                <a href="#" id="homeCalcolatore">
+                    <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
                 </a>                
                 <p>»</p>
-                <p>Calcolatore</p>
+                <p class="breadcrumb">Calcolatore</p>
             </div>
         </div>
 
@@ -4148,7 +4151,7 @@
 
                 <div class="card-indices_header">
                     <div class="card-header_title">
-                        <img src="{% static 'includes/images/info.png' %}" alt="">
+                        <img src="{% static 'image/Info.png' %}" alt="">
                         <h3>Informazioni Personali</h3>
                     </div>
                     
@@ -12471,7 +12474,7 @@
 
                         <div class="card-indices_header">
                             <div class="card-header_title">
-                                <img src="{% static 'includes/images/saluteCuore.png' %}" alt="">
+                                <img src="{% static 'image/Heart_Colorato.png' %}" alt="">
                                 <h3>Salute del cuore</h3>
                             </div>
                             
@@ -12684,7 +12687,7 @@
                     <div class="card-indices">
                         <div class="card-indices_header">
                             <div class="card-header_title">
-                                <img src="{% static 'includes/images/reni.png' %}" alt="">
+                                <img src="{% static 'image/Reni.png' %}" alt="">
                                 <h3>Salute Renale</h3>
                             </div>
                             
@@ -12763,7 +12766,7 @@
                     <div class="card-indices">
                         <div class="card-indices_header">
                             <div class="card-header_title">
-                                <img src="{% static 'includes/images/fegato.png' %}" alt="">
+                                <img src="{% static 'image/Fegato.png' %}" alt="">
                                 <h3>Salute Epatica</h3>
                             </div>
                             
@@ -12889,7 +12892,7 @@
                     <div class="card-indices">
                         <div class="card-indices_header">
                             <div class="card-header_title">
-                                <img src="{% static 'includes/images/cervello.png' %}" alt="">
+                                <img src="{% static 'image/Cervello.png' %}" alt="">
                                 <h3>Salute Cerebrale</h3>
                             </div>
                             
@@ -12934,7 +12937,7 @@
                     <div class="card-indices">
                         <div class="card-indices_header">
                             <div class="card-header_title">
-                                <img src="{% static 'includes/images/cellula.png' %}" alt="">
+                                <img src="{% static 'image/Cellula.png' %}" alt="">
                                 <h3>Salute Ormonale</h3>
                             </div>
                             
@@ -13019,7 +13022,7 @@
 
                         <div class="card-indices_header">
                             <div class="card-header_title">
-                                <img src="{% static 'includes/images/sangue.png' %}" alt="">
+                                <img src="{% static 'image/Blood_Colorato.png' %}" alt="">
                                 <h3>Salute del Sangue</h3>
                             </div>
                             
@@ -13223,7 +13226,7 @@
 
                         <div class="card-indices_header">
                             <div class="card-header_title">
-                                <img src="{% static 'includes/images/sistema.png' %}" alt="">
+                                <img src="{% static 'image/Sistema.png' %}" alt="">
                                 <h3>Salute del Sistema Immunitario</h3>
                             </div>
                             
@@ -13267,7 +13270,7 @@
 
                         <div class="card-indices_header">
                             <div class="card-header_title">
-                                <img src="{% static 'includes/images/muscolo.png' %}" alt="">
+                                <img src="{% static 'image/Muscolo.png' %}" alt="">
                                 <h3>Salute Muscolare</h3>
                             </div>
                             
@@ -13307,9 +13310,9 @@
             
             
             <div class="toolkit">
-                <img src="{% static 'includes/images/arrow.png' %}" alt="" style="width: 40px; height: 40px;">
+                <img src="{% static 'image/Arrow_Back.png' %}" alt="" style="width: 40px; height: 40px;">
 
-                <a href="{% url 'Risultati' %}" class="button" id="vediButton">
+                <a href="{% url 'loginPage' %}" class="button" id="vediButton">
                     <span class="button__icon-wrapper">
                         <svg viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="10">
                             <path
