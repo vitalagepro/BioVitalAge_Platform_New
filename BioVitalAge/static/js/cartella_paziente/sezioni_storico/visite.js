@@ -216,6 +216,13 @@ document.addEventListener("DOMContentLoaded", () => {
     daySpan.textContent = `${defaultGiorno},`;
     dateSpan.textContent = `${defaultFormattedDate},`;
     timeSpan.textContent = defaultFormattedTime;
+    document.getElementById("dottore-select").selectedIndex = 0;
+    document.getElementById("tipologia_visita").selectedIndex = 0;
+    document.getElementById("paziente-select").selectedIndex = 0;
+    document.getElementById("voce-prezzario").selectedIndex = 0;
+    document.getElementById("time").selectedIndex = 0;
+    document.getElementById("studio").selectedIndex = 0;
+    document.getElementById("note").value = "";
   
     dateInput.value = defaultDateValue;
     timeInput.value = "";  // oppure defaultFormattedTime se vuoi precompilarlo
@@ -954,6 +961,20 @@ document.addEventListener("DOMContentLoaded", () => {
       pazienteId: pazienteId || "",
     };
 
+    const doctorSelect = document.getElementById("dottore-select");
+    if (doctorSelect) {
+      const dottId = doctorSelect.value;
+      if (!dottId) {
+        showAlert({
+          type: "warning",
+          message: "Seleziona un dottore prima di salvare.",
+          borderColor: "#EF4444",
+        });
+        return;
+      }
+      payload.dottore_id = dottId;
+    }
+
     try {
       const isEdit = saveBtn.getAttribute("data-edit-id");
 
@@ -963,6 +984,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       const method = isEdit ? "PATCH" : "POST";
       
+      const currentUrl = window.location.href;
       const response = await fetch(url, {
         method: method,
         headers: {
@@ -982,7 +1004,19 @@ document.addEventListener("DOMContentLoaded", () => {
           borderColor: "var(--positive-color)",
         });
 
+        // ricarica in background la tabella visite  
+        const currentUrl = window.location.href;
+        fetch(currentUrl)
+          .then(r => r.text())
+          .then(html => {
+            const doc = new DOMParser().parseFromString(html, "text/html");
+            const newWrap = doc.querySelector(".table-wrapper");
+            document.querySelector(".table-wrapper").innerHTML = newWrap.innerHTML;
+          })
+          .catch(err => console.error("Errore refresh tabella:", err));
+
         // ✅ RESETTA I CAMPI DELLA MODALE
+        document.getElementById("dottore-select").selectedIndex = 0;
         document.getElementById("tipologia_visita").selectedIndex = 0;
         document.getElementById("voce-prezzario").innerHTML = `<option>Seleziona una Voce</option>`;
         document.getElementById("time").innerHTML = `<option>Seleziona una Durata</option>`;
@@ -1061,27 +1095,27 @@ document.addEventListener("DOMContentLoaded", () => {
 /*  -----------------------------------------------------------------------------------------------
   EVENTO PER ELIMINARE UNA VISITA
 --------------------------------------------------------------------------------------------------- */
-document.addEventListener("DOMContentLoaded", () => {
-  const deleteButtons = document.querySelectorAll(".btn.delete");
+// document.addEventListener("DOMContentLoaded", () => {
+//   const deleteButtons = document.querySelectorAll(".btn.delete");
 
-  deleteButtons.forEach((btn) => {
-    btn.addEventListener("click", function (e) {
-      e.preventDefault();
+//   deleteButtons.forEach((btn) => {
+//     btn.addEventListener("click", function (e) {
+//       e.preventDefault();
 
-      const id = btn.dataset.id;
-      if (!id) return;
+//       const id = btn.dataset.id;
+//       if (!id) return;
 
-      confirmDeleteAction({
-        url: `/elimina-visita/${id}/`,
-        elementToRemove: btn.closest("tr"),
-        successMessage: "Visita eliminata con successo!",
-        errorMessage: "Errore durante l'eliminazione della visita.",
-        confirmMessage: "Sei sicuro di voler eliminare questa visita?",
-        borderColor: "#EF4444", // rosso
-      });
-    });
-  });
-});
+//       confirmDeleteAction({
+//         url: `/elimina-visita/${id}/`,
+//         elementToRemove: btn.closest("tr"),
+//         successMessage: "Visita eliminata con successo!",
+//         errorMessage: "Errore durante l'eliminazione della visita.",
+//         confirmMessage: "Sei sicuro di voler eliminare questa visita?",
+//         borderColor: "#EF4444", // rosso
+//       });
+//     });
+//   });
+// });
 
 
 
@@ -1099,130 +1133,311 @@ document.addEventListener("DOMContentLoaded", () => {
 /*  -----------------------------------------------------------------------------------------------
   EVENTO PER MODIFICARE UNA VISITA
 --------------------------------------------------------------------------------------------------- */
-document.addEventListener("DOMContentLoaded", () => {
-  const editButtons = document.querySelectorAll(".btn.edit");
+// document.addEventListener("DOMContentLoaded", () => {
+//   const editButtons = document.querySelectorAll(".btn.edit");
 
-  editButtons.forEach((btn) => {
-    btn.addEventListener("click", async function () {
-      const id = this.dataset.id;
-      if (!id) return;
+//   editButtons.forEach((btn) => {
+//     btn.addEventListener("click", async function () {
+//       const id = this.dataset.id;
+//       if (!id) return;
 
-      try {
-        const response = await fetch(`/get-appointment/${id}/`);
-        const data = await response.json();
+//       try {
+//         const response = await fetch(`/get-appointment/${id}/`);
+//         const data = await response.json();
 
-        if (!data.success) {
-          alert("Errore nel recupero dati");
-          return;
-        }
+//         if (!data.success) {
+//           alert("Errore nel recupero dati");
+//           return;
+//         }
 
-        // ✍️ Precompila i campi
-        document.getElementById("note").value = data.note || "";
-        document.getElementById("studio").value = data.numero_studio;
-        // Trigger change su tipologia
-        const tipologiaSelect = document.getElementById("tipologia_visita");
-        tipologiaSelect.value = data.tipologia_visita;
-        tipologiaSelect.dispatchEvent(new Event("change"));
+//         // ✍️ Precompila i campi
+//         document.getElementById("note").value = data.note || "";
+//         document.getElementById("studio").value = data.numero_studio;
+//         // Trigger change su tipologia
+//         const tipologiaSelect = document.getElementById("tipologia_visita");
+//         tipologiaSelect.value = data.tipologia_visita;
+//         tipologiaSelect.dispatchEvent(new Event("change"));
     
-        setTimeout(() => {
-          document.getElementById("voce-prezzario").value = data.voce_prezzario;
-        }, 300);
+//         setTimeout(() => {
+//           document.getElementById("voce-prezzario").value = data.voce_prezzario;
+//         }, 300);
 
-        setTimeout(() => {
-          const vocePrezzarioSelect = document.getElementById("voce-prezzario");
-          vocePrezzarioSelect.value = data.voce_prezzario;
+//         setTimeout(() => {
+//           const vocePrezzarioSelect = document.getElementById("voce-prezzario");
+//           vocePrezzarioSelect.value = data.voce_prezzario;
         
-          // ✅ Simula il change per popolare la DURATA
-          vocePrezzarioSelect.dispatchEvent(new Event("change"));
+//           // ✅ Simula il change per popolare la DURATA
+//           vocePrezzarioSelect.dispatchEvent(new Event("change"));
         
-          const durataSelect = document.getElementById("time");
-          let attempts = 0;
+//           const durataSelect = document.getElementById("time");
+//           let attempts = 0;
         
-          const interval = setInterval(() => {
-            const option = Array.from(durataSelect.options).find(opt => opt.value === data.durata);
-            if (option) {
-              durataSelect.value = data.durata;
-              clearInterval(interval);
-            }
+//           const interval = setInterval(() => {
+//             const option = Array.from(durataSelect.options).find(opt => opt.value === data.durata);
+//             if (option) {
+//               durataSelect.value = data.durata;
+//               clearInterval(interval);
+//             }
         
-            attempts++;
-            if (attempts > 20) {
-              clearInterval(interval);
-              console.warn("Durata non trovata dopo 20 tentativi.");
-            }
-          }, 100);
-        }, 300);        
+//             attempts++;
+//             if (attempts > 20) {
+//               clearInterval(interval);
+//               console.warn("Durata non trovata dopo 20 tentativi.");
+//             }
+//           }, 100);
+//         }, 300);        
 
-        // Seleziona paziente
-        const nomeCompleto = `${data.nome_paziente.toLowerCase()} ${data.cognome_paziente.toLowerCase()}`;
-        const selectPaziente = document.getElementById("paziente-select");
-        for (let option of selectPaziente.options) {
-          if (option.value.toLowerCase().includes(nomeCompleto)) {
-            selectPaziente.value = option.value;
-            break;
-          }
-        }
+//         // Seleziona paziente
+//         const nomeCompleto = `${data.nome_paziente.toLowerCase()} ${data.cognome_paziente.toLowerCase()}`;
+//         const selectPaziente = document.getElementById("paziente-select");
+//         for (let option of selectPaziente.options) {
+//           if (option.value.toLowerCase().includes(nomeCompleto)) {
+//             selectPaziente.value = option.value;
+//             break;
+//           }
+//         }
 
-        const dateParts = data.data.split("-");
-        const year = parseInt(dateParts[0]);
-        const month = parseInt(dateParts[1]) - 1; // mesi in JS partono da 0
-        const day = parseInt(dateParts[2]);
+//         const dateParts = data.data.split("-");
+//         const year = parseInt(dateParts[0]);
+//         const month = parseInt(dateParts[1]) - 1; // mesi in JS partono da 0
+//         const day = parseInt(dateParts[2]);
 
-        const jsDate = new Date(year, month, day);
+//         const jsDate = new Date(year, month, day);
 
-        // Calcola giorno della settimana in italiano
-        const giorniSettimana = [
-          "Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"
-        ];
-        const giornoItaliano = giorniSettimana[jsDate.getDay()];
+//         // Calcola giorno della settimana in italiano
+//         const giorniSettimana = [
+//           "Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"
+//         ];
+//         const giornoItaliano = giorniSettimana[jsDate.getDay()];
 
-        // Format italiano
-        const dataItaliana = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+//         // Format italiano
+//         const dataItaliana = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
 
-        // Aggiorna gli span
-        document.getElementById("day-appointment").textContent = `${giornoItaliano},`;
-        document.getElementById("date-appointment").textContent = `${dataItaliana},`;
-        document.getElementById("time-appointment").textContent = data.orario;
+//         // Aggiorna gli span
+//         document.getElementById("day-appointment").textContent = `${giornoItaliano},`;
+//         document.getElementById("date-appointment").textContent = `${dataItaliana},`;
+//         document.getElementById("time-appointment").textContent = data.orario;
 
 
-        // Nascondi input, mostra solo span
-        document.getElementById("edit-date-container").classList.add("d-none");
-        document.getElementById("date-display-group").classList.remove("d-none");
+//         // Nascondi input, mostra solo span
+//         document.getElementById("edit-date-container").classList.add("d-none");
+//         document.getElementById("date-display-group").classList.remove("d-none");
 
-        // Precarica valori negli input
-        document.getElementById("editDate").value = data.data;
-        document.getElementById("editTime").value = data.orario;
+//         // Precarica valori negli input
+//         document.getElementById("editDate").value = data.data;
+//         document.getElementById("editTime").value = data.orario;
 
-        // Setta l'id per il salvataggio
-        document.getElementById("date-appointment-form").setAttribute("data-id", id);
-        document.getElementById("saveAppointmentBtn").setAttribute("data-edit-id", id);
+//         // Setta l'id per il salvataggio
+//         document.getElementById("date-appointment-form").setAttribute("data-id", id);
+//         document.getElementById("saveAppointmentBtn").setAttribute("data-edit-id", id);
 
-        // 🟣 GSAP per apertura modale
-        const modale = document.getElementById("appointmentModal");
-        const contenuto = document.getElementById("appointmentContent");
+//         // 🟣 GSAP per apertura modale
+//         const modale = document.getElementById("appointmentModal");
+//         const contenuto = document.getElementById("appointmentContent");
 
-        gsap.set(modale, { display: "flex", opacity: 0 });
-        gsap.set(contenuto, { opacity: 0, y: -50 });
+//         gsap.set(modale, { display: "flex", opacity: 0 });
+//         gsap.set(contenuto, { opacity: 0, y: -50 });
 
-        gsap.to(modale, { opacity: 1, duration: 0.3, ease: "power2.out" });
-        gsap.to(contenuto, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
+//         gsap.to(modale, { opacity: 1, duration: 0.3, ease: "power2.out" });
+//         gsap.to(contenuto, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
 
-      } catch (err) {
-        console.error("Errore durante l'edit:", err);
-        alert("Errore di rete o dati.");
+//       } catch (err) {
+//         console.error("Errore durante l'edit:", err);
+//         alert("Errore di rete o dati.");
+//       }
+//     });
+//   });
+
+//   // ✎ Attiva modifica giorno/data/ora
+//   const editDateBtn = document.getElementById("edit-date-btn");
+//   if (editDateBtn) {
+//     editDateBtn.addEventListener("click", () => {
+//       document.getElementById("date-display-group").classList.add("d-none");
+//       document.getElementById("edit-date-container").classList.remove("d-none");
+//       document.getElementById("edit-date-container").style.width = "max-content";
+//       document.getElementById("save-date-btn").style.display = "block";
+//       document.getElementById("save-date-btn").style.display = "inline-flex";
+//     });
+//   }
+// });
+
+
+/*  -----------------------------------------------------------------------------------------------
+ EVENTO PER MODIFICA, ELIMINAZIONE & RE-BIND DI MODIFICA&ELIMINA AL CAMBIO DELLA PAGINAZIONE
+--------------------------------------------------------------------------------------------------- */
+document.addEventListener('DOMContentLoaded', () => {
+  // 1️⃣ Funzione per aprire e popolare la modale di modifica visita
+  async function populateAndOpenVisitaModal(id) {
+    try {
+      const response = await fetch(`/get-appointment/${id}/`);
+      const data = await response.json();
+
+      if (!data.success) {
+        alert("Errore nel recupero dati");
+        return;
       }
-    });
-  });
 
-  // ✎ Attiva modifica giorno/data/ora
-  const editDateBtn = document.getElementById("edit-date-btn");
-  if (editDateBtn) {
-    editDateBtn.addEventListener("click", () => {
-      document.getElementById("date-display-group").classList.add("d-none");
-      document.getElementById("edit-date-container").classList.remove("d-none");
-      document.getElementById("edit-date-container").style.width = "max-content";
-      document.getElementById("save-date-btn").style.display = "block";
-      document.getElementById("save-date-btn").style.display = "inline-flex";
-    });
+      // ✍️ Precompila i campi
+
+      // popola il select “dottore-select” in versione segreteria
+      const doctorSelect = document.getElementById("dottore-select");
+      if (doctorSelect && data.dottore) {
+        // seleziona l’opzione esistente (o aggiungine una “fuori lista”)
+        const docId = data.dottore.id.toString();
+        if (doctorSelect.querySelector(`option[value="${docId}"]`)) {
+          doctorSelect.value = docId;
+        } else {
+          const opt = new Option(
+            `${data.dottore.nome} ${data.dottore.cognome}`,
+            docId
+          );
+          opt.style.color = "red";
+          doctorSelect.add(opt);
+          doctorSelect.value = docId;
+        }
+      }
+
+      document.getElementById("note").value = data.note || "";
+      document.getElementById("studio").value = data.numero_studio;
+      // Trigger change su tipologia
+      const tipologiaSelect = document.getElementById("tipologia_visita");
+      tipologiaSelect.value = data.tipologia_visita;
+      tipologiaSelect.dispatchEvent(new Event("change"));
+  
+      setTimeout(() => {
+        document.getElementById("voce-prezzario").value = data.voce_prezzario;
+      }, 300);
+
+      setTimeout(() => {
+        const vocePrezzarioSelect = document.getElementById("voce-prezzario");
+        vocePrezzarioSelect.value = data.voce_prezzario;
+      
+        // ✅ Simula il change per popolare la DURATA
+        vocePrezzarioSelect.dispatchEvent(new Event("change"));
+      
+        const durataSelect = document.getElementById("time");
+        let attempts = 0;
+      
+        const interval = setInterval(() => {
+          const option = Array.from(durataSelect.options).find(opt => opt.value === data.durata);
+          if (option) {
+            durataSelect.value = data.durata;
+            clearInterval(interval);
+          }
+      
+          attempts++;
+          if (attempts > 20) {
+            clearInterval(interval);
+            console.warn("Durata non trovata dopo 20 tentativi.");
+          }
+        }, 100);
+      }, 300);        
+
+      // Seleziona paziente
+      const nomeCompleto = `${data.nome_paziente.toLowerCase()} ${data.cognome_paziente.toLowerCase()}`;
+      const selectPaziente = document.getElementById("paziente-select");
+      for (let option of selectPaziente.options) {
+        if (option.value.toLowerCase().includes(nomeCompleto)) {
+          selectPaziente.value = option.value;
+          break;
+        }
+      }
+
+      const dateParts = data.data.split("-");
+      const year = parseInt(dateParts[0]);
+      const month = parseInt(dateParts[1]) - 1; // mesi in JS partono da 0
+      const day = parseInt(dateParts[2]);
+
+      const jsDate = new Date(year, month, day);
+
+      // Calcola giorno della settimana in italiano
+      const giorniSettimana = [
+        "Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"
+      ];
+      const giornoItaliano = giorniSettimana[jsDate.getDay()];
+
+      // Format italiano
+      const dataItaliana = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+
+      // Aggiorna gli span
+      document.getElementById("day-appointment").textContent = `${giornoItaliano},`;
+      document.getElementById("date-appointment").textContent = `${dataItaliana},`;
+      document.getElementById("time-appointment").textContent = data.orario;
+
+
+      // Nascondi input, mostra solo span
+      document.getElementById("edit-date-container").classList.add("d-none");
+      document.getElementById("date-display-group").classList.remove("d-none");
+
+      // Precarica valori negli input
+      document.getElementById("editDate").value = data.data;
+      document.getElementById("editTime").value = data.orario;
+
+      // Setta l'id per il salvataggio
+      document.getElementById("date-appointment-form").setAttribute("data-id", id);
+      document.getElementById("saveAppointmentBtn").setAttribute("data-edit-id", id);
+
+      // 🟣 GSAP per apertura modale
+      const modale = document.getElementById("appointmentModal");
+      const contenuto = document.getElementById("appointmentContent");
+
+      gsap.set(modale, { display: "flex", opacity: 0 });
+      gsap.set(contenuto, { opacity: 0, y: -50 });
+
+      gsap.to(modale, { opacity: 1, duration: 0.3, ease: "power2.out" });
+      gsap.to(contenuto, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
+
+    } catch (err) {
+      console.error("Errore durante l'edit:", err);
+      showAlert({
+        type: "danger",
+        message: "Errore di rete o dati.",
+        extraMessage: err.message,
+        borderColor: "#EF4444",
+      });
+    }
+
   }
+
+  // 2️⃣ Delegation: paginazione, delete, edit
+  document.addEventListener('click', async (event) => {
+    // — paginazione
+    const link = event.target.closest('.pagination_tabella a');
+    if (link) {
+      event.preventDefault();
+      try {
+        const txt = await fetch(link.href).then(r => r.text());
+        const doc = new DOMParser().parseFromString(txt, 'text/html');
+        const newWrap = doc.querySelector('.table-wrapper');
+        document.querySelector('.table-wrapper').innerHTML = newWrap.innerHTML;
+      } catch (e) {
+        console.error("Errore paginazione:", e);
+      }
+      return;
+    }
+
+    // — elimina visita
+    const delBtn = event.target.closest('.btn.delete');
+    if (delBtn) {
+      event.preventDefault();
+      confirmDeleteAction({
+        url: `/elimina-visita/${delBtn.dataset.id}/`,
+        elementToRemove: delBtn.closest('tr'),
+        successMessage: 'Visita eliminata con successo!',
+        errorMessage: 'Errore durante l\'eliminazione.',
+        confirmMessage: 'Sei sicuro di voler eliminare questa visita?',
+        borderColor: '#EF4444',
+      });
+      return;
+    }
+
+    // — modifica visita
+    const editBtn = event.target.closest('.btn.edit');
+    if (editBtn) {
+      event.preventDefault();
+      populateAndOpenVisitaModal(editBtn.dataset.id);
+      return;
+    }
+  });
 });
+

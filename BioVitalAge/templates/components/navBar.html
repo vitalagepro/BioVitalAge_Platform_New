@@ -11,7 +11,11 @@
 
         <!-- Links Section -->
         <div class="col-md-8 nav-bar-linkage">
-            <a href="{% url 'loginPage' %}">Pazienti</a>
+            {% if dottore.user %}
+                <a href="{% url 'Risultati' %}">Pazienti</a>
+            {% else %}
+                <a href="{% url 'loginPage' %}">Pazienti</a>
+            {% endif %}
         </div>
 
         <!-- User Section -->

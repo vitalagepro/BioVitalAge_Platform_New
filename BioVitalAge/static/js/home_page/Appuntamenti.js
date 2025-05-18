@@ -1793,6 +1793,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fillFormForNewAppointment(null, false);
 
     // Se necessario, resetta anche i campi del form
+    document.getElementById("dottore-select").selectedIndex = 0;
     document.getElementById("tipologia_visita").selectedIndex = 0;
     document.getElementById("paziente-select").selectedIndex = 0;
     document.getElementById("voce-prezzario").selectedIndex = 0;
@@ -2179,12 +2180,12 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
   // 2) Aggiungi l’id del dottore, se presente (solo utente Isabella)
   const doctorSelect = document.getElementById("dottore-select");
   if (doctorSelect) {
-  const dottId = doctorSelect.value;
-  if (!dottId) {
-    showAlert("danger", "Seleziona un dottore!");
-    return;
-  }
-  appointmentData.dottore_id = dottId;
+    const dottId = doctorSelect.value;
+    if (!dottId) {
+      showAlert("danger", "Seleziona un dottore!");
+      return;
+    }
+    appointmentData.dottore_id = dottId;
   }
 
   // Invio dei dati al backend Django tramite POST

@@ -1960,6 +1960,11 @@ class VisiteView(View):
         page_number = request.GET.get('page')
         visite = paginator.get_page(page_number)
 
+        profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        is_secretary = profile.isSecretary
+
+        dottori = UtentiRegistratiCredenziali.objects.all() if is_secretary else None
+
         context = {
             'dottore': dottore,
             'persona': persona,
@@ -1967,7 +1972,9 @@ class VisiteView(View):
             'visite': visite,
             'tipologia_appuntamenti': tipologia_appuntamenti,
             'numero_studio': numero_studio,
-            'voce_prezzario': voce_prezzario
+            'voce_prezzario': voce_prezzario,
+            'is_secretary': is_secretary,
+            'dottori': dottori,
         }
         return render(request, "cartella_paziente/sezioni_storico/visite.html", context)
 

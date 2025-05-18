@@ -128,6 +128,21 @@
 
                             <form action="POST" id="patient-appointment">
                                 {% csrf_token %}
+
+                                {% if is_secretary %}
+                                  <label for="dottore-select" class="mb-3">
+                                    <p class="mb-0">Dottore Associato*</p>
+                                    <select id="dottore-select" name="dottore_id" class="form-select-appointment w-100">
+                                      <option value="">Seleziona Dottore</option>
+                                      {% for doc in dottori %}
+                                        <option value="{{ doc.id }}" 
+                                            {% if persona.dottore and persona.dottore.id == doc.id %}selected{% endif %}>
+                                          {{ doc.nome|title }} {{ doc.cognome|title }}
+                                        </option>
+                                      {% endfor %}
+                                    </select>
+                                  </label>
+                                {% endif %}
                                 <label for="tipologia" class="input-typology">
                                     <div class="d-flex flex-column w-100">
                                         <p class="mb-0">Tipologia*</p>

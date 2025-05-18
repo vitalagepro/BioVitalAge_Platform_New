@@ -41,8 +41,16 @@
         <!-- User Section -->
         <div class="col-md-2 nav-bar-user" id="userContainer">
                
-            <h3>Dottor. {{ dottore }}</h3>
-            
+            <h3>
+                {% if dottore.isSecretary %}
+                    Segr. {{ dottore.cognome }}
+                {% elif dottore.user %}
+                    Dottor. {{ dottore.cognome }}
+                {% else %}
+                    Account Demo
+                {% endif %}
+            </h3>
+                        
             <div class="img-container-user-nav-bar">
                 <img id="userImg" src="{% static 'image/Username_White.png' %}" alt="user">
             </div>
