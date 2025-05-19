@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="{% static 'css/cartella_paziente/eta_biologica/calcolatore.css' %}">
 
     <!-- Js Import  -->
-    <script src="{% static 'js/cartella_paziente/eta_biologica/calcolatore.js' %}" defer></script>
+    <script src="{% static 'js/cartella_paziente/eta_biologica/calcolatore.js' %}" type="module" defer></script>
     <script src="{% static 'js/CodiceFiscale.js' %}" defer></script>
 
     <!-- Bootstrap import -->
@@ -3547,7 +3547,7 @@
                         <!-- Date of Birth -->
                         <div class="form-group">
                             <label for="dob">Data di nascita</label>
-                            <input type="text" id="dob" name="dob" required value="{{ persona.dob }}">
+                            <input type="text" id="dob" name="dob" required value="{{ persona.dob|date:"d/m/Y" }}">
                         </div>
                 
                         <!-- Gender -->

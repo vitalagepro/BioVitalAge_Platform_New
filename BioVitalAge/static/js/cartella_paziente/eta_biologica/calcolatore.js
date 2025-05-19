@@ -1,3 +1,5 @@
+import showAlert from "../../components/showAlert.js";
+
 /*  -----------------------------------------------------------------------------------------------
   Indicator New function
 --------------------------------------------------------------------------------------------------- */
@@ -5,6 +7,22 @@
  * Inizializza e posiziona i cursori degli indicatori
  * Deve essere chiamata solo quando la modale (e quindi gli .indicator-container) è già nel DOM.
  */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const homeCalculator = document.getElementById("homeCalcolatore");
+
+  homeCalculator.addEventListener("click" , function (event) {
+    event.preventDefault();
+    
+    showAlert({
+      type: "warning",
+      message: "",
+      extraMessage: "La Home Page è disponibile solo per i medici.",
+      borderColor: "#f97316"
+    })
+  })
+})
+
 function initIndicatori() {
   const containers = document.querySelectorAll(".indicator-container");
   if (!containers.length) {

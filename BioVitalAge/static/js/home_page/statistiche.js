@@ -1,129 +1,151 @@
-/*  -----------------------------------------------------------------------------------------------
-  Graphs and Charts
---------------------------------------------------------------------------------------------------- */
+// --- 0. ANDAMENTO INSERIMENTO PAZIENTI ---
+const patientsLabels = JSON.parse(
+  document.getElementById('monthly-labels').textContent
+);
+const patientsData = JSON.parse(
+  document.getElementById('monthly-data').textContent
+);
 
-// Chart: Patients by Age
-const ctx1 = document.getElementById("patientsByAge").getContext("2d");
-new Chart(ctx1, {
-  type: "bar",
-  data: {
-    labels: [
-      "Gen",
-      "Feb",
-      "Mar",
-      "Apr",
-      "Mag",
-      "Giu",
-      "Lug",
-      "Ago",
-      "Set",
-      "Ott",
-      "Nov",
-      "Dic",
-    ],
-    datasets: [
-      {
-        label: "0-5",
-        data: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60],
+new Chart(
+  document.getElementById("patientsChart").getContext("2d"),
+  {
+    type: "bar",
+    data: {
+      labels: patientsLabels,
+      datasets: [{
+        label: "Pazienti Inseriti",
+        data: patientsData,
         backgroundColor: "#6a2dcc",
-      },
-      {
-        label: "6-15",
-        data: [7, 12, 17, 22, 27, 32, 37, 42, 47, 52, 57, 62],
-        backgroundColor: "#8041e0",
-      },
-      {
-        label: "16-25",
-        data: [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65],
-        backgroundColor: "#9666e4",
-      },
-      {
-        label: "26-45",
-        data: [15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70],
-        backgroundColor: "#ad8be8",
-      },
-      {
-        label: "46+",
-        data: [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75],
-        backgroundColor: "#c3b0ec",
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "bottom",
-      },
+        // per maggior spazio tra le barre
+        categoryPercentage: 2.8,
+        // per barre più sottili
+        barPercentage: 0.1
+      }]
     },
-    scales: {
-      x: {
-        grid: {
-          display: false,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        x: {
+          ticks: { autoSkip: false }
         },
-      },
-      y: {
-        beginAtZero: true,
-      },
-    },
-  },
-});
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  }
+);
 
-// Chart: Patients
-const ctx2 = document.getElementById("patients").getContext("2d");
-new Chart(ctx2, {
+
+// --- 1. GRAFICO MENSILE ---
+// --- GRAFICO MENSILE CON TOOLTIP CUSTOM ---
+const monthlyLabels = JSON.parse(
+  document.getElementById('monthly-labels').textContent
+);
+const monthlyData   = JSON.parse(
+  document.getElementById('monthly-data').textContent
+);
+
+const monthlyCtx = document
+  .getElementById("monthlyPatientsChart")
+  .getContext("2d");
+
+let monthlyPatientsChart = new Chart(monthlyCtx, {
   type: "line",
   data: {
-    labels: [
-      "Gen",
-      "Feb",
-      "Mar",
-      "Apr",
-      "Mag",
-      "Giu",
-      "Lug",
-      "Ago",
-      "Set",
-      "Ott",
-      "Nov",
-      "Dic",
-    ],
-    datasets: [
-      {
-        label: "Nuovo",
-        data: [50, 60, 55, 70, 75, 80, 90, 85, 95, 100, 105, 110],
-        borderColor: "#6a2dcc",
-        backgroundColor: "#3b255d2c",
-        fill: true,
-      },
-      {
-        label: "Ritorno",
-        data: [30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85],
-        borderColor: "#9666e4",
-        backgroundColor: "#c3b0ec",
-        fill: true,
-      },
-    ],
+    labels: monthlyLabels,
+    datasets: [{
+      label: "Pazienti Mensili",
+      data: monthlyData,
+      backgroundColor: "rgba(195,176,236, 0.7)",
+      borderColor: "#6a2dcc",
+      borderWidth: 2,
+      fill: true,
+      pointRadius: 4,
+      tension: 0.3
+    }]
   },
   options: {
     responsive: true,
+    interaction: {
+      mode: "index",
+      intersect: false
+    },
     plugins: {
-      legend: {
-        position: "bottom",
-      },
+      legend: { display: false }
     },
     scales: {
-      x: {
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        beginAtZero: true,
-      },
+      y: { beginAtZero: true },
+      x: { grid: { display: false } }
     },
-  },
+    onHover: (event, chartElements) => {
+      const tooltip = document.getElementById("monthlyTooltip");
+      if (chartElements.length) {
+        const idx = chartElements[0].index;
+        const m   = monthlyLabels[idx];
+        const cnt = monthlyData[idx];
+        const bio = Math.floor(cnt * 0.6);
+
+        tooltip.innerHTML = `
+          <strong>${m}</strong><br>
+          Pazienti: ${cnt}<br>
+          Con calcolo età bio: ${bio}
+        `;
+        const rect = monthlyCtx.canvas.getBoundingClientRect();
+        tooltip.style.opacity = 1;
+        tooltip.style.left    = event.clientX - rect.left + "px";
+        tooltip.style.top     = event.clientY - rect.top  + "px";
+      } else {
+        tooltip.style.opacity = 0;
+      }
+    }
+  }
 });
+
+
+// --- 2. GRAFICO SETTIMANALE ---
+const weeklyLabels = JSON.parse(document.getElementById('weekly-labels').textContent);
+const weeklyData   = JSON.parse(document.getElementById('weekly-data').textContent);
+new Chart(
+  document.getElementById("weeklyPatientsChart").getContext("2d"),
+  {
+    type: "line",
+    data: {
+      labels: weeklyLabels,
+      datasets: [{
+        label: "Pazienti per Giorno",
+        data: weeklyData,
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } }
+    }
+  }
+);
+
+// --- 3. GRAFICO PER FASCE D’ETÀ ---
+const ageLabels   = JSON.parse(document.getElementById('age-labels').textContent);
+const ageDatasets = JSON.parse(document.getElementById('age-datasets').textContent);
+new Chart(
+  document.getElementById("patientsByAge").getContext("2d"),
+  {
+    type: "bar",
+    data: {
+      labels: ageLabels,
+      datasets: ageDatasets
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: "bottom" } }
+    }
+  }
+);
 
 // Chart: Income by Department
 const ctx3 = document.getElementById("incomeByDepartment").getContext("2d");
@@ -184,154 +206,6 @@ new Chart(ctx3, {
       y: {
         beginAtZero: true,
       },
-    },
-  },
-});
-
-const weeklyCtx = document.getElementById("weeklyPatientsChart");
-new Chart(weeklyCtx, {
-  type: "line",
-  data: {
-    labels: ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"],
-    datasets: [
-      {
-        label: "Pazienti Visitati",
-        data: [5, 10, 8, 12, 15, 20, 5],
-        borderColor: "#fff",
-        backgroundColor: "rgba(255,255,255,0.3)",
-        fill: true,
-        tension: 0.3,
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    scales: {
-      x: {
-        ticks: { color: "#fff" },
-        grid: { color: "rgba(255,255,255,0.2)" },
-      },
-      y: {
-        ticks: { color: "#fff" },
-        grid: { color: "rgba(255,255,255,0.2)" },
-      },
-    },
-    plugins: {
-      legend: { display: false },
-    },
-  },
-});
-
-const patientsCtx = document.getElementById("patientsChart");
-new Chart(patientsCtx, {
-  type: "bar",
-  data: {
-    labels: [
-      "Gen",
-      "Feb",
-      "Mar",
-      "Apr",
-      "Mag",
-      "Giu",
-      "Lug",
-      "Ago",
-      "Set",
-      "Ott",
-      "Nov",
-      "Dic",
-    ],
-    datasets: [
-      {
-        label: "Pazienti Inseriti",
-        data: [30, 45, 60, 50, 41, 66, 30, 50, 70, 90, 100, 120],
-        backgroundColor: "#6a2dcc",
-        categoryPercentage: 2.8, // Maggior spazio tra le categorie
-        barPercentage: 0.1, // Barre più sottili
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { display: false },
-    },
-    scales: {
-      x: {
-        ticks: {
-          autoSkip: false, // Mostra tutte le etichette
-        },
-      },
-      y: {
-        beginAtZero: true,
-      },
-    },
-  },
-});
-
-const monthlyCtx = document.getElementById("monthlyPatientsChart");
-const monthlyData = {
-  labels: [
-    "Gen",
-    "Feb",
-    "Mar",
-    "Apr",
-    "Mag",
-    "Giu",
-    "Lug",
-    "Ago",
-    "Set",
-    "Ott",
-    "Nov",
-    "Dic",
-  ],
-  datasets: [
-    {
-      label: "Pazienti Mensili",
-      data: [40, 60, 55, 70, 80, 90, 100, 85, 75, 95, 110, 120],
-      backgroundColor: "#c3b0ec",
-      borderColor: "#6a2dcc",
-      borderWidth: 2,
-      fill: true,
-    },
-  ],
-};
-
-let monthlyPatientsChart = new Chart(monthlyCtx, {
-  type: "line",
-  data: monthlyData,
-  options: {
-    responsive: true,
-    interaction: {
-      mode: "index",
-      intersect: false,
-    },
-    plugins: {
-      legend: { display: false },
-    },
-    scales: {
-      y: { beginAtZero: true },
-    },
-    onHover: (event, chartElement) => {
-      const tooltip = document.getElementById("monthlyTooltip");
-      if (chartElement.length > 0) {
-        const index = chartElement[0].index;
-        const monthLabel = monthlyData.labels[index];
-        const patientCount = monthlyData.datasets[0].data[index];
-        const calcCount = Math.floor(patientCount * 0.6);
-
-        tooltip.innerHTML = `
-                      <strong>${monthLabel}</strong><br>
-                      Pazienti: ${patientCount}<br>
-                      Con calcolo età bio: ${calcCount}
-                  `;
-        const canvasPos = monthlyCtx.getBoundingClientRect();
-        tooltip.style.opacity = 1;
-        tooltip.style.left = event.clientX - canvasPos.left + "px";
-        tooltip.style.top = event.clientY - canvasPos.top + "px";
-      } else {
-        const tooltip = document.getElementById("monthlyTooltip");
-        tooltip.style.opacity = 0;
-      }
     },
   },
 });

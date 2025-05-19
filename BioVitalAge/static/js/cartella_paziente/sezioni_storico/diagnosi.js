@@ -137,6 +137,15 @@ function formatDateItalian(dateStr) {
   return `${day}/${month}/${year}`;
 }
 
+async function refreshDiagnosiTable() {
+  const wrapper = document.querySelector('.table-wrapper');
+  const resp = await fetch(window.location.href);
+  const html = await resp.text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const newWrap = doc.querySelector('.table-wrapper');
+  wrapper.innerHTML = newWrap.innerHTML;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const openBtn = document.getElementById("openDiagnosisBtn");
   const closeIcon = document.getElementById("closeDiagnosisModal");
@@ -197,45 +206,60 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await response.json();
 
       if (result.success) {
-        showAlert({
-          message: "Diagnosi salvata con successo.",
-          type: "success",
-          borderColor: "var(--positive-color)"
-        });
-      
-        // Aggiungi dinamicamente la riga nella tabella
+        // Aggiungi o aggiorna dinamicamente la riga nella tabella
         const tableBody = document.querySelector("table tbody");
-        const nuovaRiga = document.createElement("tr");
-      
-        nuovaRiga.innerHTML = `
-          <td>Nuova</td>
-          <td>${result.descrizione}</td>
-          <td><span class="badge ${getBadgeClass(result.gravita)}">${getGravitaLabel(result.gravita)}</span></td>
-          <td>${formatDataItaliana(result.data_diagnosi)}</td>
-          <td>${result.stato}</td>
-          <td>${result.risolta ? "Si" : "No"}</td>
-          <td>
-            <button class="btn edit" onclick="compilaDiagnosi(${result.id})">✎</button>
-            <button class="btn delete" data-id="${result.id}">✖</button>
-          </td>
-        `;
-      
-        tableBody.prepend(nuovaRiga); // Aggiungi in cima
-      
-        // Riattiva il delete sul nuovo bottone
-        nuovaRiga.querySelector(".btn.delete").addEventListener("click", function () {
-          const row = this.closest("tr");
-          confirmDeleteAction({
-            url: `/CartellaPaziente/${result.id}/Diagnosi`,
-            elementToRemove: row,
-            successMessage: "Diagnosi eliminata con successo!",
-            errorMessage: "Errore nella cancellazione della diagnosi",
-            confirmMessage: "Sei sicuro di voler eliminare questa diagnosi?",
-            borderColor: "#EF4444",
+
+        if (!isEdit) {
+          // 🆕 nuova diagnosi
+          const nuovaRiga = document.createElement("tr");
+          nuovaRiga.setAttribute("data-id", result.id);
+          nuovaRiga.innerHTML = `
+            <td>${result.id}</td>
+            <td class="td-descrizione">${result.descrizione}</td>
+            <td class="td-gravita">
+              <span class="badge ${getBadgeClass(result.gravita)}">
+                ${getGravitaLabel(result.gravita)}
+              </span>
+            </td>
+            <td class="td-data">${formatDataItaliana(result.data_diagnosi)}</td>
+            <td class="td-stato">${result.stato}</td>
+            <td class="td-risolta">${result.risolta ? "Si" : "No"}</td>
+            <td>
+              <button class="btn edit" onclick="compilaDiagnosi(${result.id})">✎</button>
+              <button class="btn delete" data-id="${result.id}">✖</button>
+            </td>
+          `;
+          tableBody.prepend(nuovaRiga);
+
+          // riattiva il delete sul nuovo bottone
+          nuovaRiga.querySelector(".btn.delete").addEventListener("click", function () {
+            const row = this.closest("tr");
+            confirmDeleteAction({
+              url: `/CartellaPaziente/${result.id}/Diagnosi`,
+              elementToRemove: row,
+              successMessage: "Diagnosi eliminata con successo!",
+              errorMessage: "Errore nella cancellazione della diagnosi",
+              confirmMessage: "Sei sicuro di voler eliminare questa diagnosi?",
+              borderColor: "#EF4444",
+            });
           });
-        });
-      
+        } else {
+          // ✏️ modifica: aggiorna solo la riga esistente
+          const row = tableBody.querySelector(`tr[data-id="${result.id}"]`);
+          if (row) {
+            row.querySelector(".td-descrizione").textContent = result.descrizione;
+            const badge = row.querySelector(".td-gravita .badge");
+            badge.textContent = getGravitaLabel(result.gravita);
+            badge.className = "badge " + getBadgeClass(result.gravita);
+            row.querySelector(".td-data").textContent = formatDataItaliana(result.data_diagnosi);
+            row.querySelector(".td-stato").textContent = result.stato;
+            row.querySelector(".td-risolta").textContent = result.risolta ? "Si" : "No";
+          }
+        }
+
         closeModal();
+
+        await refreshDiagnosiTable();
       } else {
         showAlert({
           message: isEdit

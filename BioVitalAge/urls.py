@@ -23,6 +23,7 @@ urlpatterns = [
     ## URL SIDEBAR
     path('api/appointment-notifications/',                      AppointmentNotificationsView.as_view(),              name='appointment-notifications'),
     path('api/medical-news-notifications/',                     MedicalNewsNotificationsView.as_view(),              name='medical-news-notifications'),
+    path('api/email-notifications/',                            EmailNotificationsView.as_view(),                    name='email_notifications'),
 
     ## URL HOME PAGE / STATISTICHE
     path("Home_Page/Statistiche",                               views.StatisticheView.as_view(),                     name="statistiche"),
@@ -71,6 +72,9 @@ urlpatterns = [
     ## URL SEZIONE ALLEGATI
     path("download/<str:tipo>/<int:allegato_id>/",              DownloadAllegatoView.as_view(),                       name="download_allegato"),
     path("CartellaPaziente/<int:paziente_id>/Allegato/<str:tipo>/<int:allegato_id>/delete/", DeleteAllegatoView.as_view(), name="delete_allegato"),
+
+    ## URL SEZIONE VISITE
+    path('elimina-visita/<int:id>/',                            EliminaVisitaView.as_view(),                          name='elimina_visita'),
 
     ## SEZIONE MUSCOLO
     path('Valutazione_Muscolo_Scheletrica/<int:persona_id>/',   views.ValutazioneMSView.as_view(),                    name='valutazione_m_s'), 

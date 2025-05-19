@@ -12,6 +12,7 @@ class UtentiRegistratiCredenziali(models.Model):
     cognome = models.CharField(max_length=100)
     email = models.CharField(max_length=100, null=True)
     password = models.CharField(max_length=128, null=True)
+    isSecretary = models.BooleanField(default=False)
     cookie = models.CharField(max_length=2, null=True)
 
     #FUNZIONE DI HASHING DELLA PASSWORD
@@ -681,12 +682,6 @@ class AllegatiStrumentale (models.Model):
     paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="allegati_strumentale")
     file = models.FileField(upload_to='strumentale/', null=True, blank=True)
     data_referto = models.DateField(default=datetime.now)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-## VISITE
-class Visite(models.Model):
-    paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name="visitePazienti")
-    data_visita = models.DateField(default=datetime.now)
     created_at = models.DateTimeField(auto_now_add=True)
 
 ## MICROBIOTA

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.views import View
 from .models import *
 from django.shortcuts import redirect
@@ -35,6 +35,14 @@ def safe_float(data, key, default=0.0):
 
 
 class CalcoloEtaBiologica(View):
+    def get(self, request):
+        dottore = get_object_or_404(UtentiCredenzialiCalcolatore, email=request.user.email)
+
+        context = {
+            'dottore': dottore,
+        }
+
+        return render(request, 'includes/index.html', context)
     def post(self, request):
         data = {key: value for key, value in request.POST.items() if key != 'csrfmiddlewaretoken'}
 
@@ -265,7 +273,6 @@ class CalcoloEtaBiologica(View):
                         hct = hct_m, mcv = mcv, mch = mch, mchc = mchc, rdw = rdwsd, exams = exams, gender=data.get('gender')
         )
 
-
         datiSalvati = TabellaPazienti(
                         name = data.get('name'),
                         surname = data.get('surname'),
@@ -439,10 +446,13 @@ class CalcoloEtaBiologica(View):
         
         datiSalvati.save()
 
+        demo = get_object_or_404(UtentiCredenzialiCalcolatore, email=request.user.email)
+        
         context = {
                     "show_modal": True,
                     "biological_age": biological_age,
-                    "data": data,    
+                    "data": data,
+                    "demo": demo,
         }
 
 

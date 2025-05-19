@@ -201,15 +201,33 @@
                     <div class="other_container">
 
                         <div class="subCard-container">
-
                             <div class="card-subcard">
                                 <div class="img-circle-container">
-                                    <img src="{% static 'image/Stetoscopio.png' %}" alt="">
+                                  <img src="{% static 'image/Stetoscopio.png' %}" alt="">
                                 </div>
                                 <div class="container-input-info">
-                                    <p>Dottore Associato</p>
-                                    <input class="input-disabled type-two" type="text" name="associate_staff" value="{{ persona.associate_staff|default:persona.dottore }}" placeholder="inserisci il valore" disabled>
-                                </div>
+                                    <p class="mb-1">Dottore Associato</p>
+                                  
+                                    {% if is_secretary %}
+                                      <span id="associate-display" class="type-two">
+                                        {{ persona.dottore.nome|title }} {{ persona.dottore.cognome|title }}
+                                      </span>
+                                      <select id="associate-select" name="dottore"
+                                              class="type-two" style="display:none">
+                                        <option value="">Seleziona Dottore</option>
+                                        {% for doc in dottori %}
+                                          <option value="{{ doc.id }}"
+                                            {% if persona.dottore and persona.dottore.id == doc.id %}selected{% endif %}>
+                                            {{ doc.nome|title }} {{ doc.cognome|title }}
+                                          </option>
+                                        {% endfor %}
+                                      </select>
+                                    {% else %}
+                                      <span id="associate-display" class="type-two input-disabled">
+                                        {{ persona.dottore.nome|title }} {{ persona.dottore.cognome|title }}
+                                      </span>
+                                    {% endif %}
+                                </div>                                  
                             </div>
             
                             <div class="card-subcard">
@@ -218,19 +236,41 @@
                                 </div>
                                 <div class="container-input-info">
                                     <p>Visita Recente</p>
-                                    <input class="input-disabled type-two" type="text" name="lastVisit" value="{{ persona.lastVisit|date:'d/m/Y'|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
+                                    <!-- span per visualizzazione -->
+                                    <span id="lastVisit-display" class="type-two cursor-not-allowed">
+                                        {% if ultimo_appuntamento %}
+                                            {{ ultimo_appuntamento.data|date:"d/m/Y" }}
+                                        {% else %}
+                                            non presente.
+                                        {% endif %}
+                                    </span>
+                                    <!-- input date vero e proprio (ISO) -->
+                                    <input id="lastVisit-input" class="type-two" type="date" name="lastVisit"
+                                        value="{% if ultimo_appuntamento %}{{ ultimo_appuntamento.data|date:'Y-m-d' }}{% endif %}"
+                                        style="display:none; cursor: not-allowed;">
                                 </div>
-                            </div>
+                                </div>
             
-                            <div class="card-subcard">
-                                <div class="img-circle-container">
-                                    <img src="{% static 'image/Calendario.png' %}" alt="">
+                                <div class="card-subcard">
+                                    <div class="img-circle-container">
+                                      <img src="{% static 'image/Calendario.png' %}" alt="">
+                                    </div>
+                                    <div class="container-input-info">
+                                      <p>Prossima Visita</p>
+                                    <!-- span per visualizzazione -->
+                                    <span id="lastVisit-display" class="type-two cursor-not-allowed">
+                                        {% if prossimo_appuntamento %}
+                                            {{ prossimo_appuntamento.data|date:"d/m/Y" }}
+                                        {% else %}
+                                            non presente.
+                                        {% endif %}
+                                    </span>
+                                    <!-- input date vero e proprio (ISO) -->
+                                    <input id="lastVisit-input" class="type-two" type="date" name="lastVisit"
+                                        value="{% if prossimo_appuntamento %}{{ prossimo_appuntamento.data|date:'Y-m-d' }}{% endif %}"
+                                        style="display:none; cursor: not-allowed;">
+                                    </div>
                                 </div>
-                                <div class="container-input-info">
-                                    <p>Prossima Visita</p>
-                                    <input class="input-disabled type-two" type="text" name="upcomingVisit" value="{{ persona.upcomingVisit|date:'d/m/Y'|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
-                                </div>
-                            </div>
             
                             <div class="card-subcard">
                                 <div class="img-circle-container">
@@ -597,7 +637,7 @@
             <div class="cardDati">
          
                 <div class="cartella-effect">
-                    <h3>Dati Base - Stile di Vita Paziente</h3>
+                    <h3><a href="{% url 'dati_base' persona.id %}" style="text-decoration: none; color: inherit;">Dati Base - Stile di Vita Paziente</a></h3>
                     <div class="space"></div>
                 </div>
 
@@ -613,7 +653,7 @@
 
             <div class="cardDati">
                 <div class="cartella-effect">
-                    <h3>Età Metabolica</h3>
+                    <h3><a href="{% url 'composizione' persona.id %}" style="text-decoration: none; color: inherit;">Età Metabolica</a></h3>
                     <div class="space"></div>
                 </div>
                 <div class="card-content">
@@ -630,7 +670,7 @@
             
             <div class="cardDati">
                 <div class="cartella-effect">
-                    <h3>Capacità Vitale</h3>
+                    <h3><a href="{% url 'etaVitale' persona.id %}" style="text-decoration: none; color: inherit;">Capacità Vitale</a></h3>
                     <div class="space"></div>
                 </div>
 
@@ -646,7 +686,7 @@
             <!-- ETA BIOLOGICA -->
             <div class="cardDati">
                 <div class="cartella-effect">
-                    <h3>Rapporto Età Biologica</h3>
+                    <h3><a href="{% url 'eta_biologica' persona.id %}" style="text-decoration: none; color: inherit;">Rapporto Età Biologica</a></h3>
                     <div class="space"></div>
                 </div>
 
@@ -672,7 +712,7 @@
             <div class="cardDati">
 
                 <div class="cartella-effect">
-                    <h3>Resilienza</h3>
+                    <h3><a href="{% url 'resilienza' persona.id %}" style="text-decoration: none; color: inherit;">Resilienza</a></h3>
                     <div class="space"></div>
                 </div>
 
@@ -688,7 +728,7 @@
             <!-- TERAPHY -->
             <div class="cardDati">
                 <div class="cartella-effect">
-                    <h3>Piano Terapeutico</h3>
+                    <h3><a href="{% url 'piano_terapeutico' persona.id %}" style="text-decoration: none; color: inherit;">Piano Terapeutico</a></h3>
                     <div class="space"></div>
                 </div>
                 <div class="card-content">
@@ -913,7 +953,7 @@
       
 
     <!-- IMPORT JS PRE DOBY CLOSE TAG -->
-    <script src="{% static 'js/cartellaPaziente.js' %}"></script>
+    <script src="{% static 'js/cartellaPaziente.js' %}" type="module"></script>
     
     <!--  CLOSE MODALE MESSAGE SUCCESS -->
     <script>
@@ -922,6 +962,14 @@
             modale.style.display = 'none';
         }
     </script>
+
+    <!-- IS SECRETARY -->
+    <script>
+        window.isSecretary = {{ is_secretary|yesno:"true,false" }};
+    </script>
+  
+
+
 
     <!-- SCRIPT CAPACITA' VITALE -->
     <script>

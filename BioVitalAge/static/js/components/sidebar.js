@@ -37,6 +37,7 @@ const updates = [
 ];
 
 const configurations = [
+  { setting: "Ruolo", value: role },
   { setting: "Lingua", value: "Italiano" },
   {
     setting: "Account",
@@ -118,14 +119,24 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. Verifica il cambio utente
   checkUserChange();
 
-  // 2. Configura intervallo di aggiornamento  
+  // 2. Configura intervallo di aggiornamento
   setInterval(fetchNotifications, 3600000);
 
+  // Eseguiamo subito un primo check
+  pollEmailCount().then(updateAllBadges);
+
+  // Poi impostiamo un intervallo, ad esempio ogni 30 secondi
+  setInterval(async () => {
+    await pollEmailCount();
+    updateAllBadges();
+  }, 30000);
+
   updateAllBadges();
+
   // 4. Listener per logout
-  document.getElementById('logout-btn')?.addEventListener('click', () => {
-    localStorage.setItem('pendingLogout', 'true');
-    localStorage.removeItem('appUser');
+  document.getElementById("logout-btn")?.addEventListener("click", () => {
+    localStorage.setItem("pendingLogout", "true");
+    localStorage.removeItem("appUser");
   });
 });
 
@@ -168,38 +179,83 @@ document.addEventListener("DOMContentLoaded", () => {
           renderNotifications();
           break;
         case "Email":
-          const emailsDataElement = document.getElementById("emails-data");
-
-          if (emailsDataElement) {
-            try {
-              const emails = JSON.parse(emailsDataElement.textContent);
-        
+          // 1) metto un loader temporaneo
+          sidebarContent.innerHTML = `
+          <div class="sk-cube-grid">
+            <div class="sk-cube sk-cube1"></div>
+            <div class="sk-cube sk-cube2"></div>
+            <div class="sk-cube sk-cube3"></div>
+            <div class="sk-cube sk-cube4"></div>
+            <div class="sk-cube sk-cube5"></div>
+            <div class="sk-cube sk-cube6"></div>
+            <div class="sk-cube sk-cube7"></div>
+            <div class="sk-cube sk-cube8"></div>
+            <div class="sk-cube sk-cube9"></div>
+          </div>`;
+          
+          // 2) chiamo la fetch (che *deve* restituire la Promise di un array di email)
+          fetchEmailNotifications()
+            .then((emails) => {
+              // 3) appena arriva l'array, lo porto su sidebarContent
               if (Array.isArray(emails) && emails.length > 0) {
-                sidebarContent.innerHTML = emails.map((email, index) => `
-                  <a href="${email.link}" target="_blank" class="alert alert-warning notification d-block text-decoration-none" data-index="${index}">
-                    <strong>${email.subject}</strong> - ${email.from}
-                  </a>
-                `).join("");
+                sidebarContent.innerHTML = emails
+                  .map(
+                    (e) => `
+                    <a href="${e.link}" target="_blank"
+                       class="alert alert-warning notification d-block text-decoration-none"
+                       data-id="${e.id}">
+                      <strong>${e.subject}</strong><br>
+                      <small>${e.from}</small>
+                    </a>
+                  `
+                  )
+                  .join("");
               } else {
-                sidebarContent.innerHTML = `<p class="default-text-notification">Nessuna email disponibile.</p>`;
+                sidebarContent.innerHTML = `
+                    <p class="default-text-notification">
+                      Nessuna email disponibile.
+                    </p>
+                  `;
               }
-            } catch (error) {
-              console.error("Errore nel parsing JSON delle email:", error);
-              sidebarContent.innerHTML = `<p class="default-text-notification">Errore nel caricamento email.</p>`;
-            }
-          } else {
-            sidebarContent.innerHTML = `<p class="default-text-notification">Nessun dato email trovato.</p>`;
-          }
+            })
+            .catch((err) => {
+              console.error("Errore durante il recupero delle email:", err);
+              sidebarContent.innerHTML = `
+                  <p class="default-text-notification">
+                    Errore nel caricamento delle email, collega un account prima.
+                  </p>
+                `;
+            })
+            .finally(() => {
+              // 4) in ogni caso, mostro la sidebar e scateno GSAP sulle .notification
+              document.body.classList.add("visible");
+              requestAnimationFrame(() => {
+                const elems = document.querySelectorAll(".notification");
+                if (elems.length) {
+                  gsap.to(elems, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.5,
+                    ease: "power2.out",
+                    stagger: 0.2,
+                  });
+                } else {
+                  console.warn("⚠️ Nessuna notifica trovata per GSAP.");
+                }
+              });
+            });
           break;
         case "Appuntamenti":
           break;
         case "Update":
           sidebarContent.innerHTML = updates
-            .map((update, index) => `
+            .map(
+              (update, index) => `
               <div class="alert alert-warning notification" data-index="${index}">
                   ${update.version} - ${update.description}
               </div>
-            `)
+            `
+            )
             .join("");
           break;
         case "Configurazione":
@@ -481,6 +537,21 @@ async function fetchAppointmentNotifications() {
 
 } 
 
+// Funzione per il fetch delle email
+async function fetchEmailNotifications() {
+  const res = await fetch("/api/email-notifications/", {
+    credentials: "same-origin",
+    headers: {
+      "Accept": "application/json",
+      "X-CSRFToken": getCookie("csrftoken"),
+      "X-Requested-With": "XMLHttpRequest"
+    }
+  });
+  if (!res.ok) throw new Error(`Status ${res.status}`);
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || "fetchNonRiuscito");
+  return data.emails;  // <-- restituisco l'array direttamente
+}
 
 /* EMAIL FETCHING */
 function getCookie(name) {
@@ -490,6 +561,19 @@ function getCookie(name) {
     if (key === name) cookieValue = decodeURIComponent(val);
   });
   return cookieValue;
+}
+
+// 1) Funzione che richiama le email e restituisce il numero di messaggi
+async function pollEmailCount() {
+  try {
+    const emails = await fetchEmailNotifications();
+    // Se fetchEmailNotifications() restituisce array di oggetti email
+    window.emailCount = Array.isArray(emails) ? emails.length : 0;
+  } catch (err) {
+    console.error("Errore durante il polling delle email:", err);
+    // In caso di errore, non mostriamo badge
+    window.emailCount = 0;
+  }
 }
 
 // Modifica renderNotifications per usare data-id corretti
