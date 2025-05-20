@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
     {% csrf_token %}
     <meta name="csrf-token" content="{{ csrf_token }}">
-    <!-- Favicon -->
-    <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
     
-    <title>Composizione Corporea</title>
+    <title>BVA - Età Metabolica</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'css/Componenti.css' %}">
@@ -79,7 +79,7 @@
                     <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
                 </p>
                 <p>»</p>
-                <p class="breadcrumb">Composizione Corporea</p>
+                <p class="breadcrumb">Età Metabolica</p>
             </div>
         </div>
 

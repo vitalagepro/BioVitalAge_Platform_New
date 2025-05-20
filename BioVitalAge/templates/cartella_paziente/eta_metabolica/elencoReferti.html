@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
     {% csrf_token %}
     <meta name="csrf-token" content="{{ csrf_token }}">
-    <!-- Favicon -->
-    <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
     
-    <title>Composizione Corporea</title>
+    <title>Età Metabolica - Referti</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'css/Componenti.css' %}">
@@ -80,7 +80,7 @@
                 <p>»</p>
                 <a href="{% url 'composizione' persona.id %}">Età Metabolica</a>
                 <p>»</p>
-                <p>Elenco Referti</p>
+                <p class="breadcrumb">Elenco Referti</p>
             </div>
         </div>
 

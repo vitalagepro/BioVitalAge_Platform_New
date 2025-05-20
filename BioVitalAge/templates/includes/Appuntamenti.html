@@ -55,9 +55,7 @@
             <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
           </a>
           <p>»</p>
-          <p>Home Page</p>
-          <p>»</p>
-          <p>Appuntamenti</p>
+          <p class="breadcrumb">Appuntamenti</p>
         </div>
       </div>
 
@@ -260,7 +258,7 @@
                                                 {% for paziente in persone %}
                                                     <option value="{{ paziente.name|lower }} {{ paziente.surname|lower }}|{{ paziente.id }}">
                                                         {{ paziente.name|title }} {{ paziente.surname|title }} 
-                                                    </option>                                               
+                                                    </option>
                                                 {% endfor %}
                                             </select>
                                         </div>
