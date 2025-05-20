@@ -180,33 +180,37 @@
                         </thead>
                         <tbody id="diagnosiTableBody">
                             {% for diagnosi in storico_diagnosi %}
-                              <tr data-id="{{ diagnosi.id }}">
+                            <tr data-id="{{ diagnosi.id }}">
                                 <td class="td-id">{{ diagnosi.id }}</td>
                                 <td class="td-descrizione">{{ diagnosi.descrizione }}</td>
                                 <td class="td-gravita">
-                                  <span class="badge 
-                                    {% if diagnosi.gravita == 1 %}lieve{% elif diagnosi.gravita == 2 %}moderata{% else %}grave{% endif %}">
-                                    {% if diagnosi.gravita == 1 %}Lieve{% elif diagnosi.gravita == 2 %}Moderata{% else %}Grave{% endif %}
-                                  </span>
+                                    <span
+                                        class="badge 
+                                                        {% if diagnosi.gravita == 1 %}lieve{% elif diagnosi.gravita == 2 %}moderata{% else %}grave{% endif %}">
+                                        {% if diagnosi.gravita == 1 %}Lieve{% elif diagnosi.gravita == 2 %}Moderata{% else %}Grave{% endif
+                                        %}
+                                    </span>
                                 </td>
                                 <td class="td-data">{{ diagnosi.data_diagnosi|date:"d/m/Y" }}</td>
                                 <td class="td-stato">{{ diagnosi.stato }}</td>
                                 <td class="td-risolta">
                                     {% if diagnosi.risolta %}
-                                      <span class="badge badge-success">✔</span>
+                                    <span class="badge badge-success">✔</span>
                                     {% else %}
-                                      <span class="badge badge-secondary">—</span>
+                                    <span class="badge badge-secondary">—</span>
                                     {% endif %}
                                 </td>
                                 <td class="td-azioni">
                                     <button onclick="compilaDiagnosi({{ diagnosi.id }})" class="btn edit">✎</button>
                                     <button class="btn delete" data-id="{{ diagnosi.id }}">✖</button>
                                 </td>
-                              </tr>
+                            </tr>
                             {% empty %}
-                              <tr><td colspan="6">Nessuna diagnosi registrata.</td></tr>
+                            <tr>
+                                <td colspan="6">Nessuna diagnosi registrata.</td>
+                            </tr>
                             {% endfor %}
-                          </tbody>                          
+                        </tbody>
                     </table>
                     <!-- Sezione paginazione -->
                     <div class="pagination_tabella mb-3">

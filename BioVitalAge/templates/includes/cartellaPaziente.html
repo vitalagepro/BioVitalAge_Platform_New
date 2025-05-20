@@ -81,39 +81,54 @@
         </div>  
 
         <!-- MESSAGGIO DI SUCCESSO CON PUNTEGGIO -->
-        {% if success %}
-        <div class="success_message" id="modal_message">
-
-            <div class="header_message">
-                <div class="contianer-title">
-                    <img src="{% static 'image/Success.png' %}" alt="">
-                    <p class="title_message">Success!</p>
-                </div>
-                <button class="close" onclick="closeModal()">x</button>
-                
-            </div>
-
-            <p>I dati delle informazioni personali sono state correttamente aggiornate!</p>
-
-        </div>  
+         {% if success or errore %}
+            <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                    setTimeout(() => {
+                        const modal = document.getElementById("modal_message");
+                        if (modal) {
+                            modal.style.transition = "opacity 0.3s ease";
+                            modal.style.opacity = "0";
+                            setTimeout(() => modal.remove(), 500); // rimuove dal DOM dopo fade out
+                        }
+                    }, 4000); // tempo in millisecondi prima che scompaia (4s)
+                });
+            </script>
         {% endif %}
 
-        <!-- MESSAGGIO ERRORE -->
-        {% if errore %}
-        <div class="erorre_message" id="modal_message">
- 
+        {% if success %}
+            <div class="success_message" id="modal_message">
+
                 <div class="header_message">
                     <div class="contianer-title">
-                        <img src="{% static 'includes/images/unsuccess.png' %}" alt="">
-                        <p class="title_message_errore">Errore!</p>
+                        <img src="{% static 'image/Success.png' %}" alt="">
+                        <p class="title_message">Success!</p>
                     </div>
                     <button class="close" onclick="closeModal()">x</button>
                     
                 </div>
-                <p>Sembra che qualcosa sia andato storto.</p>
-                <p style="margin-top: -1rem; color: #c74b5b; font-weight: bold;">X {{ errore }}</p>
-            
-        </div>
+
+                <p>I dati delle informazioni personali sono state correttamente aggiornate!</p>
+
+            </div>  
+        {% endif %}
+
+        <!-- MESSAGGIO ERRORE -->
+        {% if errore %}
+            <div class="erorre_message" id="modal_message">
+    
+                    <div class="header_message">
+                        <div class="contianer-title">
+                            <img src="{% static 'includes/images/unsuccess.png' %}" alt="">
+                            <p class="title_message_errore">Errore!</p>
+                        </div>
+                        <button class="close" onclick="closeModal()">x</button>
+                        
+                    </div>
+                    <p>Sembra che qualcosa sia andato storto.</p>
+                    <p style="margin-top: -1rem; color: #c74b5b; font-weight: bold;">X {{ errore }}</p>
+                
+            </div>
         {% endif %}
 
         <!-- CARD PERSONAL INFORMATION -->
@@ -512,110 +527,118 @@
                 <div class="container-second-row">
 
                     <div class="capacita_vitale" data-punteggio="{{ ultimo_referto_capacita_vitale.punteggio|default:'2' }}">
-                        <h3>Capacità Vitale</h3>
-                  
-                        <div class="card-polmone">
-                            <div class="backdrop-riempimento">
-                                <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
-                                    <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
-                                </svg>
+                        <a href="{% url 'etaVitale' persona.id %}" style="text-decoration: none; color: inherit;" title="Capacità Vitale">
+                            <h3>Capacità Vitale</h3>
+                      
+                            <div class="card-polmone">
+                                <div class="backdrop-riempimento">
+                                    <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
+                                        <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                    </svg>
+                                </div>
+                                
+                                <img src="{% static 'image/Capacita_Vitale.png' %}" alt="" width="120px" height="120px">
                             </div>
-                            
-                            <img src="{% static 'image/Capacita_Vitale.png' %}" alt="" width="120px" height="120px">
-                        </div>
-                          
-                        <p class="descrizione-vitale"><span style="font-weight: bold;">Punteggio: &nbsp; </span>{{ ultimo_referto_capacita_vitale.punteggio|default:'n.a.' }} / 10</p>
+                              
+                            <p class="descrizione-vitale"><span style="font-weight: bold;">Punteggio: &nbsp; </span>{{ ultimo_referto_capacita_vitale.punteggio|default:'n.a.' }} / 10</p>
+                        </a>
 
                     </div>
 
                     <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.resilienza|default:'2' }}">
-                        <h3>Resilienza</h3>
-                        <div class="card-polmone">
-                            <div class="backdrop-riempimento">
-                                <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
-                                    <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
-                                </svg>
+                        <a href="{% url 'resilienza' persona.id %}" style="text-decoration: none; color: inherit;" title="Resilienza">
+                            <h3>Resilienza</h3>
+                            <div class="card-polmone">
+                                <div class="backdrop-riempimento">
+                                    <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
+                                        <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                    </svg>
+                                </div>
+                                <img src="{% static 'image/Resilienza.png' %}" alt="" width="120px" height="120px">
                             </div>
-                            <img src="{% static 'image/Resilienza.png' %}" alt="" width="120px" height="120px">
-                        </div>
-                        <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.resilienza|default:'n.a.' }}</p>
+                            <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.resilienza|default:'n.a.' }}</p>
+                        </a>
                     </div>
 
                     <div class="eta-container">
-                        <h3>Età Biologica</h3>  
-                 
-                        <script>
-                            document.addEventListener("DOMContentLoaded", function () {
-                                const crono = document.getElementById('crono');
-                                const biologica = document.getElementById('biologica');
-                            
-                                if (crono && biologica) {
-                                    const percentuale_crono = parseInt(crono.textContent);
-                                    const percentuale_biologica = parseInt(biologica.textContent); 
-                            
-                                    const div_crono = document.querySelector('.cronologic-age');
-                                    const div_biologica = document.querySelector('.biologic-age');
-                            
-                                    div_crono.style.left = `${percentuale_crono}%`;
-                                    div_biologica.style.left = `${percentuale_biologica}%`;
-                            
-                                  
-                                    if (percentuale_biologica < percentuale_crono) {
-                                        div_biologica.classList.add('freccia-up');
-                                    } else if (percentuale_biologica > percentuale_crono) {
-                                        div_biologica.classList.add('freccia-down');
-                                    } else {
-                                        div_biologica.classList.add('freccia-equal');
-                                    }
-                                } else {
-                                    console.warn("Elemento 'crono' o 'biologica' non trovato nel DOM.");
-                                }
-                            });
-                        </script>
+                        <a href="{% url 'eta_biologica' persona.id %}" style="text-decoration: none; color: inherit;" title="Età Biologica">
+                            <h3>Età Biologica</h3>
+
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    const crono = document.getElementById('crono');
+                                    const biologica = document.getElementById('biologica');
                                 
-                        <div class="lineaContainer">
-                           <p class="estremoInferiore">0</p>
-
-                            <div class="cronologic-age">
-                                <img src="{% static 'image/Eta_Cronologica.png' %}" alt="">
-                                <p id="crono">{{ persona.chronological_age }}</p>      
+                                    if (crono && biologica) {
+                                        const percentuale_crono = parseInt(crono.textContent);
+                                        const percentuale_biologica = parseInt(biologica.textContent); 
+                                
+                                        const div_crono = document.querySelector('.cronologic-age');
+                                        const div_biologica = document.querySelector('.biologic-age');
+                                
+                                        div_crono.style.left = `${percentuale_crono}%`;
+                                        div_biologica.style.left = `${percentuale_biologica}%`;
+                                
+                                      
+                                        if (percentuale_biologica < percentuale_crono) {
+                                            div_biologica.classList.add('freccia-up');
+                                        } else if (percentuale_biologica > percentuale_crono) {
+                                            div_biologica.classList.add('freccia-down');
+                                        } else {
+                                            div_biologica.classList.add('freccia-equal');
+                                        }
+                                    } else {
+                                        console.warn("Elemento 'crono' o 'biologica' non trovato nel DOM.");
+                                    }
+                                });
+                            </script>
+   
+                            <div class="lineaContainer">
+                               <p class="estremoInferiore">0</p>
+    
+                                <div class="cronologic-age">
+                                    <img src="{% static 'image/Eta_Cronologica.png' %}" alt="">
+                                    <p id="crono">{{ persona.chronological_age }}</p>      
+                                </div>
+                                
+                                <div class="biologic-age">
+                                    <img src="{% static 'image/Eta_Biologica.png' %}" alt="" style="margin-top: 15px;"> 
+                                    <p id="biologica" style="margin-top: 5px; margin-bottom: 0px;">{{ dati_estesi_ultimo_referto.biological_age }}</p>
+                                </div>
+    
+                                <p class="estremoSuperiore">100</p>
                             </div>
+
+                            <div class="legenda">
+                                <div class="subcontainer-legenda">
+                                    <img src="{% static 'image/Eta_Biologica.png' %}" alt="">
+                                    <p>Età Biologica</p>
+                                </div>
                             
-                            <div class="biologic-age">
-                                <img src="{% static 'image/Eta_Biologica.png' %}" alt="" style="margin-top: 15px;"> 
-                                <p id="biologica" style="margin-top: 5px; margin-bottom: 0px;">{{ dati_estesi_ultimo_referto.biological_age }}</p>
+                                <div class="subcontainer-legenda">
+                                    <img src="{% static 'image/Eta_Cronologica.png' %}" alt="" >
+                                    <p>Età Cronologica</p>
+                                </div>
                             </div>
-
-                            <p class="estremoSuperiore">100</p>
-                        </div>
-
-                        <div class="legenda">
-                            <div class="subcontainer-legenda">
-                                <img src="{% static 'image/Eta_Biologica.png' %}" alt="">
-                                <p>Età Biologica</p>
-                            </div>
-                        
-                            <div class="subcontainer-legenda">
-                                <img src="{% static 'image/Eta_Cronologica.png' %}" alt="" >
-                                <p>Età Cronologica</p>
-                            </div>
-                        </div>
+                        </a>
                     </div>      
 
                     <div class="capacita_vitale" data-punteggio="{{ punteggio_eta_metabolica|default:'2' }}">
-                        <h3>Età Metabolica</h3>
-                        <div class="card-polmone">
-                            <div class="backdrop-riempimento">
-                                <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
-                                    <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
-                                </svg>
+                        <a href="{% url 'composizione' persona.id %}" style="text-decoration: none; color: inherit;" title="Età Metabolica">
+                            <h3>Età Metabolica</h3>
+                            <div class="card-polmone">
+                                <div class="backdrop-riempimento">
+                                    <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
+                                        <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                    </svg>
+                                </div>
+                                <img src="{% static 'image/Eta_Metabolica.png' %}" alt="" width="120px" height="120px">
                             </div>
-                            <img src="{% static 'image/Eta_Metabolica.png' %}" alt="" width="120px" height="120px">
-                        </div>
-                        <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ punteggio_eta_metabolica|default:'n.a.' }} / 100</p>
+                            <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ punteggio_eta_metabolica|default:'n.a.' }} / 100</p>
+                        </a>
                     </div>
 
-                    <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.microbiota|default:'2' }}" onclick="window.location.href = '{% url 'valutazione_m_s' persona.id %}' " style="cursor: pointer;">
+                    <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.microbiota|default:'2' }}" onclick="window.location.href = '{% url 'valutazione_m_s' persona.id %}' " style="cursor: pointer;" title="Età Muscolo Scheletrica">
                         <h3 id="small_title">Età Muscolo Scheletrica</h3>
                         <div class="card-polmone">
                             <div class="backdrop-riempimento">
@@ -631,11 +654,12 @@
             </div>
         </div>
 
-        <!-- CARD SEZIONI DATI BASE E COMPOSIZIONE CORPOREA -->
+        <!-- CARD SEZIONI DATI BASE E TERAPIA -->
         <div class="container-sezioniInterne containerStyle"  style="margin-top: -1rem;">
                 
             <div class="cardDati">
-         
+                
+                <!-- DATI BASE -->
                 <div class="cartella-effect">
                     <h3><a href="{% url 'dati_base' persona.id %}" style="text-decoration: none; color: inherit;">Dati Base - Stile di Vita Paziente</a></h3>
                     <div class="space"></div>
@@ -650,81 +674,7 @@
                 </div>
             </div>
 
-
-            <div class="cardDati">
-                <div class="cartella-effect">
-                    <h3><a href="{% url 'composizione' persona.id %}" style="text-decoration: none; color: inherit;">Età Metabolica</a></h3>
-                    <div class="space"></div>
-                </div>
-                <div class="card-content">
-                    <img src="{% static 'image/Sezione_Metabolica.webp' %}" alt="">
-                    <p>In questa sezione è possibile inserire informazioni inerenti la composizione corporea del paziente, per una
-                        valutazione del suo stato di salute fisica.</p>
-                    <a href="{% url 'composizione' persona.id %}">Vai alla sezione</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- CARD SEZIONI ETA VITALE E ETA BIOLOGICA -->
-        <div class="container-sezioniInterne containerStyle" style="margin-top: -1rem;">
             
-            <div class="cardDati">
-                <div class="cartella-effect">
-                    <h3><a href="{% url 'etaVitale' persona.id %}" style="text-decoration: none; color: inherit;">Capacità Vitale</a></h3>
-                    <div class="space"></div>
-                </div>
-
-                <div class="card-content">
-                    <img src="{% static 'image/Sezione_Vitale.png' %}" alt="">
-                    <p>In questa sezione è possibile calcolare un punteggio relativo alla capacità vitale del paziente, sulla base delle
-                        informazioni ricavate mediante questionari e prove fisiche.
-                    </p>
-                    <a href="{% url 'etaVitale' persona.id %}">Vai alla sezione</a>
-                </div>
-            </div>
-
-            <!-- ETA BIOLOGICA -->
-            <div class="cardDati">
-                <div class="cartella-effect">
-                    <h3><a href="{% url 'eta_biologica' persona.id %}" style="text-decoration: none; color: inherit;">Rapporto Età Biologica</a></h3>
-                    <div class="space"></div>
-                </div>
-
-                <div class="card-content">
-                    <img src="{% static 'image/Sezione_Biologica.png' %}" alt="">
-                    <p>In questa sezione è possibile calcolare l'età biologica del paziente e vedere l'andamento insieme ai relativi referti.</p>
-                    
-
-                    <!-- <a href="{% url 'elenco_referti' persona.id %}" style="top: 10rem;" id="adjust">Vai ai referti</a>
-                    <a href="{% url 'Calcolatore' persona.id %}?parametro={{ persona.codice_fiscale|urlencode }}">
-                        Calcola l'età biologica
-                    </a>     --> 
-                    
-                    <a href="{% url 'eta_biologica' persona.id %}">Vai Alla sezione</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- CARD SEZIONI RESILIENZA E THERAPY -->
-        <div class="container-sezioniInterne containerStyle" style="margin-top: -1rem;">
-            
-            <!-- RESILIENZA -->
-            <div class="cardDati">
-
-                <div class="cartella-effect">
-                    <h3><a href="{% url 'resilienza' persona.id %}" style="text-decoration: none; color: inherit;">Resilienza</a></h3>
-                    <div class="space"></div>
-                </div>
-
-
-                <div class="card-content">
-                    <img src="{% static 'image/Sezione_Resilienza.png' %}" alt="">
-                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aspernatur exercitationem placeat impedit mollitia dolor est nesciunt enim in libero repellat temporibus voluptatum esse adipisci, maiores expedita eaque nulla architecto nihil!
-                    </p>
-                    <a href="{% url 'resilienza' persona.id %}">Vai alla sezione</a>
-                </div>
-            </div>
-
             <!-- TERAPHY -->
             <div class="cardDati">
                 <div class="cartella-effect">

@@ -260,6 +260,10 @@
   transform: translate(20px, 0px);
 }
 
+#modal_message {
+    transition: opacity 0.3s ease;
+}
+
 
 /*  CARD BP, SUGAR, HEART, CHOLESTEROL */
 .dashboard {
