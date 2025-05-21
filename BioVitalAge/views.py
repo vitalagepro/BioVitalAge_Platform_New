@@ -4762,9 +4762,12 @@ class MicrobiotaView(LoginRequiredMixin,View):
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
 
+        ultimo_report = persona.microbiota_reports.order_by('-created_at').first()
+
         context = {
             'persona': persona,
             'dottore': dottore,
+            'ultimo_report': ultimo_report,
         }
 
         return render(request, 'cartella_paziente/microbiota/microbiota.html', context)
@@ -4786,9 +4789,14 @@ class MicrobiotaView(LoginRequiredMixin,View):
             report.dati_estratti = data
             report.save()
 
-            print(report)
+            ultimo_report = persona.microbiota_reports.order_by('-created_at').first()
 
-            return redirect('microbiota_detail', id=persona.id)
+            context ={
+                'persona': persona,        
+                'ultimo_report': ultimo_report,
+            }   
+
+            return render(request, 'cartella_paziente/microbiota/microbiota.html', context)
 
         # se mancano dati, torna al template con errore
         return render(request, 'cartella_paziente/microbiota/microbiota.html', {
@@ -4796,3 +4804,18 @@ class MicrobiotaView(LoginRequiredMixin,View):
             'dottore': dottore,
             'error': "Devi selezionare un PDF.",
         })
+    
+
+## SEZIONE MICROIDIOTA
+@method_decorator(catch_exceptions, name='dispatch')
+class MicrobiotaAddView(LoginRequiredMixin, View):
+    def get(self, request, persona_id):
+
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        context ={
+                'persona': persona,        
+        } 
+
+        return render(request, "cartella_paziente/microbiota/add.html" , context)
