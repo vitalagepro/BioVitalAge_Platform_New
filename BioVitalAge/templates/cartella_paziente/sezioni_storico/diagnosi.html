@@ -69,9 +69,11 @@
                     <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
                 </a>
                 <p>»</p>
-                <p>Cartella Paziente</p>
+                <p>
+                    <a href="{% url 'cartella_paziente' persona.id %}" >Cartella Paziente</a>
+                </p>
                 <p>»</p>
-                <p>Diagnosi</p>
+                <p class="breadcrumb">Diagnosi</p>
             </div>
         
         </div>  
@@ -180,58 +182,56 @@
                         </thead>
                         <tbody id="diagnosiTableBody">
                             {% for diagnosi in storico_diagnosi %}
-                            <tr data-id="{{ diagnosi.id }}">
-                                <td class="td-id">{{ diagnosi.id }}</td>
-                                <td class="td-descrizione">{{ diagnosi.descrizione }}</td>
-                                <td class="td-gravita">
-                                    <span
-                                        class="badge 
-                                                        {% if diagnosi.gravita == 1 %}lieve{% elif diagnosi.gravita == 2 %}moderata{% else %}grave{% endif %}">
-                                        {% if diagnosi.gravita == 1 %}Lieve{% elif diagnosi.gravita == 2 %}Moderata{% else %}Grave{% endif
-                                        %}
-                                    </span>
-                                </td>
-                                <td class="td-data">{{ diagnosi.data_diagnosi|date:"d/m/Y" }}</td>
-                                <td class="td-stato">{{ diagnosi.stato }}</td>
-                                <td class="td-risolta">
-                                    {% if diagnosi.risolta %}
-                                    <span class="badge badge-success">✔</span>
-                                    {% else %}
-                                    <span class="badge badge-secondary">—</span>
-                                    {% endif %}
-                                </td>
-                                <td class="td-azioni">
-                                    <button onclick="compilaDiagnosi({{ diagnosi.id }})" class="btn edit">✎</button>
-                                    <button class="btn delete" data-id="{{ diagnosi.id }}">✖</button>
-                                </td>
-                            </tr>
+                                <tr data-id="{{ diagnosi.id }}">
+                                    <td class="td-id">{{ diagnosi.id }}</td>
+                                    <td class="td-descrizione">{{ diagnosi.descrizione }}</td>
+                                    <td class="td-gravita">
+                                        <span
+                                            class="badge {% if diagnosi.gravita == 1 %}lieve{% elif diagnosi.gravita == 2 %}moderata{% else %}grave{% endif %}">
+                                            {% if diagnosi.gravita == 1 %}Lieve{% elif diagnosi.gravita == 2 %}Moderata{% else %}Grave{% endif %}
+                                        </span>
+                                    </td>
+                                    <td class="td-data">{{ diagnosi.data_diagnosi|date:"d/m/Y" }}</td>
+                                    <td class="td-stato">{{ diagnosi.stato }}</td>
+                                    <td class="td-risolta">
+                                        {% if diagnosi.risolta %}
+                                            <span class="badge badge-success">✔</span>
+                                        {% else %}
+                                            <span class="badge badge-secondary">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="td-azioni">
+                                        <button onclick="compilaDiagnosi({{ diagnosi.id }})" class="btn edit">✎</button>
+                                        <button class="btn delete" data-id="{{ diagnosi.id }}">✖</button>
+                                    </td>
+                                </tr>
                             {% empty %}
-                            <tr>
-                                <td colspan="6">Nessuna diagnosi registrata.</td>
-                            </tr>
+                                <tr>
+                                    <td colspan="6">Nessuna diagnosi registrata.</td>
+                                </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                     <!-- Sezione paginazione -->
                     <div class="pagination_tabella mb-3">
                         {% if storico_diagnosi.has_previous %}
-                        <a class="previous" href="?page={{ storico_diagnosi.previous_page_number }}">Previous</a>
+                            <a class="previous" href="?page={{ storico_diagnosi.previous_page_number }}">Previous</a>
                         {% else %}
-                        <span class="previous disabled">Previous</span>
+                            <span class="previous disabled">Previous</span>
                         {% endif %}
                 
                         {% for num in storico_diagnosi.paginator.page_range %}
-                        {% if storico_diagnosi.number == num %}
-                        <span class="current">{{ num }}</span>
-                        {% else %}
-                        <a href="?page={{ num }}">{{ num }}</a>
-                        {% endif %}
+                            {% if storico_diagnosi.number == num %}
+                                <span class="current">{{ num }}</span>
+                            {% else %}
+                                <a href="?page={{ num }}">{{ num }}</a>
+                            {% endif %}
                         {% endfor %}
                 
                         {% if storico_diagnosi.has_next %}
-                        <a class="next" href="?page={{ storico_diagnosi.next_page_number }}">Next</a>
+                            <a class="next" href="?page={{ storico_diagnosi.next_page_number }}">Next</a>
                         {% else %}
-                        <span class="next disabled">Next</span>
+                            <span class="next disabled">Next</span>
                         {% endif %}
                     </div>
                 </div>
@@ -255,39 +255,39 @@
                 diagnosiChart = new Chart(ctx, {
                     type: 'line',
                     data: {
-                    labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
-                    datasets: [{
-                        label: 'Diagnosi mensili',
-                        data: datiDiagnosi,
-                        backgroundColor: 'rgba(128, 90, 213, 0.3)',
-                        borderColor: 'rgba(128, 90, 213, 1)',
-                        pointBackgroundColor: 'rgba(128, 90, 213, 1)',
-                        fill: true,
-                        tension: 0.3
-                    }]
+                        labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
+                        datasets: [{
+                            label: 'Diagnosi mensili',
+                            data: datiDiagnosi,
+                            backgroundColor: 'rgba(128, 90, 213, 0.3)',
+                            borderColor: 'rgba(128, 90, 213, 1)',
+                            pointBackgroundColor: 'rgba(128, 90, 213, 1)',
+                            fill: true,
+                            tension: 0.3
+                        }]
                     },
                     options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { mode: 'index', intersect: false }
-                    },
-                    interaction: {
-                        mode: 'nearest',
-                        intersect: false
-                    },
-                    scales: {
-                        y: {
-                        beginAtZero: true,
-                        ticks: { stepSize: 1 }
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { mode: 'index', intersect: false }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            intersect: false
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { stepSize: 1 }
+                            }
                         }
-                    }
                     }
                 });
             });
 
-        </script>        
+        </script>
 
     </main>
 

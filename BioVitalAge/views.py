@@ -2920,7 +2920,7 @@ class QuizEtaVitaleUpdateView(LoginRequiredMixin,View):
             'card_to_show': card_to_show
         }
 
-        return render(request, 'includes/testVitale.html', context)
+        return render(request, 'cartella_paziente/capacita_vitale/testVitale.html', context)
     
     def post(self, request, id):
         return 
