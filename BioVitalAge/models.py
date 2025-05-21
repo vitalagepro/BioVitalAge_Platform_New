@@ -686,11 +686,107 @@ class AllegatiStrumentale (models.Model):
 
 ## MICROBIOTA
 class MicrobiotaReport(models.Model):
-    paziente = models.ForeignKey(TabellaPazienti, on_delete=models.CASCADE, related_name='microbiota_reports')
-    caricato_da = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    file = models.FileField(upload_to='microbiota_reports/%Y/%m/%d/')
-    dati_estratti = models.JSONField(blank=True, null=True)
+    paziente = models.ForeignKey(
+        TabellaPazienti,
+        on_delete=models.CASCADE,
+        related_name='microbiota_reports'
+    )
+    caricato_da = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='uploaded_microbiota_reports'
+    )
     created_at = models.DateTimeField(default=timezone.now)
+
+    # ------------------------
+    # Indici di biodiversità
+    indice_di_biodiversita = models.CharField(max_length=50, blank=True, null=True)
+    numero_di_specie_obs_species = models.CharField(max_length=50, blank=True, null=True)
+    distanza_filogenetica_pd_whole_tree = models.CharField(max_length=50, blank=True, null=True)
+    distribuzione_specie_indice_di_pielou = models.CharField(max_length=50, blank=True, null=True)
+
+    # ------------------------
+    # Patobionti rilevati
+    batteri = models.CharField(max_length=100, blank=True, null=True)
+    miceti = models.CharField(max_length=100, blank=True, null=True)
+    virus = models.CharField(max_length=100, blank=True, null=True)
+    parassiti = models.CharField(max_length=100, blank=True, null=True)
+
+    # ------------------------
+    # Metaboliti e indicatori funzionali
+    acetato = models.CharField(max_length=50, blank=True, null=True)
+    butirrato = models.CharField(max_length=50, blank=True, null=True)
+    propionato = models.CharField(max_length=50, blank=True, null=True)
+    succinato = models.CharField(max_length=50, blank=True, null=True)
+    lattato = models.CharField(max_length=50, blank=True, null=True)
+    gaba = models.CharField(max_length=50, blank=True, null=True)
+    istamina = models.CharField(max_length=50, blank=True, null=True)
+    indolo = models.CharField(max_length=50, blank=True, null=True)
+    acido_indolacetico = models.CharField(max_length=50, blank=True, null=True)
+    acido_indolpropionico = models.CharField(max_length=50, blank=True, null=True)
+    triptammina = models.CharField(max_length=50, blank=True, null=True)
+    serotonina = models.CharField(max_length=50, blank=True, null=True)
+    trimetilammina = models.CharField(max_length=50, blank=True, null=True)
+    polifenoli = models.CharField(max_length=50, blank=True, null=True)
+    vitamine_gruppo_b = models.CharField(max_length=50, blank=True, null=True)
+    vitamina_k2 = models.CharField(max_length=50, blank=True, null=True)
+    degradazione_glutine = models.CharField(max_length=50, blank=True, null=True)
+    mucolisi = models.CharField(max_length=50, blank=True, null=True)
+    proteolisi = models.CharField(max_length=50, blank=True, null=True)
+    lipopolisaccaride_lps = models.CharField(max_length=50, blank=True, null=True)
+    acidi_biliari_secondari = models.CharField(max_length=50, blank=True, null=True)
+    etanolo = models.CharField(max_length=50, blank=True, null=True)
+    acido_solfidrico = models.CharField(max_length=50, blank=True, null=True)
+    metano = models.CharField(max_length=50, blank=True, null=True)
+
+    # ------------------------
+    # Funzioni / Assi
+    omeostasi_immunitaria = models.CharField(max_length=50, blank=True, null=True)
+    omeostasi_della_mucosa = models.CharField(max_length=50, blank=True, null=True)
+    omeostasi_del_glucosio = models.CharField(max_length=50, blank=True, null=True)
+    metabolismo_lipidico = models.CharField(max_length=50, blank=True, null=True)
+    attivita_antinfiammatoria = models.CharField(max_length=50, blank=True, null=True)
+    asse_intestino_cervello = models.CharField(max_length=50, blank=True, null=True)
+    asse_intestino_fegato = models.CharField(max_length=50, blank=True, null=True)
+    asse_intestino_pelle = models.CharField(max_length=50, blank=True, null=True)
+    ritmo_circadiano = models.CharField(max_length=50, blank=True, null=True)
+
+    # ------------------------
+    # Comunità microbica e enterotipo
+    bacteroidetes = models.CharField(max_length=50, blank=True, null=True)
+    prevotella = models.CharField(max_length=50, blank=True, null=True)
+    bacteroides = models.CharField(max_length=50, blank=True, null=True)
+    enterotipo = models.CharField(max_length=50, blank=True, null=True)
+    firmicutes = models.CharField(max_length=50, blank=True, null=True)
+    actinobacteria = models.CharField(max_length=50, blank=True, null=True)
+    verrucomicrobia = models.CharField(max_length=50, blank=True, null=True)
+    euryarchaeota = models.CharField(max_length=50, blank=True, null=True)
+    fusobacteria = models.CharField(max_length=50, blank=True, null=True)
+    lentisphaerae = models.CharField(max_length=50, blank=True, null=True)
+    ruminococcaceae = models.CharField(max_length=50, blank=True, null=True)
+    lachnospiraceae = models.CharField(max_length=50, blank=True, null=True)
+    firmicutes_unclassified = models.CharField(max_length=50, blank=True, null=True)
+    eubacteriaceae = models.CharField(max_length=50, blank=True, null=True)
+    oscillospiraceae = models.CharField(max_length=50, blank=True, null=True)
+    streptococcaceae = models.CharField(max_length=50, blank=True, null=True)
+    veillonellaceae = models.CharField(max_length=50, blank=True, null=True)
+    peptostreptococcaceae = models.CharField(max_length=50, blank=True, null=True)
+    bacteroidaceae = models.CharField(max_length=50, blank=True, null=True)
+    rikenellaceae = models.CharField(max_length=50, blank=True, null=True)
+    tannerellaceae = models.CharField(max_length=50, blank=True, null=True)
+    odoribacteraceae = models.CharField(max_length=50, blank=True, null=True)
+    coriobacteriaceae = models.CharField(max_length=50, blank=True, null=True)
+    desulfovibrionaceae = models.CharField(max_length=50, blank=True, null=True)
+
+    # ------------------------
+    # Dettaglio patogenicità e abbondanze
+    patogeni_rilevati = models.CharField(max_length=100, blank=True, null=True)
+    micete_identificato = models.CharField(max_length=100, blank=True, null=True)
+    abbondanza_relativa_generale = models.CharField(max_length=50, blank=True, null=True)
+    patogenicita = models.CharField(max_length=50, blank=True, null=True)
+    virus_identificati = models.CharField(max_length=100, blank=True, null=True)
+    parassiti_identificati = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return f"Report {self.id} – {self.paziente} ({self.created_at.date()})"
