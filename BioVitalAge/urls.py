@@ -1,6 +1,7 @@
 from django.urls import path # type: ignore
 from . import views
 from .views import *
+from django.conf.urls.static import static
 
 def download_microbiota(request, report_id):
     report = get_object_or_404(MicrobiotaReport, id=report_id)
@@ -108,14 +109,14 @@ urlpatterns = [
     path('CartellaPaziente/Piano_Terapeutico/Prescrizioni_Esami/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
     
     ## SEZIONE MICROBIOTA
-    path('CartellaPaziente/Microbiota/<int:id>/',                          views.MicrobiotaView.as_view(),            name='microbiota_detail'),
-    path('CartellaPaziente/Microbiota/download/<int:report_id>/', download_microbiota, name='microbiota_download'),
-
+    path('CartellaPaziente/Microbiota/<int:id>/',                           views.MicrobiotaView.as_view(),            name='microbiota_detail'),
+    path('CartellaPaziente/Microbiota/download/<int:report_id>/',           download_microbiota,                       name='microbiota_download'),
+    path('CartellaPaziente/Microbiota/add/<int:persona_id>/',                views.MicrobiotaAddView.as_view(),         name='microbiota_add'),
 
     # TO DEFINE
     path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>',         views.StampaRefertoView.as_view(),            name='download_pdf_vitale'),
     path('update-persona/<int:id>/',                                    views.UpdatePersonaContactView.as_view(),     name='update_persona_contact'), 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 

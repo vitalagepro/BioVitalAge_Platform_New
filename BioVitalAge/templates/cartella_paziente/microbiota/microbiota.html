@@ -87,55 +87,106 @@
             <div class="card-content">
 
                 <div class="card-container">
+   
                     <div class="container-title">
-                        <h5>Carica Referto Microbiota</h5>
+                        <h5>Compila Referto Microbiota</h5>
                         <img src="{% static 'image/upload.png' %}" alt="">
                     </div>
-                    <div class="download-container">
-                        <form action="" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="container-seleziona">
-                            <label for="pdfUpload">Carica il tuo PDF:</label><br>
-                            <input type="file" id="pdfUpload" name="pdf_file" accept="application/pdf" required>
+
+                    <div class="sub-content-container">
+
+                        <p>Clicca sotto per compilare il form e generare il referto:</p>
+
+                        <div class="img-container">
+                            <img src="{% static 'image/Referto.png' %}" alt="" style="width: 55px; height: 55px;">
+                            <img src="{% static 'image/Microbiota.png' %}" alt="" style="width: 25px; height: 25px; margin-left: -1.5rem; margin-bottom: -2rem;">
+                            <button onclick="window.location.href='{% url 'microbiota_add' persona.id %}'">Compila il modulo</button>
                         </div>
-                        <div class="container-submit">
-                            <button type="submit">Carica Pdf</button>
-                        </div>
-                        {% if error %}<p class="error">{{ error }}</p>{% endif %}
-                        </form>
+
+
+                        <!-- <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <div class="container-seleziona">
+                                    <label for="pdfUpload" class="custom-file-label">
+                                        <img src="{% static 'image/Upload_shadow.png' %}" alt="Carica PDF">
+                                    </label>
+                                
+                                    <input type="file" id="pdfUpload" name="pdf_file" accept="application/pdf" required hidden>
+                                  
+                                    <span id="nome-file" aria-live="polite">Nessun PDF selezionato</span>
+                                </div>
+
+                                <div class="container-submit">
+                                <button type="submit">Salva PDF</button>
+                                </div>
+
+                                {% if error %}
+                                <p class="error">{{ error }}</p>
+                                {% endif %}
+                        </form> -->
+
+                        <!-- SCRIPT PER MOSTRARE IL NOME DEL FILE, O RIPRISTINARE IL TESTO DI DEFAULT -->
+                        <script>
+                                const inputFile = document.getElementById('pdfUpload');
+                                const nomeFile  = document.getElementById('nome-file');
+                                const defaultText = 'Nessun PDF selezionato';
+
+                                inputFile.addEventListener('change', () => {
+                                if (inputFile.files.length) {
+                                    nomeFile.textContent = inputFile.files[0].name;
+                                } else {
+                                    nomeFile.textContent = defaultText;
+                                }
+                                });
+                        </script>
+                
                     </div>
                 </div>
 
 
                 <div class="card-container">
+
                     <div class="container-title">
                         <h5>Scarica Referto Microbiota</h5>
                         <img src="{% static 'image/download.png' %}" alt="">
                     </div>
-                    {% if report %}
-                        <div class="upload-container">
-                        <div class="container-scarica">
-                            <label>Scarica il tuo PDF:</label><br>
-                            <!-- clicca per aprire l'anteprima -->
-                            <a href="{{ report.file.url }}" target="_blank">
-                            {{ filename }}
-                            </a>
-                        </div>
-                        <div class="container-scarica-pdf">
-                            <p><span>Data Pdf:</span> {{ report.created_at|date:"d/m/Y H:i" }}</p>
-                            <a href="{{ report.file.url }}" target="_blank">
-                            <button type="button">Anteprima Pdf</button>
-                            </a>
-                        </div>
-                        </div>
-                    {% else %}
-                        <div class="upload-container">
-                        <p>Nessun referto caricato.</p>
-                        </div>
-                    {% endif %}
-                </div>
-            </div> 
 
+                    <div class="sub-content-container">
+                        {% if ultimo_report %}
+
+                        <p>Scarica l'ultimo pdf:</p>
+
+                        <div class="container-flex">
+
+                            <div class="container-scarica">
+                                <p style="font-weight: bold;">Ultimo PDF caricato:</p>
+                                <a href="{{ ultimo_report.file.url }}" target="_blank">
+                                    Referto – {{ persona }} (ID {{ ultimo_report.id }})
+                                </a>
+                            </div>
+
+                            <div class="container-scarica-pdf">
+                                <p style="font-weight: bold; margin-top: 0.5rem;">Data caricamento PDF:</p>
+                                <p>{{ ultimo_report.created_at|date:"d/m/Y H:i" }}</p>
+                            </div>
+
+                            <a href="{{ ultimo_report.file.url }}" target="_blank">
+                                <button type="button" class="download-button">Anteprima PDF</button>
+                            </a>
+
+                        </div>
+
+                        {% else %}
+                            <div class="upload-container">
+                            <p>Nessun referto caricato.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                </div>
+
+            </div> 
         </div>
 
         <div class="card-result">
@@ -169,7 +220,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>numero</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.indice_di_biodiversita }}</span></p>
                             <p>Intervallo di riferimento <= 4.05</p>
                         </div>
 
@@ -183,7 +234,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>numero</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span></p>
                             <p>Intervallo di riferimento: ≥ 55</p>
                         </div>
 
@@ -199,7 +250,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>numero</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.distanza_filogenetica_pd_whole_tree }}</span></p>
                             <p>Intervallo di riferimento: ≥ 4.5</p>
                         </div>
 
@@ -214,7 +265,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>numero</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.distribuzione_delle_specie_indice_di_pielou }}</span></p>
                             <p>Intervallo di riferimento: ≥ 0.55</p>
                         </div>  
 
@@ -233,7 +284,6 @@
                         </p>
                     </details>
                     
-
                     <div class="grid-container-indici">
 
                         <div class="indici">
@@ -246,7 +296,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>numero</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.batteri }}</span></p>
                         </div>
 
                         <div class="indici">
@@ -259,7 +309,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>numero</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.miceti }}</span></p>
                         </div>
 
                         <div class="indici">
@@ -272,7 +322,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>numero</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.virus }}</span></p>
                         </div>
 
                         <div class="indici">
@@ -285,7 +335,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>numero</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.parassiti }}</span></p>
                         </div>  
                     </div>
                 </details>  
@@ -311,8 +361,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: Un basso potenziale di produzione di acetato è legato alla riduzione dell’energia fisica, aumento
-                                dell’infiammazione intestinale, e rischio di alterazioni del metabolismo di grassi e zuccheri.     
+                                {{ ultimo_report.dati_estratti.acetato }}    
                             </p>
                             <p>’ Alimenti consigliati -> fibre, aceto biologico1, alimenti fermentati, avena, asparagi, porri, aglio, cipolla,cicoria, carciofi, topinambur, tarassaco.’</p>
                         </div>
@@ -332,8 +381,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: Un basso potenziale di produzione di butirrato è associato a rischio di riduzione dell’energia fisica,
-                                infiammazione intestinale e suscettibilità alle infezioni.
+                                {{ ultimo_report.dati_estratti.butirrato }}
                             </p>
                             <p>’ Alimenti consigliati -> alimenti ricchi di amido resistente (avena, riso, legumi, cereali integrali) ’</p>
                             <p>’ Integratori consigliati -> FOS, Inulina, Omega-3 ’</p>
@@ -354,8 +402,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: Un basso potenziale di produzione di butirrato è associato a rischio di riduzione dell’energia fisica,
-                                infiammazione intestinale e suscettibilità alle infezioni.
+                                {{ ultimo_report.dati_estratti.propionato }}
                             </p>
                             <p>’ Alimenti consigliati -> alimenti ricchi di beta-glucani (orzo, avena e crusca dei cereali integrali) ’</p>
                             <p>’ Integratori consigliati -> inulina ’</p>
@@ -375,7 +422,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento: Un eccesso di succinato di derivazione microbica nell’intestino è considerato una condizione proinfiammatoria che può essere associata a obesità e malattie infiammatorie croniche intestinali.
+                               {{ ultimo_report.dati_estratti.succinato }}
                             </p>
                         </div>
 
@@ -392,8 +439,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: un basso potenziale di produzione di lattato può portare ad alterazione della flora batterica,
-                                infiammazione e maggiore suscettibilità alle infezioni.
+                                {{ ultimo_report.dati_estratti.lattato }}
                             </p>
                             <p>’ Alimenti consigliati -> alimenti ricchi di fibre prebiotiche (cicoria, farina di frumento, banana, miele),
                             alimenti ricchi di pectina (mele, pere), alimenti a fermentazione lattica (kefir bianco naturale, yogurt greco) ’</p>
@@ -416,8 +462,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: un basso potenziale di produzione di lattato può portare ad alterazione della flora batterica,
-                                infiammazione e maggiore suscettibilità alle infezioni.
+                                {{ ultimo_report.dati_estratti.gaba }}
                             </p>
                             <p>’ Alimenti consigliati -> alimenti fermentati con lattobacilli (kefir, miso, crauti), cibi che possono stimolare la
                             produzione di GABA (noci, mandorle, nocciole, legumi, spinaci, pomodori).’</p>
@@ -441,8 +486,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento: alti livelli di istamina sono associati ad alto rischio di manifestazioni allergiche e malattie
-                                infiammatorie croniche intestinali
+                                {{ ultimo_report.dati_estratti.istamina }}
                             </p>
                             <p>’ Alimenti consigliati -> alimenti poveri di istamina (cacao, fragola, banana, kiwi, molluschi e crostacei, noci,nocciole, albume d’uovo)’</p>
                             <p>’ Integratori consigliati -> diamino ossidasi (DAO)’</p>
@@ -461,8 +505,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: un basso potenziale di produzione di lattato può portare ad alterazione della flora batterica,
-                                infiammazione e maggiore suscettibilità alle infezioni.
+                                {{ ultimo_report.dati_estratti.indolo }}
                             </p>
                             <p>’Alimenti consigliati -> alimenti ricchi di polifenoli (frutta, verdura, tè verde, caffè)’</p>
                             <p>’Probiotici consigliati -> Clostridium sporogenes’</p>
@@ -480,8 +523,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: un basso potenziale di produzione di lattato può portare ad alterazione della flora batterica,
-                                infiammazione e maggiore suscettibilità alle infezioni.
+                                Carenza
                             </p>
                             <p>’Alimenti consigliati -> carote crude, fagiolini’</p>
                             <p>’Probiotici consigliati -> Bacteroides fragilis e Bacteroides thetaiotaomicron’</p>
@@ -502,8 +544,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: un basso potenziale di produzione di lattato può portare ad alterazione della flora batterica,
-                                infiammazione e maggiore suscettibilità alle infezioni.
+                                Carenza
                             </p>
                             <p>’Alimenti consigliati -> fibre solubili (frutta), fibre insolubili (cereali integrali)’</p>
                         </div>
@@ -521,8 +562,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: un basso potenziale di produzione di lattato può portare ad alterazione della flora batterica,
-                                infiammazione e maggiore suscettibilità alle infezioni.
+                                {{ ultimo_report.dati_estratti.triptammina }}
                             </p>
                             <p>’Alimenti consigliati -> alimenti ricchi di proteine e alimenti fermentati (formaggi)’</p>
                         </div>
@@ -540,8 +580,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: un basso potenziale di produzione di lattato può portare ad alterazione della flora batterica,
-                                infiammazione e maggiore suscettibilità alle infezioni.
+                                {{ ultimo_report.dati_estratti.serotonina }}
                             </p>
                             <p>’Alimenti consigliati -> alimenti fermentati (yogurt, kefir)’</p>
                             <p>’AProbiotici consigliati -> Lactiplantibacillus plantarum’</p>
@@ -563,8 +602,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: un basso potenziale di produzione di lattato può portare ad alterazione della flora batterica,
-                                infiammazione e maggiore suscettibilità alle infezioni.
+                                {{ ultimo_report.dati_estratti.trimetilammina_tma }}
                             </p>
                             <p>’Alimenti consigliati -> verdure crucifere (broccoli, cavolfiore, cavolo, verza); ridurre il consumo di carni,soprattutto rosse, tuorlo d’uovo e formaggi grassi’</p>
                         </div>
@@ -585,8 +623,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: un basso potenziale di produzione di lattato può portare ad alterazione della flora batterica,
-                                infiammazione e maggiore suscettibilità alle infezioni.
+                                {{ ultimo_report.dati_estratti.polifenoli }}
                             </p>
                             <p>’Alimenti consigliati -> alimenti ricchi di polifenoli (melograno, frutti di bosco, tè).’</p>
                         </div>
@@ -604,8 +641,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: un basso potenziale di produzione di lattato può portare ad alterazione della flora batterica,
-                                infiammazione e maggiore suscettibilità alle infezioni.
+                                carenza
                             </p>
                             <p>’Alimenti consigliati -> alimenti ricchi di vitamine del gruppo B (proteine animali, latticini, verdure a foglia verde, fagioli)’</p>
                             <p>Integratori consigliati -> vitamine del gruppo B</p>
@@ -624,8 +660,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: un basso potenziale di produzione di lattato può portare ad alterazione della flora batterica,
-                                infiammazione e maggiore suscettibilità alle infezioni.
+                                {{ ultimo_report.dati_estratti.vitamina_k2 }}
                             </p>
                             <p>’Alimenti consigliati -> alimenti ricchi di vitamina K2 (verdura a foglia verde, frutta, cereali)’</p>
                             <p>’Probiotici consigliati -> Lactococcus Lactis’</p>
@@ -642,7 +677,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Riduzione attività: può portare ad un accumulo di glutine, aumento dell’infiammazione e della permeabilità intestinale.
+                                {{ ultimo_report.dati_estratti.degradazione_glutine  }}
                             </p>
                         </div>
 
@@ -660,8 +695,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento attività: potrebbe far avvicinare troppo il microbiota alla mucosa innescando una risposta
-                                immunitaria pro-infiammatoria.
+                                {{ ultimo_report.dati_estratti.mucolisi }}
                             </p>
                         </div>
 
@@ -677,8 +711,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento attività: potrebbe far avvicinare troppo il microbiota alla mucosa innescando una risposta
-                                immunitaria pro-infiammatoria.
+                                {{ ultimo_report.dati_estratti.proteolisi }}
                             </p>
                         </div>
 
@@ -697,10 +730,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                Alimenti consigliati  evitare l’assunzione eccessiva di grassi saturi e idrogenati (burro, margarine,
-                                formaggi interi, latte intero, prodotti a base di cocco, olio di palma, insaccati, carni grasse, biscotti, torte) e
-                                favorire i grassi insaturi (olio extra-vergine d’oliva, avocado, mandorle e omega 3 dei prodotti della pesca,
-                                delle alghe e di alcuni semi oleosi e frutta secca, come quelli di lino, sesamo e noci)
+                                {{ ultimo_report.dati_estratti.lipopolisaccaride_lps }}
                             </p>
                         </div>
 
@@ -717,7 +747,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza: è associata ad una rapida crescita batterica e ad infiammazione.
+                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}
                             </p>
                             <p>Alimenti consigliati -> alimenti ricchi di polifenoli</p>
                         </div>
@@ -735,8 +765,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento attività: potrebbe far avvicinare troppo il microbiota alla mucosa innescando una risposta
-                                immunitaria pro-infiammatoria.
+                                {{ ultimo_report.dati_estratti.etanolo }}
                             </p>
                         </div>
 
@@ -754,9 +783,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento: può modificare il metabolismo microbico dell’intestino portando alla degradazione della mucosa
-                                intestinale, rendendo così la barriera intestinale penetrabile da batteri e altri composti potenzialmente
-                                tossici e predisponenti le infezioni.
+                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}
                             </p>
                             <p>Alimenti consigliati -> alimenti ricchi di prebiotici (avena, asparagi, porri, aglio, cipolla, cicoria, carciofi
                                 topinambur, tarassaco, cibi fermentati come kefir e crauti, cacao, semi di lino ed alghe); ridurre
@@ -778,9 +805,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento: è associato a tempi più lenti di transito intestinale e costipazione e possono essere correlati a
-                                malassorbimento causato da eccesso di microorganismi nell’intestino tenue, causando dolore addominale,
-                                gonfiore, stitichezza, malattie infiammatorie croniche intestinali e non solo.
+                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}
                             </p>
                             <p>
                                 Alimenti consigliati  evitare il consumo di zucchero e farine raffinate, miele, ortaggi amidacei (patate,
@@ -880,9 +905,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento: è associato a tempi più lenti di transito intestinale e costipazione e possono essere correlati a
-                                malassorbimento causato da eccesso di microorganismi nell’intestino tenue, causando dolore addominale,
-                                gonfiore, stitichezza, malattie infiammatorie croniche intestinali e non solo.
+                                {{ ultimo_report.dati_estratti.omeostasi_del_glucosio }}
                             </p>
                             <p>
                                 Alimenti consigliati -> Ribes nero, Yogurt bianco, Amido resistente di tipo 2 (es. Tuberi, Castagne, Banane
@@ -918,9 +941,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento: è associato a tempi più lenti di transito intestinale e costipazione e possono essere correlati a
-                                malassorbimento causato da eccesso di microorganismi nell’intestino tenue, causando dolore addominale,
-                                gonfiore, stitichezza, malattie infiammatorie croniche intestinali e non solo.
+                                {{ ultimo_report.dati_estratti.metabolismo_lipidico }}
                             </p>
                             <p>
                                 Integratori consigliati -> Acido retinoico, Acido tannico, Arbutina, Caffeina, Chitosano, Esperidina, Estratto
@@ -947,9 +968,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento: è associato a tempi più lenti di transito intestinale e costipazione e possono essere correlati a
-                                malassorbimento causato da eccesso di microorganismi nell’intestino tenue, causando dolore addominale,
-                                gonfiore, stitichezza, malattie infiammatorie croniche intestinali e non solo.
+                                {{ ultimo_report.dati_estratti.attivita_antinfiammatoria }}
                             </p>
                         </div>
 
@@ -966,9 +985,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento: è associato a tempi più lenti di transito intestinale e costipazione e possono essere correlati a
-                                malassorbimento causato da eccesso di microorganismi nell’intestino tenue, causando dolore addominale,
-                                gonfiore, stitichezza, malattie infiammatorie croniche intestinali e non solo.
+                                {{ ultimo_report.dati_estratti.asse_intestino_cervello }}
                             </p>
                             <p>
                                 Alimenti consigliati -> Ribes nero, Yogurt bianco, Amido resistente di tipo 2 (es. Tuberi, Castagne, Banane
@@ -1002,9 +1019,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento: è associato a tempi più lenti di transito intestinale e costipazione e possono essere correlati a
-                                malassorbimento causato da eccesso di microorganismi nell’intestino tenue, causando dolore addominale,
-                                gonfiore, stitichezza, malattie infiammatorie croniche intestinali e non solo.
+                                {{ ultimo_report.dati_estratti.asse_intestino_fegato }}
                             </p>
                             <p>
                                 Alimenti consigliati -> Ribes nero, Yogurt bianco, Amido resistente di tipo 2 (es. Tuberi, Castagne, Banane
@@ -1045,9 +1060,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento: è associato a tempi più lenti di transito intestinale e costipazione e possono essere correlati a
-                                malassorbimento causato da eccesso di microorganismi nell’intestino tenue, causando dolore addominale,
-                                gonfiore, stitichezza, malattie infiammatorie croniche intestinali e non solo.
+                                {{ ultimo_report.dati_estratti.asse_intestino_pelle }}
                             </p>
                             <p>
                                 Alimenti consigliati -> Ribes nero, Yogurt bianco, Amido resistente di tipo 2 (es. Tuberi, Castagne, Banane
@@ -1084,9 +1097,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento: è associato a tempi più lenti di transito intestinale e costipazione e possono essere correlati a
-                                malassorbimento causato da eccesso di microorganismi nell’intestino tenue, causando dolore addominale,
-                                gonfiore, stitichezza, malattie infiammatorie croniche intestinali e non solo.
+                                {{ ultimo_report.dati_estratti.ritmo_circadiano }}
                             </p>
                             <p>
                                 Alimenti consigliati -> Ribes nero, Yogurt bianco, Amido resistente di tipo 2 (es. Tuberi, Castagne, Banane
@@ -1132,8 +1143,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                Carenza: Un basso potenziale di produzione di acetato è legato alla riduzione dell’energia fisica, aumento
-                                dell’infiammazione intestinale, e rischio di alterazioni del metabolismo di grassi e zuccheri.     
+                                {{ ultimo_report.dati_estratti.firmicutes }}    
                             </p>
                         </div>
 
@@ -1154,8 +1164,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento rapporto: è correlato ad un fenotipo obeso, alla predisposizione a prendere peso e all’assunzione
-                                di calorie superiore all’apporto isocalorico     
+                                {{ ultimo_report.dati_estratti.bacteroidetes }}    
                             </p>
                             <!-- <p>Riduzione rapporto: si osserva nei pazienti affetti da malattia di Chron o colite ulcerosa</p> -->
                         </div>
@@ -1183,8 +1192,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                Carenza: Un basso potenziale di produzione di acetato è legato alla riduzione dell’energia fisica, aumento
-                                dell’infiammazione intestinale, e rischio di alterazioni del metabolismo di grassi e zuccheri.     
+                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }} 
                             </p>
                         </div>
 
@@ -1200,7 +1208,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento rapporto: maggiori possibilità di perdere peso con una dieta ipocalorica ricca di fibre vegetali    
+                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}    
                             </p>
                             <p>Valore di riferimento: 0.002 - 14.1</p>
                             <!-- <p>Riduzione rapporto: si osserva nei pazienti affetti da malattia di Chron o colite ulcerosa</p> -->
@@ -1234,8 +1242,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                Carenza: Un basso potenziale di produzione di acetato è legato alla riduzione dell’energia fisica, aumento
-                                dell’infiammazione intestinale, e rischio di alterazioni del metabolismo di grassi e zuccheri.     
+                                {{ ultimo_report.dati_estratti.enterotipo }}    
                             </p>
                         </div>
 
@@ -1262,7 +1269,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>numero</span>    
+                                punteggio: <span>{{ ultimo_report.dati_estratti.firmicutes }}</span>    
                             </p>
                             <p>Valore di riferimento: 33.9 – 63.2</p>
                         </div>
@@ -1280,7 +1287,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>numero</span>    
+                                punteggio: <span>{{ ultimo_report.dati_estratti.bacteroidetes }}</span>    
                             </p>
                             <p>Valore di riferimento: 22.8 – 55.1</p>
                         </div>
@@ -1299,8 +1306,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento: si è osservato in pazienti con sindrome dell’intestino irritabile che seguono una dieta low
-                                FODMAP (Fermentable Oligosaccharides, Disaccharides, Monosaccharides, And Polyols)
+                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}
                             </p>
                             <p>Valore di riferimento: 0 – 14.2</p>
                         </div>
@@ -1316,7 +1322,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>numero</span>    
+                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
                             </p>
                             <p>Valore di riferimento: 0 – 10.1</p>
                         </div>
@@ -1334,7 +1340,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>numero</span>    
+                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
                             </p>
                             <p>Valore di riferimento: 0 – 2.2</p>
                         </div>  
@@ -1352,9 +1358,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                Aumento: diversi studi hanno correlato l’aumento di fusobacteria nel tratto intestinale ai pazienti con
-                                cancro al colon, cirrosi epatica, colangite sclerosante primitiva, reflusso gastroesofageo, infezione da HIV,
-                                alcolismo    
+                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}   
                             </p>
                             <p>Valore di riferimento: 0 – 6.4</p>
                         </div>
@@ -1371,9 +1375,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                Aumento: diversi studi hanno correlato l’aumento di fusobacteria nel tratto intestinale ai pazienti con
-                                cancro al colon, cirrosi epatica, colangite sclerosante primitiva, reflusso gastroesofageo, infezione da HIV,
-                                alcolismo    
+                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}    
                             </p>
                             <p>Valore di riferimento: 0 – 0.4</p>
                         </div>
@@ -1399,7 +1401,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                Carenza:   
+                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}  
                             </p>
                             <p>Valore di riferimento: 10.4 – 27.9</p>
                             <p>Alimenti consigliati -> noci</p>
@@ -1423,7 +1425,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                Carenza: correlata al rischio di infiammazione intestinale e sindrome dell’intestino irritabile    
+                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}   
                             </p>
                             <p>Valore di riferimento: 6.2 – 20.1</p>
                         </div>
@@ -1465,7 +1467,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>numero</span>    
+                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
                             </p>
                             <p>Valore di riferimento: 0 - 2.8</p>
                         </div>  
@@ -1481,7 +1483,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                Aumento: correlato a diverse condizioni, come aterosclerosi coronarica, encefalopatia epatica, cancro al pancreas    
+                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}   
                             </p>
                         </div>
 
@@ -1528,7 +1530,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                Carenza:    
+                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}    
                             </p>
                             <p>Valore di riferimento: 5.6 – 32.2</p>
                             <p>Alimenti consigliati -> cranberry</p>
@@ -1623,7 +1625,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>numero</span>    
+                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
                             </p>
                         </div>
                     </div>
@@ -1645,7 +1647,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>numero</span>    
+                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
                             </p>
                         </div>
                         <div class="indici">
@@ -1659,7 +1661,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>numero</span>    
+                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
                             </p>
                         </div>
                         <div class="indici">
@@ -1673,7 +1675,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>numero</span>    
+                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
                             </p>
                         </div>
                     </div>
@@ -1695,7 +1697,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>numero</span>    
+                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
                             </p>
                         </div>
                     </div>
@@ -1717,7 +1719,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>numero</span>    
+                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
                             </p>
                         </div>
                     </div>
