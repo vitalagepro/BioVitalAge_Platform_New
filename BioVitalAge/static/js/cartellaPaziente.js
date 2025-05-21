@@ -318,7 +318,15 @@ document.addEventListener("DOMContentLoaded", () => {
         inp.classList.add("editing");
       });
 
-      modifyBtn.querySelector(".btn-text").textContent = "Salva";
+      modifyBtn.innerHTML = `
+        <span class="btn-text">Salva</span>
+        <svg class="svg" style="width: 25px; height: 25px;" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <!-- Cloud -->
+          <path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.24 4 7 6.24 7 9a5 5 0 0 0 .11 1H5a4 4 0 0 0 0 8h14a3 3 0 0 0 .35-5.96z"/>
+          <!-- Freccia verso il basso -->
+          <path d="M13 12v5h-2v-5H8l4-4 4 4h-3z" style="fill: grey;"/>
+        </svg>
+      `;
       isEditing = true;
 
     } else {
