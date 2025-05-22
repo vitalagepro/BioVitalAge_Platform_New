@@ -1,4 +1,8 @@
 /* FONT SYLE */
+html, body {
+  perspective: 1200px;
+}
+
 * p,
 * input,
 * select{
@@ -1235,5 +1239,75 @@ strong {
   transition: margin-left 0.3s ease;
 }
 .card-storico:hover a {
-  margin-left: 5px; 
+  margin-left: 5px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* BACKDROP */
+.backdrop {
+  position: fixed; top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.4);
+  opacity: 0; pointer-events: none;
+  z-index: 9999;
+  transition: opacity 0.3s ease;
+}
+.backdrop.visible {
+  opacity: 1; pointer-events: all;
+}
+
+/* WRAPPER NORMALE: header sempre visibile */
+.app-window {
+  position: relative;
+  margin: 20px auto 0;
+  width: 98%;
+  background: var(--card-color);
+  border-radius: 8px;
+  box-shadow: 1px 1px 8px rgba(0,0,0,0.08);
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  /* non metto overflow:hidden sul wrapper, così non nasconde l’header */
+}
+
+/* NASCONDO SOLO IL CORPO INIZIALMENTE */
+.app-window .container_box {
+  display: none;
+}
+
+/* STATO OVERLAY: wrapper diventa fixed/centrato */
+.app-window.overlay {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 90vw !important;
+  max-height: 90vh;
+  overflow: auto;
+  z-index: 10000;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  border-radius: 12px;
+}
+
+/* IN OVERLAY mostro finalmente il corpo */
+.app-window.overlay .container_box {
+  display: block;
+}
+
+/* Il bottone sempre “sopra” */
+.button-view-all {
+  position: relative;
+  z-index: 10001;
 }

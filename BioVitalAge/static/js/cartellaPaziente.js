@@ -193,90 +193,90 @@ document.addEventListener("DOMContentLoaded", function () {
 /*  -----------------------------------------------------------------------------------------------
     Mostra di più
 --------------------------------------------------------------------------------------------------- */
-document.addEventListener("DOMContentLoaded", function () {
-  // Seleziona il tasto "Mostra di più"
-  const toggleButton = document.querySelector(".button-view-all");
-  if (!toggleButton) return;
+// document.addEventListener("DOMContentLoaded", function () {
+//   // Seleziona il tasto "Mostra di più"
+//   const toggleButton = document.querySelector(".button-view-all");
+//   if (!toggleButton) return;
   
-  // Seleziona l'intero contenitore dei bottoni
-  const buttonGrid = document.querySelector(".button-grid");
-  // Crea un array con tutti i figli del buttonGrid tranne il toggle button
-  const otherButtons = Array.from(buttonGrid.children).filter(el =>
-    !el.classList.contains("button-view-all")
-  );
+//   // Seleziona l'intero contenitore dei bottoni
+//   const buttonGrid = document.querySelector(".button-grid");
+//   // Crea un array con tutti i figli del buttonGrid tranne il toggle button
+//   const otherButtons = Array.from(buttonGrid.children).filter(el =>
+//     !el.classList.contains("button-view-all")
+//   );
   
-  // Inizialmente nasconde gli altri bottoni (mantiene visibile solo il toggle)
-  otherButtons.forEach((btn) => {
-    gsap.set(btn, { opacity: 0, display: "none" });
-  });
+//   // Inizialmente nasconde gli altri bottoni (mantiene visibile solo il toggle)
+//   otherButtons.forEach((btn) => {
+//     gsap.set(btn, { opacity: 0, display: "none" });
+//   });
 
-  // Seleziona i contenitori che già gestisci per i campi della card
-  const infoContainer = document.querySelector(".container_box");
-  const contactContainer = document.querySelector(".Contact-Container");
-  const subCardsContainer = document.querySelector(".subCard-container");
+//   // Seleziona i contenitori che già gestisci per i campi della card
+//   const infoContainer = document.querySelector(".container_box");
+//   const contactContainer = document.querySelector(".Contact-Container");
+//   const subCardsContainer = document.querySelector(".subCard-container");
   
-  // Seleziona i campi della card (compresi email e telefono)
-  const hiddenFields = infoContainer.querySelectorAll(".field, .email, .telefono");
+//   // Seleziona i campi della card (compresi email e telefono)
+//   const hiddenFields = infoContainer.querySelectorAll(".field, .email, .telefono");
 
-  // Nasconde i campi all'inizio
-  hiddenFields.forEach((field) => {
-    gsap.set(field, { opacity: 0, display: "none" });
-  });
+//   // Nasconde i campi all'inizio
+//   hiddenFields.forEach((field) => {
+//     gsap.set(field, { opacity: 0, display: "none" });
+//   });
 
-  // Nasconde anche le sub-card e il container dei contatti
-  gsap.set(subCardsContainer, { opacity: 0, display: "none" });
-  gsap.set(contactContainer, { opacity: 0, display: "none" });
+//   // Nasconde anche le sub-card e il container dei contatti
+//   gsap.set(subCardsContainer, { opacity: 0, display: "none" });
+//   gsap.set(contactContainer, { opacity: 0, display: "none" });
   
-  // Aggiunge una classe per gestire il layout se necessario
-  infoContainer.classList.add("hidden-row-grid");
+//   // Aggiunge una classe per gestire il layout se necessario
+//   infoContainer.classList.add("hidden-row-grid");
 
-  // Aggiunge il listener al toggle button (Mostra di più / Mostra di meno)
-  toggleButton.addEventListener("click", function () {
-    // Determina se i campi sono attualmente nascosti
-    const isHidden = hiddenFields[0].style.display === "none";
+//   // Aggiunge il listener al toggle button (Mostra di più / Mostra di meno)
+//   toggleButton.addEventListener("click", function () {
+//     // Determina se i campi sono attualmente nascosti
+//     const isHidden = hiddenFields[0].style.display === "none";
 
-    // Toggle per i campi della card
-    hiddenFields.forEach((field) => {
-      if (isHidden) {
-        gsap.to(field, { opacity: 1, display: "flex", duration: 0.5 });
-      } else {
-        gsap.to(field, { opacity: 0, display: "none", duration: 0.5 });
-      }
-    });
+//     // Toggle per i campi della card
+//     hiddenFields.forEach((field) => {
+//       if (isHidden) {
+//         gsap.to(field, { opacity: 1, display: "flex", duration: 0.5 });
+//       } else {
+//         gsap.to(field, { opacity: 0, display: "none", duration: 0.5 });
+//       }
+//     });
 
-    // Toggle per le sub-card e i contatti
-    if (isHidden) {
-      gsap.to(subCardsContainer, { opacity: 1, display: "flex", duration: 0.5 });
-      gsap.to(contactContainer, { opacity: 1, display: "flex", duration: 0.5 });
-      infoContainer.classList.remove("hidden-row-grid");
-      // Mostra gli altri bottoni quando la card è visibile
-      otherButtons.forEach((btn) => {
-        gsap.to(btn, { opacity: 1, display: "flex", duration: 0.5 });
-      });
-    } else {
-      gsap.to(subCardsContainer, { opacity: 0, display: "none", duration: 0.5 });
-      gsap.to(contactContainer, { opacity: 0, display: "none", duration: 0.5 });
-      infoContainer.classList.add("hidden-row-grid");
-      // Nasconde gli altri bottoni quando la card viene chiusa
-      otherButtons.forEach((btn) => {
-        gsap.to(btn, { opacity: 0, display: "none", duration: 0.5 });
-      });
-    }
+//     // Toggle per le sub-card e i contatti
+//     if (isHidden) {
+//       gsap.to(subCardsContainer, { opacity: 1, display: "flex", duration: 0.5 });
+//       gsap.to(contactContainer, { opacity: 1, display: "flex", duration: 0.5 });
+//       infoContainer.classList.remove("hidden-row-grid");
+//       // Mostra gli altri bottoni quando la card è visibile
+//       otherButtons.forEach((btn) => {
+//         gsap.to(btn, { opacity: 1, display: "flex", duration: 0.5 });
+//       });
+//     } else {
+//       gsap.to(subCardsContainer, { opacity: 0, display: "none", duration: 0.5 });
+//       gsap.to(contactContainer, { opacity: 0, display: "none", duration: 0.5 });
+//       infoContainer.classList.add("hidden-row-grid");
+//       // Nasconde gli altri bottoni quando la card viene chiusa
+//       otherButtons.forEach((btn) => {
+//         gsap.to(btn, { opacity: 0, display: "none", duration: 0.5 });
+//       });
+//     }
 
-    // Aggiorna il testo e le icone del bottone toggle
-    toggleButton.innerHTML = `
-      <span class="button__icon-wrapper">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
-          <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg button__icon-svg--copy">
-          <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
-      </span>
-      ${isHidden ? "Mostra di meno" : "Mostra di più"}
-    `;
-  });
-});
+//     // Aggiorna il testo e le icone del bottone toggle
+//     toggleButton.innerHTML = `
+//       <span class="button__icon-wrapper">
+//         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+//           <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+//         </svg>
+//         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg button__icon-svg--copy">
+//           <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+//         </svg>
+//       </span>
+//       ${isHidden ? "Mostra di meno" : "Mostra di più"}
+//     `;
+//   });
+// });
 
 
 
