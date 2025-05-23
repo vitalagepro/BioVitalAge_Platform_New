@@ -3,11 +3,6 @@ from . import views
 from .views import *
 from django.conf.urls.static import static
 
-def download_microbiota(request, report_id):
-    report = get_object_or_404(MicrobiotaReport, id=report_id)
-    response = FileResponse(report.file.open('rb'), content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{report.file.name.split("/")[-1]}"'
-    return response
 
 urlpatterns = [
 
@@ -110,14 +105,12 @@ urlpatterns = [
     
     ## SEZIONE MICROBIOTA
     path('CartellaPaziente/Microbiota/<int:id>/',                           views.MicrobiotaView.as_view(),            name='microbiota_detail'),
-    path('CartellaPaziente/Microbiota/download/<int:report_id>/',           download_microbiota,                       name='microbiota_download'),
     path('CartellaPaziente/Microbiota/add/<int:persona_id>/',                views.MicrobiotaAddView.as_view(),         name='microbiota_add'),
 
     # TO DEFINE
     path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>',         views.StampaRefertoView.as_view(),            name='download_pdf_vitale'),
     path('update-persona/<int:id>/',                                    views.UpdatePersonaContactView.as_view(),     name='update_persona_contact'), 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+]
 
 
 
