@@ -961,6 +961,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.0.2/docx.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SCRIPT MODALE INFORMAZIONI PERSONALI -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             gsap.registerPlugin(Flip);
@@ -969,33 +970,55 @@
             const win = document.querySelector(".app-window");
             const backdrop = document.querySelector(".backdrop");
 
-            btn.addEventListener("click", () => {
-                // Salvo lo stato compatto
-                const state = Flip.getState(win);
+            if (!btn || !win || !backdrop) return;
 
-                // Toggle classe overlay
-                const opening = win.classList.toggle("overlay");
+            let isOpen = false;
+
+            btn.addEventListener("click", () => {
+                const state = Flip.getState(win);  // snapshot prima della modifica
+                const opening = !isOpen;
+
+                // toggle visibilità con classe
+                win.classList.toggle("overlay", opening);
                 backdrop.classList.toggle("visible", opening);
 
-                // Cambio testo
-                btn.textContent = opening ? "Chiudi scheda" : "Mostra di più";
+                // aggiorna testo e icona
+                btn.innerHTML = opening ? `
+                    <span class="button__icon-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+                            <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    Mostra di meno
+                ` : `
+                    <span class="button__icon-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
+                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    Mostra di più
+                `;
 
-                // ANIMO morph tra compatto e overlay
                 Flip.from(state, {
-                    duration: 0.6,
+                    duration: 0.5,
                     ease: "power2.inOut",
-                    absolute: true
+                    absolute: true,
+                    onComplete: () => {
+                        if (!opening) {
+                            win.classList.remove("overlay");
+                            backdrop.classList.remove("visible");
+                        }
+                    }
                 });
+
+                isOpen = opening;
             });
 
-            // Chiudo se clicco fuori
             backdrop.addEventListener("click", () => {
-                if (win.classList.contains("overlay")) btn.click();
+                if (isOpen) btn.click();
             });
         });
     </script>
-
-
 </body>
 
 </html>

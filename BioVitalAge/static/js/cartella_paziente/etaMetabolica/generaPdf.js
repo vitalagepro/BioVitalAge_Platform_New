@@ -417,14 +417,15 @@ document.addEventListener("DOMContentLoaded", function () {
 /*  -----------------------------------------------------------------------------------------------
     FUNZIONE GENERAZIONE PDF
 --------------------------------------------------------------------------------------------------- */
-const generaBtn = document.getElementById("genereReport");
+const generaBtnAvanzato = document.getElementById("genereReport");
+const generaBtnBase = document.getElementById("genereReportBase");
 
 const { PDFDocument, rgb, StandardFonts } = PDFLib;
 
-async function generatePDF() {
+async function generatePDFAvanzato() {
   try {
     const existingPdfBytes = await fetch(
-      "/static/includes/pdfTemplates/composizione.pdf"
+      "/static/includes/pdfTemplates/ETA METABOLICA AVANZATA.pdf"
     ).then((res) => res.arrayBuffer());
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
 

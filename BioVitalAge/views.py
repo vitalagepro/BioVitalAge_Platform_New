@@ -2210,7 +2210,6 @@ class ComposizioneView(LoginRequiredMixin,View):
 
         ultimo_referto = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto').first()
 
-
         context = {
             'persona': persona,
             'dottore' : dottore,
@@ -2570,7 +2569,7 @@ class RefertiComposizioneView(LoginRequiredMixin,View):
         context = {
             'persona': persona,
             'dottore': dottore,
-            'referti': referti_page, 
+            'referti': referti_page,
         }
 
         return render(request, 'cartella_paziente/eta_metabolica/elencoReferti.html', context)
