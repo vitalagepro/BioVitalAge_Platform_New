@@ -3458,7 +3458,19 @@
                     <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
                 </a>                
                 <p>»</p>
-                <p>Calcolatore</p>
+                {% if dottore.user %}
+                    <p>
+                        <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
+                    </p>
+                    <p>»</p>
+                    <p>
+                        <a href="{% url 'eta_biologica' persona.id %}">Età Biologica</a>
+                    </p>
+                    <p>»</p>
+                    <p class="breadcrumb">Calcolatore</p>
+                {% else %}
+                    <p class="breadcrumb">Calcolatore</p>
+                {% endif %}
             </div>
         </div>
 
@@ -3535,13 +3547,13 @@
                         <!-- Name -->
                         <div class="form-group">
                             <label for="name">Nome</label>
-                            <input type="text" id="name" name="name" required value="{{ persona.name }}" placeholder="Inserisci il nome">
+                            <input type="text" id="name" name="name" required value="{{ persona.name|title }}" placeholder="Inserisci il nome">
                         </div>
                 
                         <!-- Surname -->
                         <div class="form-group">
                             <label for="surname">Cognome</label>
-                            <input type="text" id="surname" name="surname" required value="{{ persona.surname }}" placeholder="Inserisci il cognome">
+                            <input type="text" id="surname" name="surname" required value="{{ persona.surname|title }}" placeholder="Inserisci il cognome">
                         </div>
                 
                         <!-- Date of Birth -->
@@ -3559,7 +3571,7 @@
                         <!-- Place of Birth -->
                         <div class="form-group">
                             <label for="place_of_birth">Città di nascita</label>
-                            <input type="text" id="place_of_birth" list="cities" name="place_of_birth" required value="{{ persona.place_of_birth }}" placeholder="Inserisci il paese di nascita">
+                            <input type="text" id="place_of_birth" list="cities" name="place_of_birth" required value="{{ persona.place_of_birth|title }}" placeholder="Inserisci il paese di nascita">
                         </div>
 
                         <!-- Province -->

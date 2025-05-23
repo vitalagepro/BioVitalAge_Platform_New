@@ -39,7 +39,7 @@ export default function showAlert(arg1, message = "", extraMessage = "", borderC
     top: "20px",
     left: "50%",
     transform: "translateX(-50%)",
-    zIndex: "1050",
+    zIndex: "999999999999",
     maxWidth: "430px",
     backgroundColor: "#fff",
     borderRadius: "12px",

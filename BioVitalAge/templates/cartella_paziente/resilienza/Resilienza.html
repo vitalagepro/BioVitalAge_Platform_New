@@ -9,7 +9,7 @@
         <!-- Favicon -->
         <link rel="sortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
-        <title>Resilienza</title>
+        <title>BVA - Resilienza</title>
 
         <!-- Css Import -->
         <link rel="stylesheet" href="{% static 'css/Componenti.css' %}">
@@ -23,9 +23,6 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
-
-        <!-- JS IMPORT -->
-
     </head>
 
 
@@ -64,9 +61,11 @@
                             <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
                         </a>
                         <p>»</p>
-                        <p>Cartella Paziente</p>
+                        <p>
+                            <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
+                        </p>
                         <p>»</p>
-                        <p>Resilienza</p>
+                        <p class="breadcrumb">Resilienza</p>
                     </div>
                 
             </div>  

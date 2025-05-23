@@ -8,7 +8,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
     
-    <title>Composizione Corporea</title>
+    <title>Età Biologica - Grafici</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'css/Componenti.css' %}">
@@ -69,13 +69,13 @@
                 </a>                    
                 <p>»</p>
                 <p>
-                    <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
+                  <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
                 </p>
                
                 <p>»</p>
-                <a href="{% url 'eta_biologica' persona.id %}">Età Biologica</a>
+                  <a href="{% url 'eta_biologica' persona.id %}">Età Biologica</a>
                 <p>»</p>
-                <p>Grafici Andamento</p>
+                <p class="breadcrumb">Grafici Andamento</p>
             </div>
         </div>
 

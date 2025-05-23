@@ -9,7 +9,7 @@
     <!-- Favicon -->
     <link rel="sortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
-    <title>Piano Terapeutico</title>
+    <title>BVA - Piano Terapeutico</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'css/Componenti.css' %}">
@@ -74,7 +74,11 @@
                     <a href="{% url 'Risultati' %}">Pazienti</a>
                 </p>
                 <p>»</p>
-                <p>Cartella Paziente</p>
+                <p>
+                    <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
+                </p>
+                <p>»</p>
+                <p class="breadcrumb">Piano Terapeutico</p>
             </div>
         
         </div>
@@ -207,7 +211,7 @@
                                 </p>
                             </div>
                         {% empty %}
-                            <p class="text-center mt-2 mb-2">No recent prescription found.</p>
+                            <p class="text-center mt-2 mb-2">Nessuna prescrizione recente trovata.</p>
                         {% endfor %}
        
                     </div>  
@@ -350,9 +354,7 @@
                     </div>
 
                     <div class="table-content prescriptions">
-
-                        <p class="text-center mt-2 mb-2">No recent prescription found.</p>
-                        
+                        <p class="text-center mt-2 mb-2">Nessuna prescrizione recente trovata.</p>
                     </div>
                     
                     <div class="pagination_tabella">

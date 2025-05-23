@@ -620,6 +620,7 @@ class AppuntamentiSalvaView(LoginRequiredMixin, View):
         # Adesso creo l’appuntamento passando il dottore corretto:
         appt = Appointment.objects.create(
             tipologia_visita   = data.get("tipologia_visita"),
+            paziente_id        = data.get("pazienteId"),
             nome_paziente      = data.get("nome_paziente"),
             cognome_paziente   = data.get("cognome_paziente"),
             numero_studio      = data.get("numero_studio"),
@@ -668,6 +669,7 @@ class GetSingleAppointmentView(LoginRequiredMixin, View):
             response_data = {
                 "success": True,
                 "id": appointment.id,
+                'paziente_id': appointment.paziente_id,
                 "nome_paziente": appointment.nome_paziente,
                 "cognome_paziente": appointment.cognome_paziente,
                 "giorno": appointment.giorno,
@@ -748,6 +750,7 @@ class AppuntamentiGetView(LoginRequiredMixin,View):
                 appointments_by_date[date_str] = []
             appointments_by_date[date_str].append({
                 "id": appointment.id,
+                'paziente_id': appointment.paziente_id,
                 "nome_paziente": appointment.nome_paziente,
                 "cognome_paziente": appointment.cognome_paziente,
                 "giorno": appointment.giorno,
@@ -780,6 +783,8 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
                 appointment.data = data["new_date"]
             if data.get("new_time"):
                 appointment.orario = data["new_time"]
+            if data.get("pazienteId"):
+                appointment.paziente_id = data["pazienteId"]
             if data.get("nome_paziente"):
                 appointment.nome_paziente = data["nome_paziente"]
             if data.get("cognome_paziente"):
@@ -799,6 +804,7 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
             return JsonResponse({
                         "success": True,
                         "message": "Appuntamento aggiornato!",
+                        "paziente_id": appointment.paziente.id,
                         "dottore_associato": {
                             "id": appointment.dottore.id,
                             "nome": appointment.dottore.nome,
@@ -2208,7 +2214,6 @@ class ComposizioneView(LoginRequiredMixin,View):
 
         ultimo_referto = RefertiEtaMetabolica.objects.filter(paziente=persona).order_by('-data_referto').first()
 
-
         context = {
             'persona': persona,
             'dottore' : dottore,
@@ -2513,9 +2518,12 @@ class ComposizioneChartView(LoginRequiredMixin,View):
         sii_values = calcola_medie(dati_sii)
         cplas_values = calcola_medie(dati_c_plasmatico)
 
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+
         # Passiamo tutto in JSON
         context = {
             'persona': paziente,
+            'dottore': dottore,
 
             # Composizione
             'bmi': json.dumps(bmi_values),
@@ -2565,7 +2573,7 @@ class RefertiComposizioneView(LoginRequiredMixin,View):
         context = {
             'persona': persona,
             'dottore': dottore,
-            'referti': referti_page, 
+            'referti': referti_page,
         }
 
         return render(request, 'cartella_paziente/eta_metabolica/elencoReferti.html', context)
@@ -2915,7 +2923,7 @@ class QuizEtaVitaleUpdateView(LoginRequiredMixin,View):
             'card_to_show': card_to_show
         }
 
-        return render(request, 'includes/testVitale.html', context)
+        return render(request, 'cartella_paziente/capacita_vitale/testVitale.html', context)
     
     def post(self, request, id):
         return 

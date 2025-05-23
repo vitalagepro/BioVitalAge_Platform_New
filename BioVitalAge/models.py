@@ -629,6 +629,7 @@ class PrescrizioniEsami(models.Model):
 # TABELLA APPUNTAMENTI
 class Appointment(models.Model):
     dottore = models.ForeignKey(UtentiRegistratiCredenziali, on_delete=models.CASCADE, null=True, blank=True)
+    paziente = models.ForeignKey(TabellaPazienti, on_delete=models.SET_NULL, null=True, blank=True, related_name="appuntamenti")
     cognome_paziente = models.CharField(max_length=255, blank=True, null=True)
     nome_paziente = models.CharField(max_length=255, blank=True, null=True)
     tipologia_visita = models.CharField(max_length=100, choices=[('Fisioterapia Sportiva', 'Fisioterapia Sportiva'), ('Fisioterapia e Riabilitazione', 'Fisioterapia e Riabilitazione'), ('Fisioestetica', 'Fisioestetica')], blank=True, null=True)

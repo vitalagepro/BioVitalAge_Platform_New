@@ -716,36 +716,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (deleteButton) {
     deleteButton.addEventListener("click", () => {
-      const tableContainer = document.querySelector(
-        ".tabella-prescrizioni .table-content"
-      );
-      confirmDeleteAction({
-        onConfirm: () => {
-          const container = document.querySelector(".tabella-prescrizioni .table-content");
-          if (container) container.innerHTML = "";
-      
-          const pagination = document.querySelector(".pagination-controls");
-          if (pagination) pagination.remove();
-      
-          if (typeof updatePagination === "function") updatePagination();
-        },
-        successMessage: "Tutte le prescrizioni sono state eliminate.",
-        errorMessage: "Errore nella rimozione delle prescrizioni.",
-        confirmMessage: "Sei sicuro di voler eliminare tutte le prescrizioni?",
-        borderColor: "#f97316",
-      });         
+      const tableContent = document.querySelector(".tabella-prescrizioni .table-content");
+      const pagination = document.querySelector(".pagination-controls");
 
-      // Intercetta la conferma dell'eliminazione
+      // ✅ Controlla se ci sono figli dentro .table-content
+      const hasRows = tableContent && tableContent.children.length > 0;
+
+      if (!hasRows) {
+        showAlert({
+          type: "warning",
+          message: "Nessun esame presente da eliminare.",
+          borderColor: "#f97316",
+        });
+      } else {
+        confirmDeleteAction({
+          onConfirm: () => {
+            if (tableContent) tableContent.innerHTML = "";
+            if (pagination) pagination.remove();
+            if (typeof updatePagination === "function") updatePagination();
+          },
+          successMessage: "Tutte le prescrizioni sono state eliminate.",
+          errorMessage: "Errore nella rimozione delle prescrizioni.",
+          confirmMessage: "Sei sicuro di voler eliminare tutte le prescrizioni?",
+          borderColor: "#f97316",
+        });
+      }
+
       const originalDeleteAction = window.deleteAction;
       window.deleteAction = function ({ confirmAlert, successMessage }) {
-        // ➤ Rimuovi visivamente la tabella e la paginazione
-        if (tableContainer) tableContainer.innerHTML = "";
+        if (tableContent) tableContent.innerHTML = "";
         if (pagination) pagination.remove();
-
-        // Aggiorna eventuale paginazione
         if (typeof updatePagination === "function") updatePagination();
-
-        // Chiudi l'alert di conferma
         if (confirmAlert) {
           gsap.to(confirmAlert, {
             opacity: 0,
@@ -754,17 +755,14 @@ document.addEventListener("DOMContentLoaded", () => {
             onComplete: () => confirmAlert.remove(),
           });
         }
-
-        // Mostra messaggio di successo
         showAlert({
           type: "success",
           message: successMessage,
           borderColor: "#22c55e",
         });
-
-        // Ripristina deleteAction originale
         window.deleteAction = originalDeleteAction;
       };
     });
   }
 });
+

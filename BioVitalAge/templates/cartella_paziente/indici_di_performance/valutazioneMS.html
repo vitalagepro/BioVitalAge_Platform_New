@@ -9,7 +9,7 @@
         <!-- Favicon -->
         <link rel="sortcut icon" href='{% static "image/Favicon.png" %}' type="image/x-icon">
 
-        <title>Valutazione Muscolo Scheletrica</title>
+        <title>BVA - VMS</title>
 
         <!-- Css Import -->
         <link rel="stylesheet" href="{% static 'css/Componenti.css' %}">
@@ -62,9 +62,11 @@
                         <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
                     </a>
                     <p>»</p>
-                    <p>Cartella Paziente</p>
+                    <p>
+                        <a href="{% url 'cartella_paziente' persona.id %}">Cartella Paziente</a>
+                    </p>
                     <p>»</p>
-                    <p>Valutazione Muscolo-Scheletrica</p>
+                    <p class="breadcrumb">Valutazione Muscolo Scheletrica</p>
                     
                 </div>
             
