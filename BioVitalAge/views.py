@@ -1283,6 +1283,14 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             .first()
         )
 
+        cuore = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del Cuore')
+        reni = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Renale')
+        epatica = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Epatica')
+        cerebrale = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Cerebrale')
+        ormonale = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Ormonale')
+        sangue = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del sangue')
+        immunitario = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del sistema immunitario')
+
         context = {
             'persona': persona,
             'dottore': dottore,
@@ -1293,6 +1301,16 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             'prossimo_appuntamento': prossimo_appuntamento,
             'dottori': dottori,
             'is_secretary': is_secretary,
+
+            # indicatori 
+            "Salute_del_cuore": cuore,
+            "Salute_del_rene": reni,
+            "Salute_epatica": epatica,
+            "Salute_cerebrale": cerebrale,
+            "Salute_ormonale": ormonale,
+            "Salute_del_sangue": sangue,
+            "Salute_immunitario": immunitario,
+
 
             # Score per JS con underscore
             'score': score_js,
@@ -1308,6 +1326,7 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         }
 
         return render(request, "includes/cartellaPaziente.html", context)
+
 
     def post(self, request, id):
         
