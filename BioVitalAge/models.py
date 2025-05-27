@@ -147,6 +147,7 @@ class TabellaPazienti(models.Model):
     def __str__(self):
         return f"Paziente: {self.name} {self.surname}"
 
+
 # ETA BIOLOGICA
 class RefertiEtaBiologica(models.Model):
     paziente = models.ForeignKey(
@@ -164,7 +165,7 @@ class RefertiEtaBiologica(models.Model):
 
 class DatiEstesiRefertiEtaBiologica(models.Model):
     """
-        Dati estesi referto eta biologica table
+    Dati estesi referto eta biologica table
     """
     referto = models.OneToOneField(
         RefertiEtaBiologica, 
@@ -376,6 +377,16 @@ class DatiEstesiRefertiEtaBiologica(models.Model):
         return f"Dati Estesi Referto ID: {self.referto.id}"
    
 
+    def get_fields_by_help_text(self, help_text):
+        """
+        Restituisce un dict {nome_campo: valore} per tutti i field che
+        hanno help_text esattamente uguale a quello passato.
+        """
+        out = {}
+        for f in self._meta.get_fields():
+            if hasattr(f, 'help_text') and f.help_text == help_text:
+                out[f.name] = getattr(self, f.name)
+        return out
 
 
 # ETA METABOLICA

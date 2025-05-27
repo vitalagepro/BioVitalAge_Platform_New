@@ -13,7 +13,6 @@ const closeButton = document.getElementById('closeModale')
 const dynamicImage = document.getElementById('dynamicImage')
 
 
-// calcola la larghezza reale della scrollbar (serve solo per il padding-right)
 function getScrollbarWidth() {
   return window.innerWidth - document.documentElement.clientWidth;
 }

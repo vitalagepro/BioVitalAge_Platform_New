@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -239,3 +241,14 @@ ADMIN_REORDER = [
     # 6) Social Auth
     "social_django",
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'BioVitalAge API',
+    'DESCRIPTION': 'Documentazione OpenAPI per le API di Cartella Paziente',
+    'VERSION': '1.0.0',
+}

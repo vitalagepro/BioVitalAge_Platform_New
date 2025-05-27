@@ -1,3 +1,7 @@
+"""
+Routing core app
+"""
+
 from django.urls import path # type: ignore
 from . import views
 from .views import *
@@ -42,9 +46,12 @@ urlpatterns = [
     path("AggiungiPaziente/",                                   views.InserisciPazienteView.as_view(),               name="inserisci_paziente"),
     path("aggiungi-paziente/",                                  views.CreaPazienteView.as_view(),                    name="aggiungi_paziente"),
 
-    # -- URL SEZIONE CARTELLA PAZIENTE --
+    # -----------------------------------------#
+    # URL SEZIONE CARTELLA PAZIENTE            #
+    # -----------------------------------------#
+
     ## URL PER LA CARTELLA DEL PAZIENTE
-    path("CartellaPaziente/<int:id>/",                          views.CartellaPazienteView.as_view(),                 name="cartella_paziente"),
+    path("CartellaPaziente/<int:id>/",                                     views.CartellaPazienteView.as_view(),                 name="cartella_paziente"),
 
     ## URL SEZIONI STORICO
     path("CartellaPaziente/<int:id>/Storico",                   views.StoricoView.as_view(),                          name="storico"),
@@ -55,8 +62,8 @@ urlpatterns = [
     path("CartellaPaziente/<int:id>/Visite",                    views.VisiteView.as_view(),                           name="visite"),
 
     ## URL SEZIONE DIAGNOSI
-    path('diagnosi/<int:diagnosi_id>/dettagli/',                views.DiagnosiDettaglioView.as_view(),                name='diagnosi_dettaglio'),
-    path("CartellaPaziente/<int:id>/Diagnosi/<int:diagnosi_id>/delete/", views.DeleteDiagnosiView.as_view(),          name="delete_diagnosi"),
+    path('diagnosi/<int:diagnosi_id>/dettagli/',                                                    views.DiagnosiDettaglioView.as_view(),                name='diagnosi_dettaglio'),
+    path("CartellaPaziente/<int:id>/Diagnosi/<int:diagnosi_id>/delete/",                            views.DeleteDiagnosiView.as_view(),                   name="delete_diagnosi"),
 
     ## URL SEZIONE TERAPIE
     path("elimina-terapia-studio/<int:id>/",                    EliminaTerapiaStudioView.as_view(),                   name="elimina_terapia_studio"),
@@ -66,8 +73,8 @@ urlpatterns = [
     path('terapie/domiciliare/<int:id>/dettagli/',              DettagliTerapiaDomiciliareView.as_view(),             name='dettagli_terapia_domiciliare'),
 
     ## URL SEZIONE ALLEGATI
-    path("download/<str:tipo>/<int:allegato_id>/",              DownloadAllegatoView.as_view(),                       name="download_allegato"),
-    path("CartellaPaziente/<int:paziente_id>/Allegato/<str:tipo>/<int:allegato_id>/delete/", DeleteAllegatoView.as_view(), name="delete_allegato"),
+    path("download/<str:tipo>/<int:allegato_id>/",                                                  DownloadAllegatoView.as_view(),                       name="download_allegato"),
+    path("CartellaPaziente/<int:paziente_id>/Allegato/<str:tipo>/<int:allegato_id>/delete/",        DeleteAllegatoView.as_view(),                         name="delete_allegato"),
 
     ## URL SEZIONE VISITE
     path('elimina-visita/<int:id>/',                            EliminaVisitaView.as_view(),                          name='elimina_visita'),
@@ -90,26 +97,26 @@ urlpatterns = [
     path('UpdateTestVitale/<int:id>/',                          views.QuizEtaVitaleUpdateView.as_view(),              name='updateTestEtaVitale'), 
     
     # URL PER ETA BIOLOGICA 
-    path("Eta_Biologica/<int:id>/",                             views.EtaBiologicaView.as_view(),                     name='eta_biologica'),
-    path("Eta_Biologica/ElencoReferti/<int:id>/",               views.ElencoRefertiView.as_view(),                    name="elenco_referti"),
-    path("Eta_Biologica/GraficiAndamento/<int:persona_id>/",    views.GrafiAndamentoBiologica.as_view(),              name="grafici_eta_biologica"),
-    path("Eta_Biologica/Calcolatore/<int:id>/",                        views.CalcolatoreRender.as_view(),             name='Calcolatore'),
-    path("Eta_Biologica/ElencoReferti/Referto/<int:persona_id>/",      views.PersonaDetailView.as_view(),             name="persona_detail"),
+    path("Eta_Biologica/<int:id>/",                                    views.EtaBiologicaView.as_view(),                     name='eta_biologica'),
+    path("Eta_Biologica/ElencoReferti/<int:id>/",                      views.ElencoRefertiView.as_view(),                    name="elenco_referti"),
+    path("Eta_Biologica/GraficiAndamento/<int:persona_id>/",           views.GrafiAndamentoBiologica.as_view(),              name="grafici_eta_biologica"),
+    path("Eta_Biologica/Calcolatore/<int:id>/",                        views.CalcolatoreRender.as_view(),                    name='Calcolatore'),
+    path("Eta_Biologica/ElencoReferti/Referto/<int:persona_id>/",      views.PersonaDetailView.as_view(),                    name="persona_detail"),
     
     ## URL SEZIONE RESILIENZA 
     path('Resilienza/<int:persona_id>/',                               views.ResilienzaView.as_view(),                name='resilienza'),
     
     ## URL PIANO TERAPEUTICO
-    path('Cartella_Paziente/Piano_Terapeutico/<int:persona_id>/',           views.PianoTerapeutico.as_view(),         name='piano_terapeutico'),
-    path('CartellaPaziente/Piano_Terapeutico/Prescrizioni_Esami/<int:persona_id>/', views.PrescrizioniView.as_view(), name='prescrizioni'),
+    path('Cartella_Paziente/Piano_Terapeutico/<int:persona_id>/',                                   views.PianoTerapeutico.as_view(),                       name='piano_terapeutico'),
+    path('CartellaPaziente/Piano_Terapeutico/Prescrizioni_Esami/<int:persona_id>/',                 views.PrescrizioniView.as_view(),                       name='prescrizioni'),
     
     ## SEZIONE MICROBIOTA
-    path('CartellaPaziente/Microbiota/<int:id>/',                           views.MicrobiotaView.as_view(),            name='microbiota_detail'),
-    path('CartellaPaziente/Microbiota/add/<int:persona_id>/',                views.MicrobiotaAddView.as_view(),         name='microbiota_add'),
+    path('CartellaPaziente/Microbiota/<int:id>/',                      views.MicrobiotaView.as_view(),                name='microbiota_detail'),
+    path('CartellaPaziente/Microbiota/add/<int:persona_id>/',          views.MicrobiotaAddView.as_view(),             name='microbiota_add'),
 
     # TO DEFINE
-    path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>',         views.StampaRefertoView.as_view(),            name='download_pdf_vitale'),
-    path('update-persona/<int:id>/',                                    views.UpdatePersonaContactView.as_view(),     name='update_persona_contact'), 
+    path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>',        views.StampaRefertoView.as_view(),            name='download_pdf_vitale'),
+    path('update-persona/<int:id>/',                                   views.UpdatePersonaContactView.as_view(),     name='update_persona_contact'), 
 ]
 
 

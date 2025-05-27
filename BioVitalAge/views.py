@@ -51,6 +51,14 @@ from .models import *
 from BioVitalAge.error_handlers import catch_exceptions
 
 
+# --- IMPORT API ------
+from BioVitalAge.api.views import PazienteViewSet
+from BioVitalAge.api.serializers import PazienteSerializer
+
+
+
+
+
 logger = logging.getLogger(__name__)
 
 #----------------------------------------
@@ -98,10 +106,12 @@ class HomePageRender(LoginRequiredMixin,View):
     login_url = 'loginPage'
 
     def get(self, request):
+
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persone = TabellaPazienti.objects.order_by('created_at').all()
         today = timezone.now().date()
         total_biological_age_count = DatiEstesiRefertiEtaBiologica.objects.aggregate(total=Count('biological_age'))['total']
+
         if dottore.isSecretary:
             total_pazienti = TabellaPazienti.objects.all().count()
         else:
@@ -146,8 +156,12 @@ class HomePageRender(LoginRequiredMixin,View):
 
         if dottore.isSecretary:
             persone = TabellaPazienti.objects.all().order_by('-created_at')[:5]
+
         else:
-            persone = TabellaPazienti.objects.filter(dottore=dottore).order_by('-created_at')[:5]
+            vs = PazienteViewSet()
+            vs.request = request
+            persone = vs.get_queryset().order_by('-created_at')[:5]
+
                 
         # --- Calcolo per il report "Totale Pazienti" ---
         today = dj_timezone.now().date()
@@ -1081,9 +1095,6 @@ class InserisciPazienteView(LoginRequiredMixin,View):
 
 
 
-
-
-
 #----------------------------------------
 # ------ SEZIONE CARTELLA PAZIENTE ------
 #----------------------------------------
@@ -1093,32 +1104,52 @@ class InserisciPazienteView(LoginRequiredMixin,View):
 class CartellaPazienteView(LoginRequiredMixin,View):
 
     def get(self, request, id):
-        # Recupera dottore e paziente
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        is_secretary = profile.isSecretary
+        """ 
+        Function to handling get request for cartella pazienti 
+        """
+        # ViewSets  for API call 
+        ViewSetResult = PazienteViewSet()
+        ViewSetResult.request = request
 
-        # se può scegliere, passiamo la lista completa
+        # Fetch dottore e paziente
+        persona = ViewSetResult.get_patient_info(id)
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        is_secretary = dottore.isSecretary
         dottori = UtentiRegistratiCredenziali.objects.all() if is_secretary else None
-        persona = get_object_or_404(TabellaPazienti, id=id)
+    
+        # Fetch Referti Età BioVitale
+        referti = ViewSetResult.get_all_bio_referti(id)
+        
+        # Fetch Last referto età biologica e filtrato
+        print(ViewSetResult.get_datiEstesi_filtered(id))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         # DATI PER GLI INDICATORI DI PERFORMANCE
         ## CAPACITÀ VITALE
-        ultimo_referto_capacita_vitale = (
-            persona.referti_test
-                   .order_by('-data_ora_creazione')
-                   .first()
-        )
+        ultimo_referto_capacita_vitale = (persona.referti_test.order_by('-data_ora_creazione').first())
 
         ## STORICO APPUNTAMENTI
         storico_appuntamenti = (
-            Appointment.objects
-            .filter(
+            Appointment.objects.filter(
                 Q(nome_paziente__icontains=persona.name.strip()) |
                 Q(cognome_paziente__icontains=persona.surname.strip())
-            )
-            .order_by('data', 'orario')
+            ).order_by('data', 'orario')
         )
+
         today = now().date()
         totale_appuntamenti = storico_appuntamenti.count()
         ultimo_appuntamento = storico_appuntamenti.filter(data__lt=today).last() or None
@@ -1282,14 +1313,23 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             .filter(referto=persona.referti.order_by('-data_referto').first())
             .first()
         )
-
-        cuore = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del Cuore')
-        reni = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Renale')
-        epatica = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Epatica')
-        cerebrale = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Cerebrale')
-        ormonale = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Ormonale')
-        sangue = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del sangue')
-        immunitario = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del sistema immunitario')
+        
+        if dati_estesi_ultimo_bio: 
+            cuore = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del Cuore')
+            reni = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Renale')
+            epatica = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Epatica')
+            cerebrale = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Cerebrale')
+            ormonale = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Ormonale') 
+            sangue = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del sangue') 
+            immunitario = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del sistema immunitario') 
+        else:
+            cuore = None
+            reni = None
+            epatica = None
+            cerebrale = None
+            ormonale = None 
+            sangue = None 
+            immunitario = None 
 
         context = {
             'persona': persona,
@@ -1310,7 +1350,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             "Salute_ormonale": ormonale,
             "Salute_del_sangue": sangue,
             "Salute_immunitario": immunitario,
-
 
             # Score per JS con underscore
             'score': score_js,
@@ -1417,6 +1456,16 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             "success" : True,
         }
         return render(request, "includes/cartellaPaziente.html", context)
+
+
+
+
+
+
+
+
+
+
 
 # VIEW STORICO
 @method_decorator(catch_exceptions, name='dispatch')

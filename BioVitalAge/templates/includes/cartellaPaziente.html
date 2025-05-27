@@ -38,6 +38,7 @@
     <script src="https://unpkg.com/libphonenumber-js/bundle/libphonenumber-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
 </head>
 
 <body>
@@ -414,7 +415,9 @@
               orient="auto">
               <circle cx="5" cy="5" r="5" fill="var(--contrast-color)"/>
             </marker>
-        </defs>
+        </defs> 
+
+        
 
         <!-- MODALE POP UP INDICI DI PERFORMANCE -->
         <div class="backdrop-indici" id="backdropIndici"></div>
@@ -426,10 +429,15 @@
                 </div>
                 <button id="closeModale">x</button>
             </div>
-            
+
+            {% for key,data in cards.items %}
+            <div class="container-clock cardIndici" hx-get="{% url 'indicator_modal' persona.id key %}" hx-target="#modalContainer" hx-swap="innerHTML" style="cursor:pointer;">
+                <p>test</p>
+            </div>
+            {% endfor %}
             
             <!-- for element in elements -->
-            <div class="content-container-modale-indici">
+            <!-- <div class="content-container-modale-indici">
 
                 <p class="subtitle">Subtitle</p>
 
@@ -503,10 +511,8 @@
 
                 </div>
                 
-            </div> 
+            </div>  -->
         </div>
-
-
 
 
 
@@ -522,15 +528,7 @@
                         id="cardClick"
                         card-name="Salute del Cuore"
                         img-card="{% static 'image/Heart_Colorato.png' %}"
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        >
+                        dict-value="Cuore">
 
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
