@@ -325,8 +325,13 @@
                     </div>
 
                     <div class="field">
-                        <p class="field-title">OGTT (Glicemia post-carico):</p>
-                        <input class="input-disabled" type="text" name="ogtt" value="{{ ultimo_referto.ogtt }}" placeholder="inserisci il valore" disabled>
+                        <p class="field-title">OGTT (Glicemia post-carico 1h):</p>
+                        <input class="input-disabled" type="text" name="ogtt1" value="{{ ultimo_referto.ogtt1|default:'Non specificato.' }}" placeholder="inserisci il valore" disabled>
+                    </div>
+
+                    <div class="field">
+                        <p class="field-title">OGTT (Glicemia post-carico 2h):</p>
+                        <input class="input-disabled" type="text" name="ogtt2" value="{{ ultimo_referto.ogtt2|default:'Non specificato.' }}" placeholder="inserisci il valore" disabled>
                     </div>
 
                     <div class="field">
@@ -409,8 +414,12 @@
                     </div>
         
                     <div class="field">
-                        <p class="field-title">Bilirubina totale e frazionata:</p>
-                        <input class="input-disabled" type="text" name="bili_t" value="{{ ultimo_referto.bili_t }}" placeholder="inserisci il valore" disabled>
+                        <p class="field-title">Bilirubina diretta:</p>
+                        <input class="input-disabled" type="text" name="bili_d" value="{{ ultimo_referto.bili_d|default:'Non specificato.' }}" placeholder="inserisci il valore" disabled>
+                    </div>
+                    <div class="field">
+                        <p class="field-title">Bilirubina indiretta:</p>
+                        <input class="input-disabled" type="text" name="bili_in" value="{{ ultimo_referto.bili_in|default:'Non specificato.' }}" placeholder="inserisci il valore" disabled>
                     </div>
         
                     

@@ -360,6 +360,7 @@ const generaBtnBase = document.getElementById("pdfBase");
 
 const { PDFDocument, rgb, StandardFonts } = PDFLib;
 
+// Funzione per generare il PDF avanzato
 async function generatePDFAvanzato() {
   try {
     const existingPdfBytes = await fetch(
@@ -368,9 +369,6 @@ async function generatePDFAvanzato() {
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
     const pages = pdfDoc.getPages();
-
-    // Stampa Informazioni Personali
-    const personalInformationPages = pages[0];
 
     // Stampa Informazioni Personali
     const userData = document.getElementById("userData");
@@ -405,8 +403,16 @@ async function generatePDFAvanzato() {
     const height = bigData.getAttribute("data-altezza");
     const weight = bigData.getAttribute("data-peso-corporeo");
     const bmi = bigData.getAttribute("data-bmi");
+    const grasso = bigData.getAttribute("data-grasso");
+    const grasso_viscerale = bigData.getAttribute("data-grasso_viscerale");
+    const acqua = bigData.getAttribute("data-acqua");
+    const massa_muscolare = bigData.getAttribute("data-massa_muscolare");
+    const massa_ossea = bigData.getAttribute("data-massa_ossea");
+    const p_fisico = bigData.getAttribute("data-p_fisico");
+    const bmr = bigData.getAttribute("data-bmr");
     const glicemia = bigData.getAttribute("data-glicemia");
-    const ogtt = bigData.getAttribute("data-ogtt");
+    const ogtt1 = bigData.getAttribute("data-ogtt1");
+    const ogtt2 = bigData.getAttribute("data-ogtt2");
     const emoglobina_g = bigData.getAttribute("data-emoglobina_g");
     const insulina_d = bigData.getAttribute("data-insulina_d");
     const curva_i = bigData.getAttribute("data-curva_i");
@@ -419,7 +425,8 @@ async function generatePDFAvanzato() {
     const ast = bigData.getAttribute("data-ast");
     const alt = bigData.getAttribute("data-alt");
     const ggt = bigData.getAttribute("data-ggt");
-    const bili_t = bigData.getAttribute("data-bili_t");
+    const bili_d = bigData.getAttribute("data-bili_d");
+    const bili_in = bigData.getAttribute("data-bili_in");
     const pcr = bigData.getAttribute("data-pcr");
     const hgs = bigData.getAttribute("data-hgs");
     const sii = bigData.getAttribute("data-sii");
@@ -434,8 +441,16 @@ async function generatePDFAvanzato() {
       height: height,
       weight: weight,
       glicemia: glicemia,
-      ogtt: ogtt,
+      ogtt1: ogtt1,
+      ogtt2: ogtt2,
       bmi: bmi,
+      grasso: grasso,
+      grasso_viscerale: grasso_viscerale,
+      acqua: acqua,
+      massa_muscolare: massa_muscolare,
+      massa_ossea: massa_ossea,
+      p_fisico: p_fisico,
+      bmr: bmr,
       emoglobina_g: emoglobina_g,
       insulina_d: insulina_d,
       curva_i: curva_i,
@@ -448,7 +463,8 @@ async function generatePDFAvanzato() {
       ast: ast,
       alt: alt,
       ggt: ggt,
-      bili_t: bili_t,
+      bili_d: bili_d,
+      bili_in: bili_in,
       pcr: pcr,
       hgs: hgs,
       sii: sii,
@@ -462,7 +478,8 @@ async function generatePDFAvanzato() {
     --------------------------------------------------------------------------------------------------- */
     
     
-
+    // Stampa Informazioni Personali
+    const personalInformationPages = pages[0];
     personalInformationPages.drawText(`${dataReferto}`, {
       x: 440,
       y: 720,
@@ -529,132 +546,187 @@ async function generatePDFAvanzato() {
       size: 10,
       color: rgb(0, 0, 0),
     });
-    personalInformationPages.drawText(`${glicemia}`, {
-      x: 170,
-      y: 130,
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
+
 
     // Stampa Grasso
     const grassoPages = pages[1];
-    grassoPages.drawText(`${ogtt}`, {
-      x: 270,
-      y: 512,
+    grassoPages.drawText(`${grasso}`, {
+      x: 275,
+      y: 635,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    grassoPages.drawText(`${acqua}`, {
+      x: 290,
+      y: 155,
       size: 10,
       color: rgb(0, 0, 0),
     });
 
-    // Stampa Acqua
-    const acquaPages = pages[2];
-    acquaPages.drawText(`${emoglobina_g}`, {
-      x: 270,
-      y: 700,
+    // Stampa Massa Muscolare e Punteggio Fisico
+    const massaPages = pages[2];
+    massaPages.drawText(`${massa_muscolare}`, {
+      x: 325,
+      y: 507,
       size: 10,
       color: rgb(0, 0, 0),
     });
-    acquaPages.drawText(`${insulina_d}`, {
-      x: 330,
-      y: 189,
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
-
-    // Stampa punteggio fisico
-    const punteggioFisicoPages = pages[3];
-    punteggioFisicoPages.drawText(`${curva_i}`, {
-      x: 370,
-      y: 598,
-      size: 10,
-      color: rgb(0, 0, 0),
-    });
-    punteggioFisicoPages.drawText(`${homa_ir}`, {
-      x: 220,
-      y: 598,
+    massaPages.drawText(`${p_fisico}`, {
+      x: 315,
+      y: 415,
       size: 10,
       color: rgb(0, 0, 0),
     });
 
     // Stampa massa ossea
-    const massaOsseaPages = pages[4];
-    massaOsseaPages.drawText(`${tyg}`, {
-      x: 212,
-      y: 412,
+    const massaOsseaPages = pages[3];
+    massaOsseaPages.drawText(`${massa_ossea}`, {
+      x: 225,
+      y: 410,
       size: 10,
       color: rgb(0, 0, 0),
     });
 
-    // Stampa ete metabolica
-    const eteMetabolicaPages = pages[6];
-    eteMetabolicaPages.drawText(`${c_tot}`, {
-      x: 315,
-      y: 705,
+    // Stampa bmr e grasso viscerale
+    const bmrGrassoPages = pages[4];
+    bmrGrassoPages.drawText(`${bmr}`, {
+      x: 380,
+      y: 493,
       size: 10,
       color: rgb(0, 0, 0),
     });
-    eteMetabolicaPages.drawText(`${hdl}`, {
-      x: 315,
-      y: 523,
+    bmrGrassoPages.drawText(`${grasso_viscerale}`, {
+      x: 275,
+      y: 307,
       size: 10,
       color: rgb(0, 0, 0),
     });
-    eteMetabolicaPages.drawText(`${ldl}`, {
-      x: 300,
-      y: 355,
+
+    // Stampa glicemia
+    const glicemiaPages = pages[5];
+    glicemiaPages.drawText(`${glicemia}`, {
+      x: 210,
+      y: 97,
       size: 10,
       color: rgb(0, 0, 0),
     });
-    eteMetabolicaPages.drawText(`${trigliceridi}`, {
-      x: 300,
-      y: 355,
+
+    // Stampa OGTT, Emoglobina G, Insulina, Homa IR, TYG
+    const ogttPages = pages[6];
+    ogttPages.drawText(`${ogtt1}`, {
+      x: 210,
+      y: 655,
       size: 10,
       color: rgb(0, 0, 0),
     });
-    eteMetabolicaPages.drawText(`${ast}`, {
-      x: 300,
-      y: 355,
+    ogttPages.drawText(`${ogtt2}`, {
+      x: 210,
+      y: 625,
       size: 10,
       color: rgb(0, 0, 0),
     });
-    eteMetabolicaPages.drawText(`${alt}`, {
-      x: 300,
-      y: 355,
+    ogttPages.drawText(`${emoglobina_g}`, {
+      x: 210,
+      y: 513,
       size: 10,
       color: rgb(0, 0, 0),
     });
-    eteMetabolicaPages.drawText(`${ggt}`, {
-      x: 300,
-      y: 355,
+    ogttPages.drawText(`${insulina_d}`, {
+      x: 210,
+      y: 417,
       size: 10,
       color: rgb(0, 0, 0),
     });
-    eteMetabolicaPages.drawText(`${bili_t}`, {
-      x: 300,
-      y: 355,
+    ogttPages.drawText(`${homa_ir}`, {
+      x: 210,
+      y: 300,
       size: 10,
       color: rgb(0, 0, 0),
     });
-    eteMetabolicaPages.drawText(`${pcr}`, {
-      x: 300,
-      y: 355,
+    ogttPages.drawText(`${tyg}`, {
+      x: 210,
+      y: 187,
       size: 10,
       color: rgb(0, 0, 0),
     });
-    eteMetabolicaPages.drawText(`${hgs}`, {
-      x: 300,
-      y: 355,
+
+    // Stampa Colesterolo Totale, HDL, LDL, Trigliceridi e AST
+    const colesteroloPages = pages[7];
+    colesteroloPages.drawText(`${c_tot}`, {
+      x: 210,
+      y: 611,
       size: 10,
       color: rgb(0, 0, 0),
     });
-    eteMetabolicaPages.drawText(`${sii}`, {
-      x: 300,
-      y: 355,
+    colesteroloPages.drawText(`${hdl}`, {
+      x: 150,
+      y: 506,
       size: 10,
       color: rgb(0, 0, 0),
     });
-    eteMetabolicaPages.drawText(`${c_plasmatico}`, {
-      x: 300,
-      y: 355,
+    colesteroloPages.drawText(`${ldl}`, {
+      x: 202,
+      y: 391,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    colesteroloPages.drawText(`${trigliceridi}`, {
+      x: 202,
+      y: 281,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    colesteroloPages.drawText(`${ast}`, {
+      x: 150,
+      y: 62,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+
+    // Stampa ALT, GGT, BILI D, BILI IN, PCR, HGS e SII
+    const altGgtPages = pages[8];
+    altGgtPages.drawText(`${alt}`, {
+      x: 153,
+      y: 666,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    altGgtPages.drawText(`${ggt}`, {
+      x: 153,
+      y: 570,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    altGgtPages.drawText(`${bili_d}`, {
+      x: 200,
+      y: 473,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    altGgtPages.drawText(`${bili_in}`, {
+      x: 200,
+      y: 458,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    altGgtPages.drawText(`${pcr}`, {
+      x: 200,
+      y: 240,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    altGgtPages.drawText(`${sii}`, {
+      x: 200,
+      y: 79,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+
+    // Stampa C Plasmatico
+    const cPlasmaticoPages = pages[9];
+    cPlasmaticoPages.drawText(`${c_plasmatico}`, {
+      x: 230,
+      y: 489,
       size: 10,
       color: rgb(0, 0, 0),
     });
@@ -672,21 +744,271 @@ async function generatePDFAvanzato() {
   }
 }
 
+// Funzione per generare il PDF base
+async function generatePDFBase() {
+  try {
+    const existingPdfBytes = await fetch(
+      "/static/includes/pdfTemplates/ETA METABOLICA BASE.pdf"
+    ).then((res) => res.arrayBuffer());
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+
+    const pages = pdfDoc.getPages();
+
+    // Stampa Informazioni Personali
+    const userData = document.getElementById("userData");
+    const name = userData.getAttribute("data-name");
+    const surname = userData.getAttribute("data-surname");
+    const dob = userData.getAttribute("data-dob");
+    const cf = userData.getAttribute("data-cf");
+    const place_birth = userData.getAttribute("data-place_birth");
+    const chronological_age = userData.getAttribute("data-age");
+
+    /*  -----------------------------------------------------------------------------------------------
+      DEBUG
+    --------------------------------------------------------------------------------------------------- */
+    const objUserData = {
+      name: name,
+      surname: surname,
+      dob: dob,
+      cf: cf,
+      place_birth: place_birth,
+      chronological_age: chronological_age,
+    };
+
+    console.log("USER-DATA: ", objUserData);
+    /*  -----------------------------------------------------------------------------------------------
+      DEBUG
+    --------------------------------------------------------------------------------------------------- */
+
+    // Stampa dati avanzati
+    const dataReferto = generaBtnAvanzato.getAttribute("data-referto-date");
+    const idReferto = generaBtnAvanzato.getAttribute("data-referto-id");
+    const bigData = document.getElementById("datiReferto");
+    const height = bigData.getAttribute("data-altezza");
+    const weight = bigData.getAttribute("data-peso-corporeo");
+    const bmi = bigData.getAttribute("data-bmi");
+    const grasso = bigData.getAttribute("data-grasso");
+    const grasso_viscerale = bigData.getAttribute("data-grasso_viscerale");
+    const acqua = bigData.getAttribute("data-acqua");
+    const massa_muscolare = bigData.getAttribute("data-massa_muscolare");
+    const massa_ossea = bigData.getAttribute("data-massa_ossea");
+    const p_fisico = bigData.getAttribute("data-p_fisico");
+    const bmr = bigData.getAttribute("data-bmr");
+    const glicemia = bigData.getAttribute("data-glicemia");
+    const ogtt1 = bigData.getAttribute("data-ogtt1");
+    const ogtt2 = bigData.getAttribute("data-ogtt2");
+    const emoglobina_g = bigData.getAttribute("data-emoglobina_g");
+    const insulina_d = bigData.getAttribute("data-insulina_d");
+    const curva_i = bigData.getAttribute("data-curva_i");
+    const homa_ir = bigData.getAttribute("data-homa_ir");
+    const tyg = bigData.getAttribute("data-tyg");
+    const c_tot = bigData.getAttribute("data-c_tot");
+    const hdl = bigData.getAttribute("data-hdl");
+    const ldl = bigData.getAttribute("data-ldl");
+    const trigliceridi = bigData.getAttribute("data-trigliceridi");
+    const ast = bigData.getAttribute("data-ast");
+    const alt = bigData.getAttribute("data-alt");
+    const ggt = bigData.getAttribute("data-ggt");
+    const bili_d = bigData.getAttribute("data-bili_d");
+    const bili_in = bigData.getAttribute("data-bili_in");
+    const pcr = bigData.getAttribute("data-pcr");
+    const hgs = bigData.getAttribute("data-hgs");
+    const sii = bigData.getAttribute("data-sii");
+    const c_plasmatico = bigData.getAttribute("data-c_plasmatico");
+
+    /*  -----------------------------------------------------------------------------------------------
+      DEBUG
+    --------------------------------------------------------------------------------------------------- */
+    const objBigData = {
+      idReferto: idReferto,
+      dataReferto: dataReferto,
+      height: height,
+      weight: weight,
+      glicemia: glicemia,
+      ogtt1: ogtt1,
+      ogtt2: ogtt2,
+      bmi: bmi,
+      grasso: grasso,
+      grasso_viscerale: grasso_viscerale,
+      acqua: acqua,
+      massa_muscolare: massa_muscolare,
+      massa_ossea: massa_ossea,
+      p_fisico: p_fisico,
+      bmr: bmr,
+      emoglobina_g: emoglobina_g,
+      insulina_d: insulina_d,
+      curva_i: curva_i,
+      homa_ir: homa_ir,
+      tyg: tyg,
+      c_tot: c_tot,
+      hdl: hdl,
+      ldl: ldl,
+      trigliceridi: trigliceridi,
+      ast: ast,
+      alt: alt,
+      ggt: ggt,
+      bili_d: bili_d,
+      bili_in: bili_in,
+      pcr: pcr,
+      hgs: hgs,
+      sii: sii,
+      c_plasmatico: c_plasmatico,
+    };
+    
+    console.log("BIG-DATA: ", objBigData);
+
+    /*  -----------------------------------------------------------------------------------------------
+      DEBUG
+    --------------------------------------------------------------------------------------------------- */
+    
+    
+    // Stampa Informazioni Personali
+    const personalInformationPages = pages[0];
+    personalInformationPages.drawText(`${dataReferto}`, {
+      x: 440,
+      y: 720,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    personalInformationPages.drawText(`${idReferto}`, {
+      x: 440,
+      y: 706,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    personalInformationPages.drawText(`${surname}`, {
+      x: 340,
+      y: 692,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    personalInformationPages.drawText(`${name}`, {
+      x: 455,
+      y: 692,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    personalInformationPages.drawText(`${dob}`, {
+      x: 340,
+      y: 678,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    personalInformationPages.drawText(`${cf}`, {
+      x: 295,
+      y: 666,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    personalInformationPages.drawText(`${place_birth}`, {
+      x: 280,
+      y: 678,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    personalInformationPages.drawText(`${chronological_age}`, {
+      x: 480,
+      y: 678,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    personalInformationPages.drawText(`${height}`, {
+      x: 300,
+      y: 422,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    personalInformationPages.drawText(`${weight}`, {
+      x: 310,
+      y: 409,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    personalInformationPages.drawText(`${bmi}`, {
+      x: 280,
+      y: 250,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+
+
+    // Stampa Grasso
+    const grassoPages = pages[1];
+    grassoPages.drawText(`${grasso}`, {
+      x: 275,
+      y: 635,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    grassoPages.drawText(`${acqua}`, {
+      x: 290,
+      y: 155,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+
+    // Stampa Massa Muscolare e Punteggio Fisico
+    const massaPages = pages[2];
+    massaPages.drawText(`${massa_muscolare}`, {
+      x: 325,
+      y: 507,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    massaPages.drawText(`${p_fisico}`, {
+      x: 315,
+      y: 415,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+
+    // Stampa massa ossea
+    const massaOsseaPages = pages[3];
+    massaOsseaPages.drawText(`${massa_ossea}`, {
+      x: 225,
+      y: 410,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+
+    // Stampa bmr e grasso viscerale
+    const bmrGrassoPages = pages[4];
+    bmrGrassoPages.drawText(`${bmr}`, {
+      x: 380,
+      y: 493,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+    bmrGrassoPages.drawText(`${grasso_viscerale}`, {
+      x: 275,
+      y: 307,
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+
+    const modifiedPdfBytes = await pdfDoc.save();
+    const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
+    const nameUpperCase = name.toUpperCase();
+    const surnameUpperCase = surname.toUpperCase();
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `ETA-METABOLICA-BASE-${nameUpperCase}-${surnameUpperCase}.pdf`;
+    link.click();
+  } catch (error) {
+    console.error("Errore durante la generazione del PDF:", error);
+  }
+}
+
+// Listener per il bottone di generazione PDF avanzato
 if (generaBtnAvanzato) {
   generaBtnAvanzato.addEventListener("click", function () {
     generatePDFAvanzato();
   });
 }
 
+// Listener per il bottone di generazione PDF base
 if (generaBtnBase) {
   generaBtnBase.addEventListener("click", function () {
-    // Qui puoi chiamare la funzione per il PDF base, ad esempio:
-    // generatePDFBase();
-    showAlert({
-      type: "warning",
-      message: "Funzione PDF Base non ancora implementata.",
-      extraMessage: "Contattare il supporto per ulteriori informazioni.",
-      borderColor: "#FFA500",
-    });
+    generatePDFBase();
   });
 }

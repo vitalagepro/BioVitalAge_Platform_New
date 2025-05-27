@@ -2298,7 +2298,8 @@ class ComposizioneView(LoginRequiredMixin,View):
                 whtr=request.POST.get("whtr"),
                 # Profilo glicemico e insulinico
                 glicemia=request.POST.get("glicemia"),
-                ogtt=request.POST.get("ogtt"),
+                ogtt1=request.POST.get("ogtt1"),
+                ogtt2=request.POST.get("ogtt2"),
                 emoglobina_g=request.POST.get("emoglobina_g"),
                 insulina_d=request.POST.get("insulina_d"),
                 curva_i=request.POST.get("curva_i"),
@@ -2313,7 +2314,8 @@ class ComposizioneView(LoginRequiredMixin,View):
                 ast=request.POST.get("ast"),
                 alt=request.POST.get("alt"),
                 ggt=request.POST.get("ggt"),
-                bili_t=request.POST.get("bili_t"),
+                bili_d=request.POST.get("bili_d"),
+                bili_in=request.POST.get("bili_in"),
                 # Infiammazione
                 pcr=request.POST.get("pcr"),
                 hgs=request.POST.get("hgs"),
