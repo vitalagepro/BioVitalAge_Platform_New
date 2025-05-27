@@ -1,3 +1,7 @@
+"""
+Database tables 
+"""
+
 from datetime import datetime
 from django.utils import timezone # type: ignore
 from django.db import models # type: ignore
@@ -159,207 +163,221 @@ class RefertiEtaBiologica(models.Model):
         return f"Referto ID: {self.id} - Paziente: {self.paziente.name} {self.paziente.surname}"
 
 class DatiEstesiRefertiEtaBiologica(models.Model):
+    """
+        Dati estesi referto eta biologica table
+    """
     referto = models.OneToOneField(
         RefertiEtaBiologica, 
         on_delete=models.CASCADE, 
         related_name='dati_estesi'
     )
 
+    """ 
+    Salute del Cuore 
+    """
+
+    tot_chol = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")
+    ldl_chol = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")
+    hdl_chol_m = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
+    hdl_chol_w = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
+    trigl = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")
+    pai_1 = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")
+    d_dimero = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")
+    ves = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")
+
     # Oxidative Stress
-    d_roms = models.FloatField(null=True, blank=True)
-    osi = models.FloatField(null=True, blank=True)
-    pat = models.FloatField(null=True, blank=True)
-
+    d_roms = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")
+    osi = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")
+    pat = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")
+    
     # Omega Screening
-    my_acid = models.FloatField(null=True, blank=True)  
-    p_acid = models.FloatField(null=True, blank=True)  
-    st_acid = models.FloatField(null=True, blank=True)  
-    ar_acid = models.FloatField(null=True, blank=True)  
-    beenic_acid = models.FloatField(null=True, blank=True) 
-    pal_acid = models.FloatField(null=True, blank=True) 
-    ol_acid = models.FloatField(null=True, blank=True)  
-    ner_acid = models.FloatField(null=True, blank=True) 
-    a_linoleic_acid = models.FloatField(null=True, blank=True) 
-    eico_acid = models.FloatField(null=True, blank=True)  
-    doco_acid = models.FloatField(null=True, blank=True)  
-    lin_acid = models.FloatField(null=True, blank=True)  
-    gamma_lin_acid = models.FloatField(null=True, blank=True)  
-    dih_gamma_lin_acid = models.FloatField(null=True, blank=True)  
-    arachidonic_acid = models.FloatField(null=True, blank=True)  
-    sa_un_fatty_acid = models.FloatField(null=True, blank=True)
-    o3o6_fatty_acid_quotient = models.FloatField(null=True, blank=True)  
-    aa_epa = models.FloatField(null=True, blank=True)  
-    o3_index = models.FloatField(null=True, blank=True)
+    my_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
+    p_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
+    st_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
+    ar_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
+    beenic_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")
 
-    # White Blood Cells
-    wbc = models.FloatField(null=True, blank=True)
-    baso = models.FloatField(null=True, blank=True)
-    eosi = models.FloatField(null=True, blank=True)
-    lymph = models.FloatField(null=True, blank=True)
-    mono = models.FloatField(null=True, blank=True)
-    neut = models.FloatField(null=True, blank=True)
-    neut_ul = models.FloatField(null=True, blank=True)
-    lymph_ul = models.FloatField(null=True, blank=True)
-    mono_ul = models.FloatField(null=True, blank=True)
-    eosi_ul = models.FloatField(null=True, blank=True)
-    baso_ul = models.FloatField(null=True, blank=True)
+    # Acidi grassi insaturi
+    ## Omega 7
+    pal_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
 
-    # Red Blood Cells
-    mch = models.FloatField(null=True, blank=True)
-    mchc = models.FloatField(null=True, blank=True)
-    mcv = models.FloatField(null=True, blank=True)
-    rdwsd = models.FloatField(null=True, blank=True)
-    rdwcv = models.FloatField(null=True, blank=True)
-    hct_m = models.FloatField(null=True, blank=True)  
-    hct_w = models.FloatField(null=True, blank=True) 
-    hgb_m = models.FloatField(null=True, blank=True)  
-    hgb_w = models.FloatField(null=True, blank=True)  
-    rbc_m = models.FloatField(null=True, blank=True)  
-    rbc_w = models.FloatField(null=True, blank=True)
+    ## Omega 9
+    ol_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
+    ner_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
 
-    # Renal Functionality
-    azotemia = models.FloatField(null=True, blank=True)
-    uric_acid = models.FloatField(null=True, blank=True)
-    creatinine_m = models.FloatField(null=True, blank=True)  
-    creatinine_w = models.FloatField(null=True, blank=True)  
-    uricemy_m = models.FloatField(null=True, blank=True)  
-    uricemy_w = models.FloatField(null=True, blank=True)  
-    cistatine_c = models.FloatField(null=True, blank=True)
+    ## Omega 3
+    a_linoleic_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
+    eico_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
+    doco_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
 
-    # Clotting Status 
-    plt = models.FloatField(null=True, blank=True)
-    mpv = models.FloatField(null=True, blank=True)
-    plcr = models.FloatField(null=True, blank=True)
-    pct = models.FloatField(null=True, blank=True)
-    pdw = models.FloatField(null=True, blank=True)
-    d_dimero = models.FloatField(null=True, blank=True)
-    pai_1 = models.FloatField(null=True, blank=True)
+    ## Omega 6
+    lin_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
+    gamma_lin_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
+    dih_gamma_lin_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
+    arachidonic_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
 
-    # Lipid Appearance
-    tot_chol = models.FloatField(null=True, blank=True)
-    ldl_chol = models.FloatField(null=True, blank=True)
-    hdl_chol_m = models.FloatField(null=True, blank=True)  
-    hdl_chol_w = models.FloatField(null=True, blank=True)  
-    trigl = models.FloatField(null=True, blank=True)
+    sa_un_fatty_acid = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")
+    o3o6_fatty_acid_quotient = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
+    aa_epa = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
+    o3_index = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")
 
-    # Minerals
-    na = models.FloatField(null=True, blank=True)
-    k = models.FloatField(null=True, blank=True)
-    mg = models.FloatField(null=True, blank=True)
-    ci = models.FloatField(null=True, blank=True)
-    ca = models.FloatField(null=True, blank=True)
-    p = models.FloatField(null=True, blank=True)
 
-    # Hormonal Assets
-    dhea_m = models.FloatField(null=True, blank=True) 
-    dhea_w = models.FloatField(null=True, blank=True)  
-    testo_m = models.FloatField(null=True, blank=True) 
-    testo_w = models.FloatField(null=True, blank=True)  
-    tsh = models.FloatField(null=True, blank=True)  
-    ft3 = models.FloatField(null=True, blank=True)  
-    ft4 = models.FloatField(null=True, blank=True)  
-    beta_es_m = models.FloatField(null=True, blank=True) 
-    beta_es_w = models.FloatField(null=True, blank=True)  
-    prog_m = models.FloatField(null=True, blank=True)  
-    prog_w = models.FloatField(null=True, blank=True)  
+    """
+    Salute Renale
+    """
 
-    # Martial Trim
-    fe = models.FloatField(null=True, blank=True)
-    transferrin = models.FloatField(null=True, blank=True)
-    ferritin_m = models.FloatField(null=True, blank=True)  
-    ferritin_w = models.FloatField(null=True, blank=True)  
+    creatinine_m = models.FloatField(null=True, blank=True, help_text="Salute Renale")  
+    creatinine_w = models.FloatField(null=True, blank=True, help_text="Salute Renale") 
+    azotemia = models.FloatField(null=True, blank=True, help_text="Salute Renale")
+    cistatine_c = models.FloatField(null=True, blank=True, help_text="Salute Renale")
+    ci = models.FloatField(null=True, blank=True, help_text="Salute Renale")
+    ca = models.FloatField(null=True, blank=True, help_text="Salute Renale")
+    p = models.FloatField(null=True, blank=True, help_text="Salute Renale")
+    uricemy_m = models.FloatField(null=True, blank=True, help_text="Salute Renale")  
+    uricemy_w = models.FloatField(null=True, blank=True, help_text="Salute Renale")  
+    s_weight = models.FloatField(null=True, blank=True, help_text="Salute Renale")
+    ph = models.FloatField(null=True, blank=True, help_text="Salute Renale")
+    glucose = models.FloatField(null=True, blank=True, help_text="Salute Renale")  
+    proteins_ex = models.FloatField(null=True, blank=True, help_text="Salute Renale")
+    blood_ex = models.FloatField(null=True, blank=True, help_text="Salute Renale")
+    ketones = models.FloatField(null=True, blank=True, help_text="Salute Renale")
+    uro = models.FloatField(null=True, blank=True, help_text="Salute Renale")
+    bilirubin_ex = models.FloatField(null=True, blank=True, help_text="Salute Renale")
+    leuc = models.FloatField(null=True, blank=True, help_text="Salute Renale")
+    uric_acid = models.FloatField(null=True, blank=True, help_text="Salute Renale")
 
-    # Diabetological Setup
-    glicemy = models.FloatField(null=True, blank=True)
-    insulin = models.FloatField(null=True, blank=True)
-    homa = models.FloatField(null=True, blank=True)
-    ir = models.FloatField(null=True, blank=True)
+    """
+    Salute Epatica
+    """
 
-    # Proteins
-    albuminemia = models.FloatField(null=True, blank=True)
-    tot_prot = models.FloatField(null=True, blank=True)
-    tot_prot_ele = models.FloatField(null=True, blank=True)
-    albumin_ele = models.FloatField(null=True, blank=True)
-    a_1 = models.FloatField(null=True, blank=True)
-    a_2 = models.FloatField(null=True, blank=True)
-    b_1 = models.FloatField(null=True, blank=True)
-    b_2 = models.FloatField(null=True, blank=True)
-    gamma = models.FloatField(null=True, blank=True)
-    albumin_dI = models.FloatField(null=True, blank=True)
-    a_1_dI = models.FloatField(null=True, blank=True)
-    a_2_dI = models.FloatField(null=True, blank=True)
-    b_1_dI = models.FloatField(null=True, blank=True)
-    b_2_dI = models.FloatField(null=True, blank=True)
-    gamma_dI = models.FloatField(null=True, blank=True)
-    ag_rap = models.FloatField(null=True, blank=True)
+    got_m = models.FloatField(null=True, blank=True, help_text="Salute Epatica")  
+    got_w = models.FloatField(null=True, blank=True, help_text="Salute Epatica")  
+    gpt_m = models.FloatField(null=True, blank=True, help_text="Salute Epatica")  
+    gpt_w = models.FloatField(null=True, blank=True, help_text="Salute Epatica")  
+    g_gt_m = models.FloatField(null=True, blank=True, help_text="Salute Epatica")
+    g_gt_w = models.FloatField(null=True, blank=True, help_text="Salute Epatica") 
+    a_photo_m = models.FloatField(null=True, blank=True, help_text="Salute Epatica")  
+    a_photo_w = models.FloatField(null=True, blank=True, help_text="Salute Epatica")
+    tot_bili = models.FloatField(null=True, blank=True, help_text="Salute Epatica")  
+    direct_bili = models.FloatField(null=True, blank=True, help_text="Salute Epatica")  
+    indirect_bili = models.FloatField(null=True, blank=True, help_text="Salute Epatica")
+    albumin_ele = models.FloatField(null=True, blank=True, help_text="Salute Epatica")
+    albumin_dI = models.FloatField(null=True, blank=True, help_text="Salute Epatica")
+    tot_prot = models.FloatField(null=True, blank=True, help_text="Salute Epatica")
+    tot_prot_ele = models.FloatField(null=True, blank=True, help_text="Salute Epatica")
+    albuminemia = models.FloatField(null=True, blank=True, help_text="Salute Epatica")
+
+
+    """
+    Salute Cerebrale
+    """
+
+    mg = models.FloatField(null=True, blank=True, help_text="Salute Cerebrale")
+    na = models.FloatField(null=True, blank=True, help_text="Salute Cerebrale")
+    k = models.FloatField(null=True, blank=True, help_text="Salute Cerebrale")
+    v_b12 = models.FloatField(null=True, blank=True, help_text="Salute Cerebrale")  
+
     
-    # Liver Functionality
-    got_m = models.FloatField(null=True, blank=True)  
-    got_w = models.FloatField(null=True, blank=True)  
-    gpt_m = models.FloatField(null=True, blank=True)  
-    gpt_w = models.FloatField(null=True, blank=True)  
-    g_gt_m = models.FloatField(null=True, blank=True)
-    g_gt_w = models.FloatField(null=True, blank=True)  
-    a_photo_m = models.FloatField(null=True, blank=True)  
-    a_photo_w = models.FloatField(null=True, blank=True)
-    tot_bili = models.FloatField(null=True, blank=True)  
-    direct_bili = models.FloatField(null=True, blank=True)  
-    indirect_bili = models.FloatField(null=True, blank=True)
+    """
+    Salute Ormonale
+    """
 
-    # Indices of Phlogosis
-    ves = models.FloatField(null=True, blank=True)
-    pcr_c = models.FloatField(null=True, blank=True)
+    glicemy = models.FloatField(null=True, blank=True, help_text="Salute Ormonale") 
+    tsh = models.FloatField(null=True, blank=True, help_text="Salute Ormonale")  
+    ft3 = models.FloatField(null=True, blank=True, help_text="Salute Ormonale")  
+    ft4 = models.FloatField(null=True, blank=True, help_text="Salute Ormonale")  
+    insulin = models.FloatField(null=True, blank=True, help_text="Salute Ormonale")
+    homa = models.FloatField(null=True, blank=True, help_text="Salute Ormonale")
+    ir = models.FloatField(null=True, blank=True, help_text="Salute Ormonale")
+    dhea_m = models.FloatField(null=True, blank=True, help_text="Salute Ormonale") 
+    dhea_w = models.FloatField(null=True, blank=True, help_text="Salute Ormonale")  
+    testo_m = models.FloatField(null=True, blank=True, help_text="Salute Ormonale") 
+    testo_w = models.FloatField(null=True, blank=True, help_text="Salute Ormonale") 
+    beta_es_m = models.FloatField(null=True, blank=True, help_text="Salute Ormonale") 
+    beta_es_w = models.FloatField(null=True, blank=True, help_text="Salute Ormonale")  
+    prog_m = models.FloatField(null=True, blank=True, help_text="Salute Ormonale")  
+    prog_w = models.FloatField(null=True, blank=True, help_text="Salute Ormonale") 
+    shbg_m = models.FloatField(null=True, blank=True, help_text="Salute Ormonale")  
+    shbg_w = models.FloatField(null=True, blank=True, help_text="Salute Ormonale") 
 
-    #Advance/sasp inflammation
-    tnf_a = models.FloatField(null=True, blank=True)  
-    inter_6 = models.FloatField(null=True, blank=True)  
-    inter_10 = models.FloatField(null=True, blank=True)  
 
-    # Disbiosi Test
-    scatolo = models.FloatField(null=True, blank=True) 
-    indicano = models.FloatField(null=True, blank=True)  
+    """ 
+    Salute del Sangue 
+    """ 
 
-    # Urinalysis
-    s_weight = models.FloatField(null=True, blank=True)
-    ph = models.FloatField(null=True, blank=True)
-    proteins_ex = models.FloatField(null=True, blank=True)
-    blood_ex = models.FloatField(null=True, blank=True)
-    ketones = models.FloatField(null=True, blank=True)
-    uro = models.FloatField(null=True, blank=True)
-    bilirubin_ex = models.FloatField(null=True, blank=True)
-    leuc = models.FloatField(null=True, blank=True)
-    glucose = models.FloatField(null=True, blank=True)  
-    
-    # Other Exams
-    shbg_m = models.FloatField(null=True, blank=True)  
-    shbg_w = models.FloatField(null=True, blank=True)  
-    nt_pro = models.FloatField(null=True, blank=True)  
-    v_b12 = models.FloatField(null=True, blank=True)  
-    v_d = models.FloatField(null=True, blank=True)  
-    ves2 = models.FloatField(null=True, blank=True) 
-    sideremia = models.FloatField(null=True, blank=True)
+    baso = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    eosi = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    lymph = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    mono = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    neut = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    neut_ul = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    lymph_ul = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    mono_ul = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    eosi_ul = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    baso_ul = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    hct_m = models.FloatField(null=True, blank=True, help_text="Salute del sangue")  
+    hct_w = models.FloatField(null=True, blank=True, help_text="Salute del sangue") 
+    hgb_m = models.FloatField(null=True, blank=True, help_text="Salute del sangue")  
+    hgb_w = models.FloatField(null=True, blank=True, help_text="Salute del sangue") 
+    mch = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    mchc = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    mcv = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    rbc_m = models.FloatField(null=True, blank=True, help_text="Salute del sangue")  
+    rbc_w = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    rdwsd = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    rdwcv = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    plt = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    mpv = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    plcr = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    pct = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    pdw = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    fe = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    transferrin = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
+    ferritin_m = models.FloatField(null=True, blank=True, help_text="Salute del sangue")  
+    ferritin_w = models.FloatField(null=True, blank=True, help_text="Salute del sangue")  
+    wbc = models.FloatField(null=True, blank=True, help_text="Salute del sangue")   
+    sideremia = models.FloatField(null=True, blank=True, help_text="Salute del sangue")
 
-    # Telomere Length
-    telotest = models.FloatField(null=True, blank=True)  
+
+    """ 
+    Salute del sistema immunitario 
+    """
+
+    pcr_c = models.FloatField(null=True, blank=True, help_text="Salute del sistema immunitario")
+    ves2 = models.FloatField(null=True, blank=True, help_text="Salute del sistema immunitario") 
+    tnf_a = models.FloatField(null=True, blank=True, help_text="Salute del sistema immunitario")  
+    inter_6 = models.FloatField(null=True, blank=True, help_text="Salute del sistema immunitario")  
+    inter_10 = models.FloatField(null=True, blank=True, help_text="Salute del sistema immunitario") 
+
+
+    """ 
+    Salute muscolo-scheletrica 
+    """
+    # calcio
+    # fosforo
+    # magnesio
+    # Vitamida D
+
 
     # Biological Age
-    biological_age = models.IntegerField(null=True, blank=True)
+    biological_age = models.IntegerField(null=True, blank=True, help_text="Salute del Cuore")
 
     # Score value
-    salute_cuore = models.FloatField(null=True, blank=True)  
-    salute_renale = models.FloatField(null=True, blank=True) 
-    salute_epatica = models.FloatField(null=True, blank=True) 
-    salute_cerebrale = models.FloatField(null=True, blank=True) 
-    salute_ormonale = models.FloatField(null=True, blank=True) 
-    salute_sangue = models.FloatField(null=True, blank=True) 
-    salute_s_i = models.FloatField(null=True, blank=True) 
-    salute_m_s = models.FloatField(null=True, blank=True) 
-
-
+    salute_cuore = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
+    salute_renale = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
+    salute_epatica = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
+    salute_cerebrale = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
+    salute_ormonale = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
+    salute_sangue = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
+    salute_s_i = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
+    salute_m_s = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
 
     def __str__(self):
         return f"Dati Estesi Referto ID: {self.referto.id}"
    
+
+
+
 # ETA METABOLICA
 class RefertiEtaMetabolica(models.Model):
     dottore = models.ForeignKey(
@@ -687,10 +705,13 @@ class AllegatiStrumentale (models.Model):
     data_referto = models.DateField(default=datetime.now)
     created_at = models.DateTimeField(auto_now_add=True)
 
+
 ## MICROBIOTA
 class MicrobiotaReport(models.Model):
+    """Tabella Referti Microbiota"""
+
     paziente = models.ForeignKey(
-        TabellaPazienti,
+        'TabellaPazienti',
         on_delete=models.CASCADE,
         related_name='microbiota_reports'
     )
@@ -702,94 +723,89 @@ class MicrobiotaReport(models.Model):
     )
     created_at = models.DateTimeField(default=timezone.now)
 
-    # ------------------------
     # Indici di biodiversità
-    indice_di_biodiversita = models.CharField(max_length=50, blank=True, null=True)
-    numero_di_specie_obs_species = models.CharField(max_length=50, blank=True, null=True)
-    distanza_filogenetica_pd_whole_tree = models.CharField(max_length=50, blank=True, null=True)
-    distribuzione_specie_indice_di_pielou = models.CharField(max_length=50, blank=True, null=True)
+    ind_biod = models.CharField(max_length=50, blank=True, null=True)
+    num_spec = models.CharField(max_length=50, blank=True, null=True)
+    dis_filo = models.CharField(max_length=50, blank=True, null=True)
+    dis_spec = models.CharField(max_length=50, blank=True, null=True)
 
-    # ------------------------
     # Patobionti rilevati
-    batteri = models.CharField(max_length=100, blank=True, null=True)
-    miceti = models.CharField(max_length=100, blank=True, null=True)
-    virus = models.CharField(max_length=100, blank=True, null=True)
-    parassiti = models.CharField(max_length=100, blank=True, null=True)
+    batteri_g = models.CharField(max_length=100, blank=True, null=True)
+    miceti_g = models.CharField(max_length=100, blank=True, null=True)
+    virus_g = models.CharField(max_length=100, blank=True, null=True)
+    parassiti_g = models.CharField(max_length=100, blank=True, null=True)
 
-    # ------------------------
-    # Metaboliti e indicatori funzionali
-    acetato = models.CharField(max_length=50, blank=True, null=True)
+    # Metabolismi Alterati
     butirrato = models.CharField(max_length=50, blank=True, null=True)
     propionato = models.CharField(max_length=50, blank=True, null=True)
-    succinato = models.CharField(max_length=50, blank=True, null=True)
     lattato = models.CharField(max_length=50, blank=True, null=True)
     gaba = models.CharField(max_length=50, blank=True, null=True)
     istamina = models.CharField(max_length=50, blank=True, null=True)
     indolo = models.CharField(max_length=50, blank=True, null=True)
-    acido_indolacetico = models.CharField(max_length=50, blank=True, null=True)
-    acido_indolpropionico = models.CharField(max_length=50, blank=True, null=True)
-    triptammina = models.CharField(max_length=50, blank=True, null=True)
+    ac_indolacetico = models.CharField(max_length=50, blank=True, null=True)
+    triptamina = models.CharField(max_length=50, blank=True, null=True)
     serotonina = models.CharField(max_length=50, blank=True, null=True)
-    trimetilammina = models.CharField(max_length=50, blank=True, null=True)
     polifenoli = models.CharField(max_length=50, blank=True, null=True)
-    vitamine_gruppo_b = models.CharField(max_length=50, blank=True, null=True)
+    vitamine_gr = models.CharField(max_length=50, blank=True, null=True)
     vitamina_k2 = models.CharField(max_length=50, blank=True, null=True)
-    degradazione_glutine = models.CharField(max_length=50, blank=True, null=True)
-    mucolisi = models.CharField(max_length=50, blank=True, null=True)
     proteolisi = models.CharField(max_length=50, blank=True, null=True)
-    lipopolisaccaride_lps = models.CharField(max_length=50, blank=True, null=True)
-    acidi_biliari_secondari = models.CharField(max_length=50, blank=True, null=True)
+    ac_biliari = models.CharField(max_length=50, blank=True, null=True)
     etanolo = models.CharField(max_length=50, blank=True, null=True)
-    acido_solfidrico = models.CharField(max_length=50, blank=True, null=True)
-    metano = models.CharField(max_length=50, blank=True, null=True)
 
-    # ------------------------
     # Funzioni / Assi
-    omeostasi_immunitaria = models.CharField(max_length=50, blank=True, null=True)
-    omeostasi_della_mucosa = models.CharField(max_length=50, blank=True, null=True)
-    omeostasi_del_glucosio = models.CharField(max_length=50, blank=True, null=True)
-    metabolismo_lipidico = models.CharField(max_length=50, blank=True, null=True)
-    attivita_antinfiammatoria = models.CharField(max_length=50, blank=True, null=True)
-    asse_intestino_cervello = models.CharField(max_length=50, blank=True, null=True)
-    asse_intestino_fegato = models.CharField(max_length=50, blank=True, null=True)
-    asse_intestino_pelle = models.CharField(max_length=50, blank=True, null=True)
-    ritmo_circadiano = models.CharField(max_length=50, blank=True, null=True)
+    o_immu = models.CharField(max_length=50, blank=True, null=True)
+    o_muco = models.CharField(max_length=50, blank=True, null=True)
+    ome_gluc = models.CharField(max_length=50, blank=True, null=True)
+    meta_lip = models.CharField(max_length=50, blank=True, null=True)
+    att_antinf = models.CharField(max_length=50, blank=True, null=True)
+    att_antim = models.CharField(max_length=50, blank=True, null=True)
+    as_cerv = models.CharField(max_length=50, blank=True, null=True)
+    as_card = models.CharField(max_length=50, blank=True, null=True)
+    as_fegato = models.CharField(max_length=50, blank=True, null=True)
+    as_pelle = models.CharField(max_length=50, blank=True, null=True)
+    ri_circa = models.CharField(max_length=50, blank=True, null=True)
 
-    # ------------------------
-    # Comunità microbica e enterotipo
-    bacteroidetes = models.CharField(max_length=50, blank=True, null=True)
-    prevotella = models.CharField(max_length=50, blank=True, null=True)
-    bacteroides = models.CharField(max_length=50, blank=True, null=True)
-    enterotipo = models.CharField(max_length=50, blank=True, null=True)
+    # Rapporti e enterotipo
     firmicutes = models.CharField(max_length=50, blank=True, null=True)
-    actinobacteria = models.CharField(max_length=50, blank=True, null=True)
-    verrucomicrobia = models.CharField(max_length=50, blank=True, null=True)
-    euryarchaeota = models.CharField(max_length=50, blank=True, null=True)
-    fusobacteria = models.CharField(max_length=50, blank=True, null=True)
-    lentisphaerae = models.CharField(max_length=50, blank=True, null=True)
-    ruminococcaceae = models.CharField(max_length=50, blank=True, null=True)
-    lachnospiraceae = models.CharField(max_length=50, blank=True, null=True)
-    firmicutes_unclassified = models.CharField(max_length=50, blank=True, null=True)
-    eubacteriaceae = models.CharField(max_length=50, blank=True, null=True)
-    oscillospiraceae = models.CharField(max_length=50, blank=True, null=True)
-    streptococcaceae = models.CharField(max_length=50, blank=True, null=True)
-    veillonellaceae = models.CharField(max_length=50, blank=True, null=True)
-    peptostreptococcaceae = models.CharField(max_length=50, blank=True, null=True)
-    bacteroidaceae = models.CharField(max_length=50, blank=True, null=True)
-    rikenellaceae = models.CharField(max_length=50, blank=True, null=True)
-    tannerellaceae = models.CharField(max_length=50, blank=True, null=True)
-    odoribacteraceae = models.CharField(max_length=50, blank=True, null=True)
-    coriobacteriaceae = models.CharField(max_length=50, blank=True, null=True)
-    desulfovibrionaceae = models.CharField(max_length=50, blank=True, null=True)
+    bacteronamees = models.CharField(max_length=50, blank=True, null=True)
+    prevotella = models.CharField(max_length=50, blank=True, null=True)
+    bacte_1 = models.CharField(max_length=50, blank=True, null=True)
+    enter = models.CharField(max_length=50, blank=True, null=True)
 
-    # ------------------------
+    # Ecologia Batterica – Phylum
+    firmi = models.CharField(max_length=50, blank=True, null=True)
+    bacte_2 = models.CharField(max_length=50, blank=True, null=True)
+    actino = models.CharField(max_length=50, blank=True, null=True)
+    verruc = models.CharField(max_length=50, blank=True, null=True)
+    eurya = models.CharField(max_length=50, blank=True, null=True)
+    fusob = models.CharField(max_length=50, blank=True, null=True)
+    lentis = models.CharField(max_length=50, blank=True, null=True)
+
+    # Ecologia Batterica – Famiglia
+    rumino = models.CharField(max_length=50, blank=True, null=True)
+    lachno = models.CharField(max_length=50, blank=True, null=True)
+    firmicutes_u = models.CharField(max_length=50, blank=True, null=True)
+    eubacteria = models.CharField(max_length=50, blank=True, null=True)
+    oscillo = models.CharField(max_length=50, blank=True, null=True)
+    strept = models.CharField(max_length=50, blank=True, null=True)
+    veillo = models.CharField(max_length=50, blank=True, null=True)
+    pepto = models.CharField(max_length=50, blank=True, null=True)
+    bactero = models.CharField(max_length=50, blank=True, null=True)
+    rikene = models.CharField(max_length=50, blank=True, null=True)
+    tannere = models.CharField(max_length=50, blank=True, null=True)
+    odoribac = models.CharField(max_length=50, blank=True, null=True)
+    corioba = models.CharField(max_length=50, blank=True, null=True)
+    desulfovi = models.CharField(max_length=50, blank=True, null=True)
+
     # Dettaglio patogenicità e abbondanze
-    patogeni_rilevati = models.CharField(max_length=100, blank=True, null=True)
-    micete_identificato = models.CharField(max_length=100, blank=True, null=True)
-    abbondanza_relativa_generale = models.CharField(max_length=50, blank=True, null=True)
-    patogenicita = models.CharField(max_length=50, blank=True, null=True)
-    virus_identificati = models.CharField(max_length=100, blank=True, null=True)
-    parassiti_identificati = models.CharField(max_length=100, blank=True, null=True)
+    patogeni_rilevati = models.TextField(blank=True, null=True)
+    miceti_n = models.TextField(blank=True, null=True)
+    virus_n = models.TextField(blank=True, null=True)
+    parassiti_n = models.TextField(blank=True, null=True)
+
+
+    scatolo = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
+    indicano = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
 
     def __str__(self):
         return f"Report {self.id} – {self.paziente} ({self.created_at.date()})"
