@@ -171,6 +171,16 @@ class DatiEstesiRefertiEtaBiologica(models.Model):
         on_delete=models.CASCADE, 
         related_name='dati_estesi'
     )
+    def get_fields_by_help_text(self, text):
+        """
+        Ritorna la lista dei Field che hanno help_text == text.
+        Usalo sull'istanza o sulla classe (il self._meta è lo stesso).
+        """
+        return [
+            field
+            for field in self._meta.fields
+            if getattr(field, 'help_text', '') == text
+        ]
 
     """ 
     Salute del Cuore 

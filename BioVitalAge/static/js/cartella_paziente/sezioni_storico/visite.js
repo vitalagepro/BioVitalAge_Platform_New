@@ -216,7 +216,10 @@ document.addEventListener("DOMContentLoaded", () => {
     daySpan.textContent = `${defaultGiorno},`;
     dateSpan.textContent = `${defaultFormattedDate},`;
     timeSpan.textContent = defaultFormattedTime;
-    document.getElementById("dottore-select").selectedIndex = 0;
+    const dottoreSelect = document.getElementById("dottore-select");
+    if (dottoreSelect) {
+      dottoreSelect.selectedIndex = 0;
+    }
     document.getElementById("tipologia_visita").selectedIndex = 0;
     document.getElementById("paziente-select").selectedIndex = 0;
     document.getElementById("voce-prezzario").selectedIndex = 0;
@@ -226,11 +229,20 @@ document.addEventListener("DOMContentLoaded", () => {
   
     dateInput.value = defaultDateValue;
     timeInput.value = "";  // oppure defaultFormattedTime se vuoi precompilarlo
-  }  
+  }
 
   if (openBtn) {
     openBtn.addEventListener("click", () => {
       setDefaultValues();
+
+      // ←–– auto-seleziona il paziente corrente
+      const pazSelect = document.getElementById("paziente-select");
+      const current = openBtn.dataset.currentPatient;
+      if (pazSelect && current) {
+        pazSelect.value = current;
+        // se hai listener di change sul select, potresti lanciare:
+        // pazSelect.dispatchEvent(new Event("change"));
+      }
     
       // Rimuove la classe d-none da ogni span
       spanGroup.classList.remove("d-none");    
