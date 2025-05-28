@@ -87,8 +87,8 @@
         </div>  
 
         <!-- MESSAGGIO DI SUCCESSO CON PUNTEGGIO -->
-         {% if success or errore %}
-            <script>
+        {% if success or errore %}
+        <script>
                 document.addEventListener("DOMContentLoaded", () => {
                     setTimeout(() => {
                         const modal = document.getElementById("modal_message");
@@ -99,11 +99,11 @@
                         }
                     }, 4000); // tempo in millisecondi prima che scompaia (4s)
                 });
-            </script>
+        </script>
         {% endif %}
 
         {% if success %}
-            <div class="success_message" id="modal_message">
+        <div class="success_message" id="modal_message">
 
                 <div class="header_message">
                     <div class="contianer-title">
@@ -116,12 +116,12 @@
 
                 <p>I dati delle informazioni personali sono state correttamente aggiornate!</p>
 
-            </div>  
+        </div>  
         {% endif %}
 
         <!-- MESSAGGIO ERRORE -->
         {% if errore %}
-            <div class="erorre_message" id="modal_message">
+        <div class="erorre_message" id="modal_message">
     
                     <div class="header_message">
                         <div class="contianer-title">
@@ -134,8 +134,36 @@
                     <p>Sembra che qualcosa sia andato storto.</p>
                     <p style="margin-top: -1rem; color: #c74b5b; font-weight: bold;">X {{ errore }}</p>
                 
-            </div>
+        </div>
         {% endif %}
+
+        <!-- Backdrop -->
+        <div class="backdrop-indici" id="backdropIndici"></div>
+
+        <!-- Modale: Salute Cuore -->
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+
+        <!-- Modale: Salute Renale -->
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+
+        <!-- Modale: Salute Epatica -->
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+        
+        <!-- Modale: Salute Cerebrale -->
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+
+        <!-- Modale: Salute Ormonale -->
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+
+        <!-- Modale: Salute del Sangue -->
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+
+        <!-- Modale: Salute del Sistema Immunitario -->
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+
+
+
+
 
         <!-- CARD PERSONAL INFORMATION -->
          <div class="d-flex gap-3 mx-20px my-3">
@@ -417,102 +445,22 @@
             </marker>
         </defs> 
 
+
+
+
+        
+
+
+
+
+
         
 
         <!-- MODALE POP UP INDICI DI PERFORMANCE -->
-        <div class="backdrop-indici" id="backdropIndici"></div>
-        <div class="modale-indici" id="modaleIndici">
-            <div class="container-header">
-                <div class="title-container">
-                    <img id="dynamicImage" src="{% static 'image/Heart_Colorato.png' %}" alt="">
-                    <h3 id="dynamicTitle">Titolo dinamico</h3>
-                </div>
-                <button id="closeModale">x</button>
-            </div>
+        
+        
 
-            {% for key,data in cards.items %}
-            <div class="container-clock cardIndici" hx-get="{% url 'indicator_modal' persona.id key %}" hx-target="#modalContainer" hx-swap="innerHTML" style="cursor:pointer;">
-                <p>test</p>
-            </div>
-            {% endfor %}
-            
-            <!-- for element in elements -->
-            <!-- <div class="content-container-modale-indici">
 
-                <p class="subtitle">Subtitle</p>
-
-                    <div class="grid-container-indici">
-                        <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-
-                </div>
-
-            </div>  
-
-            <div class="content-container-modale-indici">
-
-                <p class="subtitle">Subtitle</p>
-
-                    <div class="grid-container-indici">
-                        <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-
-                </div>
-                
-            </div>  -->
-        </div>
 
 
 

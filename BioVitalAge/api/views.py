@@ -17,9 +17,7 @@ class PazienteViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # prendo le credenziali del medico collegato
         doctor = UtentiRegistratiCredenziali.objects.get(user=self.request.user)
-        # restituisco solo i pazienti di quel medico
         return TabellaPazienti.objects.filter(dottore=doctor)
 
     def get_patient_info(self, paziente_id):
@@ -45,6 +43,7 @@ class PazienteViewSet(viewsets.ReadOnlyModelViewSet):
         doctor = UtentiRegistratiCredenziali.objects.get(user=self.request.user)
         return TabellaPazienti.objects.filter(dottore=doctor), doctor
     
+
     # REFERTI ETA' BIOVITALE
     def get_all_bio_referti(self, paziente_id):
         """ 
@@ -64,7 +63,6 @@ class PazienteViewSet(viewsets.ReadOnlyModelViewSet):
                 RefertiEtaBiologica.objects.filter(paziente=paziente).order_by('-data_ora_creazione').first()
         )
         return last_referto
-
 
     #Da testare
     def get_patient_single_bio_referto(self, paziente_id, referto_id):
@@ -91,31 +89,25 @@ class PazienteViewSet(viewsets.ReadOnlyModelViewSet):
         """ 
         Function for fetch datiestesi filtered
         """ 
+        
+        referto = self.get_last_bio_referto(paziente_id)
+        if referto is None:
+            return [None, None, None, None, None, None, None]
+        
+        last_referto_datiEstesi = self.get_datiEstesi_referto(referto.id)
 
-        referto_id = self.get_last_bio_referto(paziente_id)
-        last_referto_datiEstesi = self.get_datiEstesi_referto(referto_id.id)
+        if last_referto_datiEstesi is None:
+            return [None, None, None, None, None, None, None]
 
-        if last_referto_datiEstesi:
+        cuore       = last_referto_datiEstesi.get_fields_by_help_text('Salute del Cuore')
+        reni        = last_referto_datiEstesi.get_fields_by_help_text('Salute Renale')
+        epatica     = last_referto_datiEstesi.get_fields_by_help_text('Salute Epatica')
+        cerebrale   = last_referto_datiEstesi.get_fields_by_help_text('Salute Cerebrale')
+        ormonale    = last_referto_datiEstesi.get_fields_by_help_text('Salute Ormonale')
+        sangue      = last_referto_datiEstesi.get_fields_by_help_text('Salute del sangue')
+        immunitario = last_referto_datiEstesi.get_fields_by_help_text('Salute del sistema immunitario')
 
-            cuore = last_referto_datiEstesi.get_fields_by_help_text('Salute del Cuore')
-            reni = last_referto_datiEstesi.get_fields_by_help_text('Salute Renale')
-            epatica = last_referto_datiEstesi.get_fields_by_help_text('Salute Epatica')
-            cerebrale = last_referto_datiEstesi.get_fields_by_help_text('Salute Cerebrale')
-            ormonale = last_referto_datiEstesi.get_fields_by_help_text('Salute Ormonale') 
-            sangue = last_referto_datiEstesi.get_fields_by_help_text('Salute del sangue') 
-            immunitario = last_referto_datiEstesi.get_fields_by_help_text('Salute del sistema immunitario') 
-
-        else:
-            cuore = None
-            reni = None
-            epatica = None
-            cerebrale = None
-            ormonale = None 
-            sangue = None 
-            immunitario = None 
-
-        return cuore, reni, epatica, cerebrale, ormonale, sangue, immunitario
-
+        return [cuore, reni, epatica, cerebrale, ormonale, sangue, immunitario]
 
 
 

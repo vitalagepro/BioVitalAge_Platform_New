@@ -371,17 +371,17 @@ class DatiEstesiRefertiEtaBiologica(models.Model):
 
 
     # Biological Age
-    biological_age = models.IntegerField(null=True, blank=True, help_text="Salute del Cuore")
+    biological_age = models.IntegerField(null=True, blank=True)
 
     # Score value
-    salute_cuore = models.FloatField(null=True, blank=True, help_text="Salute del Cuore")  
-    salute_renale = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
-    salute_epatica = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
-    salute_cerebrale = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
-    salute_ormonale = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
-    salute_sangue = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
-    salute_s_i = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
-    salute_m_s = models.FloatField(null=True, blank=True, help_text="Salute del Cuore") 
+    salute_cuore = models.FloatField(null=True, blank=True)  
+    salute_renale = models.FloatField(null=True, blank=True) 
+    salute_epatica = models.FloatField(null=True, blank=True) 
+    salute_cerebrale = models.FloatField(null=True, blank=True) 
+    salute_ormonale = models.FloatField(null=True, blank=True) 
+    salute_sangue = models.FloatField(null=True, blank=True) 
+    salute_s_i = models.FloatField(null=True, blank=True) 
+    salute_m_s = models.FloatField(null=True, blank=True) 
 
     def __str__(self):
         return f"Dati Estesi Referto ID: {self.referto.id}"

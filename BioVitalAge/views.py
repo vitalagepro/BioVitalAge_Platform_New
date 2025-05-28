@@ -1121,9 +1121,9 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         referti = ViewSetResult.get_all_bio_referti(id)
         
         # Fetch Last referto età biologica e filtrato
-        ViewSetResult.get_datiEstesi_filtered(id)
+        lista_filtered_value = ViewSetResult.get_datiEstesi_filtered(id)
 
-
+     
 
 
 
@@ -1314,23 +1314,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             .first()
         )
         
-        if dati_estesi_ultimo_bio: 
-            cuore = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del Cuore')
-            reni = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Renale')
-            epatica = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Epatica')
-            cerebrale = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Cerebrale')
-            ormonale = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Ormonale') 
-            sangue = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del sangue') 
-            immunitario = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del sistema immunitario') 
-        
-        else:
-            cuore = None
-            reni = None
-            epatica = None
-            cerebrale = None
-            ormonale = None 
-            sangue = None 
-            immunitario = None 
 
         context = {
             'persona': persona,
@@ -1344,13 +1327,13 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             'is_secretary': is_secretary,
 
             # indicatori 
-            "Salute_del_cuore": cuore,
-            "Salute_del_rene": reni,
-            "Salute_epatica": epatica,
-            "Salute_cerebrale": cerebrale,
-            "Salute_ormonale": ormonale,
-            "Salute_del_sangue": sangue,
-            "Salute_immunitario": immunitario,
+            "Salute_del_cuore": lista_filtered_value[0],
+            "Salute_del_rene": lista_filtered_value[1],
+            "Salute_epatica": lista_filtered_value[2],
+            "Salute_cerebrale": lista_filtered_value[3],
+            "Salute_ormonale": lista_filtered_value[4],
+            "Salute_del_sangue": lista_filtered_value[5],
+            "Salute_immunitario": lista_filtered_value[6],
 
             # Score per JS con underscore
             'score': score_js,
