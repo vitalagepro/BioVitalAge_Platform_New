@@ -445,7 +445,7 @@ tbody tr:hover {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
     align-items: end;
-    gap: 10px;
+    gap: 15px;
     width: 100%;
     margin-top: 10px;
 }
