@@ -1,5 +1,82 @@
 import showAlert from "./components/showAlert.js";
 
+/*----------------------------------------------------
+  Funzione per gestire dinamicamente la popolazione
+  delle Modali degli Indici di Performance
+-----------------------------------------------------*/
+
+const cards = document.querySelectorAll('.cardIndici')
+const modaleIndici = document.getElementById('modaleIndici')
+const backdropIndici = document.getElementById('backdropIndici')
+const dynamicTitle = document.getElementById('dynamicTitle')
+const closeButton = document.getElementById('closeModale')
+const dynamicImage = document.getElementById('dynamicImage')
+
+
+// calcola la larghezza reale della scrollbar (serve solo per il padding-right)
+function getScrollbarWidth() {
+  return window.innerWidth - document.documentElement.clientWidth;
+}
+
+function lockBodyScroll() {
+  const sbWidth = getScrollbarWidth();
+  document.documentElement.style.setProperty('--scrollbar-width', `${sbWidth}px`);
+  document.body.classList.add('body--no-scroll');
+}
+
+function unlockBodyScroll() {
+  document.body.classList.remove('body--no-scroll');
+  document.documentElement.style.removeProperty('--scrollbar-width');
+}
+
+cards.forEach(card => {
+  card.addEventListener('click', () => {
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const name     = card.getAttribute('card-name');  
+    const imgPath  = card.getAttribute('img-card');   
+
+    dynamicTitle.textContent = name;
+    dynamicImage.src         = imgPath;
+
+    modaleIndici.style.display   = 'block';
+    backdropIndici.style.display = 'block';
+    lockBodyScroll();
+  });
+});
+
+closeButton.addEventListener('click', () => {
+  modaleIndici.style.display   = 'none';
+  backdropIndici.style.display = 'none';
+  unlockBodyScroll();        
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*  -----------------------------------------------------------------------------------------------
   Funzione di paginazione con controllo di tabelle con la stessa classe
   --------------------------------------------------------------------------------------------------- */

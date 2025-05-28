@@ -1,3 +1,7 @@
+"""
+Views manage requests and redirect
+"""
+
 # --- IMPORTS STANDARD ---
 import requests # type: ignore
 import calendar
@@ -1279,6 +1283,14 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             .first()
         )
 
+        cuore = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del Cuore')
+        reni = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Renale')
+        epatica = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Epatica')
+        cerebrale = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Cerebrale')
+        ormonale = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Ormonale')
+        sangue = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del sangue')
+        immunitario = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del sistema immunitario')
+
         context = {
             'persona': persona,
             'dottore': dottore,
@@ -1289,6 +1301,16 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             'prossimo_appuntamento': prossimo_appuntamento,
             'dottori': dottori,
             'is_secretary': is_secretary,
+
+            # indicatori 
+            "Salute_del_cuore": cuore,
+            "Salute_del_rene": reni,
+            "Salute_epatica": epatica,
+            "Salute_cerebrale": cerebrale,
+            "Salute_ormonale": ormonale,
+            "Salute_del_sangue": sangue,
+            "Salute_immunitario": immunitario,
+
 
             # Score per JS con underscore
             'score': score_js,
@@ -1304,6 +1326,7 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         }
 
         return render(request, "includes/cartellaPaziente.html", context)
+
 
     def post(self, request, id):
         
@@ -4672,6 +4695,8 @@ class PrescrizioniView(LoginRequiredMixin,View):
 
         return redirect('piano_terapeutico', persona_id)
 
+
+
 # TO DEFINE
 @method_decorator(catch_exceptions, name='dispatch')
 class UpdatePersonaContactView(LoginRequiredMixin,View):
@@ -4758,8 +4783,11 @@ class RefertoView(LoginRequiredMixin,View):
 ## SEZIONE MICROIDIOTA
 @method_decorator(catch_exceptions, name='dispatch')
 class MicrobiotaView(LoginRequiredMixin,View):
-    def get(self, request, id):
-        
+    """Microbiota homepage view class"""
+
+    def get(self, request, id): 
+        """Handling get request for microbiota home section"""
+
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
 
@@ -4773,44 +4801,13 @@ class MicrobiotaView(LoginRequiredMixin,View):
 
         return render(request, 'cartella_paziente/microbiota/microbiota.html', context)
 
-    def post(self, request, id):
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        persona = get_object_or_404(TabellaPazienti, id=id)
-
-        pdf = request.FILES.get('pdf_file')
-        if pdf:
-            # crea e salva il file
-            report = MicrobiotaReport.objects.create(
-                paziente=persona,
-                caricato_da=dottore.user,
-                file=pdf
-            )
-            # estrae i valori
-            data = extract_microbiota_values(report.file.path)
-            report.dati_estratti = data
-            report.save()
-
-            ultimo_report = persona.microbiota_reports.order_by('-created_at').first()
-
-            context ={
-                'persona': persona,        
-                'ultimo_report': ultimo_report,
-            }   
-
-            return render(request, 'cartella_paziente/microbiota/microbiota.html', context)
-
-        # se mancano dati, torna al template con errore
-        return render(request, 'cartella_paziente/microbiota/microbiota.html', {
-            'persona': persona,
-            'dottore': dottore,
-            'error': "Devi selezionare un PDF.",
-        })
-    
-
-## SEZIONE MICROIDIOTA
+## AGGIUNGI REPORT MICROBIOTA
 @method_decorator(catch_exceptions, name='dispatch')
 class MicrobiotaAddView(LoginRequiredMixin, View):
+    """Microbiota section add and generete report"""
+    
     def get(self, request, persona_id):
+        """Handling get request for microbiota section"""
 
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
@@ -4820,3 +4817,31 @@ class MicrobiotaAddView(LoginRequiredMixin, View):
         } 
 
         return render(request, "cartella_paziente/microbiota/add.html" , context)
+    
+
+    def post(self, request, persona_id):
+        """Handling post request for microbiota section"""
+
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=persona_id)
+
+        report = MicrobiotaReport.objects.create(
+            paziente_id=persona_id,
+            caricato_da=request.user,
+        )
+        queryDict = self.request.POST
+
+        for key, values in queryDict.items():
+            if hasattr(report, key):
+                setattr(report, key, values)
+        report.save()
+
+        ultimo_report = persona.microbiota_reports.order_by('-created_at').first()
+
+        context ={
+            'persona': persona,
+            'ultimo_report' : ultimo_report
+        } 
+
+        return render(request, "cartella_paziente/microbiota/microbiota.html" , context)
+

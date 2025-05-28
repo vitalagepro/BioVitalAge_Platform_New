@@ -1,3 +1,8 @@
+<!-- 
+    MICROBIOTA
+-->
+
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -161,7 +166,7 @@
 
                             <div class="container-scarica">
                                 <p style="font-weight: bold;">Ultimo PDF caricato:</p>
-                                <a href="{{ ultimo_report.file.url }}" target="_blank">
+                                <a href="#" target="_blank">
                                     Referto – {{ persona }} (ID {{ ultimo_report.id }})
                                 </a>
                             </div>
@@ -171,7 +176,7 @@
                                 <p>{{ ultimo_report.created_at|date:"d/m/Y H:i" }}</p>
                             </div>
 
-                            <a href="{{ ultimo_report.file.url }}" target="_blank">
+                            <a href="#" target="_blank">
                                 <button type="button" class="download-button">Anteprima PDF</button>
                             </a>
 
@@ -205,8 +210,7 @@
                             anche una misura della resilienza del microbiota, ovvero della capacità di tornare a una condizione iniziale in seguito ad una perturbazione.
                         </p>
                     </details>
-                    
-
+      
                     <div class="grid-container-indici">
 
                         <div class="indici">
@@ -220,7 +224,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.indice_di_biodiversita }}</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.ind_biod }}</span></p>
                             <p>Intervallo di riferimento <= 4.05</p>
                         </div>
 
@@ -234,7 +238,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.num_spec }}</span></p>
                             <p>Intervallo di riferimento: ≥ 55</p>
                         </div>
 
@@ -250,7 +254,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.distanza_filogenetica_pd_whole_tree }}</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dis_filo }}</span></p>
                             <p>Intervallo di riferimento: ≥ 4.5</p>
                         </div>
 
@@ -265,7 +269,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.distribuzione_delle_specie_indice_di_pielou }}</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.dis_spec }}</span></p>
                             <p>Intervallo di riferimento: ≥ 0.55</p>
                         </div>  
 
@@ -296,7 +300,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.batteri }}</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.batteri_g }}</span></p>
                         </div>
 
                         <div class="indici">
@@ -309,7 +313,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.miceti }}</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.miceti_g }}</span></p>
                         </div>
 
                         <div class="indici">
@@ -322,7 +326,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.virus }}</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.virus_g }}</span></p>
                         </div>
 
                         <div class="indici">
@@ -335,7 +339,7 @@
                                     </p>
                                 </button>
                             </div>
-                            <p class="punteggio">punteggio: <span>{{ ultimo_report.dati_estratti.parassiti }}</span></p>
+                            <p class="punteggio">punteggio: <span>{{ ultimo_report.parassiti_g }}</span></p>
                         </div>  
                     </div>
                 </details>  
@@ -361,7 +365,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                {{ ultimo_report.dati_estratti.acetato }}    
+                                default  
                             </p>
                             <p>’ Alimenti consigliati -> fibre, aceto biologico1, alimenti fermentati, avena, asparagi, porri, aglio, cipolla,cicoria, carciofi, topinambur, tarassaco.’</p>
                         </div>
@@ -381,7 +385,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                {{ ultimo_report.dati_estratti.butirrato }}
+                                {{ ultimo_report.butirrato }}
                             </p>
                             <p>’ Alimenti consigliati -> alimenti ricchi di amido resistente (avena, riso, legumi, cereali integrali) ’</p>
                             <p>’ Integratori consigliati -> FOS, Inulina, Omega-3 ’</p>
@@ -402,7 +406,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                {{ ultimo_report.dati_estratti.propionato }}
+                                {{ ultimo_report.propionato }}
                             </p>
                             <p>’ Alimenti consigliati -> alimenti ricchi di beta-glucani (orzo, avena e crusca dei cereali integrali) ’</p>
                             <p>’ Integratori consigliati -> inulina ’</p>
@@ -422,7 +426,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                               {{ ultimo_report.dati_estratti.succinato }}
+                               default
                             </p>
                         </div>
 
@@ -439,7 +443,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                {{ ultimo_report.dati_estratti.lattato }}
+                                {{ ultimo_report.lattato }}
                             </p>
                             <p>’ Alimenti consigliati -> alimenti ricchi di fibre prebiotiche (cicoria, farina di frumento, banana, miele),
                             alimenti ricchi di pectina (mele, pere), alimenti a fermentazione lattica (kefir bianco naturale, yogurt greco) ’</p>
@@ -462,7 +466,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                {{ ultimo_report.dati_estratti.gaba }}
+                                {{ ultimo_report.gaba }}
                             </p>
                             <p>’ Alimenti consigliati -> alimenti fermentati con lattobacilli (kefir, miso, crauti), cibi che possono stimolare la
                             produzione di GABA (noci, mandorle, nocciole, legumi, spinaci, pomodori).’</p>
@@ -505,7 +509,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                {{ ultimo_report.dati_estratti.indolo }}
+                                {{ ultimo_report.indolo }}
                             </p>
                             <p>’Alimenti consigliati -> alimenti ricchi di polifenoli (frutta, verdura, tè verde, caffè)’</p>
                             <p>’Probiotici consigliati -> Clostridium sporogenes’</p>
@@ -523,7 +527,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                Carenza
+                                {{ ultimo_report.ac_indolacetico }}
                             </p>
                             <p>’Alimenti consigliati -> carote crude, fagiolini’</p>
                             <p>’Probiotici consigliati -> Bacteroides fragilis e Bacteroides thetaiotaomicron’</p>
@@ -562,7 +566,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                {{ ultimo_report.dati_estratti.triptammina }}
+                                {{ ultimo_report.triptamina }}
                             </p>
                             <p>’Alimenti consigliati -> alimenti ricchi di proteine e alimenti fermentati (formaggi)’</p>
                         </div>
@@ -580,7 +584,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                {{ ultimo_report.dati_estratti.serotonina }}
+                                {{ ultimo_report.serotonina }}
                             </p>
                             <p>’Alimenti consigliati -> alimenti fermentati (yogurt, kefir)’</p>
                             <p>’AProbiotici consigliati -> Lactiplantibacillus plantarum’</p>
@@ -602,7 +606,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                {{ ultimo_report.dati_estratti.trimetilammina_tma }}
+                                default
                             </p>
                             <p>’Alimenti consigliati -> verdure crucifere (broccoli, cavolfiore, cavolo, verza); ridurre il consumo di carni,soprattutto rosse, tuorlo d’uovo e formaggi grassi’</p>
                         </div>
@@ -623,7 +627,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                {{ ultimo_report.dati_estratti.polifenoli }}
+                                {{ ultimo_report.polifenoli }}
                             </p>
                             <p>’Alimenti consigliati -> alimenti ricchi di polifenoli (melograno, frutti di bosco, tè).’</p>
                         </div>
@@ -660,7 +664,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                {{ ultimo_report.dati_estratti.vitamina_k2 }}
+                                {{ ultimo_report.vitamina_k2 }}
                             </p>
                             <p>’Alimenti consigliati -> alimenti ricchi di vitamina K2 (verdura a foglia verde, frutta, cereali)’</p>
                             <p>’Probiotici consigliati -> Lactococcus Lactis’</p>
@@ -677,7 +681,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                {{ ultimo_report.dati_estratti.degradazione_glutine  }}
+                                default
                             </p>
                         </div>
 
@@ -695,7 +699,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.mucolisi }}
+                                test
                             </p>
                         </div>
 
@@ -711,7 +715,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.proteolisi }}
+                                {{ ultimo_report.proteolisi }}
                             </p>
                         </div>
 
@@ -730,7 +734,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                {{ ultimo_report.dati_estratti.lipopolisaccaride_lps }}
+                                default
                             </p>
                         </div>
 
@@ -747,7 +751,7 @@
                                 </button>
                             </div>
                             <p class="punteggio carenza">
-                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}
+                                {{ ultimo_report.ac_biliari }}
                             </p>
                             <p>Alimenti consigliati -> alimenti ricchi di polifenoli</p>
                         </div>
@@ -765,7 +769,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.etanolo }}
+                                {{ ultimo_report.etanolo }}
                             </p>
                         </div>
 
@@ -783,7 +787,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}
+                                test
                             </p>
                             <p>Alimenti consigliati -> alimenti ricchi di prebiotici (avena, asparagi, porri, aglio, cipolla, cicoria, carciofi
                                 topinambur, tarassaco, cibi fermentati come kefir e crauti, cacao, semi di lino ed alghe); ridurre
@@ -805,7 +809,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}
+                                default
                             </p>
                             <p>
                                 Alimenti consigliati  evitare il consumo di zucchero e farine raffinate, miele, ortaggi amidacei (patate,
@@ -828,11 +832,9 @@
                                     </p>
                                 </button>
                             </div>
-                            <!-- <p class="punteggio">
-                                Aumento: è associato a tempi più lenti di transito intestinale e costipazione e possono essere correlati a
-                                malassorbimento causato da eccesso di microorganismi nell’intestino tenue, causando dolore addominale,
-                                gonfiore, stitichezza, malattie infiammatorie croniche intestinali e non solo.
-                            </p> -->
+                            <p class="punteggio">
+                                {{ ulrtimo_report.o_immu }}
+                            </p> 
                             <p>
                                 Alimenti consigliati -> Ribes nero, Yogurt bianco, Amido resistente di tipo 2 (es. Tuberi, Castagne, Banane
                                 acerbe, etc.), Cannella, Lampone nero, Noci, Broccoli, Cavolfiore, Cavolo verde, Cavolo rosso, Cannella,
@@ -866,11 +868,9 @@
                                     </p>
                                 </button>
                             </div>
-                            <!-- <p class="punteggio">
-                                Aumento: è associato a tempi più lenti di transito intestinale e costipazione e possono essere correlati a
-                                malassorbimento causato da eccesso di microorganismi nell’intestino tenue, causando dolore addominale,
-                                gonfiore, stitichezza, malattie infiammatorie croniche intestinali e non solo.
-                            </p> -->
+                            <p class="punteggio">
+                                {{ ultimo_report.ome_gluc }}
+                            </p> 
                             <p>
                                 Alimenti consigliati -> Ribes nero, Yogurt bianco, Amido resistente di tipo 2 (es. Tuberi, Castagne, Banane
                                 acerbe, etc.), Cannella, Lampone nero, Noci, Broccoli, Cavolfiore, Cavolo verde, Cavolo rosso, Tamarindo,
@@ -905,7 +905,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.omeostasi_del_glucosio }}
+                                {{ ultimo_report.ome_gluc }}
                             </p>
                             <p>
                                 Alimenti consigliati -> Ribes nero, Yogurt bianco, Amido resistente di tipo 2 (es. Tuberi, Castagne, Banane
@@ -941,7 +941,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.metabolismo_lipidico }}
+                                {{ ultimo_report.meta_lip }}
                             </p>
                             <p>
                                 Integratori consigliati -> Acido retinoico, Acido tannico, Arbutina, Caffeina, Chitosano, Esperidina, Estratto
@@ -968,7 +968,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.attivita_antinfiammatoria }}
+                                {{ ultimo_report.att_antinf }}
                             </p>
                         </div>
 
@@ -985,7 +985,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.asse_intestino_cervello }}
+                                {{ ultimo_report.as_cerv }}
                             </p>
                             <p>
                                 Alimenti consigliati -> Ribes nero, Yogurt bianco, Amido resistente di tipo 2 (es. Tuberi, Castagne, Banane
@@ -1019,7 +1019,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.asse_intestino_fegato }}
+                                {{ ultimo_report.as_fegato }}
                             </p>
                             <p>
                                 Alimenti consigliati -> Ribes nero, Yogurt bianco, Amido resistente di tipo 2 (es. Tuberi, Castagne, Banane
@@ -1060,7 +1060,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.asse_intestino_pelle }}
+                                {{ ultimo_report.dati_estratti.as_pelle }}
                             </p>
                             <p>
                                 Alimenti consigliati -> Ribes nero, Yogurt bianco, Amido resistente di tipo 2 (es. Tuberi, Castagne, Banane
@@ -1097,7 +1097,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.ritmo_circadiano }}
+                                {{ ultimo_report.dati_estratti.ri_circa }}
                             </p>
                             <p>
                                 Alimenti consigliati -> Ribes nero, Yogurt bianco, Amido resistente di tipo 2 (es. Tuberi, Castagne, Banane
@@ -1143,7 +1143,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                {{ ultimo_report.dati_estratti.firmicutes }}    
+                                {{ ultimo_report.firmicutes }}    
                             </p>
                         </div>
 
@@ -1164,7 +1164,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.bacteroidetes }}    
+                                {{ ultimo_report.bacteroidetes }}    
                             </p>
                             <!-- <p>Riduzione rapporto: si osserva nei pazienti affetti da malattia di Chron o colite ulcerosa</p> -->
                         </div>
@@ -1192,7 +1192,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }} 
+                                {{ ultimo_report.prevotella }} 
                             </p>
                         </div>
 
@@ -1208,7 +1208,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}    
+                                {{ ultimo_report.bacte_1 }}    
                             </p>
                             <p>Valore di riferimento: 0.002 - 14.1</p>
                             <!-- <p>Riduzione rapporto: si osserva nei pazienti affetti da malattia di Chron o colite ulcerosa</p> -->
@@ -1242,7 +1242,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                {{ ultimo_report.dati_estratti.enterotipo }}    
+                                {{ ultimo_report.enter }}    
                             </p>
                         </div>
 
@@ -1269,7 +1269,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>{{ ultimo_report.dati_estratti.firmicutes }}</span>    
+                                punteggio: <span>{{ ultimo_report.firmi }}</span>    
                             </p>
                             <p>Valore di riferimento: 33.9 – 63.2</p>
                         </div>
@@ -1287,7 +1287,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>{{ ultimo_report.dati_estratti.bacteroidetes }}</span>    
+                                punteggio: <span>{{ ultimo_report.bacte_2 }}</span>    
                             </p>
                             <p>Valore di riferimento: 22.8 – 55.1</p>
                         </div>
@@ -1306,7 +1306,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}
+                                {{ ultimo_report.dati_estratti.actino }}
                             </p>
                             <p>Valore di riferimento: 0 – 14.2</p>
                         </div>
@@ -1322,7 +1322,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
+                                punteggio: <span>{{ ultimo_report.verruc }}</span>    
                             </p>
                             <p>Valore di riferimento: 0 – 10.1</p>
                         </div>
@@ -1340,7 +1340,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
+                                punteggio: <span>{{ ultimo_report.eurya }}</span>    
                             </p>
                             <p>Valore di riferimento: 0 – 2.2</p>
                         </div>  
@@ -1358,7 +1358,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}   
+                                {{ ultimo_report.fusob }}   
                             </p>
                             <p>Valore di riferimento: 0 – 6.4</p>
                         </div>
@@ -1375,7 +1375,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}    
+                                {{ ultimo_report.lentis }}    
                             </p>
                             <p>Valore di riferimento: 0 – 0.4</p>
                         </div>
@@ -1401,7 +1401,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}  
+                                {{ ultimo_report.rumino }}  
                             </p>
                             <p>Valore di riferimento: 10.4 – 27.9</p>
                             <p>Alimenti consigliati -> noci</p>
@@ -1425,7 +1425,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}   
+                                {{ ultimo_report.lachno }}   
                             </p>
                             <p>Valore di riferimento: 6.2 – 20.1</p>
                         </div>
@@ -1467,7 +1467,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
+                                punteggio: <span>{{ ultimo_report.oscillo }}</span>    
                             </p>
                             <p>Valore di riferimento: 0 - 2.8</p>
                         </div>  
@@ -1483,7 +1483,7 @@
                                 </button>
                             </div>
                             <p class="punteggio aumento">
-                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}   
+                                {{ ultimo_report.strept }}   
                             </p>
                         </div>
 
@@ -1530,7 +1530,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                {{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}    
+                                {{ ultimo_report.bactero }}    
                             </p>
                             <p>Valore di riferimento: 5.6 – 32.2</p>
                             <p>Alimenti consigliati -> cranberry</p>
@@ -1625,7 +1625,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
+                                punteggio: <span>{{ ultimo_report.patogeni_rilevati }}</span>    
                             </p>
                         </div>
                     </div>
@@ -1647,7 +1647,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
+                                punteggio: <span>{{ ultimo_report.miceti_n }}</span>    
                             </p>
                         </div>
                         <div class="indici">
@@ -1697,7 +1697,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
+                                punteggio: <span>{{ ultimo_report.virus_n }}</span>    
                             </p>
                         </div>
                     </div>
@@ -1719,7 +1719,7 @@
                                 </button>
                             </div>
                             <p class="punteggio">
-                                punteggio: <span>{{ ultimo_report.dati_estratti.numero_di_specie_obs_species }}</span>    
+                                punteggio: <span>{{ ultimo_report.parassiti_n }}</span>    
                             </p>
                         </div>
                     </div>

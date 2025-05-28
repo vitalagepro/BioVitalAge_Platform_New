@@ -1,3 +1,7 @@
+"""
+Admin customization
+"""
+
 from django.contrib import admin
 from .models import (
     UtentiRegistratiCredenziali,
@@ -14,8 +18,79 @@ from .models import (
     TerapiaDomiciliare,
     TerapiaInStudio,
     AllegatiLaboratorio,
-    AllegatiStrumentale
+    AllegatiStrumentale,
+    MicrobiotaReport
 )
+
+@admin.register(MicrobiotaReport)
+class MicrobiotaReportAdmin(admin.ModelAdmin):
+    """Admin Panel Elenco Referti Microbiota"""
+
+    list_display = (
+        'id', 'paziente', 'caricato_da', 'created_at',
+    )
+    list_filter = ('created_at', 'paziente',)
+    search_fields = (
+        'paziente__name', 'paziente__surname', 'caricato_da__username',
+    )
+
+    fieldsets = (
+        ('Meta', {
+            'fields': ('paziente', 'caricato_da', 'created_at'),
+        }),
+        ('Indici di biodiversità', {
+            'fields': ('ind_biod', 'num_spec', 'dis_filo', 'dis_spec'),
+        }),
+        ('Patobionti rilevati', {
+            'fields': ('batteri_g', 'miceti_g', 'virus_g', 'parassiti_g'),
+        }),
+        ('Metabolismi Alterati', {
+            'fields': (
+                'butirrato', 'propionato', 'lattato', 'gaba',
+                'istamina', 'indolo', 'ac_indolacetico', 'triptamina',
+                'serotonina', 'polifenoli', 'vitamine_gr', 'vitamina_k2',
+                'proteolisi', 'ac_biliari', 'etanolo',
+            ),
+        }),
+        ('Funzioni / Assi', {
+            'fields': (
+                'o_immu', 'o_muco', 'ome_gluc', 'meta_lip',
+                'att_antinf', 'att_antim', 'as_cerv', 'as_card',
+                'as_fegato', 'as_pelle', 'ri_circa',
+            ),
+        }),
+        ('Rapporti & Enterotipo', {
+            'fields': (
+                'firmicutes', 'bacteronamees', 'prevotella',
+                'bacte_1', 'enter',
+            ),
+        }),
+        ('Ecologia Batterica – Phylum', {
+            'fields': (
+                'firmi', 'bacte_2', 'actino', 'verruc',
+                'eurya', 'fusob', 'lentis',
+            ),
+        }),
+        ('Ecologia Batterica – Famiglia', {
+            'fields': (
+                'rumino', 'lachno', 'firmicutes_u', 'eubacteria',
+                'oscillo', 'strept', 'veillo', 'pepto',
+                'bactero', 'rikene', 'tannere', 'odoribac',
+                'corioba', 'desulfovi',
+            ),
+        }),
+        ('Dettaglio patogenicità e abbondanze', {
+            'fields': (
+                'patogeni_rilevati',
+                'miceti_n',
+                'virus_n',
+                'parassiti_n',
+            ),
+        }),
+    )
+
+    readonly_fields = ('created_at',)
+
 
 # --- Inline per i figli di TabellaPazienti ---
 class PrescrizioniEsamiInline(admin.TabularInline):

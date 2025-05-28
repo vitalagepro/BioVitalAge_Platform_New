@@ -1,3 +1,7 @@
+<!-- 
+    /CARTELLA PAZIENTE
+-->
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -26,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
-
+    
     <!-- CDN IMPORT -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -412,6 +416,100 @@
             </marker>
         </defs>
 
+        <!-- MODALE POP UP INDICI DI PERFORMANCE -->
+        <div class="backdrop-indici" id="backdropIndici"></div>
+        <div class="modale-indici" id="modaleIndici">
+            <div class="container-header">
+                <div class="title-container">
+                    <img id="dynamicImage" src="{% static 'image/Heart_Colorato.png' %}" alt="">
+                    <h3 id="dynamicTitle">Titolo dinamico</h3>
+                </div>
+                <button id="closeModale">x</button>
+            </div>
+            
+            
+            <!-- for element in elements -->
+            <div class="content-container-modale-indici">
+
+                <p class="subtitle">Subtitle</p>
+
+                    <div class="grid-container-indici">
+                        <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+
+                </div>
+
+            </div>  
+
+            <div class="content-container-modale-indici">
+
+                <p class="subtitle">Subtitle</p>
+
+                    <div class="grid-container-indici">
+                        <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+
+                </div>
+                
+            </div> 
+        </div>
+
+
+
+
+
         <!-- CARD CLOCK -->
         <div class="container-indicatori containerStyle" style="margin-top: 0rem;">
             <div class="card card4" id="card-style">
@@ -419,7 +517,20 @@
 
                 <div class="score-clock-graph">
     
-                    <div class="container-clock">
+                    <!-- Salute del cuore -->                
+                    <div class="container-clock cardIndici"
+                        id="cardClick"
+                        card-name="Salute del Cuore"
+                        img-card="{% static 'image/Heart_Colorato.png' %}"
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        >
 
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
@@ -435,7 +546,11 @@
                         </div>
                     </div>
                 
-                    <div class="container-clock">
+                    <!-- Salute Renale -->
+                    <div class="container-clock cardIndici" 
+                        id="cardClick" 
+                        card-name="Salute Renale"
+                         img-card="{% static 'image/Reni.png' %}">
 
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
@@ -449,8 +564,12 @@
                             <p>Salute Renale</p>
                         </div>
                     </div>
-                
-                    <div class="container-clock">
+                    
+                    <!-- Salute Epatica -->
+                    <div class="container-clock cardIndici"
+                        id="cardClick"
+                        card-name="Salute Epatica"
+                        img-card="{% static 'image/Fegato.png' %}">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
                             <circle class="progress-ring__progress" id="liverClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
@@ -463,8 +582,12 @@
                             <p>Salute Epatica</p>
                         </div>
                     </div>
-                
-                    <div class="container-clock">
+                    
+                    <!-- Salute Cerebrale -->
+                    <div class="container-clock cardIndici"
+                        id="cardClick"
+                        card-name="Salute Cerebrale" 
+                        img-card="{% static 'image/Cervello.png' %}">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
                             <circle class="progress-ring__progress" id="brainClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
@@ -477,8 +600,12 @@
                             <p>Salute Cerebrale</p>
                         </div>
                     </div>
-                
-                    <div class="container-clock">
+                    
+                    <!-- Salute Ormonale -->
+                    <div class="container-clock cardIndici" 
+                        id="cardClick"
+                        card-name="Salute Ormonale"
+                        img-card="{% static 'image/Cellula.png' %}">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
                             <circle class="progress-ring__progress" id="hormoneClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
@@ -491,8 +618,12 @@
                             <p>Salute Ormonale</p>
                         </div>
                     </div>
-                
-                    <div class="container-clock">
+                    
+                    <!-- Salute del sangue -->
+                    <div class="container-clock cardIndici"
+                        id="cardClick" 
+                        card-name="Salute del Sangue"
+                        img-card="{% static 'image/Blood_Colorato.png' %}">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
                             <circle class="progress-ring__progress" id="bloodClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
@@ -505,8 +636,11 @@
                             <p>Salute del Sangue</p>
                         </div>
                     </div>
-                
-                    <div class="container-clock" style="gap: 15px;">
+                    
+                    <!-- Salute del sistema Immunitario -->
+                    <div class="container-clock cardIndici" style="gap: 15px;" 
+                        card-name="Salute del Sistema Immunitario"
+                        img-card="{% static 'image/Sistema.png' %}">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
                             <circle class="progress-ring__progress" id="immuneClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
@@ -519,7 +653,9 @@
                             <p style="max-width: 60%; font-size: 14px;">Salute del Sistema Immunitario</p>
                         </div>
                     </div>
-                
+                    
+
+                    <!-- Salute muscolo-scheletrica  -->
                     <div class="container-clock" onclick="window.location.href ='{% url 'microbiota_detail' persona.id %}'" style="cursor: pointer;">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
@@ -820,6 +956,10 @@
 
     </main>
 
+
+
+
+
     <!-- SCRIPT SCORE -->
     <script>
         // Anima un singolo cerchio di progresso
@@ -916,8 +1056,6 @@
         });
     </script>
       
-      
-
     <!-- IMPORT JS PRE DOBY CLOSE TAG -->
     <script src="{% static 'js/cartellaPaziente.js' %}" type="module"></script>
     
@@ -934,9 +1072,6 @@
         window.isSecretary = {{ is_secretary|yesno:"true,false" }};
     </script>
   
-
-
-
     <!-- SCRIPT CAPACITA' VITALE -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
