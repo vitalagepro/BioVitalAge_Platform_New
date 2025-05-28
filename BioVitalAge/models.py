@@ -172,6 +172,16 @@ class DatiEstesiRefertiEtaBiologica(models.Model):
         on_delete=models.CASCADE, 
         related_name='dati_estesi'
     )
+    def get_fields_by_help_text(self, text):
+        """
+        Ritorna la lista dei Field che hanno help_text == text.
+        Usalo sull'istanza o sulla classe (il self._meta è lo stesso).
+        """
+        return [
+            field
+            for field in self._meta.fields
+            if getattr(field, 'help_text', '') == text
+        ]
 
     """ 
     Salute del Cuore 
@@ -419,7 +429,8 @@ class RefertiEtaMetabolica(models.Model):
 
     # GLICEMICO
     glicemia = models.CharField(max_length=100, null=True, blank=True)
-    ogtt = models.CharField(max_length=100, null=True, blank=True)
+    ogtt1 = models.CharField(max_length=100, null=True, blank=True)
+    ogtt2 = models.CharField(max_length=100, null=True, blank=True)
     emoglobina_g = models.CharField(max_length=100, null=True, blank=True)
     insulina_d = models.CharField(max_length=100, null=True, blank=True)
     curva_i = models.CharField(max_length=100, null=True, blank=True)
@@ -436,7 +447,8 @@ class RefertiEtaMetabolica(models.Model):
     ast = models.CharField(max_length=100, null=True, blank=True)
     alt = models.CharField(max_length=100, null=True, blank=True)
     ggt = models.CharField(max_length=100, null=True, blank=True)
-    bili_t = models.CharField(max_length=100, null=True, blank=True)
+    bili_d = models.CharField(max_length=100, null=True, blank=True)
+    bili_in = models.CharField(max_length=100, null=True, blank=True)
 
     # INFIAMMAZIONE
     pcr = models.CharField(max_length=100, null=True, blank=True)

@@ -33,10 +33,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>  
     
     <!-- JS import -->
-    <script>
-        window.referti = {{ referti|safe }};
-    </script>
-    <script src="{% static 'js\cartella_paziente\etaMetabolica\generaPdf.js' %}" defer></script>
+    <script src="{% static 'js\cartella_paziente\etaMetabolica\generaPdf.js' %}" type="module" defer></script>
 </head>
 
 <body>
@@ -52,6 +49,17 @@
         <div class="main-title-nav">
             
             <div class="back-tittle">
+                <input type="hidden" id="userData"
+                    data-name="{{ persona.name|title }}"
+                    data-surname="{{ persona.surname|title }}"
+                    data-age="{{ persona.chronological_age|default:'N/A' }}"
+                    data-phone="{{ persona.phone|default:'Non specificato.' }}"
+                    data-email="{{ persona.email|default:'Non specificata.' }}"
+                    data-dob="{{ persona.dob|date:'d/m/Y' }}"
+                    data-cf="{{ persona.codice_fiscale|default:'N/A' }}"
+                    data-place_birth="{{ persona.place_of_birth|default:'Non specificata.' }}"
+                    data-gender="{{ persona.gender|default:'N/B' }}"
+                >
                 <a id="back" href="{% url 'composizione' persona.id %}"><img src="{% static 'image/Arrow_Back.png' %}"></a>
                 <h2 class="main-welcome-title">
                     <span data-surname="{{ persona.surname|title }}">{{ persona.surname|title }}</span>
@@ -102,6 +110,51 @@
                     <div class="table-content">
                         {% for referto in referti %}
                         <div class="riga-container">
+                            <input type="hidden" id="datiReferto" 
+                                data-referto-id="{{ referto.id|default:'N/A' }}" 
+                                data-referto-date="{{ referto.data_referto|date:'d/m/Y' }}"
+                                data-bmi="{{ referto.bmi|default:'Non specificato.' }}"
+                                data-grasso="{{ referto.grasso|default:'Non specificato.' }}"
+                                data-acqua="{{ referto.acqua|default:'Non specificato.' }}"
+                                data-massa_muscolare="{{ referto.massa_muscolare|default:'Non specificato.' }}"
+                                data-bmr="{{ referto.bmr|default:'Non specificato.' }}"
+                                data-whr="{{ referto.whr|default:'Non specificato.' }}"
+                                data-whtr="{{ referto.whtr|default:'Non specificato.' }}"
+                                data-p_fisico="{{ referto.p_fisico|default:'Non specificato.' }}"
+                                data-altezza="{{ referto.height|default:'Non specificato.' }}"
+                                data-peso-corporeo="{{ referto.weight|default:'Non specificato.' }}"
+                                data-bmi_detection_date="{{ referto.bmi_detection_date|date:'d/m/Y'|default:'Nessuna data presente.' }}"
+                                data-girth_value="{{ referto.girth_value|default:'Non specificato.' }}"
+                                data-girth_date="{{ referto.girth_date|date:'d/m/Y'|default:'Nessuna data presente.' }}"
+                                data-girth_notes="{{ referto.girth_notes|default:'Nessuna nota presente.' }}"
+                                data-sport_frequency="{{ referto.sport_frequency|default:'Non specificato.' }}"
+                                data-livello_sedentarieta="{{ referto.livello_sedentarieta|default:'Non specificato.' }}"
+                                data-massa_ossea="{{ referto.massa_ossea|default:'Non specificato.' }}"
+                                data-eta_metabolica="{{ referto.eta_metabolica|default:'Non specificato.' }}"
+                                data-grasso_viscerale="{{ referto.grasso_viscerale|default:'Non specificato.' }}"
+                                data-glicemia="{{ referto.glicemia|default:'Non specificato.' }}"
+                                data-ogtt1="{{ referto.ogtt1|default:'Non specificato.' }}"
+                                data-ogtt2="{{ referto.ogtt2|default:'Non specificato.' }}"
+                                data-emoglobina_g="{{ referto.emoglobina_g|default:'Non specificato.' }}"
+                                data-insulina_d="{{ referto.insulina_d|default:'Non specificato.' }}"
+                                data-curva_i="{{ referto.curva_i|default:'Non specificato.' }}"
+                                data-homa_ir="{{ referto.homa_ir|default:'Non specificato.' }}"
+                                data-tyg="{{ referto.tyg|default:'Non specificato.' }}"
+                                data-c_tot="{{ referto.c_tot|default:'Non specificato.' }}"
+                                data-hdl="{{ referto.hdl|default:'Non specificato.' }}"
+                                data-ldl="{{ referto.ldl|default:'Non specificato.' }}"
+                                data-trigliceridi="{{ referto.trigliceridi|default:'Non specificato.' }}"
+                                data-ast="{{ referto.ast|default:'Non specificato.' }}"
+                                data-alt="{{ referto.alt|default:'Non specificato.' }}"
+                                data-ggt="{{ referto.ggt|default:'Non specificato.' }}"
+                                data-bili_d="{{ referto.bili_d|default:'Non specificato.' }}"
+                                data-bili_in="{{ referto.bili_in|default:'Non specificato.' }}"
+                                data-pcr="{{ referto.pcr|default:'Non specificato.' }}"
+                                data-hgs="{{ referto.hgs|default:'Non specificato.' }}"
+                                data-sii="{{ referto.sii|default:'Non specificato.' }}"
+                                data-c_plasmatico="{{ referto.c_plasmatico|default:'Non specificato.' }}"
+
+                            >
                             <p>{{ forloop.counter|add:referti.start_index|add:"-1" }}</p> 
                             <p>{{ referto.punteggio_finale|default:"Non Calcolato." }}</p>
                             <p>{{ referto.data_referto|date:"d/m/Y" }}</p>

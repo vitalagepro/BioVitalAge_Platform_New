@@ -68,7 +68,7 @@
         <div class="card-container" style="margin-top: 2rem;">
             <div class="button-container">
                 <h3>Visite Fissate e Passate</h3>
-                <button class="button" id="openModal">
+                <button class="button" id="openModal" data-current-patient="{{ persona.name|lower }} {{ persona.surname|lower }}|{{ persona.id }}">
                   <span class="button__icon-wrapper">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14"
                         height="14">
@@ -118,7 +118,7 @@
                                     </div>
                             
                                     <!-- Input nascosti inizialmente -->
-                                    <div id="edit-date-container" class="d-flex align-items-center gap-2">
+                                    <div id="edit-date-container" class="d-none d-flex align-items-center gap-2">
                                         <input type="date" id="editDate">
                                         <input type="time" id="editTime">
                                         <button type="button" id="save-date-btn" class="button mt-2" style="display:none; width: 100%;">Salva</button>

@@ -138,7 +138,7 @@
         {% endif %}
 
         <!-- CARD PERSONAL INFORMATION -->
-         <div class="d-flex gap-3 mx-3 my-3">
+         <div class="d-flex gap-3 mx-20px my-3">
              <!-- backdrop semi-trasparente -->
              <div class="backdrop"></div>
 
@@ -815,6 +815,27 @@
                     <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsum impedit velit libero perspiciatis. Qui, a nihil earum quasi impedit praesentium quia temporibus magnam modi minima libero delectus nam repudiandae amet?
                     </p>
                     <a href="{% url 'piano_terapeutico' persona.id %}">Vai alla sezione</a>
+                </div>
+            </div>
+
+            <!-- ETA BIOLOGICA -->
+            <div class="cardDati">
+                <div class="cartella-effect">
+                    <h3>Rapporto Età Biologica</h3>
+                    <div class="space"></div>
+                </div>
+
+                <div class="card-content">
+                    <img src="{% static 'image/Sezione_Biologica.png' %}" alt="">
+                    <p>In questa sezione è possibile calcolare l'età biologica del paziente e vedere l'andamento insieme ai relativi referti.</p>
+                    
+
+                    <!-- <a href="{% url 'elenco_referti' persona.id %}" style="top: 10rem;" id="adjust">Vai ai referti</a>
+                    <a href="{% url 'Calcolatore' persona.id %}?parametro={{ persona.codice_fiscale|urlencode }}">
+                        Calcola l'età biologica
+                    </a>     --> 
+                    
+                    <a href="{% url 'eta_biologica' persona.id %}">Vai Alla sezione</a>
                 </div>
             </div>
         </div>

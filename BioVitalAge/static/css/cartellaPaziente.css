@@ -21,6 +21,10 @@ html, body {
   font-size: 20.9px !important;
 }
 
+.mx-20px{
+  margin-left: 20px !important;
+  margin-right: 20px !important;
+}
 
 .main-menu-trace {
   width: 50%;
