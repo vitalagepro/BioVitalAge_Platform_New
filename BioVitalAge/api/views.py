@@ -61,13 +61,8 @@ class PazienteViewSet(viewsets.ReadOnlyModelViewSet):
         """
         paziente = self.get_patient_info(paziente_id)
         last_referto = (
-                RefertiEtaBiologica
-                .objects
-                .filter(paziente=paziente)
-                .order_by('-data_ora_creazione')
-                .first()
+                RefertiEtaBiologica.objects.filter(paziente=paziente).order_by('-data_ora_creazione').first()
         )
-
         return last_referto
 
 
@@ -81,7 +76,7 @@ class PazienteViewSet(viewsets.ReadOnlyModelViewSet):
 
         return referto
 
-    def get_datiEstesi_referto(self, paziente_id, referto_id):
+    def get_datiEstesi_referto(self, referto_id):
         """
         Function for fetch single BioVitaleAge referto
         """
@@ -96,8 +91,9 @@ class PazienteViewSet(viewsets.ReadOnlyModelViewSet):
         """ 
         Function for fetch datiestesi filtered
         """ 
+
         referto_id = self.get_last_bio_referto(paziente_id)
-        last_referto_datiEstesi = self.get_datiEstesi_referto(paziente_id, referto_id.id)
+        last_referto_datiEstesi = self.get_datiEstesi_referto(referto_id.id)
 
         if last_referto_datiEstesi:
 

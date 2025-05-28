@@ -1121,7 +1121,7 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         referti = ViewSetResult.get_all_bio_referti(id)
         
         # Fetch Last referto età biologica e filtrato
-        print(ViewSetResult.get_datiEstesi_filtered(id))
+        ViewSetResult.get_datiEstesi_filtered(id)
 
 
 
@@ -1322,6 +1322,7 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             ormonale = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute Ormonale') 
             sangue = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del sangue') 
             immunitario = dati_estesi_ultimo_bio.get_fields_by_help_text('Salute del sistema immunitario') 
+        
         else:
             cuore = None
             reni = None
