@@ -1793,7 +1793,10 @@ document.addEventListener("DOMContentLoaded", () => {
     fillFormForNewAppointment(null, false);
 
     // Se necessario, resetta anche i campi del form
-    document.getElementById("dottore-select").selectedIndex = 0;
+    const dottoreSelect = document.getElementById("dottore-select");
+    if (dottoreSelect) {
+      dottoreSelect.selectedIndex = 0; // Reset del select dottore
+    }
     document.getElementById("tipologia_visita").selectedIndex = 0;
     document.getElementById("paziente-select").selectedIndex = 0;
     document.getElementById("voce-prezzario").selectedIndex = 0;
