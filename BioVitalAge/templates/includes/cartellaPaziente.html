@@ -38,7 +38,6 @@
     <script src="https://unpkg.com/libphonenumber-js/bundle/libphonenumber-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
 </head>
 
 <body>
@@ -87,8 +86,8 @@
         </div>  
 
         <!-- MESSAGGIO DI SUCCESSO CON PUNTEGGIO -->
-        {% if success or errore %}
-        <script>
+         {% if success or errore %}
+            <script>
                 document.addEventListener("DOMContentLoaded", () => {
                     setTimeout(() => {
                         const modal = document.getElementById("modal_message");
@@ -99,11 +98,11 @@
                         }
                     }, 4000); // tempo in millisecondi prima che scompaia (4s)
                 });
-        </script>
+            </script>
         {% endif %}
 
         {% if success %}
-        <div class="success_message" id="modal_message">
+            <div class="success_message" id="modal_message">
 
                 <div class="header_message">
                     <div class="contianer-title">
@@ -116,12 +115,12 @@
 
                 <p>I dati delle informazioni personali sono state correttamente aggiornate!</p>
 
-        </div>  
+            </div>  
         {% endif %}
 
         <!-- MESSAGGIO ERRORE -->
         {% if errore %}
-        <div class="erorre_message" id="modal_message">
+            <div class="erorre_message" id="modal_message">
     
                     <div class="header_message">
                         <div class="contianer-title">
@@ -134,36 +133,8 @@
                     <p>Sembra che qualcosa sia andato storto.</p>
                     <p style="margin-top: -1rem; color: #c74b5b; font-weight: bold;">X {{ errore }}</p>
                 
-        </div>
+            </div>
         {% endif %}
-
-        <!-- Backdrop -->
-        <div class="backdrop-indici" id="backdropIndici"></div>
-
-        <!-- Modale: Salute Cuore -->
-        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
-
-        <!-- Modale: Salute Renale -->
-        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
-
-        <!-- Modale: Salute Epatica -->
-        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
-        
-        <!-- Modale: Salute Cerebrale -->
-        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
-
-        <!-- Modale: Salute Ormonale -->
-        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
-
-        <!-- Modale: Salute del Sangue -->
-        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
-
-        <!-- Modale: Salute del Sistema Immunitario -->
-        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
-
-
-
-
 
         <!-- CARD PERSONAL INFORMATION -->
          <div class="d-flex gap-3 mx-20px my-3">
@@ -209,156 +180,160 @@
                          </div>
                      </div>
                      
-                     <div class="container_box">
-                         <div class="grid-container">
-                             <!-- Esempio di input: assicurati che ogni input abbia un name appropriato -->
-                             <div class="field">
-                                 <p class="field-title">Codice Fiscale:</p>
-                                 <input class="input-disabled" type="text" name="codice_fiscale" value="{{ persona.codice_fiscale|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
-                             </div>
-                 
-                             <div class="field">
-                                 <p class="field-title">Data di Nascita:</p>
-                                 <input class="input-disabled" type="text" name="dob" value="{{ persona.dob|date:'d/m/Y'|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
-                             </div>
-                 
-                             <div class="field">
-                                 <p class="field-title">Città di nascita:</p>
-                                 <input class="input-disabled" type="text" name="place_of_birth" value="{{ persona.place_of_birth|title|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
-                             </div>
-                 
-                             <!-- Altri campi... -->
-                             <div class="field">
-                                 <p class="field-title">Città di residenza:</p>
-                                 <input class="input-disabled" type="text" name="residence" value="{{ persona.residence|title|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
-                             </div>
-                 
-                             <div class="field">
-                                 <p class="field-title">CAP:</p>
-                                 <input class="input-disabled" type="text" name="cap" value="{{ persona.cap|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
-                             </div>
-                 
-                             <div class="field">
-                                 <p class="field-title">Provincia:</p>
-                                 <input class="input-disabled" type="text" name="province" value="{{ persona.province|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
-                             </div>
-                 
-                             <div class="field">
-                                 <p class="field-title">Genere:</p>
-                                 <input class="input-disabled" type="text" name="gender" value="{{ persona.gender|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
-                             </div>
-                         </div>
-                 
-                         <div class="other_container">
-     
-                             <div class="subCard-container">
-                                 <div class="card-subcard">
-                                     <div class="img-circle-container">
-                                       <img src="{% static 'image/Stetoscopio.png' %}" alt="">
-                                     </div>
-                                     <div class="container-input-info">
-                                         <p class="mb-1">Dottore Associato</p>
-                                       
-                                         {% if is_secretary %}
-                                           <span id="associate-display" class="type-two">
-                                             {{ persona.dottore.nome|title }} {{ persona.dottore.cognome|title }}
-                                           </span>
-                                           <select id="associate-select" name="dottore"
-                                                   class="type-two" style="display:none">
-                                             <option value="">Seleziona Dottore</option>
-                                             {% for doc in dottori %}
-                                               <option value="{{ doc.id }}"
-                                                 {% if persona.dottore and persona.dottore.id == doc.id %}selected{% endif %}>
-                                                 {{ doc.nome|title }} {{ doc.cognome|title }}
-                                               </option>
-                                             {% endfor %}
-                                           </select>
-                                         {% else %}
-                                           <span id="associate-display" class="type-two input-disabled">
-                                             {{ persona.dottore.nome|title }} {{ persona.dottore.cognome|title }}
-                                           </span>
-                                         {% endif %}
-                                     </div>                                  
-                                 </div>
-                 
-                                 <div class="card-subcard">
-                                     <div class="img-circle-container">
-                                         <img src="{% static 'image/Ospedale.png' %}" alt="">
-                                     </div>
-                                     <div class="container-input-info">
-                                         <p>Visita Recente</p>
-                                         <!-- span per visualizzazione -->
-                                         <span id="lastVisit-display" class="type-two cursor-not-allowed">
-                                             {% if ultimo_appuntamento %}
-                                                 {{ ultimo_appuntamento.data|date:"d/m/Y" }}
-                                             {% else %}
-                                                 non presente.
-                                             {% endif %}
-                                         </span>
-                                         <!-- input date vero e proprio (ISO) -->
-                                         <input id="lastVisit-input" class="type-two" type="date" name="lastVisit"
-                                             value="{% if ultimo_appuntamento %}{{ ultimo_appuntamento.data|date:'Y-m-d' }}{% endif %}"
-                                             style="display:none; cursor: not-allowed;">
-                                     </div>
-                                     </div>
-                 
-                                     <div class="card-subcard">
-                                         <div class="img-circle-container">
-                                           <img src="{% static 'image/Calendario.png' %}" alt="">
-                                         </div>
-                                         <div class="container-input-info">
-                                           <p>Prossima Visita</p>
-                                         <!-- span per visualizzazione -->
-                                         <span id="lastVisit-display" class="type-two cursor-not-allowed">
-                                             {% if prossimo_appuntamento %}
-                                                 {{ prossimo_appuntamento.data|date:"d/m/Y" }}
-                                             {% else %}
-                                                 non presente.
-                                             {% endif %}
-                                         </span>
-                                         <!-- input date vero e proprio (ISO) -->
-                                         <input id="lastVisit-input" class="type-two" type="date" name="lastVisit"
-                                             value="{% if prossimo_appuntamento %}{{ prossimo_appuntamento.data|date:'Y-m-d' }}{% endif %}"
-                                             style="display:none; cursor: not-allowed;">
-                                         </div>
-                                     </div>
-                 
-                                 <div class="card-subcard">
-                                     <div class="img-circle-container">
-                                         <img src="{% static 'image/Blood.png' %}" alt="">
-                                     </div>
-                                     <div class="container-input-info">
-                                         <p>Gruppo Sanguigno</p>
-                                         <input class="input-disabled type-two" type="text" name="blood_group" value="{{ persona.blood_group|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
-                                     </div>
-                                 </div>
-                             </div>
-                 
-                             <div class="Contact-Container">
-     
-                                 <div class="card-subcard">
-                                     <div class="img-circle-container">
-                                         <img src="{% static 'image/Email_Violet.png' %}" alt="">
-                                     </div>
-                                     <div class="container-input-info">
-                                         <p>Email</p>
-                                         <input class="input-disabled type-two" type="text" name="email" value="{{ persona.email|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
-                                     </div>
-                                 </div>
-                 
-                                 <div class="card-subcard">
-                                     <div class="img-circle-container">
-                                         <img src="{% static 'image/Phone.png' %}" alt="">
-                                     </div>
-                                     <div class="container-input-info">
-                                         <p>Telefono</p>
-                                         <input class="input-disabled type-two" type="text" name="phone" value="{{ persona.phone|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
-                                     </div>
-                                 </div>
-     
-                             </div>
-     
-                         </div>
+                     <div class="modal-overlay" id="modal-overlay">
+                        <div id="modal-content" class="modal-content">
+                            <div class="container_box">
+                                <div class="grid-container">
+                                    <!-- Esempio di input: assicurati che ogni input abbia un name appropriato -->
+                                    <div class="field">
+                                        <p class="field-title">Codice Fiscale:</p>
+                                        <input class="input-disabled" type="text" name="codice_fiscale" value="{{ persona.codice_fiscale|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
+                                    </div>
+                        
+                                    <div class="field">
+                                        <p class="field-title">Data di Nascita:</p>
+                                        <input class="input-disabled" type="text" name="dob" value="{{ persona.dob|date:'d/m/Y'|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
+                                    </div>
+                        
+                                    <div class="field">
+                                        <p class="field-title">Città di nascita:</p>
+                                        <input class="input-disabled" type="text" name="place_of_birth" value="{{ persona.place_of_birth|title|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
+                                    </div>
+                        
+                                    <!-- Altri campi... -->
+                                    <div class="field">
+                                        <p class="field-title">Città di residenza:</p>
+                                        <input class="input-disabled" type="text" name="residence" value="{{ persona.residence|title|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
+                                    </div>
+                        
+                                    <div class="field">
+                                        <p class="field-title">CAP:</p>
+                                        <input class="input-disabled" type="text" name="cap" value="{{ persona.cap|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
+                                    </div>
+                        
+                                    <div class="field">
+                                        <p class="field-title">Provincia:</p>
+                                        <input class="input-disabled" type="text" name="province" value="{{ persona.province|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
+                                    </div>
+                        
+                                    <div class="field">
+                                        <p class="field-title">Genere:</p>
+                                        <input class="input-disabled" type="text" name="gender" value="{{ persona.gender|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
+                                    </div>
+                                </div>
+                        
+                                <div class="other_container">
+            
+                                    <div class="subCard-container">
+                                        <div class="card-subcard">
+                                            <div class="img-circle-container">
+                                              <img src="{% static 'image/Stetoscopio.png' %}" alt="">
+                                            </div>
+                                            <div class="container-input-info">
+                                                <p class="mb-1">Dottore Associato</p>
+                                              
+                                                {% if is_secretary %}
+                                                  <span id="associate-display" class="type-two">
+                                                    {{ persona.dottore.nome|title }} {{ persona.dottore.cognome|title }}
+                                                  </span>
+                                                  <select id="associate-select" name="dottore"
+                                                          class="type-two" style="display:none">
+                                                    <option value="">Seleziona Dottore</option>
+                                                    {% for doc in dottori %}
+                                                      <option value="{{ doc.id }}"
+                                                        {% if persona.dottore and persona.dottore.id == doc.id %}selected{% endif %}>
+                                                        {{ doc.nome|title }} {{ doc.cognome|title }}
+                                                      </option>
+                                                    {% endfor %}
+                                                  </select>
+                                                {% else %}
+                                                  <span id="associate-display" class="type-two input-disabled">
+                                                    {{ persona.dottore.nome|title }} {{ persona.dottore.cognome|title }}
+                                                  </span>
+                                                {% endif %}
+                                            </div>                                  
+                                        </div>
+                        
+                                        <div class="card-subcard">
+                                            <div class="img-circle-container">
+                                                <img src="{% static 'image/Ospedale.png' %}" alt="">
+                                            </div>
+                                            <div class="container-input-info">
+                                                <p>Visita Recente</p>
+                                                <!-- span per visualizzazione -->
+                                                <span id="lastVisit-display" class="type-two cursor-not-allowed">
+                                                    {% if ultimo_appuntamento %}
+                                                        {{ ultimo_appuntamento.data|date:"d/m/Y" }}
+                                                    {% else %}
+                                                        non presente.
+                                                    {% endif %}
+                                                </span>
+                                                <!-- input date vero e proprio (ISO) -->
+                                                <input id="lastVisit-input" class="type-two" type="date" name="lastVisit"
+                                                    value="{% if ultimo_appuntamento %}{{ ultimo_appuntamento.data|date:'Y-m-d' }}{% endif %}"
+                                                    style="display:none; cursor: not-allowed;">
+                                            </div>
+                                            </div>
+                        
+                                            <div class="card-subcard">
+                                                <div class="img-circle-container">
+                                                  <img src="{% static 'image/Calendario.png' %}" alt="">
+                                                </div>
+                                                <div class="container-input-info">
+                                                  <p>Prossima Visita</p>
+                                                <!-- span per visualizzazione -->
+                                                <span id="lastVisit-display" class="type-two cursor-not-allowed">
+                                                    {% if prossimo_appuntamento %}
+                                                        {{ prossimo_appuntamento.data|date:"d/m/Y" }}
+                                                    {% else %}
+                                                        non presente.
+                                                    {% endif %}
+                                                </span>
+                                                <!-- input date vero e proprio (ISO) -->
+                                                <input id="lastVisit-input" class="type-two" type="date" name="lastVisit"
+                                                    value="{% if prossimo_appuntamento %}{{ prossimo_appuntamento.data|date:'Y-m-d' }}{% endif %}"
+                                                    style="display:none; cursor: not-allowed;">
+                                                </div>
+                                            </div>
+                        
+                                        <div class="card-subcard">
+                                            <div class="img-circle-container">
+                                                <img src="{% static 'image/Blood.png' %}" alt="">
+                                            </div>
+                                            <div class="container-input-info">
+                                                <p>Gruppo Sanguigno</p>
+                                                <input class="input-disabled type-two" type="text" name="blood_group" value="{{ persona.blood_group|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                        
+                                    <div class="Contact-Container">
+            
+                                        <div class="card-subcard">
+                                            <div class="img-circle-container">
+                                                <img src="{% static 'image/Email_Violet.png' %}" alt="">
+                                            </div>
+                                            <div class="container-input-info">
+                                                <p>Email</p>
+                                                <input class="input-disabled type-two" type="text" name="email" value="{{ persona.email|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
+                                            </div>
+                                        </div>
+                        
+                                        <div class="card-subcard">
+                                            <div class="img-circle-container">
+                                                <img src="{% static 'image/Phone.png' %}" alt="">
+                                            </div>
+                                            <div class="container-input-info">
+                                                <p>Telefono</p>
+                                                <input class="input-disabled type-two" type="text" name="phone" value="{{ persona.phone|default:'non inserito' }}" placeholder="inserisci il valore" disabled>
+                                            </div>
+                                        </div>
+            
+                                    </div>
+            
+                                </div>
+                            </div>
+                        </div>
                      </div>
                  </form>
              </div>
@@ -443,22 +418,97 @@
               orient="auto">
               <circle cx="5" cy="5" r="5" fill="var(--contrast-color)"/>
             </marker>
-        </defs> 
-
-
-
-
-        
-
-
-
-
-
-        
+        </defs>
 
         <!-- MODALE POP UP INDICI DI PERFORMANCE -->
-        
-        
+        <div class="backdrop-indici" id="backdropIndici"></div>
+        <div class="modale-indici" id="modaleIndici">
+            <div class="container-header">
+                <div class="title-container">
+                    <img id="dynamicImage" src="{% static 'image/Heart_Colorato.png' %}" alt="">
+                    <h3 id="dynamicTitle">Titolo dinamico</h3>
+                </div>
+                <button id="closeModale">x</button>
+            </div>
+            
+            
+            <!-- for element in elements -->
+            <div class="content-container-modale-indici">
+
+                <p class="subtitle">Subtitle</p>
+
+                    <div class="grid-container-indici">
+                        <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+
+                </div>
+
+            </div>  
+
+            <div class="content-container-modale-indici">
+
+                <p class="subtitle">Subtitle</p>
+
+                    <div class="grid-container-indici">
+                        <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+                    <div class="celle-indici">
+                        <p>Titolo indicatore</p>
+                        <p class="arrow upper">x</p>
+                    </div>
+
+                </div>
+                
+            </div> 
+        </div>
 
 
 
@@ -476,7 +526,15 @@
                         id="cardClick"
                         card-name="Salute del Cuore"
                         img-card="{% static 'image/Heart_Colorato.png' %}"
-                        dict-value="Cuore">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        >
 
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
@@ -1064,63 +1122,169 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <!-- SCRIPT MODALE INFORMAZIONI PERSONALI -->
-    <script>
+    <script type="module">
+        import showAlert from "{% static 'js/components/showAlert.js' %}";
+
         document.addEventListener("DOMContentLoaded", () => {
-            gsap.registerPlugin(Flip);
+          gsap.registerPlugin();
+        
+          const btn          = document.querySelector(".button-view-all");
+          const win          = document.querySelector(".app-window");
+          const bodyBox      = win.querySelector(".container_box");
+          const modalOverlay = document.getElementById("modal-overlay");
+          const modalContent = document.getElementById("modal-content");
+        
+          // Parent/original position per riposizionare bodyBox
+          const originalParent      = bodyBox.parentNode;
+          const originalNextSibling = bodyBox.nextElementSibling;
+          let modalOpen = false;
+        
+          btn.addEventListener("click", () => {
+            const wrapRect = btn
+                .querySelector(".button__icon-wrapper")
+                .getBoundingClientRect();
 
-            const btn = document.querySelector(".button-view-all");
-            const win = document.querySelector(".app-window");
-            const backdrop = document.querySelector(".backdrop");
+            if (!modalOpen) {
+                // ─── APERTURA ───
+                modalContent.innerHTML = "";
+                document.body.style.overflow = "hidden";
 
-            if (!btn || !win || !backdrop) return;
+                // crea la barra dei pulsanti
+                const actionsEl = document.createElement("div");
+                actionsEl.className = "modal-actions";
 
-            let isOpen = false;
-
-            btn.addEventListener("click", () => {
-                const state = Flip.getState(win);  // snapshot prima della modifica
-                const opening = !isOpen;
-
-                // toggle visibilità con classe
-                win.classList.toggle("overlay", opening);
-                backdrop.classList.toggle("visible", opening);
-
-                // aggiorna testo e icona
-                btn.innerHTML = opening ? `
-                    <span class="button__icon-wrapper">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
-                            <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
-                    Mostra di meno
-                ` : `
-                    <span class="button__icon-wrapper">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
-                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
-                    Mostra di più
+                // Edita / Salva
+                const modifyBtn = document.createElement("button");
+                modifyBtn.type = "button";
+                modifyBtn.className = "Btn-modify";
+                const editSVG = `
+                <span class="btn-text">Edita</span>
+                <svg class="svg" viewBox="0 0 512 512">
+                    <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"/>
+                </svg>
                 `;
+                const saveSVG = `
+                <span class="btn-text">Salva</span>
+                <svg class="svg" viewBox="0 0 24 24" fill="currentColor" style="width: 1.5em; height: 18px;">
+                    <path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.24 4 7 6.24 7 9a5 5 0 0 0 .11 1H5a4 4 0 0 0 0 8h14a3 3 0 0 0 .35-5.96z"/>
+                    <path d="M13 12v5h-2v-5H8l4-4 4 4h-3z" style="fill: grey;"/>
+                </svg>
+                `;
+                modifyBtn.innerHTML = editSVG;
 
-                Flip.from(state, {
-                    duration: 0.5,
-                    ease: "power2.inOut",
-                    absolute: true,
-                    onComplete: () => {
-                        if (!opening) {
-                            win.classList.remove("overlay");
-                            backdrop.classList.remove("visible");
-                        }
-                    }
+                // Annulla
+                const cancelBtn = document.createElement("button");
+                cancelBtn.type = "button";
+                cancelBtn.className = "button";
+                cancelBtn.innerHTML = `
+                <span class="btn-text">Annulla</span>
+                `;
+                cancelBtn.style.display = "none";
+
+                actionsEl.append(modifyBtn, cancelBtn);
+                modalContent.append(actionsEl, bodyBox);
+
+                // animazione risucchio
+                modalOverlay.classList.add("show");
+                const mRect = modalContent.getBoundingClientRect();
+                const dx = wrapRect.left + wrapRect.width/2  - (mRect.left + mRect.width/2);
+                const dy = wrapRect.top  + wrapRect.height/2 - (mRect.top  + mRect.height/2);
+                gsap.from(modalContent, {
+                x: dx, y: dy, scale: 0,
+                duration: 0.5, ease: "power2.inOut"
                 });
 
-                isOpen = opening;
+                // LOGICA EDIT / SAVE / CANCEL
+                let isEditing = false;
+                const displaySpan = document.getElementById("associate-display");
+                const selectField = document.getElementById("associate-select");
+                const otherInputs = bodyBox.querySelectorAll(".input-disabled:not([name='associate_staff'])");
+
+                modifyBtn.addEventListener("click", e => {
+                e.preventDefault();
+                if (!isEditing) {
+                    // entra in edit-mode
+                    if (window.isSecretary && selectField) {
+                    displaySpan.style.display = "none";
+                    selectField.style.display = "";
+                    selectField.classList.add("editing");
+                    }
+                    otherInputs.forEach(i => {
+                    i.removeAttribute("disabled");
+                    i.classList.add("editing");
+                    });
+                    // cambio in Salva e mostro Annulla
+                    modifyBtn.innerHTML = saveSVG;
+                    cancelBtn.style.display = "";
+                    isEditing = true;
+                } else {
+                    // Salva → submit form
+                    document.getElementById("personaForm").submit();
+                }
+                });
+
+                cancelBtn.addEventListener("click", e => {
+                e.preventDefault();
+                if (isEditing) {
+                    // rollback edit-mode
+                    if (window.isSecretary && selectField) {
+                    selectField.style.display = "none";
+                    displaySpan.style.display = "";
+                    }
+                    otherInputs.forEach(i => {
+                    i.disabled = true;
+                    i.classList.remove("editing");
+                    });
+                    // torno a Edita e nascondo Annulla
+                    modifyBtn.innerHTML = editSVG;
+                    cancelBtn.style.display = "none";
+                    isEditing = false;
+                }
+                });
+
+            } else {
+                // ─── CHIUSURA ───
+                const mRect = modalContent.getBoundingClientRect();
+                const dx = wrapRect.left + wrapRect.width/2  - (mRect.left + mRect.width/2);
+                const dy = wrapRect.top  + wrapRect.height/2 - (mRect.top  + mRect.height/2);
+                gsap.to(modalContent, {
+                x: dx, y: dy, scale: 0,
+                duration: 0.5, ease: "power2.inOut",
+                onComplete: () => {
+                    modalOverlay.classList.remove("show");
+                    document.body.style.overflow = "auto";
+                    gsap.set(modalContent, { clearProps: "all" });
+                    if (originalNextSibling && originalNextSibling.parentNode === originalParent) {
+                    originalParent.insertBefore(bodyBox, originalNextSibling);
+                    } else {
+                    originalParent.appendChild(bodyBox);
+                    }
+                    modalContent.innerHTML = "";
+                }
+                });
+            }
+
+            modalOpen = !modalOpen;
             });
 
-            backdrop.addEventListener("click", () => {
-                if (isOpen) btn.click();
-            });
+          // click fuori per chiudere
+          modalOverlay.addEventListener("click", e => {
+            if (e.target === modalOverlay && modalOpen) {
+              btn.click();
+            }
+          });
         });
     </script>
+        
+        
+       
+    
+    <!-- MODALE “RISUCCHIO” -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div id="modal-content" class="modal-content">
+        <!-- qui sposteremo dinamicamente la .container_box -->
+        </div>
+    </div>
 </body>
 
 </html>
