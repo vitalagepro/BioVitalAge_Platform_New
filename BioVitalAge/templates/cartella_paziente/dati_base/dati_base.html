@@ -8,7 +8,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'image/Favicon.png' %}" type="image/x-icon" />
     
-    <title>BioVitalAge - Dati Base & Stile di Vita</title>
+    <title>BVA - Dati Base & Stile di Vita</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'css/Componenti.css' %}">
@@ -25,8 +25,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet"/>
     
 
+    <!-- GSAP Import -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
     <!-- JS import -->
     <script src="{% static 'js/ModifyInput.js' %}" defer></script>
+    <script src="{% static 'js/cartella_paziente/dati_base/datiBase.js' %}" type="module" defer></script>
 
   </head>
   <body>
@@ -149,6 +153,44 @@
             <div class="title-card">
               <img src="{% static 'image/Professione.png' %}" alt="">
               <h3>Informazioni occupazione</h3>
+            </div>
+            <div class="button-card">
+              <a class="button" id="btn_note_commenti">
+                <span class="button__icon-wrapper">
+                  <svg
+                    viewBox="0 0 14 15"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="button__icon-svg"
+                    width="14"
+                  >
+                    <path
+                      d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                
+                  <svg
+                    viewBox="0 0 14 15"
+                    fill="none"
+                    width="14"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="button__icon-svg button__icon-svg--copy"
+                  >
+                    <path
+                      d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
+                Aggiungi Note/Commenti
+              </a>
             </div>
           </div>
           <div class="flex-container container-general">
@@ -540,36 +582,36 @@
           <a class="button" id="btn_blood_group">
             <span class="button__icon-wrapper">
               <svg
-              viewBox="0 0 14 15"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              class="button__icon-svg"
-              width="14"
-            >
-              <path
-                d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+                viewBox="0 0 14 15"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="button__icon-svg"
+                width="14"
+              >
+                <path
+                  d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
             
-            <svg
-              viewBox="0 0 14 15"
-              fill="none"
-              width="14"
-              xmlns="http://www.w3.org/2000/svg"
-              class="button__icon-svg button__icon-svg--copy"
-            >
-              <path
-                d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+              <svg
+                viewBox="0 0 14 15"
+                fill="none"
+                width="14"
+                xmlns="http://www.w3.org/2000/svg"
+                class="button__icon-svg button__icon-svg--copy"
+              >
+                <path
+                  d="M7 1V4M7 11V14M1 7H4M10 7H13M3.5 3.5L5 5M9 9L10.5 10.5M3.5 10.5L5 9M9 5L10.5 3.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
             </span>
             Modifica Dati
           </a>
@@ -582,6 +624,28 @@
           </a>
         </div>
       </form>
+    
+
+
+      <!-- Modale Note -->
+      <div id="notes-modal" class="modal-notes hidden">
+        <div class="modal-content">
+          <button class="modal-close">&times;</button>
+          <div class="notes-header">
+            <div class="input-container">
+              <input type="text" id="note-title" required />
+              <label class="floating-label" for="note-title">Titolo Nota</label>
+            </div>
+            <div class="input-container">
+              <textarea id="note-content" rows="3" required></textarea>
+              <label class="floating-label" for="note-content">Scrivi la nota...</label>
+            </div>
+            <button id="save-note-btn">Aggiungi Nota</button>
+          </div>
+          <div id="notes-list" class="notes-list"></div>
+        </div>
+      </div>
+
     </main>
   </body>
 </html>

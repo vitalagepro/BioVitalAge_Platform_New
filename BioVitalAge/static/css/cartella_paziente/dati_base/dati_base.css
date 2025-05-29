@@ -450,11 +450,12 @@
 .toolkit img{
   margin-right: -4rem;
 }
+/* default: hover solo a 30rem */
 .toolkit:hover {
   width: 30rem;
   opacity: 1;
-  transform: translateX(0); 
 }
+
 #btn_blood_group{
   opacity: 0;
   visibility: hidden;
@@ -482,11 +483,172 @@
 
 
 
+/* MODALE NOTE/COMMENTI */
+.modal-notes {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+}
 
+.modal-notes.hidden {
+  display: none;
+}
 
+.modal-notes .modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 6px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
 
+.modal-notes .modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
 
+.modal-notes .modal-close:hover {
+  color: #dc3545;
+}
 
+/* Floating label inputs */
+.input-container {
+  position: relative;
+  margin-bottom: 12px;
+}
 
+.input-container input,
+.input-container textarea {
+  width: 100%;
+  padding: 12px 8px 4px;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+  background: transparent;
+}
 
+.input-container input:focus,
+.input-container textarea:focus {
+  border-bottom-color: #007bff;
+}
 
+.floating-label {
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #888;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.floating-label.active-label {
+  top: 4px;
+  font-size: 0.85rem;
+  color: #007bff;
+}
+
+#save-note-btn {
+  padding: 8px 12px;
+  border: none;
+  background: #28a745;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+
+#save-note-btn:hover {
+  background: #218838;
+}
+
+.notes-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 16px;
+}
+
+.note-item {
+  position: relative;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  background: #f9f9f9;
+  opacity: 0;
+}
+
+/* Truncate description to one line */
+.note-item p {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.note-item h3 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+}
+
+/* View icon button */
+.view-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.view-btn:hover {
+  transform: scale(1.2);
+  color: #007bff;
+}
+
+.note-item button {
+  margin-right: 6px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.note-item button:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+.note-item .edit-btn {
+  background: #ffc107;
+  color: #000;
+}
+
+.note-item .delete-btn {
+  background: #dc3545;
+  color: #fff;
+}
