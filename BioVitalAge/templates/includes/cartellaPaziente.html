@@ -136,6 +136,32 @@
             </div>
         {% endif %}
 
+        <!-- Backdrop -->
+        <div class="backdrop-indici" id="backdropIndici"></div>
+
+        <!-- Modale: Salute Cuore -->
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+
+        <!-- Modale: Salute Renale -->
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_del_rene.html' %}
+
+        <!-- Modale: Salute Epatica -->
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+        
+        <!-- Modale: Salute Cerebrale -->
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+
+        <!-- Modale: Salute Ormonale -->
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+
+        <!-- Modale: Salute del Sangue -->
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+
+        <!-- Modale: Salute del Sistema Immunitario -->
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+
+
+
         <!-- CARD PERSONAL INFORMATION -->
          <div class="d-flex gap-3 mx-20px my-3">
              <!-- backdrop semi-trasparente -->
@@ -420,95 +446,20 @@
             </marker>
         </defs>
 
+
+
+
+        
+
+
+
+
+
+        
+
         <!-- MODALE POP UP INDICI DI PERFORMANCE -->
-        <div class="backdrop-indici" id="backdropIndici"></div>
-        <div class="modale-indici" id="modaleIndici">
-            <div class="container-header">
-                <div class="title-container">
-                    <img id="dynamicImage" src="{% static 'image/Heart_Colorato.png' %}" alt="">
-                    <h3 id="dynamicTitle">Titolo dinamico</h3>
-                </div>
-                <button id="closeModale">x</button>
-            </div>
-            
-            
-            <!-- for element in elements -->
-            <div class="content-container-modale-indici">
-
-                <p class="subtitle">Subtitle</p>
-
-                    <div class="grid-container-indici">
-                        <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-
-                </div>
-
-            </div>  
-
-            <div class="content-container-modale-indici">
-
-                <p class="subtitle">Subtitle</p>
-
-                    <div class="grid-container-indici">
-                        <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-                    <div class="celle-indici">
-                        <p>Titolo indicatore</p>
-                        <p class="arrow upper">x</p>
-                    </div>
-
-                </div>
-                
-            </div> 
-        </div>
+        
+        
 
 
 
