@@ -13,6 +13,8 @@ import uuid
 
 from datetime import date, datetime, timedelta
 from collections import defaultdict
+from rest_framework import generics, permissions
+
 
 # --- IMPORTS DI DJANGO ---
 from django.core.cache import cache # type: ignore
@@ -37,7 +39,9 @@ from django.contrib.auth.hashers import check_password # type: ignore
 from django.db.models import OuterRef # type: ignore
 from django.contrib.auth import authenticate, login, logout # type: ignore
 from django.contrib.auth.mixins import LoginRequiredMixin # type: ignore
-from django.contrib.auth import update_session_auth_hash # type: ignore
+from django.contrib.auth import update_session_auth_hash
+
+from BioVitalAge.api import serializers # type: ignore
 
 
 # --- IMPORTS PERSONALI (APP) ---
@@ -54,6 +58,8 @@ from BioVitalAge.error_handlers import catch_exceptions
 # --- IMPORT API ------
 from BioVitalAge.api.views import PazienteViewSet
 from BioVitalAge.api.serializers import PazienteSerializer
+from BioVitalAge.api.serializers import NotaSerializer
+
 
 
 
@@ -1104,52 +1110,32 @@ class InserisciPazienteView(LoginRequiredMixin,View):
 class CartellaPazienteView(LoginRequiredMixin,View):
 
     def get(self, request, id):
-        """ 
-        Function to handling get request for cartella pazienti 
-        """
-        # ViewSets  for API call 
-        ViewSetResult = PazienteViewSet()
-        ViewSetResult.request = request
-
-        # Fetch dottore e paziente
-        persona = ViewSetResult.get_patient_info(id)
+        # Recupera dottore e paziente
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        is_secretary = dottore.isSecretary
+        profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        is_secretary = profile.isSecretary
+
+        # se può scegliere, passiamo la lista completa
         dottori = UtentiRegistratiCredenziali.objects.all() if is_secretary else None
-    
-        # Fetch Referti Età BioVitale
-        referti = ViewSetResult.get_all_bio_referti(id)
-        
-        # Fetch Last referto età biologica e filtrato
-        lista_filtered_value = ViewSetResult.get_datiEstesi_filtered(id)
-
-     
-
-
-
-
-
-
-
-
-
-
-
-
-
+        persona = get_object_or_404(TabellaPazienti, id=id)
 
         # DATI PER GLI INDICATORI DI PERFORMANCE
         ## CAPACITÀ VITALE
-        ultimo_referto_capacita_vitale = (persona.referti_test.order_by('-data_ora_creazione').first())
+        ultimo_referto_capacita_vitale = (
+            persona.referti_test
+                   .order_by('-data_ora_creazione')
+                   .first()
+        )
 
         ## STORICO APPUNTAMENTI
         storico_appuntamenti = (
-            Appointment.objects.filter(
+            Appointment.objects
+            .filter(
                 Q(nome_paziente__icontains=persona.name.strip()) |
                 Q(cognome_paziente__icontains=persona.surname.strip())
-            ).order_by('data', 'orario')
+            )
+            .order_by('data', 'orario')
         )
-
         today = now().date()
         totale_appuntamenti = storico_appuntamenti.count()
         ultimo_appuntamento = storico_appuntamenti.filter(data__lt=today).last() or None
@@ -1313,7 +1299,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             .filter(referto=persona.referti.order_by('-data_referto').first())
             .first()
         )
-        
 
         context = {
             'persona': persona,
@@ -1325,15 +1310,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             'prossimo_appuntamento': prossimo_appuntamento,
             'dottori': dottori,
             'is_secretary': is_secretary,
-
-            # indicatori 
-            "Salute_del_cuore": lista_filtered_value[0],
-            "Salute_del_rene": lista_filtered_value[1],
-            "Salute_epatica": lista_filtered_value[2],
-            "Salute_cerebrale": lista_filtered_value[3],
-            "Salute_ormonale": lista_filtered_value[4],
-            "Salute_del_sangue": lista_filtered_value[5],
-            "Salute_immunitario": lista_filtered_value[6],
 
             # Score per JS con underscore
             'score': score_js,
@@ -1349,7 +1325,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         }
 
         return render(request, "includes/cartellaPaziente.html", context)
-
 
     def post(self, request, id):
         
@@ -1443,8 +1418,37 @@ class CartellaPazienteView(LoginRequiredMixin,View):
 
 
 
+# VIEW NOTA
+@method_decorator(catch_exceptions, name='dispatch')
+class NotaListCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = NotaSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        # /api/pazienti/<pk>/note/
+        paziente_id = self.kwargs['paziente_pk']
+        return Nota.objects.filter(paziente_id=paziente_id)
 
+    def perform_create(self, serializer):
+        paziente = get_object_or_404(
+            TabellaPazienti,
+            pk=self.kwargs['paziente_pk']
+        )
+        serializer.save(paziente=paziente)   # autori/dottori qui se servono
+            # ▼▼▼ mostri gli errori se la validazione fallisce
+        if not serializer.is_valid():
+            print("VALIDATION ERRORS →", serializer.errors)
+            raise serializers.ValidationError(serializer.errors)
+
+        serializer.save(paziente=paziente)
+
+@method_decorator(catch_exceptions, name='dispatch')
+class NotaRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = NotaSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Nota.objects.filter(paziente_id=self.kwargs['paziente_pk'])
 
 
 

@@ -357,60 +357,63 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 /* FUNZIONE PER ABILITARE GLI INPUT PER LA MODIFICA */
-document.addEventListener("DOMContentLoaded", () => {
-  const modifyBtn       = document.querySelector(".Btn-modify");
-  const displaySpan     = document.getElementById("associate-display");
-  const selectField     = document.getElementById("associate-select");
-  const otherInputs     = document.querySelectorAll(".input-disabled:not([name='associate_staff'])");
-  let   isEditing       = false;
+// document.addEventListener("DOMContentLoaded", () => {
+//   const modifyBtn       = document.querySelector(".Btn-modify");
+//   const displaySpan     = document.getElementById("associate-display");
+//   const selectField     = document.getElementById("associate-select");
+//   const otherInputs     = document.querySelectorAll(".input-disabled:not([name='associate_staff'])");
+//   let   isEditing       = false;
 
-  modifyBtn.addEventListener("click", e => {
-    e.preventDefault();
 
-    // ➊ Se non sei segretaria/o, alert su click dello span
-    if (displaySpan && !window.isSecretary) {
-      displaySpan.style.cursor = "pointer";
-      displaySpan.addEventListener("click", () => {
-        showAlert({
-          type: "warning",
-          message: "Non hai i permessi per modificare questo campo.",
-          extraMessage: "Solo la segreteria può modificare questo campo.",
-          borderColor: "#f97316",
-        });
-      });
-    }
+//   modifyBtn.addEventListener("click", e => {
+//     e.preventDefault();
 
-    if (!isEditing) {
-      // 1) se sono segretaria, nascondi lo span e mostra il select
-      if (window.isSecretary && selectField) {
-        displaySpan.style.display = "none";
-        selectField.style.display = "";   // rimuove display:none
-        selectField.classList.add("editing");
-      }
+//     // ➊ Se non sei segretaria/o, alert su click dello span
 
-      // 2) abilita TUTTI gli altri input
-      otherInputs.forEach(inp => {
-        inp.removeAttribute("disabled");
-        inp.classList.add("editing");
-      });
+//     if (displaySpan && !window.isSecretary) {
+//       console.log("Non sei segretaria/o, non puoi modificare questo campo.");
+//       displaySpan.style.cursor = "pointer";
+//       displaySpan.addEventListener("click", () => {
+//         showAlert({
+//           type: "warning",
+//           message: "Non hai i permessi per modificare questo campo.",
+//           extraMessage: "Solo la segreteria può modificare questo campo.",
+//           borderColor: "#f97316",
+//         });
+//       });
+//     }
 
-      modifyBtn.innerHTML = `
-        <span class="btn-text">Salva</span>
-        <svg class="svg" style="width: 25px; height: 25px;" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <!-- Cloud -->
-          <path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.24 4 7 6.24 7 9a5 5 0 0 0 .11 1H5a4 4 0 0 0 0 8h14a3 3 0 0 0 .35-5.96z"/>
-          <!-- Freccia verso il basso -->
-          <path d="M13 12v5h-2v-5H8l4-4 4 4h-3z" style="fill: grey;"/>
-        </svg>
-      `;
-      isEditing = true;
+//     if (!isEditing) {
+//       // 1) se sono segretaria, nascondi lo span e mostra il select
+//       if (window.isSecretary && selectField) {
+//         displaySpan.style.display = "none";
+//         selectField.style.display = "";   // rimuove display:none
+//         selectField.classList.add("editing");
+//       }
 
-    } else {
-      // invia il form in modalità "Salva"
-      document.getElementById("personaForm").submit();
-    }
-  });
-});
+//       // 2) abilita TUTTI gli altri input
+//       otherInputs.forEach(inp => {
+//         inp.removeAttribute("disabled");
+//         inp.classList.add("editing");
+//       });
+
+//       modifyBtn.innerHTML = `
+//         <span class="btn-text">Salva</span>
+//         <svg class="svg" style="width: 25px; height: 25px;" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+//           <!-- Cloud -->
+//           <path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.24 4 7 6.24 7 9a5 5 0 0 0 .11 1H5a4 4 0 0 0 0 8h14a3 3 0 0 0 .35-5.96z"/>
+//           <!-- Freccia verso il basso -->
+//           <path d="M13 12v5h-2v-5H8l4-4 4 4h-3z" style="fill: grey;"/>
+//         </svg>
+//       `;
+//       isEditing = true;
+
+//     } else {
+//       // invia il form in modalità "Salva"
+//       document.getElementById("personaForm").submit();
+//     }
+//   });
+// });
 
 
 
