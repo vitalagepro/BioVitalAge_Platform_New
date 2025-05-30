@@ -82,9 +82,7 @@ html, body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 1px 1px 8px 2px rgba(0, 0, 0, 0.08);
   padding: 20px;
-  margin-top: 20px;
   border-radius: 8px;
   gap: 10px;
   transition: all 0.3s ease-in-out;
@@ -1285,12 +1283,18 @@ strong {
   transform-style: preserve-3d;
   /* non metto overflow:hidden sul wrapper, così non nasconde l’header */
 }
-/* NASCONDO SOLO IL CORPO INIZIALMENTE */
-.app-window .container_box {
-  display: none;
+
+/* nasconde il pulsante “Edita” che hai in header */
+.Btn-modify {
+  display: none !important;
 }
+
+/* NASCONDO SOLO IL CORPO INIZIALMENTE */
+/* .app-window .container_box {
+  display: none;
+} */
 /* STATO OVERLAY: wrapper diventa fixed/centrato */
-.app-window.overlay {
+/* .app-window.overlay {
   position: fixed !important;
   top: 50% !important;
   left: 50% !important;
@@ -1303,14 +1307,14 @@ strong {
   border-radius: 12px;
 }
 /* IN OVERLAY mostro finalmente il corpo */
-.app-window.overlay .container_box {
+/*.app-window.overlay .container_box {
   display: block;
-}
+} */
 /* Il bottone sempre “sopra” */
 .button-view-all {
   position: relative;
-  z-index: 10001;
 }
+
 
 
 
@@ -1459,3 +1463,75 @@ strong {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+/* ───── Modal Overlay ───── */
+#modal-overlay {
+  position: fixed !important;
+  top: -152px !important;
+  left: -20px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  display: none !important;
+  justify-content: center !important;
+  align-items: center !important;
+  background: rgba(0, 0, 0, 0.4) !important;
+  z-index: 20000 !important;
+}
+
+/* quando aggiungi la classe .show, diventa visibile & flex */
+#modal-overlay.show {
+  display: flex !important;
+}
+
+/* ───── Modal Content ───── */
+#modal-content {
+  background: var(--card-color);
+  border-radius: 8px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  transform-origin: center center;
+}
+
+/* 2) Ma lo mostra di nuovo, con display inline-flex, se sta dentro la modale */
+#modal-content .Btn-modify {
+  display: inline-flex !important;
+}
+
+/* Stesso look di Btn-modify */
+.Btn-cancel {
+  display: none;            /* di default nascosto */
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background: var(--primary-color);
+  color: #fff;
+  align-items: center;
+  cursor: pointer;
+  gap: 4px;
+}
+/* Ma dentro la modale venga mostrato quando presente */
+#modal-content .Btn-cancel {
+  display: inline-flex !important;
+}
+
+
+.modal-actions{
+  padding: 0 20px;
+  padding-top: 20px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
