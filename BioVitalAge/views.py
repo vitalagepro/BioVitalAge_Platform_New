@@ -1129,21 +1129,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         # Fetch Last referto età biologica e filtrato
         lista_filtered_value = ViewSetResult.get_datiEstesi_filtered(id)
 
-     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         # DATI PER GLI INDICATORI DI PERFORMANCE
         ## CAPACITÀ VITALE
         ultimo_referto_capacita_vitale = (persona.referti_test.order_by('-data_ora_creazione').first())
