@@ -139,6 +139,7 @@
         <!-- Backdrop -->
         <div class="backdrop-indici" id="backdropIndici"></div>
 
+        
         <!-- Modale: Salute Cuore -->
         {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
 
@@ -146,24 +147,24 @@
         {% include 'dynamic_templates/cartella_paziente/modale_salute_del_rene.html' %}
 
         <!-- Modale: Salute Epatica -->
-        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_epatica.html' %}
         
         <!-- Modale: Salute Cerebrale -->
-        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_cerebrale.html' %}
 
         <!-- Modale: Salute Ormonale -->
-        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_ormonale.html' %}
 
         <!-- Modale: Salute del Sangue -->
-        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_del_sangue.html' %}
 
         <!-- Modale: Salute del Sistema Immunitario -->
-        {% include 'dynamic_templates/cartella_paziente/modale_salute_cuore.html' %}
+        {% include 'dynamic_templates/cartella_paziente/modale_salute_del_sistema_immunitario.html' %}
 
 
 
         <!-- CARD PERSONAL INFORMATION -->
-         <div class="d-flex gap-3 mx-20px my-3">
+        <div class="d-flex gap-3 mx-20px my-3">
              <!-- backdrop semi-trasparente -->
              <div class="backdrop"></div>
 
@@ -372,7 +373,7 @@
                    <span class="freccia">&larr;</span> Dati Base - Stile di Vita Paziente
                 </a>
             </div>
-         </div>
+        </div>
 
         <!-- CARD SEZIONI STORICO -->
         <div class="container-storico">
@@ -505,7 +506,8 @@
                     <div class="container-clock cardIndici" 
                         id="cardClick" 
                         card-name="Salute Renale"
-                         img-card="{% static 'image/Reni.png' %}">
+                        img-card="{% static 'image/Reni.png' %}"
+                        dict-value="Renale">
 
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
@@ -524,7 +526,8 @@
                     <div class="container-clock cardIndici"
                         id="cardClick"
                         card-name="Salute Epatica"
-                        img-card="{% static 'image/Fegato.png' %}">
+                        img-card="{% static 'image/Fegato.png' %}"
+                        dict-value="Epatica">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
                             <circle class="progress-ring__progress" id="liverClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
@@ -542,7 +545,8 @@
                     <div class="container-clock cardIndici"
                         id="cardClick"
                         card-name="Salute Cerebrale" 
-                        img-card="{% static 'image/Cervello.png' %}">
+                        img-card="{% static 'image/Cervello.png' %}"
+                        dict-value="Cerebrale">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
                             <circle class="progress-ring__progress" id="brainClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
@@ -560,7 +564,8 @@
                     <div class="container-clock cardIndici" 
                         id="cardClick"
                         card-name="Salute Ormonale"
-                        img-card="{% static 'image/Cellula.png' %}">
+                        img-card="{% static 'image/Cellula.png' %}"
+                        dict-value="Ormonale">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
                             <circle class="progress-ring__progress" id="hormoneClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
@@ -578,7 +583,8 @@
                     <div class="container-clock cardIndici"
                         id="cardClick" 
                         card-name="Salute del Sangue"
-                        img-card="{% static 'image/Blood_Colorato.png' %}">
+                        img-card="{% static 'image/Blood_Colorato.png' %}"
+                        dict-value="Sangue">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
                             <circle class="progress-ring__progress" id="bloodClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
@@ -595,7 +601,8 @@
                     <!-- Salute del sistema Immunitario -->
                     <div class="container-clock cardIndici" style="gap: 15px;" 
                         card-name="Salute del Sistema Immunitario"
-                        img-card="{% static 'image/Sistema.png' %}">
+                        img-card="{% static 'image/Sistema.png' %}"
+                        dict-value="Immunitario">
                         <svg class="progress-ring" width="140" height="140">
                             <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
                             <circle class="progress-ring__progress" id="immuneClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
@@ -1072,6 +1079,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.0.2/docx.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+   
     <!-- SCRIPT MODALE INFORMAZIONI PERSONALI -->
     <script type="module">
         import showAlert from "{% static 'js/components/showAlert.js' %}";

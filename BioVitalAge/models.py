@@ -148,6 +148,9 @@ class TabellaPazienti(models.Model):
         return f"Paziente: {self.name} {self.surname}"
 
 
+
+
+
 # ETA BIOLOGICA
 class RefertiEtaBiologica(models.Model):
     paziente = models.ForeignKey(
@@ -162,6 +165,9 @@ class RefertiEtaBiologica(models.Model):
 
     def __str__(self):
         return f"Referto ID: {self.id} - Paziente: {self.paziente.name} {self.paziente.surname}"
+
+
+
 
 class DatiEstesiRefertiEtaBiologica(models.Model):
     """

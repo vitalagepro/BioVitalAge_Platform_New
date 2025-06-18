@@ -1354,6 +1354,18 @@ strong {
 .modale-indici h3{
   color: var(--contrast-color);
 }
+.modale-indici h5{
+  color: var(--dark1);
+  background-color: var(--contrast-color-shadow);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 18px;
+  width: 13rem;
+}
+.sub-sub-title{
+  font-weight: bold;
+  color: var(--dark1);
+}
 .modale-indici .title-container{
   display: flex;
   justify-content: flex-start;
@@ -1407,6 +1419,12 @@ strong {
   justify-content: space-between;
   align-items: center;
 }
+
+.arrow {
+  display: inline-block;
+  position: relative;
+}
+
 .arrow.upper::before{
     content: '↑';
     left: 0;
@@ -1425,6 +1443,9 @@ strong {
     top: 0;
     color: var(--negative-color-right);
 }
+
+
+
 .grid-container-indici{
   display: grid;
   grid-template-columns: repeat(2, 1fr);
