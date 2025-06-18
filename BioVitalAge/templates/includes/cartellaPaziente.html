@@ -1028,12 +1028,6 @@
             modale.style.display = 'none';
         }
     </script>
-
-    <!-- IS SECRETARY -->
-    <script>
-        window.isSecretary = {{ is_secretary|yesno:"true,false" }};
-    </script>
-  
     <!-- SCRIPT CAPACITA' VITALE -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -1079,7 +1073,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.0.2/docx.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<<<<<<< HEAD
    
+=======
+        <!-- IS SECRETARY -->
+    <script>
+        window.isSecretary = {{ is_secretary|yesno:"true,false" }};
+    </script>    
+>>>>>>> 688d0719817fae2dc1bfee74f505780db0bea559
     <!-- SCRIPT MODALE INFORMAZIONI PERSONALI -->
     <script type="module">
         import showAlert from "{% static 'js/components/showAlert.js' %}";
@@ -1134,7 +1135,7 @@
                 // Annulla
                 const cancelBtn = document.createElement("button");
                 cancelBtn.type = "button";
-                cancelBtn.className = "button";
+                cancelBtn.className = "button btn-cancel";
                 cancelBtn.innerHTML = `
                 <span class="btn-text">Annulla</span>
                 `;
@@ -1161,6 +1162,20 @@
 
                 modifyBtn.addEventListener("click", e => {
                 e.preventDefault();
+                
+                if (displaySpan && !window.isSecretary) {
+                    console.log("Non sei segretaria/o, non puoi modificare questo campo.");
+                    displaySpan.style.cursor = "pointer";
+                    displaySpan.addEventListener("click", () => {
+                        showAlert({
+                            type: "warning",
+                            message: "Non hai i permessi per modificare questo campo.",
+                            extraMessage: "Solo la segreteria può modificare questo campo.",
+                            borderColor: "#f97316",
+                        });
+                    });
+                }
+
                 if (!isEditing) {
                     // entra in edit-mode
                     if (window.isSecretary && selectField) {

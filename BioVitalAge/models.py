@@ -151,6 +151,21 @@ class TabellaPazienti(models.Model):
 
 
 
+# TABELLA NOTA
+class Nota(models.Model):
+    paziente   = models.ForeignKey(
+        TabellaPazienti,
+        on_delete=models.CASCADE,
+        related_name='note'
+    )
+    titolo     = models.CharField(max_length=255)
+    contenuto  = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"[{self.paziente}] {self.titolo}"
+
 # ETA BIOLOGICA
 class RefertiEtaBiologica(models.Model):
     paziente = models.ForeignKey(

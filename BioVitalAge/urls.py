@@ -8,6 +8,7 @@ from .views import *
 from django.conf.urls.static import static
 
 
+
 urlpatterns = [
 
     # URL PER LOGIN
@@ -51,7 +52,7 @@ urlpatterns = [
     # -----------------------------------------#
 
     ## URL PER LA CARTELLA DEL PAZIENTE
-    path("CartellaPaziente/<int:id>/",                                     views.CartellaPazienteView.as_view(),                 name="cartella_paziente"),
+    path("CartellaPaziente/<int:id>/",                          views.CartellaPazienteView.as_view(),                 name="cartella_paziente"),
 
     ## URL SEZIONI STORICO
     path("CartellaPaziente/<int:id>/Storico",                   views.StoricoView.as_view(),                          name="storico"),
@@ -84,6 +85,16 @@ urlpatterns = [
 
     ## URL PER SEZIONE DATI BASE 
     path("DatiBase/<int:id>/",                                  views.DatiBaseView.as_view(),                         name="dati_base"),
+    path(
+        'pazienti/<int:paziente_pk>/note/',
+        NotaListCreateAPIView.as_view(),
+        name='note-list-create'
+    ),
+    path(
+        'pazienti/<int:paziente_pk>/note/<int:pk>/',
+        NotaRetrieveUpdateDestroyAPIView.as_view(),
+        name='note-detail'
+    ),
 
     ## -- URL SEZIONE ETA' METABOLICA --
     path("Patients/<int:id>/Composizione",                      views.ComposizioneView.as_view(),                     name="composizione"),
