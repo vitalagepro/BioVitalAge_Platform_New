@@ -1,18 +1,13 @@
 import showAlert from "./components/showAlert.js";
 
 /*----------------------------------------------------
-  Funzione per gestire dinamicamente la popolazione
-  delle Modali degli Indici di Performance
+  Gestione dinamica delle modali per gli indici
 -----------------------------------------------------*/
 
-const cards = document.querySelectorAll('.cardIndici')
-const modaleIndici = document.getElementById('modaleIndici')
-const backdropIndici = document.getElementById('backdropIndici')
-const dynamicTitle = document.getElementById('dynamicTitle')
-const closeButton = document.getElementById('closeModale')
-const dynamicImage = document.getElementById('dynamicImage')
+const cards    = document.querySelectorAll('.cardIndici');
+const backdrop = document.getElementById('backdropIndici');
 
-
+// Utility per bloccare lo scroll del body quando apro una modale
 function getScrollbarWidth() {
   return window.innerWidth - document.documentElement.clientWidth;
 }
@@ -28,37 +23,65 @@ function unlockBodyScroll() {
   document.documentElement.style.removeProperty('--scrollbar-width');
 }
 
+// Apertura dinamica di ogni modale in base a dict-value
 cards.forEach(card => {
   card.addEventListener('click', () => {
-
+    // Scroll in alto (facoltativo)
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    const name     = card.getAttribute('card-name');  
-    const imgPath  = card.getAttribute('img-card');   
+    const titleText = card.getAttribute('card-name');   // es. "Salute del Cuore"
+    const imgPath   = card.getAttribute('img-card');    // es. "/static/image/Heart_Colorato.png"
+    const modalId   = card.getAttribute('dict-value');  // es. "Cuore"
+    const modal     = document.getElementById(modalId);
 
-    dynamicTitle.textContent = name;
-    dynamicImage.src         = imgPath;
+    if (!modal) {
+      console.error(`Modale con id="${modalId}" non trovata.`);
+      return;
+    }
 
-    modaleIndici.style.display   = 'block';
-    backdropIndici.style.display = 'block';
+    // Titolo e immagine dentro la modale giusta
+    const dynamicTitleElem = modal.querySelector('#dynamicTitle');
+    const dynamicImageElem = modal.querySelector('#dynamicImage');
+    const closeBtn         = modal.querySelector('#closeModale');
+
+    if (dynamicTitleElem) dynamicTitleElem.textContent = titleText;
+    if (dynamicImageElem) dynamicImageElem.src         = imgPath;
+
+    // Mostro modale e backdrop
+    modal.style.display    = 'block';
+    backdrop.style.display = 'block';
     lockBodyScroll();
+
+    // Chiusura con il bottone “×”
+    if (closeBtn) {
+      closeBtn.onclick = () => {
+        modal.style.display    = 'none';
+        backdrop.style.display = 'none';
+        unlockBodyScroll();
+      };
+    }
   });
 });
 
-closeButton.addEventListener('click', () => {
-  modaleIndici.style.display   = 'none';
-  backdropIndici.style.display = 'none';
-  unlockBodyScroll();        
+// Cliccando sul backdrop chiudo tutte le modali aperte
+backdrop.addEventListener('click', () => {
+  document.querySelectorAll('.modale-indici').forEach(m => {
+    m.style.display = 'none';
+  });
+  backdrop.style.display = 'none';
+  unlockBodyScroll();
 });
 
-
-
-
-
-
-
-
-
+// Chiusura con Esc (solo se il backdrop è visibile)
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && backdrop.style.display === 'block') {
+    document.querySelectorAll('.modale-indici').forEach(m => {
+      m.style.display = 'none';
+    });
+    backdrop.style.display = 'none';
+    unlockBodyScroll();
+  }
+});
 
 
 
