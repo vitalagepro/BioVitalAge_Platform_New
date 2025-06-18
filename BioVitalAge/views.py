@@ -1110,32 +1110,52 @@ class InserisciPazienteView(LoginRequiredMixin,View):
 class CartellaPazienteView(LoginRequiredMixin,View):
 
     def get(self, request, id):
-        # Recupera dottore e paziente
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        is_secretary = profile.isSecretary
+        """ 
+        Function to handling get request for cartella pazienti 
+        """
+        # ViewSets  for API call 
+        ViewSetResult = PazienteViewSet()
+        ViewSetResult.request = request
 
-        # se può scegliere, passiamo la lista completa
+        # Fetch dottore e paziente
+        persona = ViewSetResult.get_patient_info(id)
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        is_secretary = dottore.isSecretary
         dottori = UtentiRegistratiCredenziali.objects.all() if is_secretary else None
-        persona = get_object_or_404(TabellaPazienti, id=id)
+    
+        # Fetch Referti Età BioVitale
+        referti = ViewSetResult.get_all_bio_referti(id)
+        
+        # Fetch Last referto età biologica e filtrato
+        lista_filtered_value = ViewSetResult.get_datiEstesi_filtered(id)
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         # DATI PER GLI INDICATORI DI PERFORMANCE
         ## CAPACITÀ VITALE
-        ultimo_referto_capacita_vitale = (
-            persona.referti_test
-                   .order_by('-data_ora_creazione')
-                   .first()
-        )
+        ultimo_referto_capacita_vitale = (persona.referti_test.order_by('-data_ora_creazione').first())
 
         ## STORICO APPUNTAMENTI
         storico_appuntamenti = (
-            Appointment.objects
-            .filter(
+            Appointment.objects.filter(
                 Q(nome_paziente__icontains=persona.name.strip()) |
                 Q(cognome_paziente__icontains=persona.surname.strip())
-            )
-            .order_by('data', 'orario')
+            ).order_by('data', 'orario')
         )
+
         today = now().date()
         totale_appuntamenti = storico_appuntamenti.count()
         ultimo_appuntamento = storico_appuntamenti.filter(data__lt=today).last() or None
@@ -1299,6 +1319,7 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             .filter(referto=persona.referti.order_by('-data_referto').first())
             .first()
         )
+        
 
         context = {
             'persona': persona,
@@ -1310,6 +1331,15 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             'prossimo_appuntamento': prossimo_appuntamento,
             'dottori': dottori,
             'is_secretary': is_secretary,
+
+            # indicatori 
+            "Salute_del_cuore": lista_filtered_value[0],
+            "Salute_del_rene": lista_filtered_value[1],
+            "Salute_epatica": lista_filtered_value[2],
+            "Salute_cerebrale": lista_filtered_value[3],
+            "Salute_ormonale": lista_filtered_value[4],
+            "Salute_del_sangue": lista_filtered_value[5],
+            "Salute_immunitario": lista_filtered_value[6],
 
             # Score per JS con underscore
             'score': score_js,
@@ -1325,6 +1355,8 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         }
 
         return render(request, "includes/cartellaPaziente.html", context)
+
+
 
     def post(self, request, id):
         
