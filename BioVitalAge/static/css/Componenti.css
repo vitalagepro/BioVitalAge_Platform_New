@@ -562,6 +562,14 @@ COLORI GRAFICI
 .nav-bar-logo a {
   padding: 0 !important;
   width: max-content;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+}
+.nav-bar-logo a p{
+  color: var(--light1);
+  margin-top: 0.8rem;
 }
 
 .nav-bar-logo a {
