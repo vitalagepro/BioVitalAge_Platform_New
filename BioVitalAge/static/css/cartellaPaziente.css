@@ -1,8 +1,6 @@
-/* FONT SYLE */
 html, body {
   perspective: 1200px;
 }
-
 * p,
 * input,
 * select{
@@ -16,16 +14,13 @@ html, body {
 * span{
     font-family: 'Montserrat', sans-serif !important;
 }
-
 #small_title{
   font-size: 20.9px !important;
 }
-
 .mx-20px{
   margin-left: 20px !important;
   margin-right: 20px !important;
 }
-
 .main-menu-trace {
   width: 50%;
 }
@@ -35,30 +30,38 @@ html, body {
   margin: 0 !important;
 }
 
+
+
+
+
+
+
+
 /* PERSONAL INFORMATION CARD STYLE*/
-.container-datiPersonali {
-  position: relative;
-  width: 98%;
+.container-flex-layout{
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
   background-color: var(--card-color);
-  margin: 20px auto 0px auto;
-}
-.containerStyle {
-  padding: 20px;
+  width: 98%;
+  margin: auto;
   border-radius: 8px;
+  height: 250px;
 }
-.header-card {
+.container-info{
+  background-color: var(--contrast-color-shadow);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.05);
+  padding: 10px 5px;
+/*   border-bottom: 2px solid #505050; */
 }
 .container-titolo{
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 15px;
-  width: 20%;
   padding: 5px 20px;
-  border-radius: 8px;
 }
 .container-titolo h3 {
   color: var(--contrast-color);
@@ -66,275 +69,144 @@ html, body {
   margin-top: 10px;
 }
 .container-titolo img{
-  width: 30px;
-  height: 30px;
-}
-.button-grid {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  grid-gap: 10px;
-  box-shadow: 1px 1px 8px 2px rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  padding: 10px 20px;
-}
-.container_box {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px;
-  border-radius: 8px;
-  gap: 10px;
-  transition: all 0.3s ease-in-out;
-}
-.info_container {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(1, 1fr);
-  gap: 15px;
-  row-gap: 5px;
-  width: 100%;
-}
-.hidden-row-grid{
-  border: none;
-  height: 0 !important;
-  padding: 0 !important;
-  margin-top: 0 !important;
-}
-.other_container {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-}
-.subCard-container {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 5px;
-}
-.Contact-Container {
-  width: 30%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 5px;
-}
-.flex-hidden-grid{
-  justify-content: flex-start !important;
-  margin-left: 25px !important;
-}
-.card-subcard {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 5rem;
-  gap: 15px;
-  width: 15rem;
-}
-.card-subcard p {
-  margin: 0 !important;
-}
-.card-subcard span {
-  display: block;
-  color: var(--contrast-color);
-  font-weight: bold;
-}
-.img-circle-container {
-  border: 2px solid var(--contrast-color2);
-  padding: 10px 10px 10px 10px;
-  border-radius: 50px;
-}
-.img-circle-container img {
-  width: 30px;
-  height: 30px;
-}
-#capInput,
-#provinceInput,
-#emailInput,
-#phoneInput,
-#associateStaffInput,
-#lastVisitInput,
-#upcomingVisitInput,
-#bloodGroupInput {
-  display: block;
-  border: 1px solid var(--contrast-color2);
-  outline: none;
-  width: 90%;
-  padding: 0 20px;
-}
-.alert {
-  min-width: 250px;
-  max-width: 400px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  opacity: 0;
-  /* Default nascosto */
-  transition: opacity 0.5s ease-in-out;
-}
-.alert.show {
-  opacity: 1;
-  /* Mostra la notifica */
-}
-
-
-/* CONTAINER FOR SEZIONI INTERNE */
-.container-sezioniInterne {
-  height: 380px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-}
-.cardDati {
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
-  background-color: var(--card-color);
-  overflow: hidden;
-}
-.cartella-effect {
-  width: 100%;
-  height: 4rem;
-  border-radius: 8px 8px 0px 0px;
-  position: relative;
-}
-.cartella-effect h3 {
-  background-color: var(--contrast-color-shadow);
-  border-radius: 8px 0px 0px 0px;
-  width: 100%;
-  color: var(--contrast-color);
-  padding: 20px 20px;
-  border-bottom: 2px solid #505050;
-  z-index: 0;
-  height: 4.5rem;
-  font-size: 25px;
-}
-.space {
-  position: absolute;
-  top: 1rem;
-  right: 0;
-  border-radius: 12px 8px 0px 0px;
-  background-color: var(--card-color);
-  width: 50%;
-  z-index: 5;
-  border: 2px solid #505050;
-  border-bottom: none;
-  border-right: none;
-  height: 3.5rem;
-}
-.card-content {
-  width: 102%;
-  margin-left: -1%;
-  height: 100%;
-  margin-top: 0.5rem;
-  background-color: var(--card-color);
-  border: 2px solid #505050;
-  border-top: none;
-  position: relative;
-}
-.card-content img {
-  position: absolute;
-  right: 5rem;
-  top: -1rem;
-  width: 250px;
-}
-.card-content p {
-  position: absolute;
-  line-height: 1.8rem;
-  letter-spacing: 1px;
-  top: 2rem;
-  left: 2rem;
-  max-width: 50%;
-}
-.card-content a {
-  position: absolute;
-  top: 12rem;
-  left: 2rem;
-  text-decoration: none;
-  color: var(--dark2);
-  font-weight: bold;
-  font-size: 20px;
-  transition: transform 0.3s ease-in-out;
-}
-.card-content a::after {
-  content: '➜';
-  font-size: 20px;
-  margin-left: 10px;
-}
-.card-content a:hover {
-  transform: translate(20px, 0px);
-}
-
-#modal_message {
-    transition: opacity 0.3s ease;
-}
-
-
-/*  CARD BP, SUGAR, HEART, CHOLESTEROL */
-.dashboard {
-  margin-top: -1rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-.card-graphic {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  height: 420px;
-  overflow: hidden;
-}
-.card-graphic .icon img {
   width: 40px;
   height: 40px;
-  margin-bottom: 10px;
 }
-.card-graphic h3 {
-  font-size: 1.2rem;
-  margin-bottom: 5px;
-  color: var(--contrast-color);
+.header-tools{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-right: 1rem;
 }
-.card-graphic p {
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 15px;
+.header-tools a img{
+  width: 40px;
+  height: 40px;
 }
-.container_chart_dashboard {
-  width: 100%;
-  height: 150px;
-}
-.card-graphic canvas {
-  width: 100%;
-  object-fit: cover;
-  margin-bottom: 15px;
-}
-.card-graphic .data {
-  width: 100%;
-}
-.card-graphic .data table {
-  width: 100%;
-  border-collapse: collapse;
+.header-tools button{
+  height: 2.5rem;
   border-radius: 8px;
 }
-.card-graphic .data table tr {
+.container-title-modale{
   display: flex;
   justify-content: space-between;
-}
-.card-graphic .data table td {
-  text-align: left;
+  align-items: center;
   padding: 5px;
 }
 
 
 
-/* CARD CLOCK STYLE*/
+/* STILE MODALE */
+#modal-overlay {
+  position: fixed !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  display: none !important;
+  justify-content: center !important;
+  align-items: center !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  z-index: 20000 !important;
+}
+#modal-overlay.show {
+  display: flex !important;
+}
+#modal-content {
+  background: var(--card-color);
+  border-radius: 8px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  transform-origin: center center;
+}
+#modal-content .Btn-modify {
+  display: inline-flex !important;
+}
+.btn-cancel {
+  border-radius: 10px !important;
+}
+#modal-content .Btn-cancel {
+  display: inline-flex !important;
+}
+.modal-actions{
+  padding: 0 20px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+
+
+/* STILE STORICO */
+.container-storico{
+  width: 98%;
+  margin: auto;
+  border-radius: 8px;
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+.card-storico{
+  background-color: white;
+  border: 1px solid #ddd;
+  height: 120px;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.05);
+  margin-top: 1rem;
+}
+.card-storico:hover{
+  cursor: pointer;
+}
+.card-storico img{
+  width: 40px;
+  height: 40px;
+}
+.card-storico a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; 
+  color: #808080;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-size: 20px;
+  font-weight: bold;
+}
+.card-storico .freccia {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  color: var(--contrast-color);
+}
+.card-storico:hover a {
+  color: var(--contrast-color);
+}
+.card-storico:hover .freccia {
+  opacity: 1;
+  transform: translateX(0);
+}
+.card-storico a span {
+  transition: margin-left 0.3s ease;
+}
+.card-storico:hover a {
+  margin-left: 5px;
+}
+
+
+
+/* STYLE INDICATORI DI PERFORMANCE*/
+.container-indicatori{
+  width: 98%;
+  margin: auto;
+  margin-bottom: 1rem;
+}
 .container-indicatori .card{
   border-radius: 8px;
   padding-bottom: 20px;
@@ -342,24 +214,19 @@ html, body {
 .container-indicatori {
   display: flex;
   flex-direction: column;
-
 }
 .section-tittle {
   color: var(--contrast-color);
-  font-size: 25px;
-  padding-bottom: 20px;
-  padding-left: 20px;
-  background-color: var(--contrast-color-shadow);
-  padding-top: 10px;
-  border-bottom: 2px solid #505050;
+  font-size: 20px;
+  padding-left: 25px;
+  padding-top: 25px;
+ /*  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.05); */
+  /* border-bottom: 2px solid #505050; */
+  /* padding-bottom: 20px; */
 }
-
-
-
-/* STYLE INDICATORI DI PERFORMANCE */
 .score-clock-graph {
   width: 98%;
-  margin: 2rem auto 0rem auto;
+  margin: 1rem auto 0rem auto;
   height: 18rem;
   display: flex;
   justify-content: space-between;
@@ -461,7 +328,7 @@ html, body {
 }
 .container-second-row{
   width: 98%;
-  margin: 1rem auto;
+  margin: 2rem auto;
   height: 22rem;
   display: flex;
   gap: 8px;
@@ -481,7 +348,273 @@ html, body {
 
 
 
+/* STYLE PIANO TERAPEUTICO */
+.container-sezioniInterne {
+  height: 320px;
+  width: 98%;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 1rem;
+}
+.terapeutico-card {
+  background: var(--card-color);
+  border-radius: 8px;
+  margin: 2rem auto;
+  height: 300px;
+  overflow: hidden;
+}
+.terapeutico-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 260px;
+}
+.terapeutico-text{
+  width: 60%;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+}
+.terapeutico-text h3 {
+  color: var(--contrast-color);
+  font-size: 20px;
+  font-weight: 600;
+}
+.terapeutico-text p{
+  line-height: 2rem;
+}
 
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+  color: var(--contrast-color);
+  text-decoration: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  background: var(--contrast-color-shadow);
+  transition: background 0.2s, transform 0.2s;
+}
+.btn-link .arrow {
+  display: inline-block;
+  margin-left: 0.4rem;
+  transition: transform 0.2s;
+}
+.btn-link:hover {
+  background: rgba(99, 102, 241, 0.2);
+  transform: translateX(4px);
+}
+.btn-link:hover .arrow {
+  transform: translateX(4px);
+}
+
+
+
+
+.terapeutico-image{
+  width: 40%;
+  padding: 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.terapeutico-image img{
+  width: 60%;
+  height: auto;
+  margin-right: 2rem;
+  margin-top: 2rem;
+}
+
+
+
+
+
+
+/*  CARD BP, SUGAR, HEART, CHOLESTEROL */
+.dashboard {
+  margin-top: -1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+.card-graphic {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: 420px;
+  overflow: hidden;
+}
+.card-graphic .icon img {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+}
+.card-graphic h3 {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+  color: var(--contrast-color);
+}
+.card-graphic p {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+.container_chart_dashboard {
+  width: 100%;
+  height: 150px;
+}
+.card-graphic canvas {
+  width: 100%;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+.card-graphic .data {
+  width: 100%;
+}
+.card-graphic .data table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+}
+.card-graphic .data table tr {
+  display: flex;
+  justify-content: space-between;
+}
+.card-graphic .data table td {
+  text-align: left;
+  padding: 5px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* CODICE CSS DA VERIFICARE E DA PULIRE */
+.container_box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  border-radius: 8px;
+  gap: 10px;
+  transition: all 0.3s ease-in-out;
+}
+.info_container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(1, 1fr);
+  gap: 15px;
+  row-gap: 5px;
+  width: 100%;
+}
+.hidden-row-grid{
+  border: none;
+  height: 0 !important;
+  padding: 0 !important;
+  margin-top: 0 !important;
+}
+.other_container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+.subCard-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+}
+.Contact-Container {
+  width: 30%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+}
+.flex-hidden-grid{
+  justify-content: flex-start !important;
+  margin-left: 25px !important;
+}
+.card-subcard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 5rem;
+  gap: 15px;
+  width: 15rem;
+}
+.card-subcard p {
+  margin: 0 !important;
+}
+.card-subcard span {
+  display: block;
+  color: var(--contrast-color);
+  font-weight: bold;
+}
+.img-circle-container {
+  border: 2px solid #ddd;
+  padding: 10px 10px 10px 10px;
+  border-radius: 50px;
+}
+.img-circle-container img {
+  width: 40px;
+  height: 40px;
+}
+#capInput,
+#provinceInput,
+#emailInput,
+#phoneInput,
+#associateStaffInput,
+#lastVisitInput,
+#upcomingVisitInput,
+#bloodGroupInput {
+  display: block;
+  border: 1px solid var(--contrast-color2);
+  outline: none;
+  width: 90%;
+  padding: 0 20px;
+}
+.alert {
+  min-width: 250px;
+  max-width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  /* Default nascosto */
+  transition: opacity 0.5s ease-in-out;
+}
+.alert.show {
+  opacity: 1;
+  /* Mostra la notifica */
+}
 
 /* Età Style */
 .eta-container{
@@ -614,8 +747,6 @@ html, body {
   color: lightskyblue;
 }
 
-
-
 /* Capacità Vitale */
 .capacita_vitale,
 .resilienza{
@@ -675,9 +806,6 @@ html, body {
   padding: 0px 20px;
   text-align: center;
 }
-
-
-
 /* ANALISI REPOPRT */
 .card5 {
   background-color: var(--card-color) !important;
@@ -720,11 +848,6 @@ html, body {
   content: '➜';
 }
 
-
-
-
-
-
 /* DASBOARD 2 */
 .dashboard2 {
   display: flex;
@@ -763,10 +886,6 @@ html, body {
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   padding: 20px;
 }
-
-
-
-
 .contenitore-tabella {
   margin: 15px 0;
 }
@@ -842,14 +961,6 @@ html, body {
   border: 1px solid var(--contrast-color-shadow);
 }
 
-
-
-
-
-
-
-
-
 /* ! Button modify */
 /* From Uiverse.io by vinodjangid07 */
 .Btn-modify {
@@ -906,20 +1017,6 @@ html, body {
   transition-duration: .3s;
   box-shadow: 2px 2px 0px rgb(140, 32, 212);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .card-body {
   display: flex;
@@ -987,8 +1084,6 @@ strong {
   height: 40px;
 }
 
-
-
 /* Paginazione Tabella prescrizioni */
 .pagination-download{
   width: 100%;
@@ -1018,11 +1113,6 @@ strong {
   width: 65px;
   margin-right: 3.8rem;
 }
-
-
-
-
-
 
 /* STILE FIELD */
 .grid-container{
@@ -1112,10 +1202,6 @@ strong {
   cursor: not-allowed !important;
 }
 
-
-
-
-
 /* Success Message */
 .success_message{
   position: fixed;
@@ -1162,7 +1248,6 @@ strong {
   transform: scale(1.1);
 }
 
-
 /* Error Message */
 .erorre_message{
   position: fixed;
@@ -1182,82 +1267,6 @@ strong {
 }
 
 
-
-
-
-
-/* STILE STORICO */
-.container-storico{
-  width: 98%;
-  margin: auto;
-  border-radius: 8px;
-  margin-top: 1rem;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
-}
-.card-storico{
-  background-color: var(--card-color);
-  height: 120px;
-  border-radius: 8px;
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.05);
-}
-.card-storico:hover{
-  cursor: pointer;
-}
-.card-storico img{
-  width: 40px;
-  height: 40px;
-}
-.card-storico a {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px; 
-  color: #808080;
-  text-decoration: none;
-  transition: color 0.3s ease;
-  font-size: 20px;
-  font-weight: bold;
-}
-.card-storico .freccia {
-  opacity: 0;
-  transform: translateX(-10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  color: var(--contrast-color);
-}
-.card-storico:hover a {
-  color: var(--contrast-color);
-}
-.card-storico:hover .freccia {
-  opacity: 1;
-  transform: translateX(0);
-}
-.card-storico a span {
-  transition: margin-left 0.3s ease;
-}
-.card-storico:hover a {
-  margin-left: 5px;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* BACKDROP */
 .backdrop {
   position: fixed; top:0; left:0;
@@ -1269,19 +1278,6 @@ strong {
 }
 .backdrop.visible {
   opacity: 1; pointer-events: all;
-}
-/* WRAPPER NORMALE: header sempre visibile */
-.app-window {
-  position: relative;
-  z-index: 20;
-  margin: 20px auto 0;
-  width: 98%;
-  background: var(--card-color);
-  border-radius: 8px;
-  box-shadow: 1px 1px 8px rgba(0,0,0,0.08);
-  transform-origin: center center;
-  transform-style: preserve-3d;
-  /* non metto overflow:hidden sul wrapper, così non nasconde l’header */
 }
 
 /* nasconde il pulsante “Edita” che hai in header */
@@ -1314,17 +1310,6 @@ strong {
 .button-view-all {
   position: relative;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 /* MODALE INDICI STYLE */
 .modale-indici{
@@ -1444,8 +1429,6 @@ strong {
     color: var(--negative-color-right);
 }
 
-
-
 .grid-container-indici{
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -1458,7 +1441,6 @@ strong {
 .container-clock.cardIndici{
   cursor: pointer;
 }
-
 
 /* Style scrollbar modale indici */
 .modale-indici {
@@ -1494,57 +1476,3 @@ strong {
 
 
 
-/* ───── Modal Overlay ───── */
-#modal-overlay {
-  position: fixed !important;
-  top: -152px !important;
-  left: -20px !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  display: none !important;
-  justify-content: center !important;
-  align-items: center !important;
-  background: rgba(0, 0, 0, 0.4) !important;
-  z-index: 20000 !important;
-}
-
-/* quando aggiungi la classe .show, diventa visibile & flex */
-#modal-overlay.show {
-  display: flex !important;
-}
-
-/* ───── Modal Content ───── */
-#modal-content {
-  background: var(--card-color);
-  border-radius: 8px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  max-width: 90vw;
-  max-height: 90vh;
-  overflow: auto;
-  transform-origin: center center;
-}
-
-/* 2) Ma lo mostra di nuovo, con display inline-flex, se sta dentro la modale */
-#modal-content .Btn-modify {
-  display: inline-flex !important;
-}
-
-/* Stesso look di Btn-modify */
-.btn-cancel {
-  border-radius: 10px !important;
-}
-/* Ma dentro la modale venga mostrato quando presente */
-#modal-content .Btn-cancel {
-  display: inline-flex !important;
-}
-
-
-.modal-actions{
-  padding: 0 20px;
-  padding-top: 20px;
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
