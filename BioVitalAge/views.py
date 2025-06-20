@@ -161,12 +161,12 @@ class HomePageRender(LoginRequiredMixin,View):
         avg_age = agg_age['avg_age']
 
         if dottore.isSecretary:
-            persone = TabellaPazienti.objects.all().order_by('-created_at')[:5]
+            persone = TabellaPazienti.objects.all().order_by('-created_at')
 
         else:
             vs = PazienteViewSet()
             vs.request = request
-            persone = vs.get_queryset().order_by('-created_at')[:5]
+            persone = vs.get_queryset().order_by('-created_at')
 
                 
         # --- Calcolo per il report "Totale Pazienti" ---
@@ -270,6 +270,8 @@ class HomePageRender(LoginRequiredMixin,View):
 
         context["emails"] = emails  # ← questo è il campo letto nel template da: <script id="emails-data">
         return render(request, "home_page/homePage.html", context)
+
+
 
 # VIEW PER LA SEZIONE STATISTICHE
 @method_decorator(catch_exceptions, name='dispatch')
@@ -923,35 +925,8 @@ class CreaPazienteView(LoginRequiredMixin,View):
 
 
 #----------------------------------------
-# ------ SEZIONE RICERCA PAZIENTE -------
+# ------ SEZIONE AGGIUNGI PAZIENTE -------
 #----------------------------------------
-
-# VIEW PER SEZIONE RICERCA PAZIENTI
-@method_decorator(catch_exceptions, name='dispatch')
-class RisultatiRender(LoginRequiredMixin,View):
-    def get(self, request):
-          
-        
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        if dottore.isSecretary:
-            # Se il dottore è una segretaria, mostra tutti i pazienti
-            persone = TabellaPazienti.objects.all()
-        else:
-            persone = TabellaPazienti.objects.filter(dottore=dottore)
- 
-        # Ottieni il referto più recente per ogni paziente
-        ultimo_referto = RefertiEtaBiologica.objects.filter(paziente=OuterRef('referto__paziente')).order_by('-data_referto')
-
-        # Ottieni i dati estesi associati al referto più recente di ciascun paziente
-        datiEstesi = DatiEstesiRefertiEtaBiologica.objects.filter(referto=Subquery(ultimo_referto.values('id')[:1]))
-
-        context = {
-            'persone': persone,
-            'datiEstesi': datiEstesi,
-            'dottore' : dottore
-        }
-
-        return render(request, "includes/risultati.html", context)
 
 @method_decorator(catch_exceptions, name='dispatch')
 class InserisciPazienteView(LoginRequiredMixin,View):

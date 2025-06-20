@@ -28,6 +28,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
+  
 
   <!-- CDN import head-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -57,7 +58,6 @@
   <!-- Js Import -->
   <script src="{% static 'js/home_page/homePage.js' %}" type="module"></script>
   <script src="{%  static 'js/components/sidebar.js' %}"></script>
-
 
 </head>
 
@@ -124,42 +124,269 @@
 
     <!-- BANNER SECTION -->
     <div class="banner">
-      <div class="banner-info">
-        <h3>Buongiorno,</h3>
-        <h2 class="main-welcome-title" id="nameUser">{% if dottore.isSecretary %}Segr. {{ dottore.cognome }} {{ dottore.nome }}{% else %}Dott. {{ dottore.cognome }} {{ dottore.nome }} {% endif %}</h2>
-        <div class="box-icons">
-          <div class="box-info">
-            <div class="icon-container">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M8 3V5H6V9C6 11.2091 7.79086 13 10 13C12.2091 13 14 11.2091 14 9V5H12V3H15C15.5523 3 16 3.44772 16 4V9C16 11.9727 13.8381 14.4405 11.0008 14.9169L11 16.5C11 18.433 12.567 20 14.5 20C15.9973 20 17.275 19.0598 17.7749 17.7375C16.7283 17.27 16 16.2201 16 15C16 13.3431 17.3431 12 19 12C20.6569 12 22 13.3431 22 15C22 16.3711 21.0802 17.5274 19.824 17.8854C19.2102 20.252 17.0592 22 14.5 22C11.4624 22 9 19.5376 9 16.5L9.00019 14.9171C6.16238 14.4411 4 11.9731 4 9V4C4 3.44772 4.44772 3 5 3H8ZM19 14C18.4477 14 18 14.4477 18 15C18 15.5523 18.4477 16 19 16C19.5523 16 20 15.5523 20 15C20 14.4477 19.5523 14 19 14Z">
-                </path>
-              </svg>
+
+      <div class="banner-background">
+
+        <div class="banner-info">
+          <h3>Buongiorno,</h3>
+          <h2 class="main-welcome-title" id="nameUser">{% if dottore.isSecretary %}Segr. {{ dottore.cognome }} {{ dottore.nome }}{% else %}Dott. {{ dottore.cognome }} {{ dottore.nome }} {% endif %}</h2>
+          <div class="box-icons">
+            <div class="box-info">
+              <div class="icon-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M8 3V5H6V9C6 11.2091 7.79086 13 10 13C12.2091 13 14 11.2091 14 9V5H12V3H15C15.5523 3 16 3.44772 16 4V9C16 11.9727 13.8381 14.4405 11.0008 14.9169L11 16.5C11 18.433 12.567 20 14.5 20C15.9973 20 17.275 19.0598 17.7749 17.7375C16.7283 17.27 16 16.2201 16 15C16 13.3431 17.3431 12 19 12C20.6569 12 22 13.3431 22 15C22 16.3711 21.0802 17.5274 19.824 17.8854C19.2102 20.252 17.0592 22 14.5 22C11.4624 22 9 19.5376 9 16.5L9.00019 14.9171C6.16238 14.4411 4 11.9731 4 9V4C4 3.44772 4.44772 3 5 3H8ZM19 14C18.4477 14 18 14.4477 18 15C18 15.5523 18.4477 16 19 16C19.5523 16 20 15.5523 20 15C20 14.4477 19.5523 14 19 14Z">
+                  </path>
+                </svg>
+              </div>
+              <div class="icon-description">
+                <h3 id="total-pazienti">{{ total_pazienti|default:"0" }}</h3>
+                <p>Pazienti Visitati</p>
+              </div>
             </div>
-            <div class="icon-description">
-              <h3 id="total-pazienti">{{ total_pazienti|default:"0" }}</h3>
-              <p>Pazienti Visitati</p>
-            </div>
-          </div>
-          <div class="box-info">
-            <div class="icon-container">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M10 2C10.5523 2 11 2.44772 11 3V7C11 7.55228 10.5523 8 10 8H8V10H13V9C13 8.44772 13.4477 8 14 8H20C20.5523 8 21 8.44772 21 9V13C21 13.5523 20.5523 14 20 14H14C13.4477 14 13 13.5523 13 13V12H8V18H13V17C13 16.4477 13.4477 16 14 16H20C20.5523 16 21 16.4477 21 17V21C21 21.5523 20.5523 22 20 22H14C13.4477 22 13 21.5523 13 21V20H7C6.44772 20 6 19.5523 6 19V8H4C3.44772 8 3 7.55228 3 7V3C3 2.44772 3.44772 2 4 2H10ZM19 18H15V20H19V18ZM19 10H15V12H19V10ZM9 4H5V6H9V4Z">
-                </path>
-              </svg>
-            </div>
-            <div class="icon-description">
-              <h3 id="total-biological-age">{{  total_biological_age|default:"0" }}</h3>
-              <p>Calcoli BioVitalAge</p>
+            <div class="box-info">
+              <div class="icon-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M10 2C10.5523 2 11 2.44772 11 3V7C11 7.55228 10.5523 8 10 8H8V10H13V9C13 8.44772 13.4477 8 14 8H20C20.5523 8 21 8.44772 21 9V13C21 13.5523 20.5523 14 20 14H14C13.4477 14 13 13.5523 13 13V12H8V18H13V17C13 16.4477 13.4477 16 14 16H20C20.5523 16 21 16.4477 21 17V21C21 21.5523 20.5523 22 20 22H14C13.4477 22 13 21.5523 13 21V20H7C6.44772 20 6 19.5523 6 19V8H4C3.44772 8 3 7.55228 3 7V3C3 2.44772 3.44772 2 4 2H10ZM19 18H15V20H19V18ZM19 10H15V12H19V10ZM9 4H5V6H9V4Z">
+                  </path>
+                </svg>
+              </div>
+              <div class="icon-description">
+                <h3 id="total-biological-age">{{  total_biological_age|default:"0" }}</h3>
+                <p>Calcoli BioVitalAge</p>
+              </div>
             </div>
           </div>
         </div>
+
+      </div>
+      
+      <div class="card-actions">
+        <h3>Azioni Rapide</h3>
+        <div class="container-card-actions">
+
+          <div class="action-card">
+            <div class="action-card-image">
+              <img src="{% static 'image/Appuntamenti_colorato.png' %}" alt="">
+            </div>
+            <p>Appuntamenti</p>
+          </div>
+
+          <div class="action-card">
+            <div class="action-card-image">
+              <img src="{% static 'image/Calendario_Colorato.png' %}" alt="">
+            </div>
+            <p>Calendario</p>
+          </div>
+
+          <div class="action-card">
+            <div class="action-card-image">
+              <img src="{% static 'image/Statistiche_Colorato.png' %}" alt="">
+            </div>
+            <p>Statistiche</p>
+          </div>
+          
+          <div class="action-card">
+            <div class="action-card-image">
+              <img src="{% static 'image/EtaBiologica.png' %}" alt="">
+            </div>
+            <p>Calcolatore Età Biologica</p>
+          </div>
+
+          <div class="action-card">
+            <div class="action-card-image">
+              <img src="{% static 'image/Configurazione_Colorato.png' %}" alt="">
+            </div>
+            <p>Configurazione</p>
+          </div>
+
+        </div>
       </div>
 
-      <div class="container-work-in-progress">
-       <!--  <p id="work-in-progress">⚠️WORK IN PROGRESS...</p> -->
-        <div class="reminders "> <!-- hidden-promemoria -->
+    </div>
+
+    <!-- RICERCA PAZIENTI -->
+    <div class="tabella-ricerca">
+      
+      <div class="barra-ricerca">
+
+        <select name="filter" id="filter">
+          <option value="surname">Ordine Cronologico</option>
+          <option value="surname">Filtra per Cognomi</option>
+          <option value="name">Filtra per Nomi</option>
+          <option value="fisc_code">Filtra per Codici Fiscali</option>
+          <option value="personal_association">Filtra per Personale Associato</option>
+        </select>
+
+        <form method="POST">
+          {% csrf_token %}
+          <div class="input-group">
+
+            <input type="text" class="input" id="Email" name="inputField" placeholder="Scrivi qui il testo..." required>
+
+            <button class="button button--submit" type="submit">
+
+              <span class="button__icon-wrapper">
+
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  width="15"
+                  class="button__icon-svg"
+                >
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="7"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  ></circle>
+                  <line
+                    x1="16"
+                    y1="16"
+                    x2="21"
+                    y2="21"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  ></line>
+                </svg>
+    
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  width="15"
+                  class="button__icon-svg button__icon-svg--copy"
+                >
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="7"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  ></circle>
+                  <line
+                    x1="16"
+                    y1="16"
+                    x2="21"
+                    y2="21"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  ></line>
+                </svg>
+
+              </span>
+              Cerca
+            </button>
+
+          </div>
+        </form>
+
+        <a href="{% url 'inserisci_paziente' %}" title="Add Patient" class="button">
+
+            <span class="button__icon-wrapper">
+
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="button__icon-svg" width="14"
+                height="14">
+                <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+          
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                class="button__icon-svg button__icon-svg--copy" width="14" height="14">
+                <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+          
+            </span>
+            Aggiungi Paziente
+        </a>
+
+      </div>
+    
+      <div class="table-container">
+
+          <div class="table-header">
+
+            <p>Nome</p>
+            <p>Cognome</p>
+            <p>Data di nascita</p>
+            <p>Codice Fiscale</p>
+            <p>Città di nascita</p>
+            <p>Età cronologica</p>
+            <p>Dottore Associato</p>
+            <p>Cartella Paziente</p>
+
+          </div>
+        
+          <div class="bg-white">
+
+            <div class="table-content">
+              {% for persona in persone %}
+                <div class="riga-container">
+                    <p>{{ persona.name|title }}</p>
+                    <p>{{ persona.surname|title }}</p>
+                    <p>{{ persona.dob|date:"d/m/Y" }}</p>
+                    <p>{{ persona.codice_fiscale }}</p>
+                    <p>{{ persona.place_of_birth|title }}</p>
+                    <p>{{ persona.chronological_age }}</p>
+                    {% if persona.associate_staff %}
+                    <p>{{ persona.associate_staff|title }}</p>
+                    {% else %}
+                    <p>Dottore non associato.</p>
+                    {% endif %}
+
+                    <p>
+                        <a href="{% url 'cartella_paziente' persona.id %}">
+                            <img src="{% static 'image/Cartella.png' %}" alt="Cartella" />
+                        </a>
+                    </p>
+
+                </div>
+            {% endfor %}
+
+            </div>
+
+          </div>
+
+      </div>
+
+    </div>
+    
+
+    <!-- CDN import end of body -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="{% static 'js/ricerca_pazienti/risultati.js' %}" defer></script>
+</body>
+
+<!-- Script per dati email -->
+<script id="emails-data" type="application/json">[]</script>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     <!--  <div class="container-work-in-progress">
+        <div class="reminders "> 
           <div class="button-container">
             <h3>Promemoria</h3>
             <button class="button">
@@ -229,14 +456,14 @@
             </li>
           </ul>
         </div>
-      </div>
-    </div>
+      </div> -->
+      
 
     <!-- CARD APPUNTAMENTI -->
-    <div class="cardAppuntamenti">
+    <!-- <div class="cardAppuntamenti">
           <div class="button-container">
               <h3>Appuntamenti</h3>
-              <button class="button" onclick="window.location.href='{% url 'appuntamenti' %}'"> <!-- @ts-ignore -->
+              <button class="button" onclick="window.location.href='{% url 'appuntamenti' %}'"> 
                 <span class="button__icon-wrapper">
                   <svg
                     viewBox="0 0 14 15"
@@ -328,9 +555,9 @@
 
           <div id="pagination" class="pagination-container"></div>
     </div>
-
+ -->
     <!-- CARDS REPORT -->
-    <div class="cards">
+<!--     <div class="cards">
 
       <div class="report-card" id="card-style">
         <div class="container-info-report">
@@ -445,7 +672,6 @@
           <div class="report-description">
             <h3>Guadagni</h3>
             <div class="report-info-detail">
-              <!-- L'animazione riguarda solo il numero -->
               <p>
                 &nbsp;+ <span class="animate-num" data-target="980">0</span>€ &nbsp;il mese scorso
               </p>
@@ -457,10 +683,10 @@
         </p>
       </div> 
 
-    </div>
+    </div> -->
 
     <!-- TABELLA PAZIENTI RECENTI -->
-    <div class="recent-patients">
+<!--     <div class="recent-patients">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0 text-center">Ultimi 5 Pazienti Inseriti</h2>
         <a href="{% url 'inserisci_paziente' %}" title="Add Patient" class="button">
@@ -519,12 +745,5 @@
       </div>
     </div>
   </main>
-
-  <!-- CDN import end of body -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-<!-- Script per dati email -->
-<script id="emails-data" type="application/json">[]</script>
-
-</html>
+ -->
+  

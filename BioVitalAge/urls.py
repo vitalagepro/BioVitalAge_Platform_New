@@ -40,9 +40,6 @@ urlpatterns = [
     path("api/appointments/<int:appointment_id>/delete/",       views.DeleteAppointmentView.as_view(),               name="delete_appointment"),
     path('search-appointments/',                                SearchAppointmentsView.as_view(),                    name='search_appointments'),
 
-    # -- URL PER LA SEZIONE RICERCA PAZIENTE --
-    path("Ricerca_Pazienti",                                    views.RisultatiRender.as_view(),                     name='Risultati'),
-
     ## URL INSERISCI PAZIENTE
     path("AggiungiPaziente/",                                   views.InserisciPazienteView.as_view(),               name="inserisci_paziente"),
     path("aggiungi-paziente/",                                  views.CreaPazienteView.as_view(),                    name="aggiungi_paziente"),

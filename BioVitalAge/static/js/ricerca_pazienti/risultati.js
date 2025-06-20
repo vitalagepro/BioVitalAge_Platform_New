@@ -1,244 +1,122 @@
-/*  -----------------------------------------------------------------------------------------------
-      Animate Button
---------------------------------------------------------------------------------------------------- */
-function animateButton() {
-  gsap.to(".add-patient-btn", {
-    scale: 1.1,
-    duration: 0.2,
-    yoyo: true,
-    repeat: 1,
-  });
-}
-/*  -----------------------------------------------------------------------------------------------
-    FUNZIONI PER PAGINAZIONE E RICERCA
---------------------------------------------------------------------------------------------------- */
-const rows = document.querySelectorAll(".riga-container");
-const rowsPerPage = 6;
-let currentPage = 1;
-let totalPages = Math.ceil(rows.length / rowsPerPage);
+/* FUNZIONE PER LA RICERCA PAZIENTE  */
+document.addEventListener("DOMContentLoaded", () => {
+  const rows = Array.from(document.querySelectorAll(".riga-container"));
+  const rowsPerPage = 5;
+  let currentPage = 1;
 
-function showPage(page, filteredRows = rows) {
-  rows.forEach((row) =>
-    gsap.to(row, {
-      opacity: 0,
-      height: 0,
-      duration: 0.3,
-      onComplete: () => (row.style.display = "none"),
-    })
-  );
+  function showPage(page, set = rows) {
+    currentPage = page;
+    // Nascondi tutte le righe
+    rows.forEach(r => r.style.display = "none");
+    // Calcola slice
+    const start = (page - 1) * rowsPerPage;
+    const end = page * rowsPerPage;
+    const pageRows = set.slice(start, end);
+    // Mostra e anima le righe
+    pageRows.forEach(r => r.style.display = "flex");
+    gsap.fromTo(pageRows,
+      { opacity: 0,  y: -10 },
+      { opacity: 1, y:  0, duration: 0.3, stagger: 0.05 }
+    );
+    renderPagination(set);
+  }
 
-  filteredRows.forEach((row, index) => {
-    if (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) {
-      gsap.to(row, {
-        opacity: 1,
-        height: "5rem",
-        duration: 0.3,
-        display: "flex",
-        onStart: () => (row.style.display = "flex"),
-      });
+  function renderPagination(set) {
+    const totalPages = Math.ceil(set.length / rowsPerPage);
+    const maxButtons = 6;
+    let container = document.querySelector(".pagination-controls");
+
+    if (!container) {
+      container = document.createElement("div");
+      container.className = "pagination-controls";
+      document.querySelector(".bg-white").appendChild(container);
     }
-  });
 
-  updatePaginationControls(filteredRows);
-}
+    container.innerHTML = "";
 
-function updatePaginationControls(filteredRows = rows) {
-  const paginationContainer = document.querySelector(".bg-white");
-  const existingControls = document.querySelector(".pagination-controls");
-
-  // Rimuovere i controlli esistenti
-  if (existingControls) existingControls.remove();
-
-  // Se il numero di righe filtrate è inferiore a rowsPerPage, nascondi la paginazione
-  if (filteredRows.length <= rowsPerPage) {
-    return;
-  }
-
-  totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-
-  const controls = document.createElement("div");
-  controls.classList.add("pagination-controls");
-
-  const range = 10;
-  let startPage = Math.max(1, currentPage - Math.floor(range / 2));
-  let endPage = Math.min(totalPages, startPage + range - 1);
-
-  if (endPage - startPage < range - 1) {
-    startPage = Math.max(1, endPage - range + 1);
-  }
-
-  if (startPage > 1) {
-    const firstPageBtn = document.createElement("button");
-    firstPageBtn.classList.add("button-style-pagination");
-    firstPageBtn.textContent = "1";
-    firstPageBtn.addEventListener("click", () => {
-      currentPage = 1;
-      showPage(currentPage, filteredRows);
+    // ← Freccia indietro
+    const prev = document.createElement("button");
+    prev.className = "pagination-arrow prev";
+    prev.textContent = "<";
+    prev.disabled = currentPage === 1;
+    prev.addEventListener("click", () => {
+      if (currentPage > 1) showPage(currentPage - 1, set);
     });
-    controls.appendChild(firstPageBtn);
+    container.appendChild(prev);
 
-    const dots = document.createElement("span");
-    dots.textContent = "...";
-    controls.appendChild(dots);
-  }
-
-  for (let i = startPage; i <= endPage; i++) {
-    const btn = document.createElement("button");
-    btn.classList.add("button-style-pagination");
-    btn.textContent = i;
-    if (i === currentPage) {
-      btn.classList.add("active");
+    // Numeri di pagina (fino a maxButtons)
+    const pagesToShow = Math.min(totalPages, maxButtons);
+    for (let i = 1; i <= pagesToShow; i++) {
+      const btn = document.createElement("button");
+      btn.className = "button-style-pagination";
+      btn.textContent = i;
+      if (i === currentPage) btn.classList.add("active");
+      btn.addEventListener("click", () => showPage(i, set));
+      container.appendChild(btn);
     }
-    btn.addEventListener("click", () => {
-      currentPage = i;
-      showPage(currentPage, filteredRows);
+
+    // “…” se ci sono più pagine di maxButtons
+    if (totalPages > maxButtons) {
+      const ell = document.createElement("span");
+      ell.className = "pagination-ellipsis";
+      ell.textContent = "...";
+      container.appendChild(ell);
+    }
+
+    // → Freccia avanti
+    const next = document.createElement("button");
+    next.className = "pagination-arrow next";
+    next.textContent = ">";
+    next.disabled = currentPage === totalPages;
+    next.addEventListener("click", () => {
+      if (currentPage < totalPages) showPage(currentPage + 1, set);
     });
-    controls.appendChild(btn);
+    container.appendChild(next);
   }
-
-  if (endPage < totalPages) {
-    const dots = document.createElement("span");
-    dots.textContent = "...";
-    controls.appendChild(dots);
-
-    const lastPageBtn = document.createElement("button");
-    lastPageBtn.classList.add("button-style-pagination");
-    lastPageBtn.textContent = totalPages;
-    lastPageBtn.addEventListener("click", () => {
-      currentPage = totalPages;
-      showPage(currentPage, filteredRows);
-    });
-    controls.appendChild(lastPageBtn);
-  }
-
-  paginationContainer.appendChild(controls);
-}
-
-/* Funzione di ricerca */
-document.addEventListener("DOMContentLoaded", function () {
-  const searchForm = document.querySelector(".barra-ricerca form");
-  const searchInput = document.getElementById("Email");
-  const filterSelect = document.getElementById("filter");
-  const tableContainer = document.querySelector(".table-container");
-
-  // Nasconde la tabella all'avvio
-  gsap.to(".table-container", {
-    opacity: 0,
-    duration: 0.5,
-    onComplete: function () {
-      document.querySelector(".table-container").style.display =
-        "none";
-    },
-  });
 
   function filterRows() {
-    const filterValue = searchInput.value.toLowerCase().trim();
-    const filterType = filterSelect.value;
-    let matchFound = false;
-    let filteredRows = [];
-
-    rows.forEach((row) => {
+    const term = document.getElementById("Email").value.toLowerCase().trim();
+    const type = document.getElementById("filter").value;
+    const filtered = rows.filter(row => {
       const cells = row.querySelectorAll("p");
-      let rowMatch = false;
-
-      cells.forEach((cell, index) => {
-        if (
-          (filterType === "name" && index === 0) ||
-          (filterType === "surname" && index === 1) ||
-          (filterType === "fisc_code" && index === 3) ||
-          (filterType === "personal_association" && index === 7)
-        ) {
-          if (cell.textContent.toLowerCase().includes(filterValue)) {
-            rowMatch = true;
-          }
-        }
-      });
-
-      if (rowMatch) {
-        filteredRows.push(row);
-        matchFound = true;
+      switch (type) {
+        case "name":
+          return cells[0].textContent.toLowerCase().includes(term);
+        case "surname":
+          return cells[1].textContent.toLowerCase().includes(term);
+        case "fisc_code":
+          return cells[3].textContent.toLowerCase().includes(term);
+        case "personal_association":
+          return cells[6].textContent.toLowerCase().includes(term);
+        default:
+          return true;
       }
     });
 
-    // Mostra la tabella solo se ci sono risultati
-    if (matchFound) {
-      tableContainer.style.display = "block";
-      gsap.to(tableContainer, { opacity: 1, duration: 0.5 });
+    if (filtered.length) {
+      document.querySelector(".table-container").style.display = "block";
+      showPage(1, filtered);
     } else {
-      gsap.to(".table-container", {
-        opacity: 0,
-        duration: 0.5,
-        onComplete: function () {
-          document.querySelector(".table-container").style.display =
-            "none";
-        },
-      });    
+      document.querySelector(".table-container").style.display = "none";
     }
-
-    // Nasconde tutte le righe e mostra solo quelle filtrate
-    gsap.to(rows, {
-      opacity: 0,
-      height: 0,
-      duration: 0.3,
-      onComplete: () => {
-        rows.forEach((row) => (row.style.display = "none"));
-        filteredRows.forEach((row) =>
-          gsap.to(row, {
-            opacity: 1,
-            height: "5rem",
-            duration: 0.3,
-            display: "flex",
-            onStart: () => (row.style.display = "flex"),
-          })
-        );
-      },
-    });
-
-    // Mostra il messaggio se nessun risultato è trovato
-    const tableContent = document.querySelector(".table-content");
-    let noResultsMsg = document.querySelector(".no-results-message");
-
-    if (!matchFound) {
-      if (!noResultsMsg) {
-        noResultsMsg = document.createElement("p");
-        noResultsMsg.classList.add("no-results-message");
-        noResultsMsg.textContent = "Paziente non trovato";
-        tableContent.appendChild(noResultsMsg);
-      }
-    } else {
-      if (noResultsMsg) {
-        noResultsMsg.remove();
-      }
-    }
-
-    currentPage = 1;
-    showPage(currentPage, filteredRows);
   }
 
-  searchForm.addEventListener("submit", function (event) {
-    event.preventDefault();
+  // Bind sul form e sull’input
+  const form = document.querySelector(".barra-ricerca form");
+  form.addEventListener("submit", e => {
+    e.preventDefault();
     filterRows();
   });
 
-  searchInput.addEventListener("input", function () {
-    filterRows(); // Esegue la ricerca mentre digiti
-
-    if (!searchInput.value.trim()) {
-      currentPage = 1;
-      showPage(currentPage);
-      updatePaginationControls();
-      tableContainer.style.display = "none"; // Nasconde la tabella se il campo di ricerca è vuoto
-
-      const noResultsMsg = document.querySelector(".no-results-message");
-      if (noResultsMsg) {
-        noResultsMsg.remove();
-      }
+  const input = document.getElementById("Email");
+  input.addEventListener("input", () => {
+    if (!input.value.trim()) {
+      showPage(1);
+    } else {
+      filterRows();
     }
   });
 
-});
-
-/* Avvio della paginazione */
-document.addEventListener("DOMContentLoaded", function () {
-  showPage(currentPage);
+  // Avvia mostrando la pagina 1 in ordine cronologico
+  showPage(1);
 });

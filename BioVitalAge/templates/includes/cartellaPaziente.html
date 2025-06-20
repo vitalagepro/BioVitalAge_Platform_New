@@ -52,7 +52,7 @@
         <div class="main-title-nav">
 
             <div class="back-tittle">
-                <a id="back" href="{% url 'Risultati' %}"><img src="{% static 'image/Arrow_Back.png' %}"></a>
+                <a id="back" href="{% url 'HomePage' %}"><img src="{% static 'image/Arrow_Back.png' %}"></a>
                 <h2 class="main-welcome-title">
                     <span>{{ persona.surname|title }}</span>
                     <span>{{ persona.name|title }}</span> |
@@ -75,10 +75,6 @@
                 <a href="{% url 'HomePage' %}">
                     <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
                 </a>
-                <p>»</p>
-                <p>
-                    <a href="{% url 'Risultati' %}">Pazienti</a>
-                </p>
                 <p>»</p>
                 <p class="breadcrumb">Cartella Paziente</p>
             </div>
