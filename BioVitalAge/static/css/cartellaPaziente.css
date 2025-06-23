@@ -1,6 +1,4 @@
-html, body {
-  perspective: 1200px;
-}
+
 * p,
 * input,
 * select{
@@ -30,6 +28,159 @@ html, body {
   margin: 0 !important;
 }
 
+
+/* STYLE CARD FIXED DATI PERSONALI */
+.container-informazioni-personali{
+  background-color: var(--card-color);
+  border-radius: 8px;
+  width: 98%;
+  left: 1%;
+  top: 9.5rem;
+  position: fixed;
+  z-index: 9999;
+  max-height: 500px;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.container-informazioni-personali.shrunk {
+  max-height: 100px;
+  top: 5rem;  
+}
+.card-beyond-informazioni-personali.shrunk {
+  height: 200px;
+}
+
+.card-beyond-informazioni-personali{
+  background-color: var(--card-color);
+  width: 98%;
+  border-radius: 8px;
+  height: 500px;
+  margin: auto;
+  margin-top: 1rem;
+}
+.container-title-modale{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: -1rem;
+  padding: 20px;
+}
+.container-dati-anagrafici{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--contrast-color-shadow);
+  border-radius: 8px;
+  padding: 5px 20px;
+}
+.container-dati-anagrafici img{
+  width: 40px;
+  height: 40px;
+}
+.container-dati-anagrafici h3{
+  color: var(--dark1);
+  margin-top: 0.5rem;
+}
+
+
+
+
+.container_box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  border-radius: 8px;
+  gap: 10px;
+  transition: all 0.3s ease-in-out;
+}
+.info_container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(1, 1fr);
+  gap: 15px;
+  row-gap: 5px;
+  width: 100%;
+}
+.hidden-row-grid{
+  border: none;
+  height: 0 !important;
+  padding: 0 !important;
+  margin-top: 0 !important;
+}
+.other_container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+.subCard-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+}
+.Contact-Container {
+  width: 30%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+}
+.flex-hidden-grid{
+  justify-content: flex-start !important;
+  margin-left: 25px !important;
+}
+.card-subcard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 5rem;
+  gap: 15px;
+  width: 15rem;
+}
+.card-subcard p {
+  margin: 0 !important;
+}
+.card-subcard span {
+  display: block;
+  color: var(--contrast-color);
+  font-weight: bold;
+}
+.img-circle-container {
+  border: 2px solid #ddd;
+  padding: 10px 10px 10px 10px;
+  border-radius: 50px;
+}
+.img-circle-container img {
+  width: 40px;
+  height: 40px;
+}
+#capInput,
+#provinceInput,
+#emailInput,
+#phoneInput,
+#associateStaffInput,
+#lastVisitInput,
+#upcomingVisitInput,
+#bloodGroupInput {
+  display: block;
+  border: 1px solid var(--contrast-color2);
+  outline: none;
+  width: 90%;
+  padding: 0 20px;
+}
+.alert {
+  min-width: 250px;
+  max-width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+.alert.show {
+  opacity: 1;
+}
 
 
 
@@ -86,12 +237,6 @@ html, body {
 .header-tools button{
   height: 2.5rem;
   border-radius: 8px;
-}
-.container-title-modale{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px;
 }
 
 
@@ -518,103 +663,6 @@ html, body {
 
 
 /* CODICE CSS DA VERIFICARE E DA PULIRE */
-.container_box {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px;
-  border-radius: 8px;
-  gap: 10px;
-  transition: all 0.3s ease-in-out;
-}
-.info_container {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(1, 1fr);
-  gap: 15px;
-  row-gap: 5px;
-  width: 100%;
-}
-.hidden-row-grid{
-  border: none;
-  height: 0 !important;
-  padding: 0 !important;
-  margin-top: 0 !important;
-}
-.other_container {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-}
-.subCard-container {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 5px;
-}
-.Contact-Container {
-  width: 30%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 5px;
-}
-.flex-hidden-grid{
-  justify-content: flex-start !important;
-  margin-left: 25px !important;
-}
-.card-subcard {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 5rem;
-  gap: 15px;
-  width: 15rem;
-}
-.card-subcard p {
-  margin: 0 !important;
-}
-.card-subcard span {
-  display: block;
-  color: var(--contrast-color);
-  font-weight: bold;
-}
-.img-circle-container {
-  border: 2px solid #ddd;
-  padding: 10px 10px 10px 10px;
-  border-radius: 50px;
-}
-.img-circle-container img {
-  width: 40px;
-  height: 40px;
-}
-#capInput,
-#provinceInput,
-#emailInput,
-#phoneInput,
-#associateStaffInput,
-#lastVisitInput,
-#upcomingVisitInput,
-#bloodGroupInput {
-  display: block;
-  border: 1px solid var(--contrast-color2);
-  outline: none;
-  width: 90%;
-  padding: 0 20px;
-}
-.alert {
-  min-width: 250px;
-  max-width: 400px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  opacity: 0;
-  /* Default nascosto */
-  transition: opacity 0.5s ease-in-out;
-}
-.alert.show {
-  opacity: 1;
-  /* Mostra la notifica */
-}
 
 /* Età Style */
 .eta-container{

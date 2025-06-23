@@ -212,7 +212,7 @@
       <div class="barra-ricerca">
 
         <select name="filter" id="filter">
-          <option value="surname">Ordine Cronologico</option>
+          <option value="all">Ordine Cronologico</option>
           <option value="surname">Filtra per Cognomi</option>
           <option value="name">Filtra per Nomi</option>
           <option value="fisc_code">Filtra per Codici Fiscali</option>
@@ -327,7 +327,7 @@
 
             <div class="table-content">
               {% for persona in persone %}
-                <div class="riga-container">
+                <div class="riga-container" onclick="window.location.href='{% url 'cartella_paziente' persona.id %}'" style="cursor: pointer;">
                     <p>{{ persona.name|title }}</p>
                     <p>{{ persona.surname|title }}</p>
                     <p>{{ persona.dob|date:"d/m/Y" }}</p>

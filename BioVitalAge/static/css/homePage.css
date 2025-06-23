@@ -196,7 +196,12 @@
   justify-content: center !important;
   align-items: center !important;
 }
-
+.no-results{
+  width: 98%;
+  margin: auto;
+  text-align: center;
+  padding: 40px 20px;
+}
 
 
 
