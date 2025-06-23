@@ -565,6 +565,50 @@ class ProfileView(LoginRequiredMixin, View):
 #----------------------------------------
 
 # VIEWS APPUNTAMENTI
+class AppointmentViewHome(LoginRequiredMixin, View):
+    def get(self, request):
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+
+        today = timezone.now().date()
+
+        storico_appuntamenti = Appointment.objects.filter(
+            dottore=dottore
+        ).order_by('data', 'orario')
+
+        paginator = Paginator(storico_appuntamenti, 4)
+        page_number = request.GET.get('page')
+        storico_page = paginator.get_page(page_number)
+
+        totale_appuntamenti = storico_appuntamenti.count()
+        appuntamenti_confermati = storico_appuntamenti.filter(confermato=True).count()
+        appuntamenti_passati = storico_appuntamenti.filter(data__lt=today).count()
+        prossimo_appuntamento = storico_appuntamenti.filter(data__gte=today).order_by('data').first()
+        ultimo_appuntamento = storico_appuntamenti.filter(data__lt=today).last()
+
+        appuntamenti_per_mese = storico_appuntamenti.annotate(
+            month=ExtractMonth('data')
+        ).values('month').annotate(
+            count=Count('id')
+        ).order_by('month')
+
+        appuntamenti_per_mese_count = [0] * 12
+        for item in appuntamenti_per_mese:
+            appuntamenti_per_mese_count[item['month'] - 1] = item['count']
+
+        context = {
+            'dottore': dottore,
+            'storico_appuntamenti': storico_appuntamenti,
+            'totale_appuntamenti': totale_appuntamenti,
+            'appuntamenti_confermati': appuntamenti_confermati,
+            'prossimo_appuntamento': prossimo_appuntamento,
+            'appuntamenti_passati': appuntamenti_passati,
+            'ultimo_appuntamento': ultimo_appuntamento,
+            'storico_page': storico_page,
+            'appuntamenti_per_mese': appuntamenti_per_mese_count,
+        }
+
+        return render(request, 'home_page/Appuntamenti.html', context)
+
 @method_decorator(catch_exceptions, name='dispatch')
 class AppuntamentiView(LoginRequiredMixin,View):
     def get(self, request):
@@ -618,7 +662,7 @@ class AppuntamentiView(LoginRequiredMixin,View):
             'numero_studio': numero_studio,
         }
 
-        return render(request, 'includes/Appuntamenti.html', context)
+        return render(request, 'includes/Calendario.html', context)
     
 # VIEWS PER IL SALVATAGGIO DELL'APPUNTAMENTO
 @method_decorator(catch_exceptions, name='dispatch')

@@ -166,14 +166,14 @@
         <h3>Azioni Rapide</h3>
         <div class="container-card-actions">
 
-          <div class="action-card">
+          <div class="action-card" onclick="window.location.href='{% url 'appointment_home' %}'">
             <div class="action-card-image">
               <img src="{% static 'image/Appuntamenti_colorato.png' %}" alt="">
             </div>
             <p>Appuntamenti</p>
           </div>
 
-          <div class="action-card">
+          <div class="action-card" onclick="window.location.href='{% url 'appuntamenti' %}'">
             <div class="action-card-image">
               <img src="{% static 'image/Calendario_Colorato.png' %}" alt="">
             </div>

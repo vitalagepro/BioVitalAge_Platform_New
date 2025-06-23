@@ -120,6 +120,7 @@
   box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.1);
   padding-top: 10px;
   padding-bottom: 5px;
+  transition: all 0.2s cubic-bezier(.215, .61, .355, 1);
 }
 .action-card-image{
   border-radius: 50%;
@@ -129,6 +130,7 @@
 .action-card-image img{
   width: 45px;
   height: 45px;
+  transition: all 0.2s cubic-bezier(.215, .61, .355, 1);
 }
 .action-card-image img:hover{
   transform: scale(1.1);

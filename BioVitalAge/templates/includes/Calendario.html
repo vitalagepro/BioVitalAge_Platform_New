@@ -11,7 +11,7 @@
     {% csrf_token %}
     <meta name="csrf-token" content="{{ csrf_token }}">
 
-    <title>BioVitalAge - Calendario Appuntamenti</title>
+    <title>BVA - Calendario</title>
 
     <!-- Css Import -->
     <link rel="stylesheet" href="{% static 'css/Componenti.css' %}" />
@@ -46,16 +46,13 @@
       <div class="main-title-nav">
         <div class="back-tittle">
             <a id="back" href="{% url 'HomePage' %}"><img src="{% static 'image/Arrow_Back.png' %}"></a>
-            <h2 class="main-welcome-title">
-                Calendario Appuntamenti
-            </h2>
         </div>
         <div class="main-menu-trace">
           <a href="{% url 'HomePage' %}">
             <img src="{% static 'image/Home.png' %}" alt="Home Page" title="Home Page" />
           </a>
           <p>»</p>
-          <p class="breadcrumb">Appuntamenti</p>
+          <p class="breadcrumb">Calendario</p>
         </div>
       </div>
 
@@ -223,7 +220,7 @@
 
                             <form action="POST" id="patient-appointment">
                                 {% csrf_token %}
-                                {# includes/Appuntamenti.html #}
+                                {# includes/Calendario.html #}
                                 {% if is_secretary %}
                                   <label for="dottore-select" class="mb-3">
                                     <p class="mb-0">Dottore Associato*</p>

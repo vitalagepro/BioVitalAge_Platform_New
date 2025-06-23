@@ -30,7 +30,8 @@ urlpatterns = [
     path("Home_Page/Statistiche",                               views.StatisticheView.as_view(),                     name="statistiche"),
 
     ## URL APPUNTAMENTI
-    path('Home_Page/Appuntamenti',                              views.AppuntamentiView.as_view(),                    name='appuntamenti'),
+    path('Home_Page/Appuntamenti',                              views.AppointmentViewHome.as_view(),                 name='appointment_home'),
+    path('Home_Page/Calendario',                                views.AppuntamentiView.as_view(),                    name='appuntamenti'),
     path("salva-appuntamento/",                                 views.AppuntamentiSalvaView.as_view(),               name="salva_appuntamento"),
     path('get-appointments/',                                   AppuntamentiGetView.as_view(),                       name='get_appointments'),
     path('get-appointment/<int:appointment_id>/',               GetSingleAppointmentView.as_view(),                  name='get_appointment'),
