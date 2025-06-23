@@ -1027,7 +1027,9 @@ document.addEventListener("DOMContentLoaded", () => {
           .catch(err => console.error("Errore refresh tabella:", err));
 
         // ✅ RESETTA I CAMPI DELLA MODALE
-        document.getElementById("dottore-select").selectedIndex = 0;
+        if (document.getElementById("dottore-select")) {
+          document.getElementById("dottore-select").selectedIndex = 0;
+        }
         document.getElementById("tipologia_visita").selectedIndex = 0;
         document.getElementById("voce-prezzario").innerHTML = `<option>Seleziona una Voce</option>`;
         document.getElementById("time").innerHTML = `<option>Seleziona una Durata</option>`;

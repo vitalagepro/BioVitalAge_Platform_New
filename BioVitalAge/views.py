@@ -573,9 +573,9 @@ class AppointmentViewHome(LoginRequiredMixin, View):
 
         storico_appuntamenti = Appointment.objects.filter(
             dottore=dottore
-        ).order_by('data', 'orario')
+        ).order_by('-data', '-orario')
 
-        paginator = Paginator(storico_appuntamenti, 4)
+        paginator = Paginator(storico_appuntamenti, 6)
         page_number = request.GET.get('page')
         storico_page = paginator.get_page(page_number)
 

@@ -14,7 +14,7 @@ urlpatterns = [
     # URL PER LOGIN
     path("",                                                    views.LoginRenderingPage.as_view(),                  name='loginPage'),
     path("logout",                                              LogOutRender.as_view(),                              name="logout"),
-    
+  
     # URL NAVBAR    
     path('accounts/profile/',                                   ProfileView.as_view(),                               name='profile'),
 
@@ -127,10 +127,3 @@ urlpatterns = [
     path('DownloadPdfVitale/<int:persona_id>/<int:referto_id>',        views.StampaRefertoView.as_view(),            name='download_pdf_vitale'),
     path('update-persona/<int:id>/',                                   views.UpdatePersonaContactView.as_view(),     name='update_persona_contact'), 
 ]
-
-
-
-    
-
-
-
