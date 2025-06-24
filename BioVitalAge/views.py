@@ -906,18 +906,49 @@ class DeleteAppointmentView(View):
 
 # VIEW SEARCH APPOINTMENTS
 @method_decorator(catch_exceptions, name='dispatch')
-class SearchAppointmentsView(LoginRequiredMixin,View):
+class SearchAppointmentsView(LoginRequiredMixin, View):
     def get(self, request):
         query = request.GET.get("q", "").lower().strip()
-        if query:
-            # Puoi estendere il filtro a più campi, ad esempio:
-            appointments = Appointment.objects.filter(
-                Q(nome_paziente__icontains=query) | Q(tipologia_visita__icontains=query) | Q(orario__icontains=query)
-            )
-            results = list(appointments.values("id", "nome_paziente", "tipologia_visita", "orario"))
-            return JsonResponse({"success": True, "appointments": results})
-        return JsonResponse({"success": False, "error": "Nessuna query fornita"})
-    
+        if not query:
+            return JsonResponse({"success": False, "error": "Nessuna query fornita"})
+
+        # Recupera il dottore corrente
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+
+        # Filtro base su nome, tipologia o orario
+        appointments = Appointment.objects.filter(
+            Q(nome_paziente__icontains=query) |
+            Q(tipologia_visita__icontains=query) |
+            Q(orario__icontains=query)
+        )
+
+        # Se NON è segretaria/o → filtra per il suo dottore
+        if not dottore.isSecretary:
+            appointments = appointments.filter(dottore=dottore)
+
+        # Filtra appuntamenti attivi
+        current_date = timezone.localdate()
+        current_time = timezone.localtime().time()
+
+        filtered = []
+        for app in appointments:
+            if app.data > current_date:
+                filtered.append(app)
+            elif app.data == current_date and app.orario >= current_time:
+                filtered.append(app)
+
+        results = [
+            {
+                "id": app.id,
+                "nome_paziente": app.nome_paziente,
+                "tipologia_visita": app.tipologia_visita,
+                "orario": app.orario.strftime("%H:%M")
+            }
+            for app in filtered
+        ]
+
+        return JsonResponse({"success": True, "appointments": results})
+
 # VIEW CREATE PATIENT FROM SECOND MODAL
 @method_decorator(catch_exceptions, name='dispatch')
 class CreaPazienteView(LoginRequiredMixin,View):

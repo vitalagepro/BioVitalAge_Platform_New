@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 let fromCalendar = false;
 let isEditing = false;
 let appointmentsData = {}; // Definita globalmente per contenere i dati caricati
+const ALLOW_APPOINTMENT_CREATION = isSecretary;
 
 // gestione ricerca
 const searchInput = document.getElementById("searchInput");
@@ -383,16 +384,17 @@ function viewAppointmentDetails(appointmentId) {
 function setupPopupActions() {
   const popup = document.getElementById("appointment-actions-popup");
 
-  // Sostituisci i pulsanti per eliminare eventuali listener duplicati
   const oldEditBtn = popup.querySelector(".btn-edit");
   const newEditBtn = oldEditBtn.cloneNode(true);
   oldEditBtn.parentNode.replaceChild(newEditBtn, oldEditBtn);
+  if (!ALLOW_APPOINTMENT_CREATION) {
+    newEditBtn.style.display = "none";
+  }
 
   const oldViewBtn = popup.querySelector(".btn-view");
   const newViewBtn = oldViewBtn.cloneNode(true);
   oldViewBtn.parentNode.replaceChild(newViewBtn, oldViewBtn);
 
-  // Listener pulito per ✏️ Modifica
   newEditBtn.addEventListener("click", () => {
     const id = popup.dataset.id;
     if (id) {
@@ -1488,6 +1490,12 @@ document.addEventListener("DOMContentLoaded", () => {
       dayParagraph.classList.add("data");
       dayParagraph.textContent = day;
 
+      if (!ALLOW_APPOINTMENT_CREATION) {
+        cella.style.cursor = "default"; 
+      } else {
+        cella.style.cursor = "pointer";
+      }
+
       const appointmentsContainer = document.createElement("div");
       appointmentsContainer.classList.add("appointments-container");
 
@@ -1548,8 +1556,10 @@ document.addEventListener("DOMContentLoaded", () => {
           resetFormFields();
         }
 
+
         cella.addEventListener("click", (e) => {
           // Se il click proviene da un appointment-box, non aprire la modale per un nuovo appuntamento
+          if (!ALLOW_APPOINTMENT_CREATION) return;  // blocca del tutto
           if (e.target.closest(".appointment-box")) return;
 
           // Pulizia: reset della modale se era aperta in modalità modifica
@@ -2496,17 +2506,20 @@ document.addEventListener("DOMContentLoaded", function() {
                 <span>${app.tipologia_visita} - ${app.orario.slice(0,5)}</span>
                 <div>
                   <button class="action-btn view" title="Visualizza">👁️</button>
-                  <button class="action-btn edit" title="Modifica">✏️</button>
+                  ${isSecretary ? `<button class="action-btn edit" title="Modifica">✏️</button>` : ""}
                 </div>
               `;
               item.querySelector(".view").addEventListener("click", () => {
                 viewAppointmentDetails(app.id);
                 closeSearchModal();
               });
-              item.querySelector(".edit").addEventListener("click", () => {
-                openAppointmentModal(app.id);
-                closeSearchModal();
-              });
+              const editBtn = item.querySelector(".edit");
+              if (editBtn) {
+                editBtn.addEventListener("click", () => {
+                  openAppointmentModal(app.id);
+                  closeSearchModal();
+                });
+              }
               resultsContainer.appendChild(item);
               gsap.from(item, {
                 opacity: 0,
@@ -2619,3 +2632,8 @@ document.getElementById("googleCalendarBtn").addEventListener("click", function(
   const calendarUrl = addToGoogleCalendar(appointment);
   window.open(calendarUrl, '_blank');
 });
+
+if (!isSecretary) {
+  // Nascondi pulsante aggiunta appuntamento
+  document.getElementById("openModal").style.display = "none";
+}
