@@ -868,15 +868,16 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
             
             appointment.save()
             return JsonResponse({
-                        "success": True,
-                        "message": "Appuntamento aggiornato!",
-                        "paziente_id": appointment.paziente.id,
-                        "dottore_associato": {
-                            "id": appointment.dottore.id,
-                            "nome": appointment.dottore.nome,
-                            "cognome": appointment.dottore.cognome,
-                        }
-                    })
+                "success": True,
+                "message": "Appuntamento aggiornato!",
+                "paziente_id": appointment.paziente.id if appointment.paziente else None,
+                "dottore_associato": {
+                    "id": appointment.dottore.id if appointment.dottore else None,
+                    "nome": appointment.dottore.nome if appointment.dottore else "",
+                    "cognome": appointment.dottore.cognome if appointment.dottore else "",
+                }
+            })
+
         except Appointment.DoesNotExist:
             return JsonResponse({"success": False, "error": "Appuntamento non trovato"}, status=404)
         except Exception as e:
