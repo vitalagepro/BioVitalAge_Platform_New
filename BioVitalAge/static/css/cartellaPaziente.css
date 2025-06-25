@@ -36,6 +36,12 @@
   height: 100%;
   gap: 20px;
 }
+.container-header-info{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
 .container-informazioni-personali{
   background-color: var(--card-color);
   border-radius: 8px;
@@ -87,18 +93,6 @@
 .container-dati-anagrafici h3.extra-info {
   display: none;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 .container-title-modale{
   display: flex;
   justify-content: space-between;
@@ -113,7 +107,7 @@
   gap: 10px;
   background-color: var(--contrast-color-shadow);
   border-radius: 8px;
-  padding: 5px 20px;
+  padding: 0px 20px;
 }
 .container-dati-anagrafici img{
   width: 40px;
@@ -218,7 +212,16 @@
 .alert.show {
   opacity: 1;
 }
-
+.button-patologia{
+  border: none;
+  background-color: var(--contrast-color-shadow);
+  padding: 10px;
+  border-radius: 8px;
+}
+.button-patologia span{
+  color: var(--dark1);
+  font-weight: bold;
+}
 
 
 

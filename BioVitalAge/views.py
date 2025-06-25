@@ -1174,10 +1174,29 @@ class InserisciPazienteView(LoginRequiredMixin,View):
 @method_decorator(catch_exceptions, name='dispatch')
 class CartellaPazienteView(LoginRequiredMixin,View):
 
+    ICD10_ENDPOINT = 'http://www.icd10api.com/'
+
     def get(self, request, id):
         """ 
         Function to handling get request for cartella pazienti 
-        """
+        """ 
+
+        params = {
+            'r': 'json',
+            'desc': 'long',
+            'type': 'cm',
+        }
+        
+        resp = requests.get(self.ICD10_ENDPOINT, params=params)
+        if resp.status_code != 200:
+            return JsonResponse(
+                {'error': 'Impossibile contattare ICD10API', 'status_code': resp.status_code},
+                status=502
+            )
+
+        data = resp.json()
+        print(data)
+
         # ViewSets  for API call 
         ViewSetResult = PazienteViewSet()
         ViewSetResult.request = request
