@@ -90,121 +90,40 @@ const btnOpenModal = document.getElementById("openModal");
 /*  -----------------------------------------------------------------------------------------------
    MAPPING TIPOLOGIE
 --------------------------------------------------------------------------------------------------- */
-const mappingTipologie = {
-  "Fisioestetica": [
-    { value: "Crioterapia", text: "Crioterapia", duration: [30] },
-    {
-      value: "Radiofrequenza medica",
-      text: "Radiofrequenza medica",
-      duration: [20, 30, 45],
-    },
-    {
-      value: "Mesoterapia transdermica",
-      text: "Mesoterapia transdermica",
-      duration: [20, 30, 45],
-    },
-    {
-      value: "Mesoterapia intramedica",
-      text: "Mesoterapia intramedica",
-      duration: [30],
-    },
-    { value: "TECAR + massaggio", text: "TECAR + massaggio", duration: [20] },
-    {
-      value: "Massaggio linfodrenante",
-      text: "Massaggio linfodrenante",
-      duration: [30],
-    },
-    {
-      value: "Massaggio tonificante volto",
-      text: "Massaggio tonificante volto",
-      duration: [20],
-    },
-    { value: "Onde d'urto", text: "Onde d'urto", duration: [10] },
-  ],
-  "Fisioterapia e Riabilitazione": [
-    { value: "Visita fisiatrica", text: "Visita fisiatrica", duration: [30] },
-    { value: "Visita ortopedica", text: "Visita ortopedica", duration: [30] },
-    {
-      value: "Visita neurologica",
-      text: "Visita neurologica",
-      duration: [30],
-    },
-    {
-      value: "Visita reumatologica",
-      text: "Visita reumatologica",
-      duration: [30],
-    },
-    {
-      value: "Chinesiterapia manuale/strumentale",
-      text: "Chinesiterapia manuale/strumentale",
-      duration: [30],
-    },
-    {
-      value: "Elettrostimolazioni - diadinamica, ionoforesi o tens",
-      text: "Elettrostimolazioni - diadinamica, ionoforesi o tens",
-      duration: [20],
-    },
-    {
-      value: "Infiltrazioni",
-      text: "Infiltrazioni",
-      duration: ["Da definire"],
-    },
-    { value: "Infrarossi", text: "Infrarossi", duration: [10] },
-    { value: "Laserterapia", text: "Laserterapia", duration: [20] },
-    { value: "Magnetoterapia", text: "Magnetoterapia", duration: [20] },
-    {
-      value: "Massaggio linfodrenante",
-      text: "Massaggio linfodrenante",
-      duration: [30],
-    },
-    { value: "Massoterapia", text: "Massoterapia", duration: [20] },
-    {
-      value: "Mesoterapia antalgica-antinfiammatoria",
-      text: "Mesoterapia antalgica-antinfiammatoria",
-      duration: [30],
-    },
-    {
-      value: "Mobilizzazioni articolari",
-      text: "Mobilizzazioni articolari",
-      duration: [15],
-    },
-    {
-      value: "Rieducazione motoria/rinforzo muscolare",
-      text: "Rieducazione motoria/rinforzo muscolare",
-      duration: [30],
-    },
-    { value: "TECAR", text: "TECAR", duration: [20] },
-    { value: "Ultrasuonoterapia", text: "Ultrasuonoterapia", duration: [15] },
-    { value: "Onde d'urto", text: "Onde d'urto", duration: [10] },
-    {
-      value: "Trattamento miofasciale",
-      text: "Trattamento miofasciale",
-      duration: [30],
-    },
-    {
-      value: "Valutazione + Cervical ROM",
-      text: "Valutazione + Cervical ROM",
-      duration: [30],
-    },
-  ],
-  "Fisioterapia Sportiva": [
-    {
-      value: "Rieducazione motoria/Rinforzo muscolare",
-      text: "Rieducazione motoria/Rinforzo muscolare",
-      duration: [30],
-    },
-    {
-      value: "Prevenzione infotuni sport specifico",
-      text: "Prevenzione infotuni sport specifico",
-      duration: [30],
-    },
-    {
-      value: "Massaggio decontratturante",
-      text: "Massaggio decontratturante",
-      duration: [30],
-    },
-  ],
-};
+let mappingTipologie = {};
+
+fetch("../static/includes/json/typology_map.json")
+  .then(response => response.json())
+  .then(data => {
+    mappingTipologie = {};
+
+    data.forEach(item => {
+      const tipologia = item["tipologia_visita"];
+      const visite = item.visite;
+
+      mappingTipologie[tipologia] = visite.map(visita => {
+        const nomeVisita = visita["esame"];
+        return {
+          value: nomeVisita,
+          text: nomeVisita,
+        };
+      });
+    });
+
+    console.log("✅ mappingTipologie caricato dinamicamente:", mappingTipologie);
+    const tipologiaSelect = document.getElementById("tipologia_visita");
+    tipologiaSelect.innerHTML = "<option value=''>Seleziona tipologia</option>"; // resetta e aggiungi default
+
+    Object.keys(mappingTipologie).forEach(tipologia => {
+      const opt = document.createElement("option");
+      opt.value = tipologia;
+      opt.textContent = tipologia;
+      tipologiaSelect.appendChild(opt);
+    });
+
+  })
+  .catch(error => console.error("❌ Errore nel caricamento JSON:", error));
+
 
 // Mappa dei colori per ogni gruppo
 const boxColorMapping = [
@@ -326,7 +245,7 @@ function viewAppointmentDetails(appointmentId) {
             <p><strong>⏰ Orario:</strong> ${data.orario.slice(0, 5)}</p>
             <p><strong>💬 Tipologia:</strong> ${data.tipologia_visita}</p>
             <p><strong>🏥 Studio:</strong> ${data.numero_studio}</p>
-            <p><strong>🧾 Voce prezzario:</strong> ${data.voce_prezzario}</p>
+            <p><strong>🧾 Visita:</strong> ${data.visita}</p>
             <p><strong>🕒 Durata:</strong> ${data.durata} minuti</p>
             <p><strong>📝 Note:</strong> ${data.note || "Nessuna"}</p>
           `;  
@@ -339,7 +258,7 @@ function viewAppointmentDetails(appointmentId) {
             <p><strong>⏰ Orario:</strong> ${data.orario.slice(0, 5)}</p>
             <p><strong>💬 Tipologia:</strong> ${data.tipologia_visita}</p>
             <p><strong>🏥 Studio:</strong> ${data.numero_studio}</p>
-            <p><strong>🧾 Voce prezzario:</strong> ${data.voce_prezzario}</p>
+            <p><strong>🧾 Visita:</strong> ${data.visita}</p>
             <p><strong>🕒 Durata:</strong> ${data.durata} minuti</p>
             <p><strong>📝 Note:</strong> ${data.note || "Nessuna"}</p>
           `;
@@ -1173,25 +1092,25 @@ function openAppointmentModal(appointmentId) {
 
 
         setTimeout(() => {
-          let voceOption = [...vocePrezzarioSelect.options].find(
+          let voceOption = [...visitaSelect.options].find(
             (option) =>
               option.value.trim().toLowerCase() ===
-              data.voce_prezzario?.toLowerCase()
+              data.visita?.toLowerCase()
           );
 
           if (voceOption) {
-            vocePrezzarioSelect.value = voceOption.value;
-          } else if (data.voce_prezzario) {
+            visitaSelect.value = voceOption.value;
+          } else if (data.visita) {
             let newVoceOption = document.createElement("option");
-            newVoceOption.value = data.voce_prezzario;
-            newVoceOption.textContent = data.voce_prezzario + " (Non in elenco)";
+            newVoceOption.value = data.visita;
+            newVoceOption.textContent = data.visita + " (Non in elenco)";
             newVoceOption.style.color = "red";
-            vocePrezzarioSelect.appendChild(newVoceOption);
-            vocePrezzarioSelect.value = data.voce_prezzario;
+            visitaSelect.appendChild(newVoceOption);
+            visitaSelect.value = data.visita;
           }
 
-          // **TRIGGER AUTOMATICO DEL CAMBIO VOCE PREZZARIO**
-          vocePrezzarioSelect.dispatchEvent(new Event("change"));
+          // **TRIGGER AUTOMATICO DEL CAMBIO Visita**
+          visitaSelect.dispatchEvent(new Event("change"));
         }, 300); // Aggiunto un ritardo per aspettare la popolazione dinamica
 
         // **SETTAGGIO DURATA**
@@ -1271,20 +1190,20 @@ function openAppointmentModal(appointmentId) {
         }
 
         // Gestione delle altre selezioni (prezzario, durata, studio)
-        let vocePrezzarioSelect = document.getElementById("voce-prezzario");
-        let voceOption = [...vocePrezzarioSelect.options].find(
+        let visitaSelect = document.getElementById("visita");
+        let voceOption = [...visitaSelect.options].find(
           (option) =>
-            option.value.trim().toLowerCase() === data.voce_prezzario?.toLowerCase()
+            option.value.trim().toLowerCase() === data.visita?.toLowerCase()
         );
         if (voceOption) {
-          vocePrezzarioSelect.value = voceOption.value;
-        } else if (data.voce_prezzario) {
+          visitaSelect.value = voceOption.value;
+        } else if (data.visita) {
           let newVoceOption = document.createElement("option");
-          newVoceOption.value = data.voce_prezzario;
-          newVoceOption.textContent = data.voce_prezzario + " (Non in elenco)";
+          newVoceOption.value = data.visita;
+          newVoceOption.textContent = data.visita + " (Non in elenco)";
           newVoceOption.style.color = "red";
-          vocePrezzarioSelect.appendChild(newVoceOption);
-          vocePrezzarioSelect.value = data.voce_prezzario;
+          visitaSelect.appendChild(newVoceOption);
+          visitaSelect.value = data.visita;
         }
 
         let durataSelect = document.getElementById("time");
@@ -1345,7 +1264,7 @@ function saveAppointmentChanges() {
   // 3) Raccogli tutti i campi
   const tipologiaVisita    = document.getElementById("tipologia_visita").value;
   const orario             = document.getElementById("time-appointment").textContent.trim();
-  const vocePrezzario      = document.getElementById("voce-prezzario").value;
+  const visita      = document.getElementById("visita").value;
   const durata             = document.getElementById("time").value;
   const studio             = document.getElementById("studio").value;
   const note               = document.getElementById("note").value;
@@ -1366,7 +1285,7 @@ function saveAppointmentChanges() {
     orario:           orario,
     nome_paziente:    nomePaziente,
     cognome_paziente: cognomePaziente,
-    voce_prezzario:   vocePrezzario,
+    visita:   visita,
     durata:           durata,
     numero_studio:    studio,
     note:             note,
@@ -1809,7 +1728,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     document.getElementById("tipologia_visita").selectedIndex = 0;
     document.getElementById("paziente-select").selectedIndex = 0;
-    document.getElementById("voce-prezzario").selectedIndex = 0;
+    document.getElementById("visita").selectedIndex = 0;
     document.getElementById("time").selectedIndex = 0;
     document.getElementById("studio").selectedIndex = 0;
     document.getElementById("note").value = "";
@@ -1994,46 +1913,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("DOMContentLoaded", function () {
   const tipologiaSelect = document.getElementById("tipologia_visita");
-  const vocePrezzarioSelect = document.getElementById("voce-prezzario");
-  const durataSelect = document.getElementById("time");
-
-  // Quando cambia il select della tipologia, aggiorna le opzioni del select "voce prezzario"
+  const visitaSelect = document.getElementById("visita");
+  // Quando cambia il select della tipologia, aggiorna le opzioni del select "Visita"
   tipologiaSelect.addEventListener("change", function () {
-    const tipologia = tipologiaSelect.value;
-
-    // Resetta i select "voce prezzario" e "durata"
-    vocePrezzarioSelect.innerHTML = "";
-    durataSelect.innerHTML = "";
-
-    // Opzione default per "voce prezzario"
+    // reset Visita e durata
+    visitaSelect.innerHTML = "";  
+    // opzione default Visita
     const defaultOptionVoce = document.createElement("option");
     defaultOptionVoce.value = "";
-    defaultOptionVoce.textContent = "Seleziona voce prezzario";
-    vocePrezzarioSelect.appendChild(defaultOptionVoce);
-
-    // Se esiste una mappatura per la tipologia selezionata, popola il select
+    defaultOptionVoce.textContent = "Seleziona Visita";
+    visitaSelect.appendChild(defaultOptionVoce);
+  
+    const tipologia = this.value;
     if (mappingTipologie[tipologia]) {
-      mappingTipologie[tipologia].forEach(function (item) {
+      mappingTipologie[tipologia].forEach(item => {
         const opt = document.createElement("option");
         opt.value = item.value;
         opt.textContent = item.text;
-        // Salviamo l'array delle durate usando dataset (convertito in stringa JSON)
-        opt.dataset.duration = JSON.stringify(item.duration);
-        vocePrezzarioSelect.appendChild(opt);
+        visitaSelect.appendChild(opt);
       });
     }
-  });
+  });  
 
-  // Quando cambia il select "voce prezzario", aggiorna il select "durata"
-  vocePrezzarioSelect.addEventListener("change", function () {
-    const selectedOption = vocePrezzarioSelect.options[vocePrezzarioSelect.selectedIndex];
-    durataSelect.innerHTML = "";
+  // Quando cambia il select "Visita", aggiorna il select "durata"
+  visitaSelect.addEventListener("change", function () {
+    const selectedOption = visitaSelect.options[visitaSelect.selectedIndex];
 
     // Opzione default per la durata
     const defaultOptionDurata = document.createElement("option");
     defaultOptionDurata.value = "";
     defaultOptionDurata.textContent = "Seleziona durata";
-    durataSelect.appendChild(defaultOptionDurata);
 
     if (selectedOption && selectedOption.dataset.duration) {
       // Estrai l'array delle durate e convertilo da JSON
@@ -2042,7 +1951,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const opt = document.createElement("option");
         opt.value = dur;
         opt.textContent = dur + " minuti";
-        durataSelect.appendChild(opt);
       });
     }
   });
@@ -2066,7 +1974,7 @@ function resetFormFields() {
   // Reset degli <select>
   document.getElementById("tipologia_visita").selectedIndex = 0;
   document.getElementById("paziente-select").selectedIndex = 0;
-  document.getElementById("voce-prezzario").selectedIndex = 0;
+  document.getElementById("visita").selectedIndex = 0;
   document.getElementById("time").selectedIndex = 0;
   document.getElementById("studio").selectedIndex = 0;
   // Reset del campo note
@@ -2140,9 +2048,9 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
   const nomeArray = nomeCompleto.split(" ");
   const nome_paziente = nomeArray[0];
   const cognome_paziente = nomeArray.slice(1).join(" ");
-  const vocePrezzarioElement = document.getElementById("voce-prezzario");
-  const voce_prezzario = vocePrezzarioElement
-    ? vocePrezzarioElement.options[vocePrezzarioElement.selectedIndex].value.trim()
+  const visitaElement = document.getElementById("visita");
+  const visita = visitaElement
+    ? visitaElement.options[visitaElement.selectedIndex].value.trim()
     : "";
   const durataElement = document.getElementById("time");
   const durata = durataElement
@@ -2174,7 +2082,7 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
     cognome_paziente,
     numero_studio,
     note,
-    voce_prezzario,
+    visita,
     durata,
     data: data_appointment,
     orario: time_appointment,

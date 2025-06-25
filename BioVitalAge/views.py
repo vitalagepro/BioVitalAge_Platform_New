@@ -647,9 +647,18 @@ class AppuntamentiView(LoginRequiredMixin,View):
 
 
         # Ottieni le opzioni definite nei choices
-        tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
+        tipologia_appuntamenti = (
+            Appointment.objects
+            .exclude(tipologia_visita__isnull=True)
+            .exclude(tipologia_visita__exact='')
+            .values_list('tipologia_visita', flat=True)
+            .distinct()
+        )
+
+        # Pulisci e ordina (facoltativo, ma consigliato)
+        tipologia_appuntamenti = sorted(set([t.strip().title() for t in tipologia_appuntamenti]))
         numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
-        voce_prezzario = Appointment._meta.get_field('voce_prezzario').choices
+        visita = Appointment._meta.get_field('visita').choices
 
         context = {
             'is_secretary': is_secretary,
@@ -658,7 +667,7 @@ class AppuntamentiView(LoginRequiredMixin,View):
             'persone': persone,
             'appuntamenti': appuntamenti,
             'tipologia_appuntamenti': tipologia_appuntamenti,
-            'voce_prezzario': voce_prezzario,
+            'visita': visita,
             'numero_studio': numero_studio,
         }
 
@@ -694,7 +703,8 @@ class AppuntamentiSalvaView(LoginRequiredMixin, View):
             giorno             = data.get("giorno"),
             data               = data.get("data"),
             orario             = data.get("orario"),
-            voce_prezzario     = data.get("voce_prezzario"),
+            visita             = data.get("visita"),
+            prezzo             = data.get("prezzo"),
             durata             = data.get("durata"),
             dottore            = dottore
         )
@@ -742,7 +752,8 @@ class GetSingleAppointmentView(LoginRequiredMixin, View):
                 "data": appointment.data.strftime("%Y-%m-%d"),
                 "numero_studio": appointment.numero_studio or "",
                 "note": appointment.note or "",
-                "voce_prezzario": appointment.voce_prezzario or "",
+                "visita": appointment.visita or "",
+                "prezzo": appointment.prezzo or "",
                 "tipologia_visita": appointment.tipologia_visita or "",
                 "orario": str(appointment.orario)[:5],
                 "durata": appointment.durata or "",
@@ -823,7 +834,8 @@ class AppuntamentiGetView(LoginRequiredMixin,View):
                 "data": appointment.data,
                 "numero_studio": appointment.numero_studio,
                 "note": appointment.note,
-                "voce_prezzario": appointment.voce_prezzario,
+                "visita": appointment.visita,
+                "prezzo": appointment.prezzo,
                 "tipologia_visita": appointment.tipologia_visita,
                 "orario": appointment.orario,
             })
@@ -859,8 +871,10 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
                 appointment.tipologia_visita = data["tipologia_visita"]
             if data.get("numero_studio"):
                 appointment.numero_studio = data["numero_studio"]
-            if data.get("voce_prezzario"):
-                appointment.voce_prezzario = data["voce_prezzario"]
+            if data.get("visita"):
+                appointment.visita = data["visita"]
+            if data.get("prezzo"):
+                appointment.prezzo = data["prezzo"]
             if data.get("durata"):
                 appointment.durata = data["durata"]
             if "note" in data:  # anche se è vuota, la nota verrà aggiornato
@@ -2086,9 +2100,18 @@ class VisiteView(View):
             ).order_by('-data', '-orario')
 
         # Ottieni le opzioni definite nei choices
-        tipologia_appuntamenti = [choice[0] for choice in Appointment._meta.get_field('tipologia_visita').choices]
+        tipologia_appuntamenti = (
+            Appointment.objects
+            .exclude(tipologia_visita__isnull=True)
+            .exclude(tipologia_visita__exact='')
+            .values_list('tipologia_visita', flat=True)
+            .distinct()
+        )
+
+        # Pulisci e ordina (facoltativo, ma consigliato)
+        tipologia_appuntamenti = sorted(set([t.strip().title() for t in tipologia_appuntamenti]))
         numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
-        voce_prezzario = Appointment._meta.get_field('voce_prezzario').choices
+        visita = Appointment._meta.get_field('visita').choices
 
         paginator = Paginator(visite, 4)
         page_number = request.GET.get('page')
@@ -2106,7 +2129,7 @@ class VisiteView(View):
             'visite': visite,
             'tipologia_appuntamenti': tipologia_appuntamenti,
             'numero_studio': numero_studio,
-            'voce_prezzario': voce_prezzario,
+            'visita': visita,
             'is_secretary': is_secretary,
             'dottori': dottori,
         }
@@ -2115,7 +2138,7 @@ class VisiteView(View):
 ## VIEW ELIMINA VISITE
 @method_decorator(csrf_exempt, name='dispatch')
 class EliminaVisitaView(View):
-    def post(self, request, id):
+    def post(self, request, id):        
         try:
             visita = Appointment.objects.get(id=id)
             visita.delete()

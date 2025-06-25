@@ -239,9 +239,6 @@
                                         <p class="mb-0">Tipologia*</p>
                                         <select name="tipologia_visita" id="tipologia_visita" class="form-select-appointment w-100">
                                             <option>Seleziona tipologia</option>
-                                            {% for tipologia in tipologia_appuntamenti %}
-                                                <option value="{{ tipologia }}">{{ tipologia }}</option>
-                                            {% endfor %}
                                         </select>
                                     </div>
                                     <div>
@@ -264,9 +261,9 @@
                             
                                 <label id="input-time" class="mt-4">
                                     <div>
-                                        <p class="mb-0">Voce Prezzario*</p>
-                                        <select name="voce-prezzario" id="voce-prezzario" class="w-100">
-                                            <option>Seleziona una Voce</option>
+                                        <p class="mb-0">Visita*</p>
+                                        <select name="visita" id="visita" class="w-100">
+                                            <option>Seleziona una Visita</option>
                                         </select>
                                     </div>
                                     <div>

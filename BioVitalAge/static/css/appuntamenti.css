@@ -222,7 +222,7 @@ input[type='time'] {
 
 .modal-content-appointments {
     background-color: #fff;
-    margin: 15% auto;
+    margin: 10% auto;
     padding: 20px;
     width: 70%;
     border-radius: 10px;
@@ -367,7 +367,7 @@ input[type='time'] {
     margin-top: 10px;
 }
 
-#voce-prezzario {
+#visita {
     border: none;
     border-bottom: 1px solid var(--contrast-color);
     color: var(--contrast-color);
@@ -718,6 +718,15 @@ input[type='time'] {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.appointment-box span{
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
 }
 
 .appointment-box:active {
