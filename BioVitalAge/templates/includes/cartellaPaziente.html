@@ -161,16 +161,21 @@
 
                 <div class="container-title-modale">
 
-                    <div class="container-dati-anagrafici">
-                        <img src="{% static 'image/Dati_angrafici.png' %}" alt="">
-                        <h3>{{ persona.name }}</h3>
-                        <h3>{{ persona.surname }}</h3>
-                        <h3 class="extra-info">età: {{ persona.chronological_age }}</h3>
-                        {% if persona.phone %}
-                            <h3 class="extra-info">telefono: {{ persona.phone }}</h3>
-                        {% endif %}
+                    <div class="container-header-info">
+                        <div class="container-dati-anagrafici">
+                            <img src="{% static 'image/Dati_angrafici.png' %}" alt="">
+                            <h3>{{ persona.name }}</h3>
+                            <h3>{{ persona.surname }}</h3>
+                            <h3 class="extra-info">età: {{ persona.chronological_age }}</h3>
+                            {% if persona.phone %}
+                                <h3 class="extra-info">telefono: {{ persona.phone }}</h3>
+                            {% endif %}
+                        </div>
+                    
+                        <button type="button" class="button-patologia"><span>patologia:</span></button>
+                        
                     </div>
-
+        
                     <div class="header-tools">
                         <a href="#">
                             <img src="{% static 'image/Note.png' %}" alt="Note" title="Note">
