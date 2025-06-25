@@ -583,6 +583,9 @@ COLORI GRAFICI
 }
 
 /* link nav-bar style */
+.active-link{
+  border-bottom: 2px solid var(--tittle1) !important;
+}
 .nav-bar-linkage {
   display: flex;
   justify-content: flex-start;

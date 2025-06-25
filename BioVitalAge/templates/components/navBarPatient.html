@@ -13,27 +13,27 @@
         <!-- Links Section -->
         <div class="col-md-8 nav-bar-linkage">
             <a href="{% url 'eta_biologica' persona.id %}"
-                class="{% if request.resolver_match.url_name == 'Risultati' %}active-link{% endif %}">
+                class="{% if request.resolver_match.url_name == 'eta_biologica' %}active-link{% endif %}">
                 Età Biologica
             </a>
             <a href="{% url 'dati_base' persona.id %}"
-                class="{% if request.resolver_match.url_name == 'Risultati' %}active-link{% endif %}">
+                class="{% if request.resolver_match.url_name == 'dati_base' %}active-link{% endif %}">
                 Dati Base
             </a>
             <a href="{% url 'composizione' persona.id %}"
-                class="{% if request.resolver_match.url_name == 'Calcolatore' %}active-link{% endif %}">
+                class="{% if request.resolver_match.url_name == 'composizione' %}active-link{% endif %}">
                 Età Metabolica
             </a>
             <a href="{% url 'etaVitale' persona.id %}"
-                class="{% if request.resolver_match.url_name == 'Calcolatore' %}active-link{% endif %}">
+                class="{% if request.resolver_match.url_name == 'etaVitale' %}active-link{% endif %}">
                 Capacità Vitale
             </a>
             <a href="{% url 'resilienza' persona.id %}"
-                class="{% if request.resolver_match.url_name == 'Calcolatore' %}active-link{% endif %}">
+                class="{% if request.resolver_match.url_name == 'resilienza' %}active-link{% endif %}">
                 Resilienza
             </a>
             <a href="{% url 'prescrizioni' persona.id %}"
-                class="{% if request.resolver_match.url_name == 'Calcolatore' %}active-link{% endif %}">
+                class="{% if request.resolver_match.url_name == 'prescrizioni' %}active-link{% endif %}">
                 Aggiungi Prescrizioni
             </a>
         </div>
