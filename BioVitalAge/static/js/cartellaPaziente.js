@@ -87,11 +87,143 @@ window.addEventListener('keydown', (e) => {
 
 
 
+/*  -----------------------------------------------------------------------------------------------
+  Funzione animazione shrunk della card informazioni personale
+  --------------------------------------------------------------------------------------------------- */
+document.addEventListener('DOMContentLoaded', () => {
+  const header      = document.querySelector('.container-informazioni-personali');
+  const main        = document.querySelector('.container-flex-layout');
+  const wrapper     = document.querySelector('.container-scrollable');
+  const dati        = document.querySelector('.container-dati-anagrafici');
+  const headerTools = document.querySelector('.header-tools');
+  const baseBtn     = document.getElementById('base_btn');  
+
+  const fullH = header.offsetHeight;
+  main.style.marginTop = (fullH + 16) + 'px';  
+
+  let activated = false;
+
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY > 0;
+
+    if (scrolled) {
+      header.classList.add('shrunk');
+      wrapper.classList.add('scrolled');
+      main.style.marginTop = (header.offsetHeight + 16) + 'px';
+      
+      // **NASCONDI tutti gli elementi di .header-tools tranne il baseBtn**
+      headerTools.querySelectorAll(':scope > *').forEach(el => {
+        if (el !== baseBtn) el.style.display = 'none';
+      });
+      // **ASSICURA che il baseBtn sia visibile**
+      baseBtn.style.display = '';
+
+    } else {
+      header.classList.remove('shrunk');
+      wrapper.classList.remove('scrolled');
+      main.style.marginTop = (fullH + 16) + 'px';
+
+      // **RICOMPONI header-tools ripristinando display originale**
+      headerTools.querySelectorAll(':scope > *').forEach(el => {
+        el.style.display = '';
+      });
+    }
+
+    // gestione no-scroll
+    if (!activated && scrolled) {
+      document.body.classList.add('no-scroll');
+      activated = true;
+    } else if (activated && !scrolled) {
+      document.body.classList.remove('no-scroll');
+      activated = false;
+    }
+  });
+
+  // click su dati anagrafici: reset completo
+  dati.addEventListener('click', () => {
+    header.classList.remove('shrunk');
+    wrapper.classList.remove('scrolled');
+    document.body.classList.remove('no-scroll');
+    main.style.marginTop = (fullH + 16) + 'px';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    activated = false;
+
+    // ripristina header-tools
+    headerTools.querySelectorAll(':scope > *').forEach(el => {
+      el.style.display = '';
+    });
+  });
+});
 
 
 
 
 
+/*  -----------------------------------------------------------------------------------------------
+  Funzione edita dati personali
+  --------------------------------------------------------------------------------------------------- */
+document.addEventListener('DOMContentLoaded', function() {
+  const form      = document.getElementById('personaForm');
+  const editBtn   = document.getElementById('edit_btn');
+  const cancelBtn = document.getElementById('cancel_btn');
+  const editText  = editBtn.querySelector('.btn-text');
+  let isEditing   = false;
+
+  editBtn.addEventListener('click', function() {
+    if (!isEditing) {
+
+      isEditing = true;
+      editText.textContent = 'Salva';         
+      cancelBtn.classList.remove('hidden');    
+
+
+      form.querySelectorAll('input.input-disabled').forEach(input => {
+        input.dataset.originalValue = input.value;
+        input.disabled = false;
+        input.classList.add('editing');
+      });
+
+      form.querySelectorAll('select').forEach(select => {
+        select.dataset.originalValue = select.value;
+        select.classList.add('editing');
+        select.style.display = '';  
+
+        const disp = document.getElementById(
+          select.id.replace('select', 'display')
+        );
+        if (disp) disp.style.display = 'none';
+      });
+
+    } else {
+      form.submit();
+    }
+  });
+
+  cancelBtn.addEventListener('click', function() {
+    isEditing = false;
+    editText.textContent = 'Edita';
+    cancelBtn.classList.add('hidden');
+
+    form.querySelectorAll('input.input-disabled').forEach(input => {
+      input.value    = input.dataset.originalValue || input.value;
+      input.disabled = true;
+      input.classList.remove('editing');
+      delete input.dataset.originalValue;
+    });
+
+    form.querySelectorAll('select').forEach(select => {
+      select.value = select.dataset.originalValue;
+      select.classList.remove('editing');
+      select.style.display = 'none';
+      delete select.dataset.originalValue;
+
+      const disp = document.getElementById(
+        select.id.replace('select', 'display')
+      );
+      if (disp) disp.style.display = '';
+    });
+  });
+});
 
 
 

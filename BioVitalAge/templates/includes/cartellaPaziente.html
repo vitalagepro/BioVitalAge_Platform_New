@@ -165,6 +165,10 @@
                         <img src="{% static 'image/Dati_angrafici.png' %}" alt="">
                         <h3>{{ persona.name }}</h3>
                         <h3>{{ persona.surname }}</h3>
+                        <h3 class="extra-info">età: {{ persona.chronological_age }}</h3>
+                        {% if persona.phone %}
+                            <h3 class="extra-info">telefono: {{ persona.phone }}</h3>
+                        {% endif %}
                     </div>
 
                     <div class="header-tools">
@@ -176,14 +180,54 @@
                             <img src="data:image/png;base64,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" alt="data-protection" title="Privacy & Policy">
                         </a>      
                         
-                        <button type="button">
+                        <button type="button" class="button" id="edit_btn">
+                            <span class="button__icon-wrapper">
+                                <!-- Edita (normale) -->
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    width="18"
+                                    class="button__icon-svg">
+                                <path d="M4 17.25V21h3.75L18.81 9.94l-3.75-3.75L4 17.25z"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"/>
+                                <path d="M20.71 7.04a1.003 1.003 0 0 0-1.42 0l-2.34 2.34 3.75 3.75 2.34-2.34a1.003 1.003 0 0 0 0-1.42l-2.33-2.33z"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"/>
+                                </svg>
+
+                                <!-- Edita (copy) -->
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    width="18"
+                                    class="button__icon-svg button__icon-svg--copy">
+                                <path d="M4 17.25V21h3.75L18.81 9.94l-3.75-3.75L4 17.25z"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"/>
+                                <path d="M20.71 7.04a1.003 1.003 0 0 0-1.42 0l-2.34 2.34 3.75 3.75 2.34-2.34a1.003 1.003 0 0 0 0-1.42l-2.33-2.33z"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"/>
+                                </svg>
+                            </span>
                             <span class="btn-text">Edita</span>
-                            <svg class="svg" viewBox="0 0 512 512">
-                                <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"/>
-                            </svg>
+                        </button>
+
+                        <!-- Bottone Annulla (nascosto di default) -->
+                        <button type="button" id="cancel_btn" class="button hidden">
+                            <span class="btn-text">Annulla</span>
+                            <!-- se vuoi, aggiungi un’icona SVG per “X” o “Chiudi” -->
                         </button>
                         
-                        <button type="button" class="button" onclick="window.location.href='{% url 'dati_base' persona.id %}'">
+                        <button type="button" class="button" id="base_btn" onclick="window.location.href='{% url 'dati_base' persona.id %}'">
                             <span class="button__icon-wrapper">
                         
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
@@ -355,541 +399,497 @@
 
         </div>
 
-        <div class="card-beyond-informazioni-personali"></div>
-
-
-        <!-- CONTAINER INFORMAZIONI PERSONALI -->
-        <div class="container-flex-layout">
-            
-            <div class="container-info">
-
-                <div class="container-titolo">
-                    <img src="{% static 'image/Info.png' %}" alt="">
-                    <h3>Informazioni Generali</h3>
-                </div>
+        <div class="container-scrollable">
+            <!-- CONTAINER INFORMAZIONI PERSONALI -->
+            <div class="container-flex-layout">
                 
-                <div class="header-tools">
+                <div class="container-info">
 
-                    <a href="#">
-                        <img src="{% static 'image/Note.png' %}" alt="Note" title="Note">
-                    </a>
-                 
-                    <a href="{% static 'includes/pdfTemplates/Privacy&Policy.pdf' %}" download class="privacy-icon">
-                        <img src="data:image/png;base64,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" alt="data-protection" title="Privacy & Policy">
-                    </a>      
-                 
-                    <button type="button" class="button button-view-all">
-                        <span class="button__icon-wrapper">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
-                                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg button__icon-svg--copy">
-                                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </span>
-                        Dati Anagrafici
-                    </button>
-                 
-
-                    <button type="button" class="button" onclick="window.location.href='{% url 'dati_base' persona.id %}'">
-                        <span class="button__icon-wrapper">
-                       
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg">
-                            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-
+                    <div class="container-titolo">
+                        <img src="{% static 'image/Info.png' %}" alt="">
+                        <h3>Informazioni Generali</h3>
+                    </div>
                     
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="18" class="button__icon-svg button__icon-svg--copy">
-                            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-
-                        </span>
-                        Dati Base Paziente
-                    </button>
-
                 </div>
 
-            </div>
+                <div class="container-storico">
 
-            <div class="container-storico">
-
-                <div class="card-storico" onclick="window.location.href='{% url 'storico' persona.id %}'">
-                    <div class="img-circle-container">
-                        <img src="{% static 'image/Storico_color.png' %}" alt="">
-                    </div>
-                    <a href="{% url 'storico' persona.id %}">
-                    <span class="freccia">&larr;</span> Storico
-                    </a>
-                </div>
-
-                <div class="card-storico" onclick="window.location.href='{% url 'diagnosi' persona.id %}'">
-                    <div class="img-circle-container">
-                        <img src="{% static 'image/Diagnosi_color.png' %}" alt="">
-                    </div>
-                    
-                    <a href="{% url 'diagnosi' persona.id %}">
-                    <span class="freccia">&larr;</span> Diagnosi
-                    </a>
-                </div>
-
-                <div class="card-storico">
-                    <div class="img-circle-container">
-                        <img src="{% static 'image/Terapie_color.png' %}" alt="">
-                    </div>
-                    <a href="{% url 'terapie' persona.id %}">
-                    <span class="freccia">&larr;</span> Terapie
-                    </a>
-                </div>
-
-                <div class="card-storico">
-                    <div class="img-circle-container">
-                        <img src="{% static 'image/Esame_color.png' %}" alt="">
-                    </div>
-                    <a href="{% url 'esami' persona.id %}">
-                    <span class="freccia">&larr;</span> Esami
-                    </a>
-                </div>
-
-                <div class="card-storico">
-                    <div class="img-circle-container">
-                        <img src="{% static 'image/Visite_color.png' %}" alt="">
-                    </div>
-                    <a href="{% url 'visite' persona.id %}">
-                    <span class="freccia">&larr;</span> Visite
-                    </a>
-                </div>
-
-                <div class="card-storico">
-                    <div class="img-circle-container">
-                        <img src="{% static 'image/Allegati_color.png' %}" alt="">
-                    </div>
-                    <a href="{% url 'allegati' persona.id %}">
-                    <span class="freccia">&larr;</span> Allegati
-                    </a>
-                </div>
-
-            </div>
-
-        </div>
-        
-        <!-- CARD CLOCK -->
-        <div class="container-indicatori containerStyle" style="margin-top: 0rem;">
-
-            <div class="card card4" id="card-style">
-                <h3 class="section-tittle">Indicatori di performance</h3>
-
-                <div class="score-clock-graph">
-    
-                               
-                    <div class="container-clock cardIndici"
-                        id="cardClick"
-                        card-name="Salute del Cuore"
-                        img-card="{% static 'image/Heart_Colorato.png' %}"
-                        dict-value="Cuore"                   
-                        >
-
-                        <svg class="progress-ring" width="140" height="140">
-                            <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="heartClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
-                        </svg>
-                       
-                           
-                        <div class="percentage" id="heartPercentage"></div>
-                        
-                        <div class="descrizione-clock">
-                            <img src="{% static 'image/Heart_Colorato.png' %}" alt="">
-                            <p>Salute del Cuore</p>
+                    <div class="card-storico" onclick="window.location.href='{% url 'storico' persona.id %}'">
+                        <div class="img-circle-container">
+                            <img src="{% static 'image/Storico_color.png' %}" alt="">
                         </div>
-                    </div>
-                
-                    
-                    <div class="container-clock cardIndici" 
-                        id="cardClick" 
-                        card-name="Salute Renale"
-                        img-card="{% static 'image/Reni.png' %}"
-                        dict-value="Renale">
-
-                        <svg class="progress-ring" width="140" height="140">
-                            <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="kidneyClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
-                        </svg>
-                    
-                        <div class="percentage" id="kidneyPercentage"></div>
-                       
-                        <div class="descrizione-clock">
-                            <img src="{% static 'image/Reni.png' %}" alt="">
-                            <p>Salute Renale</p>
-                        </div>
-                    </div>
-                    
-                
-                    <div class="container-clock cardIndici"
-                        id="cardClick"
-                        card-name="Salute Epatica"
-                        img-card="{% static 'image/Fegato.png' %}"
-                        dict-value="Epatica">
-                        <svg class="progress-ring" width="140" height="140">
-                            <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="liverClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
-                        </svg>
-
-                        <div class="percentage" id="liverPercentage"></div>
-                      
-                        <div class="descrizione-clock">
-                            <img src="{% static 'image/Fegato.png' %}" alt="">
-                            <p>Salute Epatica</p>
-                        </div>
-                    </div>
-                    
-           
-                    <div class="container-clock cardIndici"
-                        id="cardClick"
-                        card-name="Salute Cerebrale" 
-                        img-card="{% static 'image/Cervello.png' %}"
-                        dict-value="Cerebrale">
-                        <svg class="progress-ring" width="140" height="140">
-                            <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="brainClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
-                        </svg>
-
-                        <div class="percentage" id="brainPercentage"></div>
-                       
-                        <div class="descrizione-clock">
-                            <img src="{% static 'image/Cervello.png' %}" alt="">
-                            <p>Salute Cerebrale</p>
-                        </div>
-                    </div>
-                    
-          
-                    <div class="container-clock cardIndici" 
-                        id="cardClick"
-                        card-name="Salute Ormonale"
-                        img-card="{% static 'image/Cellula.png' %}"
-                        dict-value="Ormonale">
-                        <svg class="progress-ring" width="140" height="140">
-                            <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="hormoneClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
-                        </svg>
-
-                        <div class="percentage" id="hormonePercentage"></div>
-                        
-                        <div class="descrizione-clock">
-                            <img src="{% static 'image/Cellula.png' %}" alt="">
-                            <p>Salute Ormonale</p>
-                        </div>
-                    </div>
-                    
-     
-                    <div class="container-clock cardIndici"
-                        id="cardClick" 
-                        card-name="Salute del Sangue"
-                        img-card="{% static 'image/Blood_Colorato.png' %}"
-                        dict-value="Sangue">
-                        <svg class="progress-ring" width="140" height="140">
-                            <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="bloodClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
-                        </svg>
-
-                        <div class="percentage" id="bloodPercentage"></div>
-                        
-                        <div class="descrizione-clock">
-                            <img src="{% static 'image/Blood_Colorato.png' %}" alt="">
-                            <p>Salute del Sangue</p>
-                        </div>
-                    </div>
-                 
-                    <div class="container-clock cardIndici" style="gap: 15px;" 
-                        card-name="Salute del Sistema Immunitario"
-                        img-card="{% static 'image/Sistema.png' %}"
-                        dict-value="Immunitario">
-                        <svg class="progress-ring" width="140" height="140">
-                            <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="immuneClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
-                        </svg>
-
-                        <div class="percentage" id="immunePercentage" style="margin-top: 5px;"></div>
-                     
-                        <div class="descrizione-clock" style="margin-bottom: -14px;">
-                            <img src="{% static 'image/Sistema.png' %}" alt="">
-                            <p style="max-width: 60%; font-size: 14px;">Salute del Sistema Immunitario</p>
-                        </div>
-                    </div>
-                    
-            
-                    <div class="container-clock" onclick="window.location.href ='{% url 'microbiota_detail' persona.id %}'" style="cursor: pointer;">
-                        <svg class="progress-ring" width="140" height="140">
-                            <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
-                            <circle class="progress-ring__progress" id="muscleClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
-                        </svg>
-
-                        <div class="percentage" id="musclePercentage" style="margin-top: 5px;"></div>
-                   
-                        <div class="descrizione-clock" style="margin-top: 5px;">
-                            <img src="{% static 'image/Microbiota.png' %}" alt="">
-                            
-                            <a style="text-decoration: none; color: #3a255d;" href="{% url 'microbiota_detail' persona.id %}">Microbiota</a>
-                        
-                        </div>
-                    </div>
-                </div>
-
-                <div class="container-second-row">
-
-                    <div class="capacita_vitale" data-punteggio="{{ punteggio_eta_metabolica|default:'2' }}">
-                        <a href="{% url 'composizione' persona.id %}" style="text-decoration: none; color: inherit;" title="Età Metabolica">
-                            <h3>Età Metabolica</h3>
-                            <div class="card-polmone">
-                                <div class="backdrop-riempimento">
-                                    <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
-                                        <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
-                                    </svg>
-                                </div>
-                                <img src="{% static 'image/Eta_Metabolica.png' %}" alt="" width="120px" height="120px">
-                            </div>
-                            <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ punteggio_eta_metabolica|default:'n.a.' }} / 100</p>
+                        <a href="{% url 'storico' persona.id %}">
+                        <span class="freccia">&larr;</span> Storico
                         </a>
                     </div>
 
-                    <div class="capacita_vitale" data-punteggio="{{ ultimo_referto_capacita_vitale.punteggio|default:'2' }}">
-                        <a href="{% url 'etaVitale' persona.id %}" style="text-decoration: none; color: inherit;" title="Capacità Vitale">
-                            <h3>Capacità Vitale</h3>
-                      
-                            <div class="card-polmone">
-                                <div class="backdrop-riempimento">
-                                    <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
-                                        <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
-                                    </svg>
+                    <div class="card-storico" onclick="window.location.href='{% url 'diagnosi' persona.id %}'">
+                        <div class="img-circle-container">
+                            <img src="{% static 'image/Diagnosi_color.png' %}" alt="">
+                        </div>
+                        
+                        <a href="{% url 'diagnosi' persona.id %}">
+                        <span class="freccia">&larr;</span> Diagnosi
+                        </a>
+                    </div>
+
+                    <div class="card-storico">
+                        <div class="img-circle-container">
+                            <img src="{% static 'image/Terapie_color.png' %}" alt="">
+                        </div>
+                        <a href="{% url 'terapie' persona.id %}">
+                        <span class="freccia">&larr;</span> Terapie
+                        </a>
+                    </div>
+
+                    <div class="card-storico">
+                        <div class="img-circle-container">
+                            <img src="{% static 'image/Esame_color.png' %}" alt="">
+                        </div>
+                        <a href="{% url 'esami' persona.id %}">
+                        <span class="freccia">&larr;</span> Esami
+                        </a>
+                    </div>
+
+                    <div class="card-storico">
+                        <div class="img-circle-container">
+                            <img src="{% static 'image/Visite_color.png' %}" alt="">
+                        </div>
+                        <a href="{% url 'visite' persona.id %}">
+                        <span class="freccia">&larr;</span> Visite
+                        </a>
+                    </div>
+
+                    <div class="card-storico">
+                        <div class="img-circle-container">
+                            <img src="{% static 'image/Allegati_color.png' %}" alt="">
+                        </div>
+                        <a href="{% url 'allegati' persona.id %}">
+                        <span class="freccia">&larr;</span> Allegati
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+        
+            <!-- CARD CLOCK -->
+            <div class="container-indicatori containerStyle" style="margin-top: 0rem;">
+
+                <div class="card card4" id="card-style">
+                    <h3 class="section-tittle">Indicatori di performance</h3>
+
+                    <div class="score-clock-graph">
+        
+                                
+                        <div class="container-clock cardIndici"
+                            id="cardClick"
+                            card-name="Salute del Cuore"
+                            img-card="{% static 'image/Heart_Colorato.png' %}"
+                            dict-value="Cuore"                   
+                            >
+
+                            <svg class="progress-ring" width="140" height="140">
+                                <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
+                                <circle class="progress-ring__progress" id="heartClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
+                            </svg>
+                        
+                            
+                            <div class="percentage" id="heartPercentage"></div>
+                            
+                            <div class="descrizione-clock">
+                                <img src="{% static 'image/Heart_Colorato.png' %}" alt="">
+                                <p>Salute del Cuore</p>
+                            </div>
+                        </div>
+                    
+                        
+                        <div class="container-clock cardIndici" 
+                            id="cardClick" 
+                            card-name="Salute Renale"
+                            img-card="{% static 'image/Reni.png' %}"
+                            dict-value="Renale">
+
+                            <svg class="progress-ring" width="140" height="140">
+                                <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
+                                <circle class="progress-ring__progress" id="kidneyClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
+                            </svg>
+                        
+                            <div class="percentage" id="kidneyPercentage"></div>
+                        
+                            <div class="descrizione-clock">
+                                <img src="{% static 'image/Reni.png' %}" alt="">
+                                <p>Salute Renale</p>
+                            </div>
+                        </div>
+                        
+                    
+                        <div class="container-clock cardIndici"
+                            id="cardClick"
+                            card-name="Salute Epatica"
+                            img-card="{% static 'image/Fegato.png' %}"
+                            dict-value="Epatica">
+                            <svg class="progress-ring" width="140" height="140">
+                                <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
+                                <circle class="progress-ring__progress" id="liverClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
+                            </svg>
+
+                            <div class="percentage" id="liverPercentage"></div>
+                        
+                            <div class="descrizione-clock">
+                                <img src="{% static 'image/Fegato.png' %}" alt="">
+                                <p>Salute Epatica</p>
+                            </div>
+                        </div>
+                        
+            
+                        <div class="container-clock cardIndici"
+                            id="cardClick"
+                            card-name="Salute Cerebrale" 
+                            img-card="{% static 'image/Cervello.png' %}"
+                            dict-value="Cerebrale">
+                            <svg class="progress-ring" width="140" height="140">
+                                <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
+                                <circle class="progress-ring__progress" id="brainClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
+                            </svg>
+
+                            <div class="percentage" id="brainPercentage"></div>
+                        
+                            <div class="descrizione-clock">
+                                <img src="{% static 'image/Cervello.png' %}" alt="">
+                                <p>Salute Cerebrale</p>
+                            </div>
+                        </div>
+                        
+            
+                        <div class="container-clock cardIndici" 
+                            id="cardClick"
+                            card-name="Salute Ormonale"
+                            img-card="{% static 'image/Cellula.png' %}"
+                            dict-value="Ormonale">
+                            <svg class="progress-ring" width="140" height="140">
+                                <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
+                                <circle class="progress-ring__progress" id="hormoneClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
+                            </svg>
+
+                            <div class="percentage" id="hormonePercentage"></div>
+                            
+                            <div class="descrizione-clock">
+                                <img src="{% static 'image/Cellula.png' %}" alt="">
+                                <p>Salute Ormonale</p>
+                            </div>
+                        </div>
+                        
+        
+                        <div class="container-clock cardIndici"
+                            id="cardClick" 
+                            card-name="Salute del Sangue"
+                            img-card="{% static 'image/Blood_Colorato.png' %}"
+                            dict-value="Sangue">
+                            <svg class="progress-ring" width="140" height="140">
+                                <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
+                                <circle class="progress-ring__progress" id="bloodClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
+                            </svg>
+
+                            <div class="percentage" id="bloodPercentage"></div>
+                            
+                            <div class="descrizione-clock">
+                                <img src="{% static 'image/Blood_Colorato.png' %}" alt="">
+                                <p>Salute del Sangue</p>
+                            </div>
+                        </div>
+                    
+                        <div class="container-clock cardIndici" style="gap: 15px;" 
+                            card-name="Salute del Sistema Immunitario"
+                            img-card="{% static 'image/Sistema.png' %}"
+                            dict-value="Immunitario">
+                            <svg class="progress-ring" width="140" height="140">
+                                <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
+                                <circle class="progress-ring__progress" id="immuneClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
+                            </svg>
+
+                            <div class="percentage" id="immunePercentage" style="margin-top: 5px;"></div>
+                        
+                            <div class="descrizione-clock" style="margin-bottom: -14px;">
+                                <img src="{% static 'image/Sistema.png' %}" alt="">
+                                <p style="max-width: 60%; font-size: 14px;">Salute del Sistema Immunitario</p>
+                            </div>
+                        </div>
+                        
+                
+                        <div class="container-clock" onclick="window.location.href ='{% url 'microbiota_detail' persona.id %}'" style="cursor: pointer;">
+                            <svg class="progress-ring" width="140" height="140">
+                                <circle class="progress-ring__background" cx="70" cy="70" r="65"></circle>
+                                <circle class="progress-ring__progress" id="muscleClock" cx="70" cy="70" r="65" marker-end="url(#endDot)"></circle>
+                            </svg>
+
+                            <div class="percentage" id="musclePercentage" style="margin-top: 5px;"></div>
+                    
+                            <div class="descrizione-clock" style="margin-top: 5px;">
+                                <img src="{% static 'image/Microbiota.png' %}" alt="">
+                                
+                                <a style="text-decoration: none; color: #3a255d;" href="{% url 'microbiota_detail' persona.id %}">Microbiota</a>
+                            
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container-second-row">
+
+                        <div class="capacita_vitale" data-punteggio="{{ punteggio_eta_metabolica|default:'2' }}">
+                            <a href="{% url 'composizione' persona.id %}" style="text-decoration: none; color: inherit;" title="Età Metabolica">
+                                <h3>Età Metabolica</h3>
+                                <div class="card-polmone">
+                                    <div class="backdrop-riempimento">
+                                        <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
+                                            <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                        </svg>
+                                    </div>
+                                    <img src="{% static 'image/Eta_Metabolica.png' %}" alt="" width="120px" height="120px">
+                                </div>
+                                <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ punteggio_eta_metabolica|default:'n.a.' }} / 100</p>
+                            </a>
+                        </div>
+
+                        <div class="capacita_vitale" data-punteggio="{{ ultimo_referto_capacita_vitale.punteggio|default:'2' }}">
+                            <a href="{% url 'etaVitale' persona.id %}" style="text-decoration: none; color: inherit;" title="Capacità Vitale">
+                                <h3>Capacità Vitale</h3>
+                        
+                                <div class="card-polmone">
+                                    <div class="backdrop-riempimento">
+                                        <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
+                                            <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                        </svg>
+                                    </div>
+                                    
+                                    <img src="{% static 'image/Capacita_Vitale.png' %}" alt="" width="120px" height="120px">
                                 </div>
                                 
-                                <img src="{% static 'image/Capacita_Vitale.png' %}" alt="" width="120px" height="120px">
-                            </div>
-                              
-                            <p class="descrizione-vitale"><span style="font-weight: bold;">Punteggio: &nbsp; </span>{{ ultimo_referto_capacita_vitale.punteggio|default:'n.a.' }} / 10</p>
-                        </a>
+                                <p class="descrizione-vitale"><span style="font-weight: bold;">Punteggio: &nbsp; </span>{{ ultimo_referto_capacita_vitale.punteggio|default:'n.a.' }} / 10</p>
+                            </a>
 
-                    </div>
-
-                    <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.resilienza|default:'2' }}">
-                        <a href="{% url 'resilienza' persona.id %}" style="text-decoration: none; color: inherit;" title="Resilienza">
-                            <h3>Resilienza</h3>
-                            <div class="card-polmone">
-                                <div class="backdrop-riempimento">
-                                    <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
-                                        <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
-                                    </svg>
-                                </div>
-                                <img src="{% static 'image/Resilienza.png' %}" alt="" width="120px" height="120px">
-                            </div>
-                            <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.resilienza|default:'n.a.' }}</p>
-                        </a>
-                    </div>
-
-                    <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.resilienza|default:'2' }}">
-                        <a href="{% url 'eta_biologica' persona.id %}" style="text-decoration: none; color: inherit;" title="Resilienza">
-                            <h3>Età Biologica</h3>
-                            <div class="card-polmone">
-                                <div class="backdrop-riempimento">
-                                    <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
-                                        <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
-                                    </svg>
-                                </div>
-                                <img src="{% static 'image/Eta_biologica2.png' %}" alt="" width="120px" height="120px">
-                            </div>
-                            <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.resilienza|default:'n.a.' }}</p>
-                        </a>
-                    </div>
-
-                     <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.resilienza|default:'2' }}">
-                        <a href="{% url 'resilienza' persona.id %}" style="text-decoration: none; color: inherit;" title="Resilienza">
-                            <h3>Età Neurologica</h3>
-                            <div class="card-polmone">
-                                <div class="backdrop-riempimento">
-                                    <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
-                                        <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
-                                    </svg>
-                                </div>
-                                <img src="{% static 'image/Eta_neurologica.png' %}" alt="" width="120px" height="120px">
-                            </div>
-                            <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.resilienza|default:'n.a.' }}</p>
-                        </a>
-                    </div>
-
-                  
-                    <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.microbiota|default:'2' }}" onclick="window.location.href = '{% url 'valutazione_m_s' persona.id %}' " style="cursor: pointer;" title="Età Muscolo Scheletrica">
-                        <h3 id="small_title">Età Muscolo Scheletrica</h3>
-                        <div class="card-polmone">
-                            <div class="backdrop-riempimento">
-                                <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
-                                    <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
-                                </svg>
-                            </div>
-                            <img src="{% static 'image/Muscolo.png' %}" alt="" width="120px" height="120px">
                         </div>
-                        <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.microbiota|default:'n.a.' }}</p>
-                    </div>
-                </div>
-            </div>
-            
-        </div> 
 
-        <!-- CARD SEZIONI DATI BASE E TERAPIA -->
-        <div class="container-sezioniInterne containerStyle"  style="margin-top: 0rem;">
-            
-        
-            <div class="terapeutico-card">
+                        <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.resilienza|default:'2' }}">
+                            <a href="{% url 'resilienza' persona.id %}" style="text-decoration: none; color: inherit;" title="Resilienza">
+                                <h3>Resilienza</h3>
+                                <div class="card-polmone">
+                                    <div class="backdrop-riempimento">
+                                        <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
+                                            <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                        </svg>
+                                    </div>
+                                    <img src="{% static 'image/Resilienza.png' %}" alt="" width="120px" height="120px">
+                                </div>
+                                <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.resilienza|default:'n.a.' }}</p>
+                            </a>
+                        </div>
 
+                        <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.resilienza|default:'2' }}">
+                            <a href="{% url 'eta_biologica' persona.id %}" style="text-decoration: none; color: inherit;" title="Resilienza">
+                                <h3>Età Biologica</h3>
+                                <div class="card-polmone">
+                                    <div class="backdrop-riempimento">
+                                        <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
+                                            <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                        </svg>
+                                    </div>
+                                    <img src="{% static 'image/Eta_biologica2.png' %}" alt="" width="120px" height="120px">
+                                </div>
+                                <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.resilienza|default:'n.a.' }}</p>
+                            </a>
+                        </div>
 
-                <div class="terapeutico-body">
+                        <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.resilienza|default:'2' }}">
+                            <a href="{% url 'resilienza' persona.id %}" style="text-decoration: none; color: inherit;" title="Resilienza">
+                                <h3>Età Neurologica</h3>
+                                <div class="card-polmone">
+                                    <div class="backdrop-riempimento">
+                                        <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
+                                            <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                        </svg>
+                                    </div>
+                                    <img src="{% static 'image/Eta_neurologica.png' %}" alt="" width="120px" height="120px">
+                                </div>
+                                <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.resilienza|default:'n.a.' }}</p>
+                            </a>
+                        </div>
 
-                    <div class="terapeutico-text">
-                        <h3>Piano Terapeutico</h3>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum impedit velit libero perspiciatis. Qui, a nihil earum quasi impedit praesentium quia temporibus magnam modi minima libero delectus nam repudiandae amet?
-                        </p>
-                        <a href="{% url 'piano_terapeutico' persona.id %}" class="btn-link">
-                            Vai alla sezione <span class="arrow">➔</span>
-                        </a>
-                    </div>
-
-                    <div class="terapeutico-image">
-                        <img src="{% static 'image/PianoTerapeutico.png' %}" alt="Piano Terapeutico">
-                    </div>
-
-                </div>
-            </div>
-
-
-            <!-- ETA BIOLOGICA -->
-            <!-- <div class="cardDati">
-                <div class="cartella-effect">
-                    <h3>Rapporto Età Biologica</h3>
-                    <div class="space"></div>
-                </div>
-
-                <div class="card-content">
-                    <img src="{% static 'image/Sezione_Biologica.png' %}" alt="">
-                    <p>In questa sezione è possibile calcolare l'età biologica del paziente e vedere l'andamento insieme ai relativi referti.</p>
                     
-                    <a href="{% url 'eta_biologica' persona.id %}">Vai Alla sezione</a>
+                        <div class="capacita_vitale" data-punteggio="{{ referti_test_recenti.microbiota|default:'2' }}" onclick="window.location.href = '{% url 'valutazione_m_s' persona.id %}' " style="cursor: pointer;" title="Età Muscolo Scheletrica">
+                            <h3 id="small_title">Età Muscolo Scheletrica</h3>
+                            <div class="card-polmone">
+                                <div class="backdrop-riempimento">
+                                    <svg class="ondina" viewBox="0 0 500 100" preserveAspectRatio="none">
+                                        <path class="wavePath" d="M0,30 C150,80 350,0 500,40 L500,100 L0,100 Z" />
+                                    </svg>
+                                </div>
+                                <img src="{% static 'image/Muscolo.png' %}" alt="" width="120px" height="120px">
+                            </div>
+                            <p class="descrizione-vitale"><strong>Punteggio:</strong> {{ referti_test_recenti.microbiota|default:'n.a.' }}</p>
+                        </div>
+                    </div>
                 </div>
-            </div> -->
-        </div>
-       
-        <!-- CARD BP, SUGAR, HEART, CHOLESTEROL -->
-        <div class="dashboard">
+                
+            </div> 
 
-            <div class="card-graphic" id="card-style">
-                <div class="icon">
-                    <img src="{% static 'image/BP.png' %}" alt="BP Levels Icon">
-                </div>
-                <h3>Insulina</h3>
-                <p>Ultime 3 visite</p>
-                <div class="container_chart_dashboard">
-                    <canvas id="chart1"></canvas>
+            <!-- CARD SEZIONI DATI BASE E TERAPIA -->
+            <div class="container-sezioniInterne containerStyle"  style="margin-top: 0rem;">
+                
+            
+                <div class="terapeutico-card">
+
+
+                    <div class="terapeutico-body">
+
+                        <div class="terapeutico-text">
+                            <h3>Piano Terapeutico</h3>
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum impedit velit libero perspiciatis. Qui, a nihil earum quasi impedit praesentium quia temporibus magnam modi minima libero delectus nam repudiandae amet?
+                            </p>
+                            <a href="{% url 'piano_terapeutico' persona.id %}" class="btn-link">
+                                Vai alla sezione <span class="arrow">➔</span>
+                            </a>
+                        </div>
+
+                        <div class="terapeutico-image">
+                            <img src="{% static 'image/PianoTerapeutico.png' %}" alt="Piano Terapeutico">
+                        </div>
+
+                    </div>
                 </div>
 
-                <div class="data">
-                    <table>
-                        <tr>
-                            <td>24/04/2024</td>
-                            <td>2</td>
-                        </tr>
-                        <tr>
-                            <td>16/04/2024</td>
-                            <td>4</td>
-                        </tr>
-                        <tr>
-                            <td>10/04/2024</td>
-                            <td>6</td>
-                        </tr>
-                    </table>
+
+                <!-- ETA BIOLOGICA -->
+                <!-- <div class="cardDati">
+                    <div class="cartella-effect">
+                        <h3>Rapporto Età Biologica</h3>
+                        <div class="space"></div>
+                    </div>
+
+                    <div class="card-content">
+                        <img src="{% static 'image/Sezione_Biologica.png' %}" alt="">
+                        <p>In questa sezione è possibile calcolare l'età biologica del paziente e vedere l'andamento insieme ai relativi referti.</p>
+                        
+                        <a href="{% url 'eta_biologica' persona.id %}">Vai Alla sezione</a>
+                    </div>
+                </div> -->
+            </div>
+        
+            <!-- CARD BP, SUGAR, HEART, CHOLESTEROL -->
+            <div class="dashboard">
+
+                <div class="card-graphic" id="card-style">
+                    <div class="icon">
+                        <img src="{% static 'image/BP.png' %}" alt="BP Levels Icon">
+                    </div>
+                    <h3>Insulina</h3>
+                    <p>Ultime 3 visite</p>
+                    <div class="container_chart_dashboard">
+                        <canvas id="chart1"></canvas>
+                    </div>
+
+                    <div class="data">
+                        <table>
+                            <tr>
+                                <td>24/04/2024</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>16/04/2024</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td>10/04/2024</td>
+                                <td>6</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card-graphic" id="card-style">
+                    <div class="icon">
+                        <img src="{% static 'image/Sugar.png' %}" alt="Sugar Levels Icon">
+                    </div>
+                    <h3>Glicemia</h3>
+                    <p>Ultime 3 visite</p>
+                    <div class="container_chart_dashboard">
+                        <canvas id="chart2"></canvas>
+                    </div>
+                    <div class="data">
+                        <table>
+                            <tr>
+                                <td>24/04/2024</td>
+                                <td>110</td>
+                            </tr>
+                            <tr>
+                                <td>16/04/2024</td>
+                                <td>95</td>
+                            </tr>
+                            <tr>
+                                <td>10/04/2024</td>
+                                <td>140</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card-graphic" id="card-style">
+                    <div class="icon">
+                        <img src="{% static 'image/Heart.png' %}" alt="Heart Rate Icon">
+                    </div>
+                    <h3>Emoglobina</h3>
+                    <p>Ultime 3 visite</p>
+                    <div class="container_chart_dashboard">
+                        <canvas id="chart3"></canvas>
+                    </div>
+                    <div class="data">
+                        <table>
+                            <tr>
+                                <td>24/04/2024</td>
+                                <td>22</td>
+                            </tr>
+                            <tr>
+                                <td>16/04/2024</td>
+                                <td>26</td>
+                            </tr>
+                            <tr>
+                                <td>10/04/2024</td>
+                                <td>28</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card-graphic" id="card-style">
+                    <div class="icon">
+                        <img src="{% static 'image/Provetta.png' %}" alt="Cholesterol Icon">
+                    </div>
+                    <h3>Colesterolo</h3>
+                    <p>Ultime 3 visite</p>
+                    <div class="container_chart_dashboard">
+                        <canvas id="chart4"></canvas>
+                    </div>
+                    <div class="data">
+                        <table>
+                            <tr>
+                                <td>24/04/2024</td>
+                                <td>260</td>
+                            </tr>
+                            <tr>
+                                <td>16/04/2024</td>
+                                <td>280</td>
+                            </tr>
+                            <tr>
+                                <td>10/04/2024</td>
+                                <td>255</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
-
-            <div class="card-graphic" id="card-style">
-                <div class="icon">
-                    <img src="{% static 'image/Sugar.png' %}" alt="Sugar Levels Icon">
-                </div>
-                <h3>Glicemia</h3>
-                <p>Ultime 3 visite</p>
-                <div class="container_chart_dashboard">
-                    <canvas id="chart2"></canvas>
-                </div>
-                <div class="data">
-                    <table>
-                        <tr>
-                            <td>24/04/2024</td>
-                            <td>110</td>
-                        </tr>
-                        <tr>
-                            <td>16/04/2024</td>
-                            <td>95</td>
-                        </tr>
-                        <tr>
-                            <td>10/04/2024</td>
-                            <td>140</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card-graphic" id="card-style">
-                <div class="icon">
-                    <img src="{% static 'image/Heart.png' %}" alt="Heart Rate Icon">
-                </div>
-                <h3>Emoglobina</h3>
-                <p>Ultime 3 visite</p>
-                <div class="container_chart_dashboard">
-                    <canvas id="chart3"></canvas>
-                </div>
-                <div class="data">
-                    <table>
-                        <tr>
-                            <td>24/04/2024</td>
-                            <td>22</td>
-                        </tr>
-                        <tr>
-                            <td>16/04/2024</td>
-                            <td>26</td>
-                        </tr>
-                        <tr>
-                            <td>10/04/2024</td>
-                            <td>28</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card-graphic" id="card-style">
-                <div class="icon">
-                    <img src="{% static 'image/Provetta.png' %}" alt="Cholesterol Icon">
-                </div>
-                <h3>Colesterolo</h3>
-                <p>Ultime 3 visite</p>
-                <div class="container_chart_dashboard">
-                    <canvas id="chart4"></canvas>
-                </div>
-                <div class="data">
-                    <table>
-                        <tr>
-                            <td>24/04/2024</td>
-                            <td>260</td>
-                        </tr>
-                        <tr>
-                            <td>16/04/2024</td>
-                            <td>280</td>
-                        </tr>
-                        <tr>
-                            <td>10/04/2024</td>
-                            <td>255</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
+        </div>        
     </main>
-
-
 
 
 
@@ -1054,33 +1054,6 @@
         window.isSecretary = {{ is_secretary|yesno:"true,false" }};
     </script> 
 
-    <!-- SCRIPT MODALE INFORMAZIONI PERSONALI -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const header     = document.querySelector('.container-informazioni-personali');
-            const beyondCard = document.querySelector('.card-beyond-informazioni-personali');
-            const dados      = document.querySelector('.container-dati-anagrafici');
-
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 0) {
-                // SHRINK sia header che beyond-card
-                header.classList.add('shrunk');
-                beyondCard.classList.add('shrunk');
-                } else {
-                // TORNA alla dimensione originale
-                header.classList.remove('shrunk');
-                beyondCard.classList.remove('shrunk');
-                }
-            });
-
-            // Al click sul box anagrafici riapri tutto e scrolla in cima
-            dados.addEventListener('click', () => {
-                header.classList.remove('shrunk');
-                beyondCard.classList.remove('shrunk');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        });
-    </script>
 
 
 </body>
