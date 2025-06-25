@@ -1209,6 +1209,11 @@ function openAppointmentModal(appointmentId) {
           visitaSelect.value = data.visita;
         }
 
+        let prezzoInput = document.getElementById("prezzo");
+        if (data.prezzo && !isNaN(data.prezzo)) {
+          prezzoInput.value = data.prezzo;
+        }
+
         let durataSelect = document.getElementById("time");
         let durataOption = [...durataSelect.options].find(
           (option) =>
@@ -1267,7 +1272,8 @@ function saveAppointmentChanges() {
   // 3) Raccogli tutti i campi
   const tipologiaVisita    = document.getElementById("tipologia_visita").value;
   const orario             = document.getElementById("time-appointment").textContent.trim();
-  const visita      = document.getElementById("visita").value;
+  const visita             = document.getElementById("visita").value;
+  const prezzo             = document.getElementById("prezzo").value;
   const durata             = document.getElementById("time").value;
   const studio             = document.getElementById("studio").value;
   const note               = document.getElementById("note").value;
@@ -1288,7 +1294,8 @@ function saveAppointmentChanges() {
     orario:           orario,
     nome_paziente:    nomePaziente,
     cognome_paziente: cognomePaziente,
-    visita:   visita,
+    visita:           visita,
+    prezzo:           prezzo,
     durata:           durata,
     numero_studio:    studio,
     note:             note,

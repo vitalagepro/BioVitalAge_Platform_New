@@ -747,15 +747,12 @@ class AppuntamentiSalvaView(LoginRequiredMixin, View):
 class GetSingleAppointmentView(LoginRequiredMixin, View):
     def get(self, request, appointment_id):
         try:
-            # 1) Prendo il profilo utente
             profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
             is_secretary = profile.isSecretary
 
             if is_secretary:
-                # la segretaria può vedere qualsiasi appuntamento
                 appointment = get_object_or_404(Appointment, id=appointment_id)
             else:
-                # gli altri user vedono soltanto i loro
                 dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
                 appointment = get_object_or_404(
                     Appointment,
@@ -763,7 +760,6 @@ class GetSingleAppointmentView(LoginRequiredMixin, View):
                     dottore=dottore
                 )
 
-            # Ora serializziamo sempre il dottore scelto
             response_data = {
                 "success": True,
                 "id": appointment.id,
