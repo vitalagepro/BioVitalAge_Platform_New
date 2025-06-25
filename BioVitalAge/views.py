@@ -40,6 +40,7 @@ from django.db.models import OuterRef # type: ignore
 from django.contrib.auth import authenticate, login, logout # type: ignore
 from django.contrib.auth.mixins import LoginRequiredMixin # type: ignore
 from django.contrib.auth import update_session_auth_hash
+from decimal import Decimal, InvalidOperation
 
 from BioVitalAge.api import serializers # type: ignore
 
@@ -691,6 +692,27 @@ class AppuntamentiSalvaView(LoginRequiredMixin, View):
         else:
             # per tutti gli altri, continuo a usare il profilo loggato
             dottore = profile
+        # Recupera il valore dal payload
+        prezzo_raw = data.get("prezzo")
+
+        # Normalizza se esiste
+        if prezzo_raw is not None:
+            prezzo_raw = str(prezzo_raw).strip()
+            prezzo_raw = prezzo_raw.replace("“", "").replace("”", "").strip()
+        else:
+            prezzo_raw = ""
+
+        # Se dopo il cleaning è vuoto, metti None
+        if prezzo_raw == "":
+            prezzo = None
+        else:
+            try:
+                prezzo = Decimal(prezzo_raw)
+            except (InvalidOperation, ValueError):
+                return JsonResponse({
+                    "success": False,
+                    "error": f"Prezzo non valido: {prezzo_raw}"
+                }, status=400)
 
         # Adesso creo l’appuntamento passando il dottore corretto:
         appt = Appointment.objects.create(
@@ -704,7 +726,7 @@ class AppuntamentiSalvaView(LoginRequiredMixin, View):
             data               = data.get("data"),
             orario             = data.get("orario"),
             visita             = data.get("visita"),
-            prezzo             = data.get("prezzo"),
+            prezzo             = prezzo,
             durata             = data.get("durata"),
             dottore            = dottore
         )
@@ -788,7 +810,6 @@ class AppuntamentiGetView(LoginRequiredMixin,View):
         is_secretary = (email == "isabella.g.santandrea@gmail.com")
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
-         # Se Isabella passa un dottore, usalo. Altrimenti (o per gli altri utenti) uso il profilo loggato
         if is_secretary and request.GET.get("dottore_id"):
             dottore = get_object_or_404(
                 UtentiRegistratiCredenziali,
@@ -800,29 +821,23 @@ class AppuntamentiGetView(LoginRequiredMixin,View):
                 user=request.user
             )
         
-        # 📌 1. Ottenere la data di oggi senza ore/minuti/secondi
         today = now().date()
 
-        # 📌 2. Eliminare gli appuntamenti con data precedente a oggi
         deleted_count= 0
 
-        # 📌 3. Recuperare solo gli appuntamenti futuri o di oggi
-        # Se l'utente è un segretario, mostra tutti gli appuntamenti futuri
         if is_secretary:
             future_appointments = Appointment.objects.filter(
                 data__gte=today,
             )
-        # Se l'utente non è un segretario, mostra solo gli appuntamenti futuri del dottore loggato
         else:
             future_appointments = Appointment.objects.filter(
                 data__gte=today,
                 dottore=dottore
             )
 
-        # 📌 4. Costruire il dizionario degli appuntamenti organizzati per data
         appointments_by_date = {}
         for appointment in future_appointments:
-            date_str = appointment.data.strftime("%Y-%m-%d")  # Formattazione YYYY-MM-DD
+            date_str = appointment.data.strftime("%Y-%m-%d")
             if date_str not in appointments_by_date:
                 appointments_by_date[date_str] = []
             appointments_by_date[date_str].append({
@@ -856,7 +871,6 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
             if profile.isSecretary and data.get("dottore_id"):
                         new_doc = get_object_or_404(UtentiRegistratiCredenziali, id=data["dottore_id"])
                         appointment.dottore = new_doc
-            # Aggiorna solo se i valori sono presenti e non vuoti nel payload
             if data.get("new_date"):
                 appointment.data = data["new_date"]
             if data.get("new_time"):
@@ -877,7 +891,7 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
                 appointment.prezzo = data["prezzo"]
             if data.get("durata"):
                 appointment.durata = data["durata"]
-            if "note" in data:  # anche se è vuota, la nota verrà aggiornato
+            if "note" in data:
                 appointment.note = data["note"]
             
             appointment.save()
@@ -902,14 +916,14 @@ class UpdateAppointmentView(LoginRequiredMixin,View):
 class ApproveAppointmentView(LoginRequiredMixin,View):
     def post(self, request, appointment_id):
         appointment = get_object_or_404(Appointment, id=appointment_id)
-        appointment.confermato = True  # Segna l'appuntamento come confermato
+        appointment.confermato = True
         appointment.save()
         return JsonResponse({"success": True, "message": "Appuntamento confermato!"})
 
 # VIEWS DELETE APPOINTMENT
 @method_decorator(catch_exceptions, name='dispatch')
 class DeleteAppointmentView(View):
-    def post(self, request, appointment_id):  # 👈 aggiungi questo
+    def post(self, request, appointment_id):
         try:
             appointment = Appointment.objects.get(id=appointment_id)
             appointment.delete()
@@ -927,21 +941,17 @@ class SearchAppointmentsView(LoginRequiredMixin, View):
         if not query:
             return JsonResponse({"success": False, "error": "Nessuna query fornita"})
 
-        # Recupera il dottore corrente
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
-        # Filtro base su nome, tipologia o orario
         appointments = Appointment.objects.filter(
             Q(nome_paziente__icontains=query) |
             Q(tipologia_visita__icontains=query) |
             Q(orario__icontains=query)
         )
 
-        # Se NON è segretaria/o → filtra per il suo dottore
         if not dottore.isSecretary:
             appointments = appointments.filter(dottore=dottore)
 
-        # Filtra appuntamenti attivi
         current_date = timezone.localdate()
         current_time = timezone.localtime().time()
 

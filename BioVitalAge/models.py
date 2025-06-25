@@ -696,7 +696,7 @@ class Appointment(models.Model):
     orario = models.TimeField()
     durata = models.CharField(max_length=255, blank=True, null=True)
     visita = models.CharField(max_length=255, blank=True, null=True)
-    prezzo = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    prezzo = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     numero_studio = models.CharField(max_length=100, choices=[('Studio 1', 'Studio 1'), ('Studio 2', 'Studio 2'), ('Studio 3', 'Studio 3')], blank=True, null=True)
     note = models.TextField(blank=True, null=True)
     confermato = models.BooleanField(default=False)

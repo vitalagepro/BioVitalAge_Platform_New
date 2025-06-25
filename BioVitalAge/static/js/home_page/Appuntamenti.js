@@ -209,6 +209,8 @@ function viewAppointmentDetails(appointmentId) {
       if (data.success) {
         const modal = document.getElementById("detailsModal");
         const content = document.getElementById("appointmentDetails");
+        const currencySymbol = document.getElementById("currency-symbol")?.textContent.trim() || "€";
+        const formattedPrezzo = data.prezzo ? `${currencySymbol} ${parseFloat(data.prezzo).toFixed(2)}` : "Sconosciuto";
 
         // Converti la data in oggetto Date
         const dateObj = new Date(data.data);
@@ -246,6 +248,7 @@ function viewAppointmentDetails(appointmentId) {
             <p><strong>💬 Tipologia:</strong> ${data.tipologia_visita}</p>
             <p><strong>🏥 Studio:</strong> ${data.numero_studio}</p>
             <p><strong>🧾 Visita:</strong> ${data.visita}</p>
+            <p><strong>💰 Prezzo:</strong> ${formattedPrezzo || "Sconosciuto"}</p>
             <p><strong>🕒 Durata:</strong> ${data.durata} minuti</p>
             <p><strong>📝 Note:</strong> ${data.note || "Nessuna"}</p>
           `;  
@@ -1092,20 +1095,20 @@ function openAppointmentModal(appointmentId) {
 
 
         setTimeout(() => {
-          let voceOption = [...visitaSelect.options].find(
+          let visitaOption = [...visitaSelect.options].find(
             (option) =>
               option.value.trim().toLowerCase() ===
               data.visita?.toLowerCase()
           );
 
-          if (voceOption) {
-            visitaSelect.value = voceOption.value;
+          if (visitaOption) {
+            visitaSelect.value = visitaOption.value;
           } else if (data.visita) {
-            let newVoceOption = document.createElement("option");
-            newVoceOption.value = data.visita;
-            newVoceOption.textContent = data.visita + " (Non in elenco)";
-            newVoceOption.style.color = "red";
-            visitaSelect.appendChild(newVoceOption);
+            let newVisitaOption = document.createElement("option");
+            newVisitaOption.value = data.visita;
+            newVisitaOption.textContent = data.visita + " (Non in elenco)";
+            newVisitaOption.style.color = "red";
+            visitaSelect.appendChild(newVisitaOption);
             visitaSelect.value = data.visita;
           }
 
@@ -1191,18 +1194,18 @@ function openAppointmentModal(appointmentId) {
 
         // Gestione delle altre selezioni (prezzario, durata, studio)
         let visitaSelect = document.getElementById("visita");
-        let voceOption = [...visitaSelect.options].find(
+        let visitaOption = [...visitaSelect.options].find(
           (option) =>
             option.value.trim().toLowerCase() === data.visita?.toLowerCase()
         );
-        if (voceOption) {
-          visitaSelect.value = voceOption.value;
+        if (visitaOption) {
+          visitaSelect.value = visitaOption.value;
         } else if (data.visita) {
-          let newVoceOption = document.createElement("option");
-          newVoceOption.value = data.visita;
-          newVoceOption.textContent = data.visita + " (Non in elenco)";
-          newVoceOption.style.color = "red";
-          visitaSelect.appendChild(newVoceOption);
+          let newVisitaOption = document.createElement("option");
+          newVisitaOption.value = data.visita;
+          newVisitaOption.textContent = data.visita + " (Non in elenco)";
+          newVisitaOption.style.color = "red";
+          visitaSelect.appendChild(newVisitaOption);
           visitaSelect.value = data.visita;
         }
 
@@ -1729,6 +1732,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("tipologia_visita").selectedIndex = 0;
     document.getElementById("paziente-select").selectedIndex = 0;
     document.getElementById("visita").selectedIndex = 0;
+    document.getElementById("prezzo").value = "";
     document.getElementById("time").selectedIndex = 0;
     document.getElementById("studio").selectedIndex = 0;
     document.getElementById("note").value = "";
@@ -1919,10 +1923,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // reset Visita e durata
     visitaSelect.innerHTML = "";  
     // opzione default Visita
-    const defaultOptionVoce = document.createElement("option");
-    defaultOptionVoce.value = "";
-    defaultOptionVoce.textContent = "Seleziona Visita";
-    visitaSelect.appendChild(defaultOptionVoce);
+    const defaultOptionVisita = document.createElement("option");
+    defaultOptionVisita.value = "";
+    defaultOptionVisita.textContent = "Seleziona Visita";
+    visitaSelect.appendChild(defaultOptionVisita);
   
     const tipologia = this.value;
     if (mappingTipologie[tipologia]) {
@@ -1972,9 +1976,13 @@ function convertDateFormat(dateString) {
 // Funzione per resettare i campi del form
 function resetFormFields() {
   // Reset degli <select>
+  if (document.getElementById("dottore-select")) {
+    document.getElementById("dottore-select").selectedIndex = 0;
+  }
   document.getElementById("tipologia_visita").selectedIndex = 0;
   document.getElementById("paziente-select").selectedIndex = 0;
   document.getElementById("visita").selectedIndex = 0;
+  document.getElementById("prezzo").value = "";
   document.getElementById("time").selectedIndex = 0;
   document.getElementById("studio").selectedIndex = 0;
   // Reset del campo note
@@ -1983,6 +1991,7 @@ function resetFormFields() {
   document.getElementById("day-appointment").textContent = "Giorno*,";
   document.getElementById("date-appointment").textContent = "Data*,";
   document.getElementById("time-appointment").textContent = "Orario*,";
+  document.getElementById("editTime").value = "";
 }
 
 // Funzione per chiudere il modal
@@ -2056,7 +2065,7 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
   const durata = durataElement
     ? durataElement.options[durataElement.selectedIndex].value.trim()
     : "";
-
+  const prezzo = document.getElementById("prezzo").value.trim();
   const tipologia_visita = tipologia;
   const numero_studio = document.getElementById("studio")?.value.trim() || "";
   const note = document.getElementById("note")?.value.trim() || "";
@@ -2084,6 +2093,7 @@ document.querySelector(".btn-primary").addEventListener("click", function (event
     note,
     visita,
     durata,
+    prezzo,
     data: data_appointment,
     orario: time_appointment,
     csrfmiddlewaretoken:
@@ -2267,105 +2277,79 @@ document.getElementById("addUserForm").addEventListener("submit", function (e) {
 --------------------------------------------------------------------------------------------------- */
 // gestione input prefissi
 document.addEventListener("DOMContentLoaded", function () {
-  // Lista di prefissi con bandiere
   const prefissi = [
-    {
-      value: "+39",
-      flag: "/static/image/Bandiera-italia.png",
-      country: "Italia",
-      code: "IT",
-    },
-    {
-      value: "+33",
-      flag: "/static/image/Bandiera-francia.png",
-      country: "Francia",
-      code: "FR",
-    },
-    {
-      value: "+44",
-      flag: "/static/image/Bandiera-inghilterra.png",
-      country: "Regno Unito",
-      code: "GB",
-    },
-    {
-      value: "+49",
-      flag: "/static/image/Bandiera-germania.png",
-      country: "Germania",
-      code: "DE",
-    },
-    {
-      value: "+34",
-      flag: "/static/image/Bandiera-spagna.png",
-      country: "Spagna",
-      code: "ES",
-    },
-    {
-      value: "+1",
-      flag: "/static/image/Bandiera-usa.png",
-      country: "Stati Uniti",
-      code: "US",
-    },
+    { value: "+39", flag: "/static/image/Bandiera-italia.png", country: "Italia", code: "IT", currency: "€" },
+    { value: "+33", flag: "/static/image/Bandiera-francia.png", country: "Francia", code: "FR", currency: "€" },
+    { value: "+44", flag: "/static/image/Bandiera-inghilterra.png", country: "Regno Unito", code: "GB", currency: "£" },
+    { value: "+49", flag: "/static/image/Bandiera-germania.png", country: "Germania", code: "DE", currency: "€" },
+    { value: "+34", flag: "/static/image/Bandiera-spagna.png", country: "Spagna", code: "ES", currency: "€" },
+    { value: "+1", flag: "/static/image/Bandiera-usa.png", country: "Stati Uniti", code: "US", currency: "$" }
   ];
 
   const selectContainer = document.querySelector(".custom-select");
   const selectedOption = selectContainer.querySelector(".selected-option");
   const optionsList = selectContainer.querySelector(".options-list");
   const hiddenInput = document.getElementById("hidden-prefisso");
+  const currencySymbolSpan = document.getElementById("currency-symbol");
 
-  // **1️⃣ Rileva la posizione dell'utente e imposta il prefisso corretto**
   async function setUserCountryPrefix() {
     try {
       const response = await fetch("https://ipapi.co/json/");
       const data = await response.json();
       console.log("📍 Nazione rilevata:", data.country);
 
-      // Trova il prefisso associato alla nazione
-      const userPrefix = prefissi.find((p) => p.code === data.country);
+      const userPrefix = prefissi.find(p => p.code === data.country);
       if (userPrefix) {
         updateSelectedPrefix(userPrefix);
+        updateCurrencySymbol(userPrefix.currency);
+      } else {
+        updateCurrencySymbol("€"); // default
       }
     } catch (error) {
       console.error("❌ Errore nel rilevare la posizione dell'utente:", error);
+      updateCurrencySymbol("€");
     }
   }
 
-  // **2️⃣ Funzione per aggiornare il prefisso selezionato**
   function updateSelectedPrefix(prefisso) {
     selectedOption.innerHTML = `
-          <img src="${prefisso.flag}" alt="${prefisso.country}" class="flag-icon">
-          <span id="selected-prefix">${prefisso.value}</span>
-      `;
+      <img src="${prefisso.flag}" alt="${prefisso.country}" class="flag-icon">
+      <span id="selected-prefix">${prefisso.value}</span>
+    `;
     hiddenInput.value = prefisso.value;
   }
 
-  // **3️⃣ Popola la lista delle opzioni dinamicamente**
-  prefissi.forEach((prefisso) => {
+  function updateCurrencySymbol(symbol) {
+    if (currencySymbolSpan) {
+      currencySymbolSpan.textContent = symbol;
+    }
+  }
+
+  prefissi.forEach(prefisso => {
     const li = document.createElement("li");
     li.innerHTML = `
-          <img src="${prefisso.flag}" alt="${prefisso.country}" class="flag-icon">
-          <span>${prefisso.value}</span>
-      `;
+      <img src="${prefisso.flag}" alt="${prefisso.country}" class="flag-icon">
+      <span>${prefisso.value}</span>
+    `;
     li.addEventListener("click", () => {
       updateSelectedPrefix(prefisso);
+      updateCurrencySymbol(prefisso.currency);
       optionsList.style.display = "none";
     });
     optionsList.appendChild(li);
   });
 
-  // **4️⃣ Mostra/Nasconde il menu delle opzioni**
   selectedOption.addEventListener("click", () => {
     optionsList.style.display = optionsList.style.display === "block" ? "none" : "block";
     optionsList.paddingLeft = "0px";
   });
 
-  // **5️⃣ Chiude il menu se si clicca fuori**
   document.addEventListener("click", (e) => {
     if (!selectContainer.contains(e.target)) {
       optionsList.style.display = "none";
     }
   });
 
-  // **6️⃣ Imposta il prefisso predefinito in base alla nazione dell'utente**
   setUserCountryPrefix();
 });
 

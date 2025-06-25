@@ -360,7 +360,7 @@ input[type='time'] {
 #input-time {
     display: grid;
     align-items: end;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr;
     gap: 10px;
     width: 100%;
@@ -374,6 +374,16 @@ input[type='time'] {
     padding: 5px;
     cursor: pointer;
     outline: none;
+}
+
+#prezzo {
+    border: none;
+    border-bottom: 1px solid var(--contrast-color);
+    color: var(--contrast-color);
+    padding: 5px;
+    cursor: pointer;
+    outline: none;
+    width: 100%;
 }
 
 #time {
