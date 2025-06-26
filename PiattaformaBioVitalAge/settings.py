@@ -5,35 +5,22 @@ Django Settings file
 from pathlib import Path
 import os
 from os import getenv
-import pymysql # type: ignore
-
+import pymysql 
 
 
 pymysql.install_as_MySQLdb()
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-1-exzg2a%&(t%r6^7*u+732h)8^z96-72gr!fk@$-ev25-zx7)'
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# Recupera i valori delle variabili d'ambiente
 elastic_beanstalk_domain = os.getenv('ELASTIC_BEANSTALK_DOMAIN')
 load_balancer_dns = os.getenv('LOAD_BALANCER_DNS')
 
-# Imposta ALLOWED_HOSTS in base alle variabili d'ambiente
 ALLOWED_HOSTS = [elastic_beanstalk_domain, load_balancer_dns, 'localhost', '127.0.0.1']
 ALLOWED_HOSTS = ['*']
 
 
-# Application definition
 INSTALLED_APPS = [
     "admin_reorder",
     'Calcolatore',
@@ -48,7 +35,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_spectacular',
 ]
-
 MIDDLEWARE = [
     "admin_reorder.middleware.ModelAdminReorder",
     'django.middleware.security.SecurityMiddleware',
@@ -60,7 +46,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
-
 ROOT_URLCONF = 'PiattaformaBioVitalAge.urls'
 
 TEMPLATES = [
@@ -81,11 +66,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'PiattaformaBioVitalAge.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
+# Database per testing 
 DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Testing',  
+        'USER': 'admin',  
+        'PASSWORD': 'Testing_db2025',  
+        'HOST': 'testing-instance.cliaiq44ssq9.us-east-1.rds.amazonaws.com', 
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
+    }
+}
+
+# Database in produzione
+""" DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'db_produzione',  
@@ -97,7 +94,7 @@ DATABASES = {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
         }
     }
-}
+} """
 
 
 # Password validation
