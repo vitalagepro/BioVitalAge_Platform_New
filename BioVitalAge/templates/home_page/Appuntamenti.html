@@ -22,12 +22,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
 
     <!-- CSS Import -->
-    <link rel="stylesheet" href="{% static 'css/cartella_paziente/sezioni_storico/storico.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Appuntamenti.css' %}">
     <link rel="stylesheet" href="{% static 'css/Componenti.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- JS Import -->
-    <script src="{% static 'js/cartella_paziente/sezioni_storico/storico.js' %}" type="module" defer></script>
+    <script src="{% static 'js/home_page/Appuntamenti.js' %}" type="module" defer></script>
 
     <!-- CDN Import -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -158,7 +158,8 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>Nome</th>
+                            <th>Cognome</th>
                             <th>Descrizione</th>
                             <th>Tipologia</th>
                             <th>Data</th>
@@ -170,7 +171,8 @@
                         {% if storico_page %}
                         {% for appointment in storico_page %}
                         <tr>
-                            <td>{{ appointment.id }}</td>
+                            <td>{{ appointment.nome_paziente }}</td>
+                            <td>{{ appointment.cognome_paziente }}</td>
                             <td class="appointment-note" title="{{  appointment.note }}">{{ appointment.note|default:"Nessuna" }}</td>
                             <td>
                                 <span class="badge
