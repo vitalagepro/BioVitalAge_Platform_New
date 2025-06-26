@@ -24,9 +24,20 @@ class PazienteViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Function to fetch the signle patient
         """ 
-        doctor = UtentiRegistratiCredenziali.objects.get(user=self.request.user)
-        paziente = get_object_or_404( TabellaPazienti, id=paziente_id, dottore=doctor)
-
+        profile = UtentiRegistratiCredenziali.objects.get(user=self.request.user)
+        if profile.isSecretary:
+                # la segretaria vede tutti i pazienti
+                paziente = get_object_or_404(
+                    TabellaPazienti,
+                    id=paziente_id
+                )
+        else:
+                # il dottore normale solo i suoi
+            paziente = get_object_or_404(
+                TabellaPazienti,
+                id=paziente_id,
+                dottore=profile
+            )
         return paziente
 
     def get_all_patient(self):

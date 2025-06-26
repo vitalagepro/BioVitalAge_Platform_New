@@ -802,8 +802,8 @@ class GetSingleAppointmentView(LoginRequiredMixin, View):
 class AppuntamentiGetView(LoginRequiredMixin,View):
     def get(self, request):
         """Recupera gli appuntamenti futuri o di oggi"""
-        email = request.user.email.lower()
-        is_secretary = (email == "isabella.g.santandrea@gmail.com")
+        profile= get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        is_secretary = profile.isSecretary        
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         if is_secretary and request.GET.get("dottore_id"):
@@ -1177,28 +1177,30 @@ class InserisciPazienteView(LoginRequiredMixin,View):
 @method_decorator(catch_exceptions, name='dispatch')
 class CartellaPazienteView(LoginRequiredMixin,View):
 
-    ICD10_ENDPOINT = 'http://www.icd10api.com/'
+    #ICD10_ENDPOINT = 'http://www.icd10api.com/'
 
     def get(self, request, id):
         """ 
         Function to handling get request for cartella pazienti 
         """ 
 
-        params = {
-            'r': 'json',
-            'desc': 'long',
-            'type': 'cm',
-        }
+        # params = {
+        #     'r': 'json',
+        #     'desc': 'long',
+        #     'type': 'cm',
+        # }
         
-        resp = requests.get(self.ICD10_ENDPOINT, params=params)
-        if resp.status_code != 200:
-            return JsonResponse(
-                {'error': 'Impossibile contattare ICD10API', 'status_code': resp.status_code},
-                status=502
-            )
+        # resp = requests.get(self.ICD10_ENDPOINT, params=params)
+        # if resp.status_code != 200:
+        #     return JsonResponse(
+        #         {'error': 'Impossibile contattare ICD10API', 'status_code': resp.status_code},
+        #         status=502
+        #     )
 
-        data = resp.json()
-        print(data)
+        # data = resp.json()
+        # print(data)
+
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         # ViewSets  for API call 
         ViewSetResult = PazienteViewSet()
@@ -1206,7 +1208,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
 
         # Fetch dottore e paziente
         persona = ViewSetResult.get_patient_info(id)
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         is_secretary = dottore.isSecretary
         dottori = UtentiRegistratiCredenziali.objects.all() if is_secretary else None
     
