@@ -23,8 +23,6 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     "admin_reorder",
-    'Calcolatore',
-    'BioVitalAge',
     'social_django',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -34,6 +32,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_spectacular',
+    'Calcolatore',
+    'BioVitalAge',
 ]
 MIDDLEWARE = [
     "admin_reorder.middleware.ModelAdminReorder",

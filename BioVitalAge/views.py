@@ -1201,7 +1201,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             )
 
         data = resp.json()
-        print(data)
 
         # ViewSets  for API call 
         ViewSetResult = PazienteViewSet()
@@ -1399,6 +1398,10 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             .first()
         )
         
+        #Retrive note 
+        note_text = persona.note_patologie
+        print(note_text)
+
 
         context = {
             'persona': persona,
@@ -1423,6 +1426,9 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             # Score per JS con underscore
             'score': score_js,
 
+            # Note paziente
+            'note_text': note_text,
+
             # Score dettagliati
             'punteggi_organi': punteggi_organi,
             'dettagli_organi': dettagli_organi,
@@ -1434,7 +1440,6 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         }
 
         return render(request, "includes/cartellaPaziente.html", context)
-
 
 
     def post(self, request, id):
@@ -1527,6 +1532,17 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         }
         return render(request, "includes/cartellaPaziente.html", context)
 
+@method_decorator(catch_exceptions, name='dispatch')
+class CartellaPazienteNote(LoginRequiredMixin,View):
+
+    def post(self, request, id):
+
+        note_request = request.POST.get('note_patologie')
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        persona.note_patologie = note_request
+        persona.save()
+
+        return redirect('cartella_paziente', id=id)
 
 
 # VIEW NOTA

@@ -62,7 +62,9 @@ class TabellaPazienti(models.Model):
     lastVisit = models.DateField(null=True, blank=True)
     upcomingVisit = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    
+
+    note_patologie = models.TextField(null=True, blank=True)
+
     # --- DATI BASE ---
     ## DOMINIO OCCUPAZIONE
     professione = models.CharField(max_length=100, null=True, blank=True)
