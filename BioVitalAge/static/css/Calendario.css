@@ -719,6 +719,7 @@ input[type='time'] {
     background-color: #3a255d;
     position: relative;
     color: #fff;
+    height: max-content;
     padding: 0 7px;
     margin-top: 5px;
     font-size: 0.7rem;
@@ -971,6 +972,11 @@ input[type='time'] {
     border-bottom: 1px solid #ddd;
 }
 
+.day{
+    align-items: center;
+    flex-direction: column;
+}
+
 .header-rowTrace p {
     width: 100%;
     text-align: center;
@@ -1120,16 +1126,16 @@ input[type='time'] {
 
 /* DAY LAYOUT */
 .day-layout-content {
+    margin-top: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 1rem;
 }
 
 .header-day {
     display: flex;
-    justify-content: center;
     align-items: center;
+    opacity: 0;
 }
 
 .row-day {
@@ -1140,9 +1146,30 @@ input[type='time'] {
 }
 
 .row-for-ora-day {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(11, 1fr);
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
     height: 150px;
+}
+
+/* crea il “finto elemento” a sinistra, leggendo data-time */
+.row-for-ora-day::before {
+    content: attr(data-time);
+    position: absolute;
+    left: -89px;
+    top: -64px;
+    width: 100px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    justify-content: flex-end;
+    padding-right: 8px;
+    font-size: 1rem;
+    color: #555;
+    box-sizing: border-box;
 }
 
 .row-for-ora-day p {
@@ -1151,10 +1178,17 @@ input[type='time'] {
 }
 
 .cellaDay {
-    border-right: 1px solid #ddd;
-    border-left: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     font-size: 16px;
     padding: 15px;
+}
+
+.mini-slot {
+    flex: 1;
+    border: 1px solid red;
+    position: relative;
 }
 
 /* LAYOUT VISIBILITY */

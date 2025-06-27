@@ -516,142 +516,102 @@ function generateWeeklyAppointments(appointmentsByDate) {
 
 // Funzione per generare la vista Giorno
 function generateDailyAppointments(appointmentsForDay) {
-  // Ottieni tutte le righe della griglia giornaliera
   const rows = document.querySelectorAll("#day-layout .row-for-ora-day");
+  const startHour = 9;
+
   if (!rows.length) {
     console.warn("Nessuna riga trovata nel layout giornaliero!");
     return;
   }
-  // Pulisci tutte le celle per evitare duplicazioni
+
+  // pulizia
   rows.forEach(row => {
-    const cells = row.querySelectorAll(".cellaDay");
-    cells.forEach(cell => cell.innerHTML = "");
+    row.querySelectorAll(".appointment-box").forEach(b => b.remove());
   });
 
-  const totalRows = rows.length;      // ad esempio 12 (ogni riga = 5 minuti)
-  const totalColumns = 11;             // 11 colonne per le ore (09:00-19:00)
-  const startHour = 9;                 // Orario di partenza
+  appointmentsForDay.forEach(app => {
+    const [hStr, mStr] = app.orario.split(":").map(n => parseInt(n, 10));
+    const hourKey = `${String(hStr).padStart(2, "0")}:00`;
 
-  appointmentsForDay.forEach(appointment => {
-    // Estrai l'orario nel formato "HH:mm"
-    const [hourStr, minuteStr] = appointment.orario.split(":");
-    const hour = parseInt(hourStr, 10);
-    const minute = parseInt(minuteStr, 10);
-
-    // Calcola colonna e riga
-    const colIndex = hour - startHour;
-    const rowIndex = Math.floor(minute / 5);
-
-    // Verifica che i valori siano nel range
-    if (colIndex < 0 || colIndex >= totalColumns) {
-      console.warn("Appuntamento fuori range orario:", appointment);
-      return;
-    }
-    if (rowIndex < 0 || rowIndex >= totalRows) {
-      console.warn("Appuntamento fuori range minuti:", appointment);
+    const row = document.querySelector(`.row-for-ora-day[data-time="${hourKey}"]`);
+    if (!row) {
+      console.warn("Riga non trovata per", hourKey);
       return;
     }
 
-    // Trova la cella corrispondente
-    const targetRow = rows[rowIndex];
-    const cellsInRow = targetRow.querySelectorAll(".cellaDay");
-    if (colIndex >= cellsInRow.length) {
-      console.warn("Cella non trovata per l'appuntamento:", appointment);
-      return;
-    }
-    const targetCell = cellsInRow[colIndex];
+    // mappa i minuti
+    let minuteKey;
+    if (mStr < 15) minuteKey = "00";
+    else if (mStr < 45) minuteKey = "30";
+    else minuteKey = "45";
 
-    // Crea il box per l'appuntamento
-    const appointmentBox = document.createElement("div");
-    appointmentBox.classList.add("appointment-box");
-    appointmentBox.setAttribute("draggable", "true");
-    appointmentBox.dataset.id = appointment.id;
-    appointmentBox.dataset.tipologia = appointment.tipologia_visita;
-    appointmentBox.dataset.orario = appointment.orario;
-    appointmentBox.innerHTML = `<span style="flex: 1;">${appointment.tipologia_visita}</span>
-      <button class="delete-appointment" data-id="${appointment.id}">&times;</button>`;
+    // scorri le celle in ordine
+    const celle = row.querySelectorAll(".cellaDay");
 
-    boxColorMapping.forEach((mapping) => {
-      if (mapping.group === appointment.tipologia_visita) {
-        appointmentBox.style.backgroundColor = mapping.color;
-        if (mapping.text_color) {
-          appointmentBox.style.color = mapping.text_color;
-        }
-      } else {
-        appointmentBox.style.backgroundColor = "#3a255d";
+    let foundSlot = null;
+
+    for (let i = 0; i < celle.length; i++) {
+      const cella = celle[i];
+      const slot = cella.querySelector(`.mini-slot[data-minute="${minuteKey}"]`);
+
+      if (slot && slot.querySelectorAll(".appointment-box").length === 0) {
+        foundSlot = slot;
+        break;
       }
-    });
+    }
 
-    // Applica il colore basandoti sul mapping (ricerca case-insensitive)
+    if (!foundSlot) {
+      alert(`Non c'è più spazio disponibile per le ${hourKey}:${minuteKey}`);
+      return;
+    }
+
+    // crea box
+    const box = document.createElement("div");
+    box.classList.add("appointment-box");
+    box.setAttribute("draggable", "true");
+    box.dataset.id = app.id;
+    box.dataset.tipologia = app.tipologia_visita;
+    box.dataset.orario = app.orario;
+
+    box.innerHTML = `
+      <span style="font-size:0.8rem;">${app.tipologia_visita}</span>
+      <button class="delete-appointment" data-id="${app.id}">&times;</button>
+    `;
+
+    // colore
     const mapping = boxColorMapping.find(m =>
-      m.group.toLowerCase() === appointment.tipologia_visita.toLowerCase()
+      m.group.toLowerCase() === app.tipologia_visita.toLowerCase()
     );
-    if (mapping) {
-      appointmentBox.style.backgroundColor = mapping.color;
-      if (mapping.text_color) {
-        appointmentBox.style.color = mapping.text_color;
-      }
-    } else {
-      console.log("Mapping non trovato per:", appointment.tipologia_visita);
-      appointmentBox.style.backgroundColor = "#3a255d"; // colore di default
-    }
+    box.style.backgroundColor = mapping?.color || "#3a255d";
+    if (mapping?.text_color) box.style.color = mapping.text_color;
 
-    // Inserisci il box nella cella
-    targetCell.appendChild(appointmentBox);
+    foundSlot.appendChild(box);
 
-    // Abilita i listener specifici per il drag & drop in daily view
-    addDragAndDropEventsDaily(appointmentBox);
+    addDragAndDropEventsDaily(box);
 
-    // Aggiungi il listener per aprire il popup dei dettagli
-    appointmentBox.addEventListener("click", (e) => {
+    box.addEventListener("click", e => {
       e.stopPropagation();
       const popup = document.getElementById("appointment-actions-popup");
-      const rect = appointmentBox.getBoundingClientRect();
+      const rect = box.getBoundingClientRect();
       popup.style.top = `${rect.top + window.scrollY + 27}px`;
       popup.style.left = `${rect.left + window.scrollX}px`;
       popup.classList.remove("hidden-popup");
-      gsap.set(popup, { opacity: 0 });
-      gsap.to(popup, { opacity: 1, duration: 0.2, ease: "power2.out" });
-      popup.dataset.id = appointment.id;
-
-      // 🔹 Listener per chiudere la modale
-      document
-        .getElementById("closeDetailsModal")
-        .addEventListener("click", () => {
-          const modal = document.getElementById("detailsModal");
-          const content = modal.querySelector(".custom-modal-content");
-          document.body.style.overflow = "auto";
-
-          gsap.to(content, {
-            opacity: 0,
-            scale: 0.8,
-            duration: 0.3,
-            ease: "power2.in",
-            onComplete: () => {
-              modal.classList.add("hidden-details");
-              gsap.set(content, { opacity: 1, scale: 1 }); // Reset per la prossima apertura
-            },
-          });
-        });
-
+      gsap.fromTo(popup, {opacity: 0}, {opacity: 1, duration: 0.2});
+      popup.dataset.id = app.id;
       setupPopupActions();
     });
 
-    // Listener per la cancellazione
-    const deleteButton = appointmentBox.querySelector(".delete-appointment");
-    if (deleteButton) {
-      deleteButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        confirmDeleteAction({
-          url: `/delete-appointment/${appointment.id}/`,
-          elementToRemove: appointmentBox,
-          successMessage: "Appuntamento eliminato con successo.",
-          errorMessage: "Si è verificato un errore durante la cancellazione.",
-          confirmMessage: "Sei sicuro di voler eliminare l'appuntamento?",
-          borderColor: "#EF4444",
-        });
+    box.querySelector(".delete-appointment").addEventListener("click", e => {
+      e.stopPropagation();
+      confirmDeleteAction({
+        url: `/delete-appointment/${app.id}/`,
+        elementToRemove: box,
+        successMessage: "Appuntamento eliminato!",
+        errorMessage: "Errore durante la cancellazione",
+        confirmMessage: "Sei sicuro di voler eliminare?",
+        borderColor: "#EF4444"
       });
-    }
+    });
   });
 }
 
@@ -758,7 +718,7 @@ function addDragAndDropEventsDaily(appointmentBox) {
     }
   });
 
-  // Aggiungi i listener per il drop alle celle del layout Giorno
+  // per tutte le celleDay
   document.querySelectorAll(".cellaDay").forEach(cell => {
     cell.addEventListener("dragover", (e) => {
       e.preventDefault();
@@ -775,35 +735,40 @@ function addDragAndDropEventsDaily(appointmentBox) {
       if (!selectedAppointment) return;
 
       const appointmentId = selectedAppointment.dataset.id;
-      if (!appointmentId) {
-        console.error("ID appuntamento mancante!");
+      if (!appointmentId) return;
+
+      // ottieni ora della riga
+      const row = cell.parentElement;
+      const hourKey = row.dataset.time;
+
+      // cerca la prima cella vuota di questa riga
+      const celle = row.querySelectorAll(".cellaDay");
+      let targetCell = null;
+      for (let i = 0; i < celle.length; i++) {
+        if (celle[i].querySelectorAll(".appointment-box").length === 0) {
+          targetCell = celle[i];
+          break;
+        }
+      }
+
+      if (!targetCell) {
+        alert(`Non ci sono più celle disponibili per ${hourKey}`);
         return;
       }
 
-      // Determina il nuovo orario basato sulla cella drop:
-      // Recupera la cella drop e il suo indice in riga
-      const row = cell.parentElement; // .row-for-ora-day
-      const cells = Array.from(row.querySelectorAll(".cellaDay"));
-      const colIndex = cells.indexOf(cell);
-      const newHour = 9 + colIndex; // se l'orario di partenza è 09:00
-      // Imposta i minuti a "00" (modifica solo l'ora)
-      const newTime = `${String(newHour).padStart(2, "0")}:00`;
-
-      // Aggiorna il testo visualizzato nel box
-      const tipologia = selectedAppointment.dataset.tipologia || "Sconosciuto";
-      selectedAppointment.querySelector("span").textContent = `${tipologia}`;
-
-      // Aggiorna l'appuntamento nel backend: la data resta invariata (vista Giorno)
-      const formattedDate = currentDate.toISOString().split("T")[0];
-      updateAppointmentDate(appointmentId, formattedDate, newTime);
-
-      // Sposta l'elemento nella cella drop
-      cell.appendChild(selectedAppointment);
+      // sposta l’appuntamento nella prima cella libera
+      targetCell.appendChild(selectedAppointment);
       selectedAppointment.style.opacity = "1";
+
+      // aggiorna il backend (data resta invariata, cambia solo ora)
+      const formattedDate = currentDate.toISOString().split("T")[0];
+      updateAppointmentDate(appointmentId, formattedDate, hourKey);
+
       selectedAppointment = null;
     });
   });
 }
+
 
 /* SETTING MONTH LAYOUT */
 monthLayoutBtn.addEventListener("click", () => {
@@ -1313,7 +1278,7 @@ function saveAppointmentChanges() {
   // 5) Costruisci il payload minimo
   const payload = {
     tipologia_visita: tipologiaVisita,
-    orario:           orario,
+    new_time:           orario,
     nome_paziente:    nomePaziente,
     cognome_paziente: cognomePaziente,
     visita:           visita,
@@ -1687,7 +1652,7 @@ document.addEventListener("DOMContentLoaded", () => {
     monthLayoutContainer.style.display = "none";
     weekHead.style.display = "none";
     weekLayoutContainer.style.display = "none";
-    dayLayoutContainer.style.display = "block";
+    dayLayoutContainer.style.display = "flex";
     dayHead.style.display = "block";
 
     updateTodayButtonText();
