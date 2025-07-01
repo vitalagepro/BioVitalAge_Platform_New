@@ -12,8 +12,6 @@ from django.http import HttpResponse
 
 urlpatterns = [
 
-    path("ping/", lambda req: HttpResponse("pong"), name="ping"),
-
     # URL PER LOGIN
     path("",                                                    views.LoginRenderingPage.as_view(),                  name='loginPage'),
     path("logout",                                              LogOutRender.as_view(),                              name="logout"),
@@ -55,6 +53,9 @@ urlpatterns = [
     ## URL PER LA CARTELLA DEL PAZIENTE
     path("CartellaPaziente/<int:id>/",                          views.CartellaPazienteView.as_view(),                 name="cartella_paziente"),
     path("CartellaPaziente/requestSaveNote/<int:id>",           views.CartellaPazienteNote.as_view(),                 name="cartellaPaziente_note"),
+
+    ## URL SEZIONE DIARIO CLINICO
+    path("CartellaPaziente/<int:id>/Diario_Clinico",            views.DiarioCLinicoView.as_view(),                    name="diario_clinico"),
 
     ## URL SEZIONI STORICO
     path("CartellaPaziente/<int:id>/Storico",                   views.StoricoView.as_view(),                          name="storico"),

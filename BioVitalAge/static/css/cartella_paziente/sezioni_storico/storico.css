@@ -227,3 +227,23 @@ canvas {
   background-color: #f44336;
   color: #fff;
 }
+
+.tittle-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  gap: 20px;
+  margin-bottom: 1rem;
+  background-color: var(--contrast-color-shadow);
+  border-radius: 8px;
+  box-shadow: 1px 1px 8px 2px rgba(0, 0, 0, 0.08);
+}
+.tittle-container img{
+  width: 30px;
+  height: 30px;
+}
+.tittle-container h3{
+  color: var(--dark1);
+  margin-top: 0.5rem;
+}

@@ -15,6 +15,7 @@ urlpatterns = [
 
     # PATH AUTENTIFICAZIONE SECTION
     path('auth/', include('social_django.urls', namespace='social')),
+    path('api/auth/', include('users.urls')),
 
     # PATH PER API
     path('api/', include('BioVitalAge.api.urls')),
