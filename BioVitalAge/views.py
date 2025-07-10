@@ -63,10 +63,25 @@ from BioVitalAge.api.serializers import NotaSerializer
 
 
 
-
-
-
 logger = logging.getLogger(__name__)
+
+def get_user_role(request):
+    """
+    Restituisce il ruolo dell'utente autenticato, o None se non autenticato o senza credenziali.
+    """
+    user = getattr(request, 'user', None)
+
+    if not user or not user.is_authenticated:
+        return None
+    
+    cred = getattr(user, 'utentiregistraticredenziali', None)
+    if not cred:
+        return None
+    
+    return getattr(cred, 'role', None)
+
+
+
 
 #----------------------------------------
 # ----  SEZIONE LOGIN / HOME PAGE   -----
@@ -91,13 +106,9 @@ class LoginRenderingPage(View):
                 'error': 'Email o password non valide'
             })
 
-        # 1) Faccio il login
         login(request, user)
-
-        # 2) Redirect alla home: HomePageRender gestirà tutto il contesto
         return redirect('HomePage')
     
-
 # VIEW LOGOUT
 @method_decorator(catch_exceptions, name='dispatch')
 class LogOutRender(View):
@@ -109,17 +120,21 @@ class LogOutRender(View):
 # VIEW HOME PAGE
 @method_decorator(catch_exceptions, name='dispatch')
 class HomePageRender(LoginRequiredMixin,View):
+    """Home render class"""
 
     login_url = 'loginPage'
 
     def get(self, request):
+        """Function that handling get request for home page"""
+
+        role = get_user_role(request)
 
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persone = TabellaPazienti.objects.order_by('created_at').all()
         today = timezone.now().date()
         total_biological_age_count = DatiEstesiRefertiEtaBiologica.objects.aggregate(total=Count('biological_age'))['total']
 
-        if dottore.isSecretary:
+        if role == 'secretary':
             total_pazienti = TabellaPazienti.objects.all().count()
         else:
             # Filtra i pazienti in base al dottore loggato
@@ -131,13 +146,13 @@ class HomePageRender(LoginRequiredMixin,View):
         avg_age = TabellaPazienti.objects.aggregate(avg_age=Avg('chronological_age'))['avg_age']
 
         # Ottieni solo gli appuntamenti futuri
-        if dottore.isSecretary:
+        if role == 'secretary':
             appuntamenti = Appointment.objects.filter(data__gte=today).order_by('data')[:4]
         else:
             appuntamenti = Appointment.objects.filter(dottore=dottore, data__gte=today).order_by('data')[:4]
         # Calcola il totale "biological_age" solo per i referti associati ai pazienti di questo dottore
 
-        if dottore.isSecretary:
+        if role == 'secretary':
             total_biological_age_count = DatiEstesiRefertiEtaBiologica.objects.aggregate(total=Count('biological_age'))['total']
             total_pazienti = TabellaPazienti.objects.all().count()
         else:
@@ -145,7 +160,7 @@ class HomePageRender(LoginRequiredMixin,View):
             total_pazienti = TabellaPazienti.objects.filter(dottore=dottore).count()
 
         # Calcola min, max e media dell'età cronologica solo per i pazienti del dottore
-        if dottore.isSecretary:
+        if role == 'secretary':
             agg_age = TabellaPazienti.objects.aggregate(
                 min_age=Min('chronological_age'),
                 max_age=Max('chronological_age'),
@@ -161,7 +176,7 @@ class HomePageRender(LoginRequiredMixin,View):
         max_age = agg_age['max_age']
         avg_age = agg_age['avg_age']
 
-        if dottore.isSecretary:
+        if role == 'secretary':
             persone = TabellaPazienti.objects.all().order_by('-created_at')
 
         else:
@@ -177,7 +192,7 @@ class HomePageRender(LoginRequiredMixin,View):
         end_of_last_week = start_of_week - timedelta(days=1)
 
         # Conta i pazienti creati nella settimana corrente e in quella precedente
-        if dottore.isSecretary:
+        if role == 'secretary':
             current_week_patients = TabellaPazienti.objects.filter(created_at__gte=start_of_week).count()
             last_week_patients = TabellaPazienti.objects.filter(created_at__gte=start_of_last_week, created_at__lte=end_of_last_week).count()
         else:
@@ -269,22 +284,28 @@ class HomePageRender(LoginRequiredMixin,View):
             print("⚠️ Account Google non collegato per:", dottore.email)
             emails = []
 
-        context["emails"] = emails  # ← questo è il campo letto nel template da: <script id="emails-data">
+        context["emails"] = emails 
         return render(request, "home_page/homePage.html", context)
-
 
 
 # VIEW PER LA SEZIONE STATISTICHE
 @method_decorator(catch_exceptions, name='dispatch')
 class StatisticheView(LoginRequiredMixin, View):
+    """Statistiche render class"""
+
     def get(self, request):
+        """Function that handling statistiche get request"""
+
+        role = get_user_role(request)
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        if dottore.isSecretary:
+
+        if role == 'secretary':
             qs = TabellaPazienti.objects.all()
+
         else:
             qs = TabellaPazienti.objects.filter(dottore=dottore)
 
-        # 1️⃣ Pazienti inseriti per mese (escludi created_at NULL)
+        # Pazienti inseriti per mese
         month_labels = ["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"]
         monthly_qs = (
             qs
@@ -295,10 +316,9 @@ class StatisticheView(LoginRequiredMixin, View):
         )
         monthly_counts = [0]*12
         for it in monthly_qs:
-            # sicuro che it['mese'] non sia None
             monthly_counts[it['mese']-1] = it['count']
 
-        # 2️⃣ Fasce d’età per mese
+        # Fasce d’età per mese
         age_groups = [(0,5),(6,15),(16,25),(26,45),(46,200)]
         colors = ["#6a2dcc","#8041e0","#9666e4","#ad8be8","#c3b0ec"]
         today = date.today()
@@ -324,7 +344,7 @@ class StatisticheView(LoginRequiredMixin, View):
                 'backgroundColor': colors[idx]
             })
 
-        # 3️⃣ Pazienti per giorno della settimana
+        # Pazienti per giorno della settimana
         week_labels = ["Dom","Lun","Mar","Mer","Gio","Ven","Sab"]
         weekly_qs = (
             qs
@@ -338,7 +358,7 @@ class StatisticheView(LoginRequiredMixin, View):
         for it in weekly_qs:
             weekly_counts[it['day']-1] = it['count']
 
-        # 4️⃣ Contesto e render
+        # Contesto e render
         context = {
             'dottore':        dottore,
             'monthly_labels': month_labels,
@@ -1026,20 +1046,23 @@ class InserisciPazienteView(LoginRequiredMixin,View):
 
     def get(self, request):
 
+        role = get_user_role(request)
         
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        is_secretary = profile.isSecretary
-        dottori = UtentiRegistratiCredenziali.objects.all() if is_secretary else None
+        dottori = UtentiRegistratiCredenziali.objects.all() if role else None
 
         context = {
             'dottore' : dottore,
-            'isSecretary' : is_secretary,
+            #'isSecretary' : is_secretary,
             'dottori' : dottori,
         }
         return render(request, "includes/InserisciPaziente.html", context)  
     
     def post(self, request):
+
+        role = get_user_role(request)
+
         try:
             success = None
             errore = None
@@ -1052,9 +1075,8 @@ class InserisciPazienteView(LoginRequiredMixin,View):
                 return date_str if date_str else None
 
             profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-            is_secretary = profile.isSecretary
 
-            if is_secretary:
+            if role:
                 paziente = TabellaPazienti.objects.filter(codice_fiscale=codice_fiscale).first()
             else:
                 paziente = TabellaPazienti.objects.filter(dottore=dottore, codice_fiscale=codice_fiscale).first()
@@ -1082,9 +1104,9 @@ class InserisciPazienteView(LoginRequiredMixin,View):
                 else:
                     errore = "⚠️ Il paziente esiste già e non sono stati forniti nuovi dati da aggiornare."
             else:
-                if is_secretary:
+                if role:
                     paziente = TabellaPazienti(
-                        dottore_id = request.POST.get('dottore'),  # ← qui uso _id
+                        dottore_id = request.POST.get('dottore'),  
                         codice_fiscale=codice_fiscale,
                         name=request.POST.get('name'),
                         surname=request.POST.get('surname'),
@@ -1185,9 +1207,9 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         """ 
 
         # params = {
-        #     'r': 'json',
-        #     'desc': 'long',
-        #     'type': 'cm',
+        #    'r': 'json',
+        #    'desc': 'long',
+        #    'type': 'cm',
         # }
         
         # resp = requests.get(self.ICD10_ENDPOINT, params=params)
@@ -1197,10 +1219,7 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         #         status=502
         #     )
 
-        # data = resp.json()
-        # print(data)
-
-        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        data = resp.json()
 
         # ViewSets  for API call 
         ViewSetResult = PazienteViewSet()
@@ -1208,8 +1227,8 @@ class CartellaPazienteView(LoginRequiredMixin,View):
 
         # Fetch dottore e paziente
         persona = ViewSetResult.get_patient_info(id)
-        is_secretary = dottore.isSecretary
-        dottori = UtentiRegistratiCredenziali.objects.all() if is_secretary else None
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        dottori = UtentiRegistratiCredenziali.objects.all() if role else None
     
         # Fetch Referti Età BioVitale
         referti = ViewSetResult.get_all_bio_referti(id)
@@ -1397,6 +1416,8 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             .first()
         )
         
+        #Retrive note 
+        note_text = persona.note_patologie
 
         context = {
             'persona': persona,
@@ -1407,7 +1428,7 @@ class CartellaPazienteView(LoginRequiredMixin,View):
             'ultimo_appuntamento': ultimo_appuntamento,
             'prossimo_appuntamento': prossimo_appuntamento,
             'dottori': dottori,
-            'is_secretary': is_secretary,
+            #'is_secretary': is_secretary,
 
             # indicatori 
             "Salute_del_cuore": lista_filtered_value[0],
@@ -1420,6 +1441,9 @@ class CartellaPazienteView(LoginRequiredMixin,View):
 
             # Score per JS con underscore
             'score': score_js,
+
+            # Note paziente
+            'note_text': note_text,
 
             # Score dettagliati
             'punteggi_organi': punteggi_organi,
@@ -1434,9 +1458,10 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         return render(request, "includes/cartellaPaziente.html", context)
 
 
-
     def post(self, request, id):
         
+        role = get_user_role(request)
+
         def parse_italian_date(value):
             try:
                 return datetime.strptime(value, "%d/%m/%Y").date()
@@ -1450,8 +1475,7 @@ class CartellaPazienteView(LoginRequiredMixin,View):
 
         # 2) recupera il profilo DjangoSocial / UtentiRegistratiCredenziali
         profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        is_secretary = profile.isSecretary
-
+    
         persona.codice_fiscale = request.POST.get('codice_fiscale')
         persona.dob = parse_date(request.POST.get('dob'))
         persona.residence = request.POST.get('residence')
@@ -1462,11 +1486,10 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         persona.email = request.POST.get('email')
         persona.phone = request.POST.get('phone')
         persona.place_of_birth = request.POST.get('place_of_birth')
-
         persona.dob = parse_italian_date(request.POST.get('dob'))
 
         # 4) se è segretaria, cambia la FK dottore
-        if is_secretary:
+        if role:
             doctor_id = request.POST.get('dottore')
             if doctor_id:
                 persona.dottore_id = int(doctor_id)
@@ -1525,6 +1548,17 @@ class CartellaPazienteView(LoginRequiredMixin,View):
         }
         return render(request, "includes/cartellaPaziente.html", context)
 
+@method_decorator(catch_exceptions, name='dispatch')
+class CartellaPazienteNote(LoginRequiredMixin,View):
+
+    def post(self, request, id):
+
+        note_request = request.POST.get('note_patologie')
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        persona.note_patologie = note_request
+        persona.save()
+
+        return redirect('cartella_paziente', id=id)
 
 
 # VIEW NOTA
@@ -1560,7 +1594,50 @@ class NotaRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
         return Nota.objects.filter(paziente_id=self.kwargs['paziente_pk'])
 
 
+# VIEW DIARIO CLINICO
+@method_decorator(catch_exceptions, name='dispatch')
+class DiarioCLinicoView(LoginRequiredMixin,View):
+    def get(self, request, id):
 
+        dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+        persona = get_object_or_404(TabellaPazienti, id=id)
+        today = timezone.now().date()
+
+        storico_appuntamenti = Appointment.objects.filter(
+            Q(nome_paziente__icontains=persona.name.strip()) &
+            Q(cognome_paziente__icontains=persona.surname.strip()) &
+            Q(dottore=dottore)
+        ).order_by('data', 'orario')
+
+        paginator = Paginator(storico_appuntamenti, 4)
+        page_number = request.GET.get('page')
+        storico_page = paginator.get_page(page_number)
+
+        totale_appuntamenti = storico_appuntamenti.count()
+        appuntamenti_confermati = storico_appuntamenti.filter(confermato=True).count()
+        appuntamenti_per_mese = storico_appuntamenti.annotate(month=ExtractMonth('data')).values('month').annotate(count=Count('id')).order_by('month')
+        appuntamenti_per_mese_count = [0] * 12  
+        prossimo_appuntamento = storico_appuntamenti.filter(data__gte=today).order_by('data').first()
+        appuntamenti_passati = storico_appuntamenti.filter(data__lt=today).count()
+        ultimo_appuntamento = storico_appuntamenti.filter(data__lt=today).last()
+
+        for item in appuntamenti_per_mese:
+            appuntamenti_per_mese_count[item['month'] - 1] = item['count']
+
+        context = {
+            'dottore': dottore,
+            'persona': persona,
+            'storico_appuntamenti': storico_appuntamenti,
+            'totale_appuntamenti': totale_appuntamenti,
+            'appuntamenti_confermati': appuntamenti_confermati,
+            'prossimo_appuntamento': prossimo_appuntamento,
+            'appuntamenti_passati': appuntamenti_passati,
+            'ultimo_appuntamento': ultimo_appuntamento,
+            'storico_page': storico_page,
+            'appuntamenti_per_mese': appuntamenti_per_mese_count,
+        }
+
+        return render(request, 'cartella_paziente/diario_clinico/diarioClinico.html', context)
 
 
 
@@ -2081,18 +2158,26 @@ class DeleteAllegatoView(LoginRequiredMixin, View):
 
 ### VIEW VISITE
 class VisiteView(View):
+    """Visite render class"""
+
     def get(self, request, id):
+        """Function that handling visite get requests"""
         return self._render_with_context(request, id)
 
     def post(self, request, id):
+        """Function that handling visite post requests"""
         persona = get_object_or_404(TabellaPazienti, id=id)
         return redirect('visite', id=persona.id)
 
     def _render_with_context(self, request, id):
+        """Function that handling visite render with context"""
+
+        role = get_user_role(request)
+
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
-        # nella tua view:
-        if dottore.isSecretary:
+    
+        if role == 'secretary':
             persone = (
                 TabellaPazienti.objects
                 .all()
@@ -2101,6 +2186,7 @@ class VisiteView(View):
                     Lower('surname'),
                 )
             )
+
         else:
             persone = (
                 TabellaPazienti.objects
@@ -2111,22 +2197,20 @@ class VisiteView(View):
                 )
             )
         
-        if dottore.isSecretary:
-            # Filtra gli appuntamenti del paziente in base al nome e cognome
+        if dottore.role == 'secretary':
             visite = Appointment.objects.filter(
                 nome_paziente__icontains=persona.name.strip(),
                 cognome_paziente__icontains=persona.surname.strip()
             ).order_by('-data', '-orario')
+
         else:
-            # Filtra gli appuntamenti del paziente in base al nome e cognome
-            # e al dottore associato (se non è segretaria/o)
             visite = Appointment.objects.filter(
                 nome_paziente__icontains=persona.name.strip(),
                 cognome_paziente__icontains=persona.surname.strip(),
                 dottore=dottore
             ).order_by('-data', '-orario')
 
-        # Ottieni le opzioni definite nei choices
+
         tipologia_appuntamenti = (
             Appointment.objects
             .exclude(tipologia_visita__isnull=True)
@@ -2135,7 +2219,6 @@ class VisiteView(View):
             .distinct()
         )
 
-        # Pulisci e ordina (facoltativo, ma consigliato)
         tipologia_appuntamenti = sorted(set([t.strip().title() for t in tipologia_appuntamenti]))
         numero_studio = [choice[0] for choice in Appointment._meta.get_field('numero_studio').choices]
         visita = Appointment._meta.get_field('visita').choices
@@ -2145,9 +2228,9 @@ class VisiteView(View):
         visite = paginator.get_page(page_number)
 
         profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-        is_secretary = profile.isSecretary
+        #is_secretary = profile.isSecretary
 
-        dottori = UtentiRegistratiCredenziali.objects.all() if is_secretary else None
+        dottori = UtentiRegistratiCredenziali.objects.all() if role == 'secretary' else None
 
         context = {
             'dottore': dottore,
@@ -2157,7 +2240,7 @@ class VisiteView(View):
             'tipologia_appuntamenti': tipologia_appuntamenti,
             'numero_studio': numero_studio,
             'visita': visita,
-            'is_secretary': is_secretary,
+            #'is_secretary': is_secretary,
             'dottori': dottori,
         }
         return render(request, "cartella_paziente/sezioni_storico/visite.html", context)
@@ -2178,7 +2261,6 @@ class EliminaVisitaView(View):
 class ValutazioneMSView(LoginRequiredMixin,View):
 
     def get(self, request, persona_id):
-
         
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=persona_id)
@@ -4857,64 +4939,60 @@ class PrescrizioniView(LoginRequiredMixin,View):
 class UpdatePersonaContactView(LoginRequiredMixin,View):
 
     def post(self, request, id):
+
+        role = get_user_role(request) 
+       
+        try:   
+            data = json.loads(request.body)
+            cap = data.get("cap")
+            province = data.get("province")
+            residence = data.get("residence")
+            email = data.get("email")
+            phone = data.get("phone")
+            associate_staff = data.get("associate_staff")
+            blood_group = data.get("blood_group")
+
+            from .models import TabellaPazienti 
+
+            profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
+            #is_secretary = profile.isSecretary
+
+            persona = TabellaPazienti.objects.get(id=id)
+            persona.cap = cap
+            persona.residence = residence
+            persona.province = province
+            persona.email = email
+            persona.phone = phone
+            persona.associate_staff = associate_staff
+            persona.blood_group = blood_group
+
+            if role:
+                doctor_id = request.POST.get('dottore')
+                if doctor_id:
+                    persona.dottore_id = int(doctor_id)
+                else:
+                    persona.dottore = None     
+
+            persona.save() 
+
+            return JsonResponse({"success": True})
         
-        if request.method == "POST":
-            try:
-                # Estrai il corpo della richiesta
-                data = json.loads(request.body)
-                cap = data.get("cap")
-                province = data.get("province")
-                residence = data.get("residence")
-                email = data.get("email")
-                phone = data.get("phone")
-                associate_staff = data.get("associate_staff")
-                blood_group = data.get("blood_group")
-
-                # Recupera il modello e aggiorna i dati
-                from .models import TabellaPazienti  # Sostituisci con il tuo modello
-
-                profile = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
-                is_secretary = profile.isSecretary
-
-                persona = TabellaPazienti.objects.get(id=id)
-                persona.cap = cap
-                persona.residence = residence
-                persona.province = province
-                persona.email = email
-                persona.phone = phone
-                persona.associate_staff = associate_staff
-                persona.blood_group = blood_group
-
-                        # 4) se è segretaria, cambia la FK dottore
-                if is_secretary:
-                    doctor_id = request.POST.get('dottore')
-                    if doctor_id:
-                        persona.dottore_id = int(doctor_id)
-                    else:
-                        persona.dottore = None     
-
-                persona.save()  # Salva le modifiche nel database
-
-                # print(f"Persona {id} aggiornata con email: {email}, telefono: {phone}, associate_staff: {associate_staff}, lastVisit: {lastVisit}, upcomingVisit: {upcomingVisit}, blood_group: {blood_group}")
-
-                return JsonResponse({"success": True})
-            except TabellaPazienti.DoesNotExist:
-                return JsonResponse({"success": False, "error": "Persona non trovata"})
-            except json.JSONDecodeError:
-                return JsonResponse({"success": False, "error": "JSON non valido"})
-            except Exception as e:
-                return JsonResponse({"success": False, "error": str(e)})
-        else:
-            return JsonResponse({"success": False, "error": "Metodo non valido"})
+        except TabellaPazienti.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Persona non trovata"})
+        
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "JSON non valido"})
+        
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+    
 
 
 
     def get(self, request, id):
 
         persona = get_object_or_404(TabellaPazienti, id=id)
-  
         referti_test_recenti = persona.referti_test.all().order_by('-data_ora_creazione')
-
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
 
         context = {
@@ -4922,8 +5000,8 @@ class UpdatePersonaContactView(LoginRequiredMixin,View):
             'referti_test_recenti': referti_test_recenti,
             'dottore': dottore
         }
-
         return render(request, "cartella_paziente/capacita_vitale/EtaVitale.html", context)
+    
 
 @method_decorator(catch_exceptions, name='dispatch')
 class RefertoView(LoginRequiredMixin,View):
@@ -4945,7 +5023,6 @@ class MicrobiotaView(LoginRequiredMixin,View):
 
         dottore = get_object_or_404(UtentiRegistratiCredenziali, user=request.user)
         persona = get_object_or_404(TabellaPazienti, id=id)
-
         ultimo_report = persona.microbiota_reports.order_by('-created_at').first()
 
         context = {

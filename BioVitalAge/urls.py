@@ -6,6 +6,7 @@ from django.urls import path # type: ignore
 from . import views
 from .views import *
 from django.conf.urls.static import static
+from django.http import HttpResponse
 
 
 
@@ -19,7 +20,7 @@ urlpatterns = [
     path('accounts/profile/',                                   ProfileView.as_view(),                               name='profile'),
 
     # -- URL HOME PAGE --
-    path("Home_Page",                                           HomePageRender.as_view(),                            name='HomePage'),
+    path("Home_Page/",                                           HomePageRender.as_view(),                            name='HomePage'),
 
     ## URL SIDEBAR
     path('api/appointment-notifications/',                      AppointmentNotificationsView.as_view(),              name='appointment-notifications'),
@@ -51,6 +52,10 @@ urlpatterns = [
 
     ## URL PER LA CARTELLA DEL PAZIENTE
     path("CartellaPaziente/<int:id>/",                          views.CartellaPazienteView.as_view(),                 name="cartella_paziente"),
+    path("CartellaPaziente/requestSaveNote/<int:id>",           views.CartellaPazienteNote.as_view(),                 name="cartellaPaziente_note"),
+
+    ## URL SEZIONE DIARIO CLINICO
+    path("CartellaPaziente/<int:id>/Diario_Clinico",            views.DiarioCLinicoView.as_view(),                    name="diario_clinico"),
 
     ## URL SEZIONI STORICO
     path("CartellaPaziente/<int:id>/Storico",                   views.StoricoView.as_view(),                          name="storico"),

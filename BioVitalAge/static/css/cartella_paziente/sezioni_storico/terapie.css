@@ -415,3 +415,11 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.5); 
 }
+
+
+.recent-patients{
+  width: 100%;
+  background-color: white !important;
+  margin: auto!important;
+  margin-top: 1rem!important;
+}

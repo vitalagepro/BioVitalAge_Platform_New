@@ -227,8 +227,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+/*  -----------------------------------------------------------------------------------------------
+  Funzione modale note
+  --------------------------------------------------------------------------------------------------- */
+const modaleNote = document.getElementById('modale_note');
+const buttonModaleNote = document.getElementById('modale-note');
+const buttonCloseModaleNote = document.getElementById('close')
+const backdropModaleNote = document.getElementById('backdropModaleNote')
+const textArea = document.getElementById('text_area')
+const modifyButton = document.getElementById('modify-btn-note')
 
+buttonModaleNote.addEventListener('click', ()=>{
+  modaleNote.style.display = 'block';
+  backdropModaleNote.style.display = 'block';
+})
 
+buttonCloseModaleNote.addEventListener('click', ()=>{
+  modaleNote.style.display = 'none';
+  backdropModaleNote.style.display = 'none';
+})
+
+modifyButton.addEventListener('click', ()=>{
+  textArea.removeAttribute('disabled');
+})
+
+  
 
 
 /*  -----------------------------------------------------------------------------------------------

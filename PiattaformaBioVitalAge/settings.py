@@ -20,11 +20,8 @@ load_balancer_dns = os.getenv('LOAD_BALANCER_DNS')
 ALLOWED_HOSTS = [elastic_beanstalk_domain, load_balancer_dns, 'localhost', '127.0.0.1']
 ALLOWED_HOSTS = ['*']
 
-
 INSTALLED_APPS = [
     "admin_reorder",
-    'Calcolatore',
-    'BioVitalAge',
     'social_django',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,8 +30,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    "rest_framework_simplejwt.token_blacklist",
     'drf_spectacular',
+    "users",
+    'Calcolatore',
+    'BioVitalAge',
 ]
+
 MIDDLEWARE = [
     "admin_reorder.middleware.ModelAdminReorder",
     'django.middleware.security.SecurityMiddleware',
@@ -46,6 +48,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
+
 ROOT_URLCONF = 'PiattaformaBioVitalAge.urls'
 
 TEMPLATES = [
@@ -96,10 +99,6 @@ DATABASES = {
     }
 } """
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -115,11 +114,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-#AUTH_USER_MODEL = 'BioVitalAge.UtentiRegistratiCredenziali'
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -128,19 +122,10 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
@@ -160,10 +145,12 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = [
     'first_name', 'last_name',
     'refresh_token', 'expires_in', 'token_type', 'id_token'
 ]
+
 SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
     'access_type': 'offline',
     'prompt': 'consent'
 }
+
 SOCIAL_AUTH_REVOKE_TOKENS_ON_DISCONNECT = True
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
@@ -177,13 +164,12 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 )
+
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_HTTPONLY = False  # Necessario per leggere il token via JS
-# SESSION_COOKIE_SECURE = True  # Se usi HTTPS
+CSRF_COOKIE_HTTPONLY = False
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://biovitalageplatformdeployed-env.eba-exhbgdpt.us-east-1.elasticbeanstalk.com']  # I tuoi domini
 CORS_ALLOW_CREDENTIALS = True
-
 
 ADMIN_REORDER = [
     # 1) Dottori registrati
@@ -239,13 +225,22 @@ ADMIN_REORDER = [
     "social_django",
 ]
 
-
-REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-}
-
 SPECTACULAR_SETTINGS = {
     'TITLE': 'BioVitalAge API',
     'DESCRIPTION': 'Documentazione OpenAPI per le API di Cartella Paziente',
     'VERSION': '1.0.0',
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
 }
